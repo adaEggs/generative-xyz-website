@@ -1,4 +1,5 @@
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { SEO_TITLE } from '@constants/seo-default-info';
 import GenerativeProjectDetail from '@containers/GenerativeProjectDetail';
 import MarketplaceLayout from '@layouts/Marketplace';
 import { getProjectDetail } from '@services/project';
@@ -25,7 +26,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
       seoInfo: {
-        title: res.name,
+        title: `${res.name} | ${SEO_TITLE}`,
         description: res.desc || res.itemDesc,
         image: res.image,
       },
