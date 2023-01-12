@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import s from './ProjectCard.module.scss';
 
-import { Project } from '@interfaces/project';
 import { CreatorInfo } from '@components/CreatorInfo';
-import { User } from '@interfaces/user';
-import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import Heading from '@components/Heading';
+import Link from '@components/Link';
 import ProgressBar from '@components/ProgressBar';
+import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
-import { useRouter } from 'next/router';
+import { Project } from '@interfaces/project';
+import { User } from '@interfaces/user';
 import { convertIpfsToHttp } from '@utils/image';
 
 interface IPros {
@@ -17,7 +17,6 @@ interface IPros {
 }
 
 export const ProjectCard = ({ project }: IPros): JSX.Element => {
-  const router = useRouter();
   const [creator, setCreator] = useState<User | null>(null);
 
   const [thumb, setThumb] = useState<string>(project.image);
@@ -32,12 +31,11 @@ export const ProjectCard = ({ project }: IPros): JSX.Element => {
     }
   }, [project]);
 
-  const onClick = () => {
-    router.push(`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`);
-  };
-
   return (
-    <div onClick={onClick} className={s.projectCard}>
+    <Link
+      href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
+      className={s.projectCard}
+    >
       <div className={s.projectCard_inner}>
         <div
           className={`${s.projectCard_thumb} ${
@@ -65,6 +63,6 @@ export const ProjectCard = ({ project }: IPros): JSX.Element => {
           />
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
