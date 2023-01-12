@@ -5,7 +5,7 @@ import MarketplaceLayout from '@layouts/Marketplace';
 
 const DisplayPage: NextPage = () => {
   return (
-    <MarketplaceLayout isHideFaucet={true} theme={'dark'}>
+    <MarketplaceLayout isHideFaucet={true} theme={'dark'} isDisplay={true}>
       <DisplayTemplate />
     </MarketplaceLayout>
   );

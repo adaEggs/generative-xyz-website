@@ -10,6 +10,12 @@
 
 .info {
   position: relative;
+  &_creatorLink{
+    text-decoration: none;
+    &:hover{
+      text-decoration: underline;
+    }
+  }
 }
 
 .usersInfo {
