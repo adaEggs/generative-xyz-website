@@ -3,7 +3,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import Link from '@components/Link';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
-import { LOGO_GENERATIVE } from '@constants/common';
+import { LOGO_JPG } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
@@ -161,7 +161,7 @@ const Header: React.FC<IProp> = ({
     refData.current.isHide = true;
     gsap.killTweensOf(refHeader.current);
     gsap.to(refHeader.current, {
-      y: '-100%',
+      y: '-105%',
       duration: 0.6,
       ease: 'power3.out',
     });
@@ -252,7 +252,9 @@ const Header: React.FC<IProp> = ({
       <div className={styles.header_inner}>
         <Container>
           <div className={styles.headerWrapper}>
-            <div className="d-flex align-items-center justify-content-between w-100">
+            <div
+              className={`d-flex align-items-center justify-content-between w-100 ${styles.header_row}`}
+            >
               <ul className={`${styles.navBar} ${styles[theme]}`}>
                 {MENU_HEADER?.length > 0 &&
                   MENU_HEADER.map(item => (
@@ -272,7 +274,7 @@ const Header: React.FC<IProp> = ({
               <Link className={styles.logo} href={ROUTE_PATH.HOME}>
                 <Image
                   className={styles.header_logo}
-                  src={LOGO_GENERATIVE}
+                  src={LOGO_JPG[theme]}
                   alt="LOGO_GENERATIVE"
                   width={64}
                   height={64}

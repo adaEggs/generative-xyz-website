@@ -2,6 +2,10 @@ import { CDN_URL } from './config';
 
 export const LOGO_URL =
   'https://cdn.autonomous.ai/static/upload/images/common/upload/20221221/logo6cbc3e712f.svg';
+export const LOGO_JPG = {
+  light: `${CDN_URL}/icons/generative_black.png`,
+  dark: `${CDN_URL}/icons/generative_white.png`,
+};
 
 export const LOGO_MARKETPLACE_URL = `${CDN_URL}/icons/logo-marketplace.svg`;
 export const LOGO_GENERATIVE = `${CDN_URL}/pages/home/logo.jpg`;

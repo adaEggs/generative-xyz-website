@@ -1,4 +1,4 @@
-import { LOGO_GENERATIVE, PAGE_ENTER, PAGE_LOADED } from '@constants/common';
+import { LOGO_JPG, PAGE_ENTER, PAGE_LOADED } from '@constants/common';
 import { gsap } from 'gsap';
 import s from './loading.module.scss';
 import { useContext, useEffect, useRef } from 'react';
@@ -86,7 +86,7 @@ export const LoadingLanding = (): JSX.Element => {
   return (
     <div ref={refLoading} className={s.loading}>
       <div className={s.loading_inner}>
-        <Image width={64} height={64} src={LOGO_GENERATIVE} alt={'logo-url'} />
+        <Image width={64} height={64} src={LOGO_JPG.light} alt={'logo-url'} />
         <h5 className={s.loading_text}>The Benchmark for Generative Art</h5>
         <span ref={refPersent}>0%</span>
       </div>

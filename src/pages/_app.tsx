@@ -156,7 +156,8 @@ export default function App({ Component, pageProps }: MyAppProps) {
         <meta name="msapplication-TileImage" content="images/favicon-144.png" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
 
-        {APP_ENV === ApplicationEnvironment.STAGING && (
+        {(APP_ENV === ApplicationEnvironment.STAGING ||
+          APP_ENV === ApplicationEnvironment.PRODUCTION) && (
           <script
             type="text/javascript"
             src="//script.crazyegg.com/pages/scripts/0100/2427.js"
