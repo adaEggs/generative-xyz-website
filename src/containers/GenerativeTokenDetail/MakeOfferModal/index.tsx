@@ -18,6 +18,8 @@ import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-to
 import useAsyncEffect from 'use-async-effect';
 import { WETH_ADDRESS } from '@constants/contract-address';
 import Web3 from 'web3';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
 
 interface IFormValues {
   offerPrice: number;
@@ -50,6 +52,7 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
     GetTokenBalanceOperation,
     false
   );
+  const user = useSelector(getUserSelector);
   const [wethBalance, setWETHBalance] = useState<number | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -94,14 +97,15 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
   };
 
   useAsyncEffect(async () => {
-    const balance = await getTokenBalance({
-      chainID: NETWORK_CHAIN_ID,
-      erc20TokenAddress: WETH_ADDRESS,
-    });
-    if (balance) {
+    setWETHBalance(null);
+    if (showMakeOfferModal) {
+      const balance = await getTokenBalance({
+        chainID: NETWORK_CHAIN_ID,
+        erc20TokenAddress: WETH_ADDRESS,
+      });
       setWETHBalance(balance);
     }
-  }, []);
+  }, [user, tokenData, showMakeOfferModal]);
 
   if (!tokenData) {
     return <></>;
@@ -148,7 +152,7 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
               </div>
             </div>
             <div className={s.balanceWrapper}>
-              {wethBalance ? (
+              {wethBalance && (
                 <div className={s.balanceItem}>
                   <div className={s.balanceLabel}>
                     <Image
@@ -165,10 +169,6 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
                     </span>
                   </div>
                 </div>
-              ) : (
-                <p className={s.balanceGuide}>
-                  Connect wallet to see your balance
-                </p>
               )}
             </div>
             <div className={s.listingForm}>

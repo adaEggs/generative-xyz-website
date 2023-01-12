@@ -22,7 +22,7 @@ const LOG_PREFIX = 'UploadGenArt';
 
 const UploadGenArt: React.FC = (): ReactElement => {
   const router = useRouter();
-  const [isProjectWork, setIsProjectWork] = useState(false);
+  const [isProjectWork, setIsProjectWork] = useState(true);
   const {
     formValues,
     filesSandbox,
@@ -159,34 +159,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
             </div>
           </div>
         </div>
-        {/* <div className={s.stepFooterWrapper}>
-          <footer className={s.stepFooter}>
-            <div className={s.container}>
-              <div className={s.checkboxWrapper}>
-                <Checkbox
-                  checked={isProjectWork}
-                  onClick={handleChangeIsProjectWork}
-                  className={s.checkbox}
-                  id="workProperly"
-                  label="My Generative Token works properly."
-                />
-              </div>
-              <div className={s.actionWrapper}>
-                <Button
-                  disabled={!isProjectWork || !filesSandbox}
-                  onClick={handleGoToNextStep}
-                  className={s.nextBtn}
-                  sizes="small"
-                >
-                  <SvgInset
-                    size={18}
-                    svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
-                  />
-                </Button>
-              </div>
-            </div>
-          </footer>
-        </div> */}
       </>
     );
   };

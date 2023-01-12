@@ -25,7 +25,7 @@ export const Empty = ({
 }: {
   projectInfo?: Project;
 }): JSX.Element => {
-  const { walletBalance } = useContext(WalletContext);
+  const { getWalletBalance } = useContext(WalletContext);
   const router = useRouter();
   const {
     call: mintToken,
@@ -45,6 +45,7 @@ export const Empty = ({
         return;
       }
 
+      const walletBalance = await getWalletBalance();
       if (
         walletBalance <
         parseFloat(Web3.utils.fromWei(projectInfo.mintPrice.toString()))
