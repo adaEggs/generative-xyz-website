@@ -7,7 +7,7 @@ import s from './styles.module.scss';
 
 type TColumn = {
   id: string;
-  config?: any;
+  config?: Record<string, string | number | undefined>;
   render: {
     [x: string]: ReactNode;
   };

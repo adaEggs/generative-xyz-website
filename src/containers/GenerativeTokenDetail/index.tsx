@@ -10,24 +10,24 @@ import {
   GenerativeTokenDetailContext,
   GenerativeTokenDetailProvider,
 } from '@contexts/generative-token-detail-context';
+import { TokenOffer } from '@interfaces/token';
+import { getUserSelector } from '@redux/user/selector';
 import { getChainName, getScanUrl } from '@utils/chain';
 import { formatAddress, formatTokenId } from '@utils/format';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
+import { toast } from 'react-hot-toast';
+import { useSelector } from 'react-redux';
 import { v4 } from 'uuid';
+import CancelListingModal from './CancelListingModal';
 import ListingTokenModal from './ListingTokenModal';
 import MakeOfferModal from './MakeOfferModal';
 import MoreItemsSection from './MoreItemsSection';
 import TokenActivities from './TokenActivities';
-import CancelListingModal from './CancelListingModal';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
-import { useSelector } from 'react-redux';
-import { getUserSelector } from '@redux/user/selector';
-import { TokenOffer } from '@interfaces/token';
-import { toast } from 'react-hot-toast';
 
 // const LOG_PREFIX = 'GenerativeTokenDetail';
 
@@ -132,34 +132,22 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     setIsBuying(false);
   };
 
+  const tokenName = useMemo(
+    () =>
+      `${tokenData?.project?.name} #${formatTokenId(tokenData?.tokenID || '')}`,
+    [tokenData?.project?.name, tokenData?.tokenID]
+  );
+
   return (
     <>
       <Container>
         <div className={s.wrapper} style={{ marginBottom: '100px' }}>
           <div className={s.itemInfo}>
             <Loading isLoaded={!!tokenData} className={s.loading_token} />
-            <Heading as="h4" fontWeight="bold">
-              {tokenData?.project?.name} #
-              {formatTokenId(tokenData?.tokenID || '')}
+            <Heading as="h4" fontWeight="semibold">
+              {tokenName}
             </Heading>
             <div className={s.prices}>
-              {/* TODO: Remove when API ready  */}
-              {/* <div>
-              <Text size="12" fontWeight="bold">
-                Price
-              </Text>
-              <Heading as="h5" fontWeight="bold">
-                0.01 ETH
-              </Heading>
-            </div>
-            <div>
-              <Text size="12" fontWeight="bold">
-                highest offer
-              </Text>
-              <Heading as="h5" fontWeight="bold">
-                0.2 ETH
-              </Heading>
-            </div> */}
               {isTokenListing && (
                 <div>
                   <Text size="12" fontWeight="bold">
@@ -305,7 +293,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           <MoreItemsSection genNFTAddr={tokenData.project.genNFTAddr} />
         )}
       </Container>
-
       <ListingTokenModal />
       <MakeOfferModal />
       <CancelListingModal />

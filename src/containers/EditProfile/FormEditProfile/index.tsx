@@ -42,7 +42,7 @@ const FormEditProfile = () => {
 
   const [newFile, setNewFile] = useState<File | null | undefined>();
 
-  const handleSubmit = async (values: any) => {
+  const handleSubmit = async (values: Record<string, string>) => {
     const payload: IUpdateProfilePayload = {
       avatar: newFile ? await toBase64(newFile) : '',
       bio: values.bio || '',

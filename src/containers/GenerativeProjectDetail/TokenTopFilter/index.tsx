@@ -3,6 +3,7 @@ import s from './styles.module.scss';
 import Image from 'next/image';
 import { CDN_URL } from '@constants/config';
 import Select, { SingleValue } from 'react-select';
+import { SelectOption } from '@interfaces/select-input';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -75,8 +76,8 @@ const TokenTopFilter: React.FC<IProps> = ({
           options={SORT_OPTIONS}
           className={s.selectInput}
           classNamePrefix="select"
-          onChange={(val: SingleValue<any>) => {
-            onSortChange(val.value);
+          onChange={(op: SingleValue<SelectOption>) => {
+            if (op) onSortChange(op.value);
           }}
         />
       </div>

@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-export const GridDebug = (): any => {
+export const GridDebug = (): React.ReactElement => {
   const [isGird, setIsGrid] = useState(false);
   const handleKeyDown = useCallback(
-    (ev: any) => {
+    (ev: KeyboardEvent) => {
       const key = ev.which || ev.keyCode;
       const isShift = !!ev.shiftKey;
       if (isShift && key === 71) {

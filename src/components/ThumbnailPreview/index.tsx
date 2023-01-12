@@ -12,9 +12,10 @@ import Link from 'next/link';
 import { useMemo, useRef, useState } from 'react';
 import s from './styles.module.scss';
 import Skeleton from '@components/Skeleton';
+import { Token } from '@interfaces/token';
 
 type Props = {
-  data?: any;
+  data: Token | null;
   allowVariantion?: boolean;
   previewToken?: boolean;
 };
