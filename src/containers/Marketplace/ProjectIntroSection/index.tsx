@@ -154,7 +154,11 @@ const ProjectIntroSection = ({ project }: Props) => {
     if (isProjectDetailPage) {
       return (
         <div className={s.info}>
-          <Heading as="h4" fontWeight="bold" style={{ marginBottom: '16px' }}>
+          <Heading
+            as="h4"
+            fontWeight="semibold"
+            style={{ marginBottom: '16px' }}
+          >
             {project?.name}
           </Heading>
           {project?.mintingInfo.index !== project?.maxSupply && (
