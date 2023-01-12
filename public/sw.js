@@ -1,3 +1,4 @@
+// Render preview
 const cache = {}
 const referrers = {}
 
@@ -77,7 +78,9 @@ self.addEventListener("message", async (event) => {
   }
 })
 
-const CACHE_VERSION = 1;
+
+// Cache
+const CACHE_VERSION = 'v1.0.12';
 const CURRENT_CACHES = {
   assets: `assets-cache-v${CACHE_VERSION}`,
 };
