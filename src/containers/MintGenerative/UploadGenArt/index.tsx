@@ -24,11 +24,13 @@ const UploadGenArt: React.FC = (): ReactElement => {
   const router = useRouter();
   const [isProjectWork, setIsProjectWork] = useState(false);
   const {
+    formValues,
     filesSandbox,
     setFilesSandbox,
     zipFile,
     setZipFile,
     setShowErrorAlert,
+    setFormValues,
   } = useContext(MintGenerativeContext);
 
   const handleChangeIsProjectWork = (): void => {
@@ -39,7 +41,12 @@ const UploadGenArt: React.FC = (): ReactElement => {
     try {
       const sandboxFiles = await processSandboxZipFile(file);
       setFilesSandbox(sandboxFiles);
-      detectUsedLibs(sandboxFiles);
+
+      const detectedLibs = await detectUsedLibs(sandboxFiles);
+      setFormValues({
+        ...formValues,
+        thirdPartyScripts: detectedLibs,
+      });
     } catch (err: unknown) {
       log(err as Error, LogLevel.Error, LOG_PREFIX);
       let errorMessage =

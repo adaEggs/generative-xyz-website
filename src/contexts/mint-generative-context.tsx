@@ -45,8 +45,6 @@ export type TMintGenerativeContext = {
   setShowErrorAlert: Dispatch<
     SetStateAction<{ open: boolean; message: string | null }>
   >;
-  detectedLibs: Array<string>;
-  setDetectedLibs: Dispatch<SetStateAction<Array<string>>>;
 };
 
 const initialValues: TMintGenerativeContext = {
@@ -88,10 +86,6 @@ const initialValues: TMintGenerativeContext = {
   setShowErrorAlert: _ => {
     return;
   },
-  detectedLibs: [],
-  setDetectedLibs: _ => {
-    return;
-  },
 };
 
 export const MintGenerativeContext =
@@ -117,7 +111,6 @@ export const MintGenerativeContextProvider = ({ children }: Props) => {
     open: boolean;
     message: string | null;
   }>({ open: false, message: null });
-  const [detectedLibs, setDetectedLibs] = useState<Array<string>>([]);
 
   useEffect(() => {
     if (!thumbnailFile) {
@@ -173,8 +166,6 @@ export const MintGenerativeContextProvider = ({ children }: Props) => {
         setMintedProjectID,
         showErrorAlert,
         setShowErrorAlert,
-        detectedLibs,
-        setDetectedLibs,
       }}
     >
       {children}
