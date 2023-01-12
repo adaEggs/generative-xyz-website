@@ -11,7 +11,7 @@ import React, {
 import s from './styles.module.scss';
 
 interface IProps {
-  file: any;
+  file: string;
   onFileChange: Dispatch<SetStateAction<File | null | undefined>>;
   className?: string;
   placeHolderHtml?: JSX.Element;

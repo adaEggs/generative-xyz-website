@@ -6,6 +6,7 @@ export const isOpenWalletSettingSelector = (state: RootState): boolean =>
 export const isOpenCheckoutPopupSelector = (state: RootState): boolean =>
   state.general.isOpenCheckoutPopup;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const checkoutProduct = (state: RootState): any =>
   state.general.checkoutProduct;
 

@@ -57,7 +57,7 @@ const Text = ({
   ...props
 }: PropsWithChildren<TText>) => {
   const Text = as;
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const comp = useRef<any>(null);
   const refDom = useRef<IProRefDom>({});
   const { pageLoadStatus } = useContext(LoadingContext);
@@ -175,7 +175,7 @@ const Text = ({
             });
             break;
           case 'random':
-            comp.current.textContent = '';
+            if (comp.current) comp.current.textContent = '';
             refDom.current?.arrText?.forEach((el: string, key: number) => {
               if (
                 el === ' ' &&

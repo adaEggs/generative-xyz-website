@@ -409,7 +409,7 @@ const ProjectIntroSection = ({ project }: Props) => {
       {renderLeftContent()}
       <div className={isProjectDetailPage ? `h-divider` : ''}></div>
       <div>
-        <ThumbnailPreview data={projectDetail} allowVariantion />
+        <ThumbnailPreview data={projectDetail as Token} allowVariantion />
       </div>
     </div>
   );

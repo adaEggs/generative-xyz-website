@@ -20,7 +20,7 @@ export const CreatePageSection = (): JSX.Element => {
   // const [_, setProject] = useState<Project | null>(null);
   const router = useRouter();
   const refAnim = useRef<HTMLDivElement | null>(null);
-  const refList = useRef<any>([]);
+  const refList = useRef<Array<HTMLDivElement | null>>([]);
   const { pageLoadStatus } = useContext(LoadingContext);
 
   // const fetchRandomProject = async () => {

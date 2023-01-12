@@ -11,6 +11,7 @@ export type Token = {
   description: string;
   image: string;
   animationUrl: string;
+  animation_url: string;
   attributes: Array<TokenAttribute>;
   genNFTAddr: string;
   owner: User;
