@@ -181,11 +181,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
       throw Error(WalletError.NO_INSTANCE);
     }
 
-    const walletRes = await wallet.connect();
-    if (!walletRes.isSuccess || !walletRes.data) {
-      throw Error(walletRes.message);
-    }
-    const walletAddress = walletRes.data;
+    const walletAddress = await connectedAddress();
 
     if (walletAddress) {
       const balanceRes = await wallet.getBalance(walletAddress);

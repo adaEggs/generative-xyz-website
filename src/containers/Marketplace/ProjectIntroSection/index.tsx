@@ -23,7 +23,7 @@ import MintGenerativeNFTOperation from '@services/contract-operations/generative
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
 import { convertToETH } from '@utils/currency';
-import { base64ToUtf8, formatAddress } from '@utils/format';
+import { base64ToUtf8, escapeSpecialChars, formatAddress } from '@utils/format';
 import log from '@utils/logger';
 import dayjs from 'dayjs';
 import _get from 'lodash/get';
@@ -399,7 +399,7 @@ const ProjectIntroSection = ({ project }: Props) => {
       project.projectURI.replace('data:application/json;base64,', '')
     );
     if (_projectDetail) {
-      const projectDetailObj = JSON.parse(_projectDetail);
+      const projectDetailObj = JSON.parse(escapeSpecialChars(_projectDetail));
       setProjectDetail(projectDetailObj);
     }
   }, [project?.id]);

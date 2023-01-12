@@ -14,6 +14,15 @@ export const base64ToUtf8 = (str: string): string => {
   return decodeURIComponent(escape(window.atob(str)));
 };
 
+export const escapeSpecialChars = (str: string): string => {
+  return str
+    .replaceAll('\n', '\\n')
+    .replaceAll('\b', '\\b')
+    .replaceAll('\f', '\\f')
+    .replaceAll('\r', '\\r')
+    .replaceAll('\t', '\\t');
+};
+
 export const toBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -68,7 +77,7 @@ export const exponentialToDecimal = (exponential: number): string => {
       let j = 3;
       let textLength = text.length;
       while (j < textLength) {
-        text = `${text.slice(0, textLength - j)},${text.slice(
+        text = `${text.slice(0, textLength - j)}, ${text.slice(
           textLength - j,
           textLength
         )}`;
