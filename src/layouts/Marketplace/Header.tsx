@@ -270,7 +270,7 @@ const Header: React.FC<IProp> = ({
                   >
                     <li>
                       <a href={SOCIALS.docs} target="_blank" rel="noreferrer">
-                        Doc
+                        Docs
                       </a>
                     </li>
                     <li>
