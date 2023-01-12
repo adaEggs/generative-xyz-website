@@ -77,8 +77,9 @@ export default function App({ Component, pageProps }: MyAppProps) {
         <link rel="manifest" href="/manifest.json" />
         <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#fff" />
         <meta name="theme-color" content="#ffffff"></meta>
-        <link rel="shortcut icon" href="/favicon.ico" />
-        <link rel="icon" sizes="16x16 32x32 64x64" href="/favicon.ico" />
+
+        <link rel="shortcut icon" href="/images/favicon.ico" />
+        <link rel="icon" sizes="16x16 32x32 64x64" href="/images/favicon.ico" />
         <link
           rel="icon"
           type="image/png"
