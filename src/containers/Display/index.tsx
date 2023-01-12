@@ -7,6 +7,7 @@ import { HardWare } from './components/hardware';
 import { LifeStyle } from '@containers/Display/components/lifestyle';
 import { Prices } from '@containers/Display/components/prices';
 import { LoadingContext, LoadingProvider } from '@contexts/loading-context';
+import CheckoutModal from '@containers/CheckoutModal';
 
 const Display: React.FC = (): JSX.Element => {
   const { registerLoading, unRegisterLoading } = useContext(LoadingContext);
@@ -33,6 +34,7 @@ const Display: React.FC = (): JSX.Element => {
       <HardWare />
       <LifeStyle />
       <Prices />
+      <CheckoutModal />
     </div>
   );
 };
