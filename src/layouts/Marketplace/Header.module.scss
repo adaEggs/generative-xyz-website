@@ -1,44 +1,149 @@
 @import 'src/styles/_themes/mixins';
 
 .header {
+  position: sticky;
+  width: 100%;
+  top: 0;
+  left: 0;
+  z-index: 9;
+  background-color: $white;
+
+  &_row{
+    min-height: rem(40px);
+  }
+
+  &_inner {
+    padding: rem(5px) 0;
+    position: relative;
+  }
+
+  &.dark {
+    background: $primary-brand;
+
+    :global(.divider) {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .headerWrapper {
+      .username {
+        color: $white-100;
+      }
+
+      .price {
+        color: $white-80;
+      }
+
+      .caret_icon {
+        filter: brightness(0) invert(1);
+      }
+
+      .dropdown {
+        :global(.dropdown-item) {
+          background-color: $black-100;
+          color: $white-40;
+
+          &:hover {
+            background-color: #000;
+            color: $white-100;
+          }
+        }
+      }
+    }
+  }
+
+  &_logo {
+    border-radius: 4px;
+    width: 42px;
+    height: 42px;
+    @include min-tablet {
+      width: 64px;
+      height: 64px;
+    }
+  }
+
   .headerWrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 0;
+    padding: rem(8px) 0;
+
 
     a {
       text-decoration: none;
     }
 
     .navBar {
-      display: flex;
-      gap: 24px;
-      margin-left: rem(60);
+
       margin-bottom: 0;
       padding: 0;
-      text-transform: uppercase;
-      font-size: 16px;
-      line-height: 26px;
-      font-weight: 700;
+      display: none;
+      flex-wrap: wrap;
+      font-weight: 600;
       color: $black-40;
+      line-height: (26/16);
+
+      @include min-tablet {
+        display: flex;
+        gap: rem(24px);
+        //margin-left: rem(60px);
+      }
+
+      @include calcFontAuto(13px, 16px);
+
+      li {
+        @include mobile {
+          flex: 0 0 100%;
+          width: 100%;
+        }
+      }
+
+      a {
+        @include mobile {
+          text-align: center;
+          display: block;
+        }
+
+        sup {
+          font-weight: 600;
+
+          letter-spacing: 0.01em;
+          color: #FF7E21;
+          display: inline-block;
+          transform: translateY(-.2em);
+          text-transform: none;
+          @include calcFontAutoSmall(10px, 12px)
+        }
+      }
 
       .active,
       a:hover {
         transition: all 0.3s;
         color: $black-100;
       }
+
+      &.dark {
+        color: rgba($white, 0.4);
+
+        .active,
+        a:hover {
+          transition: all 0.3s;
+          color: $white;
+        }
+      }
     }
 
     .username {
-      display: flex;
+      display: none;
+      @include min-tablet {
+        display: flex;
+      }
       align-items: center;
       gap: 6px;
       font-size: 14px;
       font-weight: 700;
 
-      span {
-        @include text-ellipsis();
+      p {
+        @include text-ellipsis;
         max-width: 150px;
         line-height: 24px;
       }
@@ -56,13 +161,75 @@
       border-radius: 8px;
       border: 2px solid $black-10;
       overflow: hidden;
-      width: rem(188);
-      box-shadow: 8px 7px 24px 0px #00000026;
+      min-width: rem(188);
+      box-shadow: 8px 7px 24px 0 #00000026;
       position: absolute;
       right: 0;
       transform: translateY(11px);
       transition: all 0.2s;
       z-index: 10;
+    }
+  }
+}
+
+
+.logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  img {
+    width: rem(64px);
+    height: rem(64px);
+    max-width: 64px;
+    max-height: 64px;
+  }
+}
+
+.testNet {
+  background: #4F43E2;
+  font-style: normal;
+  font-weight: 500;
+  line-height: (24/14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  padding: rem(8px) rem(16px);
+
+  @include calcFontAutoSmall(12px, 14px);
+
+  button {
+    background: none;
+    position: absolute;
+    right: vw(72px);
+  }
+
+  img {
+    margin-right: 6px;
+  }
+
+  a {
+    display: inline-block;
+    margin-left: 6px;
+    text-decoration: underline !important;
+    cursor: pointer !important;
+
+    &:hover {
+      color: rgba($white, .8);
+    }
+  }
+}
+
+.header{
+  &_right{
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    &_links{
+      margin-right: rem(26px);
     }
   }
 }

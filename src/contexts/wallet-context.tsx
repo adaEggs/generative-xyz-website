@@ -16,6 +16,11 @@ import { WalletError } from '@enums/wallet-error';
 import { clearAuthStorage, setAccessToken } from '@utils/auth';
 import { getProfile } from '@services/profile';
 import { NETWORK_CHAIN_ID } from '@constants/config';
+import Web3 from 'web3';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
+import { WalletEvent } from '@enums/wallet-event';
+import { METAMASK_DOWNLOAD_PAGE } from '@constants/common';
 
 const LOG_PREFIX = 'WalletContext';
 
@@ -30,6 +35,8 @@ export interface IWalletContext {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   transfer: (addr: string, val: string) => Promise<string>;
+  walletBalance: number;
+  getWalletBalance: () => Promise<number>;
 }
 
 const initialValue: IWalletContext = {
@@ -40,6 +47,8 @@ const initialValue: IWalletContext = {
   connect: () => new Promise<void>(r => r()),
   disconnect: () => new Promise<void>(r => r()),
   transfer: (_address: string, _val: string) => new Promise<string>(r => r('')),
+  walletBalance: 0,
+  getWalletBalance: () => new Promise<number>(r => r(0)),
 };
 
 export const WalletContext = React.createContext<IWalletContext>(initialValue);
@@ -50,8 +59,10 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   const [walletManager, setWalletManager] = useState<WalletManager | null>(
     null
   );
+  const [walletBalance, setWalletBalance] = useState<number>(0);
   const walletManagerRef = useRef<WalletManager | null>(walletManager);
   const dispatch = useAppDispatch();
+  const user = useSelector(getUserSelector);
 
   const connectedAddress = useCallback(async (): Promise<string | null> => {
     const wallet = walletManagerRef.current;
@@ -84,14 +95,22 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
 
   const connect = useCallback(async (): Promise<void> => {
     const wallet = walletManagerRef.current;
+
     if (!wallet) {
       throw Error(WalletError.NO_INSTANCE);
+    }
+
+    if (!wallet.isInstalled()) {
+      window.open(METAMASK_DOWNLOAD_PAGE);
+      throw Error(WalletError.NO_METAMASK);
     }
 
     const walletRes = await wallet.connect();
     if (!walletRes.isSuccess || !walletRes.data) {
       throw Error(walletRes.message);
     }
+
+    await checkAndSwitchChain({ chainID: NETWORK_CHAIN_ID });
 
     const walletAddress = walletRes.data;
     try {
@@ -168,6 +187,39 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
     []
   );
 
+  const getWalletBalance = async (): Promise<number> => {
+    const wallet = walletManagerRef.current;
+
+    if (!wallet) {
+      throw Error(WalletError.NO_INSTANCE);
+    }
+
+    if (!wallet.isInstalled()) {
+      window.open(METAMASK_DOWNLOAD_PAGE);
+      throw Error(WalletError.NO_METAMASK);
+    }
+
+    const walletAddress = await connectedAddress();
+
+    if (walletAddress) {
+      const balanceRes = await wallet.getBalance(walletAddress);
+      if (balanceRes.data) {
+        const balanceStr = Web3.utils.fromWei(
+          balanceRes.data.toString(),
+          'ether'
+        );
+        setWalletBalance(parseFloat(balanceStr));
+        return parseFloat(balanceStr);
+      }
+    }
+    return 0;
+  };
+
+  const handleWalletEvents = async (): Promise<void> => {
+    await disconnect();
+    location.reload();
+  };
+
   useEffect(() => {
     const walletManagerInstance = new WalletManager();
     walletManagerRef.current = walletManagerInstance;
@@ -177,8 +229,28 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   useEffect(() => {
     if (walletManager) {
       walletManagerRef.current = walletManager;
+      walletManagerRef.current.registerEvent(
+        WalletEvent.ACCOUNT_CHANGED,
+        handleWalletEvents
+      );
+      // walletManagerRef.current.registerEvent(WalletEvent.CHAIN_CHANGED, handleWalletEvents)
     }
+
+    return () => {
+      walletManagerRef.current &&
+        walletManagerRef.current.unregisterEvent(
+          WalletEvent.ACCOUNT_CHANGED,
+          handleWalletEvents
+        );
+      // walletManagerRef.current && walletManagerRef.current.registerEvent(WalletEvent.CHAIN_CHANGED, handleWalletEvents)
+    };
   }, [walletManager]);
+
+  useEffect(() => {
+    if (walletManager && walletManager.isConnected() && user.walletAddress) {
+      getWalletBalance();
+    }
+  }, [walletManager, user.walletAddress]);
 
   const contextValues = useMemo((): IWalletContext => {
     return {
@@ -188,6 +260,8 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
       walletManager,
       connectedAddress,
       transfer,
+      walletBalance,
+      getWalletBalance,
     };
   }, [
     connect,
@@ -196,6 +270,8 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
     walletManager,
     connectedAddress,
     transfer,
+    walletBalance,
+    getWalletBalance,
   ]);
 
   return (

@@ -1,107 +1,200 @@
-import React, { useEffect, useRef, useState } from 'react';
-import styles from './styles.module.scss';
-import cs from 'classnames';
+import Button from '@components/ButtonIcon';
+import ClientOnly from '@components/Utils/ClientOnly';
+import { CDN_URL } from '@constants/config';
 import SandboxPreview from '@containers/Sandbox/SandboxPreview';
-import Image from 'next/image';
-import { convertIpfsToHttp } from '@utils/image';
-import { Stack } from 'react-bootstrap';
+import { PreviewDisplayMode } from '@enums/mint-generative';
 import { ISandboxRef } from '@interfaces/sandbox';
 import { base64ToUtf8 } from '@utils/format';
-import Link from '@components/Link';
 import { generateHash } from '@utils/generate-data';
+import { convertIpfsToHttp } from '@utils/image';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useMemo, useRef, useState } from 'react';
+import s from './styles.module.scss';
+import Skeleton from '@components/Skeleton';
+import { Token } from '@interfaces/token';
 
 type Props = {
-  data: any;
-  allowVariation?: boolean;
+  data: Token | null;
+  allowVariantion?: boolean;
+  previewToken?: boolean;
 };
 
-const ThumbnailPreview = ({ data, allowVariation = false }: Props) => {
-  const [startAnimaton, setStartAnimaton] = useState(false);
-  const [hash, setHash] = useState('');
+const ThumbnailPreview = (props: Props) => {
+  const { data, allowVariantion = false, previewToken = false } = props;
 
   const animationUrl = data?.animationUrl || data?.animation_url || '';
 
-  const [iframeSrc, setIframeSrc] = useState('');
+  const thumbnailPreviewUrl = data?.image;
 
   const sandboxRef = useRef<ISandboxRef>(null);
+  const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>(
+    PreviewDisplayMode.Animation
+  );
+  const [hash, setHash] = useState<string>(generateHash());
 
-  const handleAnimationTrigger = () => {
-    setStartAnimaton(!startAnimaton);
+  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
+
+  const rawHtmlFile = base64ToUtf8(
+    animationUrl.replace('data:text/html;base64,', '')
+  );
+
+  const handleIframeLoaded = (): void => {
+    if (sandboxRef.current) {
+      const iframe = sandboxRef.current.getHtmlIframe();
+      if (iframe) {
+        // @ts-ignore: Allow read iframe's window object
+        setPreviewSrc(iframe.src);
+      }
+    }
+  };
+
+  const reloadIframe = (): void => {
     if (sandboxRef.current) {
       sandboxRef.current.reloadIframe();
-      const iframe = sandboxRef.current.getHtmlIframe() as HTMLIFrameElement;
-      setIframeSrc(iframe.src);
     }
   };
 
-  const handleRefreshAnimation = () => {
-    if (sandboxRef.current) {
-      sandboxRef.current.reloadIframe();
-    }
+  const handlePlay = (): void => {
+    setDisplayMode(PreviewDisplayMode.Animation);
   };
 
-  const handleVariations = () => {
-    const seed = generateHash();
-    setHash(seed);
+  const handlePause = (): void => {
+    setDisplayMode(PreviewDisplayMode.Thumbnail);
   };
 
-  useEffect(() => {
-    if (!startAnimaton) {
-      setIframeSrc('');
-    }
-  }, [startAnimaton]);
+  const handleVariation = (): void => {
+    setHash(generateHash());
+  };
 
-  useEffect(() => {
-    if (sandboxRef.current) {
-      const iframe = sandboxRef.current.getHtmlIframe() as HTMLIFrameElement;
-      setIframeSrc(iframe.src);
-    }
-  }, [hash]);
+  const canPlay = useMemo(() => {
+    return !!rawHtmlFile && displayMode === PreviewDisplayMode.Thumbnail;
+  }, [rawHtmlFile, displayMode]);
+
+  const canPause = useMemo(() => {
+    return !!rawHtmlFile && displayMode === PreviewDisplayMode.Animation;
+  }, [rawHtmlFile, displayMode]);
+
+  const openPreview = useMemo(() => !!previewSrc, [previewSrc]);
 
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.thumbnail}>
-        <div
-          className={cs(
-            startAnimaton ? 'd-block' : 'd-none',
-            styles.sandboxContainer
+    <div className={s.ThumbnailPreview}>
+      <div className={s.wrapper}>
+        <div className={s.sandboxWrapper}>
+          <Skeleton fill isLoaded={!!data} />
+          {data && (
+            <>
+              <div className={s.sandboxContent}>
+                <ClientOnly>
+                  <SandboxPreview
+                    showIframe={displayMode === PreviewDisplayMode.Animation}
+                    rawHtml={rawHtmlFile}
+                    ref={sandboxRef}
+                    hash={previewToken ? '' : hash}
+                    sandboxFiles={null}
+                    onLoaded={handleIframeLoaded}
+                  />
+                </ClientOnly>
+              </div>
+              {displayMode === PreviewDisplayMode.Thumbnail &&
+                thumbnailPreviewUrl && (
+                  <div className={s.thumbnail_image}>
+                    <Image
+                      fill
+                      src={convertIpfsToHttp(thumbnailPreviewUrl)}
+                      alt="thumbnail"
+                    ></Image>
+                  </div>
+                )}
+            </>
           )}
-        >
-          <SandboxPreview
-            ref={sandboxRef}
-            rawHtml={base64ToUtf8(
-              animationUrl.replace('data:text/html;base64,', '')
+        </div>
+        <div className={s.actionWrapper}>
+          <div className={s.sandboxControls}>
+            {allowVariantion &&
+              displayMode === PreviewDisplayMode.Animation && (
+                <Button
+                  onClick={handleVariation}
+                  className={s.actionBtn}
+                  sizes="mid"
+                  variants="outline"
+                  iconOnly
+                >
+                  <Image
+                    alt="play icon"
+                    width={16}
+                    height={16}
+                    src={`${CDN_URL}/icons/ic-variation.svg`}
+                  ></Image>
+                </Button>
+              )}
+            {canPlay && (
+              <Button
+                onClick={handlePlay}
+                className={s.actionBtn}
+                sizes="mid"
+                variants="outline"
+                iconOnly
+              >
+                <Image
+                  alt="play icon"
+                  width={16}
+                  height={16}
+                  src={`${CDN_URL}/icons/ic-play-14x14.svg`}
+                ></Image>
+              </Button>
             )}
-            hash={hash}
-            sandboxFiles={null}
-          />
+            {canPause && (
+              <Button
+                onClick={handlePause}
+                className={s.actionBtn}
+                sizes="mid"
+                variants="outline"
+                iconOnly
+              >
+                <Image
+                  alt="pause icon"
+                  width={16}
+                  height={16}
+                  src={`${CDN_URL}/icons/ic-pause-14x14.svg`}
+                ></Image>
+              </Button>
+            )}
+            <Button
+              onClick={reloadIframe}
+              className={s.actionBtn}
+              sizes="mid"
+              variants="outline"
+              iconOnly
+            >
+              <Image
+                alt="refresh icon"
+                width={16}
+                height={16}
+                src={`${CDN_URL}/icons/ic-refresh-14x14.svg`}
+              ></Image>
+            </Button>
+            {openPreview && previewSrc && (
+              <Link href={previewSrc} target="_blank">
+                <Button
+                  // onClick={}
+                  className={s.actionBtn}
+                  sizes="mid"
+                  variants="outline"
+                  iconOnly
+                >
+                  <Image
+                    alt="pause icon"
+                    width={16}
+                    height={16}
+                    src={`${CDN_URL}/icons/ic-expand.svg`}
+                  ></Image>
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
-
-        <Image
-          src={convertIpfsToHttp(
-            data?.image ||
-              'ipfs://QmNTU5ctcffhZz5Hphd44yPivh2Y89pDYYG8QQ6yWGY3wn'
-          )}
-          alt={data?.name || ''}
-          fill
-          style={{ width: '100%' }}
-          className={cs(startAnimaton ? 'd-none' : 'd-block')}
-          sizes="(max-width: 768px) 100vw,
-(max-width: 1200px) 25vw"
-        />
       </div>
-      <Stack direction="horizontal" className={styles.actionButtons} gap={5}>
-        {allowVariation && <div onClick={handleVariations}>Variations</div>}
-        <div onClick={handleAnimationTrigger}>
-          {startAnimaton ? 'Stop' : 'Run'}
-        </div>
-        {startAnimaton && <div onClick={handleRefreshAnimation}>Refresh</div>}
-        {iframeSrc && (
-          <Link href={iframeSrc} target={`_blank`} rel="noopener">
-            Open
-          </Link>
-        )}
-      </Stack>
     </div>
   );
 };

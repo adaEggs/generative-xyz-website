@@ -5,9 +5,9 @@ import Link from '@components/Link';
 import { MintGenerativeContext } from '@contexts/mint-generative-context';
 import { LogLevel } from '@enums/log-level';
 import log from '@utils/logger';
-import { processSandboxZipFile, readSandboxFileContent } from '@utils/sandbox';
+import { detectUsedLibs, processSandboxZipFile } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
-import { ReactElement, useContext, useMemo, useState } from 'react';
+import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
 import { EXTERNAL_LINK } from '@constants/external-link';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
@@ -15,15 +15,23 @@ import Image from 'next/image';
 import Checkbox from '@components/Checkbox';
 import { useRouter } from 'next/router';
 import { MintGenerativeStep } from '@enums/mint-generative';
+import { SandboxFileError } from '@enums/sandbox';
+import Text from '@components/Text';
 
 const LOG_PREFIX = 'UploadGenArt';
 
 const UploadGenArt: React.FC = (): ReactElement => {
   const router = useRouter();
-  const [isProjectWork, setIsProjectWork] = useState(false);
-  const { filesSandbox, setFilesSandbox, zipFile, setZipFile } = useContext(
-    MintGenerativeContext
-  );
+  const [isProjectWork, setIsProjectWork] = useState(true);
+  const {
+    formValues,
+    filesSandbox,
+    setFilesSandbox,
+    zipFile,
+    setZipFile,
+    setShowErrorAlert,
+    setFormValues,
+  } = useContext(MintGenerativeContext);
 
   const handleChangeIsProjectWork = (): void => {
     setIsProjectWork(!isProjectWork);
@@ -31,22 +39,42 @@ const UploadGenArt: React.FC = (): ReactElement => {
 
   const processFile = async (file: File) => {
     try {
-      const files = await processSandboxZipFile(file);
-      readSandboxFileContent(files);
-      setFilesSandbox(files);
+      const sandboxFiles = await processSandboxZipFile(file);
+      setFilesSandbox(sandboxFiles);
+
+      const detectedLibs = await detectUsedLibs(sandboxFiles);
+      setFormValues({
+        ...formValues,
+        thirdPartyScripts: detectedLibs,
+      });
     } catch (err: unknown) {
       log(err as Error, LogLevel.Error, LOG_PREFIX);
+      let errorMessage =
+        'There is a problem with your zip file. Please check and try again. ';
+      if ((err as Error).message === SandboxFileError.NO_INDEX_HTML) {
+        errorMessage += 'index.html is not found.';
+      }
+      if (
+        (err as Error).message === SandboxFileError.NO_SNIPPET_CONTRACT ||
+        (err as Error).message === SandboxFileError.NO_SNIPPET_RANDOM
+      ) {
+        errorMessage += 'Snippet code is not found.';
+      }
+      if ((err as Error).message === SandboxFileError.WRONG_FORMAT) {
+        errorMessage += 'Invalid file format.';
+      }
+      setShowErrorAlert({ open: true, message: errorMessage });
     }
-  };
-
-  const handleChangeFile = (files: File[] | null): void => {
-    setZipFile(files && files.length > 0 ? files[0] : null);
   };
 
   const handleProccessFile = (): void => {
     if (zipFile) {
       processFile(zipFile);
     }
+  };
+
+  const handleChangeFile = (files: File[] | null): void => {
+    setZipFile(files && files.length > 0 ? files[0] : null);
   };
 
   const handleGoToNextStep = (): void => {
@@ -71,67 +99,65 @@ const UploadGenArt: React.FC = (): ReactElement => {
     return (
       <>
         <div className={s.uploadSuccessWrapper}>
-          <div className={s.uploadFiles}>
-            <div className={s.zipFileInfo}>
-              <Image
-                className={s.folderIcon}
-                alt="folder icon"
-                width={28}
-                height={28}
-                src={`${CDN_URL}/icons/ic-folder-code-28x28.svg`}
-              ></Image>
-              <span className={s.zipFileName}>
-                {zipFile?.name} ({prettyPrintBytes(zipFile?.size || 0)})
-              </span>
-            </div>
-            <ul className={s.zipFileList}>
-              {fileList?.map((fileName: string) => (
-                <li key={fileName} className={s.fileItem}>
-                  <Image
-                    className={s.codeIcon}
-                    alt="folder icon"
-                    width={18}
-                    height={18}
-                    src={`${CDN_URL}/icons/ic-code-18x18.svg`}
-                  ></Image>
-                  <span className={s.fileName}>{fileName}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className={s.actionWrapper}>
-            <Button sizes="small" variants="outline" onClick={handleReupload}>
-              Update zip file
-            </Button>
-          </div>
-        </div>
-        <div className={s.stepFooterWrapper}>
-          <footer className={s.stepFooter}>
-            <div className={s.container}>
-              <div className={s.checkboxWrapper}>
-                <Checkbox
-                  checked={isProjectWork}
-                  onClick={handleChangeIsProjectWork}
-                  className={s.checkbox}
-                  id="workProperly"
-                  label="My Generative Token works properly."
-                />
+          <div>
+            <div className={s.uploadFiles}>
+              <div className={s.zipFileInfo}>
+                <Image
+                  className={s.folderIcon}
+                  alt="folder icon"
+                  width={28}
+                  height={28}
+                  src={`${CDN_URL}/icons/ic-folder-code-28x28.svg`}
+                ></Image>
+                <span className={s.zipFileName}>
+                  {zipFile?.name} ({prettyPrintBytes(zipFile?.size || 0)})
+                </span>
               </div>
-              <div className={s.actionWrapper}>
-                <Button
-                  disabled={!isProjectWork || !filesSandbox}
-                  onClick={handleGoToNextStep}
-                  className={s.nextBtn}
-                  sizes="small"
-                >
+              <ul className={s.zipFileList}>
+                {fileList?.map((fileName: string) => (
+                  <li key={fileName} className={s.fileItem}>
+                    <Image
+                      className={s.codeIcon}
+                      alt="folder icon"
+                      width={18}
+                      height={18}
+                      src={`${CDN_URL}/icons/ic-code-18x18.svg`}
+                    ></Image>
+                    <span className={s.fileName}>{fileName}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className={s.actionWrapper}>
+              <Button sizes="small" variants="outline" onClick={handleReupload}>
+                Update zip file
+              </Button>
+            </div>
+          </div>
+          <div className={s.container}>
+            <div className={s.checkboxWrapper}>
+              <Checkbox
+                checked={isProjectWork}
+                onClick={handleChangeIsProjectWork}
+                className={s.checkbox}
+                id="workProperly"
+                label="My Generative Token works properly."
+              />
+            </div>
+            <div className={s.actionWrapper}>
+              <Button
+                disabled={!isProjectWork || !filesSandbox}
+                onClick={handleGoToNextStep}
+                endIcon={
                   <SvgInset
-                    size={18}
                     svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
                   />
-                </Button>
-              </div>
+                }
+              >
+                Next step
+              </Button>
             </div>
-          </footer>
+          </div>
         </div>
       </>
     );
@@ -160,16 +186,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
               files={zipFile ? [zipFile] : null}
             />
           </div>
-          <Button
-            disabled={!zipFile}
-            className={s.uploadBtn}
-            onClick={handleProccessFile}
-          >
-            Upload Project
-          </Button>
         </div>
         <div className={s.disclaimerWrapper}>
-          <p className={s.disclaimer}>
+          <Text fontWeight="semibold" className={s.disclaimer}>
             This is a space in which you can drop a .zip of your project and see
             how it would behave when it will be minted on Generative. If your
             artwork does not behave properly in the setup thumbnail image are,
@@ -181,10 +200,10 @@ const UploadGenArt: React.FC = (): ReactElement => {
               target="_blank"
               rel="noopener"
             >
-              Guide to build a Generative Token.
+              Guide to launch your NFT collection.
             </Link>
-          </p>
-          <p className={s.disclaimer}>
+          </Text>
+          <Text fontWeight="medium" className={s.disclaimer}>
             Please make sure that your project follows our&nbsp;
             <Link
               className={s.link}
@@ -194,12 +213,16 @@ const UploadGenArt: React.FC = (): ReactElement => {
             >
               Code of Conduct.
             </Link>
-          </p>
+          </Text>
         </div>
       </>
     ),
     [zipFile]
   );
+
+  useEffect(() => {
+    handleProccessFile();
+  }, [zipFile]);
 
   return (
     <section className={s.uploadGenArt}>

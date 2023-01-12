@@ -5,9 +5,10 @@ import {
   IGetProjectDetailParams,
   IGetProjectDetailResponse,
   IGetProjectItemsParams,
-  IGetProjectItemsResponse,
+  IGetProjectItemsQuery,
   IGetProjectListParams,
   IGetProjectListResponse,
+  IGetProjectTokensResponse,
 } from '@interfaces/api/project';
 import { get, post } from '@services/http-client';
 import log from '@utils/logger';
@@ -31,12 +32,24 @@ export const getProjectDetail = async (
   }
 };
 
+export const getRandomProject =
+  async (): Promise<IGetProjectDetailResponse> => {
+    try {
+      const res = await get<IGetProjectDetailResponse>(`${API_PATH}/random`);
+      return res;
+    } catch (err: unknown) {
+      log('failed to get project detail', LogLevel.Error, LOG_PREFIX);
+      throw Error('Failed to get project detail');
+    }
+  };
+
 export const getProjectItems = async (
-  params: IGetProjectItemsParams
-): Promise<IGetProjectItemsResponse> => {
+  params: IGetProjectItemsParams,
+  query: IGetProjectItemsQuery
+): Promise<IGetProjectTokensResponse> => {
   try {
-    const qs = '?' + querystring.stringify(params);
-    const res = await get<IGetProjectItemsResponse>(
+    const qs = '?' + querystring.stringify(query);
+    const res = await get<IGetProjectTokensResponse>(
       `${API_PATH}/${params.contractAddress}/tokens${qs}`
     );
     return res;
@@ -62,6 +75,19 @@ export const createProjectMetadata = async (
 };
 
 export const getProjectList = async (
+  params: IGetProjectListParams
+): Promise<IGetProjectListResponse> => {
+  try {
+    const qs = '?' + querystring.stringify(params);
+    const res = await get<IGetProjectListResponse>(`${API_PATH}${qs}`);
+    return res;
+  } catch (err: unknown) {
+    log('failed to get project list', LogLevel.Error, LOG_PREFIX);
+    throw Error('Failed to get project list');
+  }
+};
+
+export const getProjectListMinited = async (
   params: IGetProjectListParams
 ): Promise<IGetProjectListResponse> => {
   try {

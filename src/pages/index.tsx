@@ -1,13 +1,14 @@
 import { NextPage } from 'next';
 
-import HomeTemplate from '@containers/Home';
-import DefaultLayout from '@layouts/Default';
+import MarketplaceLayout from '@layouts/Marketplace';
+// import { Landingpage } from '@containers/Landingpage';
+import Display from '@containers/Display';
 
 const HomePage: NextPage = () => {
   return (
-    <DefaultLayout>
-      <HomeTemplate />
-    </DefaultLayout>
+    <MarketplaceLayout isHideFaucet={true} theme={'dark'} isDisplay={true}>
+      <Display />
+    </MarketplaceLayout>
   );
 };
 

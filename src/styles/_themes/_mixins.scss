@@ -231,11 +231,11 @@
 }
 
 @function rem($px, $base: $font_size_rem) {
-  @if (unitless($px)) {
+  @if unitless($px) {
     $px: $px * 1px;
   }
 
-  @if (unitless($base)) {
+  @if unitless($base) {
     $base: $base * 1px;
   }
 
@@ -254,7 +254,7 @@
   }
 }
 
-@mixin mobile{
+@mixin mobile {
   @media (max-width: 767px) {
     @content;
   }
@@ -284,7 +284,6 @@
   }
 }
 
-
 @mixin min-pc-mid {
   @media screen and (min-width: #{$screen-xxl}) {
     @content;
@@ -293,6 +292,12 @@
 
 @mixin min-pc-wide {
   @media screen and (min-width: #{$screen-xxxl}) {
+    @content;
+  }
+}
+
+@mixin min-pc-superWide {
+  @media screen and (min-width: #{$screen-xxxxl}) {
     @content;
   }
 }
@@ -323,3 +328,51 @@
 @function strip-unit($value) {
   @return $value/($value * 0 + 1);
 }
+
+@mixin calcFontAuto($min-font-size, $max-font-size) {
+
+  font-size: rem($min-font-size);
+
+  @include tablet {
+    font-size: rem($max-font-size);
+  }
+
+  @include min-pc {
+    font-size: calc-auto(1200px, 1920px, $min-font-size, $max-font-size);
+  }
+
+  @include min-pc-superWide {
+    font-size: rem($max-font-size);
+  }
+}
+
+@mixin calcFontAutoSmall($min-font-size, $max-font-size) {
+
+  font-size: rem($max-font-size);
+
+  @include min-pc {
+    font-size: calc-auto(1200px, 1920px, $min-font-size, $max-font-size);
+  }
+
+  @include min-pc-superWide {
+    font-size: rem($max-font-size);
+  }
+}
+
+@mixin calcPropertyAuto($property, $min-font-size, $max-font-size) {
+
+  #{$property}: rem($min-font-size);
+
+  @include tablet {
+    #{$property}: rem($max-font-size);
+  }
+
+  @include min-pc {
+    #{$property}: calc-auto(1200px, 1920px, $min-font-size, $max-font-size);
+  }
+
+  @include min-pc-superWide {
+    #{$property}: rem($max-font-size);
+  }
+}
+

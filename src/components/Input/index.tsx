@@ -31,10 +31,12 @@ const Input: React.FC<
     onChange?.(value, e);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleClickOutside = (e: any) => {
     !wrapper?.current?.contains(e.target) && setIsFocused(false);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderInput = (props: Record<string, any>, meta: any = null) => {
     const isError = meta?.touched && meta?.error;
     return (
@@ -62,6 +64,7 @@ const Input: React.FC<
           <button
             type="button"
             className={s.Input_clearableBtn}
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onClick={() => onInputChange({ target: { value: '' } } as any)}
           >
             clear
@@ -75,6 +78,7 @@ const Input: React.FC<
   const render = () => {
     if (usingFormik) {
       return (
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         <Field>{(field: any, meta: any) => renderInput(field, meta)}</Field>
       );
     }

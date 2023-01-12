@@ -9,6 +9,7 @@ import {
   GENERATIVE_PROJECT_CONTRACT,
   ROOT_ADDRESS,
 } from '@constants/contract-address';
+import { ErrorMessage } from '@enums/error-message';
 
 class MintGenerativeProjectOperation extends ContractOperation<
   IMintGenerativeProjectParams,
@@ -87,15 +88,15 @@ class MintGenerativeProjectOperation extends ContractOperation<
       _completeTime: 0,
       _genNFTAddr: ROOT_ADDRESS,
       _itemDesc: tokenDescription,
+      _reserves: reservationList,
+      _royalty: royalty,
     };
 
     const data = await this.contract.methods
       .mint(
         JSON.parse(JSON.stringify(projectPayload)),
-        reservationList,
         false,
-        openMintUnixTimestamp,
-        royalty
+        openMintUnixTimestamp
       )
       .send({
         from: walletAddress,
@@ -111,7 +112,7 @@ class MintGenerativeProjectOperation extends ContractOperation<
   }
 
   error(): string {
-    return 'Oops, banana!';
+    return ErrorMessage.DEFAULT;
   }
 }
 

@@ -1,4 +1,4 @@
-import logger from '@helpers/logger';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ApiFactory, { DEFAULT_RESPONSE } from '../http';
 
 export const getConfigs = async (): Promise<any> => {
@@ -8,7 +8,6 @@ export const getConfigs = async (): Promise<any> => {
       return response.data;
     }
   } catch (e) {
-    logger.log(e);
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     return require('@mockup/data').default || DEFAULT_RESPONSE;
   }

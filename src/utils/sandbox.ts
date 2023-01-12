@@ -1,5 +1,10 @@
 import FileType from 'file-type/browser';
-import { JS_EXTENSION, NAIVE_MIMES, ZIP_MIMES } from '@constants/file';
+import {
+  HTML_EXTENSION,
+  JS_EXTENSION,
+  NAIVE_MIMES,
+  ZIP_MIMES,
+} from '@constants/file';
 import { SandboxFileError } from '@enums/sandbox';
 import { SandboxFileContent, SandboxFiles } from '@interfaces/sandbox';
 import { getFileExtensionByFileName, unzipFile } from '@utils/file';
@@ -15,6 +20,7 @@ import { minifyFile } from '@services/file';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { utf8ToBase64 } from '@utils/format';
+import { THIRD_PARTY_SCRIPTS } from '@constants/mint-generative';
 
 const LOG_PREFIX = 'SandboxUtil';
 
@@ -96,7 +102,9 @@ export const readSandboxFileContent = async (
               },
             },
           });
-          minifiedContent = minifiedFiles[fileName].content;
+          minifiedContent = minifiedFiles[fileName].deflate
+            ? minifiedFiles[fileName].deflate
+            : minifiedFiles[fileName].content;
         } catch (err: unknown) {
           log(err as Error, LogLevel.Error, LOG_PREFIX);
         }
@@ -113,4 +121,48 @@ export const readSandboxFileContent = async (
   }
 
   return fileContents;
+};
+
+export const detectUsedLibs = async (
+  sandBoxFiles: SandboxFiles
+): Promise<Array<string>> => {
+  let detectedLibs: Array<string> = [];
+
+  for (const [fileName, { url }] of Object.entries(sandBoxFiles)) {
+    const fileExt = getFileExtensionByFileName(fileName);
+    if (fileExt && url) {
+      const blob = await fetch(url);
+      const fileContent = await blob.text();
+
+      if (fileExt === HTML_EXTENSION) {
+        const commentCodes = fileContent.match(/<!--(?:.|\n|\r)*?-->/g);
+        const scriptCode = fileContent.match(
+          /<script ([^>]*src="(.*(cdn)+.*)")*><\/script>/g
+        );
+
+        if (scriptCode) {
+          const usedScripts = scriptCode.filter((script: string) => {
+            if (commentCodes) {
+              return !commentCodes.some((commentScript: string) =>
+                commentScript.includes(script)
+              );
+            }
+            return true;
+          });
+
+          detectedLibs = usedScripts
+            .map((script: string) => {
+              return (
+                THIRD_PARTY_SCRIPTS.find(lib => {
+                  return JSON.parse(JSON.stringify(lib.script)) === script;
+                })?.value ?? ''
+              );
+            })
+            .filter((script: string | null) => script !== '');
+        }
+      }
+    }
+  }
+
+  return detectedLibs;
 };

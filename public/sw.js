@@ -1,3 +1,4 @@
+// Render preview
 const cache = {}
 const referrers = {}
 
@@ -7,43 +8,38 @@ async function fetchUrl(url, file) {
   return new Response(record.body, options);
 }
 
-self.addEventListener("install", (event) => {
-  // The promise that skipWaiting() returns can be safely ignored.
-  self.skipWaiting();
-
-  // Perform any other actions required for your
-  // service worker to install, potentially inside
-  // of event.waitUntil();
-});
-
 self.addEventListener("fetch", async (event) => {
-  const url = new URL(event.request.referrer);
-  const id = url.searchParams.get("id");
+  try {
+    const url = new URL(event.request.referrer);
+    const id = url.searchParams.get("id");
 
-  if (id && cache[id] && referrers[id]) {
-    if (`${url.origin}${url.pathname}` === referrers[id].base) {
-      event.respondWith(async function () {
-        const path = event.request.url.replace(referrers[id].root, "");
+    if (id && cache[id] && referrers[id]) {
+      if (`${url.origin}${url.pathname}` === referrers[id].base) {
+        event.respondWith(async function () {
+          const path = event.request.url.replace(referrers[id].root, "");
 
-        if (!cache[id][path]) return null;
+          if (!cache[id][path]) return null;
 
-        return await fetchUrl(cache[id][path].url, event.request.url)
-      }())
+          return await fetchUrl(cache[id][path].url, event.request.url)
+        }())
+      }
+    } else {
+      const cacheId = Object.keys(cache).pop();
+      const moduleName = event.request.url.split('/').pop();
+
+      if (cacheId && moduleName && cache[cacheId][moduleName] && cache[cacheId][moduleName].url && event.request.url) {
+        event.respondWith(async function () {
+          return await fetchUrl(cache[cacheId][moduleName].url, event.request.url)
+        }());
+      }
     }
-  } else {
-    const cacheId = Object.keys(cache).pop();
-    const moduleName = event.request.url.split('/').pop();
-
-    if (cacheId && moduleName && cache[cacheId][moduleName]) {
-      event.respondWith(async function () {
-        return await fetchUrl(cache[cacheId][moduleName].url, event.request.url)
-      }());
-    }
+  } catch (e) {
+    console.log(event);
+    console.log(e);
   }
 })
 
 self.addEventListener("message", async (event) => {
-
   if (event?.data?.type === "REGISTER_REFERRER") {
     referrers[event.data.data.id] = event.data.data.referrer
   }
@@ -61,7 +57,7 @@ self.addEventListener("message", async (event) => {
   if (event?.data?.type === "GET_INDEX") {
     const id = event.data.data
 
-    if (cache[id]) {
+    if (cache[id] && cache[id]["index.html"]) {
       const html = await cache[id]["index.html"].blob.text()
       event.source.postMessage({
         type: "INDEX_HTML_CONTENTS",
@@ -82,3 +78,52 @@ self.addEventListener("message", async (event) => {
     }
   }
 })
+
+
+// Cache
+const CACHE_VERSION = 'v1.1.0';
+const CURRENT_CACHES = {
+  assets: `assets-cache-v${CACHE_VERSION}`,
+};
+
+self.addEventListener("activate", (event) => {
+  const expectedCacheNamesSet = new Set(Object.values(CURRENT_CACHES));
+  event.waitUntil(
+    caches.keys().then((cacheNames) =>
+      Promise.all(
+        cacheNames.map((cacheName) => {
+          if (!expectedCacheNamesSet.has(cacheName)) {
+            return caches.delete(cacheName);
+          }
+        })
+      )
+    )
+  );
+});
+
+self.addEventListener("fetch", (event) => {
+  event.respondWith(
+    caches.open(CURRENT_CACHES.assets).then((cache) => {
+      return cache
+        .match(event.request)
+        .then((response) => {
+          if (response) {
+            return response;
+          }
+          return fetch(event.request.clone()).then((response) => {
+            if (
+              response.status < 400 &&
+              response.headers.has("content-type") &&
+              (response.headers.get("content-type").match(/^font\//i) || response.headers.get("content-type").match(/^image\//i))
+            ) {
+              cache.put(event.request, response.clone());
+            }
+            return response;
+          });
+        })
+        .catch((error) => {
+          throw error;
+        });
+    })
+  );
+});

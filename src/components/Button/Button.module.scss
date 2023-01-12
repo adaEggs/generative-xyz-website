@@ -1,5 +1,5 @@
-@import 'src/styles/_themes/variables.scss';
-@import 'src/styles/_themes/mixins.scss';
+@import "src/styles/_themes/variables";
+@import "src/styles/_themes/mixins";
 
 .Button {
   display: flex;
@@ -12,15 +12,11 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
 
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-
   span {
     font-size: 14px;
     line-height: 26px;
 
-    @include min-pc{
+    @include min-pc {
       font-size: calc-auto(1200px, 1920px, 14px, 16px);
     }
   }
@@ -32,6 +28,7 @@
 
   &__xl {
     min-height: 56px;
+
     @include min-pc {
       min-height: calc-auto(1200px, 1920px, 48px, 56px);
     }
@@ -164,7 +161,7 @@
 
     &::after,
     &::before {
-      content: '';
+      content: "";
       display: block;
       width: 101%;
       height: 102%;
@@ -249,7 +246,7 @@
     }
 
     &::after {
-      content: '';
+      content: "";
       display: block;
       width: 100%;
       height: 101%;
@@ -292,7 +289,6 @@
         }
       }
     }
-
   }
 
   &__ctaNone {
@@ -305,13 +301,13 @@
     text-transform: uppercase;
     color: $white;
     border-radius: 0;
-    padding: 0 0;
+    padding: 0;
     box-shadow: none;
     gap: 10px;
     background: transparent;
 
-    &:after {
-      content: '';
+    &::after {
+      content: "";
       display: block;
       border-bottom: 1px solid $white;
       bottom: 0;
@@ -324,7 +320,7 @@
     }
 
     &:hover {
-      &:after {
+      &::after {
         width: 100%;
         opacity: 1;
       }

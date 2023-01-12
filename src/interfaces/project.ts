@@ -1,9 +1,13 @@
+import { User } from '@interfaces/user';
+import { MarketplaceStats } from './marketplace';
+
 export type ProjectSocial = {
-  Web: string;
-  Twitter: string;
-  Discord: string;
-  Medium: string;
-  Instagram: string;
+  web: string;
+  twitter: string;
+  discord: string;
+  medium?: string;
+  etherScan?: string;
+  instagram: string;
 };
 
 export type Project = {
@@ -19,7 +23,7 @@ export type Project = {
   desc: string;
   image: string;
   scriptType: string[];
-  social: ProjectSocial;
+  social: ProjectSocial | null;
   scripts: string[];
   styles: string;
   completeTime: number;
@@ -34,4 +38,7 @@ export type Project = {
     index: number;
     indexReserve: number;
   };
+  creatorProfile?: User;
+  mintedTime: number;
+  stats: MarketplaceStats;
 };

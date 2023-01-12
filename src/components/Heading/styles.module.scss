@@ -1,0 +1,33 @@
+.heading {
+  letter-spacing: -0.02em;
+
+  &:is(h1) {
+    line-height: (66/56);
+    @include calcFontAuto(40px, 56px);
+  }
+
+  &:is(h2) {
+    font-size: rem(48px);
+    line-height: rem(58px);
+  }
+
+  &:is(h3) {
+    line-height: (50/40);
+    @include calcFontAuto(24px, 40px);
+  }
+
+  &:is(h4) {
+    font-size: rem(34px);
+    line-height: rem(44px);
+  }
+
+  &:is(h5) {
+    font-size: rem(24px);
+    line-height: rem(34px);
+  }
+
+  &:is(h6) {
+    line-height: (30/20);
+    @include calcFontAuto(18px, 20px)
+  }
+}

@@ -11,6 +11,9 @@ import { WalletContext } from '@contexts/wallet-context';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { WalletError } from '@enums/wallet-error';
+import { METAMASK_DOWNLOAD_PAGE } from '@constants/common';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
 
 const LOG_PREFIX = 'useContractOperation';
 
@@ -22,6 +25,7 @@ const useContractOperation = <
   requiredConnectWallet: boolean
 ): ContractOperationHookReturn<P, R> => {
   const walletCtx = useContext(WalletContext);
+  const user = useSelector(getUserSelector);
   const [status, setStatus] = useState<ContractOperationStatus>(
     ContractOperationStatus.IDLE
   );
@@ -64,6 +68,9 @@ const useContractOperation = <
         setIsSuccess(true);
         setIsLoading(false);
 
+        // Refresh balance after each operation
+        walletCtx.getWalletBalance();
+
         if (res?.message) {
           setSuccessMsg(res.message);
         }
@@ -94,13 +101,16 @@ const useContractOperation = <
         statusCallback(ContractOperationStatus.ERROR, {
           message: WalletError.NO_METAMASK,
         });
+        if (requiredConnectWallet) {
+          window.open(METAMASK_DOWNLOAD_PAGE);
+        }
         return null;
       }
 
       try {
         if (requiredConnectWallet) {
           const walletAddress = await walletCtx.connectedAddress();
-          if (!walletAddress) {
+          if (!walletAddress || !user.walletAddress) {
             await walletCtx.connect();
           }
         }

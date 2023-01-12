@@ -1,3 +1,4 @@
+
 .projectDetail {
   padding-top: 28px;
 
@@ -25,6 +26,7 @@
     border-radius: 8px;
     width: 100%;
     resize: none;
+    white-space: normal;
 
     &::placeholder {
       /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -32,12 +34,12 @@
       opacity: 1; /* Firefox */
     }
 
-    &:-ms-input-placeholder {
+    &:input-placeholder {
       /* Internet Explorer 10-11 */
       color: $black-40;
     }
 
-    &::-ms-input-placeholder {
+    &::input-placeholder {
       /* Microsoft Edge */
       color: $black-40;
     }
@@ -117,6 +119,21 @@
       line-height: 14px;
       font-weight: 400;
     }
+
+    :global(.select__input-container) {
+      color: $black-100;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 26px;
+    }
+  }
+
+  .error {
+    font-size: 14px;
+    font-weight: 400;
+    color: $secondary-red;
+    line-height: 20px;
+    margin-top: 6px;
   }
 }
 
@@ -145,5 +162,6 @@
   .nextBtn {
     width: 48px;
     height: 48px;
+    justify-content: center;
   }
 }

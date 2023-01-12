@@ -1,4 +1,4 @@
-import logger from '@helpers/logger';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ApiFactory from '../http';
 
 /**
@@ -41,7 +41,6 @@ export const postCartItem = async (dataPost: any): Promise<any> => {
     );
     return response.data;
   } catch (e) {
-    logger.error(e);
     return DEFAULT_RESPONSE;
   }
 };
@@ -59,7 +58,6 @@ export const getProductById = async (productId: number): Promise<any> => {
     );
     return response.data;
   } catch (e) {
-    logger.error(e);
     return DEFAULT_RESPONSE;
   }
 };
@@ -81,7 +79,6 @@ export const getProductBySlug = async (
     );
     return response.data;
   } catch (e) {
-    logger.error(e);
     return DEFAULT_RESPONSE;
   }
 };
@@ -119,7 +116,6 @@ export const getProductInfoById = async (
     );
     return response.data;
   } catch (e) {
-    logger.error(e);
     return DEFAULT_RESPONSE;
   }
 };
@@ -141,7 +137,6 @@ export const getProductQuestions = async ({
     );
     return response.data;
   } catch (e) {
-    logger.error(e);
     return DEFAULT_RESPONSE;
   }
 };
@@ -164,7 +159,6 @@ export const getProductSpecs = async ({
     );
     return response.data;
   } catch (e) {
-    logger.error(e);
     return DEFAULT_RESPONSE;
   }
 };
@@ -173,7 +167,6 @@ export const getProductList = async (): Promise<any> => {
     const response = await ApiFactory.get(`${PRODUCT_LIST_API}`);
     return response.data;
   } catch (e) {
-    logger.error(e);
     return DEFAULT_RESPONSE;
   }
 };
