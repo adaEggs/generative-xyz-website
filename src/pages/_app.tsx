@@ -57,8 +57,12 @@ export default function App({ Component, pageProps }: MyAppProps) {
       <Head>
         <title>{title ?? SEO_TITLE}</title>
         <meta property="og:title" content={title ?? SEO_TITLE} />
-        <meta name="og:description" content={description ?? SEO_DESCRIPTION} />
-        <meta name="og:image" content={image ?? SEO_IMAGE} />
+        <meta
+          property="og:description"
+          content={description ?? SEO_DESCRIPTION}
+        />
+        <meta property="og:image" content={image ?? SEO_IMAGE} />
+        <meta property="og:type" content="website" />
         <meta property="twitter:title" content={title ?? SEO_TITLE} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
@@ -156,7 +160,8 @@ export default function App({ Component, pageProps }: MyAppProps) {
         <meta name="msapplication-TileImage" content="images/favicon-144.png" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
 
-        {APP_ENV === ApplicationEnvironment.STAGING && (
+        {(APP_ENV === ApplicationEnvironment.STAGING ||
+          APP_ENV === ApplicationEnvironment.PRODUCTION) && (
           <script
             type="text/javascript"
             src="//script.crazyegg.com/pages/scripts/0100/2427.js"
