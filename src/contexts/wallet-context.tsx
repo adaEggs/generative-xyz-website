@@ -17,6 +17,8 @@ import { clearAuthStorage, setAccessToken } from '@utils/auth';
 import { getProfile } from '@services/profile';
 import { NETWORK_CHAIN_ID } from '@constants/config';
 import Web3 from 'web3';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
 
 const LOG_PREFIX = 'WalletContext';
 
@@ -58,6 +60,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   const [walletBalance, setWalletBalance] = useState<number>(0);
   const walletManagerRef = useRef<WalletManager | null>(walletManager);
   const dispatch = useAppDispatch();
+  const user = useSelector(getUserSelector);
 
   const connectedAddress = useCallback(async (): Promise<string | null> => {
     const wallet = walletManagerRef.current;
@@ -208,10 +211,10 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   }, [walletManager]);
 
   useEffect(() => {
-    if (walletManager && walletManager.isConnected()) {
+    if (walletManager && walletManager.isConnected() && user.walletAddress) {
       refreshWalletBalance();
     }
-  }, [walletManager]);
+  }, [walletManager, user.walletAddress]);
 
   const contextValues = useMemo((): IWalletContext => {
     return {

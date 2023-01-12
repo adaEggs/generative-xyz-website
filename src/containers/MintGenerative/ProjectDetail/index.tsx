@@ -1,6 +1,6 @@
 import s from './styles.module.scss';
 import { Formik } from 'formik';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 // import TagsInput from 'react-tagsinput';
 import Button from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
@@ -35,6 +35,12 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
   const [categoryOptions, setCategoryOptions] = useState<Array<SelectOption>>(
     []
   );
+
+  const thirdPartyDefaultValue = useMemo(() => {
+    return THIRD_PARTY_SCRIPTS.filter(option =>
+      formValues.thirdPartyScripts?.includes(option.value)
+    );
+  }, [formValues.thirdPartyScripts]);
 
   useAsyncEffect(async () => {
     const { result } = await getCategoryList({ page: 1, limit: 100 });
@@ -196,6 +202,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                     isMulti
                     name="thirdPartyScripts"
                     options={THIRD_PARTY_SCRIPTS}
+                    defaultValue={thirdPartyDefaultValue}
                     className={s.selectInput}
                     classNamePrefix="select"
                     onChange={(val: MultiValue<SelectOption>) => {

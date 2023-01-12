@@ -23,25 +23,37 @@ export const THIRD_PARTY_SCRIPTS = [
   {
     label: 'p5js@1.5.0',
     value: 'p5js@1.5.0',
+    script:
+      '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.5.0/p5.min.js"></script>',
   },
   {
     label: 'threejs@r124',
     value: 'threejs@r124',
+    script:
+      '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>',
   },
   {
     label: 'tonejs@14.8.49',
     value: 'tonejs@14.8.49',
+    script:
+      '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>',
   },
   {
     label: 'c2.min.js@1.0.0',
     value: 'c2.min.js@1.0.0',
+    script:
+      '<script type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/c2/1.0.0/c2.min.js"></script>',
   },
   {
     label: 'chromajs@2.4.2',
     value: 'chromajs@2.4.2',
+    script:
+      '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.4.2/chroma.min.js"></script>',
   },
   {
     label: 'p5.grain.js@0.6.1',
     value: 'p5.grain.js@0.6.1',
+    script:
+      '<script type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/p5.grain/0.6.1/p5.grain.min.js"></script>',
   },
 ];

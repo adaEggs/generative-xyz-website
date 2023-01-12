@@ -20,6 +20,7 @@ import { minifyFile } from '@services/file';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { utf8ToBase64 } from '@utils/format';
+import { THIRD_PARTY_SCRIPTS } from '@constants/mint-generative';
 
 const LOG_PREFIX = 'SandboxUtil';
 
@@ -125,7 +126,7 @@ export const readSandboxFileContent = async (
 export const detectUsedLibs = async (
   sandBoxFiles: SandboxFiles
 ): Promise<Array<string>> => {
-  const detectedLibs: Array<string> = [];
+  let detectedLibs: Array<string> = [];
 
   for (const [fileName, { url }] of Object.entries(sandBoxFiles)) {
     const fileExt = getFileExtensionByFileName(fileName);
@@ -136,12 +137,29 @@ export const detectUsedLibs = async (
       if (fileExt === HTML_EXTENSION) {
         const commentCodes = fileContent.match(/<!--(?:.|\n|\r)*?-->/g);
         const scriptCode = fileContent.match(
-          /<script ([^>]*src="(.*(cdnjs)+.*)")*><\/script>/
+          /<script ([^>]*src="(.*(cdn)+.*)")*><\/script>/g
         );
-        // eslint-disable-next-line no-console
-        console.log(commentCodes);
-        // eslint-disable-next-line no-console
-        console.log(scriptCode);
+
+        if (scriptCode) {
+          const usedScripts = scriptCode.filter((script: string) => {
+            if (commentCodes) {
+              return !commentCodes.some((commentScript: string) =>
+                commentScript.includes(script)
+              );
+            }
+            return true;
+          });
+
+          detectedLibs = usedScripts
+            .map((script: string) => {
+              return (
+                THIRD_PARTY_SCRIPTS.find(lib => {
+                  return JSON.parse(JSON.stringify(lib.script)) === script;
+                })?.value ?? ''
+              );
+            })
+            .filter((script: string | null) => script !== '');
+        }
       }
     }
   }

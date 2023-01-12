@@ -7,6 +7,7 @@ export type TokenAttribute = {
 };
 
 export type Token = {
+  thumbnail?: string;
   name: string;
   description: string;
   image: string;

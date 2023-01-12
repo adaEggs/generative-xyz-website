@@ -34,6 +34,7 @@ self.addEventListener("fetch", async (event) => {
       }
     }
   } catch (e) {
+    console.log(event);
     console.log(e);
   }
 })

@@ -1,4 +1,5 @@
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { SEO_IMAGE, SEO_TITLE } from '@constants/seo-default-info';
 import GenerativeTokenDetail from '@containers/GenerativeTokenDetail';
 import MarketplaceLayout from '@layouts/Marketplace';
 import { getTokenUri } from '@services/token-uri';
@@ -30,9 +31,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
       seoInfo: {
-        title: tokenName,
+        title: `${tokenName} | ${SEO_TITLE}`,
         description: res.description,
-        image: res.image,
+        image: res.thumbnail || SEO_IMAGE,
       },
     },
   };
