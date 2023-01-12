@@ -56,13 +56,13 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       id: 'contract-address',
       info: 'Contract Address',
       value: formatAddress(tokenData?.project.genNFTAddr || ''),
-      link: `${scanURL}/token/${tokenData?.project.genNFTAddr}`,
+      link: `${scanURL}token/${tokenData?.project.genNFTAddr}`,
     },
     {
       id: 'token-id',
       info: 'Token ID',
       value: formatTokenId(tokenID),
-      link: `${scanURL}/token/${tokenData?.project.genNFTAddr}?a=${tokenID}`,
+      link: `${scanURL}token/${tokenData?.project.genNFTAddr}?a=${tokenID}`,
     },
     {
       id: 'token-standard',
