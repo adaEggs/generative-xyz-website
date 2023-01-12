@@ -1,16 +1,15 @@
-import s from './Owned.module.scss';
-import { Loading } from '@components/Loading';
-import React, { useContext } from 'react';
-import TokenTopFilter from '@containers/GenerativeProjectDetail/TokenTopFilter';
-import { calculateFloorDifference, convertToETH } from '@utils/currency';
-import Link from '@components/Link';
-import { ROUTE_PATH } from '@constants/route-path';
-import { formatAddress } from '@utils/format';
 import ButtonIcon from '@components/ButtonIcon';
+import Link from '@components/Link';
+import { Loading } from '@components/Loading';
 import Table from '@components/Table';
+import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
+import { calculateFloorDifference, convertToETH } from '@utils/currency';
+import { formatAddress } from '@utils/format';
+import { useContext } from 'react';
+import s from './Owned.module.scss';
 
 const TABLE_OFFERS_HEADING = [
   'Price',
@@ -58,7 +57,7 @@ export const OfferTab = (): JSX.Element => {
     <>
       <div className={s.tabContent}>
         <div className={s.filterWrapper}>
-          <TokenTopFilter
+          {/* <TokenTopFilter
             keyword=""
             sort=""
             onKeyWordChange={() => {
@@ -67,7 +66,7 @@ export const OfferTab = (): JSX.Element => {
             onSortChange={() => {
               //
             }}
-          />
+          /> */}
         </div>
         <div className={s.tokenListWrapper}>
           <Loading isLoaded={isLoadedProfileMakeOffer} />

@@ -156,7 +156,7 @@ const Sandbox: React.FC = (): ReactElement => {
               target="_blank"
               rel="noopener"
             >
-              Guide to build a Generative Token.
+              Guide to launch your NFT collection.
             </Link>
           </p>
           <p className={s.disclaimer}>

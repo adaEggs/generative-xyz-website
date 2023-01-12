@@ -1,10 +1,9 @@
-import s from './Owned.module.scss';
-import { Loading } from '@components/Loading';
 import CollectionList from '@components/Collection/List';
-import React, { useContext } from 'react';
-import TokenTopFilter from '@containers/GenerativeProjectDetail/TokenTopFilter';
-import { ProfileContext } from '@contexts/profile-context';
+import { Loading } from '@components/Loading';
 import { TriggerLoad } from '@components/TriggerLoader';
+import { ProfileContext } from '@contexts/profile-context';
+import { useContext } from 'react';
+import s from './Owned.module.scss';
 
 export const OwnedTab = (): JSX.Element => {
   const { isLoadedProfileTokens, profileTokens, handleFetchTokens } =
@@ -14,7 +13,7 @@ export const OwnedTab = (): JSX.Element => {
     <>
       <div className={s.tabContent}>
         <div className={s.filterWrapper}>
-          <TokenTopFilter
+          {/* <TokenTopFilter
             keyword=""
             sort=""
             onKeyWordChange={() => {
@@ -23,7 +22,7 @@ export const OwnedTab = (): JSX.Element => {
             onSortChange={() => {
               //
             }}
-          />
+          /> */}
         </div>
         <div className={s.tokenListWrapper}>
           {!profileTokens?.total && (
