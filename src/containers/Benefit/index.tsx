@@ -35,12 +35,6 @@ const BenefitPage = (): JSX.Element => {
               heading={`An open generative art platform.`}
               imageUrl={`${CDN_URL}/pages/landingpage/image-row-content.jpeg`}
             >
-              While projects such as ArtBlocks have attempted to build a
-              marketplace for artists and collectors, Generative attempts to
-              include a marketplace, community, governance, and a treasury that
-              can be used by the community.
-              <br />
-              <br />
               Generative is fully open and permissionless. Anyone, from an
               anonymous to a well-known artist, has equal access to create and
               monetize their artwork.

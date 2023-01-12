@@ -17,6 +17,8 @@ import NextNprogress from 'nextjs-progressbar';
 import React, { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
+import { APP_ENV } from '@constants/config';
+import { ApplicationEnvironment } from '@enums/config';
 
 interface MyAppProps extends AppProps {
   Component: {
@@ -153,6 +155,14 @@ export default function App({ Component, pageProps }: MyAppProps) {
         <meta name="msapplication-TileColor" content="#FFFFFF" />
         <meta name="msapplication-TileImage" content="images/favicon-144.png" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
+
+        {APP_ENV === ApplicationEnvironment.STAGING && (
+          <script
+            type="text/javascript"
+            src="//script.crazyegg.com/pages/scripts/0100/2427.js"
+            async={true}
+          />
+        )}
       </Head>
 
       <NextNprogress />
