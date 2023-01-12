@@ -228,7 +228,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
               target="_blank"
               rel="noopener"
             >
-              Guide to build a Generative Token.
+              Guide to launch your NFT collection.
             </Link>
           </Text>
           <Text fontWeight="medium" className={s.disclaimer}>
