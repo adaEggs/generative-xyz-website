@@ -88,9 +88,9 @@ export const CreatePageSection = (): JSX.Element => {
                 as="p"
                 animOption={{ screen: 0.4, offset: 0, type: 'paragraph' }}
               >
-                Generative is the community-run platform that is fully open and
-                permissionless for artists to transform creative code into a
-                variety of generative art that evolves with each minting of a
+                Generative is a community-run platform that is fully open and
+                permissionless. Allowing artists to transform creative code into
+                a variety of generative art that evolves with each minting of a
                 collection.
               </Text>
               <AnimFade screen={0.6}>
