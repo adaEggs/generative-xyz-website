@@ -54,7 +54,7 @@ export const RecentWorks = (): JSX.Element => {
     <div className={s.recentWorks}>
       <Row style={{ justifyContent: 'space-between' }}>
         <Col xs={'auto'}>
-          <Heading as="h4" fontWeight="bold">
+          <Heading as="h4" fontWeight="semibold">
             Explore collections
           </Heading>
         </Col>

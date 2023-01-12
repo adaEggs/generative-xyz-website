@@ -101,13 +101,13 @@
 
         sup {
           font-weight: 600;
-          font-size: 12px;
-          line-height: 16px;
+
           letter-spacing: 0.01em;
           color: #FF7E21;
           display: inline-block;
-          transform: translateY(-.6em);
+          transform: translateY(-.2em);
           text-transform: none;
+          @include calcFontAutoSmall(10px, 12px)
         }
       }
 
@@ -202,7 +202,8 @@
   a {
     display: inline-block;
     margin-left: 6px;
-    &:hover{
+
+    &:hover {
       color: rgba($white, .8);
     }
   }

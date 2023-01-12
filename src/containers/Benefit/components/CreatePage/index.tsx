@@ -78,8 +78,7 @@ export const CreatePageSection = (): JSX.Element => {
                 className={'spacing__small'}
                 animOption={{ screen: 0.2, offset: 0, type: 'heading' }}
               >
-                The most comprehensive platform for generative artists to
-                feature collections
+                Empowers generative artists and powers generative artworks.
               </Heading>
               <Text
                 size="20"
@@ -89,9 +88,10 @@ export const CreatePageSection = (): JSX.Element => {
                 as="p"
                 animOption={{ screen: 0.4, offset: 0, type: 'paragraph' }}
               >
-                Express your creativity to the world! Generative gives you the
-                tools to transform your creative code into a variety of
-                generative art that evolves with each minting of a collection.
+                Generative is the community-run platform that is fully open and
+                permissionless for artists to transform creative code into a
+                variety of generative art that evolves with each minting of a
+                collection.
               </Text>
               <AnimFade screen={0.6}>
                 <ButtonIcon

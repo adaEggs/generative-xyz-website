@@ -219,6 +219,13 @@ const Header: React.FC<IProp> = ({
     };
   }, [disabledMenu]);
 
+  const clickToFaucet = (): void => {
+    const faucet = getFaucetLink();
+    if (faucet) {
+      window.open(faucet, '_blank');
+    }
+  };
+
   return (
     <header ref={refHeader} className={`${styles.header} ${styles[theme]}`}>
       {isFaucet && (
@@ -229,11 +236,7 @@ const Header: React.FC<IProp> = ({
           />
           You’re on the Generative testnet network. Need ETHs for testing? Just
           request them
-          <a
-            href={'https://mumbaifaucet.com/'}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a onClick={clickToFaucet} target="_blank" rel="noreferrer">
             {' here.'}
           </a>
           <button

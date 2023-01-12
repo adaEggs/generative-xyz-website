@@ -32,29 +32,44 @@ const BenefitPage = (): JSX.Element => {
         <div className={s.benefit_rows}>
           <div className={s.benefit_rows_inner}>
             <ImageContent
-              heading={`Boost the worth of your work on Ethereum.`}
+              heading={`An open generative art platform.`}
               imageUrl={`${CDN_URL}/pages/landingpage/image-row-content.jpeg`}
             >
-              Generative is the first platform for Generative Art running on
-              Ethereum. The Ethereum community is a high-end market where
-              digital art is frequently valued higher. Artists will also receive
-              a loyalty incentive if their artwork is sold on the secondary
-              market.
+              While projects such as ArtBlocks have attempted to build a
+              marketplace for artists and collectors, Generative attempts to
+              include a marketplace, community, governance, and a treasury that
+              can be used by the community.
+              <br />
+              <br />
+              Generative is fully open and permissionless. Anyone, from an
+              anonymous to a well-known artist, has equal access to create and
+              monetize their artwork.
+              <br />
+              <br />
+              More than a marketplace for artists and collectors, Generative
+              incorporates community, governance, and a DAO treasury.
             </ImageContent>
             <ImageContent
               right={true}
-              heading={`Numerous resources for making art are supported.`}
+              heading={`Co-own and co-operate.`}
               imageUrl={`${CDN_URL}/pages/landingpage/image-row-content.jpeg`}
             >
-              Generative supports a wide range of library, making the process of
-              producing generative art simplified and more enjoyable.
+              Artists are no longer just users, they become co-owners—helping to
+              build and shape the platform.
+              <br />
+              <br />
+              100% of platform fees are trustlessly sent to the Generative DAO
+              treasury that’s controlled exclusively by the community via
+              governance— meaning a proposal can be created by anyone. The
+              community will vote to fund a new artist, hire a curation board,
+              organize an IRL exhibition, or do anything else to promote the
+              generative art movement.
             </ImageContent>
             <ImageContent
-              heading={`Decentralized from the start.`}
+              heading={`Everlasting artwork.`}
               imageUrl={`${CDN_URL}/pages/landingpage/image-row-content.jpeg`}
             >
-              No IPFS and no centralized server—your artwork is stored fully and
-              securely on the blockchain.
+              All generative scripts are stored permanently on Ethereum.
             </ImageContent>
           </div>
         </div>
