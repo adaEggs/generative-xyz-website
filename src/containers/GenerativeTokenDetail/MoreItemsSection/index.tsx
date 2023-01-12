@@ -12,7 +12,7 @@ import log from '@utils/logger';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Stack } from 'react-bootstrap';
-import Select from 'react-select';
+import Select, { SingleValue } from 'react-select';
 import s from './styles.module.scss';
 
 const LOG_PREFIX = 'MoreItemsSection';
@@ -20,28 +20,28 @@ const LOG_PREFIX = 'MoreItemsSection';
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
     value: 'newest',
-    label: 'Date minted: Newest',
-  },
-  {
-    value: 'recent-listed',
     label: 'Recently listed',
   },
   {
-    value: 'price-asc',
-    label: 'Price: Low to High',
+    value: 'minted-newest',
+    label: 'Date minted: Newest',
   },
-  {
-    value: 'price-desc',
-    label: 'Price: High to Low',
-  },
-  {
-    value: 'rarity-asc',
-    label: 'Rarity: Low to High',
-  },
-  {
-    value: 'rarity-desc',
-    label: 'Rarity: High to Low',
-  },
+  // {
+  //   value: 'price-asc',
+  //   label: 'Price: Low to High',
+  // },
+  // {
+  //   value: 'price-desc',
+  //   label: 'Price: High to Low',
+  // },
+  // {
+  //   value: 'rarity-asc',
+  //   label: 'Rarity: Low to High',
+  // },
+  // {
+  //   value: 'rarity-desc',
+  //   label: 'Rarity: High to Low',
+  // },
 ];
 
 type TMoreItemsSection = {
@@ -54,8 +54,10 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [listItems, setListItems] = useState<Token[]>([]);
+  const [sort, setSort] = useState('newest');
 
   const fetchProjectItems = async (): Promise<void> => {
+    setIsLoaded(false);
     if (genNFTAddr) {
       try {
         const res = await getProjectItems(
@@ -65,6 +67,7 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
           {
             limit: 4,
             page: 1,
+            sort,
           }
         );
         setIsLoaded(true);
@@ -77,7 +80,7 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
 
   useEffect(() => {
     fetchProjectItems();
-  }, []);
+  }, [sort]);
 
   return (
     <div className="position-relative">
@@ -93,33 +96,31 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
             options={SORT_OPTIONS}
             className={s.selectInput}
             classNamePrefix="select"
+            onChange={(val: SingleValue<any>) => setSort(val.value)}
           />
         </div>
       </Stack>
       <div className={s.listWrapper}>
-        <Loading isLoaded={isLoaded} />
-        {isLoaded && (
-          <>
-            <CollectionList listData={listItems} />
-            <div className={s.view_collection}>
-              <ButtonIcon
-                sizes="large"
-                variants="outline"
-                endIcon={
-                  <SvgInset
-                    className={s.icon_btn}
-                    svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
-                  />
-                }
-                onClick={() => {
-                  router.push(`${ROUTE_PATH.GENERATIVE}/${projectID}`);
-                }}
-              >
-                View collection
-              </ButtonIcon>
-            </div>
-          </>
-        )}
+        <Loading isLoaded={isLoaded} className={s.loading} />
+
+        <CollectionList listData={listItems} />
+        <div className={s.view_collection}>
+          <ButtonIcon
+            sizes="large"
+            variants="outline"
+            endIcon={
+              <SvgInset
+                className={s.icon_btn}
+                svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+              />
+            }
+            onClick={() => {
+              router.push(`${ROUTE_PATH.GENERATIVE}/${projectID}`);
+            }}
+          >
+            View collection
+          </ButtonIcon>
+        </div>
       </div>
     </div>
   );

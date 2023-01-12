@@ -36,7 +36,7 @@ const Footer: React.FC<IProp> = ({ theme = 'light' }): React.ReactElement => {
           <Image alt="logo" src={LOGO_GENERATIVE} width={64} height={64} />
         </div>
         <div className={styles.footer_info}>
-          <p>© 2022 Generative.</p>
+          <p>© 2023 Generative.</p>
           <ul className={styles.footer_socials}>
             <li>
               <a
@@ -68,9 +68,7 @@ const Footer: React.FC<IProp> = ({ theme = 'light' }): React.ReactElement => {
             </li>
           </ul>
         </div>
-        <div className={styles.footer_contact}>
-          Contact us: team@generative.xyz
-        </div>
+        <div className={styles.footer_contact}>team@generative.xyz</div>
       </div>
     </footer>
   );

@@ -22,14 +22,16 @@ export const ImageContent = ({
   return (
     <Row className={`${s.imageContent} ${right ? s.imageContent__right : ''}`}>
       <Col md={{ order: right ? 1 : 0, span: 6 }} xs={12}>
-        <AnimFade screen={1.2}>
-          <Image
-            src={imageUrl}
-            width={432}
-            height={576}
-            alt={'row-image-content'}
-          />
-        </AnimFade>
+        <div className={s.imageContent_thumb}>
+          <AnimFade screen={1.2}>
+            <Image
+              src={imageUrl}
+              width={432}
+              height={576}
+              alt={'row-image-content'}
+            />
+          </AnimFade>
+        </div>
       </Col>
       <Col md={{ order: right ? 0 : 1, span: 6 }} xs={12}>
         <Heading

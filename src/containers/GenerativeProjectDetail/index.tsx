@@ -1,22 +1,26 @@
 import CollectionList from '@components/Collection/List';
+import { Loading } from '@components/Loading';
 import ClientOnly from '@components/Utils/ClientOnly';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import {
+  SEO_DESCRIPTION,
+  SEO_IMAGE,
+  SEO_TITLE,
+} from '@constants/seo-default-info';
 import ProjectIntroSection from '@containers/Marketplace/ProjectIntroSection';
 import { LogLevel } from '@enums/log-level';
+import { Project } from '@interfaces/project';
+import { Token } from '@interfaces/token';
 import { setProjectCurrent } from '@redux/project/action';
 import { getProjectDetail, getProjectItems } from '@services/project';
-import { base64ToUtf8 } from '@utils/format';
 import log from '@utils/logger';
-import _get from 'lodash/get';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import TokenTopFilter from './TokenTopFilter';
 import styles from './styles.module.scss';
-import { Loading } from '@components/Loading';
-import { Project } from '@interfaces/project';
-import { Token } from '@interfaces/token';
 
 const LOG_PREFIX = 'GenerativeProjectDetail';
 
@@ -54,11 +58,6 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
           {
             limit: 20,
             page: 1,
-            // sort: 'price-asc',
-            // name: '11',
-            // attributes: [''],
-            // minPrice: '200000000',
-            // maxPrice: '3000000',
           }
         );
         res.result && setListItems(res.result);
@@ -69,25 +68,6 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
     }
   };
 
-  // const openseaUrl = useMemo(() => {
-  //   const openseaAssetURL = getOpenseaAssetUrl();
-  //   if (!openseaAssetURL) {
-  //     return null;
-  //   }
-  //   return `${openseaAssetURL}/${GENERATIVE_PROJECT_CONTRACT}/${projectID}`;
-  // }, [projectID]);
-
-  useEffect(() => {
-    if (!projectInfo) return;
-    const _projectDetail = base64ToUtf8(
-      projectInfo.projectURI.replace('data:application/json;base64,', '')
-    );
-    if (_projectDetail) {
-      // const projectDetailObj = JSON.parse(_projectDetail);
-      // setProjectDetail(projectDetailObj);
-    }
-  }, [projectInfo?.id]);
-
   useEffect(() => {
     fetchProjectDetail();
   }, [projectID]);
@@ -97,40 +77,60 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
   }, [projectInfo]);
 
   return (
-    <section>
-      <Container>
-        <ProjectIntroSection project={projectInfo} />
-        <ClientOnly>
-          <Tabs className={styles.tabs} defaultActiveKey="items">
-            <Tab tabClassName={styles.tab} eventKey="items" title="Items">
-              <div className={styles.filterWrapper}>
-                <TokenTopFilter
-                  keyword=""
-                  sort=""
-                  onKeyWordChange={() => {
-                    //
-                  }}
-                  onSortChange={() => {
-                    //
-                  }}
-                />
-              </div>
-              <div className={styles.tokenListWrapper}>
-                <Loading isLoaded={isLoaded} />
-                {isLoaded && (
-                  <div className={styles.tokenList}>
-                    <CollectionList
-                      projectInfo={projectInfo}
-                      listData={listItems}
-                    />
-                  </div>
-                )}
-              </div>
-            </Tab>
-          </Tabs>
-        </ClientOnly>
-      </Container>
-    </section>
+    <>
+      <Head>
+        <meta property="og:title" content={projectInfo?.name ?? SEO_TITLE} />
+        <meta
+          name="og:description"
+          content={projectInfo?.desc ?? SEO_DESCRIPTION}
+        />
+        <meta name="og:image" content={projectInfo?.image ?? SEO_IMAGE} />
+        <meta
+          property="twitter:title"
+          content={projectInfo?.name ?? SEO_TITLE}
+        />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:description"
+          content={projectInfo?.desc ?? SEO_DESCRIPTION}
+        />
+        <meta name="twitter:image" content={projectInfo?.image ?? SEO_IMAGE} />
+      </Head>
+      <section>
+        <Container>
+          <ProjectIntroSection project={projectInfo} />
+          <ClientOnly>
+            <Tabs className={styles.tabs} defaultActiveKey="items">
+              <Tab tabClassName={styles.tab} eventKey="items" title="Items">
+                <div className={styles.filterWrapper}>
+                  <TokenTopFilter
+                    keyword=""
+                    sort=""
+                    onKeyWordChange={() => {
+                      //
+                    }}
+                    onSortChange={() => {
+                      //
+                    }}
+                  />
+                </div>
+                <div className={styles.tokenListWrapper}>
+                  <Loading isLoaded={isLoaded} />
+                  {isLoaded && (
+                    <div className={styles.tokenList}>
+                      <CollectionList
+                        projectInfo={projectInfo}
+                        listData={listItems}
+                      />
+                    </div>
+                  )}
+                </div>
+              </Tab>
+            </Tabs>
+          </ClientOnly>
+        </Container>
+      </section>
+    </>
   );
 };
 

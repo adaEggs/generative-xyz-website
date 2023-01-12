@@ -52,5 +52,9 @@
 
 .listWrapper {
   margin-top: rem(52px);
-  min-height: rem(150px);
+  min-height: rem(400px);
+}
+
+.loading {
+  background-color: rgba(255, 255, 255, 0.5);
 }

@@ -14,7 +14,7 @@ import { getChainName, getScanUrl } from '@utils/chain';
 import { formatAddress, formatTokenId } from '@utils/format';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { v4 } from 'uuid';
 import ListingTokenModal from './ListingTokenModal';
@@ -28,6 +28,12 @@ import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { TokenOffer } from '@interfaces/token';
 import { toast } from 'react-hot-toast';
+import Head from 'next/head';
+import {
+  SEO_DESCRIPTION,
+  SEO_IMAGE,
+  SEO_TITLE,
+} from '@constants/seo-default-info';
 
 // const LOG_PREFIX = 'GenerativeTokenDetail';
 
@@ -132,15 +138,35 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     setIsBuying(false);
   };
 
+  const tokenName = useMemo(
+    () =>
+      `${tokenData?.project?.name} #${formatTokenId(tokenData?.tokenID || '')}`,
+    [tokenData?.project?.name, tokenData?.tokenID]
+  );
+
   return (
     <>
+      <Head>
+        <meta property="og:title" content={tokenName ?? SEO_TITLE} />
+        <meta
+          name="og:description"
+          content={tokenData?.description ?? SEO_DESCRIPTION}
+        />
+        <meta name="og:image" content={tokenData?.image ?? SEO_IMAGE} />
+        <meta property="twitter:title" content={tokenData?.name ?? SEO_TITLE} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta
+          name="twitter:description"
+          content={tokenData?.description ?? SEO_DESCRIPTION}
+        />
+        <meta name="twitter:image" content={tokenData?.image ?? SEO_IMAGE} />
+      </Head>
       <Container>
         <div className={s.wrapper} style={{ marginBottom: '100px' }}>
           <div className={s.itemInfo}>
             <Loading isLoaded={!!tokenData} className={s.loading_token} />
-            <Heading as="h4" fontWeight="bold">
-              {tokenData?.project?.name} #
-              {formatTokenId(tokenData?.tokenID || '')}
+            <Heading as="h4" fontWeight="semibold">
+              {tokenName}
             </Heading>
             <div className={s.prices}>
               {/* TODO: Remove when API ready  */}
