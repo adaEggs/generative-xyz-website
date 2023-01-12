@@ -6,7 +6,7 @@ import Display from '@containers/Display';
 
 const HomePage: NextPage = () => {
   return (
-    <MarketplaceLayout isHideFaucet={true} theme={'dark'}>
+    <MarketplaceLayout isHideFaucet={true} theme={'dark'} isDisplay={true}>
       <Display />
     </MarketplaceLayout>
   );

@@ -86,3 +86,16 @@ export const getProjectList = async (
     throw Error('Failed to get project list');
   }
 };
+
+export const getProjectListMinited = async (
+  params: IGetProjectListParams
+): Promise<IGetProjectListResponse> => {
+  try {
+    const qs = '?' + querystring.stringify(params);
+    const res = await get<IGetProjectListResponse>(`${API_PATH}${qs}`);
+    return res;
+  } catch (err: unknown) {
+    log('failed to get project list', LogLevel.Error, LOG_PREFIX);
+    throw Error('Failed to get project list');
+  }
+};

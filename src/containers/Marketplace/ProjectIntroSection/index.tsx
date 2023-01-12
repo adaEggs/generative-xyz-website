@@ -156,13 +156,19 @@ const ProjectIntroSection = ({ project }: Props) => {
     if (isProjectDetailPage) {
       return (
         <div className={s.info}>
-          <Heading
-            as="h4"
-            fontWeight="semibold"
-            style={{ marginBottom: '16px' }}
-          >
+          <Heading as="h4" fontWeight="semibold">
             {project?.name}
           </Heading>
+          <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
+            {'By: '}
+            <Link
+              className={s.info_creatorLink}
+              href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
+            >
+              {project?.creatorProfile?.displayName ||
+                formatAddress(project?.creatorProfile?.walletAddress || '')}
+            </Link>
+          </Text>
           {project?.mintingInfo.index !== project?.maxSupply && (
             <ProgressBar
               current={project?.mintingInfo?.index}
@@ -215,14 +221,16 @@ const ProjectIntroSection = ({ project }: Props) => {
                 {convertToETH(marketplaceStats?.floorPrice || '')}
               </Heading>
             </div>
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="bold">
-                Percent Listed
-              </Text>
-              <Heading as="h4" fontWeight="bold">
-                {marketplaceStats?.listedPercent}%
-              </Heading>
-            </div>
+            {marketplaceStats?.listedPercent !== 0 && (
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="bold">
+                  Percent Listed
+                </Text>
+                <Heading as="h4" fontWeight="bold">
+                  {marketplaceStats?.listedPercent}%
+                </Heading>
+              </div>
+            )}
 
             <div className={s.stats_item}>
               <Text size="12" fontWeight="bold">
@@ -326,10 +334,20 @@ const ProjectIntroSection = ({ project }: Props) => {
           >
             Recent Collection
           </Heading>
-          <Heading as="h4" fontWeight="bold" style={{ marginBottom: '16px' }}>
+          <Heading as="h4" fontWeight="bold">
             <Skeleton width={200} height={44} isLoaded={!!project?.name} />
             {project?.name}
           </Heading>
+          <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
+            {'By: '}
+            <Link
+              className={s.info_creatorLink}
+              href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
+            >
+              {project?.creatorProfile?.displayName ||
+                formatAddress(project?.creatorProfile?.walletAddress || '')}
+            </Link>
+          </Text>
           <ProgressBar
             current={project?.mintingInfo?.index}
             total={project?.maxSupply}
