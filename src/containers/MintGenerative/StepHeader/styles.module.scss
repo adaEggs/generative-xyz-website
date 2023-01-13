@@ -1,22 +1,21 @@
 .stepHeader {
-  max-width: 452px;
-  margin: auto;
 
   .stepList {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    gap: rem(35px);
   }
 
   .stepIndexWrapper {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 76px;
-    height: 60px;
+    width: rem(76px);
+    height: rem(60px);
     border: 2px solid $black-10;
-    border-radius: 40px;
-    margin-bottom: 14px;
+    border-radius: rem(40px);
+    margin-bottom: rem(14px);
   }
 
   .stepActiveDot {
@@ -25,13 +24,6 @@
     height: 6px;
     border-radius: 50%;
     display: none;
-  }
-
-  .stepIndex {
-    font-weight: 900;
-    font-size: 24px;
-    line-height: 34px;
-    color: $black-20;
   }
 
   .stepTitleWrapper {

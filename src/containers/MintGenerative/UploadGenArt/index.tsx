@@ -148,21 +148,50 @@ const UploadGenArt: React.FC = (): ReactElement => {
             </div>
           </div>
           <div className={s.projectAttributeWrapper}>
-            <h3 className={s.attrTitle}>Properties of the current variation</h3>
-            <p className={s.attrDescription}>
-              These properties will change for each variation
-            </p>
-            {attributes && (
-              <div className={s.attrList}>
-                {Object.entries(attributes).map(([key, value]) => {
-                  return (
-                    <div key={key} className={s.attrItem}>
-                      <span className={s.attrKey}>{key}:</span>
-                      <span className={s.attrValue}>{value}</span>
-                    </div>
-                  );
-                })}
-              </div>
+            <Heading as={'h5'} className={s.attrTitle} fontWeight={'semibold'}>
+              Properties of the current variation
+            </Heading>
+
+            {attributes ? (
+              <>
+                <Text
+                  as="p"
+                  size={'16'}
+                  fontWeight={'regular'}
+                  className={s.attrDescription}
+                  color={'black-60'}
+                >
+                  These properties will change for each variation
+                </Text>
+                <div className={s.attrList}>
+                  {Object.entries(attributes).map(([key, value]) => {
+                    return (
+                      <div key={key} className={s.attrItem}>
+                        <Text
+                          as={'span'}
+                          size="16"
+                          fontWeight={'semibold'}
+                          className={s.attrKey}
+                        >
+                          {key}:
+                        </Text>
+                        <Text
+                          as={'span'}
+                          color={'black-60'}
+                          size={'16'}
+                          className={s.attrValue}
+                        >
+                          {value}
+                        </Text>
+                      </div>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <Text as="p" fontWeight="regular" size="16" color={'black-60'}>
+                There is no properties defined.
+              </Text>
             )}
           </div>
           <div className={s.container}>
@@ -172,7 +201,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 onClick={handleChangeIsProjectWork}
                 className={s.checkbox}
                 id="workProperly"
-                label="My Generative Token works properly."
+                label="My NFT collection is ready to go!"
               />
             </div>
             <div className={s.actionWrapper}>

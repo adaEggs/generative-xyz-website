@@ -10,7 +10,7 @@
     font-weight: 700;
     font-size: 12px;
     line-height: 20px;
-    color: $black-40;
+    color: $black-60-solid;
     display: block;
     margin-bottom: 6px;
     text-transform: uppercase;
@@ -19,29 +19,30 @@
   .input {
     background-color: $background;
     font-weight: 500;
-    font-size: 16px;
-    line-height: 26px;
+    line-height: (26/16);
     color: $black-100;
-    padding: 11px 14px;
-    border-radius: 8px;
+    padding: rem(11px) rem(14px);
+    border-radius: 2px;
     width: 100%;
     resize: none;
     white-space: normal;
 
+    @include calcFontAutoSmall(14px, 16px);
+
     &::placeholder {
       /* Chrome, Firefox, Opera, Safari 10.1+ */
-      color: $black-40;
+      color: $black-40-solid;
       opacity: 1; /* Firefox */
     }
 
     &:input-placeholder {
       /* Internet Explorer 10-11 */
-      color: $black-40;
+      color: $black-40-solid;
     }
 
     &::input-placeholder {
       /* Microsoft Edge */
-      color: $black-40;
+      color: $black-40-solid;
     }
   }
 
@@ -99,8 +100,8 @@
       border: none;
       outline: none;
       box-shadow: none;
-      border-radius: 8px;
-      min-height: 48px;
+      border-radius: 2px;
+      min-height: rem(48px);
     }
 
     :global(.select__indicator-separator) {
@@ -108,23 +109,27 @@
     }
 
     :global(.select__placeholder) {
-      color: $black-40;
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 26px;
+      color: $black-40-solid;
+      line-height: (26/16);
+      @include calcFontAutoSmall(14px, 16px)
     }
 
     :global(.select__multi-value__label) {
-      font-size: 14px;
-      line-height: 14px;
       font-weight: 400;
+      line-height: 1;
+
+      @include calcFontAutoSmall(12px, 14px)
     }
 
     :global(.select__input-container) {
       color: $black-100;
       font-weight: 500;
-      font-size: 16px;
-      line-height: 26px;
+      line-height: (26/16);
+      @include calcFontAutoSmall(14px, 16px)
+    }
+
+    :global(.select__dropdown-indicator){
+      color: $primary-brand
     }
   }
 

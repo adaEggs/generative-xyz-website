@@ -37,14 +37,22 @@ const StepHeader: React.FC = (): React.ReactElement => {
             onClick={() => handleNavigate(step)}
           >
             <div className={s.stepIndexWrapper}>
-              <span className={s.stepIndex}>{step.stepIndex}</span>
+              <Text
+                as="span"
+                size="24"
+                color={'black-40-solid'}
+                fontWeight={'bold'}
+                className={s.stepIndex}
+              >
+                {step.stepIndex}
+              </Text>
             </div>
             <div className={s.stepTitleWrapper}>
               <span className={s.stepActiveDot} />
               <Text
                 as={'span'}
                 size={'18'}
-                color={'primary-color'}
+                color={'black-40-solid'}
                 fontWeight={'semibold'}
                 className={s.stepTitle}
               >

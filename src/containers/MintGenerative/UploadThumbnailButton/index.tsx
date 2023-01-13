@@ -33,12 +33,13 @@ const UploadThumbnailButton: React.FC = () => {
           height={16}
           width={16}
           src={`${CDN_URL}/icons/ic-upload-image-16x16.svg`}
-        ></Image>
+        />
         <span className={s.fileName}>
           {thumbnailFile
             ? `${thumbnailFile.name} (${prettyPrintBytes(thumbnailFile.size)})`
-            : 'Upload preview image'}
+            : 'Upload thumbnail'}
         </span>
+        <sup className={s.requiredTag}>*</sup>
       </Button>
     </div>
   );

@@ -1,6 +1,7 @@
 .uploadGenArt {
   position: relative;
   height: 100%;
+
   .uploadWrapper {
     margin: auto;
     max-width: 500px;
@@ -22,11 +23,13 @@
     margin-bottom: rem(8px);
   }
 
-  .linkDocs{
+  .linkDocs {
     margin-bottom: rem(24px);
-    a{
+
+    a {
       color: $primary-brand;
-      &:hover{
+
+      &:hover {
         text-decoration: none;
       }
     }
@@ -120,13 +123,6 @@
   }
 
   .checkbox {
-    :global(label) {
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 24px;
-      color: $black-40;
-    }
-
     :global(input) {
       accent-color: $black-100;
     }
@@ -154,39 +150,21 @@
   }
 
   .attrTitle {
-    font-weight: 600;
-    font-size: 24px;
-    line-height: 34px;
     color: $black-100;
     margin-bottom: 6px;
   }
 
   .attrDescription {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 26px;
-    color: $black-60;
     margin-bottom: 10px;
   }
 
   .attrItem {
     &:not(:last-child) {
-      margin-bottom: 4px;
+      margin-bottom: rem(4px);
     }
   }
 
   .attrKey {
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 26px;
-    color: $black-100;
-    margin-right: 10px;
-  }
-
-  .attrValue {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 26px;
-    color: $black-60;
+    margin-right: rem(10px);
   }
 }

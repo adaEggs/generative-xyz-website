@@ -104,7 +104,7 @@ export const CreatePageSection = (): JSX.Element => {
                     />
                   }
                 >
-                  Start upload
+                  Launch your art
                 </ButtonIcon>
               </AnimFade>
             </div>

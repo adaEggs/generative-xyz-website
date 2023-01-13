@@ -1,11 +1,10 @@
 import s from './styles.module.scss';
 import { TransactionReceipt } from 'web3-eth';
-import { NETWORK_CHAIN_ID } from '@constants/config';
+import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
 import { MintGenerativeContext } from '@contexts/mint-generative-context';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
-import Button from '@components/ButtonIcon';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { WalletContext } from '@contexts/wallet-context';
@@ -23,6 +22,9 @@ import { createProjectMetadata } from '@services/project';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { isTestnet } from '@utils/chain';
 import Web3 from 'web3';
+import Text from '@components/Text';
+import ButtonIcon from '@components/ButtonIcon';
+import SvgInset from '@components/SvgInset';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -248,17 +250,21 @@ const SetPrice = () => {
               <h3 className={s.descriptionTitle}>
                 How will your piece be sold
               </h3>
-              <p className={s.description}>Read more pricing guide here.</p>
-              <p className={s.description}>
-                You will be able to edit these settings after the publication,
-                except if stated otherwise on the corresponding fields.
-              </p>
+              <Text
+                size={'16'}
+                as={'p'}
+                fontWeight={'regular'}
+                className={s.description}
+              >
+                Name your price, the number of outputs and the royalties fee.
+                Remember, these numbers can be changed later after publishing.
+              </Text>
             </div>
-            <div className={s.divider}></div>
+            <div className={s.divider} />
             <div className={s.formWrapper}>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="maxSupply">
-                  Number of editions <sup className={s.requiredTag}>*</sup>
+                  Number of outputs <sup className={s.requiredTag}>*</sup>
                 </label>
                 <div className={s.inputContainer}>
                   <input
@@ -276,14 +282,19 @@ const SetPrice = () => {
                 {errors.maxSupply && touched.maxSupply && (
                   <p className={s.error}>{errors.maxSupply}</p>
                 )}
-                <p className={s.inputDesc}>
-                  How many NFT can be generated using your Token - can only be
-                  decreased after publication
-                </p>
+                <Text
+                  as={'p'}
+                  size={'14'}
+                  color={'black-60'}
+                  className={s.inputDesc}
+                >
+                  The amount of NFTs can be minted in this collection. After
+                  publication, this number can only be reduced.
+                </Text>
               </div>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="mintPrice">
-                  Price <sup className={s.requiredTag}>*</sup>
+                  PRICE <sup className={s.requiredTag}>*</sup>
                 </label>
                 <div className={s.inputContainer}>
                   <input
@@ -328,20 +339,33 @@ const SetPrice = () => {
                 {errors.royalty && touched.royalty && (
                   <p className={s.error}>{errors.royalty}</p>
                 )}
-                <p className={s.inputDesc}>in %, between 10 - 25</p>
+                <Text
+                  as={'p'}
+                  size={'14'}
+                  color={'black-60'}
+                  className={s.inputDesc}
+                >
+                  The payment artists receive every time a secondary sale of
+                  their artworks occurs. This number ranges from 10% to 25%.
+                </Text>
               </div>
             </div>
           </div>
           <div className={s.container}>
             <div className={s.actionWrapper}>
-              <Button
+              <ButtonIcon
                 disabled={isMinting}
                 type="submit"
                 className={s.nextBtn}
                 sizes="medium"
+                endIcon={
+                  <SvgInset
+                    svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+                  />
+                }
               >
-                {isMinting ? 'Minting...' : 'Publish project'}
-              </Button>
+                {isMinting ? 'Minting...' : 'Publish collection'}
+              </ButtonIcon>
             </div>
           </div>
         </form>

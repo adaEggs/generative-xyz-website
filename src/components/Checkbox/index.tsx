@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Text from '@components/Text';
 import cs from 'classnames';
 import styles from './styles.module.scss';
 
@@ -30,7 +31,9 @@ const Checkbox = ({
         onClick={onClick}
         {...props}
       />
-      <label htmlFor={id}>{label}</label>
+      <Text as={'label'} size={'16'} color={'black-60'} htmlFor={id}>
+        {label}
+      </Text>
     </div>
   );
 };
