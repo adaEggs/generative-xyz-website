@@ -8,11 +8,20 @@
   width: 100%;
   margin-bottom: rem(36px);
 
+
   .fileName {
-    text-transform: uppercase;
-    color: $black-100;
-    font-weight: 800;
-    font-size: 12px;
-    line-height: 20px;
+    font-style: normal;
+    line-height: (26/16);
+    letter-spacing: 0.01em;
+    color: $primary-brand;
+    @include calcFontAutoSmall(14px, 16px);
+  }
+
+  .requiredTag {
+    color: $secondary-red;
+  }
+
+  &:hover {
+    background-color: $primary-purple-50 !important;
   }
 }

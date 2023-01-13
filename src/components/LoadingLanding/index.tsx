@@ -87,7 +87,7 @@ export const LoadingLanding = (): JSX.Element => {
     <div ref={refLoading} className={s.loading}>
       <div className={s.loading_inner}>
         <Image width={64} height={64} src={LOGO_JPG.light} alt={'logo-url'} />
-        <h5 className={s.loading_text}>The Benchmark for Generative Art</h5>
+        <h5 className={s.loading_text}>Loading sentence</h5>
         <span ref={refPersent}>0%</span>
       </div>
     </div>

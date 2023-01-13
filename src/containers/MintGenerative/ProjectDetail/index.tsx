@@ -139,7 +139,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
               <div className={s.formWrapper}>
                 <div className={s.formItem}>
                   <label className={s.label} htmlFor="name">
-                    Name of the piece <sup className={s.requiredTag}>*</sup>
+                    Name of collection <sup className={s.requiredTag}>*</sup>
                   </label>
                   <input
                     id="name"
@@ -157,7 +157,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                 </div>
                 <div className={s.formItem}>
                   <label className={s.label} htmlFor="tokenDescription">
-                    Generative token description{' '}
+                    Description of you collection{' '}
                     <sup className={s.requiredTag}>*</sup>
                   </label>
                   <textarea
@@ -168,7 +168,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                     value={values.description}
                     className={s.input}
                     rows={4}
-                    placeholder="Provide a description of your item. &#10;Markdown language supported."
+                    placeholder="Tell us more about the meaning and inspiration behind your art."
                   />
                   {errors.description && touched.description && (
                     <p className={s.error}>{errors.description}</p>
@@ -195,7 +195,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
               </div> */}
                 <div className={s.formItem}>
                   <label className={s.label} htmlFor="thirdPartyScripts">
-                    Third party lib
+                    Library used
                   </label>
                   <Select
                     id="thirdPartyScripts"
