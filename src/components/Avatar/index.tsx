@@ -45,7 +45,6 @@ const Avatar = ({ imgSrcs, width = 48, height = 48, fill = false }: Props) => {
         ) : (
           <div className={styles.defaultAvatar}>
             <SvgInset
-              size={width}
               svgUrl={`${CDN_URL}/images/default-avatar.svg`}
             ></SvgInset>
           </div>

@@ -4,32 +4,30 @@ import Image from 'next/image';
 import { CDN_URL } from '@constants/config';
 import Select, { SingleValue } from 'react-select';
 import { SelectOption } from '@interfaces/select-input';
+import cs from 'classnames';
+import { debounce } from 'lodash';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
     value: 'newest',
+    label: 'Recently Listed',
+  },
+  {
+    value: 'minted-newest',
     label: 'Date minted: Newest',
   },
-  {
-    value: 'recent-listed',
-    label: 'Recently listed',
-  },
-  {
-    value: 'price-asc',
-    label: 'Price: Low to High',
-  },
-  {
-    value: 'price-desc',
-    label: 'Price: High to Low',
-  },
-  {
-    value: 'rarity-asc',
-    label: 'Rarity: Low to High',
-  },
-  {
-    value: 'rarity-desc',
-    label: 'Rarity: High to Low',
-  },
+  // {
+  //   value: 'price-desc',
+  //   label: 'Price: High to Low',
+  // },
+  // {
+  //   value: 'rarity-asc',
+  //   label: 'Rarity: Low to High',
+  // },
+  // {
+  //   value: 'rarity-desc',
+  //   label: 'Rarity: High to Low',
+  // },
 ];
 
 interface IProps {
@@ -37,6 +35,8 @@ interface IProps {
   sort: string;
   onKeyWordChange: (k: string) => void;
   onSortChange: (v: string) => void;
+  placeholderSearch?: string;
+  className?: string;
 }
 
 const TokenTopFilter: React.FC<IProps> = ({
@@ -44,13 +44,15 @@ const TokenTopFilter: React.FC<IProps> = ({
   sort,
   onKeyWordChange,
   onSortChange,
+  placeholderSearch,
+  className,
 }: IProps): React.ReactElement => {
   const selectedOption = useMemo(() => {
     return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
   }, [sort]);
 
   return (
-    <div className={s.tokenTopFilter}>
+    <div className={cs(s.tokenTopFilter, className)}>
       <div className={s.inputWrapper}>
         <div className={s.inputPrefixWrapper}>
           <Image
@@ -61,10 +63,12 @@ const TokenTopFilter: React.FC<IProps> = ({
           />
         </div>
         <input
-          value={keyword}
-          onChange={e => onKeyWordChange(e.target.value)}
+          defaultValue={keyword}
+          onChange={debounce(e => {
+            onKeyWordChange(e.target.value);
+          }, 500)}
           className={s.input}
-          placeholder="owner, item, address..."
+          placeholder={placeholderSearch}
           type="text"
         />
       </div>
