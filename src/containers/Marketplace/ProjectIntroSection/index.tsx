@@ -158,7 +158,6 @@ const ProjectIntroSection = ({ project }: Props) => {
             {project?.name}
           </Heading>
           <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
-            {'By: '}
             <Link
               className={s.info_creatorLink}
               href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
@@ -337,7 +336,6 @@ const ProjectIntroSection = ({ project }: Props) => {
             {project?.name}
           </Heading>
           <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
-            {'By: '}
             <Link
               className={s.info_creatorLink}
               href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}

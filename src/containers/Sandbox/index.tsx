@@ -1,20 +1,19 @@
 import s from './styles.module.scss';
 import Button from '@components/ButtonIcon';
 import DropFile from '@containers/MintGenerative/DropFile';
-import Link from '@components/Link';
 import { LogLevel } from '@enums/log-level';
 import log from '@utils/logger';
 import { processSandboxZipFile, readSandboxFileContent } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
 import { ReactElement, useMemo, useState } from 'react';
-import { EXTERNAL_LINK } from '@constants/external-link';
-import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import Image from 'next/image';
 import { SandboxFileError } from '@enums/sandbox';
 import { SandboxFiles } from '@interfaces/sandbox';
 import { toast } from 'react-hot-toast';
 import ProjectPreview from '@containers/Sandbox/ProjectPreview';
+import { SOCIALS } from '@constants/common';
+import Text from '@components/Text';
 
 const LOG_PREFIX = 'UploadGenArt';
 
@@ -116,14 +115,13 @@ const Sandbox: React.FC = (): ReactElement => {
     (): JSX.Element => (
       <>
         <div className={s.uploadWrapper}>
-          <h3 className={s.sectionTitle}>
-            Upload Genart
-            <SvgInset
-              size={18}
-              className={s.infoIcon}
-              svgUrl={`${CDN_URL}/icons/ic-info-circle-18x18.svg`}
-            ></SvgInset>
-          </h3>
+          <h3 className={s.sectionTitle}>Upload File</h3>
+          <Text as="p" size={'16'}>
+            New artist?&nbsp;
+            <a href={SOCIALS.docs} target="_blank" rel="noreferrer">
+              Start here.
+            </a>
+          </Text>
           <div className={s.dropZoneWrapper}>
             <DropFile
               className={s.dropZoneContainer}
@@ -143,34 +141,34 @@ const Sandbox: React.FC = (): ReactElement => {
             Upload Project
           </Button>
         </div>
-        <div className={s.disclaimerWrapper}>
-          <p className={s.disclaimer}>
-            This is a space in which you can drop a .zip of your project and see
-            how it would behave when it will be minted on Generative. If your
-            artwork does not behave properly in the setup thumbnail image are,
-            it will not work after being minted. If you are new to the platform
-            please read our&nbsp;
-            <Link
-              className={s.link}
-              href={EXTERNAL_LINK.GUIDE}
-              target="_blank"
-              rel="noopener"
-            >
-              Guide to launch your NFT collection.
-            </Link>
-          </p>
-          <p className={s.disclaimer}>
-            Please make sure that your project follows our&nbsp;
-            <Link
-              className={s.link}
-              href={EXTERNAL_LINK.GUIDE}
-              target="_blank"
-              rel="noopener"
-            >
-              Code of Conduct.
-            </Link>
-          </p>
-        </div>
+        {/*<div className={s.disclaimerWrapper}>*/}
+        {/*  <p className={s.disclaimer}>*/}
+        {/*    This is a space in which you can drop a .zip of your project and see*/}
+        {/*    how it would behave when it will be minted on Generative. If your*/}
+        {/*    artwork does not behave properly in the setup thumbnail image are,*/}
+        {/*    it will not work after being minted. If you are new to the platform*/}
+        {/*    please read our&nbsp;*/}
+        {/*    <Link*/}
+        {/*      className={s.link}*/}
+        {/*      href={EXTERNAL_LINK.DOCS}*/}
+        {/*      target="_blank"*/}
+        {/*      rel="noopener"*/}
+        {/*    >*/}
+        {/*      Guide to launch your NFT collection.*/}
+        {/*    </Link>*/}
+        {/*  </p>*/}
+        {/*  <p className={s.disclaimer}>*/}
+        {/*    Please make sure that your project follows our&nbsp;*/}
+        {/*    <Link*/}
+        {/*      className={s.link}*/}
+        {/*      href={EXTERNAL_LINK.GUIDE}*/}
+        {/*      target="_blank"*/}
+        {/*      rel="noopener"*/}
+        {/*    >*/}
+        {/*      Code of Conduct.*/}
+        {/*    </Link>*/}
+        {/*  </p>*/}
+        {/*</div>*/}
       </>
     ),
     [zipFile]

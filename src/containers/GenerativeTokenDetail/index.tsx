@@ -28,6 +28,7 @@ import MoreItemsSection from './MoreItemsSection';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
+import Link from '@components/Link';
 
 // const LOG_PREFIX = 'GenerativeTokenDetail';
 
@@ -147,6 +148,21 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             <Heading as="h4" fontWeight="semibold">
               {tokenName}
             </Heading>
+            <Text
+              size={'24'}
+              color={'black-40'}
+              style={{ marginBottom: '10px' }}
+            >
+              <Link
+                className={s.info_creatorLink}
+                href={`${ROUTE_PATH.PROFILE}/${tokenData?.project?.creatorAddr}`}
+              >
+                {tokenData?.project?.creatorProfile?.displayName ||
+                  formatAddress(
+                    tokenData?.project?.creatorProfile?.walletAddress || ''
+                  )}
+              </Link>
+            </Text>
             <div className={s.prices}>
               {isTokenListing && (
                 <div>

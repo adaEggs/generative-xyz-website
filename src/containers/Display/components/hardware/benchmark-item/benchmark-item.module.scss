@@ -36,6 +36,15 @@
     display: flex;
     font-size: rem(16px);
 
+    a {
+      text-decoration: none;
+
+      &:hover {
+        color: $white;
+        text-decoration: underline;
+      }
+    }
+
     @include tablet {
       font-size: rem(24px);
     }
@@ -53,6 +62,15 @@
       color: $white;
       font-weight: 700;
       position: relative;
+
+      a{
+        text-decoration: none;
+
+        &:hover {
+          color: $white;
+          text-decoration: underline;
+        }
+      }
 
       &::before {
         content: "";
@@ -119,6 +137,10 @@
           margin-top: rem(-12px);
         }
       }
+      &__target2{
+        color: rgb(255 255 255 / 80%);
+        font-weight: normal !important;
+      }
     }
   }
 
@@ -148,6 +170,12 @@
 
         &__yellow {
           background: linear-gradient(90deg, #e65c00 0%, #f9d423 100%);
+          border-radius: 100px;
+          transform: rotate(180deg);
+        }
+
+        &__depYellow {
+          background: linear-gradient(90deg, #D4E600 0%, #F92323 100%);
           border-radius: 100px;
           transform: rotate(180deg);
         }

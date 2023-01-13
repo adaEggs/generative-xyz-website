@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { MINT_STEPS } from '@constants/mint-generative';
 import { IMintStep } from '@interfaces/mint-generative';
 import cs from 'classnames';
+import Text from '@components/Text';
 import { MintGenerativeContext } from '@contexts/mint-generative-context';
 
 const StepHeader: React.FC = (): React.ReactElement => {
@@ -40,7 +41,15 @@ const StepHeader: React.FC = (): React.ReactElement => {
             </div>
             <div className={s.stepTitleWrapper}>
               <span className={s.stepActiveDot} />
-              <span className={s.stepTitle}>{step.title}</span>
+              <Text
+                as={'span'}
+                size={'18'}
+                color={'primary-color'}
+                fontWeight={'semibold'}
+                className={s.stepTitle}
+              >
+                {step.title}
+              </Text>
             </div>
           </li>
         ))}

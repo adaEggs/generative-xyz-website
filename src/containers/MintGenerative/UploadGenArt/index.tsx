@@ -1,14 +1,12 @@
 import s from './styles.module.scss';
 import Button from '@components/ButtonIcon';
 import DropFile from '@containers/MintGenerative/DropFile';
-import Link from '@components/Link';
 import { MintGenerativeContext } from '@contexts/mint-generative-context';
 import { LogLevel } from '@enums/log-level';
 import log from '@utils/logger';
 import { detectUsedLibs, processSandboxZipFile } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
 import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
-import { EXTERNAL_LINK } from '@constants/external-link';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import Image from 'next/image';
@@ -17,6 +15,8 @@ import { useRouter } from 'next/router';
 import { MintGenerativeStep } from '@enums/mint-generative';
 import { SandboxFileError } from '@enums/sandbox';
 import Text from '@components/Text';
+import Heading from '@components/Heading';
+import { SOCIALS } from '@constants/common';
 
 const LOG_PREFIX = 'UploadGenArt';
 
@@ -108,10 +108,15 @@ const UploadGenArt: React.FC = (): ReactElement => {
                   width={28}
                   height={28}
                   src={`${CDN_URL}/icons/ic-folder-code-28x28.svg`}
-                ></Image>
-                <span className={s.zipFileName}>
+                />
+                <Heading
+                  as={'h5'}
+                  fontWeight={'semibold'}
+                  color={'primary-color'}
+                  className={s.zipFileName}
+                >
                   {zipFile?.name} ({prettyPrintBytes(zipFile?.size || 0)})
-                </span>
+                </Heading>
               </div>
               <ul className={s.zipFileList}>
                 {fileList?.map((fileName: string) => (
@@ -122,8 +127,15 @@ const UploadGenArt: React.FC = (): ReactElement => {
                       width={18}
                       height={18}
                       src={`${CDN_URL}/icons/ic-code-18x18.svg`}
-                    ></Image>
-                    <span className={s.fileName}>{fileName}</span>
+                    />
+                    <Text
+                      as={'span'}
+                      size={'18'}
+                      color={'primary-color'}
+                      className={s.fileName}
+                    >
+                      {fileName}
+                    </Text>
                   </li>
                 ))}
               </ul>
@@ -195,14 +207,15 @@ const UploadGenArt: React.FC = (): ReactElement => {
     (): JSX.Element => (
       <>
         <div className={s.uploadWrapper}>
-          <h3 className={s.sectionTitle}>
-            Upload Genart
-            <SvgInset
-              size={18}
-              className={s.infoIcon}
-              svgUrl={`${CDN_URL}/icons/ic-info-circle-18x18.svg`}
-            ></SvgInset>
-          </h3>
+          <Heading as={'h5'} fontWeight={'normal'} className={s.sectionTitle}>
+            Upload file
+          </Heading>
+          <Text as={'p'} className={s.linkDocs} size={'16'} color={'black-60'}>
+            New artist?&nbsp;
+            <a href={SOCIALS.docs} target={'_blank'} rel="noreferrer">
+              Start here.
+            </a>
+          </Text>
           <div className={s.dropZoneWrapper}>
             <DropFile
               className={s.dropZoneContainer}
@@ -215,34 +228,34 @@ const UploadGenArt: React.FC = (): ReactElement => {
             />
           </div>
         </div>
-        <div className={s.disclaimerWrapper}>
-          <Text fontWeight="semibold" className={s.disclaimer}>
-            This is a space in which you can drop a .zip of your project and see
-            how it would behave when it will be minted on Generative. If your
-            artwork does not behave properly in the setup thumbnail image are,
-            it will not work after being minted. If you are new to the platform
-            please read our&nbsp;
-            <Link
-              className={s.link}
-              href={EXTERNAL_LINK.GUIDE}
-              target="_blank"
-              rel="noopener"
-            >
-              Guide to launch your NFT collection.
-            </Link>
-          </Text>
-          <Text fontWeight="medium" className={s.disclaimer}>
-            Please make sure that your project follows our&nbsp;
-            <Link
-              className={s.link}
-              href={EXTERNAL_LINK.GUIDE}
-              target="_blank"
-              rel="noopener"
-            >
-              Code of Conduct.
-            </Link>
-          </Text>
-        </div>
+        {/*<div className={s.disclaimerWrapper}>*/}
+        {/*  <Text fontWeight="semibold" className={s.disclaimer}>*/}
+        {/*    This is a space in which you can drop a .zip of your project and see*/}
+        {/*    how it would behave when it will be minted on Generative. If your*/}
+        {/*    artwork does not behave properly in the setup thumbnail image are,*/}
+        {/*    it will not work after being minted. If you are new to the platform*/}
+        {/*    please read our&nbsp;*/}
+        {/*    <Link*/}
+        {/*      className={s.link}*/}
+        {/*      href={EXTERNAL_LINK.DOCS}*/}
+        {/*      target="_blank"*/}
+        {/*      rel="noopener"*/}
+        {/*    >*/}
+        {/*      Guide to launch your NFT collection.*/}
+        {/*    </Link>*/}
+        {/*  </Text>*/}
+        {/*  <Text fontWeight="medium" className={s.disclaimer}>*/}
+        {/*    Please make sure that your project follows our&nbsp;*/}
+        {/*    <Link*/}
+        {/*      className={s.link}*/}
+        {/*      href={EXTERNAL_LINK.GUIDE}*/}
+        {/*      target="_blank"*/}
+        {/*      rel="noopener"*/}
+        {/*    >*/}
+        {/*      Code of Conduct.*/}
+        {/*    </Link>*/}
+        {/*  </Text>*/}
+        {/*</div>*/}
       </>
     ),
     [zipFile]

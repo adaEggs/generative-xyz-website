@@ -16,6 +16,7 @@
     position: absolute;
     left: 0;
   }
+
   &::-webkit-scrollbar-thumb {
     border-radius: 5px;
     background: rgba(0, 0, 0, 0.1);
@@ -100,4 +101,12 @@
 
 .loading_token {
   background-color: $white;
+}
+
+a.info_creatorLink {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
 }
