@@ -93,6 +93,7 @@ const ThumbnailPreview = (props: Props) => {
                     hash={previewToken ? '' : hash}
                     sandboxFiles={null}
                     onLoaded={handleIframeLoaded}
+                    className={s.thumbnail_iframe}
                   />
                 </ClientOnly>
               </div>
