@@ -31,7 +31,7 @@
   &_heading {
     color: #fff;
     font-style: normal;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 140%;
     display: flex;
     font-size: rem(16px);
@@ -60,7 +60,7 @@
       margin-left: rem(12px);
       padding-left: rem(12px);
       color: $white;
-      font-weight: 700;
+      font-weight: 600;
       position: relative;
 
       a{
@@ -113,7 +113,7 @@
 
     &_title {
       font-family: $font-paragraph;
-      font-weight: 700;
+      font-weight: 600;
       line-height: 140%;
       color: #fff;
       font-size: rem(12px);
@@ -197,7 +197,7 @@
     &_value {
       flex: 0 0 auto;
       font-style: normal;
-      font-weight: 700;
+      font-weight: 600;
       line-height: 140%;
       color: #fff;
       font-family: $font-paragraph;
