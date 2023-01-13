@@ -326,13 +326,9 @@ const ProjectIntroSection = ({ project }: Props) => {
     } else {
       return (
         <div className={s.info}>
-          <Heading
-            as="h5"
-            fontWeight="semibold"
-            className="text-secondary-color"
-          >
+          <Text size="18" fontWeight="medium" className="text-black-60">
             Recent Collection
-          </Heading>
+          </Text>
           <Heading as="h4" fontWeight="bold">
             <Skeleton width={200} height={44} isLoaded={!!project?.name} />
             {project?.name}

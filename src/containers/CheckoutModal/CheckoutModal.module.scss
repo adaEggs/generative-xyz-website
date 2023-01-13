@@ -1,5 +1,5 @@
-@import "src/styles/_themes/variables";
-@import "src/styles/_themes/mixins";
+@import 'src/styles/_themes/variables';
+@import 'src/styles/_themes/mixins';
 
 .CheckoutModal {
   &_title {
@@ -35,6 +35,7 @@
     margin-top: rem(12);
     border-radius: 4px;
     transition: all 0.3s ease-in-out;
+    gap: rem(10);
   }
 
   &_optionItemName {
@@ -60,7 +61,7 @@
       color: $white !important;
     }
 
-    :global(.btnEditQty:not([class*="disabled"]) svg) {
+    :global(.btnEditQty:not([class*='disabled']) svg) {
       color: $white;
     }
   }
