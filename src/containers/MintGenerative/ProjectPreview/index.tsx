@@ -22,6 +22,7 @@ const ProjectPreview = () => {
     formValues,
     currentStep,
     thumbnailPreviewUrl,
+    setAttributes,
   } = useContext(MintGenerativeContext);
   const sandboxRef = useRef<ISandboxRef>(null);
   const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>(
@@ -40,6 +41,7 @@ const ProjectPreview = () => {
         // @ts-ignore: Allow read iframe's window object
         if (iframe.contentWindow?.$generativeTraits) {
           // @ts-ignore: Allow read iframe's window object
+          setAttributes(iframe.contentWindow?.$generativeTraits);
         }
       }
     }

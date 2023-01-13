@@ -24,6 +24,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
   const router = useRouter();
   const [isProjectWork, setIsProjectWork] = useState(true);
   const {
+    attributes,
     formValues,
     filesSandbox,
     setFilesSandbox,
@@ -99,7 +100,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
     return (
       <>
         <div className={s.uploadSuccessWrapper}>
-          <div>
+          <div className={s.zipFileWrapper}>
             <div className={s.uploadFiles}>
               <div className={s.zipFileInfo}>
                 <Image
@@ -133,6 +134,24 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 Update zip file
               </Button>
             </div>
+          </div>
+          <div className={s.projectAttributeWrapper}>
+            <h3 className={s.attrTitle}>Properties of the current variation</h3>
+            <p className={s.attrDescription}>
+              These properties will change for each variation
+            </p>
+            {attributes && (
+              <div className={s.attrList}>
+                {Object.entries(attributes).map(([key, value]) => {
+                  return (
+                    <div key={key} className={s.attrItem}>
+                      <span className={s.attrKey}>{key}:</span>
+                      <span className={s.attrValue}>{value}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
           <div className={s.container}>
             <div className={s.checkboxWrapper}>
