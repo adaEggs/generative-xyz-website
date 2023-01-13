@@ -20,7 +20,17 @@ import {
 import { LoadingContext } from '@contexts/loading-context';
 
 type TText = {
-  as?: 'p' | 'span' | 'strong' | 'em' | 'sub' | 'h2' | 'h3' | 'h4' | 'a';
+  as?:
+    | 'p'
+    | 'span'
+    | 'strong'
+    | 'em'
+    | 'sub'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'a'
+    | 'label';
   fontWeight?: 'bold' | 'semibold' | 'medium' | 'regular' | 'light';
   style?: CSSProperties;
   size?: '12' | '14' | '16' | '18' | '20' | '24' | 'd1' | 'd2' | 'd3';
@@ -32,6 +42,7 @@ type TText = {
     type: 'heading' | 'random' | 'paragraph';
   };
   onClick?: () => void;
+  htmlFor?: string;
 };
 
 interface IProRefDom {

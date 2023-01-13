@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { MINT_STEPS } from '@constants/mint-generative';
 import { IMintStep } from '@interfaces/mint-generative';
 import cs from 'classnames';
+import Text from '@components/Text';
 import { MintGenerativeContext } from '@contexts/mint-generative-context';
 
 const StepHeader: React.FC = (): React.ReactElement => {
@@ -36,11 +37,27 @@ const StepHeader: React.FC = (): React.ReactElement => {
             onClick={() => handleNavigate(step)}
           >
             <div className={s.stepIndexWrapper}>
-              <span className={s.stepIndex}>{step.stepIndex}</span>
+              <Text
+                as="span"
+                size="24"
+                color={'black-40-solid'}
+                fontWeight={'bold'}
+                className={s.stepIndex}
+              >
+                {step.stepIndex}
+              </Text>
             </div>
             <div className={s.stepTitleWrapper}>
               <span className={s.stepActiveDot} />
-              <span className={s.stepTitle}>{step.title}</span>
+              <Text
+                as={'span'}
+                size={'18'}
+                color={'black-40-solid'}
+                fontWeight={'semibold'}
+                className={s.stepTitle}
+              >
+                {step.title}
+              </Text>
             </div>
           </li>
         ))}

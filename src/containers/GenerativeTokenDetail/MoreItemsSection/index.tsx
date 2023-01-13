@@ -6,6 +6,7 @@ import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { LogLevel } from '@enums/log-level';
+import { SelectOption } from '@interfaces/select-input';
 import { Token } from '@interfaces/token';
 import { getProjectItems } from '@services/project';
 import log from '@utils/logger';
@@ -26,22 +27,6 @@ const SORT_OPTIONS: Array<{ value: string; label: string }> = [
     value: 'minted-newest',
     label: 'Date minted: Newest',
   },
-  // {
-  //   value: 'price-asc',
-  //   label: 'Price: Low to High',
-  // },
-  // {
-  //   value: 'price-desc',
-  //   label: 'Price: High to Low',
-  // },
-  // {
-  //   value: 'rarity-asc',
-  //   label: 'Rarity: Low to High',
-  // },
-  // {
-  //   value: 'rarity-desc',
-  //   label: 'Rarity: High to Low',
-  // },
 ];
 
 type TMoreItemsSection = {
@@ -80,7 +65,7 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
 
   useEffect(() => {
     fetchProjectItems();
-  }, [sort]);
+  }, [genNFTAddr, sort]);
 
   return (
     <div className="position-relative">
@@ -96,7 +81,9 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
             options={SORT_OPTIONS}
             className={s.selectInput}
             classNamePrefix="select"
-            onChange={(val: SingleValue<any>) => setSort(val.value)}
+            onChange={(op: SingleValue<SelectOption>) => {
+              if (op) setSort(op.value);
+            }}
           />
         </div>
       </Stack>

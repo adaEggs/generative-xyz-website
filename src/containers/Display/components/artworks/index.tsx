@@ -85,7 +85,7 @@ export const Artworks = (): JSX.Element => {
               {/*  type="video/webm"*/}
               {/*/>*/}
               <source
-                src={`${CDN_URL}/pages/home/videos/square_v21.mp4`}
+                src={`${CDN_URL}/pages/home/videos/square3_1.mp4`}
                 type="video/mp4"
               />
             </video>

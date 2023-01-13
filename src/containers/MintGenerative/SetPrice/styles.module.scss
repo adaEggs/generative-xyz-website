@@ -5,17 +5,13 @@
     font-weight: 700;
     font-size: 12px;
     line-height: 20px;
-    color: $black-40;
+    color: $black-60-solid;
     margin-bottom: 0;
     text-transform: uppercase;
   }
 
   .description {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 26px;
     margin-top: 4px;
-    color: $black-100;
   }
 
   .divider {
@@ -34,7 +30,7 @@
     font-weight: 700;
     font-size: 12px;
     line-height: 20px;
-    color: $black-40;
+    color: $black-60-solid;
     display: block;
     margin-bottom: 6px;
     text-transform: uppercase;
@@ -43,28 +39,28 @@
   .input {
     background-color: $background;
     font-weight: 500;
-    font-size: 16px;
-    line-height: 26px;
     color: $black-100;
     padding: 11px 78px 11px 14px;
-    border-radius: 8px;
+    border-radius: 2px;
     width: 100%;
     resize: none;
+    line-height: (26/16);
+    @include calcFontAutoSmall(14px, 16px);
 
     &::placeholder {
       /* Chrome, Firefox, Opera, Safari 10.1+ */
-      color: $black-40;
+      color: $black-40-solid;
       opacity: 1; /* Firefox */
     }
 
     &:input-placeholder {
       /* Internet Explorer 10-11 */
-      color: $black-40;
+      color: $black-40-solid;
     }
 
     &::input-placeholder {
       /* Microsoft Edge */
-      color: $black-40;
+      color: $black-40-solid;
     }
   }
 
@@ -73,11 +69,8 @@
   }
 
   .inputDesc {
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 24px;
-    color: $black-60;
-    margin-top: 10px;
+    font-weight: 500;
+    margin-top: rem(10px);
   }
 
   .inputContainer {
@@ -90,20 +83,21 @@
       right: 14px;
       top: 11px;
       font-weight: 500;
-      font-size: 16px;
-      line-height: 26px;
       color: $black-100;
-      padding-left: 8px;
+      padding-left: 2px;
       border-left: 1px solid $black-20;
+
+      line-height: (26/16);
+      @include calcFontAutoSmall(14px, 16px);
     }
   }
 
   .error {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 400;
     color: $secondary-red;
     line-height: 20px;
-    margin-top: 6px;
+    margin-top: rem(6px);
   }
 }
 

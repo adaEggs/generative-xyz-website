@@ -42,10 +42,10 @@ export const SectionHero = (): JSX.Element => {
           muted
           playsInline
           preload="auto"
-          poster={`${CDN_URL}/pages/home/videos/video-hero-block-1-poster.jpeg`}
+          poster={`${CDN_URL}/pages/home/videos/poster-video.jpeg`}
         >
           <source
-            src={`${CDN_URL}/pages/home/videos/Video%20Top%20Banner%2016X9-compress.mp4`}
+            src={`${CDN_URL}/pages/home/videos/Block%201%201-1.mp4`}
             type="video/mp4"
           />
         </video>

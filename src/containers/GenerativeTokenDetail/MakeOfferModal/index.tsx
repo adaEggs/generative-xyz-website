@@ -10,8 +10,6 @@ import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
 import { Formik } from 'formik';
 import Select, { SingleValue } from 'react-select';
 import { SelectOption } from '@interfaces/select-input';
-import Link from 'next/link';
-import { getFaucetLink } from '@utils/chain';
 import dayjs from 'dayjs';
 import useContractOperation from '@hooks/useContractOperation';
 import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
@@ -20,6 +18,8 @@ import { WETH_ADDRESS } from '@constants/contract-address';
 import Web3 from 'web3';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
+import { Chain } from '@enums/chain';
+import { UNISWAP_PAGE } from '@constants/common';
 
 interface IFormValues {
   offerPrice: number;
@@ -47,6 +47,8 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
     tokenData,
     handleMakeTokenOffer,
     hideMakeOffergModal,
+    openSwapTokenModal,
+    showSwapTokenModal,
   } = useContext(GenerativeTokenDetailContext);
   const { call: getTokenBalance } = useContractOperation(
     GetTokenBalanceOperation,
@@ -55,19 +57,33 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
   const user = useSelector(getUserSelector);
   const [wethBalance, setWETHBalance] = useState<number | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isEnoughBalance, setIsEnoughBalance] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleClose = (): void => {
     hideMakeOffergModal();
   };
 
+  const handleAddFundByNetwork = (): void => {
+    if (NETWORK_CHAIN_ID === Chain.Mumbai) {
+      window.open(UNISWAP_PAGE);
+    } else {
+      openSwapTokenModal();
+    }
+  };
+
   const validateForm = (values: IFormValues) => {
     const errors: Record<string, string> = {};
+    setIsEnoughBalance(false);
 
     if (!values.offerPrice.toString()) {
       errors.offerPrice = 'Offer price is required.';
     } else if (values.offerPrice <= 0) {
       errors.offerPrice = 'Invalid number. Must be greater than 0.';
+    } else {
+      if (wethBalance) {
+        setIsEnoughBalance(wethBalance >= values.offerPrice);
+      }
     }
 
     return errors;
@@ -97,15 +113,17 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
   };
 
   useAsyncEffect(async () => {
-    setWETHBalance(null);
-    if (showMakeOfferModal) {
+    if (!showSwapTokenModal) {
+      setWETHBalance(null);
       const balance = await getTokenBalance({
         chainID: NETWORK_CHAIN_ID,
         erc20TokenAddress: WETH_ADDRESS,
       });
-      setWETHBalance(balance);
+      if (balance) {
+        setWETHBalance(parseFloat(Web3.utils.fromWei(balance.toString())));
+      }
     }
-  }, [user, tokenData, showMakeOfferModal]);
+  }, [user, tokenData, showSwapTokenModal]);
 
   if (!tokenData) {
     return <></>;
@@ -164,9 +182,7 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
                     <span>Balance</span>
                   </div>
                   <div className={s.balanceValue}>
-                    <span>
-                      {Web3.utils.fromWei(wethBalance.toString())} WETH
-                    </span>
+                    <span>{wethBalance} WETH</span>
                   </div>
                 </div>
               )}
@@ -180,7 +196,6 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
                 }}
                 validate={validateForm}
                 onSubmit={handleSubmit}
-                validateOnChange
                 enableReinitialize
               >
                 {({
@@ -238,24 +253,28 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
                       </div>
                       <div className={s.actionWrapper}>
                         <Button
-                          disabled={isProcessing}
+                          disabled={isProcessing || !isEnoughBalance}
                           className={s.submitBtn}
                           type="submit"
                         >
-                          {isProcessing ? 'Processing' : 'Make offer'}
+                          {isProcessing ? 'Processing...' : 'Make offer'}
                         </Button>
                       </div>
-                      <div className={s.addFundWrapper}>
-                        <p className={s.addFunddescription}>
-                          Not enough balance.
-                        </p>
-                        <Link
-                          className={s.addFundLink}
-                          href={getFaucetLink() ?? ''}
-                        >
-                          Add fund
-                        </Link>
-                      </div>
+                      {!isEnoughBalance && (
+                        <div className={s.addFundWrapper}>
+                          <p className={s.addFunddescription}>
+                            Not enough balance.
+                          </p>
+                          <Button
+                            type="button"
+                            variants="ghost"
+                            className={s.addFundLink}
+                            onClick={handleAddFundByNetwork}
+                          >
+                            Add WETH
+                          </Button>
+                        </div>
+                      )}
                       {errorMessage && (
                         <div className={s.errorWrapper}>
                           <div className={s.errorContainer}>

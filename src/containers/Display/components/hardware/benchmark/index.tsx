@@ -18,27 +18,34 @@ export const Benchmark = (): JSX.Element => {
         <div className="col-xl-6 offset-xl-3 col-md-10 offset-md-1 col-12">
           <BenchmarkItem
             className={s.hardWare_benchmark_item}
-            title={'GPU'}
-            isCine={false}
+            title={'Cosmic Reef #242'}
+            artLink={
+              'https://generator.artblocks.io/0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270/250000242'
+            }
+            color={'dep-yellow'}
+            artCreatorName={`Leo Villareal`}
+            target1={{ title: 'Generative Display', value: 59 }}
+            target2={{ title: 'Macbook Pro 16', value: 14 }}
+          />
+          <BenchmarkItem
+            className={s.hardWare_benchmark_item}
+            title={'Act of Emotion #200'}
+            artLink={
+              'https://generator.artblocks.io/0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270/364000200'
+            }
             color={'dep-blue'}
-            target1={{ title: 'Generative Display', value: 27478 }}
-            target2={{ title: 'Apple M1 8 core', value: 10433 }}
+            artCreatorName={`Kelly Milligan`}
+            target1={{ title: 'Generative Display', value: 58 }}
+            target2={{ title: 'Macbook Pro 16', value: 12 }}
           />
           <BenchmarkItem
             className={s.hardWare_benchmark_item}
             color={'yellow'}
-            isCine={true}
-            title={'Multi-core CPU'}
-            target1={{ title: 'Generative Display', value: 3945 }}
-            target2={{ title: 'Apple M1 8 core', value: 2040 }}
-          />
-          <BenchmarkItem
-            className={s.hardWare_benchmark_item}
-            title={'Single-core CPU'}
-            color={'blue'}
-            isCine={true}
-            target1={{ title: 'Generative Display', value: 502 }}
-            target2={{ title: 'Apple M1 8 core', value: 403 }}
+            title={'The Field #0'}
+            artLink={`https://generator.artblocks.io/0x99a9b7c1116f9ceeb1652de04d5969cce509b069/399000000`}
+            artCreatorName={`Beervangeer`}
+            target1={{ title: 'Generative Display', value: 58.5 }}
+            target2={{ title: 'Macbook Pro 16', value: 6 }}
           />
         </div>
       </div>

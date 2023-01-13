@@ -5,17 +5,17 @@ export const MINT_STEPS: Array<IMintStep> = [
   {
     path: MintGenerativeStep.UPLOAD_PROJECT,
     stepIndex: 1,
-    title: 'Upload Genart',
+    title: 'Submit your collection',
   },
   {
     path: MintGenerativeStep.PROJECT_DETAIL,
     stepIndex: 2,
-    title: 'Project Detail',
+    title: 'Collection information',
   },
   {
     path: MintGenerativeStep.SET_PRICE,
     stepIndex: 3,
-    title: 'Set price & mint',
+    title: 'Pricing and publishing',
   },
 ];
 

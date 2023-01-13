@@ -6,6 +6,7 @@
   transition: all 0.2s;
   display: inline-flex;
   align-items: center;
+  position: relative;
 
   &:disabled {
     cursor: not-allowed;
@@ -166,7 +167,7 @@
 
     &:disabled {
       background-color: $black-5;
-      color: $black-10;
+      color: $black-100;
     }
   }
 
@@ -180,7 +181,7 @@
 
     &:disabled {
       background-color: $black-5;
-      color: $black-10;
+      color: $black-100;
     }
   }
 
@@ -200,7 +201,7 @@
 
     &:disabled {
       border-color: $black-10;
-      color: $black-20;
+      color: $black-100;
     }
   }
 

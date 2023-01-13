@@ -43,6 +43,7 @@ import { ErrorMessage } from '@enums/error-message';
 import Web3 from 'web3';
 import GetAllowanceAmountOperation from '@services/contract-operations/erc20/get-allowance-amount';
 import CancelListingTokenOperation from '@services/contract-operations/generative-marketplace/cancel-listing-token';
+import DepositWETHOperation from '@services/contract-operations/weth/deposit-weth';
 
 const LOG_PREFIX = 'GenerativeTokenDetailContext';
 
@@ -68,7 +69,6 @@ export interface IGenerativeTokenDetailContext {
   tokenID: string;
   tokenOffers: Array<TokenOffer>;
   isTokenOwner: boolean;
-  isTokenCreator: boolean;
   isTokenListing: boolean;
   showMakeOfferModal: boolean;
   openMakeOfferModal: () => void;
@@ -84,6 +84,10 @@ export interface IGenerativeTokenDetailContext {
   showTransferTokenModal: boolean;
   openTransferTokenModal: () => void;
   hideTransferTokenModal: () => void;
+  showSwapTokenModal: boolean;
+  openSwapTokenModal: () => void;
+  hideSwapTokenModal: () => void;
+  handleDepositToken: (_amount: string) => Promise<void>;
 }
 
 const initialValue: IGenerativeTokenDetailContext = {
@@ -124,7 +128,6 @@ const initialValue: IGenerativeTokenDetailContext = {
   tokenID: '',
   tokenOffers: [],
   isTokenOwner: false,
-  isTokenCreator: false,
   isTokenListing: false,
   showMakeOfferModal: false,
   openMakeOfferModal: () => {
@@ -152,6 +155,14 @@ const initialValue: IGenerativeTokenDetailContext = {
   hideTransferTokenModal: () => {
     return;
   },
+  showSwapTokenModal: false,
+  openSwapTokenModal: () => {
+    return;
+  },
+  hideSwapTokenModal: () => {
+    return;
+  },
+  handleDepositToken: _ => new Promise(r => r()),
 };
 
 export const GenerativeTokenDetailContext =
@@ -165,6 +176,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   const [showListingModal, setShowListingModal] = useState(false);
   const [showMakeOfferModal, setShowMakeOfferModal] = useState(false);
   const [showTransferTokenModal, setShowTransferTokenModal] = useState(false);
+  const [showSwapTokenModal, setShowSwapTokenModal] = useState(false);
   const [showCancelListingModal, setShowCancelListingModal] = useState<{
     open: boolean;
     offer: TokenOffer | null;
@@ -175,7 +187,6 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   const [marketplaceStats, setMarketplaceStats] =
     useState<MarketplaceStats | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   const [txHash, setTxHash] = useState<string | null>(null);
   const user = useSelector(getUserSelector);
   const { call: listToken } = useContractOperation(
@@ -220,6 +231,10 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   );
   const { call: cancelListingToken } = useContractOperation(
     CancelListingTokenOperation,
+    true
+  );
+  const { call: depositWETH } = useContractOperation(
+    DepositWETHOperation,
     true
   );
   const router = useRouter();
@@ -279,6 +294,20 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   const hideTransferTokenModal = () => {
     // Reset state
     setShowTransferTokenModal(false);
+    setTxHash(null);
+
+    // Recover scroll behavior
+    document.body.style.overflow = 'auto';
+  };
+
+  const openSwapTokenModal = () => {
+    setShowSwapTokenModal(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const hideSwapTokenModal = () => {
+    // Reset state
+    setShowSwapTokenModal(false);
     setTxHash(null);
 
     // Recover scroll behavior
@@ -511,6 +540,20 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     fetchListingTokenOffers();
   };
 
+  const handleDepositToken = async (amount: string): Promise<void> => {
+    const tx = await depositWETH({
+      amount,
+      chainID: NETWORK_CHAIN_ID,
+    });
+
+    if (!tx) {
+      log('Deposit weth transaction error.', LogLevel.Error, LOG_PREFIX);
+      throw Error(ErrorMessage.DEFAULT);
+    }
+
+    hideSwapTokenModal();
+  };
+
   const fetchTokenData = async (): Promise<void> => {
     try {
       if (tokenID) {
@@ -586,11 +629,6 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     return user.walletAddress === tokenData?.ownerAddr;
   }, [tokenData, user]);
 
-  const isTokenCreator = useMemo(() => {
-    if (!user.walletAddress || !tokenData?.creator?.walletAddress) return false;
-    return user.walletAddress === tokenData?.creator?.walletAddress;
-  }, [tokenData, user]);
-
   const isTokenListing = useMemo(() => {
     if (!user.walletAddress || !listingOffers || listingOffers.length === 0)
       return false;
@@ -630,7 +668,6 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
       tokenID,
       tokenOffers,
       isTokenOwner,
-      isTokenCreator,
       isTokenListing,
       showMakeOfferModal,
       openMakeOfferModal,
@@ -646,6 +683,10 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
       showTransferTokenModal,
       openTransferTokenModal,
       hideTransferTokenModal,
+      showSwapTokenModal,
+      openSwapTokenModal,
+      hideSwapTokenModal,
+      handleDepositToken,
     };
   }, [
     tokenData,
@@ -669,7 +710,6 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     tokenID,
     tokenOffers,
     isTokenOwner,
-    isTokenCreator,
     isTokenListing,
     showMakeOfferModal,
     openMakeOfferModal,
@@ -685,6 +725,10 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     showTransferTokenModal,
     openTransferTokenModal,
     hideTransferTokenModal,
+    showSwapTokenModal,
+    openSwapTokenModal,
+    hideSwapTokenModal,
+    handleDepositToken,
   ]);
 
   return (

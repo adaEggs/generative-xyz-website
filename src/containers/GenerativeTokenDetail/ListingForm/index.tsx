@@ -17,7 +17,7 @@ const ListingForm: React.FC = (): React.ReactElement => {
     useContext(GenerativeTokenDetailContext);
   const [userEarning, setUserEarning] = useState('');
 
-  const validateForm = (values: IFormValues) => {
+  const validateForm = (values: IFormValues): Record<string, string> => {
     const errors: Record<string, string> = {};
     setUserEarning('');
 

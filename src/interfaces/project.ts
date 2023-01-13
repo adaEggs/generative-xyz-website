@@ -41,4 +41,13 @@ export type Project = {
   creatorProfile?: User;
   mintedTime: number;
   stats: MarketplaceStats;
+  traitStat: TraitStats[];
+};
+
+export type TraitStats = {
+  traitName: string;
+  traitValuesStat: {
+    value: string;
+    rarity: number;
+  }[];
 };

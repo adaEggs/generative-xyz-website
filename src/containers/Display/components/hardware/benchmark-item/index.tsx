@@ -4,14 +4,14 @@ import { useState, useEffect, useRef, useContext } from 'react';
 import { gsap } from 'gsap';
 import { PAGE_ENTER } from '@constants/common';
 import { Anim } from '@animations/anim';
-import { CDN_URL } from '@constants/config';
 import { LoadingContext } from '@contexts/loading-context';
 
 interface IProp {
   title: string;
   className: string;
-  isCine: boolean;
-  color: 'yellow' | 'blue' | 'dep-blue';
+  artLink: string;
+  artCreatorName: string;
+  color: 'yellow' | 'blue' | 'dep-blue' | 'dep-yellow';
   target1: { title: string; value: number };
   target2: { title: string; value: number };
 }
@@ -29,9 +29,10 @@ export const BenchmarkItem = ({
   className,
   color,
   title,
+  artLink,
   target1,
   target2,
-  isCine = true,
+  artCreatorName,
 }: IProp): JSX.Element => {
   const comp = useRef<HTMLDivElement>(null);
 
@@ -72,9 +73,13 @@ export const BenchmarkItem = ({
           duration: 1.8,
           ease: 'power3.inOut',
           onUpdate: () => {
-            setValueTarget1(Math.floor(refData.current.target1.value));
+            setValueTarget1(
+              Math.round(refData.current.target1.value * 10) / 10
+            );
             setPersenTarget1(
-              Math.floor((refData.current.target1.value / target1.value) * 100)
+              Math.round(
+                (refData.current.target1.value / target1.value) * 100 * 10
+              ) / 10
             );
           },
         });
@@ -84,9 +89,13 @@ export const BenchmarkItem = ({
           ease: 'power3.inOut',
           delay: 0.2,
           onUpdate: () => {
-            setValueTarget2(Math.floor(refData.current.target2.value));
+            setValueTarget2(
+              Math.round(refData.current.target2.value * 10) / 10
+            );
             setPersenTarget2(
-              Math.floor((refData.current.target2.value / target1.value) * 100)
+              Math.round(
+                (refData.current.target2.value / target1.value) * 100 * 10
+              ) / 10
             );
           },
         });
@@ -97,29 +106,13 @@ export const BenchmarkItem = ({
   return (
     <div ref={comp} className={classNames(s.benchmark, className)}>
       <div className={s.benchmark_header}>
-        <h5 className={classNames(s.benchmark_heading)}>{title}</h5>
+        <h5 className={classNames(s.benchmark_heading)}>
+          <a href={artLink} target="_blank" rel="noreferrer">
+            {title}
+          </a>
+        </h5>
         <div className={classNames(s.benchmark_heading_tool)}>
-          {isCine ? (
-            <>
-              <img
-                src={`${CDN_URL}/pages/home/icons/cin.png`}
-                width={20}
-                height={20}
-                alt="Cinebench R20"
-              />
-              Cinebench R20
-            </>
-          ) : (
-            <>
-              <img
-                src={`${CDN_URL}/pages/home/icons/gfx.png`}
-                width={20}
-                height={20}
-                alt="GFXBench 4.0"
-              />
-              GFXBench 4.0 - Car Chase Offscreen
-            </>
-          )}
+          Artist Credit:&nbsp;{artCreatorName}
         </div>
       </div>
 
@@ -131,12 +124,14 @@ export const BenchmarkItem = ({
               className={classNames(
                 s.benchmark_val_border_span,
                 color === 'yellow' && s.benchmark_val_border_span__yellow,
+                color === 'dep-yellow' &&
+                  s.benchmark_val_border_span__depYellow,
                 color === 'blue' && s.benchmark_val_border_span__blue,
                 color === 'dep-blue' && s.benchmark_val_border_span__depBlue
               )}
             />
           </div>
-          <div className={s.benchmark_val_value}>{valueTarget1}</div>
+          <div className={s.benchmark_val_value}>{valueTarget1} FPS</div>
         </div>
         <p
           className={classNames(
@@ -164,10 +159,14 @@ export const BenchmarkItem = ({
               s.benchmark_val_value__target2
             )}
           >
-            {valueTarget2}
+            {valueTarget2} FPS
           </div>
         </div>
-        <p className={s.benchmark_target_title}>{target2.title}</p>
+        <p
+          className={`${s.benchmark_target_title} ${s.benchmark_target_title__target2}`}
+        >
+          {target2.title}
+        </p>
       </div>
     </div>
   );

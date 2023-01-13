@@ -22,6 +22,7 @@ const ProjectPreview = () => {
     formValues,
     currentStep,
     thumbnailPreviewUrl,
+    setAttributes,
   } = useContext(MintGenerativeContext);
   const sandboxRef = useRef<ISandboxRef>(null);
   const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>(
@@ -40,6 +41,7 @@ const ProjectPreview = () => {
         // @ts-ignore: Allow read iframe's window object
         if (iframe.contentWindow?.$generativeTraits) {
           // @ts-ignore: Allow read iframe's window object
+          setAttributes(iframe.contentWindow?.$generativeTraits);
         }
       }
     }
@@ -101,7 +103,7 @@ const ProjectPreview = () => {
                 alt="variation icon"
                 width={14}
                 height={14}
-                src={`${CDN_URL}/icons/ic-variation.svg`}
+                src={`${CDN_URL}/icons/ic-shuffle-24x24.svg`}
               />
             </Button>
             {canPlay && (
@@ -172,7 +174,7 @@ const ProjectPreview = () => {
                 )}
               </h3>
               <div className={s.mintingInfo}>
-                {formValues.mintPrice ? (
+                {formValues.mintPrice && currentStep > 2 ? (
                   <span
                     className={s.mintPrice}
                   >{`${formValues.mintPrice} ETH`}</span>

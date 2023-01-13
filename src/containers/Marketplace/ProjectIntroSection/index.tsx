@@ -1,4 +1,3 @@
-import Accordion from '@components/Accordion';
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
@@ -18,7 +17,6 @@ import { IGetProjectDetailResponse } from '@interfaces/api/project';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
 import { Token } from '@interfaces/token';
-import { getUserSelector } from '@redux/user/selector';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
@@ -30,7 +28,6 @@ import _get from 'lodash/get';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useSelector } from 'react-redux';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
@@ -43,11 +40,11 @@ type Props = {
 
 const ProjectIntroSection = ({ project }: Props) => {
   const { getWalletBalance } = useContext(WalletContext);
-  const user = useSelector(getUserSelector);
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
   const [marketplaceStats, setMarketplaceStats] =
     useState<MarketplaceStats | null>(null);
+  const [showMore, _] = useState(false);
   const mintedTime = project?.mintedTime;
   let mintDate = dayjs();
   if (mintedTime) {
@@ -160,7 +157,6 @@ const ProjectIntroSection = ({ project }: Props) => {
             {project?.name}
           </Heading>
           <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
-            {'By: '}
             <Link
               className={s.info_creatorLink}
               href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
@@ -187,8 +183,10 @@ const ProjectIntroSection = ({ project }: Props) => {
                 {isMinting && 'Minting...'}
                 {!isMinting && project?.mintPrice && (
                   <>
-                    {'Mint iteration now'} Ξ
-                    {Web3.utils.fromWei(project?.mintPrice, 'ether')}
+                    {`Mint now Ξ${Web3.utils.fromWei(
+                      project?.mintPrice,
+                      'ether'
+                    )}`}
                   </>
                 )}
               </ButtonIcon>
@@ -199,9 +197,9 @@ const ProjectIntroSection = ({ project }: Props) => {
           <div className={s.stats}>
             <div className={s.stats_item}>
               <Text size="12" fontWeight="bold">
-                Items
+                Outputs
               </Text>
-              <Heading as="h4" fontWeight="bold">
+              <Heading as="h6" fontWeight="bold">
                 {project?.mintingInfo?.index}
               </Heading>
             </div>
@@ -209,7 +207,7 @@ const ProjectIntroSection = ({ project }: Props) => {
               <Text size="12" fontWeight="bold">
                 Total Volume
               </Text>
-              <Heading as="h4" fontWeight="bold">
+              <Heading as="h6" fontWeight="bold">
                 {convertToETH(marketplaceStats?.totalTradingVolumn || '')}
               </Heading>
             </div>
@@ -217,46 +215,71 @@ const ProjectIntroSection = ({ project }: Props) => {
               <Text size="12" fontWeight="bold">
                 Floor price
               </Text>
-              <Heading as="h4" fontWeight="bold">
+              <Heading as="h6" fontWeight="bold">
                 {convertToETH(marketplaceStats?.floorPrice || '')}
               </Heading>
             </div>
-            {marketplaceStats?.listedPercent !== 0 && (
-              <div className={s.stats_item}>
-                <Text size="12" fontWeight="bold">
-                  Percent Listed
-                </Text>
-                <Heading as="h4" fontWeight="bold">
-                  {marketplaceStats?.listedPercent}%
-                </Heading>
-              </div>
-            )}
 
             <div className={s.stats_item}>
               <Text size="12" fontWeight="bold">
                 royalty
               </Text>
-              <Heading as="h4" fontWeight="bold">
+              <Heading as="h6" fontWeight="bold">
                 {(project?.royalty || 0) / 100}%
               </Heading>
             </div>
           </div>
-          {/* {offerAvailable && (
-            <div className={s.CTA}>
-              <ButtonIcon sizes="large" variants="outline">
-                Make collection offer
-              </ButtonIcon>
-              <Text
-                size="12"
-                fontWeight="medium"
-                className="text-secondary-color"
-              >
-                Make offer for any NFT from this collection
+          <div>
+            <Text size="18" fontWeight="medium" color="black-06">
+              Created date: {mintedDate}
+            </Text>
+            <Text
+              size="18"
+              fontWeight="medium"
+              color="black-06"
+              className={s.owner}
+            >
+              Collected by:{' '}
+              <Text as="span" size="18" fontWeight="semibold">
+                {project?.stats?.uniqueOwnerCount === 1
+                  ? `${project?.stats?.uniqueOwnerCount} owner`
+                  : `${project?.stats?.uniqueOwnerCount}+ owners`}
               </Text>
-            </div>
-          )} */}
-          <div className={s.accordion_list}>
-            {project?.desc && (
+            </Text>
+            <Text
+              size="14"
+              color="black-40"
+              fontWeight="bold"
+              className="text-uppercase"
+            >
+              description
+            </Text>
+            <Text
+              size="18"
+              fontWeight="medium"
+              className={s.token_description}
+              style={{ WebkitLineClamp: showMore ? 'unset' : '7' }}
+            >
+              {project?.desc}
+            </Text>
+            {/* {!showMore ? (
+              <Text
+                as="span"
+                onClick={() => setShowMore(!showMore)}
+                fontWeight="semibold"
+              >
+                See more
+              </Text>
+            ) : (
+              <Text
+                as="span"
+                onClick={() => setShowMore(!showMore)}
+                fontWeight="semibold"
+              >
+                See less
+              </Text>
+            )} */}
+            {/* {project?.desc && (
               <Accordion
                 header={'DESCRIPTION'}
                 content={
@@ -314,7 +337,7 @@ const ProjectIntroSection = ({ project }: Props) => {
                   {mintedDate}
                 </Text>
               }
-            ></Accordion>
+            ></Accordion> */}
           </div>
           <div className="divider"></div>
           <div className={s.license}>
@@ -327,19 +350,14 @@ const ProjectIntroSection = ({ project }: Props) => {
     } else {
       return (
         <div className={s.info}>
-          <Heading
-            as="h5"
-            fontWeight="semibold"
-            className="text-secondary-color"
-          >
+          <Text size="18" fontWeight="medium" className="text-black-60">
             Recent Collection
-          </Heading>
-          <Heading as="h4" fontWeight="bold">
+          </Text>
+          <Heading as="h4" fontWeight="semibold">
             <Skeleton width={200} height={44} isLoaded={!!project?.name} />
             {project?.name}
           </Heading>
           <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
-            {'By: '}
             <Link
               className={s.info_creatorLink}
               href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
@@ -391,6 +409,33 @@ const ProjectIntroSection = ({ project }: Props) => {
               </Link>
             )}
           </div>
+          <div className="">
+            <Text size="18" fontWeight="medium" color="black-06">
+              Created date: {mintedDate}
+            </Text>
+            <Text
+              size="18"
+              fontWeight="medium"
+              color="black-06"
+              className={s.owner}
+            >
+              Collected by:{' '}
+              <Text as="span" size="18" fontWeight="semibold">
+                {project?.stats?.uniqueOwnerCount === 1
+                  ? `${project?.stats?.uniqueOwnerCount} owner`
+                  : `${project?.stats?.uniqueOwnerCount}+ owners`}
+              </Text>
+              {/* <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
+                {tokenData?.owner?.displayName ||
+                  formatAddress(
+                    tokenData?.ownerAddr ||
+                      tokenData?.owner?.walletAddress ||
+                      ''
+                  )}
+              </Link>
+              {isTokenOwner && ' (by you)'} */}
+            </Text>
+          </div>
           {project?.desc && project?.desc.length > 0 ? (
             <div className={s.description}>
               <Text size="18" fontWeight="medium">
@@ -431,7 +476,7 @@ const ProjectIntroSection = ({ project }: Props) => {
   return (
     <div className={s.wrapper} style={{ marginBottom: '100px' }}>
       {renderLeftContent()}
-      <div className={isProjectDetailPage ? `h-divider` : ''}></div>
+      <div></div>
       <div>
         <ThumbnailPreview data={projectDetail as Token} allowVariantion />
       </div>

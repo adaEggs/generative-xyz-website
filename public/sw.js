@@ -9,6 +9,10 @@ async function fetchUrl(url, file) {
 }
 
 self.addEventListener("fetch", async (event) => {
+  if (!event.request.referrer) {
+    return;
+  }
+
   try {
     const url = new URL(event.request.referrer);
     const id = url.searchParams.get("id");
@@ -34,7 +38,6 @@ self.addEventListener("fetch", async (event) => {
       }
     }
   } catch (e) {
-    console.log(event);
     console.log(e);
   }
 })
@@ -83,7 +86,7 @@ self.addEventListener("message", async (event) => {
 // Cache
 const CACHE_VERSION = 'v1.0.12';
 const CURRENT_CACHES = {
-  assets: `assets-cache-v${CACHE_VERSION}`,
+  assets: `assets-cache-${CACHE_VERSION}`,
 };
 
 self.addEventListener("activate", (event) => {

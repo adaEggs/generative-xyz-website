@@ -118,9 +118,7 @@ const DropFile: React.FC<IProps> = ({
                 </>
               ) : (
                 <p className={s.dropZoneDescription}>
-                  {isDragActive
-                    ? 'Dragging'
-                    : "Drag 'n' drop your ZIP file here."}
+                  {isDragActive ? 'Dragging' : 'Upload your ZIP file here.'}
                 </p>
               )}
             </>
