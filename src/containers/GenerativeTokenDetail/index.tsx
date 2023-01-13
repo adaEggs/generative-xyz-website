@@ -148,6 +148,8 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     setIsBuying(false);
   };
 
+  const checkLines = tokenDescription.split(/\r\n|\r|\n/).length;
+
   return (
     <>
       <Container>
@@ -287,22 +289,26 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 >
                   {tokenDescription}
                 </Text>
-                {!showMore ? (
-                  <Text
-                    as="span"
-                    onClick={() => setShowMore(!showMore)}
-                    fontWeight="semibold"
-                  >
-                    See more
-                  </Text>
-                ) : (
-                  <Text
-                    as="span"
-                    onClick={() => setShowMore(!showMore)}
-                    fontWeight="semibold"
-                  >
-                    See less
-                  </Text>
+                {checkLines > 3 && (
+                  <>
+                    {!showMore ? (
+                      <Text
+                        as="span"
+                        onClick={() => setShowMore(!showMore)}
+                        fontWeight="semibold"
+                      >
+                        See more
+                      </Text>
+                    ) : (
+                      <Text
+                        as="span"
+                        onClick={() => setShowMore(!showMore)}
+                        fontWeight="semibold"
+                      >
+                        See less
+                      </Text>
+                    )}
+                  </>
                 )}
               </div>
               {tokenData?.attributes && tokenData?.attributes?.length > 0 && (

@@ -11,7 +11,7 @@
   padding-right: rem(60px);
   position: relative;
   height: fit-content;
-  max-height: 610px;
+  max-height: rem(950px);
 
   &::-webkit-scrollbar {
     width: 5px;
@@ -136,9 +136,9 @@
 }
 
 a.info_creatorLink {
-    text-decoration: none;
+  text-decoration: none;
 
-    &:hover {
-      text-decoration: underline;
-    }
+  &:hover {
+    text-decoration: underline;
+  }
 }
