@@ -5,6 +5,7 @@ import { CDN_URL } from '@constants/config';
 import Select, { SingleValue } from 'react-select';
 import { SelectOption } from '@interfaces/select-input';
 import cs from 'classnames';
+import { debounce } from 'lodash';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -63,7 +64,9 @@ const TokenTopFilter: React.FC<IProps> = ({
         </div>
         <input
           defaultValue={keyword}
-          onBlur={e => onKeyWordChange(e.target.value)}
+          onChange={debounce(e => {
+            onKeyWordChange(e.target.value);
+          }, 500)}
           className={s.input}
           placeholder={placeholderSearch}
           type="text"

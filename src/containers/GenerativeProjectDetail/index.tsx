@@ -69,7 +69,7 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
             limit: FETCH_NUM,
             page: page,
             sort,
-            tokenID: searchToken,
+            keyword: searchToken,
           }
         );
         if (res.result) {
@@ -98,7 +98,7 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
 
   useEffect(() => {
     fetchProjectItems();
-  }, [projectInfo, page, sort]);
+  }, [projectInfo, page, sort, searchToken]);
 
   return (
     <section>
