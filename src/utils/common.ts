@@ -8,3 +8,7 @@ export const isBrowser = (): boolean => {
 export const isProduction = (): boolean => {
   return APP_ENV === ApplicationEnvironment.PRODUCTION;
 };
+
+export const isStaging = (): boolean => {
+  return APP_ENV === ApplicationEnvironment.STAGING;
+};

@@ -1,7 +1,7 @@
-import { isProduction } from '@utils/common';
+import { isProduction, isStaging } from '@utils/common';
 
 export const ROUTE_PATH = {
-  HOME: '/',
+  HOME: isStaging() ? 'https://generative.xyz' : '/',
   MARKETPLACE: isProduction()
     ? 'https://testnet.generative.xyz/collect'
     : '/collect',
@@ -13,5 +13,5 @@ export const ROUTE_PATH = {
   PROFILE: '/profile',
   EDIT_PROFILE: `/profile/edit`,
   SANDBOX: '/sandbox',
-  DISPLAY: '/display',
+  DISPLAY: isStaging() ? 'https://generative.xyz' : '/display',
 };
