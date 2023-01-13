@@ -28,6 +28,7 @@ import MoreItemsSection from './MoreItemsSection';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
+import SwapTokenModal from './SwapTokenModal';
 
 // const LOG_PREFIX = 'GenerativeTokenDetail';
 
@@ -297,6 +298,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       <MakeOfferModal />
       <CancelListingModal />
       <TransferTokenModal />
+      <SwapTokenModal />
     </>
   );
 };

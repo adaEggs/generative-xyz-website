@@ -10,8 +10,6 @@ import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
 import { Formik } from 'formik';
 import Select, { SingleValue } from 'react-select';
 import { SelectOption } from '@interfaces/select-input';
-import Link from 'next/link';
-import { getFaucetLink } from '@utils/chain';
 import dayjs from 'dayjs';
 import useContractOperation from '@hooks/useContractOperation';
 import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
@@ -47,6 +45,7 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
     tokenData,
     handleMakeTokenOffer,
     hideMakeOffergModal,
+    openSwapTokenModal,
   } = useContext(GenerativeTokenDetailContext);
   const { call: getTokenBalance } = useContractOperation(
     GetTokenBalanceOperation,
@@ -98,14 +97,12 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
 
   useAsyncEffect(async () => {
     setWETHBalance(null);
-    if (showMakeOfferModal) {
-      const balance = await getTokenBalance({
-        chainID: NETWORK_CHAIN_ID,
-        erc20TokenAddress: WETH_ADDRESS,
-      });
-      setWETHBalance(balance);
-    }
-  }, [user, tokenData, showMakeOfferModal]);
+    const balance = await getTokenBalance({
+      chainID: NETWORK_CHAIN_ID,
+      erc20TokenAddress: WETH_ADDRESS,
+    });
+    setWETHBalance(balance);
+  }, [user, tokenData]);
 
   if (!tokenData) {
     return <></>;
@@ -249,12 +246,13 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
                         <p className={s.addFunddescription}>
                           Not enough balance.
                         </p>
-                        <Link
+                        <Button
+                          variants="ghost"
                           className={s.addFundLink}
-                          href={getFaucetLink() ?? ''}
+                          onClick={openSwapTokenModal}
                         >
-                          Add fund
-                        </Link>
+                          Add WETH
+                        </Button>
                       </div>
                       {errorMessage && (
                         <div className={s.errorWrapper}>
