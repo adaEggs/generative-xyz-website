@@ -187,8 +187,10 @@ const ProjectIntroSection = ({ project }: Props) => {
                 {isMinting && 'Minting...'}
                 {!isMinting && project?.mintPrice && (
                   <>
-                    {'Mint iteration now'} Ξ
-                    {Web3.utils.fromWei(project?.mintPrice, 'ether')}
+                    {`Mint now Ξ${Web3.utils.fromWei(
+                      project?.mintPrice,
+                      'ether'
+                    )}`}
                   </>
                 )}
               </ButtonIcon>
@@ -241,20 +243,6 @@ const ProjectIntroSection = ({ project }: Props) => {
               </Heading>
             </div>
           </div>
-          {/* {offerAvailable && (
-            <div className={s.CTA}>
-              <ButtonIcon sizes="large" variants="outline">
-                Make collection offer
-              </ButtonIcon>
-              <Text
-                size="12"
-                fontWeight="medium"
-                className="text-secondary-color"
-              >
-                Make offer for any NFT from this collection
-              </Text>
-            </div>
-          )} */}
           <div className={s.accordion_list}>
             {project?.desc && (
               <Accordion

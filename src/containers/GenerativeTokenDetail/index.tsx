@@ -27,10 +27,8 @@ import MakeOfferModal from './MakeOfferModal';
 import MoreItemsSection from './MoreItemsSection';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
-import s from './styles.module.scss';
 import SwapTokenModal from './SwapTokenModal';
-
-// const LOG_PREFIX = 'GenerativeTokenDetail';
+import s from './styles.module.scss';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -219,7 +217,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             <div className={s.accordions}>
               {!!tokenDescription && (
                 <Accordion
-                  header={'DESCRIPTION'}
+                  header={'Description'}
                   content={tokenDescription}
                 ></Accordion>
               )}

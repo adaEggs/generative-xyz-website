@@ -303,7 +303,7 @@ const Header: React.FC<IProp> = ({
                         variants={theme === 'dark' ? 'secondary' : 'primary'}
                         onClick={handleConnectWallet}
                       >
-                        Connect wallet
+                        {isConnecting ? 'Connecting...' : 'Connect wallet'}
                       </ButtonIcon>
                     </div>
                   )}
