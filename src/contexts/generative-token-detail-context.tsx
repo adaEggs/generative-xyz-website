@@ -68,7 +68,6 @@ export interface IGenerativeTokenDetailContext {
   tokenID: string;
   tokenOffers: Array<TokenOffer>;
   isTokenOwner: boolean;
-  isTokenCreator: boolean;
   isTokenListing: boolean;
   showMakeOfferModal: boolean;
   openMakeOfferModal: () => void;
@@ -127,7 +126,6 @@ const initialValue: IGenerativeTokenDetailContext = {
   tokenID: '',
   tokenOffers: [],
   isTokenOwner: false,
-  isTokenCreator: false,
   isTokenListing: false,
   showMakeOfferModal: false,
   openMakeOfferModal: () => {
@@ -610,11 +608,6 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     return user.walletAddress === tokenData?.ownerAddr;
   }, [tokenData, user]);
 
-  const isTokenCreator = useMemo(() => {
-    if (!user.walletAddress || !tokenData?.creator?.walletAddress) return false;
-    return user.walletAddress === tokenData?.creator?.walletAddress;
-  }, [tokenData, user]);
-
   const isTokenListing = useMemo(() => {
     if (!user.walletAddress || !listingOffers || listingOffers.length === 0)
       return false;
@@ -654,7 +647,6 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
       tokenID,
       tokenOffers,
       isTokenOwner,
-      isTokenCreator,
       isTokenListing,
       showMakeOfferModal,
       openMakeOfferModal,
@@ -696,7 +688,6 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     tokenID,
     tokenOffers,
     isTokenOwner,
-    isTokenCreator,
     isTokenListing,
     showMakeOfferModal,
     openMakeOfferModal,

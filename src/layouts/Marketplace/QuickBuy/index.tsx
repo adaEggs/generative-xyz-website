@@ -37,7 +37,7 @@ const QuickBuy: React.FC<IProp> = ({ isShow = false }): React.ReactElement => {
           </Heading>
           <div className={s.quickBuy_right}>
             <div className={s.quickBuy_right_price}>
-              <Text size={'14'} color={'black-06'}>
+              <Text size={'14'} color={'black-60'}>
                 From
               </Text>
               <Text size={'18'} fontWeight={'semibold'} color={'black-002'}>

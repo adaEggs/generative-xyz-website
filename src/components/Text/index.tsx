@@ -32,6 +32,7 @@ type TText = {
     type: 'heading' | 'random' | 'paragraph';
   };
   onClick?: () => void;
+  maxLine?: number;
 };
 
 interface IProRefDom {

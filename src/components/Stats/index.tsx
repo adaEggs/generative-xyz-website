@@ -13,6 +13,7 @@ type TStats = {
         info: string;
         value: string;
         link: string;
+        rarity?: string;
       }[]
     | null;
 };
@@ -31,15 +32,20 @@ const Stats = ({ data }: TStats) => {
             >
               {item.info}
             </Text>
-            <Stack direction="horizontal" gap={2}>
+            <Stack direction="horizontal" gap={3}>
               {!!item?.link && (
                 <Link href={item.link} target="_blank">
                   <SvgInset svgUrl={`${CDN_URL}/icons/ic-link.svg`} />
                 </Link>
               )}
-              <Text size="18" fontWeight="semibold">
+              <Text size="18" fontWeight="medium" color="primary-color">
                 {item.value}
               </Text>
+              {!!item?.rarity && (
+                <Text size="18" fontWeight="medium" color="black-60">
+                  {item?.rarity}
+                </Text>
+              )}
             </Stack>
           </div>
         ))}

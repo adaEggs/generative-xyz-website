@@ -3,13 +3,15 @@
   grid-template-columns: rem(420px) 1px 1fr;
   color: $black-100;
   margin-top: rem(72);
+  margin-bottom: rem(100px);
 }
 
 .itemInfo {
   overflow-y: scroll;
   padding-right: rem(60px);
-  max-height: rem(610px);
   position: relative;
+  height: fit-content;
+  max-height: 610px;
 
   &::-webkit-scrollbar {
     width: 5px;
@@ -20,6 +22,17 @@
   &::-webkit-scrollbar-thumb {
     border-radius: 5px;
     background: rgba(0, 0, 0, 0.1);
+  }
+
+  .view_collection {
+    font-size: rem(20px);
+    line-height: rem(30px);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -64,7 +77,7 @@
   display: flex;
   align-items: center;
   gap: rem(32px);
-  margin-top: rem(10px);
+  margin-top: rem(24px);
   margin-bottom: rem(24px);
 
   p {
@@ -78,11 +91,30 @@
   align-items: center;
   flex-wrap: wrap;
   gap: rem(10px);
-  margin-bottom: rem(32px);
+  margin-bottom: rem(30px);
 
   button {
     width: calc(50% - 5px);
     justify-content: center;
+  }
+}
+
+.owner {
+  margin-bottom: rem(24px);
+}
+
+.token_description {
+  display: -webkit-box;
+  // -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  + span {
+    text-decoration: underline;
+    cursor: pointer;
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
