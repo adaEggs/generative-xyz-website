@@ -13,7 +13,9 @@
     height: 100%;
   }
 }
-
+.thumbnail_iframe {
+  height: calc(100vh - #{rem(260px)});
+}
 .actionButtons {
   justify-content: center;
   margin-top: 15px;

@@ -12,6 +12,7 @@ import { SandboxSWEventType } from '@enums/service-worker';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { generateID } from '@utils/generate-data';
+import cs from 'classnames';
 
 const LOG_PREFIX = 'SandboxPreview';
 
@@ -21,13 +22,21 @@ interface IProps {
   hash: string | null;
   onLoaded?: () => void;
   showIframe?: boolean;
+  className?: string;
 }
 
 const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
   (props: IProps, ref: ForwardedRef<ISandboxRef>) => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const workerReg = useRef<ServiceWorkerRegistration | null>(null);
-    const { sandboxFiles, rawHtml, hash, onLoaded, showIframe = true } = props;
+    const {
+      sandboxFiles,
+      rawHtml,
+      hash,
+      onLoaded,
+      showIframe = true,
+      className,
+    } = props;
     const [id, setId] = useState<string>('0');
     const [workerIns, setWorkerIns] =
       useState<ServiceWorkerRegistration | null>(null);
@@ -138,7 +147,7 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
     }, [id, hash, showIframe]);
 
     return (
-      <div className={s.sandboxPreview}>
+      <div className={cs(s.sandboxPreview, className)}>
         {showIframe && (
           <iframe
             ref={iframeRef}
