@@ -10,9 +10,9 @@
 
 .info {
   position: relative;
-  &_creatorLink{
+  &_creatorLink {
     text-decoration: none;
-    &:hover{
+    &:hover {
       text-decoration: underline;
     }
   }
@@ -55,7 +55,7 @@
   flex-wrap: wrap;
 
   .mint_btn {
-    min-width: rem(218px);  
+    min-width: rem(218px);
     justify-content: center;
   }
 
@@ -117,7 +117,8 @@
 
 .stats {
   display: flex;
-  gap: rem(32px);
+  column-gap: rem(32px);
+  row-gap: rem(6px);
   margin-bottom: rem(38px);
   flex-wrap: wrap;
 
@@ -130,8 +131,12 @@
 }
 
 .license {
-  margin-top: rem(30px);
+  margin-top: rem(24px);
   margin-bottom: rem(14px);
+}
+
+.token_description {
+  margin-bottom: rem(24px);
 }
 
 .description {
@@ -143,4 +148,8 @@
 .loading_project {
   background-color: $white;
   max-height: rem(550px);
+}
+
+.owner {
+  margin-bottom: rem(24px);
 }
