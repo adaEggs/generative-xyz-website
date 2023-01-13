@@ -24,7 +24,6 @@ export const Benchmark = (): JSX.Element => {
             }
             color={'dep-yellow'}
             artCreatorName={`Leo Villareal`}
-            artCreatorLink={`https://www.artblocks.io/user/0x960881ac22e23ad3c64291ad45a5de9cb113351a`}
             target1={{ title: 'Generative Display', value: 59 }}
             target2={{ title: 'Macbook Pro 16', value: 14 }}
           />
@@ -36,9 +35,8 @@ export const Benchmark = (): JSX.Element => {
             }
             color={'dep-blue'}
             artCreatorName={`Kelly Milligan`}
-            artCreatorLink={`https://www.artblocks.io/user/0x3b1383e08e7022ad9c12a62902d0fd6a65f350da`}
             target1={{ title: 'Generative Display', value: 58 }}
-            target2={{ title: 'Apple M1 8 core', value: 12 }}
+            target2={{ title: 'Macbook Pro 16', value: 12 }}
           />
           <BenchmarkItem
             className={s.hardWare_benchmark_item}
@@ -46,9 +44,8 @@ export const Benchmark = (): JSX.Element => {
             title={'The Field #0'}
             artLink={`https://generator.artblocks.io/0x99a9b7c1116f9ceeb1652de04d5969cce509b069/399000000`}
             artCreatorName={`Beervangeer`}
-            artCreatorLink={`https://www.artblocks.io/user/0x35f64560c51c8772f75186a8931929589b7c8d80`}
             target1={{ title: 'Generative Display', value: 58.5 }}
-            target2={{ title: 'Apple M1 8 core', value: 6 }}
+            target2={{ title: 'Macbook Pro 16', value: 6 }}
           />
         </div>
       </div>

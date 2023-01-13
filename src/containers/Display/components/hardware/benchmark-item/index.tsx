@@ -11,7 +11,6 @@ interface IProp {
   className: string;
   artLink: string;
   artCreatorName: string;
-  artCreatorLink: string;
   color: 'yellow' | 'blue' | 'dep-blue' | 'dep-yellow';
   target1: { title: string; value: number };
   target2: { title: string; value: number };
@@ -34,7 +33,6 @@ export const BenchmarkItem = ({
   target1,
   target2,
   artCreatorName,
-  artCreatorLink,
 }: IProp): JSX.Element => {
   const comp = useRef<HTMLDivElement>(null);
 
@@ -114,10 +112,7 @@ export const BenchmarkItem = ({
           </a>
         </h5>
         <div className={classNames(s.benchmark_heading_tool)}>
-          Artist Credit:&nbsp;
-          <a href={artCreatorLink} target="_blank" rel="noreferrer">
-            {artCreatorName}
-          </a>
+          Artist Credit:&nbsp;{artCreatorName}
         </div>
       </div>
 
