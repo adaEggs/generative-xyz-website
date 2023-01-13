@@ -41,19 +41,15 @@ export const LoadingProvider: React.FC<IProp> = ({
   >('PAGE_LOADING');
   const { pathname } = useRouter();
 
-  // console.log('___init', 'LoadingContext');
-
   const registerLoading = (): void => {
     if (typeof window !== undefined) {
       counter.current += 1;
-      // console.log('___+', n);
     }
   };
 
   const unRegisterLoading = (): void => {
     counter.current -= 1;
     counter.current = Math.max(counter.current, 0);
-    // console.log('___-', n);
   };
 
   const getCounter = (): number => {

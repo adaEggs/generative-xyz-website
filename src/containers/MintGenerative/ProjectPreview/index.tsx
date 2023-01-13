@@ -174,7 +174,7 @@ const ProjectPreview = () => {
                 )}
               </h3>
               <div className={s.mintingInfo}>
-                {formValues.mintPrice ? (
+                {formValues.mintPrice && currentStep > 2 ? (
                   <span
                     className={s.mintPrice}
                   >{`${formValues.mintPrice} ETH`}</span>

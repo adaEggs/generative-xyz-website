@@ -25,3 +25,4 @@ export const PAGE_LOADING = 'PAGE_LOADING';
 export const PAGE_ENTER = 'PAGE_ENTER';
 
 export const METAMASK_DOWNLOAD_PAGE = 'https://metamask.io/download/';
+export const UNISWAP_PAGE = 'https://app.uniswap.org/#/swap';

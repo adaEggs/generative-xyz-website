@@ -25,12 +25,10 @@ import CancelListingModal from './CancelListingModal';
 import ListingTokenModal from './ListingTokenModal';
 import MakeOfferModal from './MakeOfferModal';
 import MoreItemsSection from './MoreItemsSection';
-import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
+import SwapTokenModal from './SwapTokenModal';
 import s from './styles.module.scss';
-
-// const LOG_PREFIX = 'GenerativeTokenDetail';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -126,7 +124,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           info: attr.trait_type,
           value: attr.value.toString(),
           link: '',
-          rarity: `${rarityValue}%`,
+          rarity: rarityValue ? `${rarityValue}%` : '--%',
         };
       });
     }
@@ -287,9 +285,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   className={s.token_description}
                   style={{ WebkitLineClamp: showMore ? 'unset' : '3' }}
                 >
-                  {tokenDescription} Lorem ipsum dolor sit amet consectetur
-                  adipisicing elit. Placeat accusantium voluptates molestias
-                  magnam eveniet vero mollitia ut minus rerum laborum.
+                  {tokenDescription}
                 </Text>
                 {!showMore ? (
                   <Text
