@@ -43,6 +43,7 @@ import { ErrorMessage } from '@enums/error-message';
 import Web3 from 'web3';
 import GetAllowanceAmountOperation from '@services/contract-operations/erc20/get-allowance-amount';
 import CancelListingTokenOperation from '@services/contract-operations/generative-marketplace/cancel-listing-token';
+import DepositWETHOperation from '@services/contract-operations/weth/deposit-weth';
 
 const LOG_PREFIX = 'GenerativeTokenDetailContext';
 
@@ -86,6 +87,7 @@ export interface IGenerativeTokenDetailContext {
   showSwapTokenModal: boolean;
   openSwapTokenModal: () => void;
   hideSwapTokenModal: () => void;
+  handleDepositToken: (_amount: string) => Promise<void>;
 }
 
 const initialValue: IGenerativeTokenDetailContext = {
@@ -160,6 +162,7 @@ const initialValue: IGenerativeTokenDetailContext = {
   hideSwapTokenModal: () => {
     return;
   },
+  handleDepositToken: _ => new Promise(r => r()),
 };
 
 export const GenerativeTokenDetailContext =
@@ -228,6 +231,10 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   );
   const { call: cancelListingToken } = useContractOperation(
     CancelListingTokenOperation,
+    true
+  );
+  const { call: depositWETH } = useContractOperation(
+    DepositWETHOperation,
     true
   );
   const router = useRouter();
@@ -533,6 +540,20 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     fetchListingTokenOffers();
   };
 
+  const handleDepositToken = async (amount: string): Promise<void> => {
+    const tx = await depositWETH({
+      amount,
+      chainID: NETWORK_CHAIN_ID,
+    });
+
+    if (!tx) {
+      log('Deposit weth transaction error.', LogLevel.Error, LOG_PREFIX);
+      throw Error(ErrorMessage.DEFAULT);
+    }
+
+    hideSwapTokenModal();
+  };
+
   const fetchTokenData = async (): Promise<void> => {
     try {
       if (tokenID) {
@@ -665,6 +686,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
       showSwapTokenModal,
       openSwapTokenModal,
       hideSwapTokenModal,
+      handleDepositToken,
     };
   }, [
     tokenData,
@@ -706,6 +728,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     showSwapTokenModal,
     openSwapTokenModal,
     hideSwapTokenModal,
+    handleDepositToken,
   ]);
 
   return (

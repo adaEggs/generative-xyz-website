@@ -7,6 +7,11 @@ import React, { useContext, useState } from 'react';
 import s from './styles.module.scss';
 import { Formik } from 'formik';
 import { WalletContext } from '@contexts/wallet-context';
+import { toast } from 'react-hot-toast';
+import log from '@utils/logger';
+import { LogLevel } from '@enums/log-level';
+
+const LOG_PREFIX = 'SwapTokenModal';
 
 enum SwapWay {
   ETH_WETH = 'ETH_WETH',
@@ -14,16 +19,14 @@ enum SwapWay {
 }
 
 interface IFormValues {
-  fromToken: number;
-  toToken: number;
+  amount: number;
 }
 
 const SwapTokenModal: React.FC = (): React.ReactElement => {
-  const { showSwapTokenModal, hideSwapTokenModal } = useContext(
-    GenerativeTokenDetailContext
-  );
+  const { showSwapTokenModal, hideSwapTokenModal, handleDepositToken } =
+    useContext(GenerativeTokenDetailContext);
   const { walletBalance } = useContext(WalletContext);
-  const [isProcessing] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [swapWay] = useState<SwapWay>(SwapWay.ETH_WETH);
 
   const handleClose = (): void => {
@@ -33,23 +36,25 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
   const validateForm = (values: IFormValues): Record<string, string> => {
     const errors: Record<string, string> = {};
 
-    if (!values.fromToken.toString()) {
-      errors.fromToken = 'Value is required.';
-    } else if (values.fromToken < 0) {
-      errors.fromToken = 'Invalid number. Must be greater than 0.';
-    }
-
-    if (!values.toToken.toString()) {
-      errors.toToken = 'Value is required.';
-    } else if (values.fromToken < 0) {
-      errors.toToken = 'Invalid number. Must be greater than 0.';
+    if (!values.amount.toString()) {
+      errors.amount = 'Value is required.';
+    } else if (values.amount < 0) {
+      errors.amount = 'Invalid number. Must be greater than 0.';
     }
 
     return errors;
   };
 
-  const handleSubmit = async (): Promise<void> => {
-    //
+  const handleSubmit = async (values: IFormValues): Promise<void> => {
+    try {
+      setIsProcessing(true);
+      await handleDepositToken(values.amount.toString());
+    } catch (err: unknown) {
+      toast.error((err as Error).message);
+      log('failed to swap token', LogLevel.Error, LOG_PREFIX);
+    } finally {
+      setIsProcessing(false);
+    }
   };
 
   if (!showSwapTokenModal) {
@@ -81,7 +86,7 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
                 <Formik
                   key="swapTokenForm"
                   initialValues={{
-                    fromToken: 0,
+                    amount: 0,
                     toToken: 0,
                   }}
                   validate={validateForm}
@@ -100,17 +105,17 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
                     <form onSubmit={handleSubmit}>
                       <div className={cs(s.swapTokenWrapper)}>
                         <div className={s.formItem}>
-                          <label className={s.label} htmlFor="fromToken">
+                          <label className={s.label} htmlFor="amount">
                             Swap <sup className={s.requiredTag}>*</sup>
                           </label>
                           <div className={s.inputContainer}>
                             <input
-                              id="fromToken"
+                              id="amount"
                               type="number"
-                              name="fromToken"
+                              name="amount"
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              value={values.fromToken}
+                              value={values.amount}
                               className={s.input}
                               placeholder="0"
                             />
@@ -118,8 +123,8 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
                               {swapWay === SwapWay.ETH_WETH ? 'ETH' : 'WETH'}
                             </div>
                           </div>
-                          {errors.fromToken && touched.fromToken && (
-                            <p className={s.error}>{errors.fromToken}</p>
+                          {errors.amount && touched.amount && (
+                            <p className={s.error}>{errors.amount}</p>
                           )}
                           {swapWay === SwapWay.ETH_WETH && (
                             <p className={s.inputDesc}>
@@ -129,19 +134,18 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
                         </div>
                         <div className={s.swapActionWrapper}></div>
                         <div className={s.formItem}>
-                          <label className={s.label} htmlFor="toToken">
+                          <label className={s.label}>
                             For <sup className={s.requiredTag}>*</sup>
                           </label>
                           <div className={s.inputContainer}>
                             <input
-                              id="toToken"
                               type="number"
-                              name="toToken"
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              value={values.toToken}
+                              value={values.amount}
                               className={s.input}
                               placeholder="0"
+                              disabled
                             />
                             <div className={s.inputPostfix}>
                               {swapWay === SwapWay.ETH_WETH ? 'WETH' : 'ETH'}
@@ -164,7 +168,7 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
                           disabled={isProcessing}
                           className={s.actionBtn}
                         >
-                          Confirm
+                          {isProcessing ? 'Processing' : 'Confirm'}
                         </Button>
                       </div>
                     </form>

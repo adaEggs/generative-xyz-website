@@ -152,7 +152,7 @@ const TransferTokenModal: React.FC = () => {
                             className={s.submitBtn}
                             type="submit"
                           >
-                            {isProcessing ? 'Processing' : 'Confirm'}
+                            {isProcessing ? 'Processing...' : 'Confirm'}
                           </Button>
                         </div>
                       </div>
