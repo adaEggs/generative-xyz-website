@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import MintGenerative from '@containers/MintGenerative';
 import MarketplaceLayout from '@layouts/Marketplace';
+import { CDN_URL } from '@constants/config';
 
 const MintGenerativePage: NextPage = () => {
   return (
@@ -19,7 +20,7 @@ export async function getServerSideProps() {
         title: 'Generative | Upload Project',
         description:
           'Launch your NFT collection on the chain where it’ll last forever.',
-        image: null,
+        image: `${CDN_URL}/images/upload.jpg`,
       },
     },
   };
