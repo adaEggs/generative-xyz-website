@@ -1,6 +1,6 @@
 .sandboxPreview {
   width: 100%;
-  height: 100%;
+  height: calc(100vh - #{rem(260px)});
 
   .iframeContainer {
     width: 100%;
