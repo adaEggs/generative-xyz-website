@@ -51,13 +51,12 @@ const BenefitPage = (): JSX.Element => {
               Artists are no longer just users, they become co-owners—helping to
               build and shape the platform.
               <br />
-              <br />
-              100% of platform fees are trustlessly sent to the Generative DAO
-              treasury that’s controlled exclusively by the community via
-              governance— meaning a proposal can be created by anyone. The
-              community will vote to fund a new artist, hire a curation board,
-              organize an IRL exhibition, or do anything else to promote the
-              generative art movement.
+              <br />A portion of the platform fees are trustlessly sent to the
+              Generative DAO treasury that’s controlled exclusively by the
+              community via governance— meaning a proposal can be created by
+              anyone. The community will vote to fund a new artist, hire a
+              curation board, organize an IRL exhibition, or do anything else to
+              promote the generative art movement.
             </ImageContent>
             <ImageContent
               heading={`Everlasting artwork.`}
