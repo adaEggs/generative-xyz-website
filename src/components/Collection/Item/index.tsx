@@ -82,7 +82,7 @@ const CollectionItem = ({
           />
         </div>
         <div className={s.collectionCard_info}>
-          {!data.owner ? (
+          {data.owner ? (
             <CreatorInfo creator={data.owner as User} />
           ) : (
             <CreatorInfo creator={{ walletAddress: data.ownerAddr } as User} />
