@@ -103,7 +103,7 @@ const ProjectPreview = () => {
                 alt="variation icon"
                 width={14}
                 height={14}
-                src={`${CDN_URL}/icons/ic-variation.svg`}
+                src={`${CDN_URL}/icons/ic-shuffle-24x24.svg`}
               />
             </Button>
             {canPlay && (

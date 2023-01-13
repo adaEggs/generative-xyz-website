@@ -12,3 +12,16 @@ const BenefitTemplate: NextPage = () => {
 };
 
 export default BenefitTemplate;
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      seoInfo: {
+        title: 'Generative - Create',
+        description:
+          'An open and permissionless platform for artists to create and monetize their work',
+        image: null,
+      },
+    },
+  };
+}

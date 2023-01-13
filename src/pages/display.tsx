@@ -12,3 +12,15 @@ const DisplayPage: NextPage = () => {
 };
 
 export default DisplayPage;
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      seoInfo: {
+        title: 'Generative',
+        description: 'Bring your generative art to life',
+        image: null,
+      },
+    },
+  };
+}

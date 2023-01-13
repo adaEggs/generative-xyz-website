@@ -11,3 +11,15 @@ const MarketplacePage: NextPage = () => {
 };
 
 export default MarketplacePage;
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      seoInfo: {
+        title: 'Generative - Collect',
+        description: 'Unique artwork at your fingertips to mint and buy',
+        image: null,
+      },
+    },
+  };
+}
