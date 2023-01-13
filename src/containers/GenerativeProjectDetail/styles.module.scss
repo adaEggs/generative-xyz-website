@@ -78,14 +78,33 @@
 
 .filterWrapper {
   margin-top: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  .filter_buy {
+    display: flex;
+    min-width: rem(200px);
+    justify-content: space-between;
+  }
+
+  .filter_sort {
+    flex: 1;
+  }
 }
 
 .tokenListWrapper {
   position: relative;
-  min-height: rem(400px);
+  min-height: rem(584px);
 }
 
 .tokenList {
   padding-top: 48px;
   padding-bottom: 90px;
+}
+
+.projectDetail_loading {
+  // position: absolute;
+  max-height: rem(510px);
+  top: rem(70px);
 }

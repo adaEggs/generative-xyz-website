@@ -17,6 +17,7 @@ export interface IGetProjectItemsQuery extends IPagingParams {
   attributes?: string[];
   minPrice?: string;
   maxPrice?: string;
+  tokenID?: string;
 }
 
 export interface IGetProjectItemsResponse extends IPagingResponse {

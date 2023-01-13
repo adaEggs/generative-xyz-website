@@ -15,7 +15,13 @@ import { Stack } from 'react-bootstrap';
 import Web3 from 'web3';
 import s from './styles.module.scss';
 
-const CollectionItem = ({ data }: { data: Token }) => {
+const CollectionItem = ({
+  data,
+  filterBuyNow = false,
+}: {
+  data: Token;
+  filterBuyNow?: boolean;
+}) => {
   const tokenID = useMemo(() => data.name.split('#')[1], [data.name]);
   const [listingTokenPrice, setListingTokenPrice] = useState('0');
   const { currentUser } = useContext(ProfileContext);
@@ -53,6 +59,8 @@ const CollectionItem = ({ data }: { data: Token }) => {
     handleFetchListingTokenPrice();
   }, [data.genNFTAddr]);
 
+  if (filterBuyNow && listingTokenPrice === '0') return null;
+
   return (
     <Link
       href={`${ROUTE_PATH.GENERATIVE}/${getProjectIdFromTokenId(
@@ -74,7 +82,7 @@ const CollectionItem = ({ data }: { data: Token }) => {
           />
         </div>
         <div className={s.collectionCard_info}>
-          {data.owner ? (
+          {!data.owner ? (
             <CreatorInfo creator={data.owner as User} />
           ) : (
             <CreatorInfo creator={{ walletAddress: data.ownerAddr } as User} />

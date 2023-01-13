@@ -14,8 +14,9 @@ export const CreatorInfo = ({ creator }: IProps): JSX.Element => {
       <div className={s.useInfo_avatar}>
         <Avatar
           imgSrcs={convertIpfsToHttp(creator.avatar)}
-          width={34}
-          height={34}
+          fill
+          // width={34}
+          // height={34}
         />
       </div>
       <div className={s.userInfo_displayName}>
