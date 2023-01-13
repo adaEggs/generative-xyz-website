@@ -232,7 +232,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
           </Heading>
           <Text as={'p'} className={s.linkDocs} size={'16'} color={'black-60'}>
             New artist?&nbsp;
-            <a href={SOCIALS.docs} target={'_blank'} rel="noreferrer">
+            <a href={SOCIALS.docsForArtist} target={'_blank'} rel="noreferrer">
               Start here.
             </a>
           </Text>

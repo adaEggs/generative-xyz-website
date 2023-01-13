@@ -18,6 +18,7 @@ export const SOCIALS = {
   discord: 'https://discord.com/invite/eUrvfKKTxP',
   twitter: 'https://twitter.com/generative_xyz',
   docs: 'https://docs.generative.xyz/',
+  docsForArtist: 'https://docs.generative.xyz/artists',
 };
 
 export const PAGE_LOADED = 'PAGE_LOADED';
