@@ -124,7 +124,7 @@ const ThumbnailPreview = (props: Props) => {
                     alt="play icon"
                     width={16}
                     height={16}
-                    src={`${CDN_URL}/icons/ic-variation.svg`}
+                    src={`${CDN_URL}/icons/ic-shuffle-24x24.svg`}
                   ></Image>
                 </Button>
               )}

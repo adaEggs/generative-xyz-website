@@ -42,7 +42,7 @@ type Props = {
 };
 
 const ProjectIntroSection = ({ project }: Props) => {
-  const { walletBalance } = useContext(WalletContext);
+  const { getWalletBalance } = useContext(WalletContext);
   const user = useSelector(getUserSelector);
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
@@ -84,6 +84,8 @@ const ProjectIntroSection = ({ project }: Props) => {
       if (!project) {
         return;
       }
+
+      const walletBalance = await getWalletBalance();
 
       if (
         walletBalance <

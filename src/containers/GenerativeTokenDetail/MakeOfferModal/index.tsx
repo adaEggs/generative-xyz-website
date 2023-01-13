@@ -10,14 +10,14 @@ import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
 import { Formik } from 'formik';
 import Select, { SingleValue } from 'react-select';
 import { SelectOption } from '@interfaces/select-input';
-import Link from 'next/link';
-import { getFaucetLink } from '@utils/chain';
 import dayjs from 'dayjs';
 import useContractOperation from '@hooks/useContractOperation';
 import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
 import useAsyncEffect from 'use-async-effect';
 import { WETH_ADDRESS } from '@constants/contract-address';
 import Web3 from 'web3';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
 
 interface IFormValues {
   offerPrice: number;
@@ -45,11 +45,13 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
     tokenData,
     handleMakeTokenOffer,
     hideMakeOffergModal,
+    openSwapTokenModal,
   } = useContext(GenerativeTokenDetailContext);
   const { call: getTokenBalance } = useContractOperation(
     GetTokenBalanceOperation,
     false
   );
+  const user = useSelector(getUserSelector);
   const [wethBalance, setWETHBalance] = useState<number | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -94,14 +96,13 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
   };
 
   useAsyncEffect(async () => {
+    setWETHBalance(null);
     const balance = await getTokenBalance({
       chainID: NETWORK_CHAIN_ID,
       erc20TokenAddress: WETH_ADDRESS,
     });
-    if (balance) {
-      setWETHBalance(balance);
-    }
-  }, []);
+    setWETHBalance(balance);
+  }, [user, tokenData]);
 
   if (!tokenData) {
     return <></>;
@@ -148,7 +149,7 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
               </div>
             </div>
             <div className={s.balanceWrapper}>
-              {wethBalance ? (
+              {wethBalance && (
                 <div className={s.balanceItem}>
                   <div className={s.balanceLabel}>
                     <Image
@@ -165,10 +166,6 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
                     </span>
                   </div>
                 </div>
-              ) : (
-                <p className={s.balanceGuide}>
-                  Connect wallet to see your balance
-                </p>
               )}
             </div>
             <div className={s.listingForm}>
@@ -249,12 +246,13 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
                         <p className={s.addFunddescription}>
                           Not enough balance.
                         </p>
-                        <Link
+                        <Button
+                          variants="ghost"
                           className={s.addFundLink}
-                          href={getFaucetLink() ?? ''}
+                          onClick={openSwapTokenModal}
                         >
-                          Add fund
-                        </Link>
+                          Add WETH
+                        </Button>
                       </div>
                       {errorMessage && (
                         <div className={s.errorWrapper}>

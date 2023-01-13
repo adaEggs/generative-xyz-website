@@ -1,0 +1,21 @@
+.switch_btn {
+  > input {
+    height: 24px;
+    width: 42px !important;
+    margin-top: 0 !important;
+    background-color: $black-40;
+    border: none;
+    background-image: url('https://cdn.generative.xyz/icons/ic-circle.svg') !important;
+    background-size: 24px 16px;
+
+    &:checked {
+      background-color: $black-100 !important;
+      border-color: $black-100 !important;
+    }
+
+    &:focus {
+      background-color: $black-40;
+      border-color: $black-40;
+    }
+  }
+}

@@ -20,6 +20,7 @@ import {
   WalletOperationReturn,
 } from '@interfaces/wallet';
 import { WalletError, WalletErrorCode } from '@enums/wallet-error';
+import { WalletEvent } from '@enums/wallet-event';
 
 const LOG_PREFIX = 'WalletManager';
 
@@ -354,6 +355,21 @@ export class WalletManager {
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.contracts[contractAddress]!;
+  }
+
+  // Wallet events
+  registerEvent(eventName: WalletEvent, handler: (args: unknown) => void) {
+    const metamaskProvider = this.getMetamaskProvider();
+    if (metamaskProvider) {
+      metamaskProvider.on(eventName, handler);
+    }
+  }
+
+  unregisterEvent(eventName: WalletEvent, handler: (args: unknown) => void) {
+    const metamaskProvider = this.getMetamaskProvider();
+    if (metamaskProvider) {
+      metamaskProvider.removeListener(eventName, handler);
+    }
   }
 
   /**

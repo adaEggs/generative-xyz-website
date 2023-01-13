@@ -22,8 +22,9 @@ const LOG_PREFIX = 'UploadGenArt';
 
 const UploadGenArt: React.FC = (): ReactElement => {
   const router = useRouter();
-  const [isProjectWork, setIsProjectWork] = useState(false);
+  const [isProjectWork, setIsProjectWork] = useState(true);
   const {
+    attributes,
     formValues,
     filesSandbox,
     setFilesSandbox,
@@ -99,7 +100,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
     return (
       <>
         <div className={s.uploadSuccessWrapper}>
-          <div>
+          <div className={s.zipFileWrapper}>
             <div className={s.uploadFiles}>
               <div className={s.zipFileInfo}>
                 <Image
@@ -146,6 +147,24 @@ const UploadGenArt: React.FC = (): ReactElement => {
               </Button>
             </div>
           </div>
+          <div className={s.projectAttributeWrapper}>
+            <h3 className={s.attrTitle}>Properties of the current variation</h3>
+            <p className={s.attrDescription}>
+              These properties will change for each variation
+            </p>
+            {attributes && (
+              <div className={s.attrList}>
+                {Object.entries(attributes).map(([key, value]) => {
+                  return (
+                    <div key={key} className={s.attrItem}>
+                      <span className={s.attrKey}>{key}:</span>
+                      <span className={s.attrValue}>{value}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           <div className={s.container}>
             <div className={s.checkboxWrapper}>
               <Checkbox
@@ -171,34 +190,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
             </div>
           </div>
         </div>
-        {/* <div className={s.stepFooterWrapper}>
-          <footer className={s.stepFooter}>
-            <div className={s.container}>
-              <div className={s.checkboxWrapper}>
-                <Checkbox
-                  checked={isProjectWork}
-                  onClick={handleChangeIsProjectWork}
-                  className={s.checkbox}
-                  id="workProperly"
-                  label="My Generative Token works properly."
-                />
-              </div>
-              <div className={s.actionWrapper}>
-                <Button
-                  disabled={!isProjectWork || !filesSandbox}
-                  onClick={handleGoToNextStep}
-                  className={s.nextBtn}
-                  sizes="small"
-                >
-                  <SvgInset
-                    size={18}
-                    svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
-                  />
-                </Button>
-              </div>
-            </div>
-          </footer>
-        </div> */}
       </>
     );
   };

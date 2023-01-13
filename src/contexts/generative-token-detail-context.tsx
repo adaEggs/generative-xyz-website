@@ -84,6 +84,9 @@ export interface IGenerativeTokenDetailContext {
   showTransferTokenModal: boolean;
   openTransferTokenModal: () => void;
   hideTransferTokenModal: () => void;
+  showSwapTokenModal: boolean;
+  openSwapTokenModal: () => void;
+  hideSwapTokenModal: () => void;
 }
 
 const initialValue: IGenerativeTokenDetailContext = {
@@ -152,6 +155,13 @@ const initialValue: IGenerativeTokenDetailContext = {
   hideTransferTokenModal: () => {
     return;
   },
+  showSwapTokenModal: false,
+  openSwapTokenModal: () => {
+    return;
+  },
+  hideSwapTokenModal: () => {
+    return;
+  },
 };
 
 export const GenerativeTokenDetailContext =
@@ -165,6 +175,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   const [showListingModal, setShowListingModal] = useState(false);
   const [showMakeOfferModal, setShowMakeOfferModal] = useState(false);
   const [showTransferTokenModal, setShowTransferTokenModal] = useState(false);
+  const [showSwapTokenModal, setShowSwapTokenModal] = useState(false);
   const [showCancelListingModal, setShowCancelListingModal] = useState<{
     open: boolean;
     offer: TokenOffer | null;
@@ -175,7 +186,6 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   const [marketplaceStats, setMarketplaceStats] =
     useState<MarketplaceStats | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
   const [txHash, setTxHash] = useState<string | null>(null);
   const user = useSelector(getUserSelector);
   const { call: listToken } = useContractOperation(
@@ -279,6 +289,20 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   const hideTransferTokenModal = () => {
     // Reset state
     setShowTransferTokenModal(false);
+    setTxHash(null);
+
+    // Recover scroll behavior
+    document.body.style.overflow = 'auto';
+  };
+
+  const openSwapTokenModal = () => {
+    setShowSwapTokenModal(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const hideSwapTokenModal = () => {
+    // Reset state
+    setShowSwapTokenModal(false);
     setTxHash(null);
 
     // Recover scroll behavior
@@ -646,6 +670,9 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
       showTransferTokenModal,
       openTransferTokenModal,
       hideTransferTokenModal,
+      showSwapTokenModal,
+      openSwapTokenModal,
+      hideSwapTokenModal,
     };
   }, [
     tokenData,
@@ -685,6 +712,9 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     showTransferTokenModal,
     openTransferTokenModal,
     hideTransferTokenModal,
+    showSwapTokenModal,
+    openSwapTokenModal,
+    hideSwapTokenModal,
   ]);
 
   return (

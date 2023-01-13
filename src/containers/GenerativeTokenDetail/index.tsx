@@ -28,6 +28,7 @@ import MoreItemsSection from './MoreItemsSection';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
+import SwapTokenModal from './SwapTokenModal';
 import Link from '@components/Link';
 
 // const LOG_PREFIX = 'GenerativeTokenDetail';
@@ -57,13 +58,13 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       id: 'contract-address',
       info: 'Contract Address',
       value: formatAddress(tokenData?.project.genNFTAddr || ''),
-      link: `${scanURL}/token/${tokenData?.project.genNFTAddr}`,
+      link: `${scanURL}token/${tokenData?.project.genNFTAddr}`,
     },
     {
       id: 'token-id',
       info: 'Token ID',
       value: formatTokenId(tokenID),
-      link: `${scanURL}/token/${tokenData?.project.genNFTAddr}?a=${tokenID}`,
+      link: `${scanURL}token/${tokenData?.project.genNFTAddr}?a=${tokenID}`,
     },
     {
       id: 'token-standard',
@@ -313,6 +314,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       <MakeOfferModal />
       <CancelListingModal />
       <TransferTokenModal />
+      <SwapTokenModal />
     </>
   );
 };

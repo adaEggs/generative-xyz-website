@@ -69,7 +69,7 @@ const useContractOperation = <
         setIsLoading(false);
 
         // Refresh balance after each operation
-        walletCtx.refreshWalletBalance();
+        walletCtx.getWalletBalance();
 
         if (res?.message) {
           setSuccessMsg(res.message);
@@ -101,7 +101,9 @@ const useContractOperation = <
         statusCallback(ContractOperationStatus.ERROR, {
           message: WalletError.NO_METAMASK,
         });
-        window.open(METAMASK_DOWNLOAD_PAGE);
+        if (requiredConnectWallet) {
+          window.open(METAMASK_DOWNLOAD_PAGE);
+        }
         return null;
       }
 

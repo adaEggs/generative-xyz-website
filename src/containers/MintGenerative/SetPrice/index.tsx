@@ -133,10 +133,9 @@ const SetPrice = () => {
         return;
       }
 
-      if (
-        walletCtx.walletBalance <
-        parseFloat(Web3.utils.fromWei(mintFee.toString()))
-      ) {
+      const walletBalance = await walletCtx.getWalletBalance();
+
+      if (walletBalance < parseFloat(Web3.utils.fromWei(mintFee.toString()))) {
         if (isTestnet()) {
           setShowErrorAlert({
             open: true,

@@ -1,22 +1,27 @@
 import { CreatorInfo } from '@components/CreatorInfo';
 import Heading from '@components/Heading';
+import Link from '@components/Link';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
-import { User } from '@interfaces/user';
-import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Stack } from 'react-bootstrap';
-import s from './styles.module.scss';
-import { formatTokenId, getProjectIdFromTokenId } from '@utils/format';
-import { getListing } from '@services/marketplace';
-import Web3 from 'web3';
-import log from '@utils/logger';
+import { ProfileContext } from '@contexts/profile-context';
 import { LogLevel } from '@enums/log-level';
 import { Token } from '@interfaces/token';
-import { ProfileContext } from '@contexts/profile-context';
+import { User } from '@interfaces/user';
+import { getListing } from '@services/marketplace';
+import { formatTokenId, getProjectIdFromTokenId } from '@utils/format';
+import log from '@utils/logger';
+import { useContext, useEffect, useMemo, useState } from 'react';
+import { Stack } from 'react-bootstrap';
+import Web3 from 'web3';
+import s from './styles.module.scss';
 
-const CollectionItem = ({ data }: { data: Token }) => {
-  const router = useRouter();
+const CollectionItem = ({
+  data,
+  filterBuyNow = false,
+}: {
+  data: Token;
+  filterBuyNow?: boolean;
+}) => {
   const tokenID = useMemo(() => data.name.split('#')[1], [data.name]);
   const [listingTokenPrice, setListingTokenPrice] = useState('0');
   const { currentUser } = useContext(ProfileContext);
@@ -44,14 +49,6 @@ const CollectionItem = ({ data }: { data: Token }) => {
     }
   };
 
-  const handleClickItem = () => {
-    router.push(
-      `${ROUTE_PATH.GENERATIVE}/${getProjectIdFromTokenId(
-        parseInt(tokenID)
-      )}/${tokenID}`
-    );
-  };
-
   const [thumb, setThumb] = useState<string>(data.image);
 
   const onThumbError = () => {
@@ -62,8 +59,15 @@ const CollectionItem = ({ data }: { data: Token }) => {
     handleFetchListingTokenPrice();
   }, [data.genNFTAddr]);
 
+  if (filterBuyNow && listingTokenPrice === '0') return null;
+
   return (
-    <div onClick={handleClickItem} className={s.collectionCard}>
+    <Link
+      href={`${ROUTE_PATH.GENERATIVE}/${getProjectIdFromTokenId(
+        parseInt(tokenID)
+      )}/${tokenID}`}
+      className={s.collectionCard}
+    >
       <div className={s.collectionCard_inner}>
         <div
           className={`${s.collectionCard_thumb} ${
@@ -104,7 +108,7 @@ const CollectionItem = ({ data }: { data: Token }) => {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

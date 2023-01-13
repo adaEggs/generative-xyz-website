@@ -13,3 +13,15 @@ const HomePage: NextPage = () => {
 };
 
 export default HomePage;
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      seoInfo: {
+        title: 'Generative',
+        description: 'Bring your generative art to life',
+        image: null,
+      },
+    },
+  };
+}
