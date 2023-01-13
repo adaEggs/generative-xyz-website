@@ -81,7 +81,7 @@ export const CreatePageSection = (): JSX.Element => {
                 muted
                 playsInline
                 preload="auto"
-                poster={`${CDN_URL}/pages/home/videos/poster-video.jpeg`}
+                poster={`${CDN_URL}/pages/landingpage/benefit-poster.jpeg`}
               >
                 <source
                   src={`${CDN_URL}/pages/landingpage/Block%201-1-1.mp4`}
