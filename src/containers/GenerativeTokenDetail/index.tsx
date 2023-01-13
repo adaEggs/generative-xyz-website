@@ -124,7 +124,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           info: attr.trait_type,
           value: attr.value.toString(),
           link: '',
-          rarity: rarityValue ? `${rarityValue}%` : '-',
+          rarity: rarityValue ? `${rarityValue}%` : '--%',
         };
       });
     }
