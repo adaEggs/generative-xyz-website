@@ -42,7 +42,7 @@ const Stats = ({ data }: TStats) => {
                 {item.value}
               </Text>
               {!!item?.rarity && (
-                <Text size="18" fontWeight="medium" color="black-60">
+                <Text size="18" fontWeight="medium" color="black-06">
                   {item?.rarity}
                 </Text>
               )}

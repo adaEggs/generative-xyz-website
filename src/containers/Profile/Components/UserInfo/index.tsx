@@ -55,7 +55,7 @@ export const UserInfo = (): JSX.Element => {
                 />
               </div>
               <div className={s.userInfo_content_wallet}>
-                <Text size={'18'} color={'black-60'} fontWeight={'semibold'}>
+                <Text size={'18'} color={'black-06'} fontWeight={'semibold'}>
                   {currentUser?.walletAddress}
                 </Text>
               </div>

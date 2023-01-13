@@ -251,13 +251,13 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 </ButtonIcon>
               )}
             </div>
-            <Text size="18" fontWeight="medium" color="black-60">
+            <Text size="18" fontWeight="medium" color="black-06">
               Minted on: {mintedDate}
             </Text>
             <Text
               size="18"
               fontWeight="medium"
-              color="black-60"
+              color="black-06"
               className={s.owner}
             >
               Owner:{' '}
