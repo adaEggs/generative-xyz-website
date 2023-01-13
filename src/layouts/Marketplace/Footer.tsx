@@ -1,8 +1,8 @@
-import { LOGO_JPG, SOCIALS } from '@constants/common';
+import { CONTACT_EMAIL, SOCIALS } from '@constants/common';
 import React, { useEffect, useRef } from 'react';
-import styles from './styles.module.scss';
-import Image from 'next/image';
+import styles from './Footer.module.scss';
 import SvgInset from '@components/SvgInset';
+import { Container } from 'react-bootstrap';
 
 interface IProp {
   theme?: 'light' | 'dark';
@@ -31,45 +31,48 @@ const Footer: React.FC<IProp> = ({ theme = 'light' }): React.ReactElement => {
 
   return (
     <footer ref={refFooter} className={`${styles.footer} ${styles[theme]}`}>
-      <div className={styles.footer_content}>
-        <div className={styles.footer_content_logo}>
-          <Image alt="logo" src={LOGO_JPG.dark} width={64} height={64} />
+      <Container>
+        <div className={styles.footer_content}>
+          <div className={styles.footer_info}>
+            <p>© 2023 Generative</p>
+          </div>
+          <div className={styles.footer_right}>
+            <div className={styles.footer_contact}>
+              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+            </div>
+            <ul className={styles.footer_socials}>
+              <li>
+                <a
+                  href={SOCIALS.discord}
+                  target="_blank"
+                  className={styles.footer_bottomSocialItem}
+                  rel="noreferrer"
+                >
+                  <SvgInset
+                    svgUrl={
+                      'https://cdn.autonomous.ai/static/upload/images/common/upload/20221012/Groupaa7416858b.svg'
+                    }
+                  />
+                </a>
+              </li>
+              <li>
+                <a
+                  href={SOCIALS.twitter}
+                  target="_blank"
+                  className={styles.footer_bottomSocialItem}
+                  rel="noreferrer"
+                >
+                  <SvgInset
+                    svgUrl={
+                      'https://cdn.autonomous.ai/static/upload/images/common/upload/20221012/Group-10ab2c8e17e.svg'
+                    }
+                  />
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div className={styles.footer_info}>
-          <p>© 2023 Generative</p>
-          <ul className={styles.footer_socials}>
-            <li>
-              <a
-                href={SOCIALS.discord}
-                target="_blank"
-                className={styles.footer_bottomSocialItem}
-                rel="noreferrer"
-              >
-                <SvgInset
-                  svgUrl={
-                    'https://cdn.autonomous.ai/static/upload/images/common/upload/20221012/Groupaa7416858b.svg'
-                  }
-                />
-              </a>
-            </li>
-            <li>
-              <a
-                href={SOCIALS.twitter}
-                target="_blank"
-                className={styles.footer_bottomSocialItem}
-                rel="noreferrer"
-              >
-                <SvgInset
-                  svgUrl={
-                    'https://cdn.autonomous.ai/static/upload/images/common/upload/20221012/Group-10ab2c8e17e.svg'
-                  }
-                />
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div className={styles.footer_contact}>team@generative.xyz</div>
-      </div>
+      </Container>
     </footer>
   );
 };

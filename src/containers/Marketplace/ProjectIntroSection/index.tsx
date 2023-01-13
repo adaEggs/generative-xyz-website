@@ -160,7 +160,6 @@ const ProjectIntroSection = ({ project }: Props) => {
             {project?.name}
           </Heading>
           <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
-            {'By: '}
             <Link
               className={s.info_creatorLink}
               href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
@@ -315,19 +314,14 @@ const ProjectIntroSection = ({ project }: Props) => {
     } else {
       return (
         <div className={s.info}>
-          <Heading
-            as="h5"
-            fontWeight="semibold"
-            className="text-secondary-color"
-          >
+          <Text size="18" fontWeight="medium" className="text-black-60">
             Recent Collection
-          </Heading>
+          </Text>
           <Heading as="h4" fontWeight="bold">
             <Skeleton width={200} height={44} isLoaded={!!project?.name} />
             {project?.name}
           </Heading>
           <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
-            {'By: '}
             <Link
               className={s.info_creatorLink}
               href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}

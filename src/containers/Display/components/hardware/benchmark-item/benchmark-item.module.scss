@@ -31,10 +31,19 @@
   &_heading {
     color: #fff;
     font-style: normal;
-    font-weight: 700;
+    font-weight: 600;
     line-height: 140%;
     display: flex;
     font-size: rem(16px);
+
+    a {
+      text-decoration: none;
+
+      &:hover {
+        color: $white;
+        text-decoration: underline;
+      }
+    }
 
     @include tablet {
       font-size: rem(24px);
@@ -51,8 +60,17 @@
       margin-left: rem(12px);
       padding-left: rem(12px);
       color: $white;
-      font-weight: 700;
+      font-weight: 600;
       position: relative;
+
+      a{
+        text-decoration: none;
+
+        &:hover {
+          color: $white;
+          text-decoration: underline;
+        }
+      }
 
       &::before {
         content: "";
@@ -95,7 +113,7 @@
 
     &_title {
       font-family: $font-paragraph;
-      font-weight: 700;
+      font-weight: 600;
       line-height: 140%;
       color: #fff;
       font-size: rem(12px);
@@ -118,6 +136,10 @@
         @include min-pc {
           margin-top: rem(-12px);
         }
+      }
+      &__target2{
+        color: rgb(255 255 255 / 80%);
+        font-weight: normal !important;
       }
     }
   }
@@ -152,6 +174,12 @@
           transform: rotate(180deg);
         }
 
+        &__depYellow {
+          background: linear-gradient(90deg, #D4E600 0%, #F92323 100%);
+          border-radius: 100px;
+          transform: rotate(180deg);
+        }
+
         &__blue {
           background: linear-gradient(90deg, #5433ff 0%, #20bdff 50%, #a5fecb 100%);
           border-radius: 100px;
@@ -169,7 +197,7 @@
     &_value {
       flex: 0 0 auto;
       font-style: normal;
-      font-weight: 700;
+      font-weight: 600;
       line-height: 140%;
       color: #fff;
       font-family: $font-paragraph;

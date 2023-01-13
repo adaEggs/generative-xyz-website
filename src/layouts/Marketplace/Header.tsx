@@ -318,8 +318,8 @@ const Header: React.FC<IProp> = ({
               src={`${CDN_URL}/icons/star-shooting-horizontal.svg`}
               alt="star-shooting-horizontal"
             />
-            You’re on the Generative testnet network. Need ETHs for testing?
-            Just request them
+            You are in testnet environment. Need ETH for testing? Just request
+            them here.
             <a onClick={clickToFaucet} target="_blank" rel="noreferrer">
               {' here.'}
             </a>

@@ -1,10 +1,119 @@
-@import "src/styles/_themes/mixins";
-
-
 .footer {
-  &_content_logo{
-    img{
-      border-radius: 4px;
+
+  @include calcFontAutoSmall(13px, 16px);
+
+  border: 1px solid $black-10;
+  background-color: $primary-brand;
+  color: $white-100;
+  padding-top: rem(23px);
+  padding-bottom: rem(23px);
+
+  &.isFixed {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+  }
+
+  &_content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &_info {
+    order: 1;
+    text-align: center;
+    width: 100%;
+    margin-top: 5px;
+    @include min-tablet {
+      width: auto;
+      order: 0;
+      text-align: left;
+      margin-top: 0;
     }
+  }
+
+  &_bottomSocialItem {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 1px solid #E7E7E7;
+    border-radius: 2px;
+    transition: border-color 0.4s $easeOutCubic;
+
+    svg path {
+      transition: fill 0.4s $easeOutCubic;
+      fill: #E7E7E7;
+    }
+
+    &:hover {
+      border: 1px solid $white;
+      background-color: $white;
+
+      path {
+        fill: $primary-brand;
+      }
+    }
+  }
+
+  &_contact {
+
+    flex: 0 0 auto;
+    order: 1;
+    width: 100%;
+    text-align: center;
+    margin-top: 10px;
+    @include min-tablet {
+      order: 0;
+      text-align: right;
+      width: auto;
+      margin-top: 0;
+    }
+
+    a {
+      text-decoration: none;
+      color: $white;
+
+      &:hover {
+        color: $white;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  &_socials {
+    display: flex;
+    gap: rem(6px);
+    justify-content: center;
+
+    order: 0;
+
+    @include min-tablet {
+      order: 1;
+      justify-content: flex-end;
+    }
+  }
+
+  &_right {
+
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    order: 0;
+    flex: 0 0 auto;
+    width: 100%;
+
+    @include min-tablet {
+      gap: rem(42px);
+      align-items: center;
+      justify-content: flex-end;
+      order: 1;
+      width: auto;
+    }
+
   }
 }

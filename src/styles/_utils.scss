@@ -136,16 +136,20 @@
   color: rgba(#000, 0.6);
 }
 
+.text-black-60 {
+  color: #5b5b5b;
+}
+
 .text-black-40 {
-  color: rgba(#000, .4);
+  color: rgba(#000, 0.4);
 }
 
 .text-purple-a {
   color: #95a4fc;
 }
 
-.text-black-002{
-  color: #000002
+.text-black-002 {
+  color: #000002;
 }
 
 .h-divider {
@@ -180,4 +184,8 @@
       margin-bottom: rem(24px);
     }
   }
+}
+
+.text-uppercase {
+  text-transform: uppercase;
 }

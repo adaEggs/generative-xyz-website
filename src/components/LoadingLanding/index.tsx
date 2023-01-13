@@ -65,7 +65,7 @@ export const LoadingLanding = (): JSX.Element => {
         processing.current.onHold = 0;
       }
     } else {
-      processing.current.delta = 2;
+      processing.current.delta = 5;
       processing.current.onHold = 0;
     }
   };

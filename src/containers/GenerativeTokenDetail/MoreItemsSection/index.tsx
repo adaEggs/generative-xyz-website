@@ -65,7 +65,7 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
 
   useEffect(() => {
     fetchProjectItems();
-  }, [sort]);
+  }, [genNFTAddr, sort]);
 
   return (
     <div className="position-relative">

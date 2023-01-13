@@ -1,6 +1,6 @@
-import Accordion from '@components/Accordion';
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
+import Link from '@components/Link';
 import { Loading } from '@components/Loading';
 import Stats from '@components/Stats';
 import Text from '@components/Text';
@@ -16,7 +16,7 @@ import { getChainName, getScanUrl } from '@utils/chain';
 import { formatAddress, formatTokenId } from '@utils/format';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -32,6 +32,8 @@ import s from './styles.module.scss';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
+  const { projectID } = router.query;
+
   const {
     tokenData,
     tokenID,
@@ -40,11 +42,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     openTransferTokenModal,
     openCancelListingModal,
     handlePurchaseToken,
-    isTokenOwner,
-    isTokenCreator,
     isTokenListing,
     listingPrice,
     listingOffers,
+    tokenOffers,
+    isTokenOwner,
   } = useContext(GenerativeTokenDetailContext);
   const scanURL = getScanUrl();
   const user = useSelector(getUserSelector);
@@ -76,6 +78,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       link: '',
     },
   ];
+  const [showMore, setShowMore] = useState(false);
 
   const handleOpenListingTokenModal = (): void => {
     openListingModal();
@@ -101,13 +104,27 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   };
 
   const featuresList = () => {
-    if (tokenData?.attributes && tokenData.attributes?.length > 0) {
+    if (
+      tokenData?.attributes &&
+      tokenData.attributes?.length > 0 &&
+      tokenData?.project?.traitStat &&
+      tokenData?.project?.traitStat?.length > 0
+    ) {
       return tokenData.attributes.map(attr => {
+        const foundTrait = tokenData?.project?.traitStat.find(
+          trait => trait.traitName === attr.trait_type
+        );
+
+        const rarityValue = foundTrait?.traitValuesStat.find(
+          stat => stat.value === attr.value
+        )?.rarity;
+
         return {
           id: `attr-${v4()}`,
           info: attr.trait_type,
           value: attr.value.toString(),
           link: '',
+          rarity: `${rarityValue}%`,
         };
       });
     }
@@ -119,9 +136,9 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
 
   const handleLinkProfile = (walletAddress?: string) => {
     if (user.walletAddress === walletAddress) {
-      router.push(`${ROUTE_PATH.PROFILE}`);
+      return `${ROUTE_PATH.PROFILE}`;
     } else {
-      router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
+      return `${ROUTE_PATH.PROFILE}/${walletAddress}`;
     }
   };
 
@@ -131,28 +148,46 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     setIsBuying(false);
   };
 
-  const tokenName = useMemo(
-    () =>
-      `${tokenData?.project?.name} #${formatTokenId(tokenData?.tokenID || '')}`,
-    [tokenData?.project?.name, tokenData?.tokenID]
-  );
-
   return (
     <>
       <Container>
-        <div className={s.wrapper} style={{ marginBottom: '100px' }}>
+        <div className={s.wrapper}>
           <div className={s.itemInfo}>
             <Loading isLoaded={!!tokenData} className={s.loading_token} />
-            <Heading as="h4" fontWeight="semibold">
-              {tokenName}
+            <Heading
+              as="h4"
+              fontWeight="semibold"
+              style={{ marginBottom: '10px' }}
+            >
+              #{formatTokenId(tokenData?.tokenID || '')}
             </Heading>
+            <Heading as="h6" fontWeight="semibold">
+              <Link href={`${ROUTE_PATH.GENERATIVE}/${projectID}`}>
+                {tokenData?.project.name}
+              </Link>
+            </Heading>
+            <Text
+              size={'24'}
+              color={'black-40'}
+              style={{ marginBottom: '10px' }}
+            >
+              <Link
+                className={s.info_creatorLink}
+                href={handleLinkProfile(tokenData?.project?.creatorAddr)}
+              >
+                {tokenData?.project?.creatorProfile?.displayName ||
+                  formatAddress(
+                    tokenData?.project?.creatorProfile?.walletAddress || ''
+                  )}
+              </Link>
+            </Text>
             <div className={s.prices}>
               {isTokenListing && (
                 <div>
                   <Text size="12" fontWeight="bold">
                     Price
                   </Text>
-                  <Heading as="h4" fontWeight="bold">
+                  <Heading as="h6" fontWeight="bold">
                     Ξ {listingPrice}
                   </Heading>
                 </div>
@@ -162,7 +197,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 <Text size="12" fontWeight="bold">
                   Royalty
                 </Text>
-                <Heading as="h4" fontWeight="bold">
+                <Heading as="h6" fontWeight="bold">
                   {(tokenData?.project?.royalty || 0) / 100}%
                 </Heading>
               </div>
@@ -214,83 +249,97 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 </ButtonIcon>
               )}
             </div>
+            <Text size="18" fontWeight="medium" color="black-06">
+              Minted on: {mintedDate}
+            </Text>
+            <Text
+              size="18"
+              fontWeight="medium"
+              color="black-06"
+              className={s.owner}
+            >
+              Owner:{' '}
+              <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
+                {tokenData?.owner?.displayName ||
+                  formatAddress(
+                    tokenData?.ownerAddr ||
+                      tokenData?.owner?.walletAddress ||
+                      ''
+                  )}
+              </Link>
+              {isTokenOwner && ' (by you)'}
+            </Text>
             <div className={s.accordions}>
-              {!!tokenDescription && (
-                <Accordion
-                  header={'Description'}
-                  content={tokenDescription}
-                ></Accordion>
-              )}
-              {tokenData?.attributes && tokenData.attributes?.length > 0 && (
-                <Accordion
-                  header={'Features'}
-                  content={<Stats data={featuresList()} />}
-                ></Accordion>
-              )}
-              {mintedDate && (
-                <Accordion
-                  header={'Minted on'}
-                  content={
-                    <Text size="18" fontWeight="semibold">
-                      {mintedDate}
-                    </Text>
-                  }
-                ></Accordion>
-              )}
-              <Accordion
-                header={'Owner'}
-                content={
+              <div className={s.accordions_item}>
+                <Text
+                  size="14"
+                  color="black-40"
+                  fontWeight="bold"
+                  className="text-uppercase"
+                >
+                  description
+                </Text>
+                <Text
+                  size="18"
+                  fontWeight="medium"
+                  className={s.token_description}
+                  style={{ WebkitLineClamp: showMore ? 'unset' : '3' }}
+                >
+                  {tokenDescription}
+                </Text>
+                {!showMore ? (
                   <Text
-                    size="18"
-                    fontWeight="medium"
-                    className={s.walletAddress}
-                    onClick={() => handleLinkProfile(tokenData?.ownerAddr)}
+                    as="span"
+                    onClick={() => setShowMore(!showMore)}
+                    fontWeight="semibold"
                   >
-                    {tokenData?.owner?.displayName ||
-                      formatAddress(
-                        tokenData?.ownerAddr ||
-                          tokenData?.owner?.walletAddress ||
-                          ''
-                      )}
-                    {isTokenOwner && ' (by you)'}
+                    See more
                   </Text>
-                }
-              ></Accordion>
-              <Accordion
-                header={'Creator'}
-                content={
+                ) : (
                   <Text
-                    size="18"
-                    fontWeight="medium"
-                    className={s.walletAddress}
-                    onClick={() =>
-                      handleLinkProfile(tokenData?.creator?.walletAddress)
-                    }
+                    as="span"
+                    onClick={() => setShowMore(!showMore)}
+                    fontWeight="semibold"
                   >
-                    {tokenData?.creator?.displayName ||
-                      formatAddress(tokenData?.creator?.walletAddress || '')}
-                    {isTokenCreator && ' (by you)'}
+                    See less
                   </Text>
-                }
-              ></Accordion>
+                )}
+              </div>
+              {tokenData?.attributes && tokenData?.attributes?.length > 0 && (
+                <div className={s.accordions_item}>
+                  <Text
+                    size="14"
+                    color="black-40"
+                    fontWeight="bold"
+                    className="text-uppercase"
+                  >
+                    features
+                  </Text>
+                  <Stats data={featuresList()} />
+                </div>
+              )}
 
-              <Accordion
-                header={'Token Info'}
-                content={<Stats data={tokenInfos} />}
-              ></Accordion>
+              <div className={s.accordions_item}>
+                <Text
+                  size="14"
+                  color="black-40"
+                  fontWeight="bold"
+                  className="text-uppercase"
+                >
+                  Token Info
+                </Text>
+                <Stats data={tokenInfos} />
+              </div>
             </div>
           </div>
-          <div className="h-divider"></div>
+          <div className=""></div>
           <div>
             <ThumbnailPreview data={tokenData} previewToken />
           </div>
         </div>
         <div className="h-divider"></div>
-
-        <TokenActivities></TokenActivities>
-        {tokenData?.project.genNFTAddr && (
-          <MoreItemsSection genNFTAddr={tokenData.project.genNFTAddr} />
-        )}
+        {tokenOffers.length > 0 && <TokenActivities></TokenActivities>}
+        <MoreItemsSection genNFTAddr={tokenData?.project.genNFTAddr || ''} />
       </Container>
       <ListingTokenModal />
       <MakeOfferModal />
