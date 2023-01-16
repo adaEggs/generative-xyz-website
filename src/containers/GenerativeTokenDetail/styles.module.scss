@@ -4,14 +4,14 @@
   color: $black-100;
   margin-top: rem(72);
   margin-bottom: rem(100px);
+  height: calc(100vh - #{rem(260px)});
 }
 
 .itemInfo {
   overflow-y: scroll;
   padding-right: rem(60px);
   position: relative;
-  height: fit-content;
-  max-height: rem(950px);
+  height: 100%;
 
   &::-webkit-scrollbar {
     width: 5px;

@@ -29,6 +29,7 @@ import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import SwapTokenModal from './SwapTokenModal';
 import s from './styles.module.scss';
+import { checkLines } from '@helpers/string';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -148,7 +149,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     setIsBuying(false);
   };
 
-  const checkLines = tokenDescription.split(/\r\n|\r|\n/).length;
+  // const checkLines = tokenDescription.split(/\r\n|\r|\n/).length;
 
   return (
     <>
@@ -289,7 +290,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 >
                   {tokenDescription}
                 </Text>
-                {checkLines > 3 && (
+                {checkLines(tokenDescription) > 3 && (
                   <>
                     {!showMore ? (
                       <Text
@@ -338,7 +339,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               </div>
             </div>
           </div>
-          <div className=""></div>
+          <div></div>
           <div>
             <ThumbnailPreview data={tokenData} previewToken />
           </div>

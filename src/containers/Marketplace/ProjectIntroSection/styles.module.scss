@@ -4,12 +4,28 @@
   display: grid;
   grid-template-columns: rem(420px) 1px 1fr;
   color: $black-100;
-  gap: rem(60px);
+  // gap: rem(60px);
   padding-top: rem(60px);
+  @include fullViewScreen;
 }
 
 .info {
+  height: 100%;
+  overflow-y: scroll;
   position: relative;
+  padding-right: rem(60px);
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    position: absolute;
+    left: 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.1);
+  }
+
   &_creatorLink {
     text-decoration: none;
     &:hover {
@@ -136,7 +152,10 @@
 }
 
 .token_description {
-  margin-bottom: rem(24px);
+  display: -webkit-box;
+  // -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .description {
@@ -151,5 +170,9 @@
 }
 
 .owner {
+  margin-bottom: rem(24px);
+}
+
+.project_info {
   margin-bottom: rem(24px);
 }
