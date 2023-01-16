@@ -29,10 +29,13 @@ import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import SwapTokenModal from './SwapTokenModal';
 import s from './styles.module.scss';
+import { checkLines } from '@helpers/string';
+import useWindowSize from '@hooks/useWindowSize';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
   const { projectID } = router.query;
+  const { isMobile } = useWindowSize();
 
   const {
     tokenData,
@@ -148,7 +151,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     setIsBuying(false);
   };
 
-  const checkLines = tokenDescription.split(/\r\n|\r|\n/).length;
+  // const checkLines = tokenDescription.split(/\r\n|\r|\n/).length;
 
   return (
     <>
@@ -183,6 +186,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   )}
               </Link>
             </Text>
+            {isMobile && <ThumbnailPreview data={tokenData} previewToken />}
             <div className={s.prices}>
               {isTokenListing && (
                 <div>
@@ -289,7 +293,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 >
                   {tokenDescription}
                 </Text>
-                {checkLines > 3 && (
+                {checkLines(tokenDescription) > 3 && (
                   <>
                     {!showMore ? (
                       <Text
@@ -338,10 +342,12 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               </div>
             </div>
           </div>
-          <div className=""></div>
-          <div>
-            <ThumbnailPreview data={tokenData} previewToken />
-          </div>
+          <div></div>
+          {!isMobile && (
+            <div>
+              <ThumbnailPreview data={tokenData} previewToken />
+            </div>
+          )}
         </div>
         <div className="h-divider"></div>
         {tokenOffers.length > 0 && <TokenActivities></TokenActivities>}

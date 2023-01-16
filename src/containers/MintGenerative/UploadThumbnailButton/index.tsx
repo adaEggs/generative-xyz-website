@@ -1,32 +1,42 @@
+import s from './styles.module.scss';
 import { MintGenerativeContext } from '@contexts/mint-generative-context';
 import { prettyPrintBytes } from '@utils/units';
-import React, { useContext } from 'react';
-import { useDropzone } from 'react-dropzone';
+import React, { useContext, useState } from 'react';
+import { FileUploader } from 'react-drag-drop-files';
 import Image from 'next/image';
-import s from './styles.module.scss';
 import { CDN_URL } from '@constants/config';
-import Button from '@components/ButtonIcon';
 
 const UploadThumbnailButton: React.FC = () => {
   const { thumbnailFile, setThumbnailFile } = useContext(MintGenerativeContext);
+  const [error, setError] = useState<string | null>(null);
 
-  const onDrop = (acceptedFiles: Array<File>) => {
-    if (acceptedFiles.length > 0) {
-      setThumbnailFile(acceptedFiles[0]);
-    } else {
-      setThumbnailFile(null);
-    }
+  const onChangeFile = (file: File): void => {
+    setThumbnailFile(file);
+    setError('');
   };
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const onSizeError = (): void => {
+    setError('File size error, maximum file size is 500kb.');
+  };
+
+  const onTypeError = (): void => {
+    setError(
+      'Invalid file, supported file extensions are JPG, JPEG, PNG, GIF.'
+    );
+  };
 
   return (
-    <div {...getRootProps()}>
-      <input {...getInputProps()} />
-      <Button
-        variants="secondary"
-        sizes="small"
-        className={s.uploadThumbnailBtn}
+    <div className={s.uploadThumbnail}>
+      <FileUploader
+        handleChange={onChangeFile}
+        name={'thumbnailUploader'}
+        maxSize={0.5}
+        minSize={0}
+        types={['JPG', 'JPEG', 'PNG', 'GIF']}
+        onSizeError={onSizeError}
+        onTypeError={onTypeError}
+        fileOrFiles={thumbnailFile}
+        classes={s.uploadThumbnailBtn}
       >
         <Image
           alt="upload icon"
@@ -40,7 +50,8 @@ const UploadThumbnailButton: React.FC = () => {
             : 'Upload thumbnail'}
         </span>
         <sup className={s.requiredTag}>*</sup>
-      </Button>
+      </FileUploader>
+      {error && <p className={s.errorText}>{error}</p>}
     </div>
   );
 };

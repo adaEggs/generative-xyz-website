@@ -74,8 +74,8 @@ const UploadGenArt: React.FC = (): ReactElement => {
     }
   };
 
-  const handleChangeFile = (files: File[] | null): void => {
-    setZipFile(files && files.length > 0 ? files[0] : null);
+  const handleChangeFile = (file: File | null): void => {
+    setZipFile(file);
   };
 
   const handleGoToNextStep = (): void => {
@@ -239,43 +239,12 @@ const UploadGenArt: React.FC = (): ReactElement => {
           <div className={s.dropZoneWrapper}>
             <DropFile
               className={s.dropZoneContainer}
-              acceptedFileType={{
-                'application/zip': ['.zip'],
-                'application/x-zip-compressed': ['.zip'],
-              }}
+              acceptedFileType={['zip']}
               onChange={handleChangeFile}
-              files={zipFile ? [zipFile] : null}
+              fileOrFiles={zipFile ? [zipFile] : null}
             />
           </div>
         </div>
-        {/*<div className={s.disclaimerWrapper}>*/}
-        {/*  <Text fontWeight="semibold" className={s.disclaimer}>*/}
-        {/*    This is a space in which you can drop a .zip of your project and see*/}
-        {/*    how it would behave when it will be minted on Generative. If your*/}
-        {/*    artwork does not behave properly in the setup thumbnail image are,*/}
-        {/*    it will not work after being minted. If you are new to the platform*/}
-        {/*    please read our&nbsp;*/}
-        {/*    <Link*/}
-        {/*      className={s.link}*/}
-        {/*      href={EXTERNAL_LINK.DOCS}*/}
-        {/*      target="_blank"*/}
-        {/*      rel="noopener"*/}
-        {/*    >*/}
-        {/*      Guide to launch your NFT collection.*/}
-        {/*    </Link>*/}
-        {/*  </Text>*/}
-        {/*  <Text fontWeight="medium" className={s.disclaimer}>*/}
-        {/*    Please make sure that your project follows our&nbsp;*/}
-        {/*    <Link*/}
-        {/*      className={s.link}*/}
-        {/*      href={EXTERNAL_LINK.GUIDE}*/}
-        {/*      target="_blank"*/}
-        {/*      rel="noopener"*/}
-        {/*    >*/}
-        {/*      Code of Conduct.*/}
-        {/*    </Link>*/}
-        {/*  </Text>*/}
-        {/*</div>*/}
       </>
     ),
     [zipFile]

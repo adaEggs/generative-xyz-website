@@ -14,4 +14,5 @@ export const ROUTE_PATH = {
   EDIT_PROFILE: `/profile/edit`,
   SANDBOX: '/sandbox',
   DISPLAY: isStaging() ? 'https://generative.xyz' : '/display',
+  ORDER_NOW: isStaging() ? 'https://generative.xyz/order-now' : '/order-now',
 };

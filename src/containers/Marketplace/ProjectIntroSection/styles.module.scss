@@ -1,15 +1,37 @@
 @import 'src/styles/_themes/mixins';
 
 .wrapper {
-  display: grid;
-  grid-template-columns: rem(420px) 1px 1fr;
   color: $black-100;
-  gap: rem(60px);
-  padding-top: rem(60px);
+  padding-top: rem(32px);
+
+  @include min-tablet {
+    // @include fullViewScreen;
+    display: grid;
+    grid-template-columns: rem(420px) 1px 1fr;
+    margin-bottom: rem(90px);
+    padding-top: rem(60px);
+  }
 }
 
 .info {
-  position: relative;
+  @include min-tablet {
+    overflow-y: scroll;
+    padding-right: rem(60px);
+    height: 100%;
+    position: relative;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    position: absolute;
+    left: 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.1);
+  }
+
   &_creatorLink {
     text-decoration: none;
     &:hover {
@@ -51,12 +73,17 @@
 .CTA {
   display: flex;
   margin-bottom: rem(30px);
-  column-gap: rem(24px);
+  gap: rem(24px);
   flex-wrap: wrap;
+  align-items: center;
 
   .mint_btn {
     min-width: rem(218px);
     justify-content: center;
+
+    @include mobile {
+      width: 100%;
+    }
   }
 
   .explore_btn {
@@ -70,7 +97,8 @@
     letter-spacing: 0.01em;
     font-weight: 700;
     color: $black-100;
-    margin-top: rem(24px);
+    gap: rem(24px);
+    // margin-top: rem(24px);
 
     &:hover {
       text-decoration: none;
@@ -122,6 +150,10 @@
   margin-bottom: rem(38px);
   flex-wrap: wrap;
 
+  @include mobile {
+    margin-bottom: rem(24px);
+  }
+
   &_item {
     > p:first-of-type {
       color: $black-60;
@@ -130,19 +162,27 @@
   }
 }
 
+.project_desc {
+  margin-bottom: rem(24px);
+}
+
 .license {
   margin-top: rem(24px);
   margin-bottom: rem(14px);
 }
 
 .token_description {
-  margin-bottom: rem(24px);
+  display: -webkit-box;
+  // -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .description {
   display: flex;
   flex-direction: column;
   gap: rem(5px);
+  margin-bottom: rem(24px);
 }
 
 .loading_project {
@@ -151,5 +191,18 @@
 }
 
 .owner {
+  padding-bottom: rem(34px);
+  border-bottom: 1px solid $black-20;
+  @include min-tablet {
+    border: none;
+  }
+}
+
+.project_owner {
+  padding-bottom: rem(24px);
+  border-bottom: 1px solid $black-20;
+}
+
+.project_info {
   margin-bottom: rem(24px);
 }

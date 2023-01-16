@@ -16,7 +16,7 @@ const CollectionList = ({
   return (
     <>
       {listData && listData?.length > 0 ? (
-        <div className="grid grid-cols-4">
+        <div className="grid grid-list">
           {listData?.map((item, index: number) => (
             <CollectionItem
               key={`collection-item-${index}`}

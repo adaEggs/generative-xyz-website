@@ -11,6 +11,10 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { Project } from '@interfaces/project';
 import { User } from '@interfaces/user';
 import { convertIpfsToHttp } from '@utils/image';
+import cs from 'classnames';
+import useWindowSize from '@hooks/useWindowSize';
+import Text from '@components/Text';
+import { formatAddress } from '@utils/format';
 
 interface IPros {
   project: Project;
@@ -18,6 +22,8 @@ interface IPros {
 
 export const ProjectCard = ({ project }: IPros): JSX.Element => {
   const [creator, setCreator] = useState<User | null>(null);
+
+  const { isMobile } = useWindowSize();
 
   const [thumb, setThumb] = useState<string>(project.image);
 
@@ -49,19 +55,41 @@ export const ProjectCard = ({ project }: IPros): JSX.Element => {
             loading={'lazy'}
           />
         </div>
-        <div className={s.projectCard_info}>
-          <div className={s.projectCard_info_title}>
-            <Heading as={'h4'}>{project.name}</Heading>
+        {isMobile ? (
+          <div className={cs(s.projectCard_info, s.mobile)}>
+            {creator && (
+              <Text size="11" fontWeight="medium">
+                {creator.displayName || formatAddress(creator.walletAddress)}
+              </Text>
+            )}
+            <div className={s.projectCard_info_title}>
+              <Text size="14" fontWeight="semibold">
+                {project.name}
+              </Text>
+            </div>
+            <ProgressBar
+              size={'small'}
+              current={
+                project.mintingInfo.index + project.mintingInfo.indexReserve
+              }
+              total={project.limit}
+            />
           </div>
-          {creator && <CreatorInfo creator={creator} />}
-          <ProgressBar
-            size={'small'}
-            current={
-              project.mintingInfo.index + project.mintingInfo.indexReserve
-            }
-            total={project.limit}
-          />
-        </div>
+        ) : (
+          <div className={cs(s.projectCard_info, s.desktop)}>
+            <div className={s.projectCard_info_title}>
+              <Heading as={'h4'}>{project.name}</Heading>
+            </div>
+            {creator && <CreatorInfo creator={creator} />}
+            <ProgressBar
+              size={'small'}
+              current={
+                project.mintingInfo.index + project.mintingInfo.indexReserve
+              }
+              total={project.limit}
+            />
+          </div>
+        )}
       </div>
     </Link>
   );

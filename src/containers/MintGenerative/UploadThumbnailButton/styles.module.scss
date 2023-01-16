@@ -1,3 +1,7 @@
+.uploadThumbnail {
+  margin-bottom: rem(36px);
+}
+
 .uploadThumbnailBtn {
   display: flex;
   gap: 6px !important;
@@ -6,14 +10,14 @@
   background-color: $black-5;
   justify-content: center;
   width: 100%;
-  margin-bottom: rem(36px);
-
+  cursor: pointer;
 
   .fileName {
     font-style: normal;
     line-height: (26/16);
     letter-spacing: 0.01em;
     color: $primary-brand;
+    font-weight: 700;
     @include calcFontAutoSmall(14px, 16px);
   }
 
@@ -24,4 +28,13 @@
   &:hover {
     background-color: $primary-purple-50 !important;
   }
+}
+
+.errorText {
+  margin-top: rem(6px);
+  color: $secondary-red;
+  font-style: normal;
+  line-height: (24/14);
+  letter-spacing: 0.01em;
+  @include calcFontAutoSmall(12px, 14px);
 }

@@ -7,7 +7,7 @@ export const ProjectList = ({ listData }: { listData?: Project[] }) => {
   return (
     <>
       {listData && listData?.length > 0 ? (
-        <div className="grid grid-cols-4">
+        <div className="grid grid-list">
           {listData?.map((project, index: number) => (
             <ProjectCard key={`project-item-${index}`} project={project} />
           ))}

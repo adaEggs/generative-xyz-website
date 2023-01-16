@@ -9,6 +9,9 @@
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 2px;
     transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
+    @include mobile {
+      padding: rem(8px);
+    }
 
     &:hover {
       box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
@@ -37,20 +40,27 @@
   }
 
   &_info {
-    &_title {
-      display: block;
-      margin-top: rem(10px);
-      margin-bottom: rem(10px);
+    &.desktop {
+      .projectCard_info_title {
+        display: block;
+        margin-top: rem(10px);
+        margin-bottom: rem(10px);
 
-      h4 {
-        font-weight: 600;
-        font-size: rem(24px);
-        line-height: rem(34px);
+        h4 {
+          font-weight: 600;
+          font-size: rem(24px);
+          line-height: rem(34px);
+        }
+      }
+
+      :global(.useInfo) {
+        margin-bottom: rem(10px);
       }
     }
-
-    :global(.useInfo) {
-      margin-bottom: rem(10px);
+    &.mobile {
+      padding-left: rem(2px);
+      padding-right: rem(2px);
+      padding-bottom: rem(4px);
     }
   }
 
