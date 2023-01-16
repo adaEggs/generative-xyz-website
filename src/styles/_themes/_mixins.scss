@@ -1,4 +1,4 @@
-@import "./_variables";
+@import './_variables';
 
 @mixin disable-scrollbar {
   -ms-overflow-style: none;
@@ -94,7 +94,7 @@
 
       &::before,
       &::after {
-        content: "";
+        content: '';
         position: absolute;
         width: 50%;
         height: 2px;
@@ -316,8 +316,8 @@
 
 @function calc-auto($min-vw, $max-vw, $min-font-size, $max-font-size) {
   @return calc(
-          #{$min-font-size} + #{strip-unit($max-font-size - $min-font-size)} *
-          calc((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)})
+    #{$min-font-size} + #{strip-unit($max-font-size - $min-font-size)} *
+      calc((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)})
   );
 }
 
@@ -330,7 +330,6 @@
 }
 
 @mixin calcFontAuto($min-font-size, $max-font-size) {
-
   font-size: rem($min-font-size);
 
   @include tablet {
@@ -347,7 +346,6 @@
 }
 
 @mixin calcFontAutoSmall($min-font-size, $max-font-size) {
-
   font-size: rem($max-font-size);
 
   @include min-pc {
@@ -360,7 +358,6 @@
 }
 
 @mixin calcPropertyAuto($property, $min-font-size, $max-font-size) {
-
   #{$property}: rem($min-font-size);
 
   @include tablet {
@@ -376,3 +373,6 @@
   }
 }
 
+@mixin fullViewScreen {
+  height: calc(100vh - #{rem(260px)});
+}

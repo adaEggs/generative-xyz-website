@@ -87,3 +87,5 @@ export const stringToNumber = (str: string): number => {
 export const upperCaseFirstChar = (str: string): string => {
   return `${str.charAt(0).toUpperCase()}${str.substring(1)}`;
 };
+
+export const checkLines = (str: string) => str.split(/\r\n|\r|\n/).length;
