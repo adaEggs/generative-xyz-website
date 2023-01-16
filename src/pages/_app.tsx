@@ -19,6 +19,7 @@ import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
 import { APP_ENV } from '@constants/config';
 import { ApplicationEnvironment } from '@enums/config';
+import Script from 'next/script';
 
 interface MyAppProps extends AppProps {
   Component: {
@@ -163,7 +164,7 @@ export default function App({ Component, pageProps }: MyAppProps) {
 
         {(APP_ENV === ApplicationEnvironment.STAGING ||
           APP_ENV === ApplicationEnvironment.PRODUCTION) && (
-          <script
+          <Script
             type="text/javascript"
             src="//script.crazyegg.com/pages/scripts/0100/2427.js"
             async={true}

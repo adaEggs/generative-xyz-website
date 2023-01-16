@@ -5,7 +5,7 @@ import Input from '@components/Input';
 import InputQuantity from '@components/InputQuantity';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
-import Countries from '@constants/country-list.json';
+import COUNTRY_LIST from '@constants/country-list.json';
 import StateOfUS from '@constants/state-of-us.json';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
@@ -58,7 +58,6 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   });
   const walletCtx = useContext(WalletContext);
   const [orderSuccess, setOrderSuccess] = useState(false);
-
   const [shippingInfo, setShippingInfo] = useState<IPropState>({
     name: '',
     email: '',
@@ -70,14 +69,14 @@ const CheckoutModal: React.FC = (): JSX.Element => {
     country: '',
   });
 
-  const getDisCount = useMemo(() => (isDiscounted ? 0.1 : 0), [isDiscounted]);
-  const getDisCountPrice = useMemo(
+  const getDiscount = useMemo(() => (isDiscounted ? 0.1 : 0), [isDiscounted]);
+  const getDiscountPrice = useMemo(
     () => (isDiscounted ? 0.1 : 0) * (cart.eth_price || cart.price || 0),
     [isDiscounted]
   );
 
   const selectedCountry = useMemo(
-    () => Countries.find(item => item.key === shippingInfo.country),
+    () => COUNTRY_LIST.find(item => item.key === shippingInfo.country),
     [shippingInfo.country]
   );
   const selectedState = useMemo(
@@ -94,7 +93,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   const totalPrice = useMemo(
     () =>
       Math.round(
-        (1 - getDisCount) *
+        (1 - getDiscount) *
           (cart.eth_price || cart.price || 0) *
           cart.qty *
           10e9
@@ -105,7 +104,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   const cartItemPrice = useMemo(
     () =>
       Math.round(
-        (1 - getDisCount) * (cart.eth_price || cart.price || 0) * 10e9
+        (1 - getDiscount) * (cart.eth_price || cart.price || 0) * 10e9
       ) / 10e9,
     [cart]
   );
@@ -116,7 +115,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
         setIsLoading(true);
         const txHash = await walletCtx.transfer(
           order.master_address,
-          order.total
+          (parseFloat(order.total) * (isDiscounted ? 0.9 : 1)).toString()
         );
         if (!txHash) {
           setError(ErrorMessage.DEFAULT);
@@ -274,7 +273,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
           <div>
             <Dropdown
               values={selectedCountry ? [selectedCountry] : []}
-              options={Countries}
+              options={COUNTRY_LIST}
               labelField="value"
               valueField="value"
               multi={false}
@@ -406,7 +405,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
           {isDiscounted && (
             <div className={s.CheckoutModal_summaryLine}>
               <div>Partner discount</div>
-              <div className={s.highlight}>{`${getDisCountPrice} ETH`}</div>
+              <div className={s.highlight}>{`${getDiscountPrice} ETH`}</div>
             </div>
           )}
           <div className={s.CheckoutModal_summaryLine}>
