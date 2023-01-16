@@ -14,20 +14,21 @@ import { checkoutProduct as checkoutProductSelector } from '@redux/general/selec
 import { useAppDispatch } from '@redux/index';
 import { makeOrder } from '@services/api/order';
 import cn from 'classnames';
+import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import s from './CheckoutModal.module.scss';
 
 interface IPropState {
-  name: any;
-  email: any;
-  address: any;
-  address2: any;
-  city: any;
-  state: any;
-  zip: any;
-  country: any;
+  name: string;
+  email: string;
+  address: string;
+  address2: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
 }
 
 interface ICart extends IFrame {
@@ -36,6 +37,8 @@ interface ICart extends IFrame {
 
 const CheckoutModal: React.FC = (): JSX.Element => {
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { source } = router.query;
   const checkoutProduct = useSelector(checkoutProductSelector);
   const isShow = !!checkoutProduct.id;
   const onHideModal = () => dispatch(setCheckoutProduct({} as any));
@@ -98,8 +101,6 @@ const CheckoutModal: React.FC = (): JSX.Element => {
           return;
         }
         setOrderSuccess(true);
-        // onHideModal();
-        // router.push(`/order/${order.order_id}`);
       } catch (_: unknown) {
         setError(ErrorMessage.DEFAULT);
       } finally {
@@ -133,6 +134,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
       const { data: newOrder } = await makeOrder({
         details: [{ id: cart?.id || '', qty: cart?.qty || 0 }],
         ...shippingInfo,
+        source: source ? (source as string) : '',
       });
 
       if (!newOrder.order_id) return;
@@ -247,7 +249,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
               onChange={value =>
                 setShippingInfo({
                   ...shippingInfo,
-                  name: value,
+                  name: value as string,
                 })
               }
               required
@@ -261,7 +263,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
               onChange={value =>
                 setShippingInfo({
                   ...shippingInfo,
-                  email: value,
+                  email: value as string,
                 })
               }
               required
@@ -274,7 +276,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
               onChange={value =>
                 setShippingInfo({
                   ...shippingInfo,
-                  address: value,
+                  address: value as string,
                 })
               }
               required
@@ -287,7 +289,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
               onChange={value =>
                 setShippingInfo({
                   ...shippingInfo,
-                  address2: value,
+                  address2: value as string,
                 })
               }
             />
@@ -299,7 +301,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
                 onChange={value =>
                   setShippingInfo({
                     ...shippingInfo,
-                    city: value,
+                    city: value as string,
                   })
                 }
                 required
@@ -327,7 +329,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
                   onChange={value =>
                     setShippingInfo({
                       ...shippingInfo,
-                      state: value,
+                      state: value as string,
                     })
                   }
                   required
@@ -340,7 +342,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
                 onChange={value =>
                   setShippingInfo({
                     ...shippingInfo,
-                    zip: value,
+                    zip: value as string,
                   })
                 }
                 required
