@@ -122,9 +122,7 @@ const CollectionItem = ({
                 direction="horizontal"
               >
                 <Heading as={'h4'} className="token_id ml-auto">
-
                   {currentUser && `${data?.project?.name} `}#
-
                   {formatTokenId(tokenID)}
                 </Heading>
                 {listingTokenPrice !== '0' && (
