@@ -39,7 +39,9 @@ interface ICart extends IFrame {
 
 const CheckoutModal: React.FC = (): JSX.Element => {
   const dispatch = useAppDispatch();
+
   const isDiscounted = useIsFrameDiscounted();
+
   const router = useRouter();
   const { source } = router.query;
   const checkoutProduct = useSelector(checkoutProductSelector);
