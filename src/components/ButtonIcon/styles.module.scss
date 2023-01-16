@@ -123,6 +123,11 @@
       width: rem(40px);
       height: rem(40px);
       padding: 0;
+
+      @include mobile {
+        width: rem(34px);
+        height: rem(34px);
+      }
     }
 
     .icon {

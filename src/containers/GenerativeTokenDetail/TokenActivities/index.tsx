@@ -9,7 +9,7 @@ const TokenActivities = () => {
 
   return (
     <div className={s.wrapper}>
-      <Tabs className={s.tabs} defaultActiveKey="activities">
+      <Tabs className={s.tabs} defaultActiveKey="offers">
         <Tab
           tabClassName={s.tab}
           eventKey="offers"

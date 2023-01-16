@@ -33,7 +33,7 @@ type TText = {
     | 'label';
   fontWeight?: 'bold' | 'semibold' | 'medium' | 'regular' | 'light';
   style?: CSSProperties;
-  size?: '12' | '14' | '16' | '18' | '20' | '24' | 'd1' | 'd2' | 'd3';
+  size?: '11' | '12' | '14' | '16' | '18' | '20' | '24' | 'd1' | 'd2' | 'd3';
   color?: string;
   className?: string;
   animOption?: {

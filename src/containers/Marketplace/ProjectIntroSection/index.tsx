@@ -3,7 +3,6 @@ import Heading from '@components/Heading';
 import Link from '@components/Link';
 import { Loading } from '@components/Loading';
 import ProgressBar from '@components/ProgressBar';
-import Skeleton from '@components/Skeleton';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
@@ -12,7 +11,9 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
+import { checkLines } from '@helpers/string';
 import useContractOperation from '@hooks/useContractOperation';
+import useWindowSize from '@hooks/useWindowSize';
 import { IGetProjectDetailResponse } from '@interfaces/api/project';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
@@ -31,7 +32,6 @@ import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
-import { checkLines } from '@helpers/string';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -41,6 +41,7 @@ type Props = {
 
 const ProjectIntroSection = ({ project }: Props) => {
   const { getWalletBalance } = useContext(WalletContext);
+  const { isMobile } = useWindowSize();
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
   const [showMore, setShowMore] = useState(false);
@@ -152,6 +153,7 @@ const ProjectIntroSection = ({ project }: Props) => {
           />
         </div>
       );
+
     if (isProjectDetailPage) {
       return (
         <div className={s.info}>
@@ -167,6 +169,11 @@ const ProjectIntroSection = ({ project }: Props) => {
                 formatAddress(project?.creatorProfile?.walletAddress || '')}
             </Link>
           </Text>
+          {isMobile && (
+            <div>
+              <ThumbnailPreview data={projectDetail as Token} allowVariantion />
+            </div>
+          )}
           {project?.mintingInfo.index !== project?.maxSupply && (
             <ProgressBar
               current={project?.mintingInfo?.index}
@@ -174,7 +181,7 @@ const ProjectIntroSection = ({ project }: Props) => {
               className={s.progressBar}
             />
           )}
-          {project?.status ? (
+          {project?.status && (
             <div className={s.CTA}>
               <ButtonIcon
                 sizes="large"
@@ -193,8 +200,6 @@ const ProjectIntroSection = ({ project }: Props) => {
                 )}
               </ButtonIcon>
             </div>
-          ) : (
-            <></>
           )}
           <div className={s.stats}>
             <div className={s.stats_item}>
@@ -232,65 +237,60 @@ const ProjectIntroSection = ({ project }: Props) => {
             </div>
           </div>
           <div className={s.project_info}>
-            <Text size="18" fontWeight="medium" color="black-06">
+            <div className={s.project_desc}>
+              <Text
+                size="14"
+                color="black-40"
+                fontWeight="medium"
+                className="text-uppercase"
+              >
+                description
+              </Text>
+              <Text
+                size="18"
+                className={s.token_description}
+                style={{ WebkitLineClamp: showMore ? 'unset' : '7' }}
+              >
+                {project?.desc}
+              </Text>
+              {project?.desc && checkLines(project.desc) > 7 && (
+                <>
+                  {!showMore ? (
+                    <Text
+                      as="span"
+                      onClick={() => setShowMore(!showMore)}
+                      fontWeight="semibold"
+                    >
+                      See more
+                    </Text>
+                  ) : (
+                    <Text
+                      as="span"
+                      onClick={() => setShowMore(!showMore)}
+                      fontWeight="semibold"
+                    >
+                      See less
+                    </Text>
+                  )}
+                </>
+              )}
+            </div>
+
+            <Text size="18" color="black-40">
               Created date: {mintedDate}
             </Text>
-            <Text
-              size="18"
-              fontWeight="medium"
-              color="black-06"
-              className={s.owner}
-            >
+            <Text size="18" color="black-40" className={s.project_owner}>
               Collected by:{' '}
-              <Text as="span" size="18" fontWeight="semibold">
+              <Text as="span" size="18">
                 {project?.stats?.uniqueOwnerCount === 1
                   ? `${project?.stats?.uniqueOwnerCount} owner`
                   : `${project?.stats?.uniqueOwnerCount}+ owners`}
               </Text>
             </Text>
-            <Text
-              size="14"
-              color="black-40"
-              fontWeight="bold"
-              className="text-uppercase"
-            >
-              description
-            </Text>
-            <Text
-              size="18"
-              fontWeight="medium"
-              className={s.token_description}
-              style={{ WebkitLineClamp: showMore ? 'unset' : '7' }}
-            >
-              {project?.desc}
-            </Text>
-            {project?.desc && checkLines(project.desc) > 7 && (
-              <>
-                {!showMore ? (
-                  <Text
-                    as="span"
-                    onClick={() => setShowMore(!showMore)}
-                    fontWeight="semibold"
-                  >
-                    See more
-                  </Text>
-                ) : (
-                  <Text
-                    as="span"
-                    onClick={() => setShowMore(!showMore)}
-                    fontWeight="semibold"
-                  >
-                    See less
-                  </Text>
-                )}
-              </>
-            )}
           </div>
-          <div className="divider"></div>
+          {!isMobile && <div className="divider"></div>}
           <div className={s.license}>
-            <Text size="14" fontWeight="semibold">
-              License: {project?.license}
-            </Text>
+            <Text size="14">License: {project?.license}</Text>
           </div>
         </div>
       );
@@ -301,7 +301,6 @@ const ProjectIntroSection = ({ project }: Props) => {
             Recent Collection
           </Text>
           <Heading as="h4" fontWeight="semibold">
-            <Skeleton width={200} height={44} isLoaded={!!project?.name} />
             {project?.name}
           </Heading>
           <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
@@ -313,17 +312,17 @@ const ProjectIntroSection = ({ project }: Props) => {
                 formatAddress(project?.creatorProfile?.walletAddress || '')}
             </Link>
           </Text>
+          {isMobile && (
+            <div>
+              <ThumbnailPreview data={projectDetail as Token} allowVariantion />
+            </div>
+          )}
           <ProgressBar
             current={project?.mintingInfo?.index}
             total={project?.maxSupply}
             className={s.progressBar}
           />
           <div className={s.CTA}>
-            <Skeleton
-              width={200}
-              height={56}
-              isLoaded={!(typeof project?.status === 'undefined')}
-            />
             {project?.status && (
               <>
                 <ButtonIcon
@@ -356,46 +355,24 @@ const ProjectIntroSection = ({ project }: Props) => {
               </Link>
             )}
           </div>
-          <div className="">
-            <Text size="18" fontWeight="medium" color="black-06">
+          {project?.desc && project?.desc.length > 0 && (
+            <div className={s.description}>
+              <Text size="18">{project?.desc}</Text>
+            </div>
+          )}
+          <div>
+            <Text size="18" color="black-40">
               Created date: {mintedDate}
             </Text>
-            <Text
-              size="18"
-              fontWeight="medium"
-              color="black-06"
-              className={s.owner}
-            >
+            <Text size="18" color="black-40" className={s.owner}>
               Collected by:{' '}
-              <Text as="span" size="18" fontWeight="semibold">
+              <Text as="span" size="18">
                 {project?.stats?.uniqueOwnerCount === 1
                   ? `${project?.stats?.uniqueOwnerCount} owner`
                   : `${project?.stats?.uniqueOwnerCount}+ owners`}
               </Text>
-              {/* <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
-                {tokenData?.owner?.displayName ||
-                  formatAddress(
-                    tokenData?.ownerAddr ||
-                      tokenData?.owner?.walletAddress ||
-                      ''
-                  )}
-              </Link>
-              {isTokenOwner && ' (by you)'} */}
             </Text>
           </div>
-          {project?.desc && project?.desc.length > 0 ? (
-            <div className={s.description}>
-              <Text size="18" fontWeight="medium">
-                {project?.desc}
-              </Text>
-            </div>
-          ) : (
-            <div className={s.description}>
-              <Skeleton width={400} height={28} />
-              <Skeleton width={400} height={28} />
-              <Skeleton width={200} height={28} />
-            </div>
-          )}
         </div>
       );
     }
@@ -421,12 +398,14 @@ const ProjectIntroSection = ({ project }: Props) => {
   }, [project?.id]);
 
   return (
-    <div className={s.wrapper} style={{ marginBottom: '100px' }}>
+    <div className={s.wrapper}>
       {renderLeftContent()}
       <div></div>
-      <div>
-        <ThumbnailPreview data={projectDetail as Token} allowVariantion />
-      </div>
+      {!isMobile && (
+        <div>
+          <ThumbnailPreview data={projectDetail as Token} allowVariantion />
+        </div>
+      )}
     </div>
   );
 };

@@ -105,8 +105,8 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
       <Container>
         <ProjectIntroSection project={projectInfo} />
         <ClientOnly>
-          <Tabs className={styles.tabs} defaultActiveKey="items">
-            <Tab tabClassName={styles.tab} eventKey="items" title="Items">
+          <Tabs className={styles.tabs} defaultActiveKey="outputs">
+            <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">
               <div className={styles.filterWrapper}>
                 <div className={styles.filter_buy}>
                   <Text size="18" fontWeight="medium">

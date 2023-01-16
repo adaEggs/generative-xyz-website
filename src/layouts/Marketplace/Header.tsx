@@ -26,6 +26,8 @@ import { useSelector } from 'react-redux';
 import styles from './Header.module.scss';
 import { getFaucetLink, isTestnet } from '@utils/chain';
 import QuickBuy from '@layouts/Marketplace/QuickBuy';
+import querystring from 'query-string';
+import _isEmpty from 'lodash/isEmpty';
 
 const LOG_PREFIX = 'MarketplaceHeader';
 
@@ -64,6 +66,7 @@ const Header: React.FC<IProp> = ({
   const { connect, disconnect, walletBalance } = useContext(WalletContext);
   const user = useAppSelector(getUserSelector);
   const router = useRouter();
+  const { query } = router;
   const activePath = router.asPath.split('/')[1];
   const [openProfile, setOpenProfile] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -93,6 +96,13 @@ const Header: React.FC<IProp> = ({
       },
     },
   ];
+
+  const getUrlWithQueryParams = (url: string): string => {
+    if (_isEmpty(query)) {
+      return url;
+    }
+    return `${url}?${querystring.stringify(query)}`;
+  };
 
   const handleConnectWallet = async (): Promise<void> => {
     try {
@@ -201,10 +211,6 @@ const Header: React.FC<IProp> = ({
   };
 
   useEffect(() => {
-    // const lcStoreFaucet = localStorage.getItem('close_faucet');
-    // setIsFaucet(!lcStoreFaucet && isShowFaucet);
-    // setIsFaucet(true);
-
     window.addEventListener('scroll', onWinScrolling);
     return () => {
       if (refHeader.current)
@@ -249,12 +255,17 @@ const Header: React.FC<IProp> = ({
                         )}
                         key={`header-${item.id}`}
                       >
-                        <Link href={item.route}>{item.name}</Link>
+                        <Link href={getUrlWithQueryParams(item.route)}>
+                          {item.name}
+                        </Link>
                       </li>
                     ))}
                 </ul>
 
-                <Link className={styles.logo} href={ROUTE_PATH.HOME}>
+                <Link
+                  className={styles.logo}
+                  href={getUrlWithQueryParams(ROUTE_PATH.HOME)}
+                >
                   <Image
                     className={styles.header_logo}
                     src={LOGO_JPG[theme]}
