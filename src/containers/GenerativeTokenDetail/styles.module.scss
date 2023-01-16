@@ -1,17 +1,26 @@
 .wrapper {
-  display: grid;
-  grid-template-columns: rem(420px) 1px 1fr;
   color: $black-100;
-  margin-top: rem(72);
-  margin-bottom: rem(100px);
-  height: calc(100vh - #{rem(260px)});
+  margin-top: rem(32px);
+  margin-bottom: rem(48px);
+
+  @include min-tablet {
+    margin-top: rem(60px);
+    margin-bottom: rem(90px);
+
+    display: grid;
+    grid-template-columns: rem(420px) 1px 1fr;
+    height: calc(100vh - #{rem(260px)});
+  }
 }
 
 .itemInfo {
-  overflow-y: scroll;
-  padding-right: rem(60px);
   position: relative;
   height: 100%;
+
+  @include min-tablet {
+    overflow-y: scroll;
+    padding-right: rem(60px);
+  }
 
   &::-webkit-scrollbar {
     width: 5px;
@@ -100,7 +109,7 @@
 }
 
 .owner {
-  margin-bottom: rem(24px);
+  margin-bottom: rem(34px);
 }
 
 .token_description {

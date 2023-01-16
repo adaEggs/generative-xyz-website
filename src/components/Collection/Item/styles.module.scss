@@ -7,6 +7,10 @@
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 2px;
     transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
+    height: 100%;
+    @include mobile {
+      padding: rem(8px);
+    }
 
     &:hover {
       box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.15);
@@ -35,27 +39,29 @@
   }
 
   &_info {
-    &_title {
-      display: block;
-      margin-top: rem(10px);
+    &.desktop {
+      .collectionCard_info_title {
+        display: block;
+        margin-top: rem(10px);
 
-      h4 {
-        font-size: rem(24px);
-        line-height: rem(34px);
-        font-weight: 600;
+        h4 {
+          font-size: rem(24px);
+          line-height: rem(34px);
+          font-weight: 600;
+        }
       }
-    }
 
-    &_stack {
-      justify-content: space-between;
-    }
-  }
+      .collectionCard_info_stack {
+        justify-content: space-between;
+      }
 
-  &_listing {
-    justify-content: space-between;
+      .collectionCard_info_listing {
+        justify-content: space-between;
 
-    &_owner {
-      color: $black-40;
+        &_owner {
+          color: $black-40;
+        }
+      }
     }
   }
 
