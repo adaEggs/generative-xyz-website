@@ -1,27 +1,34 @@
 import { LogLevel } from '@enums/log-level';
-import { useAppDispatch } from '@redux';
-import { setCheckoutProduct } from '@redux/general/action';
+// import { useAppDispatch } from '@redux';
+// import { setCheckoutProduct } from '@redux/general/action';
 import { getProductList } from '@services/api/product';
 import log from '@utils/logger';
 import { default as classNames, default as cn } from 'classnames';
 import { useState, useContext } from 'react';
 import { AnimHeading } from 'src/animations/heading';
 import useAsyncEffect from 'use-async-effect';
-import { FrameItem } from '../frame-item';
+// import { FrameItem } from '../frame-item';
 import s from './prices.module.scss';
 import Button from '@components/Button';
 import { CDN_URL } from '@constants/config';
 import { LoadingContext } from '@contexts/loading-context';
+import { useRouter } from 'next/router';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const LOG_PREFIX = 'Prices';
 
 export const Prices = (): JSX.Element => {
   const { registerLoading, unRegisterLoading } = useContext(LoadingContext);
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
+  const router = useRouter();
   const [products, setProducts] = useState<IFrame[]>([]);
 
-  const openCheckoutPopup = (product: IFrame) => {
-    dispatch(setCheckoutProduct(product));
+  // const openCheckoutPopup = (product: IFrame) => {
+  //   dispatch(setCheckoutProduct(product));
+  // };
+
+  const openOrderNow = () => {
+    router.push(ROUTE_PATH.ORDER_NOW);
   };
 
   useAsyncEffect(async () => {
@@ -75,7 +82,10 @@ export const Prices = (): JSX.Element => {
                         'image__fit'
                       )}
                     >
-                      <img src={products[0].image} alt="ethf4d1101ffd" />
+                      <img
+                        src={`${CDN_URL}/pages/home/icons/55.svg`}
+                        alt="ethf4d1101ffd"
+                      />
                     </div>
                     <div
                       className={cn(
@@ -108,7 +118,10 @@ export const Prices = (): JSX.Element => {
                         'image__fit'
                       )}
                     >
-                      <img src={products[2].image_left} alt="ethf4d1101ffd" />
+                      <img
+                        src={`${CDN_URL}/pages/home/icons/30.svg`}
+                        alt="ethf4d1101ffd"
+                      />
                     </div>
                     <div
                       className={cn(
@@ -147,7 +160,7 @@ export const Prices = (): JSX.Element => {
                       )}
                     >
                       <img
-                        src={products[1].image_left || products[1].image}
+                        src={`${CDN_URL}/pages/home/icons/43.svg`}
                         alt="ethf4d1101ffd"
                       />
                     </div>
@@ -187,11 +200,8 @@ export const Prices = (): JSX.Element => {
                         {products[0].eth_price || products[0].price} ETH
                       </span>
                     </div>
-                    <Button
-                      className={s.buy_now}
-                      onClick={() => openCheckoutPopup(products[0])}
-                    >
-                      Buy
+                    <Button className={s.buy_now} onClick={openOrderNow}>
+                      Order Now
                     </Button>
                   </td>
                   <td>
@@ -200,11 +210,8 @@ export const Prices = (): JSX.Element => {
                         {products[2].eth_price || products[2].price} ETH
                       </span>
                     </div>
-                    <Button
-                      className={s.buy_now}
-                      onClick={() => openCheckoutPopup(products[2])}
-                    >
-                      Buy
+                    <Button className={s.buy_now} onClick={openOrderNow}>
+                      Order Now
                     </Button>
                   </td>
                   <td>
@@ -213,11 +220,8 @@ export const Prices = (): JSX.Element => {
                         {products[1].eth_price || products[1].price} ETH
                       </span>
                     </div>
-                    <Button
-                      className={s.buy_now}
-                      onClick={() => openCheckoutPopup(products[1])}
-                    >
-                      Buy
+                    <Button className={s.buy_now} onClick={openOrderNow}>
+                      Order Now
                     </Button>
                   </td>
                 </tr>
@@ -572,28 +576,28 @@ export const Prices = (): JSX.Element => {
           </div>
         </div>
 
-        <div
-          className={classNames(s.home_rowFrame, 'row justify-content-center')}
-        >
-          <div className="col-xl-4 col-sm-6 col-12">
-            <FrameItem
-              data={products[0]}
-              openCheckoutPopup={() => openCheckoutPopup(products[0])}
-            />
-          </div>
-          <div className="col-xl-4 col-sm-6 col-12">
-            <FrameItem
-              data={products[2]}
-              openCheckoutPopup={() => openCheckoutPopup(products[2])}
-            />
-          </div>
-          <div className="col-xl-4 col-sm-6 col-12">
-            <FrameItem
-              data={products[1]}
-              openCheckoutPopup={() => openCheckoutPopup(products[1])}
-            />
-          </div>
-        </div>
+        {/*<div*/}
+        {/*  className={classNames(s.home_rowFrame, 'row justify-content-center')}*/}
+        {/*>*/}
+        {/*  <div className="col-xl-4 col-sm-6 col-12">*/}
+        {/*    <FrameItem*/}
+        {/*      data={products[0]}*/}
+        {/*      openCheckoutPopup={() => openCheckoutPopup(products[0])}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*  <div className="col-xl-4 col-sm-6 col-12">*/}
+        {/*    <FrameItem*/}
+        {/*      data={products[2]}*/}
+        {/*      openCheckoutPopup={() => openCheckoutPopup(products[2])}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*  <div className="col-xl-4 col-sm-6 col-12">*/}
+        {/*    <FrameItem*/}
+        {/*      data={products[1]}*/}
+        {/*      openCheckoutPopup={() => openCheckoutPopup(products[1])}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*</div>*/}
       </div>
     </div>
   );

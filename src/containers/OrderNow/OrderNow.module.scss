@@ -1,0 +1,28 @@
+.orderNow {
+  margin-top: var(--spacing-supper);
+
+  &_back {
+    text-decoration: none;
+    margin-bottom: rem(10px);
+
+    span {
+      transition: color .4s $easeOutCubic;
+
+    }
+
+    &:hover {
+      text-decoration: underline;
+
+      span {
+        color: $primary-brand
+      }
+    }
+  }
+
+  &_rowFrame {
+    margin-top: rem(24px);
+    @include min-tablet {
+      margin-top: rem(48px);
+    }
+  }
+}

@@ -9,6 +9,7 @@ import Countries from '@constants/country-list.json';
 import StateOfUS from '@constants/state-of-us.json';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
+import useIsFrameDiscounted from '@hooks/useIsFrameDiscounted';
 import { setCheckoutProduct } from '@redux/general/action';
 import { checkoutProduct as checkoutProductSelector } from '@redux/general/selector';
 import { useAppDispatch } from '@redux/index';
@@ -19,6 +20,7 @@ import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import s from './CheckoutModal.module.scss';
+import Text from '@components/Text';
 
 interface IPropState {
   name: string;
@@ -37,6 +39,7 @@ interface ICart extends IFrame {
 
 const CheckoutModal: React.FC = (): JSX.Element => {
   const dispatch = useAppDispatch();
+  const isDiscounted = useIsFrameDiscounted();
   const router = useRouter();
   const { source } = router.query;
   const checkoutProduct = useSelector(checkoutProductSelector);
@@ -67,6 +70,12 @@ const CheckoutModal: React.FC = (): JSX.Element => {
     country: '',
   });
 
+  const getDisCount = useMemo(() => (isDiscounted ? 0.1 : 0), [isDiscounted]);
+  const getDisCountPrice = useMemo(
+    () => (isDiscounted ? 0.1 : 0) * (cart.eth_price || cart.price || 0),
+    [isDiscounted]
+  );
+
   const selectedCountry = useMemo(
     () => Countries.find(item => item.key === shippingInfo.country),
     [shippingInfo.country]
@@ -84,7 +93,20 @@ const CheckoutModal: React.FC = (): JSX.Element => {
 
   const totalPrice = useMemo(
     () =>
-      Math.round((cart.eth_price || cart.price || 0) * cart.qty * 10e9) / 10e9,
+      Math.round(
+        (1 - getDisCount) *
+          (cart.eth_price || cart.price || 0) *
+          cart.qty *
+          10e9
+      ) / 10e9,
+    [cart]
+  );
+
+  const cartItemPrice = useMemo(
+    () =>
+      Math.round(
+        (1 - getDisCount) * (cart.eth_price || cart.price || 0) * 10e9
+      ) / 10e9,
     [cart]
   );
 
@@ -196,6 +218,24 @@ const CheckoutModal: React.FC = (): JSX.Element => {
       <Modal.Header closeButton />
       <Modal.Body>
         <div>
+          {isDiscounted && (
+            <div className={s.CheckoutModal_discount}>
+              <img
+                className={s.CheckoutModal_discount_icon}
+                src={`${CDN_URL}/pages/home/icons/ic-check.svg`}
+                alt="ic-check"
+              />
+              <Text
+                as="span"
+                size={'16'}
+                fontWeight={'medium'}
+                color={'green-c'}
+                className={s.CheckoutModal_discount_text}
+              >
+                10% discount granted by the Gen Art community!
+              </Text>
+            </div>
+          )}
           <div className={s.CheckoutModal_title}>Buy Gen-Frame</div>
           <div className={s.CheckoutModal_optionsContainer}>
             <div key={cart?.id} className={s.CheckoutModal_optionItem}>
@@ -206,7 +246,14 @@ const CheckoutModal: React.FC = (): JSX.Element => {
                     {cart?.name}
                   </div>
                   <div className={s.CheckoutModal_optionItemPrice}>
-                    {`${cart?.eth_price || cart?.price} ETH`}
+                    {isDiscounted && (
+                      <span
+                        className={s.CheckoutModal_optionItemPrice_disCount}
+                      >{`${cart?.eth_price || cart?.price} ETH`}</span>
+                    )}
+                    <span
+                      className={s.CheckoutModal_optionItemPrice_val}
+                    >{`${cartItemPrice} ETH`}</span>
                   </div>
                 </div>
                 <InputQuantity
@@ -356,6 +403,12 @@ const CheckoutModal: React.FC = (): JSX.Element => {
             <div>Items</div>
             <div className={s.highlight}>{`${totalPrice} ETH`}</div>
           </div>
+          {isDiscounted && (
+            <div className={s.CheckoutModal_summaryLine}>
+              <div>Partner discount</div>
+              <div className={s.highlight}>{`${getDisCountPrice} ETH`}</div>
+            </div>
+          )}
           <div className={s.CheckoutModal_summaryLine}>
             <div>
               Shipping
@@ -365,6 +418,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
             </div>
             <div className={s.highlight}>FREE</div>
           </div>
+
           <div className={s.CheckoutModal_summaryLine}>
             <div>Payment Total:</div>
             <div className={s.CheckoutModal_totalPrice}>

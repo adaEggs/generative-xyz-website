@@ -194,7 +194,7 @@ const Header: React.FC<IProp> = ({
       if (!refData.current.isHide) {
         hideMenu();
       }
-    } else {
+    } else if (!isDisplay) {
       if (refData.current.isHide) {
         showMenu();
       }
@@ -346,7 +346,7 @@ const Header: React.FC<IProp> = ({
         )}
         <div className="divider"></div>
       </header>
-      {isDisplay && <QuickBuy isShow={isHide && !disabledMenu} />}
+      {isDisplay && <QuickBuy isShow={isHide} />}
     </>
   );
 };

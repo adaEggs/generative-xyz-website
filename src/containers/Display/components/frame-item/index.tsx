@@ -14,7 +14,10 @@ export const FrameItem = ({ data, openCheckoutPopup }: IProp): JSX.Element => {
   return (
     <div className={s.frameItem}>
       <div className={`${s.frameItem_inner}`}>
-        <div className={`${s.frameItem_img} image__fit`}>
+        <div
+          className={`${s.frameItem_img} image__fit`}
+          onClick={openCheckoutPopup}
+        >
           <img src={data.image} alt="8-ethf4d1101ffd" />
         </div>
         <p className="desc__medium">{data.name}</p>
