@@ -31,6 +31,7 @@ import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
+import { checkLines } from '@helpers/string';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -42,9 +43,10 @@ const ProjectIntroSection = ({ project }: Props) => {
   const { getWalletBalance } = useContext(WalletContext);
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
+  const [showMore, setShowMore] = useState(false);
+
   const [marketplaceStats, setMarketplaceStats] =
     useState<MarketplaceStats | null>(null);
-  const [showMore, _] = useState(false);
   const mintedTime = project?.mintedTime;
   let mintDate = dayjs();
   if (mintedTime) {
@@ -229,7 +231,7 @@ const ProjectIntroSection = ({ project }: Props) => {
               </Heading>
             </div>
           </div>
-          <div>
+          <div className={s.project_info}>
             <Text size="18" fontWeight="medium" color="black-06">
               Created date: {mintedDate}
             </Text>
@@ -262,82 +264,27 @@ const ProjectIntroSection = ({ project }: Props) => {
             >
               {project?.desc}
             </Text>
-            {/* {!showMore ? (
-              <Text
-                as="span"
-                onClick={() => setShowMore(!showMore)}
-                fontWeight="semibold"
-              >
-                See more
-              </Text>
-            ) : (
-              <Text
-                as="span"
-                onClick={() => setShowMore(!showMore)}
-                fontWeight="semibold"
-              >
-                See less
-              </Text>
-            )} */}
-            {/* {project?.desc && (
-              <Accordion
-                header={'DESCRIPTION'}
-                content={
-                  <Text size="18" fontWeight="semibold">
-                    {project?.desc}
-                  </Text>
-                }
-              ></Accordion>
-            )}
-            <Accordion
-              header={'Collected by'}
-              content={
-                <Text size="18" fontWeight="semibold">
-                  {project?.stats?.uniqueOwnerCount === 1
-                    ? `${project?.stats?.uniqueOwnerCount} owner`
-                    : `${project?.stats?.uniqueOwnerCount}+ owners`}
-                </Text>
-              }
-            ></Accordion>
-            <Accordion
-              header={'Creator'}
-              content={
-                <>
-                  <Link
-                    href={
-                      user?.walletAddress === project?.creatorAddr
-                        ? ROUTE_PATH.PROFILE
-                        : `${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`
-                    }
+            {project?.desc && checkLines(project.desc) > 7 && (
+              <>
+                {!showMore ? (
+                  <Text
+                    as="span"
+                    onClick={() => setShowMore(!showMore)}
+                    fontWeight="semibold"
                   >
-                    <Text as="span" size="18" fontWeight="semibold">
-                      {project?.creatorProfile?.displayName ||
-                        formatAddress(
-                          project?.creatorAddr ||
-                            project?.creatorProfile?.walletAddress ||
-                            ''
-                        )}
-                    </Text>
-                  </Link>
-                  {user &&
-                    user?.walletAddress &&
-                    user?.walletAddress === project?.creatorAddr && (
-                      <Text as="span" size="18" fontWeight="semibold">
-                        {' '}
-                        (by you)
-                      </Text>
-                    )}
-                </>
-              }
-            ></Accordion>
-            <Accordion
-              header={'Created date'}
-              content={
-                <Text size="18" fontWeight="semibold">
-                  {mintedDate}
-                </Text>
-              }
-            ></Accordion> */}
+                    See more
+                  </Text>
+                ) : (
+                  <Text
+                    as="span"
+                    onClick={() => setShowMore(!showMore)}
+                    fontWeight="semibold"
+                  >
+                    See less
+                  </Text>
+                )}
+              </>
+            )}
           </div>
           <div className="divider"></div>
           <div className={s.license}>

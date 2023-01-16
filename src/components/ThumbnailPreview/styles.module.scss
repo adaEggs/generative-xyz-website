@@ -14,7 +14,7 @@
   }
 }
 .thumbnail_iframe {
-  height: calc(100vh - #{rem(260px)});
+  @include fullViewScreen;
 }
 .actionButtons {
   justify-content: center;
