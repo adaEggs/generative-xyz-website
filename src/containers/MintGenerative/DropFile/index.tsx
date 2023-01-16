@@ -1,130 +1,77 @@
 import s from './styles.module.scss';
 import cs from 'classnames';
-import { useCallback, useMemo, useState } from 'react';
-import { Accept, ErrorCode, useDropzone } from 'react-dropzone';
+import { FileUploader } from 'react-drag-drop-files';
+import { useState } from 'react';
 import { prettyPrintBytes } from '@utils/units';
 import { APP_MAX_FILESIZE, CDN_URL } from '@constants/config';
 import SvgInset from '@components/SvgInset';
 
-const getPrettyError = (code: ErrorCode): string => {
-  switch (code) {
-    case ErrorCode.FileInvalidType:
-      return 'Invalid format';
-    case ErrorCode.FileTooLarge:
-      return 'File is too large';
-    case ErrorCode.FileTooSmall:
-      return 'File is too small';
-    case ErrorCode.TooManyFiles:
-      return 'There are too many files';
-    default:
-      return 'Unknown error';
-  }
-};
-
 export interface IProps {
-  acceptedFileType?: Accept;
-  files?: File[] | null;
-  onChange: (files: File[] | null) => void;
-  className?: string;
-  onClick?: () => void;
-  maxSizeMb?: number;
+  className: string;
+  acceptedFileType?: Array<string>;
+  fileOrFiles?: File[] | null;
+  onChange: (files: File | null) => void;
 }
 
 const DropFile: React.FC<IProps> = ({
   acceptedFileType,
-  files,
-  onChange,
-  onClick,
+  fileOrFiles,
   className,
-  maxSizeMb = parseInt(APP_MAX_FILESIZE),
+  onChange,
 }: IProps) => {
+  const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const onDrop = useCallback(
-    (acceptedFiles: Array<File>) => {
-      if (acceptedFiles.length > 0) {
-        onChange(acceptedFiles);
-        setError(null);
-      } else {
-        onChange(null);
-        setError('Format is not supported');
-      }
-    },
-    [onChange]
-  );
+  const onChangeFile = (file: File): void => {
+    setFile(file);
+    setError('');
+    onChange(file);
+  };
 
-  const { getRootProps, getInputProps, isDragActive, fileRejections } =
-    useDropzone({
-      onDrop,
-      accept: acceptedFileType,
-      maxFiles: 1,
-      multiple: false,
-      maxSize: maxSizeMb * 1024 * 1024,
-    });
+  const onSizeError = (): void => {
+    setError('File size error, maximum file size is 5MB');
+  };
 
-  const rootProps = useMemo(() => {
-    const props = getRootProps();
-    if (onClick) {
-      props.onClick = onClick;
-    }
-    return props;
-  }, [getRootProps, onClick]);
+  const onTypeError = (): void => {
+    setError('Invalid file, supported file extensions is ZIP');
+  };
 
   return (
     <div
-      {...rootProps}
       className={cs(s.dropFile, className, {
-        [s.dropFile__drag]: isDragActive,
+        [s.dropFile__drag]: false,
         [s.dropFile__error]: !!error,
       })}
-      contentEditable={false}
     >
-      <input {...getInputProps()} />
-      <div>
-        <div className={s.dropZone}>
+      <FileUploader
+        handleChange={onChangeFile}
+        name={'zipFileUploader'}
+        maxSize={parseInt(APP_MAX_FILESIZE, 10)}
+        minSize={0}
+        types={acceptedFileType}
+        onSizeError={onSizeError}
+        onTypeError={onTypeError}
+        fileOrFiles={fileOrFiles}
+        classes={s.dropZone}
+      >
+        <div>
           <SvgInset
             size={100}
             className={s.dropZoneThumbnail}
             svgUrl={`${CDN_URL}/images/docs.svg`}
           ></SvgInset>
-          {files ? (
+          {file ? (
             <p className={s.dropZoneDescription}>
-              {files
-                .map(f => `${f.name} (${prettyPrintBytes(f.size)})`)
-                .join(', ')}
+              {`${file.name} (${prettyPrintBytes(file.size)})`}
             </p>
           ) : (
-            <>
-              {error ? (
-                <>
-                  {fileRejections?.length > 0 ? (
-                    fileRejections.map(({ file, errors }) => (
-                      <p
-                        key={file.name}
-                        className={cs(s.dropZoneDescription, s.errorText)}
-                      >
-                        {file.name}:{' '}
-                        {errors
-                          .map(e => getPrettyError(e.code as ErrorCode))
-                          .join(',')}
-                        {'.'}
-                      </p>
-                    ))
-                  ) : (
-                    <p className={cs(s.dropZoneDescription, s.errorText)}>
-                      {error}
-                    </p>
-                  )}
-                </>
-              ) : (
-                <p className={s.dropZoneDescription}>
-                  {isDragActive ? 'Dragging' : 'Upload your ZIP file here.'}
-                </p>
-              )}
-            </>
+            <p className={s.dropZoneDescription}>Upload your ZIP file here.</p>
+          )}
+          {error && (
+            <p className={cs(s.dropZoneDescription, s.errorText)}>{error}</p>
           )}
         </div>
-      </div>
+      </FileUploader>
     </div>
   );
 };
