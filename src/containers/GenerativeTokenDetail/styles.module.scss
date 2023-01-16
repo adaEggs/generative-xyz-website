@@ -3,7 +3,7 @@
   grid-template-columns: rem(420px) 1px 1fr;
   color: $black-100;
   margin-top: rem(72);
-  margin-bottom: rem(100px);
+  // margin-bottom: rem(100px);
   height: calc(100vh - #{rem(260px)});
 }
 
@@ -100,7 +100,7 @@
 }
 
 .owner {
-  margin-bottom: rem(24px);
+  margin-bottom: rem(34px);
 }
 
 .token_description {

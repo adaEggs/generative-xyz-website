@@ -63,7 +63,7 @@
 }
 
 .tab {
-  font-weight: 700;
+  font-weight: 500;
   font-size: 18px;
   line-height: 28px;
   border: none !important;
@@ -81,15 +81,34 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  // flex-wrap: wrap;
+
+  @include mobile {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
 
   .filter_buy {
     display: flex;
-    min-width: rem(200px);
+    min-width: rem(150px);
     justify-content: space-between;
+
+    @include mobile {
+      min-width: rem(120px);
+    }
   }
 
   .filter_sort {
     flex: 1;
+    width: 100%;
+
+    @include mobile {
+      flex-direction: column;
+
+      > div {
+        width: 100%;
+      }
+    }
   }
 }
 
@@ -99,8 +118,13 @@
 }
 
 .tokenList {
-  padding-top: 48px;
-  padding-bottom: 90px;
+  padding-top: rem(48px);
+  padding-bottom: rem(90px);
+
+  @include mobile {
+    padding-top: rem(20px);
+    padding-bottom: rem(64px);
+  }
 }
 
 .projectDetail_loading {
