@@ -40,7 +40,7 @@ export const UserInfo = (): JSX.Element => {
       </div>
       <Container>
         <Row>
-          <Col xs={8}>
+          <Col md={8}>
             <div className={s.userInfo_content}>
               <div className={s.userInfo_content_avatar}>
                 <Image
@@ -75,7 +75,9 @@ export const UserInfo = (): JSX.Element => {
                         startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}
                         onClick={() => router.push(ROUTE_PATH.EDIT_PROFILE)}
                       >
-                        Edit profile
+                        <Text fontWeight="medium" as="span">
+                          Edit profile
+                        </Text>
                       </ButtonIcon>
                     </div>
                     <div className={s.offerSetting}>
@@ -84,7 +86,9 @@ export const UserInfo = (): JSX.Element => {
                         variants={'ghost'}
                         startIcon={<SvgInset svgUrl={IC_OFFER_SETTING} />}
                       >
-                        Offer setting
+                        <Text fontWeight="medium" as="span">
+                          Offer setting
+                        </Text>
                       </ButtonIcon>
                     </div>
                   </>
