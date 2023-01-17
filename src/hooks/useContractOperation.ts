@@ -14,6 +14,8 @@ import { WalletError } from '@enums/wallet-error';
 import { METAMASK_DOWNLOAD_PAGE } from '@constants/common';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
+import { isMobile } from '@helpers/anim.helpers';
+import { openMetamaskDeeplink } from '@utils/metamask';
 
 const LOG_PREFIX = 'useContractOperation';
 
@@ -51,6 +53,11 @@ const useContractOperation = <
   };
 
   const call = async (params: P): Promise<R | null> => {
+    if (isMobile()) {
+      openMetamaskDeeplink();
+      return null;
+    }
+
     setIsLoading(true);
     setIsSuccess(false);
     setIsError(false);

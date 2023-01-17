@@ -9,6 +9,7 @@ import COUNTRY_LIST from '@constants/country-list.json';
 import StateOfUS from '@constants/state-of-us.json';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
+import useIsFrameDiscounted from '@hooks/useIsFrameDiscounted';
 import { setCheckoutProduct } from '@redux/general/action';
 import { checkoutProduct as checkoutProductSelector } from '@redux/general/selector';
 import { useAppDispatch } from '@redux/index';
@@ -40,7 +41,7 @@ interface ICart extends IFrame {
 const CheckoutModal: React.FC = (): JSX.Element => {
   const dispatch = useAppDispatch();
   const user = useSelector(getUserSelector);
-  const isDiscounted = true; //useIsFrameDiscounted();
+  const isDiscounted = useIsFrameDiscounted();
 
   const router = useRouter();
   const { source } = router.query;

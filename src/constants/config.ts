@@ -31,5 +31,6 @@ export const SERVICE_FEE = 2.5 / 100;
 
 // Discount
 export const PRINTS_REQUIRED_TO_DISCOUNT = 5000;
+export const NFT_REQUIRED_TO_DISCOUNT = 1;
 
 /* eslint-enable @typescript-eslint/no-non-null-assertion */
