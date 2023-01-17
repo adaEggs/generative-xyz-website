@@ -149,7 +149,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                     onBlur={handleBlur}
                     value={values.name}
                     className={s.input}
-                    placeholder="Provide a detailed description of your item."
+                    placeholder="Give your collection a name that’s easy to remember."
                   />
                   {errors.name && touched.name && (
                     <p className={s.error}>{errors.name}</p>

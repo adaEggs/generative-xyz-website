@@ -7,24 +7,31 @@ import { AnimParallax } from '@animations/parallax';
 import { AnimFade } from '@animations/fade';
 import classNames from 'classnames';
 import { AnimHeading } from '@animations/heading';
-import { useAppDispatch } from '@redux';
-import { setIsScrolling } from '@redux/general/action';
+// import { useAppDispatch } from '@redux';
+// import { setIsScrolling } from '@redux/general/action';
 import { CDN_URL } from '@constants/config';
+import { ROUTE_PATH } from '@constants/route-path';
+import { useRouter } from 'next/router';
 
 export const SectionHero = (): JSX.Element => {
-  const dispatch = useAppDispatch();
-  const scrollTo = () => {
-    dispatch(setIsScrolling(true));
-    gsap.to(window, {
-      scrollTo: '#tech-spec',
-      duration: 0.6,
-      ease: 'power3.inOut',
-      onComplete: () => {
-        setTimeout(() => {
-          dispatch(setIsScrolling(false));
-        }, 1500);
-      },
-    });
+  const router = useRouter();
+  // const dispatch = useAppDispatch();
+  // const scrollTo = () => {
+  //   dispatch(setIsScrolling(true));
+  //   gsap.to(window, {
+  //     scrollTo: '#tech-spec',
+  //     duration: 0.6,
+  //     ease: 'power3.inOut',
+  //     onComplete: () => {
+  //       setTimeout(() => {
+  //         dispatch(setIsScrolling(false));
+  //       }, 1500);
+  //     },
+  //   });
+  // };
+
+  const onClick = () => {
+    router.push(ROUTE_PATH.ORDER_NOW);
   };
 
   useEffect(() => {
@@ -70,7 +77,7 @@ export const SectionHero = (): JSX.Element => {
                 size="xl"
                 variant="cta-anim"
                 className={classNames(s.Home_video_content_ctas_orderBtn)}
-                onClick={scrollTo}
+                onClick={onClick}
               >
                 <span className="text">Order Now</span>
               </Button>

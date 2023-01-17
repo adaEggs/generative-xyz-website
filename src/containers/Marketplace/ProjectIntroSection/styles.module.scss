@@ -72,13 +72,13 @@
 
 .CTA {
   display: flex;
-  margin-bottom: rem(30px);
+  margin-bottom: rem(24px);
   gap: rem(24px);
   flex-wrap: wrap;
   align-items: center;
 
   .mint_btn {
-    min-width: rem(218px);
+    width: fit-content;
     justify-content: center;
 
     @include mobile {
@@ -132,10 +132,6 @@
   }
 }
 
-.progressBar {
-  margin-bottom: rem(28px);
-}
-
 .accordion_list {
   display: flex;
   flex-direction: column;
@@ -145,9 +141,9 @@
 
 .stats {
   display: flex;
-  column-gap: rem(32px);
+  column-gap: rem(69px);
   row-gap: rem(6px);
-  margin-bottom: rem(38px);
+  margin-bottom: rem(24px);
   flex-wrap: wrap;
 
   @include mobile {

@@ -11,11 +11,7 @@ import { Container } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
 
-interface IProp {
-  isShow: boolean;
-}
-
-const QuickBuy: React.FC<IProp> = ({ isShow = false }): React.ReactElement => {
+const QuickBuy = (): React.ReactElement => {
   const router = useRouter();
   const dispatch = useDispatch();
   const scrollTo = () => {
@@ -51,11 +47,11 @@ const QuickBuy: React.FC<IProp> = ({ isShow = false }): React.ReactElement => {
   };
 
   return (
-    <div className={`${s.quickBuy} ${isShow ? s.isShow : ''}`}>
+    <div className={`${s.quickBuy}`}>
       <Container>
         <div className={s.quickBuy_inner}>
           <div className={s.quickBuy_left}>
-            <Heading as={'h5'} className={`${s.quickBuy_heading}`}>
+            <Heading as={'h6'} className={`${s.quickBuy_heading}`}>
               Generative Display
             </Heading>
             <span onClick={scrollTop} className={s.quickBuy_scroller}>
@@ -77,7 +73,7 @@ const QuickBuy: React.FC<IProp> = ({ isShow = false }): React.ReactElement => {
             <Button
               size="lg"
               variant="black"
-              className={classNames(s.Home_video_content_ctas_orderBtn)}
+              className={classNames(s.quickBuy_right_orderBtn)}
               onClick={onClick}
             >
               <span className="text">Order Now</span>

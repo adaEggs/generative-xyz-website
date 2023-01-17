@@ -4,8 +4,8 @@
   &_recentWorks {
     overflow: hidden;
     padding: {
-      top: rem(100px);
-      bottom: rem(100px);
+      top: rem(62px);
+      bottom: rem(60px);
     }
 
     @include mobile {
@@ -16,7 +16,7 @@
     }
 
     @include min-tablet {
-      border: 1px solid rgba(0, 0, 0, 0.2);
+      // border: 1px solid rgba(0, 0, 0, 0.2);
     }
   }
 }

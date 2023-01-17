@@ -25,11 +25,7 @@ const Stats = ({ data }: TStats) => {
       {data.length > 0 &&
         data.map(item => (
           <div className={s.statsInfo} key={`token-${v4()}`}>
-            <Text
-              size="18"
-              fontWeight="semibold"
-              className="text-secondary-color"
-            >
+            <Text size="18" color="black-80">
               {item.info}
             </Text>
             <Stack direction="horizontal" gap={3}>
@@ -38,11 +34,11 @@ const Stats = ({ data }: TStats) => {
                   <SvgInset svgUrl={`${CDN_URL}/icons/ic-link.svg`} />
                 </Link>
               )}
-              <Text size="18" fontWeight="medium" color="primary-color">
+              <Text size="18" color="black-80">
                 {item.value}
               </Text>
               {!!item?.rarity && (
-                <Text size="18" fontWeight="medium" color="black-06">
+                <Text size="18" color="black-80">
                   {item?.rarity}
                 </Text>
               )}

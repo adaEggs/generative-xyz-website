@@ -33,6 +33,13 @@
     background: rgba(0, 0, 0, 0.1);
   }
 
+  .projectName {
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .view_collection {
     font-size: rem(20px);
     line-height: rem(30px);
@@ -86,7 +93,6 @@
   display: flex;
   align-items: center;
   gap: rem(32px);
-  margin-top: rem(24px);
   margin-bottom: rem(24px);
 
   p {
@@ -110,6 +116,14 @@
 
 .owner {
   margin-bottom: rem(34px);
+
+  > a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .token_description {
@@ -130,7 +144,8 @@
 .accordions {
   display: flex;
   flex-direction: column;
-  gap: rem(32px);
+  gap: rem(24px);
+  margin-bottom: rem(30px);
 }
 
 .walletAddress {

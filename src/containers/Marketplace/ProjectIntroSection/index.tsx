@@ -3,10 +3,9 @@ import Heading from '@components/Heading';
 import Link from '@components/Link';
 import { Loading } from '@components/Loading';
 import ProgressBar from '@components/ProgressBar';
-import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
-import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
+import { NETWORK_CHAIN_ID } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
@@ -157,10 +156,10 @@ const ProjectIntroSection = ({ project }: Props) => {
     if (isProjectDetailPage) {
       return (
         <div className={s.info}>
-          <Heading as="h4" fontWeight="semibold">
+          <Heading as="h4" fontWeight="medium">
             {project?.name}
           </Heading>
-          <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
+          <Text size={'18'} color={'black-60'} style={{ marginBottom: '10px' }}>
             <Link
               className={s.info_creatorLink}
               href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
@@ -189,49 +188,51 @@ const ProjectIntroSection = ({ project }: Props) => {
                 disabled={isMinting}
                 onClick={handleMintToken}
               >
-                {isMinting && 'Minting...'}
-                {!isMinting && project?.mintPrice && (
-                  <>
-                    {`Mint now Ξ${Web3.utils.fromWei(
-                      project?.mintPrice,
-                      'ether'
-                    )}`}
-                  </>
-                )}
+                <Text as="span" size="14" fontWeight="medium">
+                  {isMinting && 'Minting...'}
+                  {!isMinting && project?.mintPrice && (
+                    <>
+                      {`Mint now Ξ${Web3.utils.fromWei(
+                        project?.mintPrice,
+                        'ether'
+                      )}`}
+                    </>
+                  )}
+                </Text>
               </ButtonIcon>
             </div>
           )}
           <div className={s.stats}>
             <div className={s.stats_item}>
-              <Text size="12" fontWeight="bold">
+              <Text size="12" fontWeight="medium">
                 Outputs
               </Text>
-              <Heading as="h6" fontWeight="bold">
+              <Heading as="h6" fontWeight="medium">
                 {project?.mintingInfo?.index}
               </Heading>
             </div>
             <div className={s.stats_item}>
-              <Text size="12" fontWeight="bold">
+              <Text size="12" fontWeight="medium">
                 Total Volume
               </Text>
-              <Heading as="h6" fontWeight="bold">
+              <Heading as="h6" fontWeight="medium">
                 {convertToETH(marketplaceStats?.totalTradingVolumn || '')}
               </Heading>
             </div>
             <div className={s.stats_item}>
-              <Text size="12" fontWeight="bold">
+              <Text size="12" fontWeight="medium">
                 Floor price
               </Text>
-              <Heading as="h6" fontWeight="bold">
+              <Heading as="h6" fontWeight="medium">
                 {convertToETH(marketplaceStats?.floorPrice || '')}
               </Heading>
             </div>
 
             <div className={s.stats_item}>
-              <Text size="12" fontWeight="bold">
+              <Text size="12" fontWeight="medium">
                 royalty
               </Text>
-              <Heading as="h6" fontWeight="bold">
+              <Heading as="h6" fontWeight="medium">
                 {(project?.royalty || 0) / 100}%
               </Heading>
             </div>
@@ -276,10 +277,10 @@ const ProjectIntroSection = ({ project }: Props) => {
               )}
             </div>
 
-            <Text size="18" color="black-40">
+            <Text size="14" color="black-40">
               Created date: {mintedDate}
             </Text>
-            <Text size="18" color="black-40" className={s.project_owner}>
+            <Text size="14" color="black-40" className={s.project_owner}>
               Collected by:{' '}
               <Text as="span" size="18">
                 {project?.stats?.uniqueOwnerCount === 1
@@ -288,7 +289,6 @@ const ProjectIntroSection = ({ project }: Props) => {
               </Text>
             </Text>
           </div>
-          {!isMobile && <div className="divider"></div>}
           <div className={s.license}>
             <Text size="14">License: {project?.license}</Text>
           </div>
@@ -296,84 +296,86 @@ const ProjectIntroSection = ({ project }: Props) => {
       );
     } else {
       return (
-        <div className={s.info}>
-          <Text size="18" fontWeight="medium" className="text-black-60">
-            Recent Collection
-          </Text>
-          <Heading as="h4" fontWeight="semibold">
-            {project?.name}
-          </Heading>
-          <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
-            <Link
-              className={s.info_creatorLink}
-              href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
-            >
-              {project?.creatorProfile?.displayName ||
-                formatAddress(project?.creatorProfile?.walletAddress || '')}
-            </Link>
-          </Text>
-          {isMobile && (
-            <div>
-              <ThumbnailPreview data={projectDetail as Token} allowVariantion />
-            </div>
-          )}
-          <ProgressBar
-            current={project?.mintingInfo?.index}
-            total={project?.maxSupply}
-            className={s.progressBar}
-          />
-          <div className={s.CTA}>
-            {project?.status && (
-              <>
-                <ButtonIcon
-                  sizes="large"
-                  className={s.mint_btn}
-                  endIcon={
-                    <SvgInset
-                      svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
-                    />
-                  }
-                  disabled={isMinting}
-                  onClick={handleMintToken}
-                >
-                  {isMinting && 'Minting...'}
-                  {!isMinting && project?.mintPrice && (
-                    <>
-                      {'Mint now'} Ξ
-                      {Web3.utils.fromWei(project?.mintPrice, 'ether')}
-                    </>
-                  )}
-                </ButtonIcon>
-              </>
-            )}
-            {project?.tokenID && (
-              <Link
-                className={s.explore_btn}
-                href={`${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-              >
-                Explore this collection
-              </Link>
-            )}
-          </div>
-          {project?.desc && project?.desc.length > 0 && (
-            <div className={s.description}>
-              <Text size="18">{project?.desc}</Text>
-            </div>
-          )}
-          <div>
-            <Text size="18" color="black-40">
-              Created date: {mintedDate}
-            </Text>
-            <Text size="18" color="black-40" className={s.owner}>
-              Collected by:{' '}
-              <Text as="span" size="18">
-                {project?.stats?.uniqueOwnerCount === 1
-                  ? `${project?.stats?.uniqueOwnerCount} owner`
-                  : `${project?.stats?.uniqueOwnerCount}+ owners`}
-              </Text>
-            </Text>
-          </div>
-        </div>
+        <></>
+        // Do not remove code below, might use later
+        // <div className={s.info}>
+        //   <Text size="18" className="text-black-60">
+        //     Recent Collection
+        //   </Text>
+        //   <Heading as="h4" fontWeight="semibold">
+        //     {project?.name}
+        //   </Heading>
+        //   <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
+        //     <Link
+        //       className={s.info_creatorLink}
+        //       href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
+        //     >
+        //       {project?.creatorProfile?.displayName ||
+        //         formatAddress(project?.creatorProfile?.walletAddress || '')}
+        //     </Link>
+        //   </Text>
+        //   {isMobile && (
+        //     <div>
+        //       <ThumbnailPreview data={projectDetail as Token} allowVariantion />
+        //     </div>
+        //   )}
+        //   <ProgressBar
+        //     current={project?.mintingInfo?.index}
+        //     total={project?.maxSupply}
+        //     className={s.progressBar}
+        //   />
+        //   <div className={s.CTA}>
+        //     {project?.status && (
+        //       <>
+        //         <ButtonIcon
+        //           sizes="large"
+        //           className={s.mint_btn}
+        //           endIcon={
+        //             <SvgInset
+        //               svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+        //             />
+        //           }
+        //           disabled={isMinting}
+        //           onClick={handleMintToken}
+        //         >
+        //           {isMinting && 'Minting...'}
+        //           {!isMinting && project?.mintPrice && (
+        //             <>
+        //               {'Mint now'} Ξ
+        //               {Web3.utils.fromWei(project?.mintPrice, 'ether')}
+        //             </>
+        //           )}
+        //         </ButtonIcon>
+        //       </>
+        //     )}
+        //     {project?.tokenID && (
+        //       <Link
+        //         className={s.explore_btn}
+        //         href={`${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+        //       >
+        //         Explore this collection
+        //       </Link>
+        //     )}
+        //   </div>
+        //   {project?.desc && project?.desc.length > 0 && (
+        //     <div className={s.description}>
+        //       <Text size="18">{project?.desc}</Text>
+        //     </div>
+        //   )}
+        //   <div>
+        //     <Text size="18" color="black-40">
+        //       Created date: {mintedDate}
+        //     </Text>
+        //     <Text size="18" color="black-40" className={s.owner}>
+        //       Collected by:{' '}
+        //       <Text as="span" size="18">
+        //         {project?.stats?.uniqueOwnerCount === 1
+        //           ? `${project?.stats?.uniqueOwnerCount} owner`
+        //           : `${project?.stats?.uniqueOwnerCount}+ owners`}
+        //       </Text>
+        //     </Text>
+        //   </div>
+        // </div>
       );
     }
   };
