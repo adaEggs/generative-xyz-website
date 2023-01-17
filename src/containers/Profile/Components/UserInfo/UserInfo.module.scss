@@ -1,5 +1,7 @@
 .userInfo {
-  margin-bottom: rem(60px);
+  @incluide min-tablet {
+    margin-bottom: rem(60px);
+  }
 
   &_cover {
     height: rem(240px);
@@ -42,9 +44,11 @@
 
     &_display {
       display: flex;
+      flex-wrap: wrap;
 
-      .userName{
+      .userName {
         margin-right: rem(20px);
+        width: 100%;
       }
     }
   }
@@ -65,13 +69,14 @@
       justify-content: center;
       border: 1px solid $black-20;
       border-radius: 2px;
-      transition: background-color .4s $easeOutCubic;
+      transition: background-color 0.4s $easeOutCubic;
 
-      &:hover{
-        background: $black-20
+      &:hover {
+        background: $black-20;
       }
 
-      img, svg {
+      img,
+      svg {
         width: rem(24px);
         height: rem(24px);
       }
