@@ -5,8 +5,6 @@
   left: 0;
   z-index: 8;
   background-color: $white;
-  //transform: translateY(-102%);
-  transition: transform .5s $easeOutCubic;
 
   &_heading {
     display: none;
@@ -36,7 +34,7 @@
     font-weight: 500;
     color: #9C9C9C;
     line-height: (26/16);
-    @include calcFontAuto(14px, 16px);
+    @include calcFontAuto(12px, 14px);
     transition: color .4s $easeOutCubic;
 
     &:hover {
@@ -67,6 +65,13 @@
       display: flex;
       align-items: center;
       gap: 6px;
+    }
+
+    &_orderBtn {
+      text-transform: unset;
+      padding-left: rem(24px);
+      padding-right: rem(24px);
+      border-radius: 2px;
     }
   }
 }
