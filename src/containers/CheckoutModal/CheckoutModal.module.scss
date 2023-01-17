@@ -15,16 +15,21 @@
   }
 
   &_optionsContainer {
+
     display: flex;
     gap: 10px;
+
   }
 
   &_optionItem {
-    flex:  0 0 100%;
+    flex: 0 0 100%;
     width: 100%;
-    display: flex;
-    align-items: center;
-    gap: rem(24px);
+
+    @include min-pc {
+      display: flex;
+      align-items: center;
+      gap: rem(24px);
+    }
 
     img {
       width: 230px;
@@ -32,21 +37,20 @@
   }
 
   &_optionItemContainer {
-    display: flex;
     flex: 1;
     justify-content: space-between;
     text-align: left;
     margin-top: rem(12);
     border-radius: 4px;
     transition: all 0.3s ease-in-out;
-    gap: rem(10);
   }
 
   &_optionItemName {
     font-weight: 500;
-    font-size: 14px;
-    line-height: 20px;
+    font-size: 18px;
+    line-height: 26px;
     color: $neutral-06;
+
   }
 
   &_optionItemPrice {
@@ -58,6 +62,7 @@
     display: flex;
     align-items: center;
     gap: rem(12px);
+    margin-bottom: rem(10px);
 
     &_disCount {
       color: #B1B5C3;
@@ -189,6 +194,11 @@
     justify-content: center;
     align-items: center;
     margin-bottom: rem(16px);
+
+    @include max-tablet {
+      padding-top: rem(5px);
+      padding-bottom: rem(5px);
+    }
 
     span {
       transform: translateY(.1em);

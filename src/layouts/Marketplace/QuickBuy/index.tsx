@@ -11,11 +11,7 @@ import { Container } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
 
-interface IProp {
-  isShow: boolean;
-}
-
-const QuickBuy: React.FC<IProp> = ({ isShow = false }): React.ReactElement => {
+const QuickBuy = (): React.ReactElement => {
   const router = useRouter();
   const dispatch = useDispatch();
   const scrollTo = () => {
@@ -51,7 +47,7 @@ const QuickBuy: React.FC<IProp> = ({ isShow = false }): React.ReactElement => {
   };
 
   return (
-    <div className={`${s.quickBuy} ${isShow ? s.isShow : ''}`}>
+    <div className={`${s.quickBuy}`}>
       <Container>
         <div className={s.quickBuy_inner}>
           <div className={s.quickBuy_left}>

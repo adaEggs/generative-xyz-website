@@ -9,7 +9,6 @@ import COUNTRY_LIST from '@constants/country-list.json';
 import StateOfUS from '@constants/state-of-us.json';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
-import useIsFrameDiscounted from '@hooks/useIsFrameDiscounted';
 import { setCheckoutProduct } from '@redux/general/action';
 import { checkoutProduct as checkoutProductSelector } from '@redux/general/selector';
 import { useAppDispatch } from '@redux/index';
@@ -21,6 +20,7 @@ import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import s from './CheckoutModal.module.scss';
 import Text from '@components/Text';
+import { getUserSelector } from '@redux/user/selector';
 
 interface IPropState {
   name: string;
@@ -39,13 +39,13 @@ interface ICart extends IFrame {
 
 const CheckoutModal: React.FC = (): JSX.Element => {
   const dispatch = useAppDispatch();
-
-  const isDiscounted = useIsFrameDiscounted();
+  const user = useSelector(getUserSelector);
+  const isDiscounted = true; //useIsFrameDiscounted();
 
   const router = useRouter();
   const { source } = router.query;
   const checkoutProduct = useSelector(checkoutProductSelector);
-  const isShow = !!checkoutProduct.id;
+  const isShow = !!checkoutProduct.id && !!user.id;
   const onHideModal = () => dispatch(setCheckoutProduct({} as any));
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -73,8 +73,8 @@ const CheckoutModal: React.FC = (): JSX.Element => {
 
   const getDiscount = useMemo(() => (isDiscounted ? 0.1 : 0), [isDiscounted]);
   const getDiscountPrice = useMemo(
-    () => (isDiscounted ? 0.1 : 0) * (cart.eth_price || cart.price || 0),
-    [isDiscounted]
+    () => getDiscount * (cart.eth_price || cart.price || 0) * cart.qty,
+    [cart]
   );
 
   const selectedCountry = useMemo(
@@ -181,6 +181,10 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   useEffect(() => {
     setCart({ ...checkoutProduct, qty: 1 });
   }, [checkoutProduct]);
+
+  useEffect(() => {
+    setError('');
+  }, [isShow]);
 
   if (orderSuccess) {
     return (
@@ -407,7 +411,9 @@ const CheckoutModal: React.FC = (): JSX.Element => {
           {isDiscounted && (
             <div className={s.CheckoutModal_summaryLine}>
               <div>Partner discount</div>
-              <div className={s.highlight}>{`${getDiscountPrice} ETH`}</div>
+              <div className={s.highlight}>
+                {`${getDiscountPrice} ETH`} ({getDiscount * 100}%)
+              </div>
             </div>
           )}
           <div className={s.CheckoutModal_summaryLine}>

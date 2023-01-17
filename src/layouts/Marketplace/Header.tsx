@@ -8,21 +8,17 @@ import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
-import { getScrollTop } from '@helpers/common';
 import useOnClickOutside from '@hooks/useOnClickOutSide';
 import s from '@layouts/Default/components/HeaderFixed/Header.module.scss';
 import { useAppSelector } from '@redux';
-import { disabledMenuSelector } from '@redux/general/selector';
 import { getUserSelector } from '@redux/user/selector';
 import { formatAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
-import { gsap } from 'gsap';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import { Container } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
 import styles from './Header.module.scss';
 import { getFaucetLink, isTestnet } from '@utils/chain';
 import QuickBuy from '@layouts/Marketplace/QuickBuy';
@@ -72,7 +68,6 @@ const Header: React.FC<IProp> = ({
   const [isConnecting, setIsConnecting] = useState(false);
   const dropdownRef = useRef<HTMLUListElement>(null);
   const [isFaucet, _] = useState<boolean>(isShowFaucet);
-  const [isHide, setIsHide] = useState<boolean>(false);
 
   const PROFILE_MENU = [
     {
@@ -161,74 +156,6 @@ const Header: React.FC<IProp> = ({
   useOnClickOutside(dropdownRef, () => setOpenProfile(false));
 
   const refHeader = useRef<HTMLDivElement>(null);
-  const refData = useRef({
-    scrollCurrent: 0,
-    isHide: false,
-    disabled: false,
-    lock: false,
-  });
-  const disabledMenu = useSelector(disabledMenuSelector);
-
-  const hideMenu = () => {
-    refData.current.isHide = true;
-    gsap.killTweensOf(refHeader.current);
-    gsap.to(refHeader.current, {
-      y: '-105%',
-      duration: 0.6,
-      ease: 'power3.out',
-    });
-    setIsHide(true);
-  };
-
-  const showMenu = () => {
-    refData.current.isHide = false;
-    setIsHide(false);
-    gsap.killTweensOf(refHeader.current);
-    gsap.to(refHeader.current, { y: '0%', duration: 0.6, ease: 'power3.out' });
-  };
-
-  const onWinScrolling = () => {
-    if (refData.current.lock) return;
-    const scrollTop = getScrollTop();
-    if (scrollTop - refData.current.scrollCurrent > 0 && scrollTop > 100) {
-      if (!refData.current.isHide) {
-        hideMenu();
-      }
-    } else if (!isDisplay) {
-      if (refData.current.isHide) {
-        showMenu();
-      }
-    }
-
-    if (refHeader.current) {
-      if (scrollTop > 100) {
-        refHeader.current.classList.add(s['is-scrolling']);
-      } else {
-        refHeader.current.classList.remove(s['is-scrolling']);
-      }
-    }
-    refData.current.scrollCurrent = scrollTop;
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', onWinScrolling);
-    return () => {
-      if (refHeader.current)
-        refHeader.current.classList.remove(s['is-scrolling']);
-      window.removeEventListener('scroll', onWinScrolling);
-    };
-  }, []);
-
-  useEffect(() => {
-    refData.current.lock = disabledMenu;
-    if (disabledMenu) {
-      hideMenu();
-    }
-    return () => {
-      refData.current.lock = false;
-      showMenu();
-    };
-  }, [disabledMenu]);
 
   const clickToFaucet = (): void => {
     const faucet = getFaucetLink();
@@ -346,7 +273,7 @@ const Header: React.FC<IProp> = ({
         )}
         <div className="divider"></div>
       </header>
-      {isDisplay && <QuickBuy isShow={isHide} />}
+      {isDisplay && <QuickBuy />}
     </>
   );
 };

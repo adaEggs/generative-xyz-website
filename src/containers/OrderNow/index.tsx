@@ -38,9 +38,8 @@ export const OrderNowTemplate = (): JSX.Element => {
   const openCheckoutPopup = (product: IFrame) => {
     if (!use.id) {
       handleConnectWallet();
-    } else {
-      dispatch(setCheckoutProduct(product));
     }
+    dispatch(setCheckoutProduct(product));
   };
 
   useAsyncEffect(async () => {
