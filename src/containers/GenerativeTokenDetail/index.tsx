@@ -10,9 +10,10 @@ import {
   GenerativeTokenDetailContext,
   GenerativeTokenDetailProvider,
 } from '@contexts/generative-token-detail-context';
+import { checkLines } from '@helpers/string';
+import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
-import { getChainName, getScanUrl } from '@utils/chain';
 import { formatAddress, formatTokenId } from '@utils/format';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
@@ -25,12 +26,10 @@ import CancelListingModal from './CancelListingModal';
 import ListingTokenModal from './ListingTokenModal';
 import MakeOfferModal from './MakeOfferModal';
 import MoreItemsSection from './MoreItemsSection';
+import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
-import SwapTokenModal from './SwapTokenModal';
 import s from './styles.module.scss';
-import { checkLines } from '@helpers/string';
-import useWindowSize from '@hooks/useWindowSize';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -39,7 +38,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
 
   const {
     tokenData,
-    tokenID,
+    // tokenID,
     openListingModal,
     openMakeOfferModal,
     openTransferTokenModal,
@@ -51,36 +50,36 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     tokenOffers,
     isTokenOwner,
   } = useContext(GenerativeTokenDetailContext);
-  const scanURL = getScanUrl();
+  // const scanURL = getScanUrl();
   const user = useSelector(getUserSelector);
   const mintedDate = dayjs(tokenData?.mintedTime).format('MMM DD, YYYY');
   const [isBuying, setIsBuying] = useState(false);
-  const tokenInfos = [
-    {
-      id: 'contract-address',
-      info: 'Contract Address',
-      value: formatAddress(tokenData?.project.genNFTAddr || ''),
-      link: `${scanURL}token/${tokenData?.project.genNFTAddr}`,
-    },
-    {
-      id: 'token-id',
-      info: 'Token ID',
-      value: formatTokenId(tokenID),
-      link: `${scanURL}token/${tokenData?.project.genNFTAddr}?a=${tokenID}`,
-    },
-    {
-      id: 'token-standard',
-      info: 'Token Standard',
-      value: 'ERC-721',
-      link: '',
-    },
-    {
-      id: 'blockchain',
-      info: 'Blockchain',
-      value: getChainName() || '',
-      link: '',
-    },
-  ];
+  // const tokenInfos = [
+  //   {
+  //     id: 'contract-address',
+  //     info: 'Contract Address',
+  //     value: formatAddress(tokenData?.project.genNFTAddr || ''),
+  //     link: `${scanURL}token/${tokenData?.project.genNFTAddr}`,
+  //   },
+  //   {
+  //     id: 'token-id',
+  //     info: 'Token ID',
+  //     value: formatTokenId(tokenID),
+  //     link: `${scanURL}token/${tokenData?.project.genNFTAddr}?a=${tokenID}`,
+  //   },
+  //   {
+  //     id: 'token-standard',
+  //     info: 'Token Standard',
+  //     value: 'ERC-721',
+  //     link: '',
+  //   },
+  //   {
+  //     id: 'blockchain',
+  //     info: 'Blockchain',
+  //     value: getChainName() || '',
+  //     link: '',
+  //   },
+  // ];
   const [showMore, setShowMore] = useState(false);
 
   const handleOpenListingTokenModal = (): void => {
@@ -161,20 +160,23 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             <Loading isLoaded={!!tokenData} className={s.loading_token} />
             <Heading
               as="h4"
-              fontWeight="semibold"
-              style={{ marginBottom: '10px' }}
+              fontWeight="medium"
+              style={{ marginBottom: '20px' }}
             >
               #{formatTokenId(tokenData?.tokenID || '')}
             </Heading>
-            <Heading as="h6" fontWeight="semibold">
-              <Link href={`${ROUTE_PATH.GENERATIVE}/${projectID}`}>
+            <Heading as="h6" fontWeight="medium">
+              <Link
+                href={`${ROUTE_PATH.GENERATIVE}/${projectID}`}
+                className={s.projectName}
+              >
                 {tokenData?.project.name}
               </Link>
             </Heading>
             <Text
-              size={'24'}
-              color={'black-40'}
-              style={{ marginBottom: '10px' }}
+              size={'18'}
+              color={'black-60'}
+              style={{ marginBottom: '16px' }}
             >
               <Link
                 className={s.info_creatorLink}
@@ -190,20 +192,20 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             <div className={s.prices}>
               {isTokenListing && (
                 <div>
-                  <Text size="12" fontWeight="bold">
+                  <Text size="12" fontWeight="medium" color="black-40">
                     Price
                   </Text>
-                  <Heading as="h6" fontWeight="bold">
+                  <Heading as="h6" fontWeight="medium">
                     Ξ {listingPrice}
                   </Heading>
                 </div>
               )}
 
               <div>
-                <Text size="12" fontWeight="bold">
+                <Text size="12" fontWeight="medium" color="black-40">
                   Royalty
                 </Text>
-                <Heading as="h6" fontWeight="bold">
+                <Heading as="h6" fontWeight="medium">
                   {(tokenData?.project?.royalty || 0) / 100}%
                 </Heading>
               </div>
@@ -255,39 +257,18 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 </ButtonIcon>
               )}
             </div>
-            <Text size="18" fontWeight="medium" color="black-06">
-              Minted on: {mintedDate}
-            </Text>
-            <Text
-              size="18"
-              fontWeight="medium"
-              color="black-06"
-              className={s.owner}
-            >
-              Owner:{' '}
-              <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
-                {tokenData?.owner?.displayName ||
-                  formatAddress(
-                    tokenData?.ownerAddr ||
-                      tokenData?.owner?.walletAddress ||
-                      ''
-                  )}
-              </Link>
-              {isTokenOwner && ' (by you)'}
-            </Text>
             <div className={s.accordions}>
               <div className={s.accordions_item}>
                 <Text
                   size="14"
                   color="black-40"
-                  fontWeight="bold"
+                  fontWeight="medium"
                   className="text-uppercase"
                 >
                   description
                 </Text>
                 <Text
                   size="18"
-                  fontWeight="medium"
                   className={s.token_description}
                   style={{ WebkitLineClamp: showMore ? 'unset' : '3' }}
                 >
@@ -296,19 +277,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 {checkLines(tokenDescription) > 3 && (
                   <>
                     {!showMore ? (
-                      <Text
-                        as="span"
-                        onClick={() => setShowMore(!showMore)}
-                        fontWeight="semibold"
-                      >
+                      <Text as="span" onClick={() => setShowMore(!showMore)}>
                         See more
                       </Text>
                     ) : (
-                      <Text
-                        as="span"
-                        onClick={() => setShowMore(!showMore)}
-                        fontWeight="semibold"
-                      >
+                      <Text as="span" onClick={() => setShowMore(!showMore)}>
                         See less
                       </Text>
                     )}
@@ -320,7 +293,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   <Text
                     size="14"
                     color="black-40"
-                    fontWeight="bold"
+                    fontWeight="medium"
                     className="text-uppercase"
                   >
                     features
@@ -329,7 +302,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 </div>
               )}
 
-              <div className={s.accordions_item}>
+              {/* <div className={s.accordions_item}>
                 <Text
                   size="14"
                   color="black-40"
@@ -339,8 +312,23 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   Token Info
                 </Text>
                 <Stats data={tokenInfos} />
-              </div>
+              </div> */}
             </div>
+            <Text size="18" color="black-40">
+              Minted on: {mintedDate}
+            </Text>
+            <Text size="18" color="black-40" className={s.owner}>
+              Owner:{' '}
+              <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
+                {tokenData?.owner?.displayName ||
+                  formatAddress(
+                    tokenData?.ownerAddr ||
+                      tokenData?.owner?.walletAddress ||
+                      ''
+                  )}
+              </Link>
+              {isTokenOwner && ' (by you)'}
+            </Text>
           </div>
           <div></div>
           {!isMobile && (

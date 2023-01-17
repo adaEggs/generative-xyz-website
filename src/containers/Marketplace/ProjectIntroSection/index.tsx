@@ -156,10 +156,10 @@ const ProjectIntroSection = ({ project }: Props) => {
     if (isProjectDetailPage) {
       return (
         <div className={s.info}>
-          <Heading as="h4" fontWeight="semibold">
+          <Heading as="h4" fontWeight="medium">
             {project?.name}
           </Heading>
-          <Text size={'24'} color={'black-40'} style={{ marginBottom: '10px' }}>
+          <Text size={'18'} color={'black-60'} style={{ marginBottom: '10px' }}>
             <Link
               className={s.info_creatorLink}
               href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
@@ -188,49 +188,51 @@ const ProjectIntroSection = ({ project }: Props) => {
                 disabled={isMinting}
                 onClick={handleMintToken}
               >
-                {isMinting && 'Minting...'}
-                {!isMinting && project?.mintPrice && (
-                  <>
-                    {`Mint now Ξ${Web3.utils.fromWei(
-                      project?.mintPrice,
-                      'ether'
-                    )}`}
-                  </>
-                )}
+                <Text as="span" size="14" fontWeight="medium">
+                  {isMinting && 'Minting...'}
+                  {!isMinting && project?.mintPrice && (
+                    <>
+                      {`Mint now Ξ${Web3.utils.fromWei(
+                        project?.mintPrice,
+                        'ether'
+                      )}`}
+                    </>
+                  )}
+                </Text>
               </ButtonIcon>
             </div>
           )}
           <div className={s.stats}>
             <div className={s.stats_item}>
-              <Text size="12" fontWeight="bold">
+              <Text size="12" fontWeight="medium">
                 Outputs
               </Text>
-              <Heading as="h6" fontWeight="bold">
+              <Heading as="h6" fontWeight="medium">
                 {project?.mintingInfo?.index}
               </Heading>
             </div>
             <div className={s.stats_item}>
-              <Text size="12" fontWeight="bold">
+              <Text size="12" fontWeight="medium">
                 Total Volume
               </Text>
-              <Heading as="h6" fontWeight="bold">
+              <Heading as="h6" fontWeight="medium">
                 {convertToETH(marketplaceStats?.totalTradingVolumn || '')}
               </Heading>
             </div>
             <div className={s.stats_item}>
-              <Text size="12" fontWeight="bold">
+              <Text size="12" fontWeight="medium">
                 Floor price
               </Text>
-              <Heading as="h6" fontWeight="bold">
+              <Heading as="h6" fontWeight="medium">
                 {convertToETH(marketplaceStats?.floorPrice || '')}
               </Heading>
             </div>
 
             <div className={s.stats_item}>
-              <Text size="12" fontWeight="bold">
+              <Text size="12" fontWeight="medium">
                 royalty
               </Text>
-              <Heading as="h6" fontWeight="bold">
+              <Heading as="h6" fontWeight="medium">
                 {(project?.royalty || 0) / 100}%
               </Heading>
             </div>
@@ -275,10 +277,10 @@ const ProjectIntroSection = ({ project }: Props) => {
               )}
             </div>
 
-            <Text size="18" color="black-40">
+            <Text size="14" color="black-40">
               Created date: {mintedDate}
             </Text>
-            <Text size="18" color="black-40" className={s.project_owner}>
+            <Text size="14" color="black-40" className={s.project_owner}>
               Collected by:{' '}
               <Text as="span" size="18">
                 {project?.stats?.uniqueOwnerCount === 1
@@ -287,7 +289,6 @@ const ProjectIntroSection = ({ project }: Props) => {
               </Text>
             </Text>
           </div>
-          {!isMobile && <div className="divider"></div>}
           <div className={s.license}>
             <Text size="14">License: {project?.license}</Text>
           </div>

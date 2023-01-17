@@ -28,14 +28,14 @@ const ProgressBar = ({
       <div className={s.stats}>
         {size === 'regular' && (
           <>
-            <Heading as="h5" fontWeight="bold">
+            <Heading as="h6" fontWeight="medium">
               {total ? (
                 `${current}/${total}`
               ) : (
                 <Skeleton width={60} height={34} />
               )}
             </Heading>
-            <Text fontWeight="semibold">minted</Text>
+            <Text color="black-60">minted</Text>
           </>
         )}
         {size === 'small' && (
