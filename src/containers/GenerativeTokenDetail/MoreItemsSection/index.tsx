@@ -69,7 +69,7 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
 
   return (
     <div className="position-relative">
-      <Stack direction="horizontal" className="justify-between">
+      <Stack direction="horizontal" className={s.heading}>
         <Heading as="h4" fontWeight="bold">
           More from this collection
         </Heading>

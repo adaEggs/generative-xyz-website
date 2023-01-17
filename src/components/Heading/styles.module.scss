@@ -7,8 +7,8 @@
   }
 
   &:is(h2) {
-    font-size: rem(48px);
-    line-height: rem(58px);
+    line-height: (58/48);
+    @include calcFontAuto(34px, 48px);
   }
 
   &:is(h3) {

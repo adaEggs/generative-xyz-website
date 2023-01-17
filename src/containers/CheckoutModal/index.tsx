@@ -5,29 +5,32 @@ import Input from '@components/Input';
 import InputQuantity from '@components/InputQuantity';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
-import Countries from '@constants/country-list.json';
+import COUNTRY_LIST from '@constants/country-list.json';
 import StateOfUS from '@constants/state-of-us.json';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
+import useIsFrameDiscounted from '@hooks/useIsFrameDiscounted';
 import { setCheckoutProduct } from '@redux/general/action';
 import { checkoutProduct as checkoutProductSelector } from '@redux/general/selector';
 import { useAppDispatch } from '@redux/index';
 import { makeOrder } from '@services/api/order';
 import cn from 'classnames';
+import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import s from './CheckoutModal.module.scss';
+import Text from '@components/Text';
 
 interface IPropState {
-  name: any;
-  email: any;
-  address: any;
-  address2: any;
-  city: any;
-  state: any;
-  zip: any;
-  country: any;
+  name: string;
+  email: string;
+  address: string;
+  address2: string;
+  city: string;
+  state: string;
+  zip: string;
+  country: string;
 }
 
 interface ICart extends IFrame {
@@ -36,6 +39,11 @@ interface ICart extends IFrame {
 
 const CheckoutModal: React.FC = (): JSX.Element => {
   const dispatch = useAppDispatch();
+
+  const isDiscounted = useIsFrameDiscounted();
+
+  const router = useRouter();
+  const { source } = router.query;
   const checkoutProduct = useSelector(checkoutProductSelector);
   const isShow = !!checkoutProduct.id;
   const onHideModal = () => dispatch(setCheckoutProduct({} as any));
@@ -52,7 +60,6 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   });
   const walletCtx = useContext(WalletContext);
   const [orderSuccess, setOrderSuccess] = useState(false);
-
   const [shippingInfo, setShippingInfo] = useState<IPropState>({
     name: '',
     email: '',
@@ -64,8 +71,14 @@ const CheckoutModal: React.FC = (): JSX.Element => {
     country: '',
   });
 
+  const getDiscount = useMemo(() => (isDiscounted ? 0.1 : 0), [isDiscounted]);
+  const getDiscountPrice = useMemo(
+    () => (isDiscounted ? 0.1 : 0) * (cart.eth_price || cart.price || 0),
+    [isDiscounted]
+  );
+
   const selectedCountry = useMemo(
-    () => Countries.find(item => item.key === shippingInfo.country),
+    () => COUNTRY_LIST.find(item => item.key === shippingInfo.country),
     [shippingInfo.country]
   );
   const selectedState = useMemo(
@@ -81,7 +94,20 @@ const CheckoutModal: React.FC = (): JSX.Element => {
 
   const totalPrice = useMemo(
     () =>
-      Math.round((cart.eth_price || cart.price || 0) * cart.qty * 10e9) / 10e9,
+      Math.round(
+        (1 - getDiscount) *
+          (cart.eth_price || cart.price || 0) *
+          cart.qty *
+          10e9
+      ) / 10e9,
+    [cart]
+  );
+
+  const cartItemPrice = useMemo(
+    () =>
+      Math.round(
+        (1 - getDiscount) * (cart.eth_price || cart.price || 0) * 10e9
+      ) / 10e9,
     [cart]
   );
 
@@ -91,15 +117,13 @@ const CheckoutModal: React.FC = (): JSX.Element => {
         setIsLoading(true);
         const txHash = await walletCtx.transfer(
           order.master_address,
-          order.total
+          (parseFloat(order.total) * (isDiscounted ? 0.9 : 1)).toString()
         );
         if (!txHash) {
           setError(ErrorMessage.DEFAULT);
           return;
         }
         setOrderSuccess(true);
-        // onHideModal();
-        // router.push(`/order/${order.order_id}`);
       } catch (_: unknown) {
         setError(ErrorMessage.DEFAULT);
       } finally {
@@ -133,6 +157,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
       const { data: newOrder } = await makeOrder({
         details: [{ id: cart?.id || '', qty: cart?.qty || 0 }],
         ...shippingInfo,
+        source: source ? (source as string) : '',
       });
 
       if (!newOrder.order_id) return;
@@ -194,6 +219,24 @@ const CheckoutModal: React.FC = (): JSX.Element => {
       <Modal.Header closeButton />
       <Modal.Body>
         <div>
+          {isDiscounted && (
+            <div className={s.CheckoutModal_discount}>
+              <img
+                className={s.CheckoutModal_discount_icon}
+                src={`${CDN_URL}/pages/home/icons/ic-check.svg`}
+                alt="ic-check"
+              />
+              <Text
+                as="span"
+                size={'16'}
+                fontWeight={'medium'}
+                color={'green-c'}
+                className={s.CheckoutModal_discount_text}
+              >
+                10% discount granted by the Gen Art community!
+              </Text>
+            </div>
+          )}
           <div className={s.CheckoutModal_title}>Buy Gen-Frame</div>
           <div className={s.CheckoutModal_optionsContainer}>
             <div key={cart?.id} className={s.CheckoutModal_optionItem}>
@@ -204,7 +247,14 @@ const CheckoutModal: React.FC = (): JSX.Element => {
                     {cart?.name}
                   </div>
                   <div className={s.CheckoutModal_optionItemPrice}>
-                    {`${cart?.eth_price || cart?.price} ETH`}
+                    {isDiscounted && (
+                      <span
+                        className={s.CheckoutModal_optionItemPrice_disCount}
+                      >{`${cart?.eth_price || cart?.price} ETH`}</span>
+                    )}
+                    <span
+                      className={s.CheckoutModal_optionItemPrice_val}
+                    >{`${cartItemPrice} ETH`}</span>
                   </div>
                 </div>
                 <InputQuantity
@@ -225,7 +275,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
           <div>
             <Dropdown
               values={selectedCountry ? [selectedCountry] : []}
-              options={Countries}
+              options={COUNTRY_LIST}
               labelField="value"
               valueField="value"
               multi={false}
@@ -247,7 +297,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
               onChange={value =>
                 setShippingInfo({
                   ...shippingInfo,
-                  name: value,
+                  name: value as string,
                 })
               }
               required
@@ -261,7 +311,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
               onChange={value =>
                 setShippingInfo({
                   ...shippingInfo,
-                  email: value,
+                  email: value as string,
                 })
               }
               required
@@ -274,7 +324,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
               onChange={value =>
                 setShippingInfo({
                   ...shippingInfo,
-                  address: value,
+                  address: value as string,
                 })
               }
               required
@@ -287,7 +337,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
               onChange={value =>
                 setShippingInfo({
                   ...shippingInfo,
-                  address2: value,
+                  address2: value as string,
                 })
               }
             />
@@ -299,7 +349,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
                 onChange={value =>
                   setShippingInfo({
                     ...shippingInfo,
-                    city: value,
+                    city: value as string,
                   })
                 }
                 required
@@ -327,7 +377,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
                   onChange={value =>
                     setShippingInfo({
                       ...shippingInfo,
-                      state: value,
+                      state: value as string,
                     })
                   }
                   required
@@ -340,7 +390,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
                 onChange={value =>
                   setShippingInfo({
                     ...shippingInfo,
-                    zip: value,
+                    zip: value as string,
                   })
                 }
                 required
@@ -354,6 +404,12 @@ const CheckoutModal: React.FC = (): JSX.Element => {
             <div>Items</div>
             <div className={s.highlight}>{`${totalPrice} ETH`}</div>
           </div>
+          {isDiscounted && (
+            <div className={s.CheckoutModal_summaryLine}>
+              <div>Partner discount</div>
+              <div className={s.highlight}>{`${getDiscountPrice} ETH`}</div>
+            </div>
+          )}
           <div className={s.CheckoutModal_summaryLine}>
             <div>
               Shipping
@@ -363,6 +419,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
             </div>
             <div className={s.highlight}>FREE</div>
           </div>
+
           <div className={s.CheckoutModal_summaryLine}>
             <div>Payment Total:</div>
             <div className={s.CheckoutModal_totalPrice}>

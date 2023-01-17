@@ -20,16 +20,20 @@
   }
 
   &_optionItem {
-    flex: 1;
-    max-width: 243px;
+    flex:  0 0 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: rem(24px);
 
     img {
-      width: 100%;
+      width: 230px;
     }
   }
 
   &_optionItemContainer {
     display: flex;
+    flex: 1;
     justify-content: space-between;
     text-align: left;
     margin-top: rem(12);
@@ -51,6 +55,14 @@
     line-height: 28px;
     color: $neutral-08;
     margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: rem(12px);
+
+    &_disCount {
+      color: #B1B5C3;
+      text-decoration-line: line-through;
+    }
   }
 
   &_optionItemQty {
@@ -166,6 +178,21 @@
   :global(.modal-content) {
     border-radius: 12px;
     border: none;
+  }
+
+  &_discount {
+    background: rgba(186, 237, 189, 0.3);
+    border: 1px solid #00AA6C;
+    box-shadow: 8px 7px 24px rgba(0, 0, 0, 0.15);
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: rem(16px);
+
+    span {
+      transform: translateY(.1em);
+    }
   }
 }
 

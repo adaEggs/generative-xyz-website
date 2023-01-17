@@ -1,7 +1,12 @@
 .wrapper {
-  flex: 1;
+  margin-bottom: rem(30px);
   position: relative;
-  margin-left: rem(60px);
+
+  @include min-tablet {
+    flex: 1;
+    margin-left: rem(60px);
+    margin-bottom: 0;
+  }
 }
 
 .sandboxContainer {
@@ -13,7 +18,17 @@
     height: 100%;
   }
 }
+.thumbnail_iframe {
+  height: 100%;
 
+  @include min-tablet {
+    @include fullViewScreen;
+  }
+
+  @include mobile {
+    aspect-ratio: 1 / 1;
+  }
+}
 .actionButtons {
   justify-content: center;
   margin-top: 15px;
@@ -46,6 +61,11 @@
   position: absolute;
   bottom: rem(32px);
   right: rem(32px);
+
+  @include mobile {
+    bottom: rem(16px);
+    right: rem(16px);
+  }
 }
 
 .thumbnail_image {

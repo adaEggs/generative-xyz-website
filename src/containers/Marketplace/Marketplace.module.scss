@@ -2,12 +2,21 @@
   overflow: hidden;
 
   &_recentWorks {
-    border: 1px solid rgba(0, 0, 0, 0.2);
     overflow: hidden;
     padding: {
       top: rem(100px);
       bottom: rem(100px);
     }
+
+    @include mobile {
+      padding: {
+        top: rem(40px);
+        bottom: rem(64px);
+      }
+    }
+
+    @include min-tablet {
+      border: 1px solid rgba(0, 0, 0, 0.2);
+    }
   }
 }
-
