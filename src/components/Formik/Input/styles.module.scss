@@ -30,7 +30,9 @@
     }
 
     &:has(textarea) {
-      min-width: rem(436);
+      @include min-tablet {
+        min-width: rem(436);
+      }
 
       textarea {
         min-height: rem(126);
