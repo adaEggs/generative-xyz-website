@@ -156,8 +156,13 @@ const ProjectPreview = () => {
           <div className={s.projectInfoWrapper}>
             <div className={s.ownerInfo}>
               <Image
+                className={s.ownerAvatar}
                 alt="owner avatar"
-                src={`${CDN_URL}/images/default-avatar.svg`}
+                src={
+                  user.avatar
+                    ? user.avatar
+                    : `${CDN_URL}/images/default-avatar.jpeg`
+                }
                 width={48}
                 height={48}
               ></Image>

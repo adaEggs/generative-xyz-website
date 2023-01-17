@@ -47,7 +47,7 @@ export const UserInfo = (): JSX.Element => {
                   src={
                     currentUser?.avatar
                       ? currentUser.avatar
-                      : `${CDN_URL}/icons/logo-marketplace.svg`
+                      : `${CDN_URL}/images/default-avatar.jpeg`
                   }
                   alt={currentUser?.displayName || ''}
                   width={100}

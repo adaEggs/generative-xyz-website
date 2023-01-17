@@ -1,4 +1,3 @@
-import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import Image from 'next/image';
 import React from 'react';
@@ -36,6 +35,7 @@ const Avatar = ({ imgSrcs, width = 48, height = 48, fill = false }: Props) => {
             <Image src={convertIpfsToHttp(src)} alt="user avatar" fill />
           ) : (
             <Image
+              className={styles.ownerAvatar}
               src={convertIpfsToHttp(src)}
               alt="user avatar"
               width={width}
@@ -43,11 +43,13 @@ const Avatar = ({ imgSrcs, width = 48, height = 48, fill = false }: Props) => {
             />
           )
         ) : (
-          <div className={styles.defaultAvatar}>
-            <SvgInset
-              svgUrl={`${CDN_URL}/images/default-avatar.svg`}
-            ></SvgInset>
-          </div>
+          <Image
+            className={styles.ownerAvatar}
+            alt="owner avatar"
+            src={`${CDN_URL}/images/default-avatar.jpeg`}
+            width={width}
+            height={height}
+          />
         )}
       </div>
     );
