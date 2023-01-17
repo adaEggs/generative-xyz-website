@@ -1,38 +1,33 @@
 import { RecentWorks } from '@containers/Marketplace/RecentWorks';
-import { LogLevel } from '@enums/log-level';
-import { Project } from '@interfaces/project';
-import { getRandomProject } from '@services/project';
-import log from '@utils/logger';
-import { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
-import ProjectIntroSection from './ProjectIntroSection';
 
 import s from './Marketplace.module.scss';
 
-const LOG_PREFIX = 'Marketplace';
+// const LOG_PREFIX = 'Marketplace';
 
 const Marketplace = () => {
-  const [projectInfo, setProjectInfo] = useState<Project | undefined>();
+  // Do not remove comment code below, might use later
+  // const [projectInfo, setProjectInfo] = useState<Project | undefined>();
 
-  const fetchRandomProject = async () => {
-    try {
-      const res = await getRandomProject();
-      setProjectInfo(res);
-    } catch (err: unknown) {
-      log('failed to fetch random project', LogLevel.Error, LOG_PREFIX);
-      throw Error();
-    }
-  };
+  // const fetchRandomProject = async () => {
+  //   try {
+  //     const res = await getRandomProject();
+  //     setProjectInfo(res);
+  //   } catch (err: unknown) {
+  //     log('failed to fetch random project', LogLevel.Error, LOG_PREFIX);
+  //     throw Error();
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchRandomProject();
-  }, []);
+  // useEffect(() => {
+  //   fetchRandomProject();
+  // }, []);
 
   return (
     <>
-      <Container className={s.marketplaceContainer}>
+      {/* <Container className={s.marketplaceContainer}>
         <ProjectIntroSection project={projectInfo} />
-      </Container>
+      </Container> */}
       <div className={s.marketplaceContainer_recentWorks}>
         <Container>
           <RecentWorks />

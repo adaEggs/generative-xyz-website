@@ -1,8 +1,10 @@
-
-
-.recentWorks{
-  &_projects{
+.recentWorks {
+  &_projects {
     margin-top: rem(50px);
     position: relative;
+
+    @include mobile {
+      margin-top: rem(24px);
+    }
   }
 }
