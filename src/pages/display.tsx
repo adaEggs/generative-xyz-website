@@ -2,12 +2,15 @@ import { NextPage } from 'next';
 
 import DisplayTemplate from '@containers/Display';
 import MarketplaceLayout from '@layouts/Marketplace';
+import { NavigationProvider } from '@contexts/navigation-context';
 
 const DisplayPage: NextPage = () => {
   return (
-    <MarketplaceLayout isHideFaucet={true} theme={'dark'} isDisplay={true}>
-      <DisplayTemplate />
-    </MarketplaceLayout>
+    <NavigationProvider>
+      <MarketplaceLayout isHideFaucet={true} theme={'dark'} isDisplay={true}>
+        <DisplayTemplate />
+      </MarketplaceLayout>
+    </NavigationProvider>
   );
 };
 

@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import React, { ReactNode, useMemo, useState } from 'react';
 
 export interface INavigationContext {
   isTechSpecz: boolean;
@@ -19,10 +19,6 @@ export const NavigationProvider: React.FC<IProp> = ({
   children,
 }: IProp): React.ReactElement => {
   const [isTechSpecz, setIsTechSpecz] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log('__isTechSpecz', isTechSpecz);
-  }, [isTechSpecz]);
 
   const contextValues = useMemo((): INavigationContext => {
     return {

@@ -56,11 +56,8 @@ export const Prices = (): JSX.Element => {
   useEffect(() => {
     const obServicer = new IntersectionObserver(entries => {
       if (entries[0].isIntersecting) {
-        // console.log('__in');
-        //todo meomeo
         setIsTechSpecz && setIsTechSpecz(true);
       } else {
-        console.log('__out');
         setIsTechSpecz && setIsTechSpecz(false);
       }
     });
