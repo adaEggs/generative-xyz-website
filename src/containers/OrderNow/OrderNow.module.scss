@@ -1,28 +1,25 @@
 .orderNow {
- margin-top: 32px;
+  margin-top: rem(32px);
 
-  &_back {
-    text-decoration: none;
-    margin-bottom: rem(10px);
-
-    span {
-      transition: color .4s $easeOutCubic;
-
-    }
-
-    &:hover {
-      text-decoration: underline;
-
-      span {
-        color: $primary-brand
-      }
-    }
+  @include min-pc {
+    margin-top: rem(64px);
   }
 
   &_rowFrame {
     margin-top: rem(24px);
     @include min-tablet {
       margin-top: rem(48px);
+    }
+  }
+
+  &_header {
+    text-align: center;
+
+    a {
+      &:hover {
+        color: $primary-brand;
+        text-decoration: none;
+      }
     }
   }
 }

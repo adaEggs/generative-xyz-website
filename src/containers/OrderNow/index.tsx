@@ -15,10 +15,9 @@ import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { WalletContext } from '@contexts/wallet-context';
 import CheckoutModal from '@containers/CheckoutModal';
-import { ROUTE_PATH } from '@constants/route-path';
-import Link from 'next/link';
 import Text from '@components/Text';
 import Heading from '@components/Heading';
+import { SOCIALS } from '@constants/common';
 
 const LOG_PREFIX = 'OrderNow';
 export const OrderNowTemplate = (): JSX.Element => {
@@ -59,12 +58,16 @@ export const OrderNowTemplate = (): JSX.Element => {
     <>
       <div className={s.orderNow}>
         <Container>
-          <Link className={s.orderNow_back} href={ROUTE_PATH.DISPLAY}>
-            <Text color={'black-60'} as="span" size={'16'}>
-              Back
+          <div className={s.orderNow_header}>
+            <Heading as={'h2'}>All displays</Heading>
+            <Text as={'p'} fontWeight={'regular'} size={'16'}>
+              Have questions about buying a Generative Display?
             </Text>
-          </Link>
-          <Heading as={'h2'}>All displays</Heading>
+            <a href={SOCIALS.discord} target="_blank" rel="noreferrer">
+              Join our Discord
+            </a>
+          </div>
+
           <div
             className={classNames(
               s.orderNow_rowFrame,
