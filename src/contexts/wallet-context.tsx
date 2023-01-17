@@ -19,8 +19,9 @@ import { NETWORK_CHAIN_ID } from '@constants/config';
 import Web3 from 'web3';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
-import { WalletEvent } from '@enums/wallet-event';
 import { METAMASK_DOWNLOAD_PAGE } from '@constants/common';
+import { isMobile } from '@helpers/anim.helpers';
+import { openMetamaskDeeplink } from '@utils/metamask';
 
 const LOG_PREFIX = 'WalletContext';
 
@@ -34,7 +35,7 @@ export interface IWalletContext {
   checkAndSwitchChain: (params: IWalletState) => Promise<void>;
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
-  transfer: (addr: string, val: string) => Promise<string>;
+  transfer: (addr: string, val: string) => Promise<string | null>;
   walletBalance: number;
   getWalletBalance: () => Promise<number>;
 }
@@ -46,7 +47,8 @@ const initialValue: IWalletContext = {
     new Promise(r => r()),
   connect: () => new Promise<void>(r => r()),
   disconnect: () => new Promise<void>(r => r()),
-  transfer: (_address: string, _val: string) => new Promise<string>(r => r('')),
+  transfer: (_address: string, _val: string) =>
+    new Promise<string | null>(r => r(null)),
   walletBalance: 0,
   getWalletBalance: () => new Promise<number>(r => r(0)),
 };
@@ -65,9 +67,20 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   const user = useSelector(getUserSelector);
 
   const connectedAddress = useCallback(async (): Promise<string | null> => {
+    if (isMobile()) {
+      openMetamaskDeeplink();
+      return null;
+    }
+
     const wallet = walletManagerRef.current;
+
     if (!wallet) {
       throw Error(WalletError.NO_INSTANCE);
+    }
+
+    if (!wallet.isInstalled()) {
+      window.open(METAMASK_DOWNLOAD_PAGE);
+      throw Error(WalletError.NO_METAMASK);
     }
 
     const walletAddress = await wallet.connectedAddress();
@@ -94,6 +107,11 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   );
 
   const connect = useCallback(async (): Promise<void> => {
+    if (isMobile()) {
+      openMetamaskDeeplink();
+      return;
+    }
+
     const wallet = walletManagerRef.current;
 
     if (!wallet) {
@@ -148,10 +166,21 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   }, [dispatch]);
 
   const transfer = useCallback(
-    async (toAddress: string, value: string): Promise<string> => {
+    async (toAddress: string, value: string): Promise<string | null> => {
+      if (isMobile()) {
+        openMetamaskDeeplink();
+        return '';
+      }
+
       const wallet = walletManagerRef.current;
+
       if (!wallet) {
         throw Error(WalletError.NO_INSTANCE);
+      }
+
+      if (!wallet.isInstalled()) {
+        window.open(METAMASK_DOWNLOAD_PAGE);
+        throw Error(WalletError.NO_METAMASK);
       }
 
       const walletRes = await wallet.connect();
@@ -188,6 +217,11 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   );
 
   const getWalletBalance = async (): Promise<number> => {
+    if (isMobile()) {
+      openMetamaskDeeplink();
+      return 0;
+    }
+
     const wallet = walletManagerRef.current;
 
     if (!wallet) {
@@ -215,36 +249,11 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
     return 0;
   };
 
-  const handleWalletEvents = async (): Promise<void> => {
-    await disconnect();
-    location.reload();
-  };
-
   useEffect(() => {
     const walletManagerInstance = new WalletManager();
     walletManagerRef.current = walletManagerInstance;
     setWalletManager(walletManagerInstance);
   }, []);
-
-  useEffect(() => {
-    if (walletManager) {
-      walletManagerRef.current = walletManager;
-      walletManagerRef.current.registerEvent(
-        WalletEvent.ACCOUNT_CHANGED,
-        handleWalletEvents
-      );
-      // walletManagerRef.current.registerEvent(WalletEvent.CHAIN_CHANGED, handleWalletEvents)
-    }
-
-    return () => {
-      walletManagerRef.current &&
-        walletManagerRef.current.unregisterEvent(
-          WalletEvent.ACCOUNT_CHANGED,
-          handleWalletEvents
-        );
-      // walletManagerRef.current && walletManagerRef.current.registerEvent(WalletEvent.CHAIN_CHANGED, handleWalletEvents)
-    };
-  }, [walletManager]);
 
   useEffect(() => {
     if (walletManager && walletManager.isConnected() && user.walletAddress) {

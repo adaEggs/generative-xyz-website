@@ -26,6 +26,10 @@
     align-items: center;
     gap: rem(24px);
 
+    @include mobile {
+      flex-direction: column;
+    }
+
     img {
       width: 230px;
     }
@@ -40,6 +44,10 @@
     border-radius: 4px;
     transition: all 0.3s ease-in-out;
     gap: rem(10);
+
+    @include mobile {
+      width: 100%;
+    }
   }
 
   &_optionItemName {
