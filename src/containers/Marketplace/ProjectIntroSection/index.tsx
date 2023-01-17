@@ -281,12 +281,11 @@ const ProjectIntroSection = ({ project }: Props) => {
               Created date: {mintedDate}
             </Text>
             <Text size="14" color="black-40" className={s.project_owner}>
-              Collected by:{' '}
-              <Text as="span" size="18">
-                {project?.stats?.uniqueOwnerCount === 1
-                  ? `${project?.stats?.uniqueOwnerCount} owner`
-                  : `${project?.stats?.uniqueOwnerCount}+ owners`}
-              </Text>
+              Collected by: {/* <Text as="span" size="18"> */}
+              {project?.stats?.uniqueOwnerCount === 1
+                ? `${project?.stats?.uniqueOwnerCount} owner`
+                : `${project?.stats?.uniqueOwnerCount}+ owners`}
+              {/* </Text> */}
             </Text>
           </div>
           <div className={s.license}>
