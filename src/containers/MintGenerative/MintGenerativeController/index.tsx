@@ -12,6 +12,7 @@ import { MintGenerativeContext } from '@contexts/mint-generative-context';
 import cs from 'classnames';
 import { CDN_URL } from '@constants/config';
 import ErrorAlert from '../ErrorAlert';
+import { Container } from 'react-bootstrap';
 
 const MintGenerativeController: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -48,37 +49,39 @@ const MintGenerativeController: React.FC = (): React.ReactElement => {
   }, [stepParam]);
 
   return (
-    <div
-      className={cs(s.mintGenerative, {
-        [`${s.mintGenerative__success}`]: isLastStep,
-      })}
-      style={
-        isLastStep
-          ? {
-              backgroundImage: `url(${CDN_URL}/images/mint-success-bg.svg)`,
-            }
-          : {}
-      }
-    >
+    <Container>
       <div
-        className={cs(s.stepHeaderWrapper, {
-          [`${s.stepHeaderWrapper__hide}`]: isLastStep,
+        className={cs(s.mintGenerative, {
+          [`${s.mintGenerative__success}`]: isLastStep,
         })}
+        style={
+          isLastStep
+            ? {
+                backgroundImage: `url(${CDN_URL}/images/mint-success-bg.svg)`,
+              }
+            : {}
+        }
       >
-        <StepHeader />
-      </div>
-      <div
-        className={cs(s.stepContent, {
-          [`${s.stepContent__twoColumn}`]: !!filesSandbox,
-        })}
-      >
-        <div className={s.previewWrapper}>
-          <ProjectPreview />
+        <div
+          className={cs(s.stepHeaderWrapper, {
+            [`${s.stepHeaderWrapper__hide}`]: isLastStep,
+          })}
+        >
+          <StepHeader />
         </div>
-        <div className={s.stepContentWrapper}>{renderStep()}</div>
+        <div
+          className={cs(s.stepContent, {
+            [`${s.stepContent__twoColumn}`]: !!filesSandbox,
+          })}
+        >
+          <div className={s.previewWrapper}>
+            <ProjectPreview />
+          </div>
+          <div className={s.stepContentWrapper}>{renderStep()}</div>
+        </div>
+        <ErrorAlert />
       </div>
-      <ErrorAlert />
-    </div>
+    </Container>
   );
 };
 

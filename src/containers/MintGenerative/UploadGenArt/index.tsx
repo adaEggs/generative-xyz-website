@@ -1,22 +1,22 @@
-import s from './styles.module.scss';
 import Button from '@components/ButtonIcon';
+import Checkbox from '@components/Checkbox';
+import Heading from '@components/Heading';
+import SvgInset from '@components/SvgInset';
+import Text from '@components/Text';
+import { SOCIALS } from '@constants/common';
+import { CDN_URL } from '@constants/config';
 import DropFile from '@containers/MintGenerative/DropFile';
 import { MintGenerativeContext } from '@contexts/mint-generative-context';
 import { LogLevel } from '@enums/log-level';
+import { MintGenerativeStep } from '@enums/mint-generative';
+import { SandboxFileError } from '@enums/sandbox';
 import log from '@utils/logger';
 import { detectUsedLibs, processSandboxZipFile } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
-import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
-import SvgInset from '@components/SvgInset';
-import { CDN_URL } from '@constants/config';
 import Image from 'next/image';
-import Checkbox from '@components/Checkbox';
 import { useRouter } from 'next/router';
-import { MintGenerativeStep } from '@enums/mint-generative';
-import { SandboxFileError } from '@enums/sandbox';
-import Text from '@components/Text';
-import Heading from '@components/Heading';
-import { SOCIALS } from '@constants/common';
+import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
+import s from './styles.module.scss';
 
 const LOG_PREFIX = 'UploadGenArt';
 

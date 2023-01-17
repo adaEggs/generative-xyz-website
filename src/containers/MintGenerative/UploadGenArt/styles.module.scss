@@ -4,10 +4,12 @@
 
   .uploadWrapper {
     margin: auto;
+    width: 100%;
     max-width: 500px;
     text-align: center;
     padding: rem(48px) rem(64px) rem(80px);
-    box-shadow: 35px 15px 120px $black-10;
+    box-shadow: 35px 15px 120px rgba(0, 0, 0, 0.15);
+    border-radius: 2px;
     margin-bottom: 42px;
   }
 
@@ -101,7 +103,6 @@
     display: inline-block;
     margin-right: 6px;
   }
-
 
   .stepFooterWrapper {
     position: fixed;
