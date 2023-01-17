@@ -28,12 +28,17 @@
       .frameItem_ctas {
         opacity: 1;
       }
+
+      .frameItem_img{
+        opacity: .35;
+      }
     }
   }
 
   &_img {
     margin-bottom: rem(24px);
     position: relative;
+    transition: opacity .4s $easeOutCubic;
   }
 
   &_buy {
@@ -88,7 +93,8 @@
     @include  min-pc{
       position: absolute;
       opacity: 0;
-      top: calc(100% - #{rem(25px)});
+      top: 50%;
+      transform: translateY(-50%);
     }
 
     &__in {

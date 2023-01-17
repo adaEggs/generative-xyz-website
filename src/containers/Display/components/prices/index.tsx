@@ -4,7 +4,7 @@ import { LogLevel } from '@enums/log-level';
 import { getProductList } from '@services/api/product';
 import log from '@utils/logger';
 import { default as classNames, default as cn } from 'classnames';
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import { AnimHeading } from 'src/animations/heading';
 import useAsyncEffect from 'use-async-effect';
 // import { FrameItem } from '../frame-item';
@@ -14,11 +14,15 @@ import { CDN_URL } from '@constants/config';
 import { LoadingContext } from '@contexts/loading-context';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
+import { NavigationContext } from '@contexts/navigation-context';
 
 const LOG_PREFIX = 'Prices';
 
 export const Prices = (): JSX.Element => {
   const { registerLoading, unRegisterLoading } = useContext(LoadingContext);
+
+  const { setIsTechSpecz } = useContext(NavigationContext);
+  const refTech = useRef<HTMLDivElement>(null);
   // const dispatch = useAppDispatch();
   const router = useRouter();
   const [products, setProducts] = useState<IFrame[]>([]);
@@ -49,10 +53,34 @@ export const Prices = (): JSX.Element => {
     };
   }, []);
 
+  useEffect(() => {
+    const obServicer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        // console.log('__in');
+        //todo meomeo
+        setIsTechSpecz && setIsTechSpecz(true);
+      } else {
+        console.log('__out');
+        setIsTechSpecz && setIsTechSpecz(false);
+      }
+    });
+
+    if (refTech.current) {
+      obServicer.observe(refTech.current);
+    }
+
+    return () => {
+      if (refTech.current) {
+        obServicer.unobserve(refTech.current);
+        obServicer.disconnect();
+      }
+    };
+  }, [refTech, products]);
+
   if (products.length === 0) return <></>;
 
   return (
-    <div className={s.tableInfo}>
+    <div id="tech-spec" ref={refTech} className={s.tableInfo}>
       <div className={cn(s.tableInfo_specContainer, 'container')}>
         <div className="row">
           <div className="col-12">
@@ -66,7 +94,7 @@ export const Prices = (): JSX.Element => {
               Tech specs
             </AnimHeading>
           </div>
-          <div id="tech-spec" className={classNames('col-12', s.Home_table)}>
+          <div className={classNames('col-12', s.Home_table)}>
             <table>
               <tbody>
                 <tr>
