@@ -3,12 +3,15 @@ import { NextPage } from 'next';
 import MarketplaceLayout from '@layouts/Marketplace';
 // import { Landingpage } from '@containers/Landingpage';
 import Display from '@containers/Display';
+import { NavigationProvider } from '@contexts/navigation-context';
 
 const HomePage: NextPage = () => {
   return (
-    <MarketplaceLayout isHideFaucet={true} theme={'dark'} isDisplay={true}>
-      <Display />
-    </MarketplaceLayout>
+    <NavigationProvider>
+      <MarketplaceLayout isHideFaucet={true} theme={'dark'} isDisplay={true}>
+        <Display />
+      </MarketplaceLayout>
+    </NavigationProvider>
   );
 };
 

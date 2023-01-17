@@ -118,7 +118,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
         );
 
         const rarityValue = foundTrait?.traitValuesStat.find(
-          stat => stat.value === attr.value
+          stat => stat.value.toString() === attr.value.toString()
         )?.rarity;
 
         return {

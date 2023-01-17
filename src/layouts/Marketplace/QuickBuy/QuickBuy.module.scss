@@ -5,6 +5,7 @@
   left: 0;
   z-index: 8;
   background-color: $white;
+  border-bottom: 1px solid #e1e2e2;
 
   &_heading {
     display: none;
@@ -24,8 +25,8 @@
     padding-top: rem(5px);
     padding-bottom: rem(5px);
     @include min-tablet {
-      padding-top: rem(5px);
-      padding-bottom: rem(5px);
+      padding-top: rem(7px);
+      padding-bottom: rem(7px);
     }
   }
 
@@ -34,8 +35,12 @@
     font-weight: 500;
     color: #9C9C9C;
     line-height: (26/16);
-    @include calcFontAuto(12px, 14px);
+    @include calcFontAuto(14px, 16px);
     transition: color .4s $easeOutCubic;
+
+    &.isActive {
+      color: $primary-brand;
+    }
 
     &:hover {
       color: $primary-brand;
@@ -69,9 +74,14 @@
 
     &_orderBtn {
       text-transform: unset;
-      padding-left: rem(24px);
-      padding-right: rem(24px);
+      padding-left: 14px;
+      padding-right: 14px;
       border-radius: 2px;
+      height: 34px !important;
+
+      span {
+        font-size: 14px;
+      }
     }
   }
 }

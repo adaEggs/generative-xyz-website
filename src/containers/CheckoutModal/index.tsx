@@ -69,7 +69,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
     city: '',
     state: '',
     zip: '',
-    country: '',
+    country: 'US',
   });
 
   const getDiscount = useMemo(() => (isDiscounted ? 0.1 : 0), [isDiscounted]);
@@ -242,7 +242,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
               </Text>
             </div>
           )}
-          <div className={s.CheckoutModal_title}>Buy Gen-Frame</div>
+          <div className={s.CheckoutModal_title}>Buy Generative Display</div>
           <div className={s.CheckoutModal_optionsContainer}>
             <div key={cart?.id} className={s.CheckoutModal_optionItem}>
               <img src={cart?.image} alt="" />

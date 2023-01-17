@@ -10,6 +10,7 @@
   flex: 1;
   @include max-tablet {
     flex-direction: column;
+    gap: rem(40px);
   }
 
   &_avatar {
@@ -35,10 +36,13 @@
 
   &_form {
     flex: 1;
-    max-width: rem(515px);
 
     h4 {
       margin-bottom: rem(32px);
+    }
+
+    @include min-tablet {
+      max-width: rem(515px);
     }
   }
 

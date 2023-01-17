@@ -13,11 +13,8 @@ interface IProp {
 export const FrameItem = ({ data, openCheckoutPopup }: IProp): JSX.Element => {
   return (
     <div className={s.frameItem}>
-      <div className={`${s.frameItem_inner}`}>
-        <div
-          className={`${s.frameItem_img} image__fit`}
-          onClick={openCheckoutPopup}
-        >
+      <div className={`${s.frameItem_inner}`} onClick={openCheckoutPopup}>
+        <div className={`${s.frameItem_img} image__fit`}>
           <img src={data.image} alt="8-ethf4d1101ffd" />
         </div>
         <p className="desc__medium">{data.name}</p>
@@ -36,7 +33,7 @@ export const FrameItem = ({ data, openCheckoutPopup }: IProp): JSX.Element => {
                 size="xl"
                 variant="black"
                 className={classNames(s.Home_video_content_ctas_orderBtn)}
-                onClick={openCheckoutPopup}
+                // onClick={openCheckoutPopup}
               >
                 <span className="text">Buy</span>
               </Button>
