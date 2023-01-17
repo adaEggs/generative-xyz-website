@@ -14,6 +14,8 @@ export const WETH_ADDRESS = process.env.NEXT_PUBLIC_WETH_ADDRESS!;
 
 export const PRINTS_ADDRESS = process.env.NEXT_PUBLIC_PRINTS_ADDRESS!;
 
+export const GENART_ADDRESS = process.env.NEXT_PUBLIC_GENART_ADDRESS!;
+
 export const MAX_HEX_VALUE =
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 

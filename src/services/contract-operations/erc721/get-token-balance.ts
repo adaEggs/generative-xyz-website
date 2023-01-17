@@ -1,9 +1,9 @@
 import { AbiItem } from 'web3-utils';
 import { Contract } from 'web3-eth-contract';
 import ContractOperation from '@services/contract-operations/contract-operation';
-import ContractABI from '@services/contract-abis/erc20.json';
+import ContractABI from '@services/contract-abis/erc721.json';
 import { ErrorMessage } from '@enums/error-message';
-import { IGetTokenBalanceParams } from '@interfaces/contract-operations/erc20-get-token-balance';
+import { IGetTokenBalanceParams } from '@interfaces/contract-operations/erc721-get-token-balance';
 
 class GetTokenBalanceOperation extends ContractOperation<
   IGetTokenBalanceParams,
@@ -13,7 +13,7 @@ class GetTokenBalanceOperation extends ContractOperation<
 
   async prepare(): Promise<void> {
     this.contract = await this.walletManager.getContract(
-      this.params.erc20TokenAddress,
+      this.params.erc721TokenAddress,
       ContractABI.abi as Array<AbiItem>
     );
   }

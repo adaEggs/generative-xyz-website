@@ -1,10 +1,12 @@
 import {
   NETWORK_CHAIN_ID,
+  NFT_REQUIRED_TO_DISCOUNT,
   PRINTS_REQUIRED_TO_DISCOUNT,
 } from '@constants/config';
-import { PRINTS_ADDRESS } from '@constants/contract-address';
+import { GENART_ADDRESS, PRINTS_ADDRESS } from '@constants/contract-address';
 import { getUserSelector } from '@redux/user/selector';
 import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
+import GetNFTBalanceOperation from '@services/contract-operations/erc721/get-token-balance';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import useAsyncEffect from 'use-async-effect';
@@ -20,6 +22,10 @@ const useIsFrameDiscounted = (): boolean => {
   const [isDiscounted, setIsDiscounted] = useState<boolean>(false);
   const { call: getTokenBalance } = useContractOperation(
     GetTokenBalanceOperation,
+    false
+  );
+  const { call: getNFTBalance } = useContractOperation(
+    GetNFTBalanceOperation,
     false
   );
 
@@ -41,6 +47,28 @@ const useIsFrameDiscounted = (): boolean => {
         Web3.utils.fromWei(printsBalance.toString())
       );
       if (convertedBalance >= PRINTS_REQUIRED_TO_DISCOUNT) {
+        setIsDiscounted(true);
+      }
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.Error, LOG_PREFIX);
+    }
+  }, [user]);
+
+  useAsyncEffect(async () => {
+    if (!GENART_ADDRESS) {
+      return;
+    }
+
+    try {
+      const nftBalance = await getNFTBalance({
+        chainID: NETWORK_CHAIN_ID,
+        erc721TokenAddress: GENART_ADDRESS,
+      });
+      if (!nftBalance) {
+        return;
+      }
+
+      if (nftBalance >= NFT_REQUIRED_TO_DISCOUNT) {
         setIsDiscounted(true);
       }
     } catch (err: unknown) {
