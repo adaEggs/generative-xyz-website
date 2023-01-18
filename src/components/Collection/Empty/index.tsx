@@ -23,7 +23,7 @@ const LOG_PREFIX = 'Empty';
 export const Empty = ({
   projectInfo,
 }: {
-  projectInfo?: Project;
+  projectInfo?: Project | null;
 }): JSX.Element => {
   const { getWalletBalance } = useContext(WalletContext);
   const router = useRouter();

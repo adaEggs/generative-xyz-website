@@ -8,8 +8,11 @@ export const ProjectList = ({ listData }: { listData?: Project[] }) => {
     <>
       {listData && listData?.length > 0 ? (
         <div className="grid grid-list">
-          {listData?.map((project, index: number) => (
-            <ProjectCard key={`project-item-${index}`} project={project} />
+          {listData?.map(project => (
+            <ProjectCard
+              key={`project-item-${project.tokenID}`}
+              project={project}
+            />
           ))}
         </div>
       ) : (

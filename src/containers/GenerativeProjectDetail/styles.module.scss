@@ -89,16 +89,6 @@
     align-items: flex-start;
   }
 
-  .filter_buy {
-    display: flex;
-    min-width: rem(150px);
-    justify-content: space-between;
-
-    @include mobile {
-      min-width: rem(120px);
-    }
-  }
-
   .filter_sort {
     flex: 1;
     width: 100%;
