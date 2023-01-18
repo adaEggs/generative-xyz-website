@@ -159,6 +159,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
         details: [{ id: cart?.id || '', qty: cart?.qty || 0 }],
         ...shippingInfo,
         source: source ? (source as string) : '',
+        wallet_address: user.walletAddress,
       });
 
       if (!newOrder.order_id) return;

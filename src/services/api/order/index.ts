@@ -14,6 +14,7 @@ export const makeOrder = async (orderInfo: {
   zip: string;
   country: string;
   source: string;
+  wallet_address: string;
 }): Promise<any> => {
   try {
     const response = await ApiFactory.post(`${ORDER_API}/make`, {
@@ -32,6 +33,7 @@ export const makeOrder = async (orderInfo: {
       shipping_city: orderInfo.city,
       shipping_country: orderInfo.country,
       source: orderInfo.source,
+      wallet_address: orderInfo.wallet_address,
     });
     return response.data;
   } catch (e) {
