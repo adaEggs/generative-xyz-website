@@ -57,3 +57,5 @@ export const THIRD_PARTY_SCRIPTS = [
       '<script type="text/javascript" src="https://cdn.generative.xyz/ajax/libs/p5.grain/0.6.1/p5.grain.min.js"></script>',
   },
 ];
+
+export const LICENSE_OPTIONS = [];

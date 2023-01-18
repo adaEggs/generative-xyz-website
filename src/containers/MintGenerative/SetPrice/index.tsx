@@ -183,7 +183,7 @@ const SetPrice = () => {
         socialMedium: socialMedium ?? '',
         socialTwitter: socialTwitter ?? '',
         socialWeb: socialWeb ?? '',
-        license: license ?? 'MIT',
+        license: license ?? '',
         mintFee: mintFee,
       };
 
