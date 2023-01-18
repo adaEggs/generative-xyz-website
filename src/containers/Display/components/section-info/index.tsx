@@ -36,7 +36,7 @@ export const SectionInfo = ({
     >
       <div className="container">
         <div className="row">
-          <div className="offset-xl-1 col-xl-10 col-12">
+          <div className="offset-xxxl-1 col-xxxl-10 col-12">
             <div className={`sectionInfo_inner ${s.sectionInfo_inner}`}>
               <AnimRanText className={`${s.sectionInfo_sub} desc__label`}>
                 {subTitle}

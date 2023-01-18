@@ -6,7 +6,7 @@ export const Benchmark = (): JSX.Element => {
   return (
     <div className={classNames(s.hardWare_benchmark, 'container')}>
       <div className={`row ${s.hardWare_benchmark_header}`}>
-        <div className="col-xl-6 offset-xl-3 col-md-10 offset-md-1 col-12">
+        <div className="col-xxxl-6 col-xl-7 offset-xxxl-3 offset-xl-2 col-md-10 offset-md-1 col-12">
           <h3 className={`heading heading__medium`}>Benchmark</h3>
           <p className={`desc__medium`}>
             Generative Display has set a rising standard in showcasing living
@@ -15,7 +15,7 @@ export const Benchmark = (): JSX.Element => {
         </div>
       </div>
       <div className="row">
-        <div className="col-xl-6 offset-xl-3 col-md-10 offset-md-1 col-12">
+        <div className="col-xxxl-6 col-xl-8 offset-xxxl-3 offset-xl-2 col-md-10 offset-md-1 col-12">
           <BenchmarkItem
             className={s.hardWare_benchmark_item}
             title={'Cosmic Reef #242'}
