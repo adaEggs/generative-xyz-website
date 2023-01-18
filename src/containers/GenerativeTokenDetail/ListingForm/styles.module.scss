@@ -1,10 +1,10 @@
 .listingForm {
   .title {
     font-weight: 700;
-    font-size: 24px;
-    line-height: 34px;
     color: $black-100;
     margin-bottom: 24px;
+    line-height: (34 / 24);
+    @include calcFontAuto(18px, 24px);
   }
 
   .formItem {
@@ -24,8 +24,8 @@
   .input {
     background-color: $white-100;
     font-weight: 500;
-    font-size: 16px;
-    line-height: 26px;
+    line-height: (26/16);
+    @include calcFontAuto(14px, 16px);
     color: $black-100;
     padding: 11px 78px 11px 14px;
     border: 2px solid rgba(0, 0, 0, 0.1);
@@ -39,7 +39,7 @@
       opacity: 1; /* Firefox */
     }
 
-    &:input-placeholder {
+    &::input-placeholder {
       /* Internet Explorer 10-11 */
       color: $black-40;
     }
@@ -72,8 +72,8 @@
       right: 14px;
       top: 13px;
       font-weight: 500;
-      font-size: 16px;
-      line-height: 26px;
+      line-height: (26/16);
+      @include calcFontAuto(14px, 16px);
       color: $black-100;
       padding-left: 8px;
       border-left: 1px solid $black-20;
@@ -99,8 +99,8 @@
 
   .sectionTitle {
     font-weight: 700;
-    font-size: 18px;
-    line-height: 28px;
+    line-height: (28 / 18);
+    @include calcFontAuto(16px, 18px);
     letter-spacing: -0.01em;
     color: $black-100;
     margin-bottom: 8px;

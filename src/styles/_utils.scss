@@ -50,12 +50,26 @@
 }
 
 .grid-list {
-  grid-template-columns: repeat(4, 1fr);
-  gap: rem(24px);
+
 
   @include mobile {
     grid-template-columns: repeat(2, 1fr);
     gap: rem(10px);
+  }
+
+  @include min-tablet{
+    grid-template-columns: repeat(3, 1fr);
+    gap: rem(10px);
+  }
+
+  @include min-pc{
+    grid-template-columns: repeat(4, 1fr);
+    gap: rem(24px);
+  }
+
+  @include min-pc-superWide{
+    grid-template-columns: repeat(6, 1fr);
+    gap: rem(24px);
   }
 }
 

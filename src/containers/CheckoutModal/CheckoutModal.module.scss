@@ -10,11 +10,13 @@
   }
 
   &_title {
+
     font-weight: 700;
-    font-size: 20px;
-    line-height: 28px;
     color: $neutral-08;
     margin-bottom: rem(16);
+
+    line-height: (28/20);
+    @include calcFontAuto(18px, 20px);
   }
 
   &_shippingTitle {
@@ -53,22 +55,23 @@
 
   &_optionItemName {
     font-weight: 500;
-    font-size: 18px;
-    line-height: 26px;
     color: $neutral-06;
-
+    line-height: (26/18);
+    @include calcFontAuto(16px, 18px);
   }
 
   &_optionItemPrice {
     font-weight: 700;
-    font-size: 18px;
-    line-height: 28px;
+
     color: $neutral-08;
     margin-left: auto;
     display: flex;
     align-items: center;
     gap: rem(12px);
     margin-bottom: rem(10px);
+
+    line-height: (26/18);
+    @include calcFontAuto(16px, 18px);
 
     &_disCount {
       color: #B1B5C3;
@@ -134,15 +137,19 @@
     justify-content: space-between;
     margin-top: rem(16);
     font-weight: 500;
-    font-size: 16px;
-    line-height: 24px;
+
+    line-height: (24/16);
+    @include calcFontAuto(14px, 16px);
 
     &:last-of-type {
       margin-top: rem(20);
       padding-top: rem(20);
       border-top: 1px solid #e1e2e2;
       font-weight: 600;
-      font-size: 18px;
+
+      line-height: (26/18);
+      @include calcFontAuto(16px, 18px);
+
     }
 
     .highlight {
@@ -230,7 +237,8 @@
 
   &_title {
     font-weight: 600;
-    font-size: 24px;
+    line-height: (34/24);
+    @include calcFontAuto(18px, 24px);
   }
 
   &_content {

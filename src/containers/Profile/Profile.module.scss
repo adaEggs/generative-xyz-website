@@ -33,21 +33,13 @@
   font-style: normal;
   font-weight: 700;
 
-  font-size: rem(18px);
   line-height: (28/18);
   padding-left: 0 !important;
   padding-right: 0 !important;
   margin-right: rem(48px);
-
-  @include min-pc {
-    font-size: calc-auto(1200px, 1920px, 16px, 18px);
-  }
-
-  @include min-pc-wide {
-    font-size: rem(18px);
-  }
-
   position: relative;
+
+  @include calcFontAuto(16px, 18px);
 
   &:after {
     content: '';

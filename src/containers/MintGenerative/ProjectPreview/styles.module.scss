@@ -77,8 +77,8 @@
   .mintPrice,
   .mintCount {
     font-weight: 700;
-    font-size: 16px;
-    line-height: 26px;
     color: $black-100;
+    line-height: (26/16);
+    @include calcFontAuto(14px, 16px)
   }
 }

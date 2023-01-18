@@ -126,21 +126,15 @@
     line-height: 140%;
     color: $neutral-08;
     margin-bottom: rem(16px);
-
     @include min-pc {
       margin-bottom: 0;
-      font-size: calc-auto(1200px, 1920px, 15px, 20px);
     }
   }
 
   &_specContent {
     color: $neutral-06;
     font-weight: 400;
-    font-size: 16px;
-
-    @include min-pc {
-      font-size: calc-auto(1200px, 1920px, 13px, 16px);
-    }
+    font-size: rem(16px);
 
     line-height: 140%;
 
@@ -157,11 +151,6 @@
         font-size: rem(20px);
         line-height: 140%;
         color: $neutral-08;
-
-        @include min-pc {
-          margin-bottom: 0;
-          font-size: calc-auto(1200px, 1920px, 15px, 20px);
-        }
       }
     }
 

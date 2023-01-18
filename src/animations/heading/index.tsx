@@ -34,7 +34,7 @@ export const AnimHeading = ({
   isIn = true,
 }: IProps): JSX.Element => {
   const comp = useRef<HTMLHeadingElement>(null);
-  const refDom = useRef<IProRefDom>({ heading: null });
+  const refDom = useRef<IProRefDom>({ heading: null, runned: false });
   const { pageLoadStatus } = useContext(LoadingContext);
 
   useEffect(() => {
@@ -43,12 +43,12 @@ export const AnimHeading = ({
       if (refDom.current.heading) {
         refDom.current.heading.classList.add(`is-handle`);
         refDom.current.texts = new SplitType(refDom.current.heading, {
-          types: 'lines, chars',
+          types: 'words, chars',
         });
 
         refDom.current.resizeObserver = new ResizeObserver(
           debounce(() => {
-            if (refDom.current.texts) {
+            if (refDom.current.texts && !refDom.current.runned) {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               refDom.current.texts?.split();
@@ -77,7 +77,7 @@ export const AnimHeading = ({
     if (refDom.current.heading && pageLoadStatus === PAGE_ENTER) {
       new Anim(refDom.current.heading, () => {
         const delay = getDelay(screen, offset);
-
+        refDom.current.runned = true;
         gsap.to(refDom.current.texts?.chars || [], {
           opacity: 1,
           ease: 'power3.inOut',

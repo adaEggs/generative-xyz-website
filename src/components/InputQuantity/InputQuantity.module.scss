@@ -90,7 +90,7 @@
     appearance: none;
 
     line-height: (28/18);
-    @include calcFontAuto(15px, 18px);
+    @include calcFontAuto(16px, 18px);
 
     @include max-tablet {
       text-align: center;

@@ -429,7 +429,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
           </div>
 
           <div className={s.CheckoutModal_summaryLine}>
-            <div>Payment Total:</div>
+            <div>Payment total:</div>
             <div className={s.CheckoutModal_totalPrice}>
               {`${totalPrice} ETH`}
             </div>

@@ -62,8 +62,8 @@
 
   .modalDescription {
     font-weight: 500;
-    font-size: 18px;
-    line-height: 28px;
+    line-height: (28 / 18);
+    @include calcFontAuto(16px, 18px);
     letter-spacing: -0.01em;
     color: $black-60;
   }
@@ -86,8 +86,8 @@
     height: 48px;
     justify-content: center;
     font-weight: 700;
-    font-size: 16px;
-    line-height: 26px;
+    line-height: (26/16);
+    @include calcFontAuto(14px, 16px)
   }
 
   .formItem {
@@ -107,8 +107,8 @@
   .input {
     background-color: $white-100;
     font-weight: 500;
-    font-size: 16px;
-    line-height: 26px;
+    line-height: (26/16);
+    @include calcFontAuto(14px, 16px);
     color: $black-100;
     padding: 11px 78px 11px 14px;
     border: 2px solid rgba(0, 0, 0, 0.1);
@@ -155,8 +155,8 @@
       right: 14px;
       top: 13px;
       font-weight: 500;
-      font-size: 16px;
-      line-height: 26px;
+      line-height: (26/16);
+      @include calcFontAuto(14px, 16px);
       color: $black-100;
       padding-left: 8px;
       border-left: 1px solid $black-20;

@@ -21,20 +21,20 @@
       color: $black-40;
       font-weight: 400;
       line-height: (26/16);
-      @include calcFontAuto(14px, 16px);
+      @include calcFontAuto(14px, 16px)
     }
 
     :global(.select__multi-value__label) {
       font-weight: 400;
       line-height: 1;
-      @include calcFontAuto(12px, 14px);
+      @include calcFontAuto(12px, 14px)
     }
 
     :global(.select__input-container) {
       color: $black-100;
       font-weight: 400;
       line-height: (26/16);
-      @include calcFontAuto(14px, 16px);
+      @include calcFontAuto(14px, 16px)
     }
 
     :global(.select__dropdown-indicator) {

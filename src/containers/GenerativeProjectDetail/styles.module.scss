@@ -64,12 +64,13 @@
 
 .tab {
   font-weight: 500;
-  font-size: 18px;
-  line-height: 28px;
   border: none !important;
   letter-spacing: -0.01em;
   color: $black-100 !important;
   padding: 10px 0 !important;
+
+  line-height: (28 / 18);
+  @include calcFontAuto(16px, 18px);
 
   &:global(.active) {
     border-bottom: 2px solid $black-100 !important;

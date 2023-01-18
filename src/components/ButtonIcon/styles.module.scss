@@ -25,13 +25,13 @@
   &.large,
   &.medium {
     line-height: (26/16);
-    @include calcFontAuto(13px, 16px);
+    @include calcFontAuto(14px, 16px);
   }
 
   &.small,
   &.xsmall {
     line-height: (24/14);
-    @include calcFontAuto(12px, 14px);
+    font-size: rem(14px);
   }
 
   /* Button sizes */

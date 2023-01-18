@@ -1,6 +1,6 @@
 .footer {
 
-  @include calcFontAutoSmall(13px, 16px);
+  @include calcFontAuto(14px, 16px);
 
   border: 1px solid $black-10;
   background-color: $primary-brand;

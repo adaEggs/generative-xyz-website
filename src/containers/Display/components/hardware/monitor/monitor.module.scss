@@ -45,15 +45,8 @@
 
     &_item_desc {
 
-      font-size: rem(16px);
+      @include calcFontAuto(16px, 20px);
 
-      @include tablet {
-        font-size: rem(20px);
-      }
-
-      @include min-pc {
-        font-size: calc-auto(1200px, 1920px, 14px, 20px);
-      }
     }
 
     &_item_icon {

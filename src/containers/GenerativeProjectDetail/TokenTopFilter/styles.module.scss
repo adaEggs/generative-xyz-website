@@ -11,8 +11,8 @@
     .input {
       padding: 11px 16px 11px 42px;
       font-weight: 500;
-      font-size: 16px;
-      line-height: 26px;
+      line-height: (26/16);
+      @include calcFontAuto(14px, 16px);
       width: 100%;
 
       &::placeholder {
@@ -60,8 +60,9 @@
     :global(.select__placeholder) {
       color: $black-40;
       font-weight: 500;
-      font-size: 16px;
-      line-height: 26px;
+      line-height: (26/16);
+      @include calcFontAuto(14px, 16px)
+
     }
 
     :global(.select__multi-value__label) {
@@ -73,8 +74,8 @@
     :global(.select__input-container) {
       color: $black-100;
       font-weight: 500;
-      font-size: 16px;
-      line-height: 26px;
+      line-height: (26/16);
+      @include calcFontAuto(14px, 16px)
     }
   }
 }

@@ -66,8 +66,8 @@
 
   .tokenName {
     font-weight: 700;
-    font-size: 16px;
-    line-height: 26px;
+    line-height: (26/16);
+    @include calcFontAuto(14px, 16px);
     color: $black-100;
   }
 
@@ -95,8 +95,8 @@
   .input {
     background-color: $white-100;
     font-weight: 500;
-    font-size: 16px;
-    line-height: 26px;
+    line-height: (26/16);
+    @include calcFontAuto(14px, 16px);
     color: $black-100;
     padding: 11px 14px;
     border: 2px solid rgba(0, 0, 0, 0.1);
@@ -164,8 +164,8 @@
 
   .errorTitle {
     font-weight: 700;
-    font-size: 18px;
-    line-height: 28px;
+    line-height: (28 / 18);
+    @include calcFontAuto(16px, 18px);
     color: $secondary-red;
     margin: 0;
   }

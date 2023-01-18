@@ -6,7 +6,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    @include calcFontAuto(13px, 16px);
+    @include calcFontAuto(14px, 16px);
 
     h1 {
       font-size: 36px;
