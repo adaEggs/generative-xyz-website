@@ -112,7 +112,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 />
                 <Heading
                   as={'h5'}
-                  fontWeight={'semibold'}
+                  fontWeight={'medium'}
                   color={'primary-color'}
                   className={s.zipFileName}
                 >
@@ -148,7 +148,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
             </div>
           </div>
           <div className={s.projectAttributeWrapper}>
-            <Heading as={'h5'} className={s.attrTitle} fontWeight={'semibold'}>
+            <Heading as={'h5'} className={s.attrTitle} fontWeight={'medium'}>
               Properties of the current variation
             </Heading>
 
@@ -170,7 +170,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
                         <Text
                           as={'span'}
                           size="16"
-                          fontWeight={'semibold'}
+                          fontWeight={'medium'}
                           className={s.attrKey}
                         >
                           {key}:

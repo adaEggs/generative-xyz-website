@@ -5,9 +5,12 @@
       outline: none;
       box-shadow: none;
       border-radius: 0;
-      border: 2px solid $black-20;
+      border: 1px solid $black-20;
       min-width: rem(250px);
       @include calcPropertyAuto(height, 36px, 48px);
+      @include min-pc-mid{
+        border: 2px solid $black-20;
+      }
     }
 
     :global(.select__indicator-separator) {
@@ -16,7 +19,7 @@
 
     :global(.select__placeholder) {
       color: $black-40;
-      font-weight: 500;
+      font-weight: 400;
       line-height: (26/16);
       @include calcFontAuto(14px, 16px);
     }
@@ -29,7 +32,7 @@
 
     :global(.select__input-container) {
       color: $black-100;
-      font-weight: 500;
+      font-weight: 400;
       line-height: (26/16);
       @include calcFontAuto(14px, 16px);
     }
@@ -41,8 +44,11 @@
     :global(.select__menu) {
       border-radius: 2px;
       background: #FFFFFF;
-      border: 2px solid rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.1);
       box-shadow: 8px 7px 24px rgba(0, 0, 0, 0.15);
+      @include min-pc-mid{
+        border: 2px solid rgba(0, 0, 0, 0.1);
+      }
     }
 
     :global(.select__menu-list) {

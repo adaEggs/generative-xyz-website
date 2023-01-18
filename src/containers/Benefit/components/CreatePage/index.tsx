@@ -27,7 +27,7 @@ export const CreatePageSection = (): JSX.Element => {
                 as={'h5'}
                 color={'purple-a'}
                 className={'spacing__small'}
-                fontWeight={'semibold'}
+                fontWeight={'medium'}
                 animOption={{ screen: 0, offset: 0, type: 'random' }}
               >
                 Incentivized testnet
@@ -35,7 +35,7 @@ export const CreatePageSection = (): JSX.Element => {
               <Heading
                 as={'h1'}
                 color={'white'}
-                fontWeight={'semibold'}
+                fontWeight={'medium'}
                 className={'spacing__small'}
                 animOption={{ screen: 0.2, offset: 0, type: 'heading' }}
               >

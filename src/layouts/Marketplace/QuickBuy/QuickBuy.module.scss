@@ -81,6 +81,9 @@
 
       span {
         font-size: 14px;
+        @include min-pc-wide {
+          font-size: rem(14px);
+        }
       }
     }
   }

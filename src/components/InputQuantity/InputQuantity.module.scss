@@ -32,16 +32,22 @@
     background: none !important;
     color: $white !important;
     border: 0 none;
-    font-size: 10px;
-    line-height: 10px;
+
     height: 100%;
     cursor: pointer;
-    width: 74px;
+    width: rem(74px);
     display: flex;
     align-items: center;
     justify-content: center;
     outline: 0;
     box-shadow: 0 0 0 transparent;
+    font-size: 10px;
+    line-height: 10px;
+
+    @include min-pc-wide {
+      font-size: rem(10px);
+      line-height: rem(10px);
+    }
 
     &:active,
     &:hover,

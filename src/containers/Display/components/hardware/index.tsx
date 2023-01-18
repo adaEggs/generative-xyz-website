@@ -97,9 +97,9 @@ export const HardWare = (): JSX.Element => {
               width={1920}
               height={1080}
               className={s.hardWare_content_main}
-              urlFrame={`${CDN_URL}/pages/home/frame-3/block-3-v2-%d.png`}
-              webmFrame={`${CDN_URL}/pages/home/frame-3/block-3-v2-%d.png.webp`}
-              totalFrames={111}
+              urlFrame={`${CDN_URL}/pages/home/block-3-2/block-3-v2-%d.png`}
+              webmFrame={`${CDN_URL}/pages/home/block-3-2/block-3-v2-%d.png.webp`}
+              totalFrames={116}
               onProcessing={processing}
               start={registerLoading}
               end={unRegisterLoading}

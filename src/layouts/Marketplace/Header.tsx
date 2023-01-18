@@ -114,16 +114,18 @@ const Header: React.FC<IProp> = ({
     return (
       <div>
         <div className={styles.username}>
-          <Text size="14" fontWeight="semibold">
+          <Text size="14" fontWeight="medium">
             {user.displayName || formatAddress(user.walletAddress)}
           </Text>
           <SvgInset
             svgUrl={`${CDN_URL}/icons/ic-caret-down.svg`}
             className={styles.caret_icon}
-          ></SvgInset>
+          />
         </div>
         <div className={styles.price}>
-          {walletBalance?.toFixed(4)}
+          <Text size="14" fontWeight="regular">
+            {walletBalance?.toFixed(4)}
+          </Text>
           <SvgInset
             svgUrl={`${CDN_URL}/icons/ic-eth-token.svg`}
             className={s.eth_icon}
