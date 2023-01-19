@@ -2,3 +2,9 @@
   grid-template-columns: 0.25fr 1fr;
   gap: rem(42px);
 }
+
+.projectDetail_loading {
+  // position: absolute;
+  max-height: rem(510px);
+  top: rem(70px);
+}

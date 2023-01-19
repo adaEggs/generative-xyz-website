@@ -1,7 +1,6 @@
 import ButtonIcon from '@components/ButtonIcon';
 import CollectionList from '@components/Collection/List';
 import Heading from '@components/Heading';
-import { Loading } from '@components/Loading';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
@@ -38,7 +37,7 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
   const { projectID } = router.query;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [listItems, setListItems] = useState<Token[]>([]);
+  const [listItems, setListItems] = useState<Token[] | null>(null);
   const [sort, setSort] = useState('newest');
 
   const fetchProjectItems = async (): Promise<void> => {
@@ -88,26 +87,28 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
         </div>
       </Stack>
       <div className={s.listWrapper}>
-        <Loading isLoaded={isLoaded} className={s.loading} />
+        {/* <Loading isLoaded={isLoaded} className={s.loading} /> */}
 
-        <CollectionList listData={listItems} />
-        <div className={s.view_collection}>
-          <ButtonIcon
-            sizes="large"
-            variants="outline"
-            endIcon={
-              <SvgInset
-                className={s.icon_btn}
-                svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
-              />
-            }
-            onClick={() => {
-              router.push(`${ROUTE_PATH.GENERATIVE}/${projectID}`);
-            }}
-          >
-            View collection
-          </ButtonIcon>
-        </div>
+        <CollectionList listData={listItems} isLoaded={isLoaded} />
+        {isLoaded && (
+          <div className={s.view_collection}>
+            <ButtonIcon
+              sizes="large"
+              variants="outline"
+              endIcon={
+                <SvgInset
+                  className={s.icon_btn}
+                  svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+                />
+              }
+              onClick={() => {
+                router.push(`${ROUTE_PATH.GENERATIVE}/${projectID}`);
+              }}
+            >
+              View collection
+            </ButtonIcon>
+          </div>
+        )}
       </div>
     </div>
   );

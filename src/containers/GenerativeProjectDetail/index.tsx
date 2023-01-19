@@ -1,5 +1,4 @@
 import CollectionList from '@components/Collection/List';
-import { Loading } from '@components/Loading';
 import { TriggerLoad } from '@components/TriggerLoader';
 import ClientOnly from '@components/Utils/ClientOnly';
 import ProjectIntroSection from '@containers/Marketplace/ProjectIntroSection';
@@ -9,8 +8,9 @@ import {
 } from '@contexts/generative-project-detail-context';
 import React, { useContext } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
-import TokenTopFilter from './TokenTopFilter';
+
 import styles from './styles.module.scss';
+import TokenTopFilter from './TokenTopFilter';
 
 // const LOG_PREFIX = 'GenerativeProjectDetail';
 
@@ -46,45 +46,19 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
                 />
               </div>
               <div className={styles.tokenListWrapper}>
-                <div className="postion-relative">
-                  <div
-                    style={
-                      !isLoaded
-                        ? {
-                            width: '100%',
-                            minHeight: '100%',
-                            backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                            zIndex: '1',
-                            position: 'absolute',
-                            top: '0',
-                          }
-                        : {
-                            visibility: 'hidden',
-                            pointerEvents: 'none',
-                          }
-                    }
-                  >
-                    <Loading
-                      isLoaded={isLoaded}
-                      className={styles.projectDetail_loading}
-                    />
-                  </div>
+                <div className={styles.tokenList}>
+                  <CollectionList
+                    projectInfo={projectInfo}
+                    listData={listItems}
+                    isLoaded={isLoaded}
+                  />
+                  <TriggerLoad
+                    len={listItems?.length || 0}
+                    total={total || 0}
+                    isLoaded={isNextPageLoaded}
+                    onEnter={handleFetchNextPage}
+                  />
                 </div>
-
-                {listItems && (
-                  <div className={styles.tokenList}>
-                    <CollectionList
-                      projectInfo={projectInfo}
-                      listData={listItems}
-                    />
-                    <TriggerLoad
-                      len={listItems.length || 0}
-                      total={total || 0}
-                      isLoaded={isNextPageLoaded}
-                      onEnter={handleFetchNextPage}
-                    />
-                  </div>
-                )}
               </div>
             </Tab>
           </Tabs>
