@@ -58,6 +58,13 @@
         }
       }
     }
+
+    .btnMenuMobile {
+
+      svg path {
+        stroke: $white;
+      }
+    }
   }
 
   &_logo {
@@ -74,8 +81,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: rem(8px) 0;
-
+    @include min-tablet {
+      padding: rem(8px) 0;
+    }
 
     a {
       text-decoration: none;
@@ -184,16 +192,25 @@
 
 
 .logo {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+
+  @include min-tablet {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 
   img {
-    width: rem(64px);
-    height: rem(64px);
-    max-width: 64px;
-    max-height: 64px;
+
+    width: rem(54px);
+    height: rem(54px);
+
+    @include min-tablet {
+      width: rem(64px);
+      height: rem(64px);
+      max-width: 64px;
+      max-height: 64px;
+    }
   }
 }
 
@@ -254,5 +271,17 @@
         line-height: (26/16);
       }
     }
+  }
+}
+
+
+.btnMenuMobile {
+
+  display: block;
+  background: none;
+  padding: rem(8px) 0;
+
+  @include min-tablet {
+    display: none;
   }
 }

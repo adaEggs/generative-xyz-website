@@ -24,29 +24,9 @@ import { getFaucetLink, isTestnet } from '@utils/chain';
 import QuickBuy from '@layouts/Marketplace/QuickBuy';
 import querystring from 'query-string';
 import _isEmpty from 'lodash/isEmpty';
+import { MENU_HEADER } from '@constants/header';
 
 const LOG_PREFIX = 'MarketplaceHeader';
-
-const MENU_HEADER = [
-  {
-    id: 'menu-4',
-    name: 'Display',
-    route: ROUTE_PATH.DISPLAY,
-    activePath: 'display',
-  },
-  {
-    id: 'menu-1',
-    name: 'Create',
-    route: ROUTE_PATH.BENEFIT,
-    activePath: 'benefit',
-  },
-  {
-    id: 'menu-2',
-    name: 'Collect',
-    route: ROUTE_PATH.MARKETPLACE,
-    activePath: 'marketplace',
-  },
-];
 
 interface IProp {
   theme?: 'light' | 'dark';
@@ -68,6 +48,8 @@ const Header: React.FC<IProp> = ({
   const [isConnecting, setIsConnecting] = useState(false);
   const dropdownRef = useRef<HTMLUListElement>(null);
   const [isFaucet, _] = useState<boolean>(isShowFaucet);
+  const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
+  const refMenu = useRef<HTMLDivElement>(null);
 
   const PROFILE_MENU = [
     {
@@ -247,6 +229,17 @@ const Header: React.FC<IProp> = ({
                       </ButtonIcon>
                     </div>
                   )}
+
+                  <button
+                    className={styles.btnMenuMobile}
+                    onClick={() => setIsOpenMenu(!isOpenMenu)}
+                  >
+                    {isOpenMenu ? (
+                      <SvgInset svgUrl={`${CDN_URL}/icons/ic-close-menu.svg`} />
+                    ) : (
+                      <SvgInset svgUrl={`${CDN_URL}/icons/ic-hamburger.svg`} />
+                    )}
+                  </button>
                 </div>
               </div>
             </div>
