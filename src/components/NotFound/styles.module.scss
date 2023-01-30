@@ -1,6 +1,7 @@
 .notFound {
   display: grid;
   place-items: center;
+  position: relative;
 
   &_image {
     margin-bottom: rem(32px);

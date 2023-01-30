@@ -47,7 +47,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     isTokenListing,
     listingPrice,
     listingOffers,
-    tokenOffers,
     isTokenOwner,
   } = useContext(GenerativeTokenDetailContext);
   // const scanURL = getScanUrl();
@@ -338,7 +337,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           )}
         </div>
         <div className="h-divider"></div>
-        {tokenOffers.length > 0 && <TokenActivities></TokenActivities>}
+        <TokenActivities></TokenActivities>
         <MoreItemsSection genNFTAddr={tokenData?.project.genNFTAddr || ''} />
       </Container>
       <ListingTokenModal />

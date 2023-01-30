@@ -13,6 +13,7 @@ import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import s from './styles.module.scss';
 import dayjs from 'dayjs';
+import NotFound from '@components/NotFound';
 
 const TABLE_OFFERS_HEADING = [
   'Price',
@@ -107,6 +108,14 @@ const OfferTable = () => {
       },
     };
   });
+
+  if (!offerDatas || offerDatas.length === 0) {
+    return (
+      <div className={s.table}>
+        <NotFound infoText="No recorded offer" />
+      </div>
+    );
+  }
 
   return <Table tableHead={TABLE_OFFERS_HEADING} data={offerDatas}></Table>;
 };
