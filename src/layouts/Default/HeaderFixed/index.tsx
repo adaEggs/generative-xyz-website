@@ -10,7 +10,7 @@ import { useAppDispatch } from '@redux/index';
 import SvgInset from '@components/SvgInset';
 import { useRef } from 'react';
 import { useEffect } from 'react';
-import { getScrollTop } from '@helpers/common';
+import { getScrollTop } from '@utils/common';
 import { useSelector } from 'react-redux';
 import { disabledMenuSelector } from '@redux/general/selector';
 import Link from 'next/link';

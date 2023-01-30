@@ -9,7 +9,7 @@ import s from './QuickBuy.module.scss';
 import { Container } from 'react-bootstrap';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
-import { isPhoneScreen, isTabletScreen } from '@helpers/common';
+import { isPhoneScreen, isTabletScreen } from '@utils/common';
 import { NavigationContext } from '@contexts/navigation-context';
 
 const QuickBuy = (): React.ReactElement => {
