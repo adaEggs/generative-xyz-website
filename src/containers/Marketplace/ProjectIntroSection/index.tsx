@@ -10,7 +10,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
-import { checkLines } from '@helpers/string';
+import { checkLines } from '@utils/string';
 import useContractOperation from '@hooks/useContractOperation';
 import useWindowSize from '@hooks/useWindowSize';
 import { IGetProjectDetailResponse } from '@interfaces/api/project';
