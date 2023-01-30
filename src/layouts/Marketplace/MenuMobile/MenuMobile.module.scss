@@ -20,7 +20,7 @@
   &_inner {
     background-color: var(--bg-color);
     width: 100vw;
-    height: vh100mobile();
+    height: vh100-mobile();
     display: block;
     position: relative;
     padding: {
