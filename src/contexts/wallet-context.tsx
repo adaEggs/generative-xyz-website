@@ -66,7 +66,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   const dispatch = useAppDispatch();
   const user = useSelector(getUserSelector);
 
-  const isDeepLinkRequired = () => {
+  const isDeepLinkRequired = (): boolean => {
     const wallet = walletManagerRef.current;
 
     return isMobile() && !wallet?.isInstalled();
