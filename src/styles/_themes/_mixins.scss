@@ -356,3 +356,20 @@
 @mixin fullViewScreen {
   height: calc(100vh - #{rem(260px)});
 }
+
+
+@function vhMathDiv($px, $base) {
+  @return ($px / $base) * 100;
+}
+
+@function fixXvhMobile($vhInput) {
+  @return calc(var(--vh) * #{$vhInput});
+}
+
+@function vh100Mobile() {
+  @return calc(var(--vh) * 100);
+}
+
+@function vhOnMobile($px, $base: 1080px) {
+  @return calc(var(--vh) * #{vhMathDiv($px, $base)});
+}

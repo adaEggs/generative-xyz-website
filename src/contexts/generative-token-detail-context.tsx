@@ -5,31 +5,33 @@ import {
   MAX_HEX_VALUE,
   WETH_ADDRESS,
 } from '@constants/contract-address';
+import { ErrorMessage } from '@enums/error-message';
 import { ListingStep } from '@enums/listing-generative';
 import { LogLevel } from '@enums/log-level';
 import useContractOperation from '@hooks/useContractOperation';
 import { MarketplaceStats } from '@interfaces/marketplace';
-import { Token, TokenOffer } from '@interfaces/token';
+import { Token, TokenActivities, TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
 import ApproveTokenAmountOperation from '@services/contract-operations/erc20/approve-token-amount';
+import GetAllowanceAmountOperation from '@services/contract-operations/erc20/get-allowance-amount';
+import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
+import AcceptTokenOfferOperation from '@services/contract-operations/generative-marketplace/accept-token-offer';
+import CancelListingTokenOperation from '@services/contract-operations/generative-marketplace/cancel-listing-token';
+import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
 import ListingToSaleTokenOperation from '@services/contract-operations/generative-marketplace/list-to-sale-token';
 import MakeTokenOfferOperation from '@services/contract-operations/generative-marketplace/make-token-offer';
 import PurchaseTokenOperation from '@services/contract-operations/generative-marketplace/purchase-token';
 import IsApprrovedForAllOperation from '@services/contract-operations/generative-nft/is-approved-for-all';
 import SetApprrovalForAllOperation from '@services/contract-operations/generative-nft/set-approval-for-all';
-import AcceptTokenOfferOperation from '@services/contract-operations/generative-marketplace/accept-token-offer';
-import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
 import TransferTokenOperation from '@services/contract-operations/generative-nft/transfer-token';
-import GetAllowanceAmountOperation from '@services/contract-operations/erc20/get-allowance-amount';
-import CancelListingTokenOperation from '@services/contract-operations/generative-marketplace/cancel-listing-token';
 import DepositWETHOperation from '@services/contract-operations/weth/deposit-weth';
 import WithdrawWETHOperation from '@services/contract-operations/weth/withdraw-weth';
-import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
 import {
   getListing,
   getMakeOffers,
   getMarketplaceStats,
 } from '@services/marketplace';
+import { getTokenActivities } from '@services/nfts';
 import { getTokenUri } from '@services/token-uri';
 import log from '@utils/logger';
 import { useRouter } from 'next/router';
@@ -44,7 +46,6 @@ import React, {
 } from 'react';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
-import { ErrorMessage } from '@enums/error-message';
 import Web3 from 'web3';
 import useAsyncEffect from 'use-async-effect';
 
@@ -53,6 +54,7 @@ const LOG_PREFIX = 'GenerativeTokenDetailContext';
 export interface IGenerativeTokenDetailContext {
   tokenData: Token | null;
   setTokenData: Dispatch<SetStateAction<Token | null>>;
+  tokenActivities: TokenActivities | null;
   showListingModal: boolean;
   openListingModal: () => void;
   hideListingModal: () => void;
@@ -100,6 +102,7 @@ const initialValue: IGenerativeTokenDetailContext = {
   setTokenData: _ => {
     return;
   },
+  tokenActivities: null,
   showListingModal: false,
   openListingModal: () => {
     return;
@@ -180,6 +183,8 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
 }: PropsWithChildren): React.ReactElement => {
   const [tokenData, setTokenData] = useState<Token | null>(null);
   const [tokenOffers, setTokenOffers] = useState<Array<TokenOffer>>([]);
+  const [tokenActivities, setTokenActivities] =
+    useState<TokenActivities | null>(null);
   const [showListingModal, setShowListingModal] = useState(false);
   const [showMakeOfferModal, setShowMakeOfferModal] = useState(false);
   const [showTransferTokenModal, setShowTransferTokenModal] = useState(false);
@@ -654,6 +659,21 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
+  const fetchTokenActivities = async () => {
+    try {
+      if (tokenData && tokenData.genNFTAddr) {
+        const res = await getTokenActivities({
+          contractAddress: tokenData.genNFTAddr,
+          tokenID: tokenID,
+        });
+        if (res) setTokenActivities(res);
+      }
+    } catch (err: unknown) {
+      log('failed to ', LogLevel.Error, LOG_PREFIX);
+      throw Error();
+    }
+  };
+
   const isTokenOwner = useMemo(() => {
     if (!user.walletAddress || !tokenData?.ownerAddr) return false;
     return user.walletAddress === tokenData?.ownerAddr;
@@ -673,6 +693,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     fetchTokenOffers();
     fetchListingTokenOffers();
     fetchMarketplaceStats();
+    fetchTokenActivities();
   }, [tokenData]);
 
   useAsyncEffect(async () => {
@@ -692,6 +713,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     return {
       tokenData,
       setTokenData,
+      tokenActivities,
       showListingModal,
       handleListingToken,
       marketplaceStats,

@@ -1,0 +1,44 @@
+.menuMobile {
+  --bg-color: #{$white};
+  --color: #{$black-60-solid};
+
+  &.dark {
+    --bg-color: #{$primary-brand};
+    --color: #fafafa;
+  }
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 8;
+  transform: translateX(100%);
+
+  &_inner {
+    background-color: var(--bg-color);
+    width: 100vw;
+    height: vh100Mobile();
+    display: block;
+    padding: {
+      top: rem(120px);
+      left: rem(16px);
+      right: rem(16px);
+      bottom: rem(40px);
+    }
+
+    a {
+      color: var(--color);
+      display: block;
+      text-decoration: none;
+
+      font-weight: 500;
+      font-size: rem(18px);
+      line-height: rem(28px);
+      letter-spacing: -0.01em;
+      text-align: right;
+    }
+  }
+
+  .connectWallet {
+    text-align: right;
+  }
+}
