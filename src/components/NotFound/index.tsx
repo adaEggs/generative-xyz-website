@@ -12,9 +12,9 @@ const NotFound = ({ infoText }: TNotFound) => {
   return (
     <div className={s.notFound}>
       <Image
-        width={75}
-        height={99}
-        src={`${CDN_URL}/icons/ic-empty.svg`}
+        width={195}
+        height={200}
+        src={`${CDN_URL}/images/no-table-data.svg`}
         alt="Not found item"
         className={s.notFound_image}
       />

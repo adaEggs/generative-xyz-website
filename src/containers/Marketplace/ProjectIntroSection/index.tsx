@@ -250,7 +250,7 @@ const ProjectIntroSection = ({ project }: Props) => {
               <Text
                 size="18"
                 className={s.token_description}
-                style={{ WebkitLineClamp: showMore ? 'unset' : '7' }}
+                style={{ WebkitLineClamp: showMore ? 'unset' : '5' }}
               >
                 {project?.desc}
               </Text>
@@ -281,7 +281,7 @@ const ProjectIntroSection = ({ project }: Props) => {
               Created date: {mintedDate}
             </Text>
             <Text size="14" color="black-40" className={s.project_owner}>
-              Collected by: {/* <Text as="span" size="18"> */}
+              Collected by:{' '}
               {project?.stats?.uniqueOwnerCount === 1
                 ? `${project?.stats?.uniqueOwnerCount} owner`
                 : `${project?.stats?.uniqueOwnerCount}+ owners`}
