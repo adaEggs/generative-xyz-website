@@ -31,21 +31,17 @@ export const toBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
     reader.onerror = error => reject(error);
   });
 
-// export const getBase64 = (file: File): string | ArrayBuffer | null => {
-//   let reader = new FileReader();
-//   reader.readAsDataURL(file);
-//   reader.onload = function () {
-//     return reader.result;
-//   };
-//   reader.onerror = function (error) {
-//     return error;
-//   };
-//   return null;
-// };
-
 export const formatAddress = (address: string): string => {
   if (address.length < 14) return address;
   return `${address.substring(0, 7)}`;
+};
+
+export const formatLongAddress = (address: string): string => {
+  if (address.length < 14) return address;
+  return `${address.substring(0, 6)}...${address.substring(
+    address.length - 4,
+    address.length
+  )}`;
 };
 
 export const getProjectIdFromTokenId = (tokenId: number): number => {
