@@ -18,7 +18,8 @@ class DepositWETHOperation extends ContractOperation<
   async prepare(): Promise<void> {
     this.contract = await this.walletManager.getContract(
       this.contractAddress,
-      ContractWETHAbi.abi as Array<AbiItem>
+      ContractWETHAbi.abi as Array<AbiItem>,
+      false
     );
   }
 

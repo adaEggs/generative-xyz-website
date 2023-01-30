@@ -1,8 +1,7 @@
-@import 'src/styles/_themes/variables';
-@import 'src/styles/_themes/mixins';
+@import "src/styles/_themes/variables";
+@import "src/styles/_themes/mixins";
 
 .CheckoutModal {
-
   :global(.modal-dialog) {
     @media (min-width: 576px) and (max-width: 1400px) {
       max-width: 90%;
@@ -11,10 +10,11 @@
 
   &_title {
     font-weight: 700;
-    font-size: 20px;
-    line-height: 28px;
     color: $neutral-08;
     margin-bottom: rem(16);
+    line-height: (28/20);
+
+    @include calcFontAuto(18px, 20px);
   }
 
   &_shippingTitle {
@@ -22,7 +22,6 @@
   }
 
   &_optionsContainer {
-
     display: flex;
     gap: 10px;
   }
@@ -53,25 +52,26 @@
 
   &_optionItemName {
     font-weight: 500;
-    font-size: 18px;
-    line-height: 26px;
     color: $neutral-06;
+    line-height: (26/18);
 
+    @include calcFontAuto(16px, 18px);
   }
 
   &_optionItemPrice {
     font-weight: 700;
-    font-size: 18px;
-    line-height: 28px;
     color: $neutral-08;
     margin-left: auto;
     display: flex;
     align-items: center;
     gap: rem(12px);
     margin-bottom: rem(10px);
+    line-height: (26/18);
+
+    @include calcFontAuto(16px, 18px);
 
     &_disCount {
-      color: #B1B5C3;
+      color: #b1b5c3;
       text-decoration-line: line-through;
     }
   }
@@ -84,7 +84,7 @@
       color: $white !important;
     }
 
-    :global(.btnEditQty:not([class*='disabled']) svg) {
+    :global(.btnEditQty:not([class*="disabled"]) svg) {
       color: $white;
     }
   }
@@ -134,15 +134,18 @@
     justify-content: space-between;
     margin-top: rem(16);
     font-weight: 500;
-    font-size: 16px;
-    line-height: 24px;
+    line-height: (24/16);
+
+    @include calcFontAuto(14px, 16px);
 
     &:last-of-type {
       margin-top: rem(20);
       padding-top: rem(20);
       border-top: 1px solid #e1e2e2;
       font-weight: 600;
-      font-size: 18px;
+      line-height: (26/18);
+
+      @include calcFontAuto(16px, 18px);
     }
 
     .highlight {
@@ -192,9 +195,9 @@
   }
 
   &_discount {
-    background: rgba(186, 237, 189, 0.3);
-    border: 1px solid #00AA6C;
-    box-shadow: 8px 7px 24px rgba(0, 0, 0, 0.15);
+    background: rgb(186 237 189 / 30%);
+    border: 1px solid #00aa6c;
+    box-shadow: 8px 7px 24px rgb(0 0 0 / 15%);
     border-radius: 2px;
     display: flex;
     justify-content: center;
@@ -207,7 +210,7 @@
     }
 
     span {
-      transform: translateY(.1em);
+      transform: translateY(0.1em);
     }
   }
 }
@@ -230,7 +233,9 @@
 
   &_title {
     font-weight: 600;
-    font-size: 24px;
+    line-height: (34/24);
+
+    @include calcFontAuto(18px, 24px);
   }
 
   &_content {

@@ -45,7 +45,8 @@
     width: 100%;
     resize: none;
     line-height: (26/16);
-    @include calcFontAutoSmall(14px, 16px);
+
+    @include calcFontAuto(14px, 16px);
 
     &::placeholder {
       /* Chrome, Firefox, Opera, Safari 10.1+ */
@@ -86,9 +87,9 @@
       color: $black-100;
       padding-left: 2px;
       border-left: 1px solid $black-20;
-
       line-height: (26/16);
-      @include calcFontAutoSmall(14px, 16px);
+
+      @include calcFontAuto(14px, 16px);
     }
   }
 

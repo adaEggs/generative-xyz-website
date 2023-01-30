@@ -1,4 +1,4 @@
-@import './_variables';
+@import "./_variables";
 
 @mixin disable-scrollbar {
   -ms-overflow-style: none;
@@ -94,7 +94,7 @@
 
       &::before,
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         width: 50%;
         height: 2px;
@@ -117,9 +117,11 @@
     }
 
     .title {
-      font-size: 24px;
+      line-height: (34 / 24);
+
+      @include calcFontAuto(18px, 24px);
+
       color: #222;
-      line-height: 32px;
       word-break: break-word;
       font-weight: 500;
     }
@@ -140,9 +142,11 @@
       button {
         height: 40px;
         padding: 4px 16px 0;
-        font-size: 16px;
         border-radius: 8px;
         margin: 0 0 0 12px;
+        line-height: (26/16);
+
+        @include calcFontAuto(14px, 16px);
 
         &:first-child {
           margin: 0;
@@ -302,6 +306,12 @@
   }
 }
 
+@mixin min-2k {
+  @media screen and (min-width: 2500px) {
+    @content;
+  }
+}
+
 @function vh($px, $base: 1080px) {
   @return ($px / $base) * 100vh;
 }
@@ -317,7 +327,7 @@
 @function calc-auto($min-vw, $max-vw, $min-font-size, $max-font-size) {
   @return calc(
     #{$min-font-size} + #{strip-unit($max-font-size - $min-font-size)} *
-      calc((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)})
+    calc((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)})
   );
 }
 
@@ -332,27 +342,7 @@
 @mixin calcFontAuto($min-font-size, $max-font-size) {
   font-size: rem($min-font-size);
 
-  @include tablet {
-    font-size: rem($max-font-size);
-  }
-
   @include min-pc {
-    font-size: calc-auto(1200px, 1920px, $min-font-size, $max-font-size);
-  }
-
-  @include min-pc-superWide {
-    font-size: rem($max-font-size);
-  }
-}
-
-@mixin calcFontAutoSmall($min-font-size, $max-font-size) {
-  font-size: rem($max-font-size);
-
-  @include min-pc {
-    font-size: calc-auto(1200px, 1920px, $min-font-size, $max-font-size);
-  }
-
-  @include min-pc-superWide {
     font-size: rem($max-font-size);
   }
 }
@@ -360,19 +350,27 @@
 @mixin calcPropertyAuto($property, $min-font-size, $max-font-size) {
   #{$property}: rem($min-font-size);
 
-  @include tablet {
-    #{$property}: rem($max-font-size);
-  }
-
   @include min-pc {
-    #{$property}: calc-auto(1200px, 1920px, $min-font-size, $max-font-size);
-  }
-
-  @include min-pc-superWide {
     #{$property}: rem($max-font-size);
   }
 }
 
 @mixin fullViewScreen {
   height: calc(100vh - #{rem(260px)});
+}
+
+@function vhMathDiv($px, $base) {
+  @return ($px / $base) * 100;
+}
+
+@function fixXvhMobile($vhInput) {
+  @return calc(var(--vh) * #{$vhInput});
+}
+
+@function vh100Mobile() {
+  @return calc(var(--vh) * 100);
+}
+
+@function vhOnMobile($px, $base: 1080px) {
+  @return calc(var(--vh) * #{vhMathDiv($px, $base)});
 }

@@ -1,6 +1,3 @@
-.wrapper {
-}
-
 .table {
   position: relative;
 
@@ -17,19 +14,18 @@
 
   .tableData {
     border-bottom: 1px solid $black-10;
+
     &:hover {
       background-color: $primary-light;
     }
+
     &_item {
       padding-top: rem(20px);
       padding-bottom: rem(20px);
       color: $primary-333;
-      font-size: rem(18px);
-      line-height: rem(28px);
+      font-size: rem(16px);
+      line-height: rem(26px);
       font-weight: 600;
     }
-  }
-
-  .tableLoading {
   }
 }

@@ -2,7 +2,7 @@ import React, { ReactNode, useContext, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 
 import { PAGE_ENTER } from '@constants/common';
-import { getDelay } from '@helpers/anim.helpers';
+import { getDelay } from '@utils/animation';
 import { Anim } from '../anim';
 import { LoadingContext } from '@contexts/loading-context';
 

@@ -41,7 +41,7 @@ const StepHeader: React.FC = (): React.ReactElement => {
                 as="span"
                 size="24"
                 color={'black-40-solid'}
-                fontWeight={'bold'}
+                fontWeight={'medium'}
                 className={s.stepIndex}
               >
                 {step.stepIndex}
@@ -53,7 +53,7 @@ const StepHeader: React.FC = (): React.ReactElement => {
                 as={'span'}
                 size={'18'}
                 color={'black-40-solid'}
-                fontWeight={'semibold'}
+                fontWeight={'medium'}
                 className={s.stepTitle}
               >
                 {step.title}

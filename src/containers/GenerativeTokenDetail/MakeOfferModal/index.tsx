@@ -11,13 +11,6 @@ import { Formik } from 'formik';
 import Select, { SingleValue } from 'react-select';
 import { SelectOption } from '@interfaces/select-input';
 import dayjs from 'dayjs';
-import useContractOperation from '@hooks/useContractOperation';
-import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
-import useAsyncEffect from 'use-async-effect';
-import { WETH_ADDRESS } from '@constants/contract-address';
-import Web3 from 'web3';
-import { useSelector } from 'react-redux';
-import { getUserSelector } from '@redux/user/selector';
 import { Chain } from '@enums/chain';
 import { UNISWAP_PAGE } from '@constants/common';
 
@@ -48,14 +41,9 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
     handleMakeTokenOffer,
     hideMakeOffergModal,
     openSwapTokenModal,
-    showSwapTokenModal,
+    wethBalance,
   } = useContext(GenerativeTokenDetailContext);
-  const { call: getTokenBalance } = useContractOperation(
-    GetTokenBalanceOperation,
-    false
-  );
-  const user = useSelector(getUserSelector);
-  const [wethBalance, setWETHBalance] = useState<number | null>(null);
+
   const [isProcessing, setIsProcessing] = useState(false);
   const [isEnoughBalance, setIsEnoughBalance] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -112,19 +100,6 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
     }
   };
 
-  useAsyncEffect(async () => {
-    if (!showSwapTokenModal) {
-      setWETHBalance(null);
-      const balance = await getTokenBalance({
-        chainID: NETWORK_CHAIN_ID,
-        erc20TokenAddress: WETH_ADDRESS,
-      });
-      if (balance) {
-        setWETHBalance(parseFloat(Web3.utils.fromWei(balance.toString())));
-      }
-    }
-  }, [user, tokenData, showSwapTokenModal]);
-
   if (!tokenData) {
     return <></>;
   }
@@ -170,22 +145,22 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
               </div>
             </div>
             <div className={s.balanceWrapper}>
-              {wethBalance && (
-                <div className={s.balanceItem}>
-                  <div className={s.balanceLabel}>
-                    <Image
-                      src={`${CDN_URL}/icons/ic-wallet-01-24x24.svg`}
-                      alt="wallet icon"
-                      width={24}
-                      height={24}
-                    />
-                    <span>Balance</span>
-                  </div>
-                  <div className={s.balanceValue}>
-                    <span>{wethBalance} WETH</span>
-                  </div>
+              <div className={s.balanceItem}>
+                <div className={s.balanceLabel}>
+                  <Image
+                    src={`${CDN_URL}/icons/ic-wallet-01-24x24.svg`}
+                    alt="wallet icon"
+                    width={24}
+                    height={24}
+                  />
+                  <span>Balance</span>
                 </div>
-              )}
+                <div className={s.balanceValue}>
+                  <span>
+                    {wethBalance !== null ? `${wethBalance} WETH` : '--'}{' '}
+                  </span>
+                </div>
+              </div>
             </div>
             <div className={s.listingForm}>
               <Formik

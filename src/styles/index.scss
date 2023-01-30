@@ -1,14 +1,14 @@
-@import '_themes/mixins';
-@import '_themes/fonts';
-@import '_themes/bt-variables';
-@import '~bootstrap/scss/bootstrap';
-@import '_reset';
-@import '_variables';
-@import '_theme';
-@import '_utils';
-@import '_themes/laddingpage';
-@import '_grid-debug';
-@import '_themes/bootstrap-overrides';
+@import "_themes/mixins";
+@import "_themes/fonts";
+@import "_themes/bt-variables";
+@import "~bootstrap/scss/bootstrap";
+@import "_reset";
+@import "_variables";
+@import "_theme";
+@import "_utils";
+@import "_themes/laddingpage";
+@import "_grid-debug";
+@import "_themes/bootstrap-overrides";
 
 * {
   margin: 0;
@@ -25,15 +25,19 @@
 }
 
 html {
-  font-size: 10px;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   -moz-osx-font-smoothing: grayscale;
   font-smoothing: antialiased !important;
   -webkit-font-smoothing: antialiased !important;
+  font-size: 10px;
 
   @include min-pc {
-    font-size: calc-auto(1200px, 1920px, 8px, 10px);
+    @include font-calc(1200px, 1920px, 8px, 10px);
+  }
+
+  @include min-2k {
+    font-size: 11.5px;
   }
 }
 
@@ -51,7 +55,8 @@ body {
 
 main {
   height: 100%;
-  @include calcFontAuto(13px, 16px);
+
+  @include calcFontAuto(14px, 16px);
 }
 
 input,
@@ -69,7 +74,7 @@ button {
   border: none;
 }
 
-[class^='js-anim']:not(.is-handle) {
+[class^="js-anim"]:not(.is-handle) {
   opacity: 0;
 }
 

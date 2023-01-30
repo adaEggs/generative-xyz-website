@@ -1,0 +1,132 @@
+.menuMobile {
+  --bg-color: #{$white};
+  --color: #{$black-60-solid};
+  --color-hover: #000;
+  --border-color: #cecece;
+
+  &.dark {
+    --bg-color: #{$primary-brand};
+    --color: #fafafa;
+    --color-hover: #fff;
+    --border-color: #e9e9e9;
+  }
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 8;
+  transform: translateX(100%);
+
+  &_inner {
+    background-color: var(--bg-color);
+    width: 100vw;
+    height: vh100mobile();
+    display: block;
+    position: relative;
+    padding: {
+      top: rem(120px);
+      left: rem(16px);
+      right: rem(16px);
+      bottom: rem(40px);
+    }
+
+    a {
+      color: var(--color);
+      display: block;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: rem(18px);
+      line-height: rem(28px);
+      letter-spacing: -0.01em;
+      text-align: right;
+      padding-top: rem(8px);
+      padding-bottom: rem(8px);
+
+      &:hover {
+        color: var(--color-hover);
+      }
+    }
+  }
+
+  .connectWallet {
+    text-align: right;
+    padding-top: rem(16px);
+
+    :global(.caret_icon) {
+      display: none;
+    }
+
+    :global(.username) {
+      color: var(--color);
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 22px;
+    }
+
+    :global(.price) {
+      color: $black-60-solid;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 22px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 5px;
+    }
+
+    :global(.dropdown) {
+      background: none;
+      margin-top: 10px;
+    }
+
+    :global(.dropdown-item) {
+      background: none;
+      padding-left: 0;
+      padding-right: 0;
+      color: var(--color);
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 22px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+    }
+  }
+
+  &_bottom {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    padding: rem(16px);
+
+    &.hasUser {
+      border-top: 1px solid var(--border-color);
+    }
+
+    &_cta {
+      margin-bottom: rem(60px);
+    }
+
+    &_socials {
+      display: flex;
+      justify-content: flex-end;
+      gap: rem(10px);
+      margin-top: rem(16px);
+      margin-bottom: 24px;
+
+      a {
+        border: 1px solid var(--border-color);
+        width: rem(40px);
+        height: rem(40px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 2px;
+
+        svg path {
+          fill: var(--color);
+        }
+      }
+    }
+  }
+}

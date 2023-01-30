@@ -1,4 +1,4 @@
-@import 'src/styles/_themes/mixins';
+@import "src/styles/_themes/mixins";
 
 .useInfo {
   display: flex;
@@ -21,8 +21,9 @@
 
   &_displayName {
     font-weight: 600;
-    line-height: (26/16);
     color: $primary-brand;
-    @include calcFontAuto(13px, 16px);
+    line-height: (26/16);
+
+    @include calcFontAuto(14px, 16px);
   }
 }

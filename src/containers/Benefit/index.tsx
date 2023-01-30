@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import s from './Benefit.module.scss';
-import { CreatePageSection } from '@containers/Benefit/components/CreatePage';
-import { ImageContent } from '@containers/Benefit/components/ImageContent';
+import { CreatePageSection } from '@containers/Benefit/CreatePage';
+import { ImageContent } from '@containers/Benefit/ImageContent';
 import { CDN_URL } from '@constants/config';
 import { Container } from 'react-bootstrap';
 import { LoadingContext, LoadingProvider } from '@contexts/loading-context';
@@ -33,7 +33,7 @@ const BenefitPage = (): JSX.Element => {
           <div className={s.benefit_rows_inner}>
             <ImageContent
               heading={`An open generative art platform.`}
-              imageUrl={`${CDN_URL}/pages/landingpage/benefit-section-1.png`}
+              imageUrl={`${CDN_URL}/images/BENEFIT-FOR-ARTIST1%201.png`}
             >
               Generative is fully open and permissionless. Anyone, from an
               anonymous to a well-known artist, has equal access to create and
@@ -46,7 +46,7 @@ const BenefitPage = (): JSX.Element => {
             <ImageContent
               right={true}
               heading={`Co-own and co-operate.`}
-              imageUrl={`${CDN_URL}/pages/landingpage/benefit-section-2.png`}
+              imageUrl={`${CDN_URL}/images/BENEFIT-FOR-ARTIST2%201.png`}
             >
               Artists are no longer just users, they become co-owners—helping to
               build and shape the platform.
@@ -60,7 +60,7 @@ const BenefitPage = (): JSX.Element => {
             </ImageContent>
             <ImageContent
               heading={`Everlasting artwork.`}
-              imageUrl={`${CDN_URL}/pages/landingpage/benefit-section-3.png`}
+              imageUrl={`${CDN_URL}/images/BENEFIT-FOR-ARTIST3%201.png`}
             >
               All generative scripts are stored permanently on Ethereum.
             </ImageContent>

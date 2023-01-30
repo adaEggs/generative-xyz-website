@@ -1,15 +1,13 @@
 import useAsyncEffect from 'use-async-effect';
-import { getProductList } from '@services/api/product';
+import { getProductList } from '@services/product';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
-// import { useContext, useState } from 'react';
-// import { LoadingContext } from '@contexts/loading-context';
 import { useAppDispatch } from '@redux';
 import { setCheckoutProduct } from '@redux/general/action';
 import { Container } from 'react-bootstrap';
 import { default as classNames } from 'classnames';
 import s from './OrderNow.module.scss';
-import { FrameItem } from '@containers/Display/components/frame-item';
+import { FrameItem } from '@containers/Display/FrameItem';
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
@@ -18,13 +16,14 @@ import CheckoutModal from '@containers/CheckoutModal';
 import Text from '@components/Text';
 import Heading from '@components/Heading';
 import { SOCIALS } from '@constants/common';
+import { Product } from '@interfaces/product';
 
 const LOG_PREFIX = 'OrderNow';
 export const OrderNowTemplate = (): JSX.Element => {
   const { connect } = useContext(WalletContext);
   const use = useSelector(getUserSelector);
   const dispatch = useAppDispatch();
-  const [products, setProducts] = useState<IFrame[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   const handleConnectWallet = async (): Promise<void> => {
     try {
@@ -34,7 +33,7 @@ export const OrderNowTemplate = (): JSX.Element => {
     }
   };
 
-  const openCheckoutPopup = (product: IFrame) => {
+  const openCheckoutPopup = (product: Product) => {
     if (!use.id) {
       handleConnectWallet();
     }
@@ -43,9 +42,9 @@ export const OrderNowTemplate = (): JSX.Element => {
 
   useAsyncEffect(async () => {
     try {
-      const { data } = await getProductList();
-      if (data.products) {
-        setProducts(data.products);
+      const { products } = await getProductList();
+      if (products) {
+        setProducts(products);
       }
     } catch (_: unknown) {
       log('failed to get products', LogLevel.Error, LOG_PREFIX);
@@ -63,9 +62,19 @@ export const OrderNowTemplate = (): JSX.Element => {
             <Text as={'p'} fontWeight={'regular'} size={'16'}>
               Have questions about buying a Generative Display?
             </Text>
-            <a href={SOCIALS.discord} target="_blank" rel="noreferrer">
-              Join our Discord
-            </a>
+            <ul>
+              <li>
+                <a href={SOCIALS.discord} target="_blank" rel="noreferrer">
+                  Join our Discord
+                </a>
+              </li>
+              <li>or</li>
+              <li>
+                <a href={SOCIALS.bookATour} target="_blank" rel="noreferrer">
+                  Book a tour
+                </a>
+              </li>
+            </ul>
           </div>
 
           <div
@@ -90,6 +99,24 @@ export const OrderNowTemplate = (): JSX.Element => {
               <FrameItem
                 data={products[1]}
                 openCheckoutPopup={() => openCheckoutPopup(products[1])}
+              />
+            </div>
+            <div className="col-xl-4 col-sm-6 col-12">
+              <FrameItem
+                data={products[3]}
+                openCheckoutPopup={() => openCheckoutPopup(products[3])}
+              />
+            </div>
+            <div className="col-xl-4 col-sm-6 col-12">
+              <FrameItem
+                data={products[4]}
+                openCheckoutPopup={() => openCheckoutPopup(products[4])}
+              />
+            </div>
+            <div className="col-xl-4 col-sm-6 col-12">
+              <FrameItem
+                data={products[5]}
+                openCheckoutPopup={() => openCheckoutPopup(products[5])}
               />
             </div>
           </div>

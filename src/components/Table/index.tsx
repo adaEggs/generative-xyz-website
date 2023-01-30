@@ -1,5 +1,3 @@
-import { Loading } from '@components/Loading';
-import NotFound from '@components/NotFound';
 import { ReactNode, useEffect, useState } from 'react';
 import { default as BSTable } from 'react-bootstrap/Table';
 import { v4 } from 'uuid';
@@ -67,14 +65,14 @@ const Table = ({ tableHead = [], data }: Props) => {
     }
   }, [data]);
 
-  if (!tableData || tableData.length === 0) {
-    return (
-      <div className={s.table}>
-        <Loading isLoaded={!!tableData} className={s.tableLoading} />
-        <NotFound infoText="No recorded offer" />
-      </div>
-    );
-  }
+  // if (!tableData || tableData.length === 0) {
+  //   return (
+  //     <div className={s.table}>
+  //       <Loading isLoaded={!!tableData} className={s.tableLoading} />
+  //       <NotFound infoText="No recorded offer" />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className={s.wrapper}>

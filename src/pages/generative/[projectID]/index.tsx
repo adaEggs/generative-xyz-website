@@ -1,6 +1,6 @@
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { SEO_TITLE } from '@constants/seo-default-info';
-import GenerativeProjectDetail from '@containers/GenerativeProjectDetail';
+import GenerativeProjectDetailWrapper from '@containers/GenerativeProjectDetail';
 import MarketplaceLayout from '@layouts/Marketplace';
 import { getProjectDetail } from '@services/project';
 import { GetServerSidePropsContext, NextPage } from 'next';
@@ -8,7 +8,7 @@ import { GetServerSidePropsContext, NextPage } from 'next';
 const GenerativeProjectDetailPage: NextPage = () => {
   return (
     <MarketplaceLayout>
-      <GenerativeProjectDetail />
+      <GenerativeProjectDetailWrapper />
     </MarketplaceLayout>
   );
 };

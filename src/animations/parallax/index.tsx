@@ -1,8 +1,7 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-
 import s from './parallax.module.scss';
-import { getScrollTop } from '@helpers/common';
+import { getScrollTop } from '@utils/common';
 
 interface IProps {
   children: ReactNode;

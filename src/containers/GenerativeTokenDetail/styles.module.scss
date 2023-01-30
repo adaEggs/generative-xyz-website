@@ -6,7 +6,6 @@
   @include min-tablet {
     margin-top: rem(60px);
     margin-bottom: rem(90px);
-
     display: grid;
     grid-template-columns: rem(420px) 1px 1fr;
     height: calc(100vh - #{rem(260px)});
@@ -30,11 +29,12 @@
 
   &::-webkit-scrollbar-thumb {
     border-radius: 5px;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgb(0 0 0 / 10%);
   }
 
   .projectName {
     text-decoration: none;
+
     &:hover {
       text-decoration: underline;
     }
@@ -128,13 +128,13 @@
 
 .token_description {
   display: -webkit-box;
-  // -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 
   + span {
     text-decoration: underline;
     cursor: pointer;
+
     &:hover {
       text-decoration: none;
     }

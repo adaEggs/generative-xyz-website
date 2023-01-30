@@ -34,7 +34,8 @@ a {
   line-height: (26/16);
   color: $black-60;
   font-weight: 500;
-  @include calcFontAuto(13px, 16px);
+
+  @include calcFontAuto(14px, 16px);
 
   &:hover {
     background-color: $white-5;

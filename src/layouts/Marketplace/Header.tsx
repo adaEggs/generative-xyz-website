@@ -9,7 +9,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
 import useOnClickOutside from '@hooks/useOnClickOutSide';
-import s from '@layouts/Default/components/HeaderFixed/Header.module.scss';
+import s from '@layouts/Default/HeaderFixed/Header.module.scss';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { formatAddress } from '@utils/format';
@@ -17,36 +17,17 @@ import log from '@utils/logger';
 import cs from 'classnames';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import React, { useContext, useRef, useState } from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import styles from './Header.module.scss';
 import { getFaucetLink, isTestnet } from '@utils/chain';
 import QuickBuy from '@layouts/Marketplace/QuickBuy';
 import querystring from 'query-string';
 import _isEmpty from 'lodash/isEmpty';
-
+import { MENU_HEADER } from '@constants/header';
+import MenuMobile from '@layouts/Marketplace/MenuMobile';
+import { gsap } from 'gsap';
 const LOG_PREFIX = 'MarketplaceHeader';
-
-const MENU_HEADER = [
-  {
-    id: 'menu-4',
-    name: 'Display',
-    route: ROUTE_PATH.DISPLAY,
-    activePath: 'display',
-  },
-  {
-    id: 'menu-1',
-    name: 'Create',
-    route: ROUTE_PATH.BENEFIT,
-    activePath: 'benefit',
-  },
-  {
-    id: 'menu-2',
-    name: 'Collect',
-    route: ROUTE_PATH.MARKETPLACE,
-    activePath: 'marketplace',
-  },
-];
 
 interface IProp {
   theme?: 'light' | 'dark';
@@ -68,6 +49,8 @@ const Header: React.FC<IProp> = ({
   const [isConnecting, setIsConnecting] = useState(false);
   const dropdownRef = useRef<HTMLUListElement>(null);
   const [isFaucet, _] = useState<boolean>(isShowFaucet);
+  const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
+  const refMenu = useRef<HTMLDivElement | null>(null);
 
   const PROFILE_MENU = [
     {
@@ -113,20 +96,22 @@ const Header: React.FC<IProp> = ({
   const renderProfileHeader = () => {
     return (
       <div>
-        <div className={styles.username}>
-          <Text size="14" fontWeight="semibold">
+        <div className={`${styles.username} username`}>
+          <Text size="14" fontWeight="medium">
             {user.displayName || formatAddress(user.walletAddress)}
           </Text>
           <SvgInset
             svgUrl={`${CDN_URL}/icons/ic-caret-down.svg`}
-            className={styles.caret_icon}
-          ></SvgInset>
+            className={`${styles.caret_icon} caret_icon`}
+          />
         </div>
-        <div className={styles.price}>
-          {walletBalance?.toFixed(4)}
+        <div className={`${styles.price} price`}>
+          <Text size="14" fontWeight="regular">
+            {walletBalance?.toFixed(4)}
+          </Text>
           <SvgInset
             svgUrl={`${CDN_URL}/icons/ic-eth-token.svg`}
-            className={s.eth_icon}
+            className={`${s.eth_icon} eth_icon`}
           />
         </div>
       </div>
@@ -135,7 +120,7 @@ const Header: React.FC<IProp> = ({
 
   const ProfileDropdown = () => {
     return (
-      <ul className={styles.dropdown} ref={dropdownRef}>
+      <ul className={`${styles.dropdown} dropdown`} ref={dropdownRef}>
         {PROFILE_MENU?.length > 0 &&
           PROFILE_MENU.map(
             item =>
@@ -164,9 +149,28 @@ const Header: React.FC<IProp> = ({
     }
   };
 
+  useEffect(() => {
+    if (refMenu.current) {
+      if (isOpenMenu) {
+        gsap.to(refMenu.current, { x: 0, duration: 0.6, ease: 'power3.inOut' });
+      } else {
+        gsap.to(refMenu.current, {
+          x: '100%',
+          duration: 0.6,
+          ease: 'power3.inOut',
+        });
+      }
+    }
+  }, [isOpenMenu]);
+
   return (
     <>
-      <header ref={refHeader} className={`${styles.header} ${styles[theme]}`}>
+      <header
+        ref={refHeader}
+        className={`${styles.header} ${styles[theme]} ${
+          isOpenMenu ? styles.isMenuOpen : ''
+        }`}
+      >
         <div className={styles.header_inner}>
           <Container>
             <div className={styles.headerWrapper}>
@@ -245,6 +249,18 @@ const Header: React.FC<IProp> = ({
                       </ButtonIcon>
                     </div>
                   )}
+
+                  <button
+                    className={`${styles.btnMenuMobile} ${
+                      isOpenMenu ? styles.isOpenMenu : ''
+                    }`}
+                    onClick={() => setIsOpenMenu(!isOpenMenu)}
+                  >
+                    <span className={styles.btnMenuMobile_inner}>
+                      <SvgInset svgUrl={`${CDN_URL}/icons/ic-close-menu.svg`} />
+                      <SvgInset svgUrl={`${CDN_URL}/icons/ic-hamburger.svg`} />
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -261,19 +277,19 @@ const Header: React.FC<IProp> = ({
             <a onClick={clickToFaucet} target="_blank" rel="noreferrer">
               {' here.'}
             </a>
-            {/*<button*/}
-            {/*  onClick={() => {*/}
-            {/*    localStorage.setItem('close_faucet', '1');*/}
-            {/*    setIsFaucet(false);*/}
-            {/*  }}*/}
-            {/*>*/}
-            {/*  <img src={`${CDN_URL}/icons/x-02.svg`} alt="x-v" />*/}
-            {/*</button>*/}
           </div>
         )}
         <div className="divider"></div>
       </header>
       {isDisplay && <QuickBuy />}
+      <MenuMobile
+        renderProfileHeader={renderProfileHeader}
+        ProfileDropdown={ProfileDropdown}
+        isConnecting={isConnecting}
+        handleConnectWallet={handleConnectWallet}
+        ref={refMenu}
+        theme={theme}
+      />
     </>
   );
 };

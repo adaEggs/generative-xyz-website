@@ -11,7 +11,7 @@
   pointer-events: none;
   opacity: 0;
   visibility: hidden;
-  transition: all .4s $easeOutCubic;
+  transition: all 0.4s $easeOutCubic;
 
   &.isShow {
     z-index: 99999;
@@ -28,7 +28,7 @@
     height: 100vh;
 
     &.light {
-      background-color: #ffffff;
+      background-color: #fff;
     }
 
     &.dark {
@@ -37,7 +37,7 @@
   }
 
   &_inner {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgb(0 0 0 / 40%);
     border-radius: 50%;
     height: rem(56px);
     width: rem(56px);
@@ -47,14 +47,13 @@
   }
 }
 
-
 .lds-spinner {
   color: $white;
   display: inline-block;
   position: absolute;
   width: 80px;
   height: 80px;
-  transform: scale(.35);
+  transform: scale(0.35);
 }
 
 .lds-spinner div {
@@ -62,7 +61,7 @@
   animation: lds-spinner 1.2s linear infinite;
 }
 
-.lds-spinner div:after {
+.lds-spinner div::after {
   content: " ";
   display: block;
   position: absolute;
@@ -138,6 +137,7 @@
   0% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }

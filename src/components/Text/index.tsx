@@ -16,7 +16,7 @@ import {
   getDelay,
   getRandomArbitrary,
   getRandomArbitraryFloat,
-} from '@helpers/anim.helpers';
+} from '@utils/animation';
 import { LoadingContext } from '@contexts/loading-context';
 
 type TText = {
@@ -86,7 +86,7 @@ const Text = ({
 
             refDom.current.resizeObserver = new ResizeObserver(
               debounce(() => {
-                if (refDom.current.texts) {
+                if (refDom.current.texts && !refDom.current.runned) {
                   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                   // @ts-ignore
                   refDom.current.texts?.split();
@@ -167,6 +167,7 @@ const Text = ({
     if (comp.current && pageLoadStatus === PAGE_ENTER) {
       anim = new Anim(comp.current, () => {
         const delay = getDelay(animOption.screen, animOption.offset);
+        refDom.current.runned = true;
         switch (animOption.type) {
           case 'heading':
             gsap.to(refDom.current.texts?.chars || [], {

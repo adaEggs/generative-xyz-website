@@ -15,14 +15,14 @@
     justify-content: center;
   }
 
-  &_desc{
+  &_desc {
     margin-top: rem(32px);
     margin-bottom: rem(32px);
     font-style: normal;
-    font-weight: 600;
-    font-size: rem(24px);
-    line-height: rem(34px);
-    color: $black-40;
+    font-weight: 500;
+    line-height: (34/24);
+    color: $black-40-solid;
 
+    @include calcFontAuto(18px, 24px);
   }
 }

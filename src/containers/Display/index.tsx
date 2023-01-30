@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react';
 
 import s from './Display.module.scss';
-import { SectionHero } from '@containers/Display/components/hero';
-import { Artworks } from '@containers/Display/components/artworks';
-import { HardWare } from './components/hardware';
-import { LifeStyle } from '@containers/Display/components/lifestyle';
-import { Prices } from '@containers/Display/components/prices';
+import { SectionHero } from '@containers/Display/Hero';
+import { Artworks } from '@containers/Display/Artworks';
+import { HardWare } from './Hardware';
+import { LifeStyle } from '@containers/Display/Lifestyle';
+import { Prices } from '@containers/Display/Prices';
 import { LoadingContext, LoadingProvider } from '@contexts/loading-context';
 import CheckoutModal from '@containers/CheckoutModal';
 

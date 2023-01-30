@@ -40,8 +40,20 @@
   display: grid;
 }
 
+.grid-cols-1 {
+  grid-template-columns: repeat(1, 1fr);
+}
+
 .grid-cols-2 {
   grid-template-columns: repeat(2, 1fr);
+
+  @include w-max($screen-sm) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
 }
 
 .grid-cols-4 {
@@ -50,13 +62,29 @@
 }
 
 .grid-list {
-  grid-template-columns: repeat(4, 1fr);
-  gap: rem(24px);
-
   @include mobile {
     grid-template-columns: repeat(2, 1fr);
     gap: rem(10px);
   }
+
+  @include min-tablet {
+    grid-template-columns: repeat(3, 1fr);
+    gap: rem(10px);
+  }
+
+  @include min-pc {
+    grid-template-columns: repeat(4, 1fr);
+    gap: rem(24px);
+  }
+
+  @include min-pc-superWide {
+    grid-template-columns: repeat(6, 1fr);
+    gap: rem(24px);
+  }
+}
+
+.gap-24 {
+  gap: rem(24px);
 }
 
 .cursor-pointer {
@@ -175,7 +203,6 @@
 }
 
 .h-divider {
-  // height: 100%;
   width: 1px;
   background-color: $black-20;
 }
@@ -191,6 +218,7 @@
 .spacing {
   &__large {
     margin-bottom: rem(40px);
+
     @include min-tablet {
       margin-bottom: rem(60px);
     }
@@ -202,6 +230,7 @@
 
   &__small {
     margin-bottom: rem(16px);
+
     @include min-tablet {
       margin-bottom: rem(24px);
     }
@@ -210,4 +239,16 @@
 
 .text-uppercase {
   text-transform: uppercase;
+}
+
+.white-fill-icon {
+  svg path {
+    fill: $white;
+  }
+}
+
+.white-stroke-icon {
+  svg path {
+    fill: $white;
+  }
 }

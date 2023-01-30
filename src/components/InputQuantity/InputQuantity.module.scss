@@ -32,16 +32,21 @@
     background: none !important;
     color: $white !important;
     border: 0 none;
-    font-size: 10px;
-    line-height: 10px;
     height: 100%;
     cursor: pointer;
-    width: 74px;
+    width: rem(74px);
     display: flex;
     align-items: center;
     justify-content: center;
     outline: 0;
     box-shadow: 0 0 0 transparent;
+    font-size: 10px;
+    line-height: 10px;
+
+    @include min-pc-wide {
+      font-size: rem(10px);
+      line-height: rem(10px);
+    }
 
     &:active,
     &:hover,
@@ -82,15 +87,17 @@
     height: auto;
     margin: 0;
     appearance: none;
-
     line-height: (28/18);
-    @include calcFontAuto(15px, 18px);
+
+    @include calcFontAuto(16px, 18px);
 
     @include max-tablet {
       text-align: center;
       font-weight: 500;
       line-height: (26/16);
+
       @include calcFontAuto(14px, 16px);
+
       border-radius: 0 !important;
       width: fit-content;
       max-width: rem(46);
@@ -118,11 +125,13 @@
 
     .qtyInput {
       line-height: (26/16);
+
       @include calcFontAuto(14px, 16px);
     }
 
     .btnEditQty {
       line-height: (26/16);
+
       @include calcFontAuto(14px, 16px);
     }
 

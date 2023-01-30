@@ -1,4 +1,4 @@
-import { IPagingParams, IPagingResponse } from '@interfaces/paging';
+import { IPagingParams, IPagingResponse } from '@interfaces/api/paging';
 import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 export interface IGetProjectDetailParams {
@@ -14,7 +14,7 @@ export interface IGetProjectItemsParams {
 export interface IGetProjectItemsQuery extends IPagingParams {
   name?: string;
   sort?: string;
-  attributes?: string[];
+  attributes?: string;
   minPrice?: string;
   maxPrice?: string;
   tokenID?: string;

@@ -19,9 +19,9 @@
     height: 100%;
     right: -445px;
     width: 444px;
-    background: #ffffff;
+    background: #fff;
     border-left: 1px solid $black-10;
-    box-shadow: -10px 0px 40px $black-20;
+    box-shadow: -10px 0 40px $black-20;
     transition: all 0.2s ease-in;
     z-index: 20;
   }
@@ -68,8 +68,10 @@
 
   .title {
     font-weight: 700;
-    font-size: 24px;
-    line-height: 34px;
+    line-height: (34 / 24);
+
+    @include calcFontAuto(18px, 24px);
+
     color: $black-100;
     margin-bottom: 16px;
   }
@@ -116,7 +118,7 @@
     line-height: 26px;
     color: $black-100;
     padding: 11px 78px 11px 14px;
-    border: 2px solid rgba(0, 0, 0, 0.1);
+    border: 2px solid rgb(0 0 0 / 10%);
     border-radius: 2px;
     width: 100%;
     resize: none;
@@ -168,19 +170,10 @@
     }
   }
 
-  .error {
-    font-size: 14px;
-    font-weight: 400;
-    color: $secondary-red;
-    line-height: 20px;
-    margin-top: 6px;
-  }
-
   .selectInput {
     :global(.select__control) {
       background-color: $white-100;
-      border: 2px solid rgba(0, 0, 0, 0.1);
-      border-radius: 2px !important;
+      border: 2px solid rgb(0 0 0 / 10%);
       outline: none;
       box-shadow: none;
       border-radius: 8px;
@@ -277,8 +270,10 @@
 
   .errorTitle {
     font-weight: 700;
-    font-size: 18px;
-    line-height: 28px;
+    line-height: (28 / 18);
+
+    @include calcFontAuto(16px, 18px);
+
     color: $secondary-red;
     margin: 0;
   }

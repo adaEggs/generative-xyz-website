@@ -1,3 +1,4 @@
+import { IGetTokenActivitiesResponse } from './api/nfts';
 import { User } from '@interfaces/user';
 import { Project } from './project';
 
@@ -36,3 +37,5 @@ export type TokenOffer = {
   token?: Token;
   buyer?: string;
 };
+
+export type TokenActivities = IGetTokenActivitiesResponse;

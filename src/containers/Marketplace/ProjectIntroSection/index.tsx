@@ -10,7 +10,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
-import { checkLines } from '@helpers/string';
+import { checkLines } from '@utils/string';
 import useContractOperation from '@hooks/useContractOperation';
 import useWindowSize from '@hooks/useWindowSize';
 import { IGetProjectDetailResponse } from '@interfaces/api/project';
@@ -35,7 +35,7 @@ import s from './styles.module.scss';
 const LOG_PREFIX = 'ProjectIntroSection';
 
 type Props = {
-  project?: IGetProjectDetailResponse;
+  project?: IGetProjectDetailResponse | null;
 };
 
 const ProjectIntroSection = ({ project }: Props) => {
@@ -250,7 +250,7 @@ const ProjectIntroSection = ({ project }: Props) => {
               <Text
                 size="18"
                 className={s.token_description}
-                style={{ WebkitLineClamp: showMore ? 'unset' : '7' }}
+                style={{ WebkitLineClamp: showMore ? 'unset' : '5' }}
               >
                 {project?.desc}
               </Text>
@@ -281,7 +281,7 @@ const ProjectIntroSection = ({ project }: Props) => {
               Created date: {mintedDate}
             </Text>
             <Text size="14" color="black-40" className={s.project_owner}>
-              Collected by: {/* <Text as="span" size="18"> */}
+              Collected by:{' '}
               {project?.stats?.uniqueOwnerCount === 1
                 ? `${project?.stats?.uniqueOwnerCount} owner`
                 : `${project?.stats?.uniqueOwnerCount}+ owners`}

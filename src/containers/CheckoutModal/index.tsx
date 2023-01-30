@@ -13,7 +13,7 @@ import useIsFrameDiscounted from '@hooks/useIsFrameDiscounted';
 import { setCheckoutProduct } from '@redux/general/action';
 import { checkoutProduct as checkoutProductSelector } from '@redux/general/selector';
 import { useAppDispatch } from '@redux/index';
-import { makeOrder } from '@services/api/order';
+import { makeOrder } from '@services/order';
 import cn from 'classnames';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
@@ -22,6 +22,7 @@ import { useSelector } from 'react-redux';
 import s from './CheckoutModal.module.scss';
 import Text from '@components/Text';
 import { getUserSelector } from '@redux/user/selector';
+import { Product } from '@interfaces/product';
 
 interface IPropState {
   name: string;
@@ -34,7 +35,7 @@ interface IPropState {
   country: string;
 }
 
-interface ICart extends IFrame {
+interface ICart extends Product {
   qty: number;
 }
 
@@ -53,11 +54,11 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   const [cart, setCart] = useState<ICart>({
     id: '',
     name: '',
-    price: 0,
-    eth_price: 0,
+    eth_price: '0',
     image: '',
     image_left: '',
     qty: 1,
+    slug: '',
   });
   const walletCtx = useContext(WalletContext);
   const [orderSuccess, setOrderSuccess] = useState(false);
@@ -74,7 +75,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
 
   const getDiscount = useMemo(() => (isDiscounted ? 0.1 : 0), [isDiscounted]);
   const getDiscountPrice = useMemo(
-    () => getDiscount * (cart.eth_price || cart.price || 0) * cart.qty,
+    () => getDiscount * parseFloat(cart.eth_price) * cart.qty,
     [cart]
   );
 
@@ -96,19 +97,14 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   const totalPrice = useMemo(
     () =>
       Math.round(
-        (1 - getDiscount) *
-          (cart.eth_price || cart.price || 0) *
-          cart.qty *
-          10e9
+        (1 - getDiscount) * parseFloat(cart.eth_price) * cart.qty * 10e9
       ) / 10e9,
     [cart]
   );
 
   const cartItemPrice = useMemo(
     () =>
-      Math.round(
-        (1 - getDiscount) * (cart.eth_price || cart.price || 0) * 10e9
-      ) / 10e9,
+      Math.round((1 - getDiscount) * parseFloat(cart.eth_price) * 10e9) / 10e9,
     [cart]
   );
 
@@ -155,10 +151,11 @@ const CheckoutModal: React.FC = (): JSX.Element => {
     try {
       setIsLoading(true);
 
-      const { data: newOrder } = await makeOrder({
+      const newOrder = await makeOrder({
         details: [{ id: cart?.id || '', qty: cart?.qty || 0 }],
         ...shippingInfo,
         source: source ? (source as string) : '',
+        wallet_address: user.walletAddress,
       });
 
       if (!newOrder.order_id) return;
@@ -255,7 +252,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
                     {isDiscounted && (
                       <span
                         className={s.CheckoutModal_optionItemPrice_disCount}
-                      >{`${cart?.eth_price || cart?.price} ETH`}</span>
+                      >{`${cart?.eth_price} ETH`}</span>
                     )}
                     <span
                       className={s.CheckoutModal_optionItemPrice_val}
@@ -428,7 +425,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
           </div>
 
           <div className={s.CheckoutModal_summaryLine}>
-            <div>Payment Total:</div>
+            <div>Payment total:</div>
             <div className={s.CheckoutModal_totalPrice}>
               {`${totalPrice} ETH`}
             </div>

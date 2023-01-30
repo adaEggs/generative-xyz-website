@@ -3,7 +3,7 @@ import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { GenerativeTokenDetailContext } from '@contexts/generative-token-detail-context';
 import cs from 'classnames';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import s from './styles.module.scss';
 import { Formik } from 'formik';
 import { WalletContext } from '@contexts/wallet-context';
@@ -23,14 +23,27 @@ interface IFormValues {
 }
 
 const SwapTokenModal: React.FC = (): React.ReactElement => {
-  const { showSwapTokenModal, hideSwapTokenModal, handleDepositToken } =
-    useContext(GenerativeTokenDetailContext);
+  const {
+    showSwapTokenModal,
+    hideSwapTokenModal,
+    handleDepositToken,
+    handleWithdrawToken,
+    wethBalance,
+  } = useContext(GenerativeTokenDetailContext);
   const { walletBalance } = useContext(WalletContext);
   const [isProcessing, setIsProcessing] = useState(false);
-  const [swapWay] = useState<SwapWay>(SwapWay.ETH_WETH);
+  const [swapWay, setSwapWay] = useState<SwapWay>(SwapWay.ETH_WETH);
 
   const handleClose = (): void => {
     hideSwapTokenModal();
+  };
+
+  const handleSwitchSwapWay = (): void => {
+    if (swapWay === SwapWay.ETH_WETH) {
+      setSwapWay(SwapWay.WETH_ETH);
+    } else {
+      setSwapWay(SwapWay.ETH_WETH);
+    }
   };
 
   const validateForm = (values: IFormValues): Record<string, string> => {
@@ -40,15 +53,28 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
       errors.amount = 'Value is required.';
     } else if (values.amount < 0) {
       errors.amount = 'Invalid number. Must be greater than 0.';
+    } else if (swapWay === SwapWay.ETH_WETH && values.amount > walletBalance) {
+      errors.amount = `Invalid number. Must be equal or less than ${walletBalance.toFixed(
+        4
+      )}.`;
+    } else if (
+      swapWay === SwapWay.WETH_ETH &&
+      wethBalance &&
+      values.amount > wethBalance
+    ) {
+      errors.amount = `Invalid number. Must be equal or less than ${wethBalance}.`;
     }
-
     return errors;
   };
 
   const handleSubmit = async (values: IFormValues): Promise<void> => {
     try {
       setIsProcessing(true);
-      await handleDepositToken(values.amount.toString());
+      if (swapWay === SwapWay.ETH_WETH) {
+        await handleDepositToken(values.amount.toString());
+      } else {
+        await handleWithdrawToken(values.amount.toString());
+      }
     } catch (err: unknown) {
       toast.error((err as Error).message);
       log('failed to swap token', LogLevel.Error, LOG_PREFIX);
@@ -56,6 +82,12 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
       setIsProcessing(false);
     }
   };
+
+  useEffect(() => {
+    if (showSwapTokenModal) {
+      setSwapWay(SwapWay.ETH_WETH);
+    }
+  }, [showSwapTokenModal]);
 
   if (!showSwapTokenModal) {
     return <></>;
@@ -81,7 +113,9 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
             </div>
             <div className={s.modalBody}>
               <h3 className={s.modalTitle}>Add fund</h3>
-              <p className={s.modalDescription}>Swap for WETH</p>
+              <p className={s.modalDescription}>
+                Swap for {swapWay === SwapWay.ETH_WETH ? 'WETH' : 'ETH'}
+              </p>
               <div className={s.formWrapper}>
                 <Formik
                   key="swapTokenForm"
@@ -101,6 +135,7 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
                     handleChange,
                     handleBlur,
                     handleSubmit,
+                    setErrors,
                   }) => (
                     <form onSubmit={handleSubmit}>
                       <div className={cs(s.swapTokenWrapper)}>
@@ -131,8 +166,30 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
                               Balance: {walletBalance.toFixed(4)}
                             </p>
                           )}
+                          {swapWay === SwapWay.WETH_ETH && (
+                            <p className={s.inputDesc}>
+                              Balance:{' '}
+                              {wethBalance !== null ? wethBalance : '--'}
+                            </p>
+                          )}
                         </div>
-                        <div className={s.swapActionWrapper}></div>
+                        <div className={s.swapActionWrapper}>
+                          <Button
+                            disabled={isProcessing}
+                            type="button"
+                            onClick={() => {
+                              setErrors({});
+                              handleSwitchSwapWay();
+                            }}
+                            className={s.switchBtn}
+                            variants="ghost"
+                          >
+                            <SvgInset
+                              size={18}
+                              svgUrl={`${CDN_URL}/icons/ic-arrow-switch-horizontal-24x24.svg`}
+                            ></SvgInset>
+                          </Button>
+                        </div>
                         <div className={s.formItem}>
                           <label className={s.label}>
                             For <sup className={s.requiredTag}>*</sup>
@@ -154,11 +211,6 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
                           {errors.toToken && touched.toToken && (
                             <p className={s.error}>{errors.toToken}</p>
                           )}
-                          {swapWay === SwapWay.WETH_ETH && (
-                            <p className={s.inputDesc}>
-                              Balance: {walletBalance.toFixed(4)}
-                            </p>
-                          )}
                         </div>
                       </div>
                       <div className={s.divider}></div>
@@ -168,7 +220,7 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
                           disabled={isProcessing}
                           className={s.actionBtn}
                         >
-                          {isProcessing ? 'Processing' : 'Confirm'}
+                          {isProcessing ? 'Processing...' : 'Confirm'}
                         </Button>
                       </div>
                     </form>

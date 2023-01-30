@@ -5,9 +5,14 @@
       outline: none;
       box-shadow: none;
       border-radius: 0;
-      border: 2px solid $black-20;
+      border: 1px solid $black-20;
       min-width: rem(250px);
+
       @include calcPropertyAuto(height, 36px, 48px);
+
+      @include min-pc-mid {
+        border: 2px solid $black-20;
+      }
     }
 
     :global(.select__indicator-separator) {
@@ -16,21 +21,24 @@
 
     :global(.select__placeholder) {
       color: $black-40;
-      font-weight: 500;
+      font-weight: 400;
       line-height: (26/16);
+
       @include calcFontAuto(14px, 16px);
     }
 
     :global(.select__multi-value__label) {
       font-weight: 400;
       line-height: 1;
+
       @include calcFontAuto(12px, 14px);
     }
 
     :global(.select__input-container) {
       color: $black-100;
-      font-weight: 500;
+      font-weight: 400;
       line-height: (26/16);
+
       @include calcFontAuto(14px, 16px);
     }
 
@@ -40,9 +48,13 @@
 
     :global(.select__menu) {
       border-radius: 2px;
-      background: #FFFFFF;
-      border: 2px solid rgba(0, 0, 0, 0.1);
-      box-shadow: 8px 7px 24px rgba(0, 0, 0, 0.15);
+      background: #fff;
+      border: 1px solid rgb(0 0 0 / 10%);
+      box-shadow: 8px 7px 24px rgb(0 0 0 / 15%);
+
+      @include min-pc-mid {
+        border: 2px solid rgb(0 0 0 / 10%);
+      }
     }
 
     :global(.select__menu-list) {
@@ -50,24 +62,24 @@
     }
 
     :global(.select__option) {
-      background-color: #FFFFFF;
-      color: rgba($black, .6);
+      background-color: #fff;
+      color: rgba($black, 0.6);
       padding: 0 rem(16px);
       display: flex;
       align-items: center;
+
       @include calcPropertyAuto(height, 36px, 48px);
 
       &:hover {
         color: $primary-brand;
-        background: #F2F2F2;
+        background: #f2f2f2;
         cursor: pointer;
       }
     }
 
     :global(.select__option--is-selected) {
       color: $primary-brand;
-      background: #F2F2F2;
+      background: #f2f2f2;
     }
-
   }
 }

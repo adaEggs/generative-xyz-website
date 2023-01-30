@@ -1,6 +1,5 @@
 .footer {
-
-  @include calcFontAutoSmall(13px, 16px);
+  @include calcFontAuto(14px, 16px);
 
   border: 1px solid $black-10;
   background-color: $primary-brand;
@@ -26,6 +25,7 @@
     text-align: center;
     width: 100%;
     margin-top: 5px;
+
     @include min-tablet {
       width: auto;
       order: 0;
@@ -40,14 +40,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
-    border: 1px solid #E7E7E7;
+    border: 1px solid #e7e7e7;
     border-radius: 2px;
     transition: border-color 0.4s $easeOutCubic;
 
     svg path {
       transition: fill 0.4s $easeOutCubic;
-      fill: #E7E7E7;
+      fill: #e7e7e7;
     }
 
     &:hover {
@@ -61,12 +60,12 @@
   }
 
   &_contact {
-
     flex: 0 0 auto;
     order: 1;
     width: 100%;
     text-align: center;
     margin-top: 10px;
+
     @include min-tablet {
       order: 0;
       text-align: right;
@@ -89,7 +88,6 @@
     display: flex;
     gap: rem(6px);
     justify-content: center;
-
     order: 0;
 
     @include min-tablet {
@@ -99,7 +97,6 @@
   }
 
   &_right {
-
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -114,6 +111,5 @@
       order: 1;
       width: auto;
     }
-
   }
 }

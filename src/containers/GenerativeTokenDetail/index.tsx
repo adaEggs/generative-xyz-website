@@ -10,7 +10,7 @@ import {
   GenerativeTokenDetailContext,
   GenerativeTokenDetailProvider,
 } from '@contexts/generative-token-detail-context';
-import { checkLines } from '@helpers/string';
+import { checkLines } from '@utils/string';
 import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
@@ -47,7 +47,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     isTokenListing,
     listingPrice,
     listingOffers,
-    tokenOffers,
     isTokenOwner,
   } = useContext(GenerativeTokenDetailContext);
   // const scanURL = getScanUrl();
@@ -277,11 +276,21 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 {checkLines(tokenDescription) > 3 && (
                   <>
                     {!showMore ? (
-                      <Text as="span" onClick={() => setShowMore(!showMore)}>
+                      <Text
+                        as="span"
+                        onClick={() => setShowMore(!showMore)}
+                        size="18"
+                        fontWeight="semibold"
+                      >
                         See more
                       </Text>
                     ) : (
-                      <Text as="span" onClick={() => setShowMore(!showMore)}>
+                      <Text
+                        as="span"
+                        onClick={() => setShowMore(!showMore)}
+                        size="18"
+                        fontWeight="semibold"
+                      >
                         See less
                       </Text>
                     )}
@@ -314,10 +323,10 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 <Stats data={tokenInfos} />
               </div> */}
             </div>
-            <Text size="18" color="black-40">
+            <Text size="14" color="black-40">
               Minted on: {mintedDate}
             </Text>
-            <Text size="18" color="black-40" className={s.owner}>
+            <Text size="14" color="black-40" className={s.owner}>
               Owner:{' '}
               <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
                 {tokenData?.owner?.displayName ||
@@ -338,7 +347,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           )}
         </div>
         <div className="h-divider"></div>
-        {tokenOffers.length > 0 && <TokenActivities></TokenActivities>}
+        <TokenActivities></TokenActivities>
         <MoreItemsSection genNFTAddr={tokenData?.project.genNFTAddr || ''} />
       </Container>
       <ListingTokenModal />

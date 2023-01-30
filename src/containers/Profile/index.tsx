@@ -1,13 +1,13 @@
 import ClientOnly from '@components/Utils/ClientOnly';
-import { OfferTab } from '@containers/Profile/Components/Offer';
-import { OwnedTab } from '@containers/Profile/Components/OwnedTab';
-import { UserInfo } from '@containers/Profile/Components/UserInfo';
+import { OfferTab } from '@containers/Profile/Offer';
+import { OwnedTab } from '@containers/Profile/OwnedTab';
+import { UserInfo } from '@containers/Profile/UserInfo';
 import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
 import React, { useContext } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
 import s from './Profile.module.scss';
 import { Loading } from '@components/Loading';
-import { CreatedTab } from '@containers/Profile/Components/Created';
+import { CreatedTab } from '@containers/Profile/Created';
 
 // const LOG_PREFIX = 'Profile';
 

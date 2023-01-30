@@ -1,10 +1,10 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollFixed } from '../scroll-fixed';
-import { MathLerp, MathMap } from '@helpers/functions.helpers';
+import { MathLerp, MathMap } from '@utils/function';
 import classNames from 'classnames';
 import s from './frame.module.scss';
-import { isMobileAndTablet, webpSupported } from '@helpers/anim.helpers';
+import { isMobileAndTablet, webpSupported } from '@utils/animation';
 
 interface IProps {
   className: string;

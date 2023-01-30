@@ -2,6 +2,12 @@
   "extends": "stylelint-config-standard",
   "formatter": "stylelint-checkstyle-formatter",
   "plugins": ["stylelint-scss"],
+  "overrides": [
+    {
+      "files": ["*.scss", "**/*.scss"],
+      "customSyntax": "postcss-scss"
+    }
+  ],
   "rules": {
     "import-notation": "string",
     "at-rule-no-unknown": null,
@@ -11,6 +17,7 @@
     "selector-pseudo-class-no-unknown": null,
     "selector-pseudo-element-no-unknown": null,
     "declaration-block-no-redundant-longhand-properties": null,
+    "no-duplicate-selectors": null,
     "selector-class-pattern": [
       ".*",
       {

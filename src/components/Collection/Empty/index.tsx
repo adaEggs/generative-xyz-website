@@ -23,7 +23,7 @@ const LOG_PREFIX = 'Empty';
 export const Empty = ({
   projectInfo,
 }: {
-  projectInfo?: Project;
+  projectInfo?: Project | null;
 }): JSX.Element => {
   const { getWalletBalance } = useContext(WalletContext);
   const router = useRouter();
@@ -97,7 +97,7 @@ export const Empty = ({
     <div className={`${s.empty} empty`}>
       <div className={s.empty_inner}>
         <div className={s.empty_thumb}>
-          <img src={`${CDN_URL}/pages/marketplace/empty.svg`} alt="empty.svg" />
+          <img src={`${CDN_URL}/icons/ic-empty.svg`} alt="empty.svg" />
         </div>
         <div className={s.empty_desc}>
           Bring your unique vision to life. Mint your first NFT now

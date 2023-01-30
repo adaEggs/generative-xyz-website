@@ -19,12 +19,16 @@
   }
 
   input {
-    padding: rem(14);
-    height: 56px;
+    padding: rem(16);
     border: 1px solid $neutral-03;
     border-radius: 6px;
     width: 100%;
     transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    height: rem(48px);
+
+    @include min-pc {
+      height: rem(56px);
+    }
   }
 
   input.clearable {
@@ -46,12 +50,9 @@
   input,
   label {
     font-weight: 400;
-    font-size: 18px;
-    line-height: 28px;
+    line-height: (28/18);
 
-    @include mobile {
-      font-size: 16px;
-    }
+    @include calcFontAuto(16px, 18px);
   }
 
   input:focus {

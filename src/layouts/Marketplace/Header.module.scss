@@ -1,13 +1,12 @@
-@import 'src/styles/_themes/mixins';
+@import "src/styles/_themes/mixins";
 
 .header {
-
   width: 100%;
   z-index: 9;
   position: relative;
   background-color: $white;
 
-  &_row{
+  &_row {
     min-height: rem(40px);
   }
 
@@ -16,11 +15,19 @@
     position: relative;
   }
 
+  .caret_icon {
+    display: none;
+
+    @include min-tablet {
+      display: block;
+    }
+  }
+
   &.dark {
     background: $primary-brand;
 
     :global(.divider) {
-      background: rgba(0, 0, 0, 0.1);
+      background: rgb(0 0 0 / 10%);
     }
 
     .headerWrapper {
@@ -29,7 +36,7 @@
       }
 
       .price {
-        color: $white-80;
+        color: $white-60-solid;
       }
 
       .caret_icon {
@@ -39,7 +46,7 @@
       .dropdown {
         :global(.dropdown-item) {
           background-color: $black-100;
-          color: $white-40;
+          color: $white-60-solid;
 
           &:hover {
             background-color: #000;
@@ -48,12 +55,29 @@
         }
       }
     }
+
+    .header {
+      &_right {
+        &_links {
+          a {
+            color: $white-60-solid;
+          }
+        }
+      }
+    }
+
+    .btnMenuMobile {
+      svg path {
+        stroke: $white;
+      }
+    }
   }
 
   &_logo {
     border-radius: 4px;
     width: 42px;
     height: 42px;
+
     @include min-tablet {
       width: 64px;
       height: 64px;
@@ -64,30 +88,32 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: rem(8px) 0;
 
+    @include min-tablet {
+      padding: rem(8px) 0;
+    }
 
     a {
       text-decoration: none;
+      font-weight: 500;
+      letter-spacing: 0;
     }
 
     .navBar {
-
       margin-bottom: 0;
       padding: 0;
       display: none;
       flex-wrap: wrap;
-      font-weight: 600;
-      color: $black-40;
+      font-weight: 500;
+      color: $black-60-solid;
       line-height: (26/16);
 
       @include min-tablet {
         display: flex;
         gap: rem(24px);
-        //margin-left: rem(60px);
       }
 
-      @include calcFontAuto(13px, 16px);
+      @include calcFontAuto(14px, 16px);
 
       li {
         @include mobile {
@@ -103,14 +129,14 @@
         }
 
         sup {
-          font-weight: 600;
-
+          font-weight: 500;
           letter-spacing: 0.01em;
-          color: #FF7E21;
+          color: #ff7e21;
           display: inline-block;
-          transform: translateY(-.2em);
+          transform: translateY(-0.2em);
           text-transform: none;
-          @include calcFontAutoSmall(10px, 12px)
+
+          @include calcFontAuto(10px, 12px);
         }
       }
 
@@ -121,7 +147,7 @@
       }
 
       &.dark {
-        color: rgba($white, 0.4);
+        color: $white-60-solid;
 
         .active,
         a:hover {
@@ -132,10 +158,7 @@
     }
 
     .username {
-      display: none;
-      @include min-tablet {
-        display: flex;
-      }
+      display: flex;
       align-items: center;
       gap: 6px;
       font-size: 14px;
@@ -143,6 +166,7 @@
 
       p {
         @include text-ellipsis;
+
         max-width: 150px;
         line-height: 24px;
       }
@@ -157,6 +181,12 @@
     }
 
     .dropdown {
+      display: none;
+
+      @include min-tablet {
+        display: block;
+      }
+
       border-radius: 8px;
       border: 2px solid $black-10;
       overflow: hidden;
@@ -169,32 +199,66 @@
       z-index: 10;
     }
   }
+
+  .testNet,
+  :global(.divider) {
+    transition: all 0.4s $easeOutCubic;
+  }
+
+  &.isMenuOpen {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100vw;
+
+    .testNet {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    :global(.divider) {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
 }
 
-
 .logo {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  @include min-pc {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 
   img {
-    width: rem(64px);
-    height: rem(64px);
-    max-width: 64px;
-    max-height: 64px;
+    width: rem(54px);
+    height: rem(54px);
+
+    @include min-tablet {
+      width: rem(64px);
+      height: rem(64px);
+      max-width: 64px;
+      max-height: 64px;
+    }
   }
 }
 
 .testNet {
-  background: #4F43E2;
+  background: #4f43e2;
   font-style: normal;
-  font-weight: 500;
+  font-weight: 400;
   line-height: (24/14);
-  color: #FFFFFF;
-  padding: rem(0) rem(16px) rem(8px) rem(16px);
-  @include calcFontAutoSmall(12px, 14px);
+  color: #fff;
+
+  @include calcFontAuto(12px, 14px);
+
   text-align: center;
+  padding: rem(4px) rem(16px) rem(4px) rem(16px);
+
+  @include min-tablet {
+    padding: rem(0) rem(16px) rem(8px) rem(16px);
+  }
 
   button {
     background: none;
@@ -205,13 +269,12 @@
   img {
     margin-right: 6px;
     display: none;
-
     width: rem(24px);
     height: rem(24px);
 
-    @include min-tablet{
+    @include min-tablet {
       display: inline-block;
-      transform: translateY(.5em);
+      transform: translateY(0.5em);
     }
   }
 
@@ -222,19 +285,72 @@
     cursor: pointer !important;
 
     &:hover {
-      color: rgba($white, .8);
+      color: rgba($white, 0.8);
     }
   }
 }
 
-.header{
-  &_right{
+.header {
+  &_right {
     display: flex;
     justify-content: flex-end;
     align-items: center;
 
-    &_links{
+    &_links {
       margin-right: rem(26px);
+
+      a {
+        @include calcFontAuto(14px, 16px);
+
+        font-weight: 500;
+        color: $black-60-solid;
+        line-height: (26/16);
+      }
     }
+  }
+}
+
+.btnMenuMobile {
+  display: block;
+  background: none;
+  padding: rem(8px) 0;
+  margin-left: rem(15px);
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  &_inner {
+    position: relative;
+    display: block;
+
+    > div:nth-child(1) {
+      opacity: 0;
+    }
+
+    > div:nth-child(2) {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+  }
+
+  &.isOpenMenu {
+    .btnMenuMobile_inner {
+      > div:nth-child(2) {
+        opacity: 0;
+      }
+
+      > div:nth-child(1) {
+        opacity: 1;
+      }
+    }
+  }
+
+  @include min-tablet {
+    display: none;
   }
 }

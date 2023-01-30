@@ -37,7 +37,7 @@ class MintGenerativeProjectOperation extends ContractOperation<
       mintTokenAddress = ROOT_ADDRESS,
       name,
       creatorName,
-      license = 'MIT',
+      license = '',
       description,
       thumbnail,
       socialWeb = '',

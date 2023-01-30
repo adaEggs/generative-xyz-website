@@ -6,19 +6,18 @@
   align-items: center;
   justify-content: center;
   font-weight: 500;
-  font-size: 14px;
-  line-height: 26px;
+  line-height: (26/16);
+
+  @include calcFontAuto(14px, 16px);
+
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.01em;
 
   span {
-    font-size: 14px;
-    line-height: 26px;
+    line-height: (26/16);
 
-    @include min-pc {
-      font-size: calc-auto(1200px, 1920px, 14px, 16px);
-    }
+    @include calcFontAuto(14px, 16px);
   }
 
   padding: {
@@ -30,7 +29,7 @@
     min-height: 56px;
 
     @include min-pc {
-      min-height: calc-auto(1200px, 1920px, 48px, 56px);
+      min-height: rem(56px);
     }
   }
 
@@ -44,8 +43,8 @@
     font-size: 14px;
 
     @include min-pc {
-      font-size: calc-auto(1200px, 1920px, 12px, 14px);
-      min-height: calc-auto(1200px, 1920px, 32px, 40px);
+      font-size: rem(14px);
+      min-height: rem(40px);
     }
 
     span {

@@ -5,26 +5,33 @@ import {
   MAX_HEX_VALUE,
   WETH_ADDRESS,
 } from '@constants/contract-address';
+import { ErrorMessage } from '@enums/error-message';
 import { ListingStep } from '@enums/listing-generative';
 import { LogLevel } from '@enums/log-level';
 import useContractOperation from '@hooks/useContractOperation';
 import { MarketplaceStats } from '@interfaces/marketplace';
-import { Token, TokenOffer } from '@interfaces/token';
+import { Token, TokenActivities, TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
 import ApproveTokenAmountOperation from '@services/contract-operations/erc20/approve-token-amount';
+import GetAllowanceAmountOperation from '@services/contract-operations/erc20/get-allowance-amount';
+import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
+import AcceptTokenOfferOperation from '@services/contract-operations/generative-marketplace/accept-token-offer';
+import CancelListingTokenOperation from '@services/contract-operations/generative-marketplace/cancel-listing-token';
+import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
 import ListingToSaleTokenOperation from '@services/contract-operations/generative-marketplace/list-to-sale-token';
 import MakeTokenOfferOperation from '@services/contract-operations/generative-marketplace/make-token-offer';
 import PurchaseTokenOperation from '@services/contract-operations/generative-marketplace/purchase-token';
 import IsApprrovedForAllOperation from '@services/contract-operations/generative-nft/is-approved-for-all';
 import SetApprrovalForAllOperation from '@services/contract-operations/generative-nft/set-approval-for-all';
-import AcceptTokenOfferOperation from '@services/contract-operations/generative-marketplace/accept-token-offer';
-import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
 import TransferTokenOperation from '@services/contract-operations/generative-nft/transfer-token';
+import DepositWETHOperation from '@services/contract-operations/weth/deposit-weth';
+import WithdrawWETHOperation from '@services/contract-operations/weth/withdraw-weth';
 import {
   getListing,
   getMakeOffers,
   getMarketplaceStats,
 } from '@services/marketplace';
+import { getTokenActivities } from '@services/nfts';
 import { getTokenUri } from '@services/token-uri';
 import log from '@utils/logger';
 import { useRouter } from 'next/router';
@@ -39,17 +46,15 @@ import React, {
 } from 'react';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
-import { ErrorMessage } from '@enums/error-message';
 import Web3 from 'web3';
-import GetAllowanceAmountOperation from '@services/contract-operations/erc20/get-allowance-amount';
-import CancelListingTokenOperation from '@services/contract-operations/generative-marketplace/cancel-listing-token';
-import DepositWETHOperation from '@services/contract-operations/weth/deposit-weth';
+import useAsyncEffect from 'use-async-effect';
 
 const LOG_PREFIX = 'GenerativeTokenDetailContext';
 
 export interface IGenerativeTokenDetailContext {
   tokenData: Token | null;
   setTokenData: Dispatch<SetStateAction<Token | null>>;
+  tokenActivities: TokenActivities | null;
   showListingModal: boolean;
   openListingModal: () => void;
   hideListingModal: () => void;
@@ -88,6 +93,8 @@ export interface IGenerativeTokenDetailContext {
   openSwapTokenModal: () => void;
   hideSwapTokenModal: () => void;
   handleDepositToken: (_amount: string) => Promise<void>;
+  handleWithdrawToken: (_amount: string) => Promise<void>;
+  wethBalance: number | null;
 }
 
 const initialValue: IGenerativeTokenDetailContext = {
@@ -95,6 +102,7 @@ const initialValue: IGenerativeTokenDetailContext = {
   setTokenData: _ => {
     return;
   },
+  tokenActivities: null,
   showListingModal: false,
   openListingModal: () => {
     return;
@@ -163,6 +171,8 @@ const initialValue: IGenerativeTokenDetailContext = {
     return;
   },
   handleDepositToken: _ => new Promise(r => r()),
+  handleWithdrawToken: _ => new Promise(r => r()),
+  wethBalance: null,
 };
 
 export const GenerativeTokenDetailContext =
@@ -173,6 +183,8 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
 }: PropsWithChildren): React.ReactElement => {
   const [tokenData, setTokenData] = useState<Token | null>(null);
   const [tokenOffers, setTokenOffers] = useState<Array<TokenOffer>>([]);
+  const [tokenActivities, setTokenActivities] =
+    useState<TokenActivities | null>(null);
   const [showListingModal, setShowListingModal] = useState(false);
   const [showMakeOfferModal, setShowMakeOfferModal] = useState(false);
   const [showTransferTokenModal, setShowTransferTokenModal] = useState(false);
@@ -188,6 +200,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     useState<MarketplaceStats | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [wethBalance, setWETHBalance] = useState<number | null>(null);
   const user = useSelector(getUserSelector);
   const { call: listToken } = useContractOperation(
     ListingToSaleTokenOperation,
@@ -237,17 +250,25 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     DepositWETHOperation,
     true
   );
+  const { call: withdrawWETH } = useContractOperation(
+    WithdrawWETHOperation,
+    true
+  );
+  const { call: getTokenBalance } = useContractOperation(
+    GetTokenBalanceOperation,
+    false
+  );
   const router = useRouter();
   const { tokenID } = router.query as {
     tokenID: string;
   };
 
-  const openListingModal = () => {
+  const openListingModal = (): void => {
     setShowListingModal(true);
     document.body.style.overflow = 'hidden';
   };
 
-  const hideListingModal = () => {
+  const hideListingModal = (): void => {
     // Reset state
     setShowListingModal(false);
     setListingStep(ListingStep.InputInfo);
@@ -258,12 +279,12 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     document.body.style.overflow = 'auto';
   };
 
-  const openMakeOfferModal = () => {
+  const openMakeOfferModal = (): void => {
     setShowMakeOfferModal(true);
     document.body.style.overflow = 'hidden';
   };
 
-  const hideMakeOffergModal = () => {
+  const hideMakeOffergModal = (): void => {
     // Reset state
     setShowMakeOfferModal(false);
     setTxHash(null);
@@ -272,12 +293,12 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     document.body.style.overflow = 'auto';
   };
 
-  const openCancelListingModal = (offer: TokenOffer) => {
+  const openCancelListingModal = (offer: TokenOffer): void => {
     setShowCancelListingModal({ open: true, offer });
     document.body.style.overflow = 'hidden';
   };
 
-  const hideCancelListingModal = () => {
+  const hideCancelListingModal = (): void => {
     // Reset state
     setShowCancelListingModal({ open: false, offer: null });
     setTxHash(null);
@@ -286,12 +307,12 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     document.body.style.overflow = 'auto';
   };
 
-  const openTransferTokenModal = () => {
+  const openTransferTokenModal = (): void => {
     setShowTransferTokenModal(true);
     document.body.style.overflow = 'hidden';
   };
 
-  const hideTransferTokenModal = () => {
+  const hideTransferTokenModal = (): void => {
     // Reset state
     setShowTransferTokenModal(false);
     setTxHash(null);
@@ -300,12 +321,12 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     document.body.style.overflow = 'auto';
   };
 
-  const openSwapTokenModal = () => {
+  const openSwapTokenModal = (): void => {
     setShowSwapTokenModal(true);
     document.body.style.overflow = 'hidden';
   };
 
-  const hideSwapTokenModal = () => {
+  const hideSwapTokenModal = (): void => {
     // Reset state
     setShowSwapTokenModal(false);
     setTxHash(null);
@@ -554,6 +575,20 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     hideSwapTokenModal();
   };
 
+  const handleWithdrawToken = async (amount: string): Promise<void> => {
+    const tx = await withdrawWETH({
+      amount,
+      chainID: NETWORK_CHAIN_ID,
+    });
+
+    if (!tx) {
+      log('Withdraw weth transaction error.', LogLevel.Error, LOG_PREFIX);
+      throw Error(ErrorMessage.DEFAULT);
+    }
+
+    hideSwapTokenModal();
+  };
+
   const fetchTokenData = async (): Promise<void> => {
     try {
       if (tokenID) {
@@ -624,6 +659,21 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
+  const fetchTokenActivities = async () => {
+    try {
+      if (tokenData && tokenData.genNFTAddr) {
+        const res = await getTokenActivities({
+          contractAddress: tokenData.genNFTAddr,
+          tokenID: tokenID,
+        });
+        if (res) setTokenActivities(res);
+      }
+    } catch (err: unknown) {
+      log('failed to ', LogLevel.Error, LOG_PREFIX);
+      throw Error();
+    }
+  };
+
   const isTokenOwner = useMemo(() => {
     if (!user.walletAddress || !tokenData?.ownerAddr) return false;
     return user.walletAddress === tokenData?.ownerAddr;
@@ -643,12 +693,27 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     fetchTokenOffers();
     fetchListingTokenOffers();
     fetchMarketplaceStats();
+    fetchTokenActivities();
   }, [tokenData]);
+
+  useAsyncEffect(async () => {
+    if (!showSwapTokenModal) {
+      setWETHBalance(null);
+      const balance = await getTokenBalance({
+        chainID: NETWORK_CHAIN_ID,
+        erc20TokenAddress: WETH_ADDRESS,
+      });
+      if (balance) {
+        setWETHBalance(parseFloat(Web3.utils.fromWei(balance.toString())));
+      }
+    }
+  }, [user, tokenData, showSwapTokenModal]);
 
   const contextValues = useMemo((): IGenerativeTokenDetailContext => {
     return {
       tokenData,
       setTokenData,
+      tokenActivities,
       showListingModal,
       handleListingToken,
       marketplaceStats,
@@ -687,6 +752,8 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
       openSwapTokenModal,
       hideSwapTokenModal,
       handleDepositToken,
+      handleWithdrawToken,
+      wethBalance,
     };
   }, [
     tokenData,
@@ -729,6 +796,8 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     openSwapTokenModal,
     hideSwapTokenModal,
     handleDepositToken,
+    handleWithdrawToken,
+    wethBalance,
   ]);
 
   return (

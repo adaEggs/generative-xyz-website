@@ -6,10 +6,10 @@
 
   input,
   textarea {
-    padding: 16px;
+    padding: rem(16px);
     width: 100%;
     border: 1px solid #000;
-    margin-top: 8px;
+    margin-top: rem(8px);
 
     &::placeholder {
       color: var(--text-disabled);

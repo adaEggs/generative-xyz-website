@@ -11,8 +11,10 @@
 
 .tab {
   font-weight: 700;
-  font-size: 18px;
-  line-height: 28px;
+  line-height: (28 / 18);
+
+  @include calcFontAuto(16px, 18px);
+
   border: none !important;
   letter-spacing: -0.01em;
   color: $black-40;

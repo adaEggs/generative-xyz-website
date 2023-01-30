@@ -2,9 +2,12 @@ html.is-landing {
   font-size: 10px;
 
   @include min-pc {
-    font-size: calc-auto(1200px, 1920px, 8px, 10px);
+    @include font-calc(1200px, 1920px, 8px, 10px);
   }
 
+  @include min-2k {
+    font-size: 11.5px;
+  }
 }
 
 .ul_reset {
@@ -24,28 +27,17 @@ html.is-landing {
     font-weight: 600;
     line-height: 120%;
     margin-bottom: rem(32px);
-    font-size: rem(48px);
 
-    @include tablet {
-      font-size: rem(64px);
-    }
-
-    @include min-pc {
-      font-size: calc-auto(1200px, 1920px, 60px, 96px);
-      margin-bottom: calc-auto(1200px, 1920px, 20px, 32px);
-    }
+    @include calcFontAuto(48px, 96px);
   }
 
   &__large {
     font-weight: 600;
     line-height: 120%;
     font-size: rem(48px);
-    margin-bottom: rem(20px);
 
-    @include min-pc {
-      font-size: calc-auto(1200px, 1920px, 50px, 80px);
-      margin-bottom: calc-auto(1200px, 1920px, 22px, 36px);
-    }
+    @include calcFontAuto(48px, 80px);
+    @include calcPropertyAuto(margin-bottom, 24px, 36px);
   }
 
   &__medium {
@@ -53,14 +45,6 @@ html.is-landing {
     font-weight: 600;
     line-height: 120%;
     font-size: rem(48px);
-
-    @include tablet {
-      font-size: rem(42px);
-    }
-
-    @include min-pc {
-      font-size: calc-auto(1200px, 1920px, 30px, 48px);
-    }
   }
 }
 
@@ -72,11 +56,8 @@ html.is-landing {
     line-height: (24/14);
     letter-spacing: 0.01em;
     text-transform: uppercase;
-    font-size: 14px;
 
-    @include min-pc {
-      font-size: calc-auto(1200px, 1920px, 14px, 16px);
-    }
+    @include calcFontAuto(14px, 16px);
   }
 
   &__body {
@@ -85,15 +66,8 @@ html.is-landing {
     font-weight: 500;
     line-height: 140%;
     color: $neutral-06;
-    font-size: rem(14px);
 
-    @include tablet {
-      font-size: rem(16px);
-    }
-
-    @include min-pc {
-      font-size: calc-auto(1200px, 1920px, 14px, 20px);
-    }
+    @include calcFontAuto(14px, 20px);
   }
 
   &__large {
@@ -102,11 +76,8 @@ html.is-landing {
     font-weight: 500;
     line-height: 140%;
     letter-spacing: -0.01em;
-    font-size: rem(20px);
 
-    @include min-pc {
-      font-size: calc-auto(1200px, 1920px, 16px, 24px);
-    }
+    @include calcFontAuto(20px, 24px);
   }
 
   &__medium {
@@ -115,11 +86,8 @@ html.is-landing {
     font-weight: 500;
     line-height: 140%;
     color: $neutral-06;
-    font-size: rem(16);
 
-    @include min-pc {
-      font-size: calc-auto(1200px, 1920px, 16px, 20px);
-    }
+    @include calcFontAuto(16px, 20px);
   }
 
   &__small {
@@ -130,10 +98,6 @@ html.is-landing {
     text-transform: uppercase;
     color: $neutral-06;
     font-size: rem(14px);
-
-    @include min-pc {
-      font-size: calc-auto(1200px, 1920px, 12px, 14px);
-    }
   }
 }
 

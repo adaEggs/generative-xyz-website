@@ -126,11 +126,12 @@
     }
 
     .title {
-      font-size: 26px;
       color: #fff;
-      line-height: 36px;
       word-break: break-word;
       font-weight: 500;
+      line-height: (36/26);
+
+      @include calcFontAuto(20px, 26px);
     }
 
     .main {
@@ -147,11 +148,13 @@
       justify-content: flex-end;
 
       button {
-        height: 40px;
         padding: 4px 16px 0;
-        font-size: 16px;
         border-radius: 8px;
         margin: 0 0 0 12px;
+
+        @include calcFontAuto(14px, 16px);
+
+        height: rem(40px);
 
         &:first-child {
           margin: 0;
