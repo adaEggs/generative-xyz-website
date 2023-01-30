@@ -28,7 +28,7 @@ const AvatarInfo = ({
       style={wrapperStyle}
       onClick={onClick}
     >
-      <div className={`${styles.avatar}`}>
+      <div className={`${styles.avatar} avatar`}>
         <Avatar
           imgSrcs={convertIpfsToHttp(imgSrc)}
           width={width}

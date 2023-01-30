@@ -12,6 +12,7 @@ import { AnimHeading } from '@animations/heading';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { useRouter } from 'next/router';
+import { SOCIALS } from '@constants/common';
 
 export const SectionHero = (): JSX.Element => {
   const router = useRouter();
@@ -83,21 +84,23 @@ export const SectionHero = (): JSX.Element => {
               </Button>
             </AnimFade>
           </li>
-          {/*<li>*/}
-          {/*  <AnimFade screen={0.4}>*/}
-          {/*    <Button*/}
-          {/*      size="xl"*/}
-          {/*      variant="cta-border"*/}
-          {/*      className={classNames(*/}
-          {/*        s.Home_video_content_ctas_bookBtn,*/}
-          {/*        'js-anim-fade'*/}
-          {/*      )}*/}
-          {/*      onClick={openCheckoutPopup}*/}
-          {/*    >*/}
-          {/*      <span className="text">Book a tour</span>*/}
-          {/*    </Button>*/}
-          {/*  </AnimFade>*/}
-          {/*</li>*/}
+          <li>
+            <AnimFade screen={0.4}>
+              <Button
+                size="xl"
+                variant="cta-border"
+                className={classNames(
+                  s.Home_video_content_ctas_bookBtn,
+                  'js-anim-fade'
+                )}
+                onClick={() => {
+                  window.open(SOCIALS.bookATour);
+                }}
+              >
+                <span className="text">Book a tour</span>
+              </Button>
+            </AnimFade>
+          </li>
         </ul>
         {/*<AnimFade className={s.Home_video_content_ctas_play} screen={0.6}>*/}
         {/*  <Button*/}

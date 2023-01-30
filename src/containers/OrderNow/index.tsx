@@ -61,9 +61,19 @@ export const OrderNowTemplate = (): JSX.Element => {
             <Text as={'p'} fontWeight={'regular'} size={'16'}>
               Have questions about buying a Generative Display?
             </Text>
-            <a href={SOCIALS.discord} target="_blank" rel="noreferrer">
-              Join our Discord
-            </a>
+            <ul>
+              <li>
+                <a href={SOCIALS.discord} target="_blank" rel="noreferrer">
+                  Join our Discord
+                </a>
+              </li>
+              <li>or</li>
+              <li>
+                <a href={SOCIALS.bookATour} target="_blank" rel="noreferrer">
+                  Book a tour
+                </a>
+              </li>
+            </ul>
           </div>
 
           <div

@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
 import { isPhoneScreen, isTabletScreen } from '@helpers/common';
 import { NavigationContext } from '@contexts/navigation-context';
+import { SOCIALS } from '@constants/common';
 
 const QuickBuy = (): React.ReactElement => {
   const { isTechSpecz } = useContext(NavigationContext);
@@ -82,6 +83,15 @@ const QuickBuy = (): React.ReactElement => {
               }`}
             >
               Tech specs
+            </span>
+
+            <span
+              onClick={() => {
+                window.open(SOCIALS.bookATour);
+              }}
+              className={`${s.quickBuy_scroller}`}
+            >
+              Book a tour
             </span>
             <Button
               size="sm"

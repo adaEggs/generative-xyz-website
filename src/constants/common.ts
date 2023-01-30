@@ -19,6 +19,7 @@ export const SOCIALS = {
   twitter: 'https://twitter.com/generative_xyz',
   docs: 'https://docs.generative.xyz/',
   docsForArtist: 'https://docs.generative.xyz/how-to/launch-your-art',
+  bookATour: 'https://calendly.com/generative_xyz/30min?month=2023-01',
 };
 
 export const PAGE_LOADED = 'PAGE_LOADED';

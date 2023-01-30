@@ -7,13 +7,22 @@
 
   &_rowFrame {
     margin-top: rem(24px);
+    row-gap: rem(32px);
+    padding-bottom: rem(40px);
     @include min-tablet {
+      padding-bottom: rem(80px);
       margin-top: rem(48px);
     }
   }
 
   &_header {
     text-align: center;
+
+    ul{
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
 
     a {
       &:hover {

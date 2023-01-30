@@ -96,22 +96,22 @@ const Header: React.FC<IProp> = ({
   const renderProfileHeader = () => {
     return (
       <div>
-        <div className={styles.username}>
+        <div className={`${styles.username} username`}>
           <Text size="14" fontWeight="medium">
             {user.displayName || formatAddress(user.walletAddress)}
           </Text>
           <SvgInset
             svgUrl={`${CDN_URL}/icons/ic-caret-down.svg`}
-            className={styles.caret_icon}
+            className={`${styles.caret_icon} caret_icon`}
           />
         </div>
-        <div className={styles.price}>
+        <div className={`${styles.price} price`}>
           <Text size="14" fontWeight="regular">
             {walletBalance?.toFixed(4)}
           </Text>
           <SvgInset
             svgUrl={`${CDN_URL}/icons/ic-eth-token.svg`}
-            className={s.eth_icon}
+            className={`${s.eth_icon} eth_icon`}
           />
         </div>
       </div>
@@ -120,7 +120,7 @@ const Header: React.FC<IProp> = ({
 
   const ProfileDropdown = () => {
     return (
-      <ul className={styles.dropdown} ref={dropdownRef}>
+      <ul className={`${styles.dropdown} dropdown`} ref={dropdownRef}>
         {PROFILE_MENU?.length > 0 &&
           PROFILE_MENU.map(
             item =>
@@ -165,7 +165,12 @@ const Header: React.FC<IProp> = ({
 
   return (
     <>
-      <header ref={refHeader} className={`${styles.header} ${styles[theme]}`}>
+      <header
+        ref={refHeader}
+        className={`${styles.header} ${styles[theme]} ${
+          isOpenMenu ? styles.isMenuOpen : ''
+        }`}
+      >
         <div className={styles.header_inner}>
           <Container>
             <div className={styles.headerWrapper}>
@@ -246,14 +251,15 @@ const Header: React.FC<IProp> = ({
                   )}
 
                   <button
-                    className={styles.btnMenuMobile}
+                    className={`${styles.btnMenuMobile} ${
+                      isOpenMenu ? styles.isOpenMenu : ''
+                    }`}
                     onClick={() => setIsOpenMenu(!isOpenMenu)}
                   >
-                    {isOpenMenu ? (
+                    <span className={styles.btnMenuMobile_inner}>
                       <SvgInset svgUrl={`${CDN_URL}/icons/ic-close-menu.svg`} />
-                    ) : (
                       <SvgInset svgUrl={`${CDN_URL}/icons/ic-hamburger.svg`} />
-                    )}
+                    </span>
                   </button>
                 </div>
               </div>
@@ -277,6 +283,8 @@ const Header: React.FC<IProp> = ({
       </header>
       {isDisplay && <QuickBuy />}
       <MenuMobile
+        renderProfileHeader={renderProfileHeader}
+        ProfileDropdown={ProfileDropdown}
         isConnecting={isConnecting}
         handleConnectWallet={handleConnectWallet}
         ref={refMenu}
