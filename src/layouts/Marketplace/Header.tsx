@@ -9,7 +9,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
 import useOnClickOutside from '@hooks/useOnClickOutSide';
-import s from '@layouts/Default/components/HeaderFixed/Header.module.scss';
+import s from '@layouts/Default/HeaderFixed/Header.module.scss';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { formatAddress } from '@utils/format';

@@ -1,13 +1,10 @@
 import { LogLevel } from '@enums/log-level';
-// import { useAppDispatch } from '@redux';
-// import { setCheckoutProduct } from '@redux/general/action';
 import { getProductList } from '@services/api/product';
 import log from '@utils/logger';
 import { default as classNames, default as cn } from 'classnames';
 import { useState, useContext, useRef, useEffect } from 'react';
 import { AnimHeading } from 'src/animations/heading';
 import useAsyncEffect from 'use-async-effect';
-// import { FrameItem } from '../frame-item';
 import s from './prices.module.scss';
 import Button from '@components/Button';
 import { CDN_URL } from '@constants/config';
@@ -23,13 +20,8 @@ export const Prices = (): JSX.Element => {
 
   const { setIsTechSpecz } = useContext(NavigationContext);
   const refTech = useRef<HTMLDivElement>(null);
-  // const dispatch = useAppDispatch();
   const router = useRouter();
   const [products, setProducts] = useState<IFrame[]>([]);
-
-  // const openCheckoutPopup = (product: IFrame) => {
-  //   dispatch(setCheckoutProduct(product));
-  // };
 
   const openOrderNow = () => {
     router.push(ROUTE_PATH.ORDER_NOW);
@@ -257,7 +249,7 @@ export const Prices = (): JSX.Element => {
                   <td className={s.dimensions}>
                     <span className={s.Home_specTitle}>Dimensions</span>
                     <img
-                      src={`${CDN_URL}/pages/home/icons/55_.svg`}
+                      src={`${CDN_URL}/pages/landingpage/55_30_1.svg`}
                       alt="55_"
                       className={s.Home_specDimension}
                     />
@@ -287,7 +279,7 @@ export const Prices = (): JSX.Element => {
                   </td>
                   <td className={s.dimensions}>
                     <img
-                      src={`${CDN_URL}/pages/home/icons/43_.svg`}
+                      src={`${CDN_URL}/pages/landingpage/43_30_1.svg`}
                       alt="43_"
                       className={s.Home_specDimension}
                     />

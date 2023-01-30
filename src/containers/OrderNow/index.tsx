@@ -2,14 +2,12 @@ import useAsyncEffect from 'use-async-effect';
 import { getProductList } from '@services/api/product';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
-// import { useContext, useState } from 'react';
-// import { LoadingContext } from '@contexts/loading-context';
 import { useAppDispatch } from '@redux';
 import { setCheckoutProduct } from '@redux/general/action';
 import { Container } from 'react-bootstrap';
 import { default as classNames } from 'classnames';
 import s from './OrderNow.module.scss';
-import { FrameItem } from '@containers/Display/components/frame-item';
+import { FrameItem } from '@containers/Display/FrameItem';
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
@@ -90,6 +88,24 @@ export const OrderNowTemplate = (): JSX.Element => {
               <FrameItem
                 data={products[1]}
                 openCheckoutPopup={() => openCheckoutPopup(products[1])}
+              />
+            </div>
+            <div className="col-xl-4 col-sm-6 col-12">
+              <FrameItem
+                data={products[3]}
+                openCheckoutPopup={() => openCheckoutPopup(products[3])}
+              />
+            </div>
+            <div className="col-xl-4 col-sm-6 col-12">
+              <FrameItem
+                data={products[4]}
+                openCheckoutPopup={() => openCheckoutPopup(products[4])}
+              />
+            </div>
+            <div className="col-xl-4 col-sm-6 col-12">
+              <FrameItem
+                data={products[5]}
+                openCheckoutPopup={() => openCheckoutPopup(products[5])}
               />
             </div>
           </div>

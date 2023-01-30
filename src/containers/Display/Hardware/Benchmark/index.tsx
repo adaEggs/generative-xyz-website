@@ -1,5 +1,5 @@
-import s from '@containers/Display/components/hardware/hardware.module.scss';
-import { BenchmarkItem } from '../benchmark-item';
+import s from '@containers/Display/Hardware/hardware.module.scss';
+import { BenchmarkItem } from '../BenchmarkItem';
 import classNames from 'classnames';
 
 export const Benchmark = (): JSX.Element => {

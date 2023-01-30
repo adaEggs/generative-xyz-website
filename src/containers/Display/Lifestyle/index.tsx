@@ -1,5 +1,5 @@
 import { Frames } from '@animations/frames';
-import { SectionInfo } from '../section-info';
+import { SectionInfo } from '../SectionInfo';
 import s from './lifestyle.module.scss';
 import classNames from 'classnames';
 import { MaskerStart } from '@animations/masker-start';

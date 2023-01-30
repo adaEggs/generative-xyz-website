@@ -1,5 +1,5 @@
 import { gsap } from 'gsap';
-import { SectionInfo } from '../section-info';
+import { SectionInfo } from '../SectionInfo';
 import s from './artworks.module.scss';
 import React, { useEffect, useRef } from 'react';
 import { MaskerEnd } from '@animations/masker-end';

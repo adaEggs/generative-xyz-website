@@ -1,13 +1,13 @@
 import s from './hardware.module.scss';
 import { gsap } from 'gsap';
-import { SectionInfo } from '@containers/Display/components/section-info';
-import { Monitor } from '@containers/Display/components/hardware/monitor';
+import { SectionInfo } from '@containers/Display/SectionInfo';
+import { Monitor } from '@containers/Display/Hardware/Monitor';
 import classNames from 'classnames';
 import { MaskerStart } from 'src/animations/masker-start';
 import { Frames } from '@animations/frames';
 import { HARDWARE_CONTENTS } from '@constants/frame';
 import { useContext, useRef, useEffect } from 'react';
-import { Benchmark } from './benchmark';
+import { Benchmark } from './Benchmark';
 import { LoadingContext } from '@contexts/loading-context';
 import { CDN_URL } from '@constants/config';
 

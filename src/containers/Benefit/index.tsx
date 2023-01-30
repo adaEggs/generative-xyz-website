@@ -1,7 +1,7 @@
 import { useContext, useEffect } from 'react';
 import s from './Benefit.module.scss';
-import { CreatePageSection } from '@containers/Benefit/components/CreatePage';
-import { ImageContent } from '@containers/Benefit/components/ImageContent';
+import { CreatePageSection } from '@containers/Benefit/CreatePage';
+import { ImageContent } from '@containers/Benefit/ImageContent';
 import { CDN_URL } from '@constants/config';
 import { Container } from 'react-bootstrap';
 import { LoadingContext, LoadingProvider } from '@contexts/loading-context';
