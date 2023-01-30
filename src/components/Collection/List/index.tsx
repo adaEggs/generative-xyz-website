@@ -73,8 +73,8 @@ const CollectionList = ({
             />
           ))}
         </div>
+        {listData?.length === 0 && <Empty projectInfo={projectInfo} />}
       </div>
-      {listData?.length === 0 && <Empty projectInfo={projectInfo} />}
     </div>
   );
 };

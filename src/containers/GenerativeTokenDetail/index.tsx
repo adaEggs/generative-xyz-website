@@ -314,10 +314,10 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 <Stats data={tokenInfos} />
               </div> */}
             </div>
-            <Text size="18" color="black-40">
+            <Text size="14" color="black-40">
               Minted on: {mintedDate}
             </Text>
-            <Text size="18" color="black-40" className={s.owner}>
+            <Text size="14" color="black-40" className={s.owner}>
               Owner:{' '}
               <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
                 {tokenData?.owner?.displayName ||
