@@ -14,7 +14,7 @@ const TABLE_ACTIVITIES_HEADING = ['Event', 'Price', 'From', 'To', 'Date'];
 const TableActivities = () => {
   const { tokenActivities } = useContext(GenerativeTokenDetailContext);
 
-  if (!tokenActivities) return <NotFound infoText="No activity yet" />;
+  if (!tokenActivities?.items) return <NotFound infoText="No activity yet" />;
 
   const activityDatas = tokenActivities?.items[0]?.nft_transactions?.map(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
