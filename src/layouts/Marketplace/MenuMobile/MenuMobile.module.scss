@@ -16,7 +16,7 @@
   &_inner {
     background-color: var(--bg-color);
     width: 100vw;
-    height: vh100Mobile();
+    height: vh100mobile();
     display: block;
     padding: {
       top: rem(120px);
@@ -29,7 +29,6 @@
       color: var(--color);
       display: block;
       text-decoration: none;
-
       font-weight: 500;
       font-size: rem(18px);
       line-height: rem(28px);

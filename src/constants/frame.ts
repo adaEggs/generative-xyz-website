@@ -1,30 +1,5 @@
 import { CDN_URL } from '@constants/config';
-
-declare global {
-  interface IHardwareInfo {
-    subtitle: string;
-    title: string;
-    icon: string;
-  }
-
-  interface IHardwareItem {
-    subtitle: string;
-    title: string;
-    desc: string;
-    options: IHardwareInfo[];
-    video?: string;
-    poster?: string;
-  }
-
-  interface IFrame {
-    id: string;
-    name: string;
-    price?: number;
-    eth_price?: number;
-    image: string;
-    image_left: string;
-  }
-}
+import { IHardwareItem } from '@interfaces/product';
 
 export const HARDWARE_CONTENTS: IHardwareItem[] = [
   {

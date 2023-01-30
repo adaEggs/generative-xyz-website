@@ -1,10 +1,11 @@
 .marketplace {
-  background: #0F0F11;
+  background: #0f0f11;
   padding: {
     top: rem(80px);
     bottom: rem(80px);
   }
-  @include min-tablet{
+
+  @include min-tablet {
     padding: {
       top: 0;
       bottom: rem(145px);
@@ -15,7 +16,6 @@
     position: relative;
 
     .layer {
-
       img {
         object-fit: contain;
       }
@@ -28,16 +28,14 @@
           }
 
           &:not(:nth-child(2)) {
-
             display: none;
+
             @include min-tablet {
               display: block;
             }
-
           }
 
           &:nth-child(2) {
-
             display: block;
             width: 100%;
             height: auto;
@@ -46,16 +44,16 @@
               display: none;
             }
           }
-
         }
       }
 
-      &__2, &__3 {
+      &__2,
+      &__3 {
         position: absolute;
         top: 0;
         right: 0;
-
         display: none;
+
         @include min-tablet {
           display: block;
         }
@@ -74,14 +72,16 @@
   }
 
   &_content {
-
     padding-top: rem(32px);
-    @include min-tablet{
+
+    @include min-tablet {
       padding-top: 0;
     }
+
     button {
       width: 100%;
       justify-content: center;
+
       @include min-tablet {
         width: auto;
         justify-content: left;

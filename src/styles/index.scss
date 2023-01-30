@@ -1,14 +1,14 @@
-@import '_themes/mixins';
-@import '_themes/fonts';
-@import '_themes/bt-variables';
-@import '~bootstrap/scss/bootstrap';
-@import '_reset';
-@import '_variables';
-@import '_theme';
-@import '_utils';
-@import '_themes/laddingpage';
-@import '_grid-debug';
-@import '_themes/bootstrap-overrides';
+@import "_themes/mixins";
+@import "_themes/fonts";
+@import "_themes/bt-variables";
+@import "~bootstrap/scss/bootstrap";
+@import "_reset";
+@import "_variables";
+@import "_theme";
+@import "_utils";
+@import "_themes/laddingpage";
+@import "_grid-debug";
+@import "_themes/bootstrap-overrides";
 
 * {
   margin: 0;
@@ -30,7 +30,6 @@ html {
   -moz-osx-font-smoothing: grayscale;
   font-smoothing: antialiased !important;
   -webkit-font-smoothing: antialiased !important;
-
   font-size: 10px;
 
   @include min-pc {
@@ -56,6 +55,7 @@ body {
 
 main {
   height: 100%;
+
   @include calcFontAuto(14px, 16px);
 }
 
@@ -74,7 +74,7 @@ button {
   border: none;
 }
 
-[class^='js-anim']:not(.is-handle) {
+[class^="js-anim"]:not(.is-handle) {
   opacity: 0;
 }
 

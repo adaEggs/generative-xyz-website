@@ -7,6 +7,7 @@
 
   &_rowFrame {
     margin-top: rem(24px);
+
     @include min-tablet {
       margin-top: rem(48px);
     }

@@ -4,7 +4,7 @@ import s from './artworks.module.scss';
 import React, { useEffect, useRef } from 'react';
 import { MaskerEnd } from '@animations/masker-end';
 import { ScrollFixed } from '@animations/scroll-fixed';
-import { isMobileAndTablet } from '@helpers/anim.helpers';
+import { isMobileAndTablet } from '@utils/animation';
 import { CDN_URL } from '@constants/config';
 
 export const Artworks = (): JSX.Element => {

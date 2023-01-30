@@ -1,5 +1,5 @@
 import useAsyncEffect from 'use-async-effect';
-import { getProductList } from '@services/api/product';
+import { getProductList } from '@services/product';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { useAppDispatch } from '@redux';
@@ -16,13 +16,14 @@ import CheckoutModal from '@containers/CheckoutModal';
 import Text from '@components/Text';
 import Heading from '@components/Heading';
 import { SOCIALS } from '@constants/common';
+import { Product } from '@interfaces/product';
 
 const LOG_PREFIX = 'OrderNow';
 export const OrderNowTemplate = (): JSX.Element => {
   const { connect } = useContext(WalletContext);
   const use = useSelector(getUserSelector);
   const dispatch = useAppDispatch();
-  const [products, setProducts] = useState<IFrame[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   const handleConnectWallet = async (): Promise<void> => {
     try {
@@ -32,7 +33,7 @@ export const OrderNowTemplate = (): JSX.Element => {
     }
   };
 
-  const openCheckoutPopup = (product: IFrame) => {
+  const openCheckoutPopup = (product: Product) => {
     if (!use.id) {
       handleConnectWallet();
     }
@@ -41,9 +42,9 @@ export const OrderNowTemplate = (): JSX.Element => {
 
   useAsyncEffect(async () => {
     try {
-      const { data } = await getProductList();
-      if (data.products) {
-        setProducts(data.products);
+      const { products } = await getProductList();
+      if (products) {
+        setProducts(products);
       }
     } catch (_: unknown) {
       log('failed to get products', LogLevel.Error, LOG_PREFIX);

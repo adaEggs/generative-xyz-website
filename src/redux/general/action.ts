@@ -1,3 +1,4 @@
+import { Product } from '@interfaces/product';
 import { createAction } from '@reduxjs/toolkit';
 
 export const setIsOpenWalletSetting = createAction<boolean>(
@@ -8,7 +9,7 @@ export const setIsOpenCheckoutPopup = createAction<boolean>(
   'general/setIsOpenCheckoutPopup'
 );
 
-export const setCheckoutProduct = createAction<IFrame>(
+export const setCheckoutProduct = createAction<Product>(
   'general/setCheckoutProduct'
 );
 

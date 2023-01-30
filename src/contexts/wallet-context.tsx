@@ -20,7 +20,7 @@ import Web3 from 'web3';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { METAMASK_DOWNLOAD_PAGE } from '@constants/common';
-import { isMobile } from '@helpers/anim.helpers';
+import { isMobile } from '@utils/animation';
 import { openMetamaskDeeplink } from '@utils/metamask';
 
 const LOG_PREFIX = 'WalletContext';

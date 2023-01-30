@@ -4,9 +4,10 @@ import cn from 'classnames';
 import React from 'react';
 import Button from '@components/Button';
 import classNames from 'classnames';
+import { Product } from '@interfaces/product';
 
 interface IProp {
-  data: IFrame;
+  data: Product;
   openCheckoutPopup: () => void;
 }
 
@@ -23,7 +24,7 @@ export const FrameItem = ({ data, openCheckoutPopup }: IProp): JSX.Element => {
           className={cn(s.frameItem_item_price, 'desc__large text__black mb-0')}
           offset={0.2}
         >
-          {data.eth_price || data.price} ETH
+          {data.eth_price} ETH
         </AnimRanText>
 
         <div className={classNames(s.frameItem_ctas)}>

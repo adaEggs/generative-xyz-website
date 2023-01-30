@@ -27,6 +27,7 @@
         @include max-tablet {
           display: none;
         }
+
         @include min-pc {
           width: 20%;
         }
@@ -96,7 +97,7 @@
       }
 
       &.Home_specTitle_large {
-        @include mobile{
+        @include mobile {
           padding-top: rem(100px) !important;
         }
       }
@@ -126,6 +127,7 @@
     line-height: 140%;
     color: $neutral-08;
     margin-bottom: rem(16px);
+
     @include min-pc {
       margin-bottom: 0;
     }
@@ -135,7 +137,6 @@
     color: $neutral-06;
     font-weight: 400;
     font-size: rem(16px);
-
     line-height: 140%;
 
     &:not(:first-of-type) {
@@ -187,8 +188,8 @@
   margin-top: var(--spacing-supper);
 }
 
-.dimensions{
-  img{
+.dimensions {
+  img {
     width: auto;
     height: rem(200px);
   }

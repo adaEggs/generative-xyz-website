@@ -16,7 +16,7 @@ import {
   getDelay,
   getRandomArbitrary,
   getRandomArbitraryFloat,
-} from '@helpers/anim.helpers';
+} from '@utils/animation';
 import { LoadingContext } from '@contexts/loading-context';
 
 type THeading = {

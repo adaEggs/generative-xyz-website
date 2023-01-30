@@ -15,9 +15,9 @@
   }
 
   .modalWrapper {
-    background: #ffffff;
+    background: #fff;
     border-left: 1px solid $black-10;
-    box-shadow: -10px 0px 40px $black-20;
+    box-shadow: -10px 0 40px $black-20;
     transition: all 0.2s ease-in;
     z-index: 40;
     width: 490px;
@@ -63,7 +63,9 @@
   .modalDescription {
     font-weight: 500;
     line-height: (28 / 18);
+
     @include calcFontAuto(16px, 18px);
+
     letter-spacing: -0.01em;
     color: $black-60;
   }
@@ -87,6 +89,7 @@
     justify-content: center;
     font-weight: 700;
     line-height: (26/16);
+
     @include calcFontAuto(14px, 16px);
   }
 
@@ -104,10 +107,12 @@
     background-color: $white-100;
     font-weight: 500;
     line-height: (26/16);
+
     @include calcFontAuto(14px, 16px);
+
     color: $black-100;
     padding: 11px 78px 11px 14px;
-    border: 2px solid rgba(0, 0, 0, 0.1);
+    border: 2px solid rgb(0 0 0 / 10%);
     border-radius: 2px;
     width: 100%;
     resize: none;
@@ -157,7 +162,9 @@
       top: 13px;
       font-weight: 500;
       line-height: (26/16);
+
       @include calcFontAuto(14px, 16px);
+
       color: $black-100;
       padding-left: 8px;
       border-left: 1px solid $black-20;

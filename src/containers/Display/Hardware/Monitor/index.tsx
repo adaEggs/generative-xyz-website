@@ -1,5 +1,6 @@
 import s from './monitor.module.scss';
 import SvgInset from '@components/SvgInset';
+import { IHardwareInfo, IHardwareItem } from '@interfaces/product';
 
 export const Monitor = ({ data }: { data: IHardwareItem }): JSX.Element => {
   return (

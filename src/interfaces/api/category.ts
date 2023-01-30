@@ -1,5 +1,5 @@
 import { Category } from '@interfaces/category';
-import { IPagingParams, IPagingResponse } from '@interfaces/paging';
+import { IPagingParams, IPagingResponse } from '@interfaces/api/paging';
 
 export type IGetCategoryListParams = IPagingParams;
 

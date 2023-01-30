@@ -1,5 +1,5 @@
 .createPage {
-  background: #0F0F11;
+  background: #0f0f11;
 
   padding: {
     top: rem(60px);
@@ -12,6 +12,7 @@
       bottom: rem(120px);
     }
   }
+
   @include min-pc {
     padding: {
       top: rem(164px);
@@ -20,7 +21,7 @@
   }
 
   &_project {
-    video{
+    video {
       object-fit: cover;
       width: 100%;
       height: 100%;
@@ -33,6 +34,7 @@
     button {
       width: 100%;
       justify-content: center;
+
       @include min-tablet {
         width: auto;
         justify-content: left;
@@ -46,7 +48,6 @@
 }
 
 .token {
-
   img {
     aspect-ratio: 1/1;
     object-fit: contain;

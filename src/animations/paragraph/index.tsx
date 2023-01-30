@@ -4,7 +4,7 @@ import { gsap } from 'gsap';
 import { debounce } from 'lodash';
 import SplitType from 'split-type';
 import { PAGE_ENTER } from '@constants/common';
-import { getDelay } from '@helpers/anim.helpers';
+import { getDelay } from '@utils/animation';
 import { Anim } from '../anim';
 import s from './paragraph.module.scss';
 import { LoadingContext } from '@contexts/loading-context';

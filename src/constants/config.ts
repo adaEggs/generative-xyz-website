@@ -33,4 +33,8 @@ export const SERVICE_FEE = 2.5 / 100;
 export const PRINTS_REQUIRED_TO_DISCOUNT = 5000;
 export const NFT_REQUIRED_TO_DISCOUNT = 1;
 
+// API
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+export const GN_API_BASE_URL = process.env.NEXT_PUBLIC_GN_API_URL ?? '';
+
 /* eslint-enable @typescript-eslint/no-non-null-assertion */

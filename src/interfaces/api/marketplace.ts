@@ -1,6 +1,6 @@
-import { IPagingParams } from './../paging';
+import { IPagingParams } from './paging';
 import { IMakeOffers, MarketplaceStats } from '@interfaces/marketplace';
-import { IPagingResponse } from '@interfaces/paging';
+import { IPagingResponse } from '@interfaces/api/paging';
 import { TokenOffer } from '@interfaces/token';
 
 export interface IListingTokensResponse extends IPagingResponse {

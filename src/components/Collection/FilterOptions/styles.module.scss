@@ -32,6 +32,7 @@
   :global(.react-dropdown-select-item-selected) {
     background: transparent !important;
     color: $black-100 !important;
+
     &:hover {
       background: $black-5 !important;
     }

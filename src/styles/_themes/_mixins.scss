@@ -1,4 +1,4 @@
-@import './_variables';
+@import "./_variables";
 
 @mixin disable-scrollbar {
   -ms-overflow-style: none;
@@ -94,7 +94,7 @@
 
       &::before,
       &::after {
-        content: '';
+        content: "";
         position: absolute;
         width: 50%;
         height: 2px;
@@ -118,7 +118,9 @@
 
     .title {
       line-height: (34 / 24);
+
       @include calcFontAuto(18px, 24px);
+
       color: #222;
       word-break: break-word;
       font-weight: 500;
@@ -142,8 +144,8 @@
         padding: 4px 16px 0;
         border-radius: 8px;
         margin: 0 0 0 12px;
-
         line-height: (26/16);
+
         @include calcFontAuto(14px, 16px);
 
         &:first-child {
@@ -324,8 +326,8 @@
 
 @function calc-auto($min-vw, $max-vw, $min-font-size, $max-font-size) {
   @return calc(
-          #{$min-font-size} + #{strip-unit($max-font-size - $min-font-size)} *
-          calc((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)})
+    #{$min-font-size} + #{strip-unit($max-font-size - $min-font-size)} *
+    calc((100vw - #{$min-vw}) / #{strip-unit($max-vw - $min-vw)})
   );
 }
 
@@ -340,7 +342,7 @@
 @mixin calcFontAuto($min-font-size, $max-font-size) {
   font-size: rem($min-font-size);
 
-  @include min-pc{
+  @include min-pc {
     font-size: rem($max-font-size);
   }
 }
@@ -356,7 +358,6 @@
 @mixin fullViewScreen {
   height: calc(100vh - #{rem(260px)});
 }
-
 
 @function vhMathDiv($px, $base) {
   @return ($px / $base) * 100;

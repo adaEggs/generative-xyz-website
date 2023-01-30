@@ -1,5 +1,5 @@
 .createPage {
-  background: #0F0F11;
+  background: #0f0f11;
 
   padding: {
     top: rem(60px);
@@ -12,6 +12,7 @@
       bottom: rem(240px);
     }
   }
+
   @include min-pc {
     padding: {
       top: rem(164px);
@@ -33,13 +34,15 @@
   &_content {
     padding-top: rem(70px);
 
-    strong, b{
+    strong,
+    b {
       font-weight: 400 !important;
     }
 
     button {
       width: 100%;
       justify-content: center;
+
       @include min-tablet {
         width: auto;
         justify-content: left;
@@ -53,7 +56,6 @@
 }
 
 .token {
-
   img {
     aspect-ratio: 1/1;
     object-fit: contain;

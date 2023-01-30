@@ -8,6 +8,7 @@
   display: flex;
   gap: rem(90px);
   flex: 1;
+
   @include max-tablet {
     flex-direction: column;
     gap: rem(40px);
