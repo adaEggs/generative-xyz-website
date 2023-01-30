@@ -367,7 +367,7 @@
   @return calc(var(--vh) * #{$vhInput});
 }
 
-@function vh100Mobile() {
+@function vh100-mobile() {
   @return calc(var(--vh) * 100);
 }
 
