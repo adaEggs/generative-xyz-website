@@ -1,0 +1,44 @@
+.filter_buy {
+  display: flex;
+  min-width: rem(150px);
+  justify-content: space-between;
+  margin-bottom: rem(21px);
+
+  @include mobile {
+    min-width: rem(120px);
+  }
+}
+
+.filter_traits {
+  margin-top: rem(20px);
+
+  &_dropdown {
+    margin-top: rem(20px);
+    display: flex;
+    flex-direction: column;
+    gap: rem(10px);
+  }
+}
+
+.filter_dropdown {
+  :global(.react-dropdown-select-item) {
+    padding: 10px 16px;
+
+    &:hover {
+      background: $black-5;
+    }
+  }
+
+  :global(.react-dropdown-select-item-selected) {
+    background: transparent !important;
+    color: $black-100 !important;
+    &:hover {
+      background: $black-5 !important;
+    }
+  }
+
+  :global(.react-dropdown-select-content) {
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+  }
+}

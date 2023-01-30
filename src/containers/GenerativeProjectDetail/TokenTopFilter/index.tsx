@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import s from './styles.module.scss';
 import Image from 'next/image';
 import { CDN_URL } from '@constants/config';
@@ -6,6 +6,9 @@ import Select, { SingleValue } from 'react-select';
 import { SelectOption } from '@interfaces/select-input';
 import cs from 'classnames';
 import { debounce } from 'lodash';
+import ButtonIcon from '@components/ButtonIcon';
+import SvgInset from '@components/SvgInset';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -51,8 +54,31 @@ const TokenTopFilter: React.FC<IProps> = ({
     return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
   }, [sort]);
 
+  const { showFilter, setShowFilter } = useContext(
+    GenerativeProjectDetailContext
+  );
+
   return (
     <div className={cs(s.tokenTopFilter, className)}>
+      <div className={s.filterWrapper}>
+        {showFilter ? (
+          <ButtonIcon
+            variants="primary"
+            startIcon={<SvgInset svgUrl={`${CDN_URL}/icons/ic-close.svg`} />}
+            onClick={() => setShowFilter(!showFilter)}
+          >
+            Filter
+          </ButtonIcon>
+        ) : (
+          <ButtonIcon
+            variants="outline"
+            startIcon={<SvgInset svgUrl={`${CDN_URL}/icons/ic-filter.svg`} />}
+            onClick={() => setShowFilter(!showFilter)}
+          >
+            Filter
+          </ButtonIcon>
+        )}
+      </div>
       <div className={s.inputWrapper}>
         <div className={s.inputPrefixWrapper}>
           <Image

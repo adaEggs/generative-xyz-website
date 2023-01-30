@@ -66,8 +66,14 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   const dispatch = useAppDispatch();
   const user = useSelector(getUserSelector);
 
+  const isDeepLinkRequired = (): boolean => {
+    const wallet = walletManagerRef.current;
+
+    return isMobile() && !wallet?.isInstalled();
+  };
+
   const connectedAddress = useCallback(async (): Promise<string | null> => {
-    if (isMobile()) {
+    if (isDeepLinkRequired()) {
       openMetamaskDeeplink();
       return null;
     }
@@ -107,7 +113,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   );
 
   const connect = useCallback(async (): Promise<void> => {
-    if (isMobile()) {
+    if (isDeepLinkRequired()) {
       openMetamaskDeeplink();
       return;
     }
@@ -167,7 +173,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
 
   const transfer = useCallback(
     async (toAddress: string, value: string): Promise<string | null> => {
-      if (isMobile()) {
+      if (isDeepLinkRequired()) {
         openMetamaskDeeplink();
         return '';
       }
@@ -217,7 +223,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   );
 
   const getWalletBalance = async (): Promise<number> => {
-    if (isMobile()) {
+    if (isDeepLinkRequired()) {
       openMetamaskDeeplink();
       return 0;
     }

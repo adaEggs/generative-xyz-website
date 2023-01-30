@@ -87,11 +87,7 @@
     justify-content: center;
     font-weight: 700;
     line-height: (26/16);
-    @include calcFontAuto(14px, 16px)
-  }
-
-  .formItem {
-    margin-bottom: 24px;
+    @include calcFontAuto(14px, 16px);
   }
 
   .label {
@@ -130,6 +126,11 @@
     &::input-placeholder {
       /* Microsoft Edge */
       color: $black-40;
+    }
+
+    &:disabled {
+      background: $black-5;
+      color: $black-20;
     }
   }
 
@@ -173,5 +174,18 @@
 
   .formWrapper {
     margin-top: 24px;
+  }
+
+  .swapActionWrapper {
+    margin-top: 12px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+
+  .switchBtn {
+    display: inline-flex;
+    padding: 8px;
+    align-items: center;
+    justify-content: center;
   }
 }

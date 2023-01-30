@@ -21,7 +21,6 @@ import {
 } from '@interfaces/wallet';
 import { WalletError, WalletErrorCode } from '@enums/wallet-error';
 import { WalletEvent } from '@enums/wallet-event';
-import { WETH_ADDRESS } from '@constants/contract-address';
 
 const LOG_PREFIX = 'WalletManager';
 
@@ -344,9 +343,10 @@ export class WalletManager {
    */
   async getContract(
     contractAddress: string,
-    abi: AbiItem[]
+    abi: AbiItem[],
+    needToCache = true
   ): Promise<Contract> {
-    if (!this.contracts[contractAddress] || contractAddress === WETH_ADDRESS) {
+    if (!this.contracts[contractAddress] || !needToCache) {
       const web3Provider = this.getWeb3Provider();
       this.contracts[contractAddress] = new web3Provider.eth.Contract(
         abi,

@@ -3,13 +3,13 @@ import { Contract } from 'web3-eth-contract';
 import { TransactionReceipt } from 'web3-eth';
 import ContractOperation from '@services/contract-operations/contract-operation';
 import ContractWETHAbi from '@services/contract-abis/weth.json';
-import { IDepositWETHParams } from '@interfaces/contract-operations/deposit-weth';
+import { IWithdrawWETHParams } from '@interfaces/contract-operations/withdraw-weth';
 import { ErrorMessage } from '@enums/error-message';
 import { WETH_ADDRESS } from '@constants/contract-address';
 import Web3 from 'web3';
 
-class DepositWETHOperation extends ContractOperation<
-  IDepositWETHParams,
+class WithdrawWETHOperation extends ContractOperation<
+  IWithdrawWETHParams,
   TransactionReceipt
 > {
   contract: Contract | null = null;
@@ -32,11 +32,13 @@ class DepositWETHOperation extends ContractOperation<
 
     const walletAddress = await this.walletManager.connectedAddress();
 
-    const data = await this.contract.methods.deposit().send({
-      from: walletAddress,
-      to: this.contractAddress,
-      value: Web3.utils.toWei(amount),
-    });
+    const data = await this.contract.methods
+      .withdraw(Web3.utils.toWei(amount))
+      .send({
+        from: walletAddress,
+        to: this.contractAddress,
+        value: '0',
+      });
 
     return data;
   }
@@ -50,4 +52,4 @@ class DepositWETHOperation extends ContractOperation<
   }
 }
 
-export default DepositWETHOperation;
+export default WithdrawWETHOperation;
