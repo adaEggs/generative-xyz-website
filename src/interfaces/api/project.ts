@@ -1,4 +1,4 @@
-import { IPagingParams, IPagingResponse } from '@interfaces/paging';
+import { IPagingParams, IPagingResponse } from '@interfaces/api/paging';
 import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 export interface IGetProjectDetailParams {

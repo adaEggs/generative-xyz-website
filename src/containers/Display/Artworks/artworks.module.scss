@@ -57,7 +57,9 @@
         position: relative;
         z-index: 2;
         will-change: transform;
-        img, video{
+
+        img,
+        video {
           object-fit: contain;
           height: 100%;
           width: 100%;

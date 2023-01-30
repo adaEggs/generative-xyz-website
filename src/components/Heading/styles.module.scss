@@ -3,31 +3,37 @@
 
   &:is(h1) {
     line-height: (66/56);
+
     @include calcFontAuto(40px, 56px);
   }
 
   &:is(h2) {
     line-height: (58/48);
+
     @include calcFontAuto(34px, 48px);
   }
 
   &:is(h3) {
     line-height: (50/40);
+
     @include calcFontAuto(24px, 40px);
   }
 
   &:is(h4) {
     line-height: (44/34);
+
     @include calcFontAuto(24px, 34px);
   }
 
   &:is(h5) {
     line-height: (34 / 24);
+
     @include calcFontAuto(18px, 24px);
   }
 
   &:is(h6) {
     line-height: (30/20);
-    @include calcFontAuto(20px, 18px)
+
+    @include calcFontAuto(20px, 18px);
   }
 }

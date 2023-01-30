@@ -1,18 +1,21 @@
 .benefit {
-  background-color: #0F0F11;
+  background-color: #0f0f11;
   padding: {
     bottom: rem(80px);
   }
+
   @include tablet {
     padding: {
       bottom: rem(240px);
     }
   }
+
   @include min-pc {
     padding: {
       bottom: rem(184px);
     }
   }
+
   &_rows {
     display: flex;
     justify-content: center;

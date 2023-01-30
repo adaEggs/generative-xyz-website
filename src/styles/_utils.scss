@@ -43,6 +43,7 @@
 .grid-cols-1 {
   grid-template-columns: repeat(1, 1fr);
 }
+
 .grid-cols-2 {
   grid-template-columns: repeat(2, 1fr);
 
@@ -202,7 +203,6 @@
 }
 
 .h-divider {
-  // height: 100%;
   width: 1px;
   background-color: $black-20;
 }
@@ -218,6 +218,7 @@
 .spacing {
   &__large {
     margin-bottom: rem(40px);
+
     @include min-tablet {
       margin-bottom: rem(60px);
     }
@@ -229,6 +230,7 @@
 
   &__small {
     margin-bottom: rem(16px);
+
     @include min-tablet {
       margin-bottom: rem(24px);
     }

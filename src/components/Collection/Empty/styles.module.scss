@@ -22,6 +22,7 @@
     font-weight: 500;
     line-height: (34/24);
     color: $black-40-solid;
-    @include calcFontAuto(18px, 24px)
+
+    @include calcFontAuto(18px, 24px);
   }
 }

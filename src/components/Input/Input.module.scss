@@ -25,7 +25,8 @@
     width: 100%;
     transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
     height: rem(48px);
-    @include min-pc{
+
+    @include min-pc {
       height: rem(56px);
     }
   }
@@ -50,9 +51,8 @@
   label {
     font-weight: 400;
     line-height: (28/18);
+
     @include calcFontAuto(16px, 18px);
-
-
   }
 
   input:focus {

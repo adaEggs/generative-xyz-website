@@ -44,6 +44,7 @@
     }
 
     line-height: 140%;
+
     @include calcFontAuto(18px, 24px);
 
     &_tool {
@@ -56,7 +57,7 @@
       font-weight: 600;
       position: relative;
 
-      a{
+      a {
         text-decoration: none;
 
         &:hover {
@@ -118,7 +119,8 @@
           margin-top: rem(-12px);
         }
       }
-      &__target2{
+
+      &__target2 {
         color: rgb(255 255 255 / 80%);
         font-weight: normal !important;
       }
@@ -156,7 +158,7 @@
         }
 
         &__depYellow {
-          background: linear-gradient(90deg, #D4E600 0%, #F92323 100%);
+          background: linear-gradient(90deg, #d4e600 0%, #f92323 100%);
           border-radius: 100px;
           transform: rotate(180deg);
         }
@@ -195,7 +197,6 @@
         @include min-tablet {
           font-size: rem(28px);
         }
-
       }
     }
   }

@@ -25,10 +25,10 @@
 
       &:focus {
         box-shadow: none;
-        border-color: rgba(0, 0, 0, 0.125);
+        border-color: rgb(0 0 0 / 12.5%);
       }
 
-      &:after {
+      &::after {
         display: none;
       }
     }

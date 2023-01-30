@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '@constants/config';
 import { HttpMethod } from '@enums/http-method';
 import {
   HttpResponse,
@@ -6,9 +7,15 @@ import {
 } from '@interfaces/api/http-client';
 import { getAccessToken } from '@utils/auth';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
+const getRequestEndpoint = (
+  url: string,
+  externalResource = false,
+  baseUrl?: string
+): string => {
+  if (baseUrl) {
+    return `${baseUrl}${url}`;
+  }
 
-const getRequestEndpoint = (url: string, externalResource = false): string => {
   if (!externalResource) {
     return `${API_BASE_URL}${url}`;
   }
@@ -62,7 +69,11 @@ export const get = async <R>(
   config?: RequestConfig
 ): Promise<R> => {
   const requestOptions: RequestInit = getRequestOptions(HttpMethod.GET, config);
-  const requestUrl = getRequestEndpoint(url, !!config?.externalResource);
+  const requestUrl = getRequestEndpoint(
+    url,
+    !!config?.externalResource,
+    config?.baseUrl
+  );
   const response = await fetch(requestUrl, requestOptions);
   return handleResponse(response);
 };
@@ -76,7 +87,11 @@ export const post = async <P, R>(
     ...getRequestOptions(HttpMethod.POST, config),
     body: JSON.stringify(body),
   };
-  const requestUrl = getRequestEndpoint(url, !!config?.externalResource);
+  const requestUrl = getRequestEndpoint(
+    url,
+    !!config?.externalResource,
+    config?.baseUrl
+  );
   const response = await fetch(requestUrl, requestOptions);
   return handleResponse(response);
 };
@@ -98,7 +113,11 @@ export const postFile = async <P, R>(
   ) {
     delete (requestOptions.headers as Record<string, string>)['Content-Type'];
   }
-  const requestUrl = getRequestEndpoint(url, !!config?.externalResource);
+  const requestUrl = getRequestEndpoint(
+    url,
+    !!config?.externalResource,
+    config?.baseUrl
+  );
   const response = await fetch(requestUrl, requestOptions);
   return handleResponse(response);
 };
@@ -112,7 +131,11 @@ export const put = async <P, R>(
     ...getRequestOptions(HttpMethod.PUT, config),
     body: JSON.stringify(body),
   };
-  const requestUrl = getRequestEndpoint(url, !!config?.externalResource);
+  const requestUrl = getRequestEndpoint(
+    url,
+    !!config?.externalResource,
+    config?.baseUrl
+  );
   const response = await fetch(requestUrl, requestOptions);
   return handleResponse(response);
 };
@@ -125,7 +148,11 @@ export const del = async <R>(
     HttpMethod.POST,
     config
   );
-  const requestUrl = getRequestEndpoint(url, !!config?.externalResource);
+  const requestUrl = getRequestEndpoint(
+    url,
+    !!config?.externalResource,
+    config?.baseUrl
+  );
   const response = await fetch(requestUrl, requestOptions);
   return handleResponse(response);
 };

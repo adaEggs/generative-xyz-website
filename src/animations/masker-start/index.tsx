@@ -1,7 +1,7 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollMaskStart } from './scroll-mask-start';
-import { isMobileAndTablet } from '@helpers/anim.helpers';
+import { isMobileAndTablet } from '@utils/animation';
 
 interface IProp {
   className: string;

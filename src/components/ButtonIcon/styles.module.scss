@@ -25,6 +25,7 @@
   &.large,
   &.medium {
     line-height: (26/16);
+
     @include calcFontAuto(14px, 16px);
   }
 

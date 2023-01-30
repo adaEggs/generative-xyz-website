@@ -29,8 +29,8 @@
         opacity: 1;
       }
 
-      .frameItem_img{
-        opacity: .35;
+      .frameItem_img {
+        opacity: 0.35;
       }
     }
   }
@@ -38,7 +38,7 @@
   &_img {
     margin-bottom: rem(24px);
     position: relative;
-    transition: opacity .4s $easeOutCubic;
+    transition: opacity 0.4s $easeOutCubic;
   }
 
   &_buy {
@@ -90,7 +90,7 @@
     z-index: 3;
     transition: opacity 0.4s $easeOutCubic;
 
-    @include  min-pc{
+    @include min-pc {
       position: absolute;
       opacity: 0;
       top: 50%;
@@ -139,7 +139,8 @@
 
   :global(.desc__medium) {
     margin-bottom: rem(4px);
-    @include calcFontAuto(14px, 16px)
+
+    @include calcFontAuto(14px, 16px);
   }
 
   :global(.desc__large) {

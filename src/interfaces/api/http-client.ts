@@ -1,5 +1,6 @@
 export type RequestConfig = Omit<RequestInit, 'method' | 'body'> & {
   externalResource?: boolean;
+  baseUrl?: string;
 };
 
 export type HttpResponse<T> = {

@@ -130,6 +130,7 @@
       word-break: break-word;
       font-weight: 500;
       line-height: (36/26);
+
       @include calcFontAuto(20px, 26px);
     }
 
@@ -147,12 +148,12 @@
       justify-content: flex-end;
 
       button {
-
         padding: 4px 16px 0;
         border-radius: 8px;
         margin: 0 0 0 12px;
 
         @include calcFontAuto(14px, 16px);
+
         height: rem(40px);
 
         &:first-child {

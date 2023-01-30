@@ -9,6 +9,7 @@
 
   &_heading {
     display: none;
+
     @include min-tablet {
       display: block;
     }
@@ -24,6 +25,7 @@
     align-items: center;
     padding-top: rem(5px);
     padding-bottom: rem(5px);
+
     @include min-tablet {
       padding-top: rem(7px);
       padding-bottom: rem(7px);
@@ -33,10 +35,12 @@
   &_scroller {
     font-style: normal;
     font-weight: 500;
-    color: #9C9C9C;
+    color: #9c9c9c;
     line-height: (26/16);
+
     @include calcFontAuto(14px, 16px);
-    transition: color .4s $easeOutCubic;
+
+    transition: color 0.4s $easeOutCubic;
 
     &.isActive {
       color: $primary-brand;
@@ -61,6 +65,7 @@
     justify-content: space-between;
     flex: 0 0 auto;
     width: 100%;
+
     @include min-tablet {
       justify-content: flex-end;
       width: auto;
@@ -81,6 +86,7 @@
 
       span {
         font-size: 14px;
+
         @include min-pc-wide {
           font-size: rem(14px);
         }

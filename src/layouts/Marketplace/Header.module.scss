@@ -1,7 +1,6 @@
-@import 'src/styles/_themes/mixins';
+@import "src/styles/_themes/mixins";
 
 .header {
-
   width: 100%;
   z-index: 9;
   position: relative;
@@ -17,8 +16,8 @@
   }
 
   .caret_icon {
-
     display: none;
+
     @include min-tablet {
       display: block;
     }
@@ -28,7 +27,7 @@
     background: $primary-brand;
 
     :global(.divider) {
-      background: rgba(0, 0, 0, 0.1);
+      background: rgb(0 0 0 / 10%);
     }
 
     .headerWrapper {
@@ -68,7 +67,6 @@
     }
 
     .btnMenuMobile {
-
       svg path {
         stroke: $white;
       }
@@ -79,6 +77,7 @@
     border-radius: 4px;
     width: 42px;
     height: 42px;
+
     @include min-tablet {
       width: 64px;
       height: 64px;
@@ -89,6 +88,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     @include min-tablet {
       padding: rem(8px) 0;
     }
@@ -100,7 +100,6 @@
     }
 
     .navBar {
-
       margin-bottom: 0;
       padding: 0;
       display: none;
@@ -112,7 +111,6 @@
       @include min-tablet {
         display: flex;
         gap: rem(24px);
-        //margin-left: rem(60px);
       }
 
       @include calcFontAuto(14px, 16px);
@@ -133,11 +131,12 @@
         sup {
           font-weight: 500;
           letter-spacing: 0.01em;
-          color: #FF7E21;
+          color: #ff7e21;
           display: inline-block;
-          transform: translateY(-.2em);
+          transform: translateY(-0.2em);
           text-transform: none;
-          @include calcFontAuto(10px, 12px)
+
+          @include calcFontAuto(10px, 12px);
         }
       }
 
@@ -167,11 +166,10 @@
 
       p {
         @include text-ellipsis;
+
         max-width: 150px;
         line-height: 24px;
       }
-
-
     }
 
     .price {
@@ -183,11 +181,12 @@
     }
 
     .dropdown {
-
       display: none;
+
       @include min-tablet {
         display: block;
       }
+
       border-radius: 8px;
       border: 2px solid $black-10;
       overflow: hidden;
@@ -201,8 +200,9 @@
     }
   }
 
-  .testNet, :global(.divider) {
-    transition: all .4s $easeOutCubic;
+  .testNet,
+  :global(.divider) {
+    transition: all 0.4s $easeOutCubic;
   }
 
   &.isMenuOpen {
@@ -220,13 +220,10 @@
       opacity: 0;
       visibility: hidden;
     }
-
   }
 }
 
-
 .logo {
-
   @include min-pc {
     position: absolute;
     left: 50%;
@@ -235,7 +232,6 @@
   }
 
   img {
-
     width: rem(54px);
     height: rem(54px);
 
@@ -249,16 +245,18 @@
 }
 
 .testNet {
-  background: #4F43E2;
+  background: #4f43e2;
   font-style: normal;
   font-weight: 400;
   line-height: (24/14);
-  color: #FFFFFF;
+  color: #fff;
+
   @include calcFontAuto(12px, 14px);
+
   text-align: center;
   padding: rem(4px) rem(16px) rem(4px) rem(16px);
 
-  @include min-tablet{
+  @include min-tablet {
     padding: rem(0) rem(16px) rem(8px) rem(16px);
   }
 
@@ -271,13 +269,12 @@
   img {
     margin-right: 6px;
     display: none;
-
     width: rem(24px);
     height: rem(24px);
 
     @include min-tablet {
       display: inline-block;
-      transform: translateY(.5em);
+      transform: translateY(0.5em);
     }
   }
 
@@ -288,7 +285,7 @@
     cursor: pointer !important;
 
     &:hover {
-      color: rgba($white, .8);
+      color: rgba($white, 0.8);
     }
   }
 }
@@ -304,6 +301,7 @@
 
       a {
         @include calcFontAuto(14px, 16px);
+
         font-weight: 500;
         color: $black-60-solid;
         line-height: (26/16);
@@ -312,9 +310,7 @@
   }
 }
 
-
 .btnMenuMobile {
-
   display: block;
   background: none;
   padding: rem(8px) 0;
@@ -353,7 +349,6 @@
       }
     }
   }
-
 
   @include min-tablet {
     display: none;

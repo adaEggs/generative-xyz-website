@@ -1,6 +1,5 @@
 .hardwareDisplay {
-  background: #333333;
-
+  background: #333;
   padding-top: 0;
   padding-bottom: rem(80px);
 
@@ -10,7 +9,6 @@
   }
 
   &_content {
-
     padding-top: rem(32px);
 
     @include tablet {
@@ -24,6 +22,7 @@
     button {
       width: 100%;
       justify-content: center;
+
       @include min-tablet {
         width: auto;
         justify-content: left;
@@ -37,6 +36,7 @@
 
   &_fame {
     margin-top: rem(-40px);
+
     @include min-tablet {
       margin-top: rem(-250px);
     }
@@ -45,7 +45,6 @@
       object-fit: contain;
       aspect-ratio: 1/1;
       margin: auto;
-
       width: vw(280px, 375px);
       height: vw(280px, 375px);
 

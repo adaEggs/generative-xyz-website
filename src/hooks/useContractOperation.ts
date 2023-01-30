@@ -14,7 +14,7 @@ import { WalletError } from '@enums/wallet-error';
 import { METAMASK_DOWNLOAD_PAGE } from '@constants/common';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
-import { isMobile } from '@helpers/anim.helpers';
+import { isMobile } from '@utils/animation';
 import { openMetamaskDeeplink } from '@utils/metamask';
 
 const LOG_PREFIX = 'useContractOperation';

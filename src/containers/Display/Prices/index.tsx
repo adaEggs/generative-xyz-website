@@ -1,5 +1,5 @@
 import { LogLevel } from '@enums/log-level';
-import { getProductList } from '@services/api/product';
+import { getProductList } from '@services/product';
 import log from '@utils/logger';
 import { default as classNames, default as cn } from 'classnames';
 import { useState, useContext, useRef, useEffect } from 'react';
@@ -12,6 +12,7 @@ import { LoadingContext } from '@contexts/loading-context';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
 import { NavigationContext } from '@contexts/navigation-context';
+import { Product } from '@interfaces/product';
 
 const LOG_PREFIX = 'Prices';
 
@@ -21,7 +22,7 @@ export const Prices = (): JSX.Element => {
   const { setIsTechSpecz } = useContext(NavigationContext);
   const refTech = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const [products, setProducts] = useState<IFrame[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
   const openOrderNow = () => {
     router.push(ROUTE_PATH.ORDER_NOW);
@@ -30,10 +31,10 @@ export const Prices = (): JSX.Element => {
   useAsyncEffect(async () => {
     try {
       registerLoading('Prices2');
-      const { data } = await getProductList();
-      if (data.products) {
+      const { products } = await getProductList();
+      if (products) {
         unRegisterLoading('Prices2');
-        setProducts(data.products);
+        setProducts(products);
       }
     } catch (_: unknown) {
       unRegisterLoading('Prices2');
@@ -213,9 +214,7 @@ export const Prices = (): JSX.Element => {
                     <span className={s.Home_specTitle}>Price</span>
 
                     <div className={cn(s.Home_specContent, s.price)}>
-                      <span>
-                        {products[0].eth_price || products[0].price} ETH
-                      </span>
+                      <span>{products[0].eth_price} ETH</span>
                     </div>
                     <Button className={s.buy_now} onClick={openOrderNow}>
                       Order Now
@@ -223,9 +222,7 @@ export const Prices = (): JSX.Element => {
                   </td>
                   <td>
                     <div className={cn(s.Home_specContent, s.price)}>
-                      <span>
-                        {products[2].eth_price || products[2].price} ETH
-                      </span>
+                      <span>{products[2].eth_price} ETH</span>
                     </div>
                     <Button className={s.buy_now} onClick={openOrderNow}>
                       Order Now
@@ -233,9 +230,7 @@ export const Prices = (): JSX.Element => {
                   </td>
                   <td>
                     <div className={cn(s.Home_specContent, s.price)}>
-                      <span>
-                        {products[1].eth_price || products[1].price} ETH
-                      </span>
+                      <span>{products[1].eth_price} ETH</span>
                     </div>
                     <Button className={s.buy_now} onClick={openOrderNow}>
                       Order Now
