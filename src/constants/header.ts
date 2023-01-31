@@ -25,9 +25,9 @@ export const MENU_HEADER = [
 export const RIGHT_MENU = [
   {
     id: 'menu-5',
-    name: 'Docs',
-    route: SOCIALS.docs,
-    activePath: 'docs',
+    name: 'Whitepaper',
+    route: SOCIALS.whitepaper,
+    activePath: 'whitepaper',
   },
   {
     id: 'menu-6',

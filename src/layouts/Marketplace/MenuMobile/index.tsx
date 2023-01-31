@@ -61,8 +61,8 @@ const MenuMobile = React.forwardRef(
               ))}
 
             <li>
-              <a href={SOCIALS.docs} target={'_blank'} rel="noreferrer">
-                Docs
+              <a href={SOCIALS.whitepaper} target={'_blank'} rel="noreferrer">
+                Whitepaper
               </a>
             </li>
           </ul>

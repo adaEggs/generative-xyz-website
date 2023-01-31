@@ -91,7 +91,7 @@ const QuickBuy = (): React.ReactElement => {
               }}
               className={`${s.quickBuy_scroller}`}
             >
-              Book a tour
+              Showroom
             </span>
             <Button
               size="sm"

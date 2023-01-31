@@ -7,7 +7,6 @@ import { useContext } from 'react';
 import FilterOptions from '../FilterOptions';
 import s from './CollectionList.module.scss';
 import useWindowSize from '@hooks/useWindowSize';
-import { v4 } from 'uuid';
 import { Loading } from '@components/Loading';
 
 const CollectionList = ({
@@ -65,9 +64,9 @@ const CollectionList = ({
               : 'grid-cols-4'
           }`}
         >
-          {listData?.map(item => (
+          {listData?.map((item, index) => (
             <CollectionItem
-              key={`collection-item-${v4()}`}
+              key={`${index}`}
               data={item}
               filterBuyNow={filterBuyNow}
             />

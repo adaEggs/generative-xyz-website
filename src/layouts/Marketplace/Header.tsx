@@ -211,8 +211,12 @@ const Header: React.FC<IProp> = ({
                     className={`${styles.navBar} ${styles.header_right_links} ${styles[theme]}`}
                   >
                     <li>
-                      <a href={SOCIALS.docs} target="_blank" rel="noreferrer">
-                        Docs
+                      <a
+                        href={SOCIALS.whitepaper}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Whitepaper
                       </a>
                     </li>
                     <li>

@@ -110,3 +110,5 @@ export const formatCurrency = (value: number): string => {
     .toFixed(decimalLength > 2 ? decimalLength : 2)
     .replace(/\d(?=(\d{3})+\.)/g, '$&,');
 };
+
+export const tokenID = (tokenName: string) => tokenName.split('#')[1];
