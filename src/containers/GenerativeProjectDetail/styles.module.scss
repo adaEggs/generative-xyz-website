@@ -93,7 +93,7 @@
     width: 100%;
 
     @include mobile {
-      flex-direction: column;
+      flex-direction: column-reverse;
 
       > div {
         width: 100%;
