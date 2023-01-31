@@ -61,23 +61,19 @@ const TokenTopFilter: React.FC<IProps> = ({
   return (
     <div className={cs(s.tokenTopFilter, className)}>
       <div className={s.filterWrapper}>
-        {showFilter ? (
-          <ButtonIcon
-            variants="primary"
-            startIcon={<SvgInset svgUrl={`${CDN_URL}/icons/ic-close.svg`} />}
-            onClick={() => setShowFilter(!showFilter)}
-          >
-            Filter
-          </ButtonIcon>
-        ) : (
-          <ButtonIcon
-            variants="outline"
-            startIcon={<SvgInset svgUrl={`${CDN_URL}/icons/ic-filter.svg`} />}
-            onClick={() => setShowFilter(!showFilter)}
-          >
-            Filter
-          </ButtonIcon>
-        )}
+        <ButtonIcon
+          variants={showFilter ? 'primary' : 'outline'}
+          startIcon={
+            showFilter ? (
+              <SvgInset svgUrl={`${CDN_URL}/icons/ic-close.svg`} />
+            ) : (
+              <SvgInset svgUrl={`${CDN_URL}/icons/ic-filter.svg`} />
+            )
+          }
+          onClick={() => setShowFilter(!showFilter)}
+        >
+          Filter
+        </ButtonIcon>
       </div>
       <div className={s.inputWrapper}>
         <div className={s.inputPrefixWrapper}>
