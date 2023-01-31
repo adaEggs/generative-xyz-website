@@ -43,3 +43,41 @@
     justify-content: flex-end;
   }
 }
+
+.filter_title {
+  color: $black;
+  margin-bottom: rem(21);
+  display: none;
+
+  @include mobile {
+    display: block;
+  }
+}
+
+.filter_CTA {
+  display: none;
+  flex-direction: column;
+  gap: rem(6);
+  margin-top: rem(18);
+
+  > button {
+    justify-content: center;
+  }
+
+  @include mobile {
+    display: flex;
+  }
+}
+
+@include mobile {
+  .filter_wrapper {
+    position: fixed;
+    top: 0;
+    height: 100vh;
+    background: $white;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    padding: 16px;
+  }
+}

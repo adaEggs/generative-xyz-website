@@ -24,7 +24,6 @@ const LOG_PREFIX = 'FormEditProfile';
 const FormEditProfile = () => {
   const user = useAppSelector(getUserSelector);
   const dispatch = useAppDispatch();
-
   const walletCtx = useContext(WalletContext);
 
   const handleConnectWallet = async (): Promise<void> => {
@@ -35,7 +34,7 @@ const FormEditProfile = () => {
     }
   };
 
-  const text = user.avatar.replace('data:image/png;base64,', '');
+  const text = user?.avatar.replace('data:image/png;base64,', '') ?? '';
   const file = URL.createObjectURL(new Blob([text], { type: 'image/png' }));
 
   const [avatar] = useState(file);
@@ -73,14 +72,14 @@ const FormEditProfile = () => {
     <Formik
       key="listingForm"
       initialValues={{
-        nickname: user.displayName || '',
-        bio: user.bio || '',
+        nickname: user?.displayName || '',
+        bio: user?.bio || '',
         avatar: avatar || '',
-        website: user.profileSocial?.web || '',
-        instagram: user.profileSocial?.instagram || '',
-        discord: user.profileSocial?.discord || '',
-        etherScan: user.profileSocial?.etherScan || '',
-        twitter: user.profileSocial?.twitter || '',
+        website: user?.profileSocial?.web || '',
+        instagram: user?.profileSocial?.instagram || '',
+        discord: user?.profileSocial?.discord || '',
+        etherScan: user?.profileSocial?.etherScan || '',
+        twitter: user?.profileSocial?.twitter || '',
       }}
       // validate={validateForm}
       onSubmit={handleSubmit}

@@ -7,6 +7,7 @@
     border: none;
     background-image: url("https://cdn.generative.xyz/icons/ic-circle.svg") !important;
     background-size: 24px 16px;
+    cursor: pointer;
 
     &:checked {
       background-color: $black-100 !important;

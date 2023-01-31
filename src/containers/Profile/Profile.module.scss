@@ -12,21 +12,27 @@
   --bs-nav-link-color: #{rgba(#000, 0.4)};
   --bs-nav-link-hover-color: #{$primary-brand};
 
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+
   :global(.active) {
     &::after {
       width: 100%;
     }
   }
 
-  flex-wrap: nowrap;
-  overflow-x: scroll;
+  display: flex;
+  flex-wrap: wrap;
 
-  &::-webkit-scrollbar {
-    width: 0;
+  @include mobile {
+    row-gap: rem(10px);
   }
 
-  > li {
-    white-space: nowrap;
+  :global(.nav-item) {
+    @include mobile {
+      flex: 0 0 50%;
+      width: 50%;
+    }
   }
 }
 

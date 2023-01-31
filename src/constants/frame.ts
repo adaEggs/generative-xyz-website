@@ -3,7 +3,7 @@ import { IHardwareItem } from '@interfaces/product';
 
 export const HARDWARE_CONTENTS: IHardwareItem[] = [
   {
-    subtitle: 'The monitor',
+    subtitle: 'The Screen',
     title: 'Immersive 55-inch OLED',
     desc: 'A big, beautiful window into new worlds, Generative Display draws you in from the moment you turn it on. Spectacularly detailed generative art springs to life.',
     video:

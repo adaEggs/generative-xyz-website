@@ -1,0 +1,25 @@
+.tokenListWrapper {
+  position: relative;
+  padding-top: rem(40px);
+  padding-bottom: rem(80px);
+}
+
+.tabContent {
+  padding-top: rem(32px);
+}
+
+.filterWrapper {
+  button {
+    min-width: rem(200px);
+    text-align: center;
+    justify-content: center;
+
+    &:nth-child(1) {
+      border-radius: 2px 0 0 2px;
+    }
+
+    &:nth-child(2) {
+      border-radius: 0 2px 2px 0;
+    }
+  }
+}

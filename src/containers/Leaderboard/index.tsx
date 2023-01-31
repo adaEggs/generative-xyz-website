@@ -1,39 +1,47 @@
 import s from './styles.module.scss';
-import { UserLeaderBoard } from '@interfaces/leaderboard';
+import { NFTHolder } from '@interfaces/nft';
 import React, { useState } from 'react';
 import useAsyncEffect from 'use-async-effect';
 import { Loading } from '@components/Loading';
 import { CDN_URL } from '@constants/config';
 import Table from '@components/Table';
 import Image from 'next/image';
-import { formatLongAddress } from '@utils/format';
+import { formatCurrency, formatLongAddress } from '@utils/format';
+import { getNFTHolderList } from '@services/nfts';
+import Web3 from 'web3';
+import {
+  GEN_TOKEN_ADDRESS,
+  IGNORABLE_GEN_HOLDER_ADDRESS_LIST,
+} from '@constants/contract-address';
 
 const TABLE_LEADERBOARD_HEADING = ['Rank', 'Artist', 'GEN Balance'];
 
 const Leaderboard: React.FC = (): React.ReactElement => {
-  const [userList, setUserList] = useState<Array<UserLeaderBoard>>([]);
+  const [userList, setUserList] = useState<Array<NFTHolder>>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useAsyncEffect(async () => {
     try {
-      // const { items } = await getLeaderboardUserList();
-      // const leaderboardData = items.map((item) => {
-      //   return {
-      //     walletAddress: item.address,
-      //     balance: Web3.utils.fromWei(item.balance),
-      //   }
-      // })
-      setUserList([
-        {
-          walletAddress: '0xBc785D855012105820Be6D8fFA7f644062a91bcA',
-          balance: '100.02',
-        },
-        {
-          walletAddress: '0xBc785D855012105820Be6D8fFA7f644062a91bcA',
-          balance: '100.02',
-        },
-      ]);
+      const { result } = await getNFTHolderList({
+        contractAddress: GEN_TOKEN_ADDRESS,
+        page: 1,
+        limit: 100,
+      });
+      const formattedData = result
+        .filter(
+          item => !IGNORABLE_GEN_HOLDER_ADDRESS_LIST.includes(item.address)
+        )
+        .map(item => {
+          return {
+            ...item,
+            profile: item.profile,
+            balance: formatCurrency(
+              parseFloat(Web3.utils.fromWei(item.balance))
+            ),
+          };
+        });
+      setUserList(formattedData);
     } catch (err: unknown) {
       setErrorMessage('Failed to fetch leaderboard data');
     } finally {
@@ -42,11 +50,45 @@ const Leaderboard: React.FC = (): React.ReactElement => {
   }, []);
 
   const tableData = userList.map((item, index) => {
+    const displayName = item.profile?.display_name
+      ? item.profile.display_name
+      : formatLongAddress(item.address);
     return {
       id: index.toString(),
       render: {
         rank: index + 1,
-        walletAddress: formatLongAddress(item.walletAddress),
+        walletAddress: (
+          <div className={s.artistCol}>
+            {index === 0 && (
+              <Image
+                className={s.trophyIcon}
+                alt="trophy gold"
+                width={20}
+                height={20}
+                src={`${CDN_URL}/icons/ic-trophy-gold-20x20.svg`}
+              />
+            )}
+            {index === 1 && (
+              <Image
+                className={s.trophyIcon}
+                alt="trophy silver"
+                width={20}
+                height={20}
+                src={`${CDN_URL}/icons/ic-trophy-silver-20x20.svg`}
+              />
+            )}
+            {index === 2 && (
+              <Image
+                className={s.trophyIcon}
+                alt="trophy bronze"
+                width={20}
+                height={20}
+                src={`${CDN_URL}/icons/ic-trophy-bronze-20x20.svg`}
+              />
+            )}
+            <span>{displayName}</span>
+          </div>
+        ),
         balance: item.balance,
       },
     };
@@ -82,7 +124,11 @@ const Leaderboard: React.FC = (): React.ReactElement => {
                 </div>
               )}
               {userList.length > 0 && (
-                <Table tableHead={TABLE_LEADERBOARD_HEADING} data={tableData} />
+                <Table
+                  className={s.dataTable}
+                  tableHead={TABLE_LEADERBOARD_HEADING}
+                  data={tableData}
+                />
               )}
             </>
           )}

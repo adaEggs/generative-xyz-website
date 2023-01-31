@@ -72,7 +72,7 @@ const OfferTable = () => {
             ? 'All Time'
             : endDate.format('MMM DD, YYYY'),
         buyer:
-          user.walletAddress === offer?.buyer ? (
+          user?.walletAddress === offer?.buyer ? (
             <Link href={ROUTE_PATH.PROFILE}>You</Link>
           ) : (
             // TODO: Update to correct profile
@@ -82,7 +82,7 @@ const OfferTable = () => {
           ),
         cancel: (
           <div className={s.actionWrapper}>
-            {user.walletAddress === offer?.token?.ownerAddr && (
+            {user?.walletAddress === offer?.token?.ownerAddr && (
               <ButtonIcon
                 disabled={isLoading}
                 onClick={() => onAcceptOffer(offer)}
@@ -92,7 +92,7 @@ const OfferTable = () => {
                 Accept
               </ButtonIcon>
             )}
-            {user.walletAddress === offer?.buyer && (
+            {user?.walletAddress === offer?.buyer && (
               <ButtonIcon
                 disabled={isLoading}
                 onClick={() => onCancelOffer(offer)}

@@ -21,7 +21,7 @@ import { Product } from '@interfaces/product';
 const LOG_PREFIX = 'OrderNow';
 export const OrderNowTemplate = (): JSX.Element => {
   const { connect } = useContext(WalletContext);
-  const use = useSelector(getUserSelector);
+  const user = useSelector(getUserSelector);
   const dispatch = useAppDispatch();
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -34,7 +34,7 @@ export const OrderNowTemplate = (): JSX.Element => {
   };
 
   const openCheckoutPopup = (product: Product) => {
-    if (!use.id) {
+    if (!user) {
       handleConnectWallet();
     }
     dispatch(setCheckoutProduct(product));
@@ -58,23 +58,19 @@ export const OrderNowTemplate = (): JSX.Element => {
       <div className={s.orderNow}>
         <Container>
           <div className={s.orderNow_header}>
-            <Heading as={'h2'}>All displays</Heading>
+            <Heading as={'h2'}>Shop Generative Displays</Heading>
             <Text as={'p'} fontWeight={'regular'} size={'16'}>
-              Have questions about buying a Generative Display?
+              Need shopping help?{' '}
+              <a href={SOCIALS.discord} target="_blank" rel="noreferrer">
+                Ask the community
+              </a>
             </Text>
-            <ul>
-              <li>
-                <a href={SOCIALS.discord} target="_blank" rel="noreferrer">
-                  Join our Discord
-                </a>
-              </li>
-              <li>or</li>
-              <li>
-                <a href={SOCIALS.bookATour} target="_blank" rel="noreferrer">
-                  Book a tour
-                </a>
-              </li>
-            </ul>
+            <Text as={'p'} fontWeight={'regular'} size={'16'}>
+              Visit a Generative Showroom?{' '}
+              <a href={SOCIALS.bookATour} target="_blank" rel="noreferrer">
+                Book an appointment
+              </a>
+            </Text>
           </div>
 
           <div
@@ -85,8 +81,8 @@ export const OrderNowTemplate = (): JSX.Element => {
           >
             <div className="col-xl-4 col-sm-6 col-12">
               <FrameItem
-                data={products[0]}
-                openCheckoutPopup={() => openCheckoutPopup(products[0])}
+                data={products[1]}
+                openCheckoutPopup={() => openCheckoutPopup(products[1])}
               />
             </div>
             <div className="col-xl-4 col-sm-6 col-12">
@@ -97,14 +93,14 @@ export const OrderNowTemplate = (): JSX.Element => {
             </div>
             <div className="col-xl-4 col-sm-6 col-12">
               <FrameItem
-                data={products[1]}
-                openCheckoutPopup={() => openCheckoutPopup(products[1])}
+                data={products[0]}
+                openCheckoutPopup={() => openCheckoutPopup(products[0])}
               />
             </div>
             <div className="col-xl-4 col-sm-6 col-12">
               <FrameItem
-                data={products[3]}
-                openCheckoutPopup={() => openCheckoutPopup(products[3])}
+                data={products[5]}
+                openCheckoutPopup={() => openCheckoutPopup(products[5])}
               />
             </div>
             <div className="col-xl-4 col-sm-6 col-12">
@@ -115,8 +111,8 @@ export const OrderNowTemplate = (): JSX.Element => {
             </div>
             <div className="col-xl-4 col-sm-6 col-12">
               <FrameItem
-                data={products[5]}
-                openCheckoutPopup={() => openCheckoutPopup(products[5])}
+                data={products[3]}
+                openCheckoutPopup={() => openCheckoutPopup(products[3])}
               />
             </div>
           </div>

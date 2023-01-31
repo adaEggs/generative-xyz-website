@@ -1,8 +1,8 @@
 import { LogLevel } from '@enums/log-level';
 import { useAppDispatch } from '@redux';
-import { setUser } from '@redux/user/action';
+import { resetUser, setUser } from '@redux/user/action';
 import { getProfile } from '@services/profile';
-import { getAccessToken } from '@utils/auth';
+import { clearAuthStorage, getAccessToken } from '@utils/auth';
 import log from '@utils/logger';
 import React, { PropsWithChildren, useEffect } from 'react';
 
@@ -21,6 +21,8 @@ const AuthWrapper: React.FC<PropsWithChildren> = ({
         dispatch(setUser(userRes));
       } catch (err: unknown) {
         log('failed to get profile', LogLevel.Error, LOG_PREFIX);
+        clearAuthStorage();
+        dispatch(resetUser());
       }
     }
   };

@@ -17,13 +17,16 @@ import { isTestnet } from '@utils/chain';
 import { ErrorMessage } from '@enums/error-message';
 import { WalletContext } from '@contexts/wallet-context';
 import Web3 from 'web3';
+import cs from 'classnames';
 
 const LOG_PREFIX = 'Empty';
 
 export const Empty = ({
   projectInfo,
+  className,
 }: {
   projectInfo?: Project | null;
+  className?: string;
 }): JSX.Element => {
   const { getWalletBalance } = useContext(WalletContext);
   const router = useRouter();
@@ -94,7 +97,7 @@ export const Empty = ({
   }, [errorMessage]);
 
   return (
-    <div className={`${s.empty} empty`}>
+    <div className={cs(s.empty, 'empty', className)}>
       <div className={s.empty_inner}>
         <div className={s.empty_thumb}>
           <img src={`${CDN_URL}/icons/ic-empty.svg`} alt="empty.svg" />

@@ -5,8 +5,8 @@ import Input from '@components/Input';
 import InputQuantity from '@components/InputQuantity';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
-import COUNTRY_LIST from '@constants/country-list.json';
-import StateOfUS from '@constants/state-of-us.json';
+import { COUNTRY_LIST } from '@constants/country-list';
+import { STATE_OF_US_LIST } from '@constants/state-of-us';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import useIsFrameDiscounted from '@hooks/useIsFrameDiscounted';
@@ -47,7 +47,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   const router = useRouter();
   const { source } = router.query;
   const checkoutProduct = useSelector(checkoutProductSelector);
-  const isShow = !!checkoutProduct.id && !!user.id;
+  const isShow = !!checkoutProduct.id && !!user;
   const onHideModal = () => dispatch(setCheckoutProduct({} as any));
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -86,7 +86,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   const selectedState = useMemo(
     () =>
       shippingInfo.country === 'US' &&
-      StateOfUS.find(item => item.key === shippingInfo.state),
+      STATE_OF_US_LIST.find(item => item.key === shippingInfo.state),
     [shippingInfo.state]
   );
 
@@ -144,7 +144,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   };
 
   const placeOrder = async () => {
-    if (!validateForm()) {
+    if (!validateForm() || !user) {
       return;
     }
 
@@ -359,7 +359,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
               {shippingInfo.country === 'US' ? (
                 <Dropdown
                   values={selectedState ? [selectedState] : []}
-                  options={StateOfUS}
+                  options={STATE_OF_US_LIST}
                   labelField="value"
                   valueField="value"
                   placeholder="State"
