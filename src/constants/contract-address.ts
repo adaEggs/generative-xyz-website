@@ -19,4 +19,10 @@ export const GENART_ADDRESS = process.env.NEXT_PUBLIC_GENART_ADDRESS!;
 export const MAX_HEX_VALUE =
   '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
 
+export const GEN_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_GEN_TOKEN_ADDRESS!;
+
+export const IGNORABLE_GEN_HOLDER_ADDRESS_LIST = [
+  '0xe55eade1b17bba28a80a71633af8c15dc2d556a5',
+];
+
 /* eslint-enable @typescript-eslint/no-non-null-assertion */

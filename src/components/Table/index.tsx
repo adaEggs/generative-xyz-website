@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { default as BSTable } from 'react-bootstrap/Table';
 import { v4 } from 'uuid';
+import cs from 'classnames';
 import s from './styles.module.scss';
 
 type TColumn = {
@@ -14,9 +15,10 @@ type TColumn = {
 type Props = {
   data?: TColumn[];
   tableHead: ReactNode[];
+  className?: string;
 };
 
-const Table = ({ tableHead = [], data }: Props) => {
+const Table = ({ tableHead = [], data, className }: Props) => {
   const [tableData, setTableData] = useState<TColumn[] | null>(null);
 
   const TableHeads = () => {
@@ -65,18 +67,9 @@ const Table = ({ tableHead = [], data }: Props) => {
     }
   }, [data]);
 
-  // if (!tableData || tableData.length === 0) {
-  //   return (
-  //     <div className={s.table}>
-  //       <Loading isLoaded={!!tableData} className={s.tableLoading} />
-  //       <NotFound infoText="No recorded offer" />
-  //     </div>
-  //   );
-  // }
-
   return (
     <div className={s.wrapper}>
-      <BSTable bordered className={s.table}>
+      <BSTable bordered className={cs(s.table, className)}>
         <TableHeads />
         <TableBody />
       </BSTable>

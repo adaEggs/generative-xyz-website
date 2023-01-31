@@ -1,13 +1,14 @@
 import { Empty } from '@components/Collection/Empty';
 import CollectionItem from '@components/Collection/Item';
+import { Loading } from '@components/Loading';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import useWindowSize from '@hooks/useWindowSize';
 import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
+import cs from 'classnames';
 import { useContext } from 'react';
 import FilterOptions from '../FilterOptions';
 import s from './CollectionList.module.scss';
-import useWindowSize from '@hooks/useWindowSize';
-import { Loading } from '@components/Loading';
 
 const CollectionList = ({
   listData,
@@ -18,19 +19,12 @@ const CollectionList = ({
   projectInfo?: Project | null;
   isLoaded?: boolean;
 }) => {
-  // useEffect(() => {
-  //   const grid = document.querySelector(".grid");
-  //   animateCSSGrid.wrapGrid(grid, { easing : 'backOut', stagger: 10, duration: 400 });
-  // }, [])
-
   const { isMobile } = useWindowSize();
 
-  const { showFilter, filterBuyNow } = useContext(
-    GenerativeProjectDetailContext
-  );
+  const { showFilter } = useContext(GenerativeProjectDetailContext);
 
   return (
-    <div className={`grid ${showFilter ? s.showFilter : 'grid-cols-1'}`}>
+    <div className={`grid  ${showFilter ? s.showFilter : 'grid-cols-1'}`}>
       {showFilter && <FilterOptions attributes={projectInfo?.traitStat} />}
       {/* {listData && listData?.length > 0 ? ( */}
       <div className="position-relative">
@@ -56,23 +50,24 @@ const CollectionList = ({
           </div>
         </div>
         <div
-          className={`grid gap-24 ${
-            isMobile
-              ? 'grid-cols-2'
-              : showFilter
-              ? 'grid-cols-3'
-              : 'grid-cols-4'
-          }`}
+          className={cs(
+            s.collectionList,
+            `grid gap-24 animate-grid ${
+              isMobile
+                ? 'grid-cols-2'
+                : showFilter
+                ? 'grid-cols-3'
+                : 'grid-cols-4'
+            }`
+          )}
         >
           {listData?.map((item, index) => (
-            <CollectionItem
-              key={`${index}`}
-              data={item}
-              filterBuyNow={filterBuyNow}
-            />
+            <CollectionItem key={index} data={item} />
           ))}
         </div>
-        {listData?.length === 0 && <Empty projectInfo={projectInfo} />}
+        {listData?.length && (
+          <Empty projectInfo={projectInfo} className={s.list_empty} />
+        )}
       </div>
     </div>
   );
