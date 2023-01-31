@@ -35,6 +35,12 @@ export const RIGHT_MENU = [
     route: SOCIALS.discord,
     activePath: 'discord',
   },
+  {
+    id: 'menu-7',
+    name: 'Leaderboards',
+    route: ROUTE_PATH.LEADERBOARDS,
+    activePath: 'leaderboards',
+  },
 ];
 
 export const MENU_MOBILE = [...MENU_HEADER, ...RIGHT_MENU];
