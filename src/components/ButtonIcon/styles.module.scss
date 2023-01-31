@@ -211,6 +211,26 @@
     }
   }
 
+  &.filter {
+    background-color: transparent;
+    border: 1px solid $black-outline;
+    color: $black-60-solid;
+
+    &.medium {
+      padding-top: rem(10px);
+      padding-bottom: rem(10px);
+    }
+
+    &:hover {
+      border-color: $black-40;
+    }
+
+    &:disabled {
+      border-color: $black-10;
+      color: $black-100;
+    }
+  }
+
   &.ghost {
     background-color: transparent;
     color: $black-100;

@@ -8,43 +8,56 @@ import { Container, Tab, Tabs } from 'react-bootstrap';
 import s from './Profile.module.scss';
 import { Loading } from '@components/Loading';
 import { CreatedTab } from '@containers/Profile/Created';
-
-// const LOG_PREFIX = 'Profile';
+import { ListingTab } from '@containers/Profile/Listing';
 
 const Profile: React.FC = (): React.ReactElement => {
-  const { isLoaded, profileTokens, profileProjects, profileMakeOffer } =
-    useContext(ProfileContext);
+  const {
+    isLoaded,
+    profileTokens,
+    profileProjects,
+    profileMakeOffer,
+    profileListing,
+  } = useContext(ProfileContext);
 
   return (
     <div className={s.profile}>
       <UserInfo />
       <Container>
         <ClientOnly>
-          <Tabs className={s.tabs} defaultActiveKey="ownedTab">
-            <Tab
-              tabClassName={s.tab}
-              eventKey="ownedTab"
-              title={`Owned (${profileTokens?.total || 0})`}
-            >
-              <OwnedTab />
-            </Tab>
+          <div className={s.wrapTabs}>
+            <Tabs className={s.tabs} defaultActiveKey="ownedTab">
+              <Tab
+                tabClassName={s.tab}
+                eventKey="ownedTab"
+                title={`Owned (${profileTokens?.total || 0})`}
+              >
+                <OwnedTab />
+              </Tab>
 
-            <Tab
-              tabClassName={s.tab}
-              eventKey="createdTab"
-              title={`Created (${profileProjects?.total || 0})`}
-            >
-              <CreatedTab />
-            </Tab>
+              <Tab
+                tabClassName={s.tab}
+                eventKey="createdTab"
+                title={`Created (${profileProjects?.total || 0})`}
+              >
+                <CreatedTab />
+              </Tab>
 
-            <Tab
-              tabClassName={s.tab}
-              eventKey="offerTab"
-              title={`Offer (${profileMakeOffer?.total || 0})`}
-            >
-              <OfferTab />
-            </Tab>
-          </Tabs>
+              <Tab
+                tabClassName={s.tab}
+                eventKey="offerTab"
+                title={`Offer (${profileMakeOffer?.total || 0})`}
+              >
+                <OfferTab />
+              </Tab>
+              <Tab
+                tabClassName={s.tab}
+                eventKey="listingTab"
+                title={`Listing (${profileListing?.total || 0})`}
+              >
+                <ListingTab />
+              </Tab>
+            </Tabs>
+          </div>
         </ClientOnly>
       </Container>
       <Loading

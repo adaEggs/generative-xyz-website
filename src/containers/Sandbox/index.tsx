@@ -118,7 +118,7 @@ const Sandbox: React.FC = (): ReactElement => {
           <h3 className={s.sectionTitle}>Upload File</h3>
           <Text as="p" size={'16'}>
             New artist?&nbsp;
-            <a href={SOCIALS.docs} target="_blank" rel="noreferrer">
+            <a href={SOCIALS.whitepaper} target="_blank" rel="noreferrer">
               Start here.
             </a>
           </Text>

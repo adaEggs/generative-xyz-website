@@ -26,6 +26,13 @@ import {
 } from '@interfaces/api/marketplace';
 import { useRouter } from 'next/router';
 import useAsyncEffect from 'use-async-effect';
+import { ROUTE_PATH } from '@constants/route-path';
+import { SimpleLoading } from '@components/SimpleLoading';
+import { TokenOffer } from '@interfaces/token';
+import { NETWORK_CHAIN_ID } from '@constants/config';
+import { ErrorMessage } from '@enums/error-message';
+import useContractOperation from '@hooks/useContractOperation';
+import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
 
 const LOG_PREFIX = 'ProfileContext';
 
@@ -42,12 +49,13 @@ export interface IProfileContext {
   isLoadedProfileTokens: boolean;
   isLoadedProfileProjects: boolean;
   isLoadedProfileMakeOffer: boolean;
-  // isLoadedProfileListing: boolean;
+  isLoadedProfileListing: boolean;
 
   handleFetchTokens: () => void;
   handleFetchProjects: () => void;
   handleFetchMakeOffers: () => void;
   handleFetchListingTokens: () => void;
+  handleCancelOffer: (offer: TokenOffer) => void;
 }
 
 const initialValue: IProfileContext = {
@@ -56,11 +64,12 @@ const initialValue: IProfileContext = {
   isLoadedProfileTokens: false,
   isLoadedProfileProjects: false,
   isLoadedProfileMakeOffer: false,
-  // isLoadedProfileListing: false,
+  isLoadedProfileListing: false,
   handleFetchTokens: () => new Promise<void>(r => r()),
   handleFetchProjects: () => new Promise<void>(r => r()),
   handleFetchMakeOffers: () => new Promise<void>(r => r()),
   handleFetchListingTokens: () => new Promise<void>(r => r()),
+  handleCancelOffer: () => new Promise<void>(r => r()),
 };
 
 export const ProfileContext =
@@ -77,6 +86,10 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   const { walletAddress } = router.query as { walletAddress: string };
   const [currentUser, setCurrentUser] = useState<User | null>(user);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const { call: cancelOffer } = useContractOperation(
+    CancelTokenOfferOperation,
+    true
+  );
 
   const [profileTokens, setProfileTokens] = useState<
     IGetProfileTokensResponse | undefined
@@ -103,8 +116,8 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     IListingTokensResponse | undefined
   >();
 
-  // const [isLoadedProfileListing, setIsLoadedProfileListing] =
-  //   useState<boolean>(false);
+  const [isLoadedProfileListing, setIsLoadedProfileListing] =
+    useState<boolean>(false);
 
   const handleFetchProjects = useCallback(async () => {
     try {
@@ -144,6 +157,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         if (listingTokens && listingTokens) {
           setProfileListing(listingTokens);
         }
+        setIsLoadedProfileListing(true);
       }
     } catch (ex) {
       log('can not fetch listing tokens', LogLevel.Error, LOG_PREFIX);
@@ -202,7 +216,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         const getUser = await getProfileByWallet({
           walletAddress: walletAddress.toLowerCase(),
         });
-        if (getUser && getUser.id !== '') {
+        if (getUser && getUser.id) {
           setCurrentUser(getUser);
         }
       }
@@ -211,28 +225,49 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     }
   }, [walletAddress]);
 
+  const handleCancelOffer = async (offer: TokenOffer): Promise<void> => {
+    const tx = await cancelOffer({
+      offerId: offer.offeringID,
+      chainID: NETWORK_CHAIN_ID,
+    });
+
+    if (!tx) {
+      log('Cancel token offer transaction error.', LogLevel.Error, LOG_PREFIX);
+      throw Error(ErrorMessage.DEFAULT);
+    }
+
+    // Refresh offers data
+    handleFetchMakeOffers();
+  };
+
   useAsyncEffect(async () => {
+    setIsLoaded(false);
+    if (!router.isReady) return;
     if (walletAddress) {
-      setIsLoaded(false);
       setUserWalletAddress(walletAddress);
       await handleFetchProfileByWallet();
       setTimeout(() => {
         setIsLoaded(true);
       }, 400);
+    } else {
+      if (!user) {
+        router.push(ROUTE_PATH.MARKETPLACE);
+        return;
+      } else {
+        setCurrentUser(user);
+        setTimeout(() => {
+          setIsLoaded(true);
+        }, 400);
+      }
     }
-  }, [walletAddress]);
+  }, [walletAddress, router]);
 
   useAsyncEffect(async () => {
-    if (!walletAddress) {
-      setCurrentUser(user);
-      setTimeout(() => {
-        setIsLoaded(true);
-      }, 400);
-    }
-
-    handleFetchMakeOffers();
-    handleFetchProjects();
-    handleFetchTokens();
+    if (!router.isReady) return;
+    await handleFetchTokens();
+    await handleFetchMakeOffers();
+    await handleFetchProjects();
+    await handleFetchListingTokens();
   }, [currentUser, user]);
 
   const contextValues = useMemo((): IProfileContext => {
@@ -249,12 +284,13 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       isLoadedProfileTokens,
       isLoadedProfileProjects,
       isLoadedProfileMakeOffer,
-      // isLoadedProfileListing,
+      isLoadedProfileListing,
 
       handleFetchTokens,
       handleFetchProjects,
       handleFetchMakeOffers,
       handleFetchListingTokens,
+      handleCancelOffer,
     };
   }, [
     currentUser,
@@ -269,16 +305,18 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     isLoadedProfileTokens,
     isLoadedProfileProjects,
     isLoadedProfileMakeOffer,
-    // isLoadedProfileListing,
+    isLoadedProfileListing,
 
     handleFetchTokens,
     handleFetchProjects,
     handleFetchMakeOffers,
     handleFetchListingTokens,
+    handleCancelOffer,
   ]);
 
   return (
     <ProfileContext.Provider value={contextValues}>
+      <SimpleLoading isCssLoading={false} />
       {children}
     </ProfileContext.Provider>
   );

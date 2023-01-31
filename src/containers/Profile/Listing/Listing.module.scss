@@ -1,0 +1,19 @@
+.tokenListWrapper {
+  position: relative;
+
+  tr,
+  td {
+    width: 25%;
+    vertical-align: middle;
+  }
+}
+
+.tabContent {
+  padding-top: rem(42px);
+}
+
+.listingItem_token {
+  display: flex;
+  align-items: center;
+  gap: rem(12px);
+}

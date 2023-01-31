@@ -25,15 +25,21 @@ export const MENU_HEADER = [
 export const RIGHT_MENU = [
   {
     id: 'menu-5',
-    name: 'Docs',
-    route: SOCIALS.docs,
-    activePath: 'docs',
+    name: 'Whitepaper',
+    route: SOCIALS.whitepaper,
+    activePath: 'whitepaper',
   },
   {
     id: 'menu-6',
     name: 'DisCord',
     route: SOCIALS.discord,
     activePath: 'discord',
+  },
+  {
+    id: 'menu-7',
+    name: 'Leaderboards',
+    route: ROUTE_PATH.LEADERBOARDS,
+    activePath: 'leaderboards',
   },
 ];
 

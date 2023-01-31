@@ -7,7 +7,6 @@ import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 import cs from 'classnames';
 import { useContext } from 'react';
-import { v4 } from 'uuid';
 import FilterOptions from '../FilterOptions';
 import s from './CollectionList.module.scss';
 
@@ -62,11 +61,11 @@ const CollectionList = ({
             }`
           )}
         >
-          {listData?.map(item => (
-            <CollectionItem key={`collection-item-${v4()}`} data={item} />
+          {listData?.map((item, index) => (
+            <CollectionItem key={index} data={item} />
           ))}
         </div>
-        {isLoaded && (
+        {listData?.length && (
           <Empty projectInfo={projectInfo} className={s.list_empty} />
         )}
       </div>

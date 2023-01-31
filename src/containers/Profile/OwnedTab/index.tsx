@@ -1,4 +1,5 @@
 import CollectionList from '@components/Collection/List';
+import { Loading } from '@components/Loading';
 import { TriggerLoad } from '@components/TriggerLoader';
 import { ProfileContext } from '@contexts/profile-context';
 import { useContext } from 'react';
@@ -24,9 +25,9 @@ export const OwnedTab = (): JSX.Element => {
           /> */}
         </div>
         <div className={s.tokenListWrapper}>
-          {/* {!profileTokens?.total && (
+          {!profileTokens?.total && (
             <Loading isLoaded={isLoadedProfileTokens} />
-          )} */}
+          )}
           <div className={s.tokenList}>
             <CollectionList listData={profileTokens?.result} />
             <TriggerLoad

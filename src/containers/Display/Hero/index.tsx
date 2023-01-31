@@ -97,7 +97,7 @@ export const SectionHero = (): JSX.Element => {
                   window.open(SOCIALS.bookATour);
                 }}
               >
-                <span className="text">Book a tour</span>
+                <span className="text">Visit showroom</span>
               </Button>
             </AnimFade>
           </li>
