@@ -262,10 +262,15 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   }, []);
 
   useEffect(() => {
-    if (walletManager && walletManager.isConnected() && user.walletAddress) {
+    if (
+      walletManager &&
+      walletManager.isConnected() &&
+      user &&
+      user.walletAddress
+    ) {
       getWalletBalance();
     }
-  }, [walletManager, user.walletAddress]);
+  }, [walletManager, user]);
 
   const contextValues = useMemo((): IWalletContext => {
     return {

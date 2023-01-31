@@ -66,9 +66,9 @@ const MenuMobile = React.forwardRef(
               </a>
             </li>
           </ul>
-          <div className={`${s.menuMobile_bottom} ${user.id ? s.hasUser : ''}`}>
+          <div className={`${s.menuMobile_bottom} ${user ? s.hasUser : ''}`}>
             <div className={`${s.connectWallet}`}>
-              {user.id ? (
+              {user ? (
                 <div className="position-relative">
                   {renderProfileHeader()}
                   {ProfileDropdown()}

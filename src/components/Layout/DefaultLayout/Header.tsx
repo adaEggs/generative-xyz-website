@@ -47,7 +47,7 @@ const Header: React.FC = (): React.ReactElement => {
                 </li>
               </ul>
             </Stack>
-            {user.id ? (
+            {user ? (
               <div className="d-flex align-items-center gap-3">
                 <Link href={ROUTE_PATH.PROFILE} className={styles.userAddress}>
                   {formatAddress(user.walletAddress)}

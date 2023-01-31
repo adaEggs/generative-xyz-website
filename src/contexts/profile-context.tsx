@@ -30,7 +30,7 @@ import useAsyncEffect from 'use-async-effect';
 const LOG_PREFIX = 'ProfileContext';
 
 export interface IProfileContext {
-  currentUser?: User;
+  currentUser: User | null;
   userWalletAddress?: string;
   profileTokens?: IGetProfileTokensResponse;
   profileProjects?: IGetProjectItemsResponse;
@@ -51,7 +51,7 @@ export interface IProfileContext {
 }
 
 const initialValue: IProfileContext = {
-  currentUser: undefined,
+  currentUser: null,
   isLoaded: false,
   isLoadedProfileTokens: false,
   isLoadedProfileProjects: false,
@@ -75,7 +75,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     string | undefined
   >();
   const { walletAddress } = router.query as { walletAddress: string };
-  const [currentUser, setCurrentUser] = useState<User>(user);
+  const [currentUser, setCurrentUser] = useState<User | null>(user);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const [profileTokens, setProfileTokens] = useState<
@@ -108,7 +108,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const handleFetchProjects = useCallback(async () => {
     try {
-      if (currentUser.walletAddress) {
+      if (currentUser?.walletAddress) {
         let page = (profileProjects && profileProjects?.page) || 0;
         page += 1;
 
@@ -136,7 +136,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const handleFetchListingTokens = useCallback(async () => {
     try {
-      if (currentUser.walletAddress) {
+      if (currentUser?.walletAddress) {
         const listingTokens = await getListingTokensByWallet({
           walletAddress: currentUser.walletAddress,
           closed: false,
@@ -152,7 +152,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const handleFetchMakeOffers = useCallback(async () => {
     try {
-      if (currentUser.walletAddress) {
+      if (currentUser?.walletAddress) {
         setIsLoadedProfileMakeOffer(false);
         const makeOffers = await getMakeOffersByWallet({
           walletAddress: currentUser.walletAddress,
@@ -171,7 +171,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const handleFetchTokens = useCallback(async () => {
     try {
-      if (currentUser.walletAddress) {
+      if (currentUser?.walletAddress) {
         let page = (profileTokens && profileTokens?.page) || 0;
         page += 1;
 

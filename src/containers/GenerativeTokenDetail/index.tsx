@@ -91,7 +91,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
 
   const handleOpenCancelListingTokenModal = (): void => {
     const userListingOffer = listingOffers.find(
-      (offer: TokenOffer) => offer.seller === user.walletAddress
+      (offer: TokenOffer) => offer.seller === user?.walletAddress
     );
     if (userListingOffer) {
       openCancelListingModal(userListingOffer);
@@ -136,7 +136,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     tokenData?.description || tokenData?.project?.desc || '';
 
   const handleLinkProfile = (walletAddress?: string) => {
-    if (user.walletAddress === walletAddress) {
+    if (user?.walletAddress === walletAddress) {
       return `${ROUTE_PATH.PROFILE}`;
     } else {
       return `${ROUTE_PATH.PROFILE}/${walletAddress}`;

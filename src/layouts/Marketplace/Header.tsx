@@ -98,7 +98,7 @@ const Header: React.FC<IProp> = ({
       <div>
         <div className={`${styles.username} username`}>
           <Text size="14" fontWeight="medium">
-            {user.displayName || formatAddress(user.walletAddress)}
+            {user?.displayName || formatAddress(user?.walletAddress)}
           </Text>
           <SvgInset
             svgUrl={`${CDN_URL}/icons/ic-caret-down.svg`}
@@ -225,7 +225,7 @@ const Header: React.FC<IProp> = ({
                       </a>
                     </li>
                   </ul>
-                  {user.id ? (
+                  {user ? (
                     <div className="position-relative">
                       <AvatarInfo
                         imgSrc={user.avatar}

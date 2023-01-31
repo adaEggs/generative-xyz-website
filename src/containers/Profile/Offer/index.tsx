@@ -35,14 +35,14 @@ export const OfferTab = (): JSX.Element => {
         ),
         // expired_date: offer?.durationTime,
         buyer:
-          user.walletAddress === offer?.buyer ? (
+          user?.walletAddress === offer?.buyer ? (
             <Link href={ROUTE_PATH.PROFILE}>You</Link>
           ) : (
             <Link href={ROUTE_PATH.PROFILE}>
               {formatAddress(offer?.buyer || '')}
             </Link>
           ),
-        cancel: user.walletAddress === offer?.buyer && (
+        cancel: user?.walletAddress === offer?.buyer && (
           <div className={s.action_btn}>
             <ButtonIcon sizes="small" variants="outline">
               Cancel

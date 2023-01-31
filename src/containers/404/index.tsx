@@ -61,7 +61,7 @@ const Page404 = (): JSX.Element => {
           To continue you need to connect your wallet.
         </Heading>
         <ul className={s.error404_ctas}>
-          {!user.id && (
+          {!user && (
             <li>
               <AnimFade screen={0.5}>
                 <ButtonIcon

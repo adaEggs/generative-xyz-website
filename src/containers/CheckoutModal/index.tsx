@@ -47,7 +47,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   const router = useRouter();
   const { source } = router.query;
   const checkoutProduct = useSelector(checkoutProductSelector);
-  const isShow = !!checkoutProduct.id && !!user.id;
+  const isShow = !!checkoutProduct.id && !!user;
   const onHideModal = () => dispatch(setCheckoutProduct({} as any));
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -144,7 +144,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
   };
 
   const placeOrder = async () => {
-    if (!validateForm()) {
+    if (!validateForm() || !user) {
       return;
     }
 

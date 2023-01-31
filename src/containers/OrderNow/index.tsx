@@ -21,7 +21,7 @@ import { Product } from '@interfaces/product';
 const LOG_PREFIX = 'OrderNow';
 export const OrderNowTemplate = (): JSX.Element => {
   const { connect } = useContext(WalletContext);
-  const use = useSelector(getUserSelector);
+  const user = useSelector(getUserSelector);
   const dispatch = useAppDispatch();
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -34,7 +34,7 @@ export const OrderNowTemplate = (): JSX.Element => {
   };
 
   const openCheckoutPopup = (product: Product) => {
-    if (!use.id) {
+    if (!user) {
       handleConnectWallet();
     }
     dispatch(setCheckoutProduct(product));
