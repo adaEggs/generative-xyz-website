@@ -1,20 +1,17 @@
-import React, { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import s from './RecentWorks.module.scss';
 import Heading from '@components/Heading';
+import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { Project } from '@interfaces/project';
 import { getProjectList } from '@services/project';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import useAsyncEffect from 'use-async-effect';
-import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
-// import { SingleValue } from 'react-select';
+import s from './RecentWorks.module.scss';
+import ProjectListLoading from '@components/ProjectListLoading';
 import { ProjectList } from '@components/ProjectLists';
-import { Loading } from '@components/Loading';
 import { TriggerLoad } from '@components/TriggerLoader';
 import { IGetProjectListResponse } from '@interfaces/api/project';
-// import { CsSelect } from '@components/CsSelect';
-// import { getProfileProjectsByWallet } from '@services/profile';
 
 // const SORT_OPTIONS: Array<{ value: string; label: string }> = [
 //   {
@@ -121,7 +118,8 @@ export const RecentWorks = (): JSX.Element => {
         </Col>
       </Row>
       <Row className={s.recentWorks_projects}>
-        <Loading isLoaded={isLoaded} />
+        {/* <Loading isLoaded={isLoaded} /> */}
+        {!isLoaded && <ProjectListLoading />}
         {isLoaded && (
           <div className={s.recentWorks_projects_list}>
             <ProjectList listData={listData} />
