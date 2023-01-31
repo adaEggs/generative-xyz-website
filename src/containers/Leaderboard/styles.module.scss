@@ -36,4 +36,19 @@
     display: inline-block;
     margin-bottom: rem(24px);
   }
+
+  .dataTable {
+    max-width: rem(888px);
+    margin: 0 auto;
+  }
+
+  .artistCol {
+    position: relative;
+  }
+
+  .trophyIcon {
+    position: absolute;
+    left: rem(-30px);
+    top: 0;
+  }
 }
