@@ -17,9 +17,10 @@ export const CONTACT_EMAIL = 'gm@generative.xyz';
 export const SOCIALS = {
   discord: 'https://discord.com/invite/eUrvfKKTxP',
   twitter: 'https://twitter.com/generative_xyz',
-  docs: 'https://docs.generative.xyz/',
+  whitepaper: 'https://docs.generative.xyz/',
   docsForArtist: 'https://docs.generative.xyz/how-to/launch-your-art',
-  bookATour: 'https://calendly.com/generative_xyz/30min?month=2023-01',
+  bookATour:
+    'https://calendly.com/generative_xyz/welcome_to_generative_showroom',
 };
 
 export const PAGE_LOADED = 'PAGE_LOADED';

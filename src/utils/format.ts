@@ -31,12 +31,14 @@ export const toBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
     reader.onerror = error => reject(error);
   });
 
-export const formatAddress = (address: string): string => {
+export const formatAddress = (address?: string): string => {
+  if (!address) return '';
   if (address.length < 14) return address;
   return `${address.substring(0, 7)}`;
 };
 
-export const formatLongAddress = (address: string): string => {
+export const formatLongAddress = (address?: string): string => {
+  if (!address) return '';
   if (address.length < 14) return address;
   return `${address.substring(0, 6)}...${address.substring(
     address.length - 4,
@@ -109,3 +111,5 @@ export const formatCurrency = (value: number): string => {
     .toFixed(decimalLength > 2 ? decimalLength : 2)
     .replace(/\d(?=(\d{3})+\.)/g, '$&,');
 };
+
+export const tokenID = (tokenName: string) => tokenName.split('#')[1];

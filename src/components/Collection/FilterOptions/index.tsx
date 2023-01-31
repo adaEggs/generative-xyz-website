@@ -1,5 +1,6 @@
 import ButtonIcon from '@components/ButtonIcon';
 import Dropdown from '@components/Dropdown';
+import Heading from '@components/Heading';
 import Text from '@components/Text';
 import ToogleSwitch from '@components/Toggle';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
@@ -21,6 +22,9 @@ const FilterOptions = ({ attributes }: Props) => {
     setFilterTraits,
     query,
     setQuery,
+    setPage,
+    showFilter,
+    setShowFilter,
   } = useContext(GenerativeProjectDetailContext);
 
   const initialAttributesMap = useCallback(() => {
@@ -44,6 +48,7 @@ const FilterOptions = ({ attributes }: Props) => {
     });
     setFilterTraits(str.substring(1));
     setQuery(newQuery || null);
+    setPage(1);
   };
 
   const handleResetAllFilter = () => {
@@ -56,7 +61,11 @@ const FilterOptions = ({ attributes }: Props) => {
   }, [attributes]);
 
   return (
-    <div>
+    <div className={styles.filter_wrapper}>
+      <Heading fontWeight="semibold" className={styles.filter_title}>
+        Filter
+      </Heading>
+      {/* )} */}
       <div className={styles.filter_buy}>
         <Text size="18" fontWeight="medium">
           Buy now
@@ -116,6 +125,16 @@ const FilterOptions = ({ attributes }: Props) => {
           </div>
         </>
       )}
+      <div className={styles.filter_CTA}>
+        <ButtonIcon>
+          <Text fontWeight="medium" onClick={() => setShowFilter(!showFilter)}>
+            Apply
+          </Text>
+        </ButtonIcon>
+        <ButtonIcon variants="ghost" onClick={() => setShowFilter(!showFilter)}>
+          <Text fontWeight="medium">Cancel</Text>
+        </ButtonIcon>
+      </div>
     </div>
   );
 };

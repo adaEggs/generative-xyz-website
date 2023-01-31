@@ -35,6 +35,7 @@ export interface IGenerativeProjectDetailContext {
   filterBuyNow: boolean;
   setFilterBuyNow: Dispatch<SetStateAction<boolean>>;
   isLoaded: boolean;
+  setIsLoaded: Dispatch<SetStateAction<boolean>>;
   isNextPageLoaded: boolean;
   showFilter: boolean;
   setShowFilter: Dispatch<SetStateAction<boolean>>;
@@ -42,6 +43,8 @@ export interface IGenerativeProjectDetailContext {
   setFilterTraits: Dispatch<SetStateAction<string>>;
   query: Map<string, string> | null;
   setQuery: Dispatch<SetStateAction<Map<string, string> | null>>;
+  page: number;
+  setPage: Dispatch<SetStateAction<number>>;
 }
 
 const initialValue: IGenerativeProjectDetailContext = {
@@ -69,6 +72,9 @@ const initialValue: IGenerativeProjectDetailContext = {
   setFilterBuyNow: _ => {
     return;
   },
+  setIsLoaded: _ => {
+    return;
+  },
   isLoaded: false,
   isNextPageLoaded: true,
   showFilter: false,
@@ -81,6 +87,10 @@ const initialValue: IGenerativeProjectDetailContext = {
   },
   query: null,
   setQuery: _ => {
+    return;
+  },
+  page: 1,
+  setPage: _ => {
     return;
   },
 };
@@ -189,6 +199,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       filterBuyNow,
       setFilterBuyNow,
       isLoaded,
+      setIsLoaded,
       isNextPageLoaded,
       showFilter,
       setShowFilter,
@@ -196,6 +207,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       setFilterTraits,
       query,
       setQuery,
+      page,
+      setPage,
     };
   }, [
     projectData,
@@ -211,6 +224,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     filterBuyNow,
     setFilterBuyNow,
     isLoaded,
+    setIsLoaded,
     isNextPageLoaded,
     showFilter,
     setShowFilter,
@@ -218,6 +232,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     setFilterTraits,
     query,
     setQuery,
+    page,
+    setPage,
   ]);
 
   return (

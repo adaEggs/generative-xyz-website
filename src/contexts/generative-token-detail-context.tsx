@@ -675,12 +675,12 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   };
 
   const isTokenOwner = useMemo(() => {
-    if (!user.walletAddress || !tokenData?.ownerAddr) return false;
+    if (!user?.walletAddress || !tokenData?.ownerAddr) return false;
     return user.walletAddress === tokenData?.ownerAddr;
   }, [tokenData, user]);
 
   const isTokenListing = useMemo(() => {
-    if (!user.walletAddress || !listingOffers || listingOffers.length === 0)
+    if (!user?.walletAddress || !listingOffers || listingOffers.length === 0)
       return false;
     return listingOffers.length > 0;
   }, [user, listingOffers]);

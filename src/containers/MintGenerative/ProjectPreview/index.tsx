@@ -159,15 +159,13 @@ const ProjectPreview = () => {
                 className={s.ownerAvatar}
                 alt="owner avatar"
                 src={
-                  user.avatar
-                    ? user.avatar
-                    : `${CDN_URL}/images/default-avatar.jpeg`
+                  user ? user.avatar : `${CDN_URL}/images/default-avatar.jpeg`
                 }
                 width={48}
                 height={48}
               ></Image>
               <span className={s.ownerName}>
-                {user.displayName || formatAddress(user.walletAddress)}
+                {user?.displayName || formatAddress(user?.walletAddress)}
               </span>
             </div>
             <div className={s.projectInfo}>

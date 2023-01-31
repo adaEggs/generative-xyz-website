@@ -96,12 +96,12 @@ export const Prices = (): JSX.Element => {
                     <div
                       className={classNames(
                         s.screen,
-                        s.screen__55,
+                        s.screen__45,
                         'image__fit'
                       )}
                     >
                       <img
-                        src={`${CDN_URL}/pages/home/icons/55.svg`}
+                        src={`${CDN_URL}/pages/home/icons/43.svg`}
                         alt="ethf4d1101ffd"
                       />
                     </div>
@@ -112,14 +112,14 @@ export const Prices = (): JSX.Element => {
                         s.highlight__name
                       )}
                     >
-                      55 inches (diagonal) OLED display
+                      {`Generative Display 43" 4K`}
                     </div>
                     <div className={s.Home_specContent}>
                       Display Resolution: 4K (3840x2160 pixels)
                     </div>
                     <div className={s.Home_specContent}>Aspect Ratio 16:9</div>
                     <div className={s.Home_specContent}>
-                      Brightness (Typ.,cd/m²) 800 unit
+                      Brightness (Typ.,cd/m²) 500 unit
                     </div>
                     <div className={s.Home_specContent}>
                       Contrast Ratio 1,000,000:1
@@ -148,7 +148,7 @@ export const Prices = (): JSX.Element => {
                         s.highlight__name
                       )}
                     >
-                      29.5” LCD display
+                      Generative Display SQ
                     </div>
                     <div className={s.Home_specContent}>
                       Display Resolution: 2K (2160x2160 pixels)
@@ -173,12 +173,12 @@ export const Prices = (): JSX.Element => {
                     <div
                       className={classNames(
                         s.screen,
-                        s.screen__45,
+                        s.screen__55,
                         'image__fit'
                       )}
                     >
                       <img
-                        src={`${CDN_URL}/pages/home/icons/43.svg`}
+                        src={`${CDN_URL}/pages/home/icons/55.svg`}
                         alt="ethf4d1101ffd"
                       />
                     </div>
@@ -189,14 +189,14 @@ export const Prices = (): JSX.Element => {
                         s.highlight__name
                       )}
                     >
-                      43 inches (diagonal) 4K LED display
+                      {`Generative Display 55" OLED`}
                     </div>
                     <div className={s.Home_specContent}>
                       Display Resolution: 4K (3840x2160 pixels)
                     </div>
                     <div className={s.Home_specContent}>Aspect Ratio 16:9</div>
                     <div className={s.Home_specContent}>
-                      Brightness (Typ.,cd/m²) 500 unit
+                      Brightness (Typ.,cd/m²) 800 unit
                     </div>
                     <div className={s.Home_specContent}>
                       Contrast Ratio 1,000,000:1
@@ -212,9 +212,8 @@ export const Prices = (): JSX.Element => {
                   </td>
                   <td>
                     <span className={s.Home_specTitle}>Price</span>
-
                     <div className={cn(s.Home_specContent, s.price)}>
-                      <span>{products[0].eth_price} ETH</span>
+                      <span>{products[1].eth_price} ETH</span>
                     </div>
                     <Button className={s.buy_now} onClick={openOrderNow}>
                       Order Now
@@ -230,7 +229,7 @@ export const Prices = (): JSX.Element => {
                   </td>
                   <td>
                     <div className={cn(s.Home_specContent, s.price)}>
-                      <span>{products[1].eth_price} ETH</span>
+                      <span>{products[0].eth_price} ETH</span>
                     </div>
                     <Button className={s.buy_now} onClick={openOrderNow}>
                       Order Now
@@ -244,8 +243,8 @@ export const Prices = (): JSX.Element => {
                   <td className={s.dimensions}>
                     <span className={s.Home_specTitle}>Dimensions</span>
                     <img
-                      src={`${CDN_URL}/pages/landingpage/55_30_1.svg`}
-                      alt="55_"
+                      src={`${CDN_URL}/pages/landingpage/43_30_1.svg`}
+                      alt="43_"
                       className={s.Home_specDimension}
                     />
                     <div
@@ -254,7 +253,7 @@ export const Prices = (): JSX.Element => {
                         s.Home_specContent_specDimension
                       )}
                     >
-                      Weight: 70 lbs
+                      Weight: 50 lbs
                     </div>
                   </td>
                   <td className={s.dimensions}>
@@ -274,8 +273,8 @@ export const Prices = (): JSX.Element => {
                   </td>
                   <td className={s.dimensions}>
                     <img
-                      src={`${CDN_URL}/pages/landingpage/43_30_1.svg`}
-                      alt="43_"
+                      src={`${CDN_URL}/pages/landingpage/55_30_1.svg`}
+                      alt="55_"
                       className={s.Home_specDimension}
                     />
                     <div
@@ -284,7 +283,7 @@ export const Prices = (): JSX.Element => {
                         s.Home_specContent_specDimension
                       )}
                     >
-                      Weight: 50 lbs
+                      Weight: 70 lbs
                     </div>
                   </td>
                 </tr>
@@ -295,7 +294,7 @@ export const Prices = (): JSX.Element => {
                   <td>
                     <span className={s.Home_specTitle}>In the box</span>
                     <div className={s.Home_specContent}>
-                      Generative Display 55”
+                      Generative Display 43”
                     </div>
                     <div className={s.Home_specContent}>
                       16 ft cable - Adapted to USA, EU, UK sockets
@@ -311,7 +310,7 @@ export const Prices = (): JSX.Element => {
                   </td>
                   <td>
                     <div className={s.Home_specContent}>
-                      Generative Display 43”
+                      Generative Display 55”
                     </div>
                     <div className={s.Home_specContent}>
                       16 ft cable - Adapted to USA, EU, UK sockets
@@ -328,11 +327,10 @@ export const Prices = (): JSX.Element => {
                     <span className={s.Home_specTitle}>
                       Shipping dimensions
                     </span>
-
                     <div
                       className={s.Home_specContent}
-                    >{`58.8" L x 38.1" W x 5.7" H`}</div>
-                    <div className={s.Home_specContent}>Weight: 85 lbs</div>
+                    >{`48.6" L x 32.3" W x 5.7" H`}</div>
+                    <div className={s.Home_specContent}>Weight: 65 lbs</div>
                   </td>
                   <td>
                     <div
@@ -343,8 +341,8 @@ export const Prices = (): JSX.Element => {
                   <td>
                     <div
                       className={s.Home_specContent}
-                    >{`48.6" L x 32.3" W x 5.7" H`}</div>
-                    <div className={s.Home_specContent}>Weight: 65 lbs</div>
+                    >{`58.8" L x 38.1" W x 5.7" H`}</div>
+                    <div className={s.Home_specContent}>Weight: 85 lbs</div>
                   </td>
                 </tr>
 

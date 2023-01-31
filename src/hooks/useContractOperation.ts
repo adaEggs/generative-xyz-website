@@ -117,7 +117,7 @@ const useContractOperation = <
       try {
         if (requiredConnectWallet) {
           const walletAddress = await walletCtx.connectedAddress();
-          if (!walletAddress || !user.walletAddress) {
+          if (!walletAddress || !user?.walletAddress) {
             await walletCtx.connect();
           }
         }

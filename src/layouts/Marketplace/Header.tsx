@@ -24,9 +24,10 @@ import { getFaucetLink, isTestnet } from '@utils/chain';
 import QuickBuy from '@layouts/Marketplace/QuickBuy';
 import querystring from 'query-string';
 import _isEmpty from 'lodash/isEmpty';
-import { MENU_HEADER } from '@constants/header';
+import { MENU_HEADER, RIGHT_MENU } from '@constants/header';
 import MenuMobile from '@layouts/Marketplace/MenuMobile';
 import { gsap } from 'gsap';
+import { isProduction } from '@utils/common';
 const LOG_PREFIX = 'MarketplaceHeader';
 
 interface IProp {
@@ -98,7 +99,7 @@ const Header: React.FC<IProp> = ({
       <div>
         <div className={`${styles.username} username`}>
           <Text size="14" fontWeight="medium">
-            {user.displayName || formatAddress(user.walletAddress)}
+            {user?.displayName || formatAddress(user?.walletAddress)}
           </Text>
           <SvgInset
             svgUrl={`${CDN_URL}/icons/ic-caret-down.svg`}
@@ -210,9 +211,27 @@ const Header: React.FC<IProp> = ({
                   <ul
                     className={`${styles.navBar} ${styles.header_right_links} ${styles[theme]}`}
                   >
+                    {!isProduction() && (
+                      <li
+                        className={cs(
+                          activePath === RIGHT_MENU[2].activePath &&
+                            styles.active
+                        )}
+                        key={`header-${RIGHT_MENU[2].id}`}
+                      >
+                        <Link href={getUrlWithQueryParams(RIGHT_MENU[2].route)}>
+                          {RIGHT_MENU[2].name}
+                        </Link>
+                      </li>
+                    )}
+
                     <li>
-                      <a href={SOCIALS.docs} target="_blank" rel="noreferrer">
-                        Docs
+                      <a
+                        href={SOCIALS.whitepaper}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Whitepaper
                       </a>
                     </li>
                     <li>
@@ -225,7 +244,7 @@ const Header: React.FC<IProp> = ({
                       </a>
                     </li>
                   </ul>
-                  {user.id ? (
+                  {user ? (
                     <div className="position-relative">
                       <AvatarInfo
                         imgSrc={user.avatar}
@@ -238,7 +257,7 @@ const Header: React.FC<IProp> = ({
                       {openProfile && <ProfileDropdown />}
                     </div>
                   ) : (
-                    <div className={'d-md-block d-none'}>
+                    <div className={'d-xl-block d-none'}>
                       <ButtonIcon
                         disabled={isConnecting}
                         sizes="small"

@@ -10,7 +10,7 @@ const AuthGuard: React.FC<PropsWithChildren> = ({
   const router = useRouter();
   const user = useSelector(getUserSelector);
 
-  if (typeof window !== 'undefined' && !user.id) {
+  if (typeof window !== 'undefined' && !user) {
     router.push(`/connect-wallet?next=${location.pathname}`);
     return <></>;
   }

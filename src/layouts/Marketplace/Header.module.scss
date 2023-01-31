@@ -18,7 +18,7 @@
   .caret_icon {
     display: none;
 
-    @include min-tablet {
+    @include min-pc {
       display: block;
     }
   }
@@ -78,7 +78,7 @@
     width: 42px;
     height: 42px;
 
-    @include min-tablet {
+    @include min-pc {
       width: 64px;
       height: 64px;
     }
@@ -89,7 +89,7 @@
     align-items: center;
     justify-content: space-between;
 
-    @include min-tablet {
+    @include min-pc {
       padding: rem(8px) 0;
     }
 
@@ -108,7 +108,7 @@
       color: $black-60-solid;
       line-height: (26/16);
 
-      @include min-tablet {
+      @include min-pc {
         display: flex;
         gap: rem(24px);
       }
@@ -183,7 +183,7 @@
     .dropdown {
       display: none;
 
-      @include min-tablet {
+      @include min-pc {
         display: block;
       }
 
@@ -306,6 +306,20 @@
         color: $black-60-solid;
         line-height: (26/16);
       }
+
+      .active {
+        a {
+          color: $black-100;
+        }
+      }
+
+      &.dark {
+        .active {
+          a {
+            color: $white;
+          }
+        }
+      }
     }
   }
 }
@@ -350,7 +364,7 @@
     }
   }
 
-  @include min-tablet {
+  @include min-pc {
     display: none;
   }
 }

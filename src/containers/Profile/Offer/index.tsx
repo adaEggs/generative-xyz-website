@@ -1,50 +1,52 @@
 import ButtonIcon from '@components/ButtonIcon';
-import Link from '@components/Link';
 import { Loading } from '@components/Loading';
 import Table from '@components/Table';
-import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { calculateFloorDifference, convertToETH } from '@utils/currency';
-import { formatAddress } from '@utils/format';
+import { formatTokenId, tokenID } from '@utils/format';
 import { useContext } from 'react';
-import s from './Owned.module.scss';
+import s from './Offer.module.scss';
+import dayjs from 'dayjs';
 
-const TABLE_OFFERS_HEADING = [
+const TABLE_OFFERS_SENT_HEADING = [
+  'Output/Collections',
   'Price',
   'Floor difference',
-  // 'Expiration',
-  'From',
+  'Expiration',
   '',
 ];
 
 export const OfferTab = (): JSX.Element => {
   const user = useAppSelector(getUserSelector);
-  const { isLoadedProfileMakeOffer, profileMakeOffer } =
+  // const [filterOffer, setFillterOffer] = useState<string>('sent');
+  const { isLoadedProfileMakeOffer, profileMakeOffer, handleCancelOffer } =
     useContext(ProfileContext);
 
   const offerDatas = profileMakeOffer?.result?.map(offer => {
+    const { token } = offer;
+    const project = token?.project;
+    const endDate = dayjs
+      .unix(Number(offer?.durationTime))
+      .format('MMM DD, YYYY');
     return {
       id: offer.offeringID,
       render: {
+        name: `${project?.name} #${formatTokenId(tokenID(token?.name || ''))}`,
         price: convertToETH(offer?.price || ''),
         floor_differece: calculateFloorDifference(
           offer?.token?.project?.stats?.floorPrice || '0',
           offer?.price
         ),
-        // expired_date: offer?.durationTime,
-        buyer:
-          user.walletAddress === offer?.buyer ? (
-            <Link href={ROUTE_PATH.PROFILE}>You</Link>
-          ) : (
-            <Link href={ROUTE_PATH.PROFILE}>
-              {formatAddress(offer?.buyer || '')}
-            </Link>
-          ),
-        cancel: user.walletAddress === offer?.buyer && (
+        expired_date: endDate,
+        cancel: user?.walletAddress === offer?.buyer && (
           <div className={s.action_btn}>
-            <ButtonIcon sizes="small" variants="outline">
+            <ButtonIcon
+              sizes="small"
+              variants="outline"
+              onClick={() => handleCancelOffer(offer)}
+            >
               Cancel
             </ButtonIcon>
           </div>
@@ -57,22 +59,24 @@ export const OfferTab = (): JSX.Element => {
     <>
       <div className={s.tabContent}>
         <div className={s.filterWrapper}>
-          {/* <TokenTopFilter
-            keyword=""
-            sort=""
-            onKeyWordChange={() => {
-              //
-            }}
-            onSortChange={() => {
-              //
-            }}
-          /> */}
+          {/*<ButtonIcon*/}
+          {/*  variants={`${filterOffer === 'received' ? 'primary' : 'filter'}`}*/}
+          {/*  sizes={'medium'}*/}
+          {/*>*/}
+          {/*  Offers received*/}
+          {/*</ButtonIcon>*/}
+          {/*<ButtonIcon*/}
+          {/*  variants={`${filterOffer === 'sent' ? 'primary' : 'filter'}`}*/}
+          {/*  sizes={'medium'}*/}
+          {/*>*/}
+          {/*  Offers sent*/}
+          {/*</ButtonIcon>*/}
         </div>
         <div className={s.tokenListWrapper}>
           <Loading isLoaded={isLoadedProfileMakeOffer} />
           {isLoadedProfileMakeOffer && (
             <Table
-              tableHead={TABLE_OFFERS_HEADING}
+              tableHead={TABLE_OFFERS_SENT_HEADING}
               data={offerDatas || undefined}
             ></Table>
           )}

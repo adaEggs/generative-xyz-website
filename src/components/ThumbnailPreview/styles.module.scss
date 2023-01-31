@@ -38,6 +38,9 @@
 
 .sandboxWrapper {
   position: relative;
+  width: 100%;
+
+  @include fullViewScreen;
 
   .sandboxContent {
     height: 100%;

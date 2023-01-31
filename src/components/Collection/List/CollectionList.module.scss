@@ -1,9 +1,26 @@
 .showFilter {
   grid-template-columns: 0.25fr 1fr;
   gap: rem(42px);
+
+  @include mobile {
+    grid-template-columns: 1fr;
+  }
 }
 
 .projectDetail_loading {
   max-height: rem(510px);
   top: rem(70px);
+}
+
+.collectionList {
+  z-index: 1;
+  position: relative;
+  background-color: $white;
+  // height: 100%;
+}
+
+.list_empty {
+  position: absolute;
+  z-index: 0;
+  top: 0;
 }
