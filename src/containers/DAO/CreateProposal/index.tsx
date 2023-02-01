@@ -7,7 +7,7 @@ import ProposalPreview from '../ProposalPreview';
 import s from './styles.module.scss';
 
 const CreateProposal: React.FC = (): React.ReactElement => {
-  const { currentStep } = useContext(DAOContext);
+  const { currentStep, handleDelegateGENToken } = useContext(DAOContext);
 
   return (
     <div className={s.createProposal}>
@@ -23,6 +23,9 @@ const CreateProposal: React.FC = (): React.ReactElement => {
         {currentStep === CreateDAOProposalStep.PREVIEW_INFO && (
           <ProposalPreview />
         )}
+      </div>
+      <div>
+        <Button onClick={handleDelegateGENToken}>Test</Button>
       </div>
     </div>
   );

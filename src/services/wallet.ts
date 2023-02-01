@@ -5,7 +5,7 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { provider } from 'web3-core';
 import { MetaMaskInpageProvider } from '@metamask/providers';
-import { AbiItem } from 'web3-utils';
+import { AbiItem, AbiType } from 'web3-utils';
 import {
   TContractOperation,
   ContractOperationCallback,
@@ -21,6 +21,7 @@ import {
 } from '@interfaces/wallet';
 import { WalletError, WalletErrorCode } from '@enums/wallet-error';
 import { WalletEvent } from '@enums/wallet-event';
+import DAOTresuryContractABI from '@services/contract-abis/gen-dao-treasury.json';
 
 const LOG_PREFIX = 'WalletManager';
 
@@ -331,6 +332,31 @@ export class WalletManager {
         data: null,
       };
     }
+  }
+
+  encodeFunctionCall(funcName: string, args: Array<string>) {
+    const { abi } = DAOTresuryContractABI;
+
+    const funcObj = abi.find(abiItem => {
+      return abiItem.name === funcName && abiItem.type === 'function';
+    });
+
+    if (!funcObj) {
+      return ['0x'];
+    }
+
+    const web3Provider = this.getWeb3Provider();
+
+    const encodedData = web3Provider.eth.abi.encodeFunctionCall(
+      {
+        name: funcObj.name ?? '',
+        type: (funcObj.type ?? 'function') as AbiType,
+        inputs: funcObj.inputs,
+      },
+      [...args]
+    );
+
+    return [encodedData];
   }
 
   /**
