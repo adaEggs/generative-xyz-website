@@ -40,7 +40,7 @@ type Props = {
 
 const ProjectIntroSection = ({ project }: Props) => {
   const { getWalletBalance } = useContext(WalletContext);
-  const { isMobile } = useWindowSize();
+  const { mobileScreen } = useWindowSize();
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
   const [showMore, setShowMore] = useState(false);
@@ -168,7 +168,7 @@ const ProjectIntroSection = ({ project }: Props) => {
                 formatAddress(project?.creatorProfile?.walletAddress || '')}
             </Link>
           </Text>
-          {isMobile && (
+          {mobileScreen && (
             <div>
               <ThumbnailPreview data={projectDetail as Token} allowVariantion />
             </div>
@@ -313,7 +313,7 @@ const ProjectIntroSection = ({ project }: Props) => {
         //         formatAddress(project?.creatorProfile?.walletAddress || '')}
         //     </Link>
         //   </Text>
-        //   {isMobile && (
+        //   {mobileScreen && (
         //     <div>
         //       <ThumbnailPreview data={projectDetail as Token} allowVariantion />
         //     </div>
@@ -402,7 +402,7 @@ const ProjectIntroSection = ({ project }: Props) => {
     <div className={s.wrapper}>
       {renderLeftContent()}
       <div></div>
-      {!isMobile && (
+      {!mobileScreen && (
         <div>
           <ThumbnailPreview data={projectDetail as Token} allowVariantion />
         </div>

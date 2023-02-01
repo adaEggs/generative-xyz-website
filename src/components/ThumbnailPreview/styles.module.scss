@@ -54,6 +54,14 @@
   border-radius: 50% !important;
   border-color: $black-10 !important;
   background-color: #fff !important;
+
+  &:hover {
+    background-color: $secondary-purple-c !important;
+
+    > img {
+      filter: brightness(0) invert(1);
+    }
+  }
 }
 
 .sandboxControls {
