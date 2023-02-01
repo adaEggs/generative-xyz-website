@@ -221,6 +221,11 @@
       visibility: hidden;
     }
   }
+
+  &:not(.isDisplay) {
+    position: sticky;
+    top: 0;
+  }
 }
 
 .logo {

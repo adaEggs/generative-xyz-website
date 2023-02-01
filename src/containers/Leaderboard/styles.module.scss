@@ -51,4 +51,12 @@
     left: rem(-30px);
     top: 0;
   }
+
+  .displayName {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }

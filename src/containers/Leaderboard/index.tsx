@@ -13,6 +13,8 @@ import {
   GEN_TOKEN_ADDRESS,
   IGNORABLE_GEN_HOLDER_ADDRESS_LIST,
 } from '@constants/contract-address';
+import Link from '@components/Link';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const TABLE_LEADERBOARD_HEADING = ['Rank', 'Artist', 'GEN Balance'];
 
@@ -86,7 +88,12 @@ const Leaderboard: React.FC = (): React.ReactElement => {
                 src={`${CDN_URL}/icons/ic-trophy-bronze-20x20.svg`}
               />
             )}
-            <span>{displayName}</span>
+            <Link
+              className={s.displayName}
+              href={`${ROUTE_PATH.PROFILE}/${item.address}`}
+            >
+              {displayName}
+            </Link>
           </div>
         ),
         balance: item.balance,

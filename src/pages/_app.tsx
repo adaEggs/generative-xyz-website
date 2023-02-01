@@ -166,21 +166,21 @@ export default function App({ Component, pageProps }: MyAppProps) {
         <meta name="msapplication-TileColor" content="#FFFFFF" />
         <meta name="msapplication-TileImage" content="images/favicon-144.png" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
-
-        {(APP_ENV === ApplicationEnvironment.STAGING ||
-          APP_ENV === ApplicationEnvironment.PRODUCTION) && (
-          <Script
-            type="text/javascript"
-            src="//script.crazyegg.com/pages/scripts/0100/2427.js"
-            async={true}
-          />
-        )}
       </Head>
 
       <NextNprogress />
       <Provider store={store}>
         <WalletProvider>
           <AuthWrapper>
+            <>
+              {(APP_ENV === ApplicationEnvironment.STAGING ||
+                APP_ENV === ApplicationEnvironment.PRODUCTION) && (
+                <Script
+                  type="text/javascript"
+                  src="//script.crazyegg.com/pages/scripts/0100/2427.js"
+                />
+              )}
+            </>
             <Component {...pageProps} />
             <Toaster />
           </AuthWrapper>

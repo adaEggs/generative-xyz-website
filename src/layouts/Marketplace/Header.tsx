@@ -170,7 +170,7 @@ const Header: React.FC<IProp> = ({
         ref={refHeader}
         className={`${styles.header} ${styles[theme]} ${
           isOpenMenu ? styles.isMenuOpen : ''
-        }`}
+        } ${isDisplay ? styles.isDisplay : ''}`}
       >
         <div className={styles.header_inner}>
           <Container>
@@ -285,21 +285,20 @@ const Header: React.FC<IProp> = ({
             </div>
           </Container>
         </div>
-        {isFaucet && (
-          <div className={styles.testNet}>
-            <img
-              src={`${CDN_URL}/icons/star-shooting-horizontal.svg`}
-              alt="star-shooting-horizontal"
-            />
-            Welcome to Generative testnet! Don’t have ETH for testnet? Request
-            some
-            <a onClick={clickToFaucet} target="_blank" rel="noreferrer">
-              {' here.'}
-            </a>
-          </div>
-        )}
-        <div className="divider"></div>
       </header>
+      {isFaucet && (
+        <div className={styles.testNet}>
+          <img
+            src={`${CDN_URL}/icons/star-shooting-horizontal.svg`}
+            alt="star-shooting-horizontal"
+          />
+          Welcome to Generative testnet! Don’t have ETH for testnet? Request
+          some
+          <a onClick={clickToFaucet} target="_blank" rel="noreferrer">
+            {' here.'}
+          </a>
+        </div>
+      )}
       {isDisplay && <QuickBuy />}
       <MenuMobile
         renderProfileHeader={renderProfileHeader}
