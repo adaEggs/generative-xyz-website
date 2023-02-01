@@ -53,11 +53,6 @@ const useContractOperation = <
   };
 
   const call = async (params: P): Promise<R | null> => {
-    if (isMobile()) {
-      openMetamaskDeeplink();
-      return null;
-    }
-
     setIsLoading(true);
     setIsSuccess(false);
     setIsError(false);
@@ -109,7 +104,12 @@ const useContractOperation = <
           message: WalletError.NO_METAMASK,
         });
         if (requiredConnectWallet) {
-          window.open(METAMASK_DOWNLOAD_PAGE);
+          if (isMobile()) {
+            openMetamaskDeeplink();
+            return null;
+          } else {
+            window.open(METAMASK_DOWNLOAD_PAGE);
+          }
         }
         return null;
       }
