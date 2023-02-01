@@ -28,6 +28,13 @@ const TableActivities = () => {
 
   if (!tokenActivities?.items) return <NotFound infoText="No activity yet" />;
 
+  // const HARD_CORE = [
+  //   {
+  //     block_signed_at: 12120000,
+  //     tx_hash: 'abc',
+  //   },
+  // ];
+
   const activityDatas = tokenActivities?.items[0]?.nft_transactions?.map(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (transaction: any, index, transactionList) => {
@@ -87,16 +94,9 @@ const TableActivities = () => {
     <>
       <div className={s.tabContent}>
         <div className={s.filterWrapper}>
-          {/* <TokenTopFilter
-            keyword=""
-            sort=""
-            onKeyWordChange={() => {
-              //
-            }}
-            onSortChange={() => {
-              //
-            }}
-          /> */}
+          <ul>
+            <li>button</li>
+          </ul>
         </div>
         <div className={s.tokenListWrapper}>
           <Loading isLoaded={isLoadedProfileListing} />

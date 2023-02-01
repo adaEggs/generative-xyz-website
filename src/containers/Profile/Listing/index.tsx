@@ -5,12 +5,15 @@ import { calculateFloorDifference, convertToETH } from '@utils/currency';
 import { useContext } from 'react';
 import s from './Listing.module.scss';
 import Image from 'next/image';
-import { formatTokenId, tokenID } from '@utils/format';
+import { formatTokenId, getProjectIdFromTokenId, tokenID } from '@utils/format';
+import { ROUTE_PATH } from '@constants/route-path';
+import { useRouter } from 'next/router';
 
 const TABLE_OFFERS_HEADING = ['Output', 'Price', 'Floor difference'];
 
 export const ListingTab = (): JSX.Element => {
   const { isLoadedProfileListing, profileListing } = useContext(ProfileContext);
+  const router = useRouter();
 
   const listingDatas = profileListing?.result?.map(item => {
     const { price, offeringID } = item;
@@ -22,7 +25,16 @@ export const ListingTab = (): JSX.Element => {
       id: offeringID,
       render: {
         output: (
-          <div className={s.listingItem_token}>
+          <div
+            className={s.listingItem_token}
+            onClick={() =>
+              router.push(
+                `${ROUTE_PATH.GENERATIVE}/${getProjectIdFromTokenId(
+                  parseInt(tokenID(token?.name || ''))
+                )}/${tokenID(token?.name || '')}`
+              )
+            }
+          >
             <Image
               src={token?.thumbnail || ''}
               alt={token?.name || ''}

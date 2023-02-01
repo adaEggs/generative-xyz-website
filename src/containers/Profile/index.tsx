@@ -9,6 +9,7 @@ import s from './Profile.module.scss';
 import { Loading } from '@components/Loading';
 import { CreatedTab } from '@containers/Profile/Created';
 import { ListingTab } from '@containers/Profile/Listing';
+// import TableActivities from '@containers/Profile/Activity';
 
 const Profile: React.FC = (): React.ReactElement => {
   const {
@@ -57,13 +58,13 @@ const Profile: React.FC = (): React.ReactElement => {
                 <ListingTab />
               </Tab>
 
-              <Tab
-                tabClassName={s.tab}
-                eventKey="activity-tab"
-                title={`Activity (${profileListing?.total || 0})`}
-              >
-                <ListingTab />
-              </Tab>
+              {/*<Tab*/}
+              {/*  tabClassName={s.tab}*/}
+              {/*  eventKey="activity-tab"*/}
+              {/*  title={`Activity (${profileListing?.total || 0})`}*/}
+              {/*>*/}
+              {/*  <TableActivities />*/}
+              {/*</Tab>*/}
             </Tabs>
           </div>
         </ClientOnly>
