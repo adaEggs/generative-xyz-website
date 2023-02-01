@@ -53,6 +53,7 @@
     "react-svg": "^15.1.16",
     "react-tagsinput": "^3.20.0",
     "reselect": "^4.1.7",
+    "scrolly-video": "^0.0.10",
     "split-type": "^0.3.3",
     "supports-webp": "^3.0.0",
     "unzipit": "^1.4.0",

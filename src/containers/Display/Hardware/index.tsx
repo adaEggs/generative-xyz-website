@@ -1,19 +1,20 @@
 import s from './hardware.module.scss';
 import { gsap } from 'gsap';
 import { SectionInfo } from '@containers/Display/SectionInfo';
-import { Monitor } from '@containers/Display/Hardware/Monitor';
-import classNames from 'classnames';
+// import { Monitor } from '@containers/Display/Hardware/Monitor';
+// import classNames from 'classnames';
 import { MaskerStart } from 'src/animations/masker-start';
-import { Frames } from '@animations/frames';
-import { HARDWARE_CONTENTS } from '@constants/frame';
-import { useContext, useRef, useEffect } from 'react';
+// import { Frames } from '@animations/frames';
+// import { HARDWARE_CONTENTS } from '@constants/frame';
+import React, { useRef, useEffect } from 'react';
 import { Benchmark } from './Benchmark';
-import { LoadingContext } from '@contexts/loading-context';
+// import { LoadingContext } from '@contexts/loading-context';
 import { CDN_URL } from '@constants/config';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import ScrollyVideo from 'scrolly-video/dist/ScrollyVideo.jsx';
 
 export const HardWare = (): JSX.Element => {
-  const { registerLoading, unRegisterLoading } = useContext(LoadingContext);
-
   const refOptions = useRef({ isCPUIn: false, isFirst: false });
   const refMain = useRef<HTMLDivElement>(null);
   const refScreen = useRef(null);
@@ -93,38 +94,45 @@ export const HardWare = (): JSX.Element => {
       <div className={s.hardWare_wrap}>
         <MaskerStart className={s.hardWare_content}>
           <div>
-            <Frames
-              width={1920}
-              height={1080}
-              className={s.hardWare_content_main}
-              urlFrame={`${CDN_URL}/pages/home/block-3-2/block-3-v2-%d.png`}
-              webmFrame={`${CDN_URL}/pages/home/block-3-2/block-3-v2-%d.png.webp`}
-              totalFrames={116}
-              onProcessing={processing}
-              start={registerLoading}
-              end={unRegisterLoading}
-            >
-              <div className={`${s.hardWare_content_detail}`}>
-                <div className={s.hardWare_content_detail_inner}>
-                  <div
-                    ref={refScreen}
-                    className={`${s.hardWare_content_detail_display}`}
-                  >
-                    <Monitor data={HARDWARE_CONTENTS[0]} />
-                  </div>
-                  <div
-                    ref={refCpu}
-                    className={`${s.hardWare_content_detail_cpu}`}
-                  >
-                    <Monitor data={HARDWARE_CONTENTS[1]} />
-                  </div>
-                </div>
-              </div>
-              <div
-                className={classNames(s.hardWare_content_frames, 'js-frames')}
+            <div className={s.hardWare_content_video}>
+              <ScrollyVideo
+                src={`${CDN_URL}/pages/landingpage/block_3_video_test.mp4`}
               />
-            </Frames>
-            <Benchmark />
+            </div>
+            {/*<Frames*/}
+            {/*  width={1920}*/}
+            {/*  height={1080}*/}
+            {/*  className={s.hardWare_content_main}*/}
+            {/*  urlFrame={`${CDN_URL}/pages/home/block-3-2/block-3-v2-%d.png`}*/}
+            {/*  webmFrame={`${CDN_URL}/pages/home/block-3-2/block-3-v2-%d.png.webp`}*/}
+            {/*  totalFrames={116}*/}
+            {/*  onProcessing={processing}*/}
+            {/*  start={registerLoading}*/}
+            {/*  end={unRegisterLoading}*/}
+            {/*>*/}
+            {/*  <div className={`${s.hardWare_content_detail}`}>*/}
+            {/*    <div className={s.hardWare_content_detail_inner}>*/}
+            {/*      <div*/}
+            {/*        ref={refScreen}*/}
+            {/*        className={`${s.hardWare_content_detail_display}`}*/}
+            {/*      >*/}
+            {/*        <Monitor data={HARDWARE_CONTENTS[0]} />*/}
+            {/*      </div>*/}
+            {/*      <div*/}
+            {/*        ref={refCpu}*/}
+            {/*        className={`${s.hardWare_content_detail_cpu}`}*/}
+            {/*      >*/}
+            {/*        <Monitor data={HARDWARE_CONTENTS[1]} />*/}
+            {/*      </div>*/}
+            {/*    </div>*/}
+            {/*  </div>*/}
+            {/*  <div*/}
+            {/*    className={classNames(s.hardWare_content_frames, 'js-frames')}*/}
+            {/*  />*/}
+            {/*</Frames>*/}
+            <div className={s.hardWare_content_benchmark}>
+              <Benchmark />
+            </div>
           </div>
         </MaskerStart>
       </div>
