@@ -118,8 +118,10 @@ const CollectionItem = ({ data }: { data: Token }) => {
                 direction="horizontal"
               >
                 <Heading as={'h4'} className="token_id ml-auto">
-                  {currentUser && `${data?.project?.name} `}#
-                  {formatTokenId(tokenID)}
+                  <span className={s.collectionCard_info_title_name}>
+                    {currentUser && `${data?.project?.name} `}
+                  </span>
+                  #{formatTokenId(tokenID)}
                 </Heading>
                 {listingTokenPrice !== '0' && (
                   <Stack

@@ -1,3 +1,9 @@
+.event {
+  display: flex;
+  align-items: center;
+  gap: rem(12);
+}
+
 .tokenListWrapper {
   position: relative;
 
@@ -16,5 +22,4 @@
   display: flex;
   align-items: center;
   gap: rem(12px);
-  cursor: pointer;
 }

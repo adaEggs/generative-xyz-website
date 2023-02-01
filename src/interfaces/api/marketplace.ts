@@ -23,3 +23,7 @@ export interface IMakeOffersQuery extends IPagingParams {
   sort_by: string;
   sort?: 1 | -1;
 }
+
+export interface IProfileActivityResponse extends IPagingResponse {
+  result: TokenOffer[];
+}

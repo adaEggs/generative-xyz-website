@@ -33,6 +33,7 @@ import { NETWORK_CHAIN_ID } from '@constants/config';
 import { ErrorMessage } from '@enums/error-message';
 import useContractOperation from '@hooks/useContractOperation';
 import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
+import { IGetTokenActivitiesResponse } from '@interfaces/api/nfts';
 
 const LOG_PREFIX = 'ProfileContext';
 
@@ -43,6 +44,7 @@ export interface IProfileContext {
   profileProjects?: IGetProjectItemsResponse;
   profileMakeOffer?: ITokenOfferListResponse;
   profileListing?: IListingTokensResponse;
+  profileActivity?: IGetTokenActivitiesResponse;
 
   isLoaded: boolean;
 
@@ -50,11 +52,13 @@ export interface IProfileContext {
   isLoadedProfileProjects: boolean;
   isLoadedProfileMakeOffer: boolean;
   isLoadedProfileListing: boolean;
+  isLoadedProfileActivity: boolean;
 
   handleFetchTokens: () => void;
   handleFetchProjects: () => void;
   handleFetchMakeOffers: () => void;
   handleFetchListingTokens: () => void;
+  handleFetchProfileActivity: () => void;
   handleCancelOffer: (offer: TokenOffer) => void;
 }
 
@@ -65,11 +69,13 @@ const initialValue: IProfileContext = {
   isLoadedProfileProjects: false,
   isLoadedProfileMakeOffer: false,
   isLoadedProfileListing: false,
+  isLoadedProfileActivity: false,
   handleFetchTokens: () => new Promise<void>(r => r()),
   handleFetchProjects: () => new Promise<void>(r => r()),
   handleFetchMakeOffers: () => new Promise<void>(r => r()),
   handleFetchListingTokens: () => new Promise<void>(r => r()),
   handleCancelOffer: () => new Promise<void>(r => r()),
+  handleFetchProfileActivity: () => new Promise<void>(r => r()),
 };
 
 export const ProfileContext =
@@ -116,7 +122,14 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     IListingTokensResponse | undefined
   >();
 
+  const [profileActivity, _] = useState<
+    IGetTokenActivitiesResponse | undefined
+  >();
+
   const [isLoadedProfileListing, setIsLoadedProfileListing] =
+    useState<boolean>(false);
+
+  const [isLoadedProfileActivity, setIsLoadedProfileActivity] =
     useState<boolean>(false);
 
   const handleFetchProjects = useCallback(async () => {
@@ -210,6 +223,32 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     }
   }, [currentUser, profileTokens]);
 
+  const handleFetchProfileActivity = useCallback(async () => {
+    try {
+      if (currentUser?.walletAddress) {
+        // const profileActivity = await getListingTokensByWallet({
+        //   walletAddress: currentUser.walletAddress,
+        //   closed: false,
+        // });
+        // if (listingTokens && listingTokens) {
+        //   setProfileListing(listingTokens);
+        // }
+
+        // setProfileActivity({
+        //   updated_at: '11/11/2022';
+        //   items: [
+        //     nft_transactions: Array<unknown>;
+        //     [x: string]: unknown;
+        //   ],
+        //   pagination: unknown;
+        // });
+        setIsLoadedProfileActivity(true);
+      }
+    } catch (ex) {
+      log('can not fetch listing tokens', LogLevel.Error, LOG_PREFIX);
+    }
+  }, [currentUser]);
+
   const handleFetchProfileByWallet = useCallback(async () => {
     try {
       if (walletAddress) {
@@ -278,6 +317,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       profileProjects,
       profileMakeOffer,
       profileListing,
+      profileActivity,
 
       isLoaded,
 
@@ -285,12 +325,14 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       isLoadedProfileProjects,
       isLoadedProfileMakeOffer,
       isLoadedProfileListing,
+      isLoadedProfileActivity,
 
       handleFetchTokens,
       handleFetchProjects,
       handleFetchMakeOffers,
       handleFetchListingTokens,
       handleCancelOffer,
+      handleFetchProfileActivity,
     };
   }, [
     currentUser,
@@ -299,6 +341,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     profileProjects,
     profileMakeOffer,
     profileListing,
+    profileActivity,
 
     isLoaded,
 
@@ -306,12 +349,14 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     isLoadedProfileProjects,
     isLoadedProfileMakeOffer,
     isLoadedProfileListing,
+    isLoadedProfileActivity,
 
     handleFetchTokens,
     handleFetchProjects,
     handleFetchMakeOffers,
     handleFetchListingTokens,
     handleCancelOffer,
+    handleFetchProfileActivity,
   ]);
 
   return (

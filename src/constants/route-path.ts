@@ -15,6 +15,8 @@ export const ROUTE_PATH = {
   SANDBOX: '/sandbox',
   DISPLAY: isStaging() ? 'https://generative.xyz' : '/display',
   ORDER_NOW: isStaging() ? 'https://generative.xyz/order-now' : '/order-now',
-  LEADERBOARDS: '/leaderboards',
+  LEADERBOARDS: isProduction()
+    ? 'https://testnet.generative.xyz/leaderboards'
+    : '/leaderboards',
   DAO: '/dao',
 };
