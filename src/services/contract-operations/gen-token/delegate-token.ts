@@ -1,19 +1,21 @@
 import { AbiItem } from 'web3-utils';
 import { Contract } from 'web3-eth-contract';
 import ContractOperation from '@services/contract-operations/contract-operation';
-import ContractABI from '@services/contract-abis/erc721.json';
+import ContractABI from '@services/contract-abis/gen-token.json';
 import { ErrorMessage } from '@enums/error-message';
-import { IGetTokenBalanceParams } from '@interfaces/contract-operations/erc721-get-token-balance';
+import { GEN_TOKEN_ADDRESS } from '@constants/contract-address';
+import { IDelegateGENTokenParams } from '@interfaces/contract-operations/delegate-gen-token';
 
 class DelegateGENTokenOperation extends ContractOperation<
-  IGetTokenBalanceParams,
+  IDelegateGENTokenParams,
   number
 > {
   contract: Contract | null = null;
+  contractAddress = GEN_TOKEN_ADDRESS;
 
   async prepare(): Promise<void> {
     this.contract = await this.walletManager.getContract(
-      this.params.erc721TokenAddress,
+      this.contractAddress,
       ContractABI.abi as Array<AbiItem>
     );
   }

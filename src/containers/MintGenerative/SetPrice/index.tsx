@@ -94,12 +94,12 @@ const SetPrice = () => {
 
   const handleSubmit = async (): Promise<void> => {
     if (!filesSandbox) {
-      log('No sandbox files', LogLevel.Debug, LOG_PREFIX);
+      log('No sandbox files', LogLevel.DEBUG, LOG_PREFIX);
       return;
     }
 
     if (!walletCtx.walletManager) {
-      log('No wallet manager', LogLevel.Debug, LOG_PREFIX);
+      log('No wallet manager', LogLevel.DEBUG, LOG_PREFIX);
       return;
     }
 
@@ -131,7 +131,7 @@ const SetPrice = () => {
       });
 
       if (mintFee === null) {
-        log('No mint fee', LogLevel.Debug, LOG_PREFIX);
+        log('No mint fee', LogLevel.DEBUG, LOG_PREFIX);
         return;
       }
 
@@ -216,7 +216,7 @@ const SetPrice = () => {
         shallow: true,
       });
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Error, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       setShowErrorAlert({ open: true, message: null });
     } finally {
       setIsMinting(false);

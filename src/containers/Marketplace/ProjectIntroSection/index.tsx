@@ -72,7 +72,7 @@ const ProjectIntroSection = ({ project }: Props) => {
         if (res) setMarketplaceStats(res?.stats);
       }
     } catch (e) {
-      log('can not fetch price', LogLevel.Error, '');
+      log('can not fetch price', LogLevel.ERROR, '');
     }
   };
 
@@ -120,7 +120,7 @@ const ProjectIntroSection = ({ project }: Props) => {
         router.push(`/generative/${project.tokenID}/${tokenID}`);
       }, 1000);
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Error, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
     } finally {
       setIsMinting(false);
     }

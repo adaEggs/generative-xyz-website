@@ -29,7 +29,7 @@ const ThumbnailPreview = (props: Props) => {
 
   const sandboxRef = useRef<ISandboxRef>(null);
   const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>(
-    PreviewDisplayMode.Animation
+    PreviewDisplayMode.ANIMATION
   );
   const [hash, setHash] = useState<string>(generateHash());
 
@@ -56,11 +56,11 @@ const ThumbnailPreview = (props: Props) => {
   };
 
   const handlePlay = (): void => {
-    setDisplayMode(PreviewDisplayMode.Animation);
+    setDisplayMode(PreviewDisplayMode.ANIMATION);
   };
 
   const handlePause = (): void => {
-    setDisplayMode(PreviewDisplayMode.Thumbnail);
+    setDisplayMode(PreviewDisplayMode.THUMBNAIL);
   };
 
   const handleVariation = (): void => {
@@ -68,11 +68,11 @@ const ThumbnailPreview = (props: Props) => {
   };
 
   const canPlay = useMemo(() => {
-    return !!rawHtmlFile && displayMode === PreviewDisplayMode.Thumbnail;
+    return !!rawHtmlFile && displayMode === PreviewDisplayMode.THUMBNAIL;
   }, [rawHtmlFile, displayMode]);
 
   const canPause = useMemo(() => {
-    return !!rawHtmlFile && displayMode === PreviewDisplayMode.Animation;
+    return !!rawHtmlFile && displayMode === PreviewDisplayMode.ANIMATION;
   }, [rawHtmlFile, displayMode]);
 
   const openPreview = useMemo(() => !!previewSrc, [previewSrc]);
@@ -87,7 +87,7 @@ const ThumbnailPreview = (props: Props) => {
               <div className={s.sandboxContent}>
                 <ClientOnly>
                   <SandboxPreview
-                    showIframe={displayMode === PreviewDisplayMode.Animation}
+                    showIframe={displayMode === PreviewDisplayMode.ANIMATION}
                     rawHtml={rawHtmlFile}
                     ref={sandboxRef}
                     hash={previewToken ? '' : hash}
@@ -97,7 +97,7 @@ const ThumbnailPreview = (props: Props) => {
                   />
                 </ClientOnly>
               </div>
-              {displayMode === PreviewDisplayMode.Thumbnail &&
+              {displayMode === PreviewDisplayMode.THUMBNAIL &&
                 thumbnailPreviewUrl && (
                   <div className={s.thumbnail_image}>
                     <Image
@@ -113,7 +113,7 @@ const ThumbnailPreview = (props: Props) => {
         <div className={s.actionWrapper}>
           <div className={s.sandboxControls}>
             {allowVariantion &&
-              displayMode === PreviewDisplayMode.Animation && (
+              displayMode === PreviewDisplayMode.ANIMATION && (
                 <Button
                   onClick={handleVariation}
                   className={s.actionBtn}

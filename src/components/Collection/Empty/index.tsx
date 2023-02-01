@@ -82,7 +82,7 @@ export const Empty = ({
 
       router.push(`/generative/${projectInfo.tokenID}/${tokenID}`);
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Error, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
     } finally {
       setIsMinting(false);
     }

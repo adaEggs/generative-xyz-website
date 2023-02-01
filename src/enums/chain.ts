@@ -1,5 +1,5 @@
 export enum Chain {
-  Ethereum = 1,
-  Goerli = 5,
-  Mumbai = 80001,
+  ETHEREUM = 1,
+  GOERLI = 5,
+  MUMBAI = 80001,
 }

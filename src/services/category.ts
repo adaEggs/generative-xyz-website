@@ -19,7 +19,7 @@ export const getCategoryList = async (
     const res = await get<IGetCategoryListResponse>(`${API_PATH}${qs}`);
     return res;
   } catch (err: unknown) {
-    log('failed to get category list', LogLevel.Error, LOG_PREFIX);
+    log('failed to get category list', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get category list');
   }
 };

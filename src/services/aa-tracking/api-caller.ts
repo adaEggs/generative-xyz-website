@@ -100,7 +100,7 @@ class APICaller {
         value: userLocation.organization,
       });
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Error, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       eventParams.push({
         key: 'error_get_api_ip',
         value: err,
@@ -110,7 +110,7 @@ class APICaller {
     eventPayload.data = eventData;
 
     if (this.debugMode) {
-      log(JSON.stringify(eventPayload), LogLevel.Debug, LOG_PREFIX);
+      log(JSON.stringify(eventPayload), LogLevel.DEBUG, LOG_PREFIX);
     }
 
     try {
@@ -122,7 +122,7 @@ class APICaller {
       });
     } catch (err: unknown) {
       if (this.debugMode) {
-        log(err as Error, LogLevel.Debug, LOG_PREFIX);
+        log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
       }
     }
   }

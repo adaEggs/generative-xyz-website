@@ -36,7 +36,7 @@ const Page404 = (): JSX.Element => {
     try {
       await walletCtx.connect();
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Debug, LOG_PREFIX);
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
     }
   };
 

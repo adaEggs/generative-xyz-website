@@ -25,7 +25,7 @@ export const getTokenUri = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to get token uri', LogLevel.Error, LOG_PREFIX);
+    log('failed to get token uri', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get token uri');
   }
 };
@@ -40,7 +40,7 @@ export const getTokenAttributes = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to get token attributes', LogLevel.Error, LOG_PREFIX);
+    log('failed to get token attributes', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get token attributes');
   }
 };

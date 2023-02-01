@@ -37,7 +37,7 @@ export default function App({ Component, pageProps }: MyAppProps) {
       navigator.serviceWorker
         .register('/sw.js', { scope: '/' })
         .catch(function (err) {
-          log(err as Error, LogLevel.Error, 'App');
+          log(err as Error, LogLevel.ERROR, 'App');
         });
     }
 

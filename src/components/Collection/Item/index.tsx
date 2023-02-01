@@ -49,7 +49,7 @@ const CollectionItem = ({ data }: { data: Token }) => {
         );
       }
     } catch (e) {
-      log('can not fetch price', LogLevel.Error, '');
+      log('can not fetch price', LogLevel.ERROR, '');
     }
   };
 

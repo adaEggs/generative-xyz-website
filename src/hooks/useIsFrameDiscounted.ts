@@ -50,7 +50,7 @@ const useIsFrameDiscounted = (): boolean => {
         setIsDiscounted(true);
       }
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Error, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
     }
   }, [user]);
 
@@ -72,7 +72,7 @@ const useIsFrameDiscounted = (): boolean => {
         setIsDiscounted(true);
       }
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Error, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
     }
   }, [user]);
 

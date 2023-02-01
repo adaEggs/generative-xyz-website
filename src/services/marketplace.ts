@@ -24,7 +24,7 @@ export const getListing = async (
       `${API_PATH}/listing/${params.genNFTAddr}/token/${params.tokenId}${qs}`
     );
   } catch (err: unknown) {
-    log('failed to get listing token', LogLevel.Error, LOG_PREFIX);
+    log('failed to get listing token', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get listing');
   }
 };
@@ -39,7 +39,7 @@ export const getMakeOffers = async ({
       `${API_PATH}/offers/${genNFTAddr}/token/${tokenId}?closed=${closed}`
     );
   } catch (err: unknown) {
-    log('failed to get listing token', LogLevel.Error, LOG_PREFIX);
+    log('failed to get listing token', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get listing');
   }
 };
@@ -56,7 +56,7 @@ export const getListingTokensByWallet = async ({
       `${API_PATH}/wallet/${walletAddress}/listing?closed=${closed}`
     );
   } catch (err: unknown) {
-    log('failed to get listing token', LogLevel.Error, LOG_PREFIX);
+    log('failed to get listing token', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get listing');
   }
 };
@@ -73,7 +73,7 @@ export const getMakeOffersByWallet = async ({
       `${API_PATH}/wallet/${walletAddress}/offer?closed=${closed}`
     );
   } catch (err: unknown) {
-    log('failed to get listing token', LogLevel.Error, LOG_PREFIX);
+    log('failed to get listing token', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get listing');
   }
 };
@@ -88,7 +88,7 @@ export const getMarketplaceStats = async ({
       `${API_PATH}/stats/${collectionAddr}`
     );
   } catch (err: unknown) {
-    log('failed to get project stats', LogLevel.Error, LOG_PREFIX);
+    log('failed to get project stats', LogLevel.ERROR, LOG_PREFIX);
     return null;
   }
 };

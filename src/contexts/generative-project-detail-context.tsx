@@ -135,7 +135,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
         dispatch(setProjectCurrent(data));
         setProjectData(data);
       } catch (_: unknown) {
-        log('failed to fetch project detail data', LogLevel.Error, LOG_PREFIX);
+        log('failed to fetch project detail data', LogLevel.ERROR, LOG_PREFIX);
       }
     }
   };
@@ -171,7 +171,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
         setIsLoaded(true);
         setIsNextPageLoaded(true);
       } catch (_: unknown) {
-        log('failed to fetch project items data', LogLevel.Error, LOG_PREFIX);
+        log('failed to fetch project items data', LogLevel.ERROR, LOG_PREFIX);
       }
     }
   };

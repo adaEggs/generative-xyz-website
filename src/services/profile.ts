@@ -17,7 +17,7 @@ export const getProfile = async (): Promise<IGetProfileResponse> => {
   try {
     return await get<IGetProfileResponse>(`${API_PATH}`);
   } catch (err: unknown) {
-    log('failed to get profile', LogLevel.Error, LOG_PREFIX);
+    log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get profile');
   }
 };
@@ -32,7 +32,7 @@ export const getProfileByWallet = async ({
       `${API_PATH}/wallet/${walletAddress}`
     );
   } catch (err: unknown) {
-    log('failed to get profile', LogLevel.Error, LOG_PREFIX);
+    log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get profile');
   }
 };
@@ -42,7 +42,7 @@ export const getProfileProjects =
     try {
       return await get<IGetProjectItemsResponse>(`${API_PATH}/projects`);
     } catch (err: unknown) {
-      log('failed to get profile projects', LogLevel.Error, LOG_PREFIX);
+      log('failed to get profile projects', LogLevel.ERROR, LOG_PREFIX);
       throw Error('Failed to get profile projects');
     }
   };
@@ -61,7 +61,7 @@ export const getProfileProjectsByWallet = async ({
       `${API_PATH}/wallet/${walletAddress}/projects?limit=${limit}&page=${page}`
     );
   } catch (err: unknown) {
-    log('failed to get profile', LogLevel.Error, LOG_PREFIX);
+    log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get profile');
   }
 };
@@ -80,7 +80,7 @@ export const getProfileTokens = async ({
       `${API_PATH}/wallet/${walletAddress}/nfts?limit=${limit}&page=${page}`
     );
   } catch (err: unknown) {
-    log('failed to get profile nfts', LogLevel.Error, LOG_PREFIX);
+    log('failed to get profile nfts', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get profile nfts');
   }
 };
@@ -95,7 +95,7 @@ export const updateProfile = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to update profile', LogLevel.Error, LOG_PREFIX);
+    log('failed to update profile', LogLevel.ERROR, LOG_PREFIX);
     throw Error();
   }
 };

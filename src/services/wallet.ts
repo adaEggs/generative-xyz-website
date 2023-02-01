@@ -82,7 +82,7 @@ export class WalletManager {
       const currentChainID = await this.getWeb3Provider().eth.getChainId();
       return chainID === currentChainID;
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Error, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       return false;
     }
   }
@@ -125,7 +125,7 @@ export class WalletManager {
         data: null,
       };
     } catch (err: unknown) {
-      log('failed to connect to wallet', LogLevel.Error, LOG_PREFIX);
+      log('failed to connect to wallet', LogLevel.ERROR, LOG_PREFIX);
       return {
         isError: true,
         isSuccess: false,
@@ -165,7 +165,7 @@ export class WalletManager {
         data: signature,
       };
     } catch (err: unknown) {
-      log('failed to sign message', LogLevel.Error, LOG_PREFIX);
+      log('failed to sign message', LogLevel.ERROR, LOG_PREFIX);
       return {
         isError: true,
         isSuccess: false,
@@ -192,7 +192,7 @@ export class WalletManager {
           ],
         });
       } catch (err: unknown) {
-        log(err as Error, LogLevel.Error, LOG_PREFIX);
+        log(err as Error, LogLevel.ERROR, LOG_PREFIX);
 
         if ((err as ProviderRpcError).code !== WalletErrorCode.USER_REJECTED) {
           this.requestAddChain(chainID);
@@ -210,7 +210,7 @@ export class WalletManager {
     } catch (err: unknown) {
       log(
         `failed switch chain, request chain id ${chainID}`,
-        LogLevel.Error,
+        LogLevel.ERROR,
         LOG_PREFIX
       );
 
@@ -237,7 +237,7 @@ export class WalletManager {
         (c: IResourceChain) => c.chainId === chainID
       );
       if (!chain) {
-        log(`chain ${chainID} not found`, LogLevel.Error, LOG_PREFIX);
+        log(`chain ${chainID} not found`, LogLevel.ERROR, LOG_PREFIX);
         return {
           isError: true,
           isSuccess: false,
@@ -279,7 +279,7 @@ export class WalletManager {
         data: null,
       };
     } catch (_: unknown) {
-      log('failed to add chain', LogLevel.Error, LOG_PREFIX);
+      log('failed to add chain', LogLevel.ERROR, LOG_PREFIX);
       return {
         isError: true,
         isSuccess: false,
@@ -323,7 +323,7 @@ export class WalletManager {
         };
       }
     } catch (_: unknown) {
-      log('failed to add chain', LogLevel.Error, LOG_PREFIX);
+      log('failed to add chain', LogLevel.ERROR, LOG_PREFIX);
       return {
         isError: true,
         isSuccess: false,
@@ -418,7 +418,7 @@ export class WalletManager {
       });
       return res;
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Error, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
 
       statusCallback?.(ContractOperationStatus.ERROR, {
         error: err,

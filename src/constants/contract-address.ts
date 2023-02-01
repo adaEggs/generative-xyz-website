@@ -21,6 +21,11 @@ export const MAX_HEX_VALUE =
 
 export const GEN_TOKEN_ADDRESS = process.env.NEXT_PUBLIC_GEN_TOKEN_ADDRESS!;
 
+export const GEN_DAO_ADDRESS = process.env.NEXT_PUBLIC_GEN_DAO_ADDRESS!;
+
+export const GEN_DAO_TREASURY_ADDRESS =
+  process.env.NEXT_PUBLIC_GEN_DAO_TREASURY_ADDRESS!;
+
 export const IGNORABLE_GEN_HOLDER_ADDRESS_LIST = [
   '0xe55eade1b17bba28a80a71633af8c15dc2d556a5',
 ];
