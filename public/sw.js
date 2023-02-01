@@ -84,7 +84,7 @@ self.addEventListener("message", async (event) => {
 
 
 // Cache
-const CACHE_VERSION = 'v1.1.9';
+const CACHE_VERSION = 'v1.1.11';
 const CURRENT_CACHES = {
   assets: `assets-cache-${CACHE_VERSION}`,
 };
