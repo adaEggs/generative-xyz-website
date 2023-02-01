@@ -26,7 +26,7 @@ const ProjectPreview = () => {
   } = useContext(MintGenerativeContext);
   const sandboxRef = useRef<ISandboxRef>(null);
   const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>(
-    PreviewDisplayMode.Animation
+    PreviewDisplayMode.ANIMATION
   );
   const [hash, setHash] = useState<string>(generateHash());
 
@@ -54,19 +54,19 @@ const ProjectPreview = () => {
   };
 
   const handlePlay = (): void => {
-    setDisplayMode(PreviewDisplayMode.Animation);
+    setDisplayMode(PreviewDisplayMode.ANIMATION);
   };
 
   const handlePause = (): void => {
-    setDisplayMode(PreviewDisplayMode.Thumbnail);
+    setDisplayMode(PreviewDisplayMode.THUMBNAIL);
   };
 
   const canPlay = useMemo(() => {
-    return !!filesSandbox && displayMode === PreviewDisplayMode.Thumbnail;
+    return !!filesSandbox && displayMode === PreviewDisplayMode.THUMBNAIL;
   }, [filesSandbox, displayMode]);
 
   const canPause = useMemo(() => {
-    return !!thumbnailFile && displayMode === PreviewDisplayMode.Animation;
+    return !!thumbnailFile && displayMode === PreviewDisplayMode.ANIMATION;
   }, [thumbnailFile, displayMode]);
 
   return (
@@ -75,7 +75,7 @@ const ProjectPreview = () => {
         <div className={s.sandboxWrapper}>
           <ClientOnly>
             <SandboxPreview
-              showIframe={displayMode === PreviewDisplayMode.Animation}
+              showIframe={displayMode === PreviewDisplayMode.ANIMATION}
               rawHtml={null}
               ref={sandboxRef}
               hash={hash}
@@ -83,7 +83,7 @@ const ProjectPreview = () => {
               onLoaded={handleIframeLoaded}
             />
           </ClientOnly>
-          {displayMode === PreviewDisplayMode.Thumbnail &&
+          {displayMode === PreviewDisplayMode.THUMBNAIL &&
             thumbnailPreviewUrl && (
               <Image fill src={thumbnailPreviewUrl} alt="thumbnail"></Image>
             )}

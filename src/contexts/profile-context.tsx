@@ -142,7 +142,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         }
       }
     } catch (ex) {
-      log('can not fetch created collections', LogLevel.Error, LOG_PREFIX);
+      log('can not fetch created collections', LogLevel.ERROR, LOG_PREFIX);
       setIsLoadedProfileProjects(true);
     }
   }, [currentUser, profileProjects]);
@@ -160,7 +160,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         setIsLoadedProfileListing(true);
       }
     } catch (ex) {
-      log('can not fetch listing tokens', LogLevel.Error, LOG_PREFIX);
+      log('can not fetch listing tokens', LogLevel.ERROR, LOG_PREFIX);
     }
   }, [currentUser]);
 
@@ -178,7 +178,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         }
       }
     } catch (ex) {
-      log('can not fetch listing tokens', LogLevel.Error, LOG_PREFIX);
+      log('can not fetch listing tokens', LogLevel.ERROR, LOG_PREFIX);
       setIsLoadedProfileMakeOffer(true);
     }
   }, [currentUser]);
@@ -205,7 +205,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         }
       }
     } catch (ex) {
-      log('can not fetch tokens', LogLevel.Error, LOG_PREFIX);
+      log('can not fetch tokens', LogLevel.ERROR, LOG_PREFIX);
       setIsLoadedProfileTokens(true);
     }
   }, [currentUser, profileTokens]);
@@ -221,7 +221,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         }
       }
     } catch (ex) {
-      log('can not fetch tokens', LogLevel.Error, LOG_PREFIX);
+      log('can not fetch tokens', LogLevel.ERROR, LOG_PREFIX);
     }
   }, [walletAddress]);
 
@@ -232,7 +232,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     });
 
     if (!tx) {
-      log('Cancel token offer transaction error.', LogLevel.Error, LOG_PREFIX);
+      log('Cancel token offer transaction error.', LogLevel.ERROR, LOG_PREFIX);
       throw Error(ErrorMessage.DEFAULT);
     }
 

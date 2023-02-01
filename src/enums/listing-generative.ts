@@ -1,5 +1,5 @@
 export enum ListingStep {
-  InputInfo = 'InputInfo',
-  Processing = 'Processing',
-  Success = 'Success',
+  INPUT_INFO = 'INPUT_INFO',
+  PROCESSING = 'PROCESSING',
+  SUCCESS = 'SUCCESS',
 }

@@ -88,7 +88,7 @@ const Header: React.FC<IProp> = ({
       setIsConnecting(true);
       await connect();
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Debug, LOG_PREFIX);
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
     } finally {
       setIsConnecting(false);
     }

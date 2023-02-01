@@ -20,7 +20,7 @@ const AuthWrapper: React.FC<PropsWithChildren> = ({
         const userRes = await getProfile();
         dispatch(setUser(userRes));
       } catch (err: unknown) {
-        log('failed to get profile', LogLevel.Error, LOG_PREFIX);
+        log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
         clearAuthStorage();
         dispatch(resetUser());
       }

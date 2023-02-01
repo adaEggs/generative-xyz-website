@@ -1,17 +1,17 @@
 import { useCallback, useState } from 'react';
 
 import Heading from '@components/Heading';
+import ProjectListLoading from '@components/ProjectListLoading';
+import { ProjectList } from '@components/ProjectLists';
+import { TriggerLoad } from '@components/TriggerLoader';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { IGetProjectListResponse } from '@interfaces/api/project';
 import { Project } from '@interfaces/project';
 import { getProjectList } from '@services/project';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
-import ProjectListLoading from '@components/ProjectListLoading';
-import { ProjectList } from '@components/ProjectLists';
-import { TriggerLoad } from '@components/TriggerLoader';
-import { IGetProjectListResponse } from '@interfaces/api/project';
 
 // const SORT_OPTIONS: Array<{ value: string; label: string }> = [
 //   {

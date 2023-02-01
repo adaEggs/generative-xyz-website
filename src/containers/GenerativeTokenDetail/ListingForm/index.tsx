@@ -40,7 +40,7 @@ const ListingForm: React.FC = (): React.ReactElement => {
 
   const handleSubmit = async (values: IFormValues) => {
     setListingPrice(values.price);
-    setListingStep(ListingStep.Processing);
+    setListingStep(ListingStep.PROCESSING);
     await handleListingToken(values.price.toString());
   };
 

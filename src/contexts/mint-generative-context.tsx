@@ -16,11 +16,8 @@ import React, {
   useState,
   useMemo,
   useEffect,
+  PropsWithChildren,
 } from 'react';
-
-type Props = {
-  children: React.ReactNode;
-};
 
 export type TMintGenerativeContext = {
   currentStep: number;
@@ -91,7 +88,9 @@ const initialValues: TMintGenerativeContext = {
 export const MintGenerativeContext =
   createContext<TMintGenerativeContext>(initialValues);
 
-export const MintGenerativeContextProvider = ({ children }: Props) => {
+export const MintGenerativeContextProvider = ({
+  children,
+}: PropsWithChildren) => {
   const router = useRouter();
   const { stepParam } = router.query;
   const [filesSandbox, setFilesSandbox] = useState<SandboxFiles | null>(null);

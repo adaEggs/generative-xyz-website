@@ -20,3 +20,18 @@
     margin-right: auto;
   }
 }
+
+.tooltip {
+  .tooltip-arrow::before {
+    border-bottom-color: $white;
+    box-shadow: 0 4px 16px 0 #0000001a;
+  }
+
+  .tooltip-inner {
+    background-color: $white;
+    box-shadow: 0 4px 20px 0 #00000026;
+    padding: rem(6) rem(16);
+    border-radius: 8px;
+    font-family: $font-heading;
+  }
+}

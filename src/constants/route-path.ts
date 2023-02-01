@@ -16,4 +16,5 @@ export const ROUTE_PATH = {
   DISPLAY: isStaging() ? 'https://generative.xyz' : '/display',
   ORDER_NOW: isStaging() ? 'https://generative.xyz/order-now' : '/order-now',
   LEADERBOARDS: '/leaderboards',
+  DAO: '/dao',
 };

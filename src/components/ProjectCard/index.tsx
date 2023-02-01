@@ -23,7 +23,7 @@ interface IPros {
 export const ProjectCard = ({ project }: IPros): JSX.Element => {
   const [creator, setCreator] = useState<User | null>(null);
 
-  const { isMobile } = useWindowSize();
+  const { mobileScreen } = useWindowSize();
 
   const [thumb, setThumb] = useState<string>(project.image);
 
@@ -55,7 +55,7 @@ export const ProjectCard = ({ project }: IPros): JSX.Element => {
             loading={'lazy'}
           />
         </div>
-        {isMobile ? (
+        {mobileScreen ? (
           <div className={cs(s.projectCard_info, s.mobile)}>
             {creator && (
               <Text size="11" fontWeight="medium">

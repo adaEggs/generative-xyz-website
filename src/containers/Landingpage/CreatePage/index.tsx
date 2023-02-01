@@ -32,7 +32,7 @@ export const CreatePageSection = (): JSX.Element => {
       const res = await getRandomProject();
       setProject(res);
     } catch (err: unknown) {
-      log('failed to fetch random project', LogLevel.Error);
+      log('failed to fetch random project', LogLevel.ERROR);
       throw Error();
     }
   };

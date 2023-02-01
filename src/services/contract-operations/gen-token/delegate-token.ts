@@ -1,31 +1,39 @@
 import { AbiItem } from 'web3-utils';
 import { Contract } from 'web3-eth-contract';
 import ContractOperation from '@services/contract-operations/contract-operation';
-import ContractABI from '@services/contract-abis/erc721.json';
+import ContractABI from '@services/contract-abis/gen-token.json';
 import { ErrorMessage } from '@enums/error-message';
-import { IGetTokenBalanceParams } from '@interfaces/contract-operations/erc721-get-token-balance';
+import { GEN_TOKEN_ADDRESS } from '@constants/contract-address';
+import { IDelegateGENTokenParams } from '@interfaces/contract-operations/delegate-gen-token';
+import { TransactionReceipt } from 'web3-eth';
 
 class DelegateGENTokenOperation extends ContractOperation<
-  IGetTokenBalanceParams,
-  number
+  IDelegateGENTokenParams,
+  TransactionReceipt
 > {
   contract: Contract | null = null;
+  contractAddress = GEN_TOKEN_ADDRESS;
 
   async prepare(): Promise<void> {
     this.contract = await this.walletManager.getContract(
-      this.params.erc721TokenAddress,
+      this.contractAddress,
       ContractABI.abi as Array<AbiItem>
     );
   }
 
-  async call(): Promise<number> {
+  async call(): Promise<TransactionReceipt> {
     if (!this.contract) {
       throw Error('Contract not found');
     }
 
+    // Delegatee address
     const walletAddress = await this.walletManager.connectedAddress();
 
-    const data = await this.contract.methods.balanceOf(walletAddress).call();
+    const data = await this.contract.methods.delegate(walletAddress).send({
+      from: walletAddress,
+      to: this.contractAddress,
+      value: '0',
+    });
 
     return data;
   }

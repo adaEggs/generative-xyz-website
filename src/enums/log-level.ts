@@ -2,32 +2,32 @@ export enum LogLevel {
   /**
    * Used for tests only
    */
-  Test = 'test',
+  TEST = 'test',
   /**
    * Verbose logging.
    * Not recommended for production use.
    */
-  Verbose = 'verbose',
+  VERBOSE = 'verbose',
   /**
    * Debug logging.
    * Not recommended for production use.
    */
-  Debug = 'debug',
+  DEBUG = 'debug',
   /**
    * Info logging.
    * May be useful for production use for new services.
    */
-  Info = 'info',
+  INFO = 'info',
   /**
    * Warnings and above.
    * Recommended for production use.
    */
-  Warning = 'warning',
+  WARNING = 'warning',
   /**
    * HIGHest log level.
    *
    * Recommended for production use only if you really
    * want to ignore warnings.
    */
-  Error = 'error',
+  ERROR = 'error',
 }

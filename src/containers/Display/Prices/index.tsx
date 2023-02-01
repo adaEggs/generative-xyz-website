@@ -38,7 +38,7 @@ export const Prices = (): JSX.Element => {
       }
     } catch (_: unknown) {
       unRegisterLoading('Prices2');
-      log('failed to get products', LogLevel.Error, LOG_PREFIX);
+      log('failed to get products', LogLevel.ERROR, LOG_PREFIX);
     }
 
     return () => {

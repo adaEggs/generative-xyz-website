@@ -6,6 +6,6 @@ export enum MintGenerativeStep {
 }
 
 export enum PreviewDisplayMode {
-  Animation = 'Animation',
-  Thumbnail = 'Thumbnail',
+  ANIMATION = 'ANIMATION',
+  THUMBNAIL = 'THUMBNAIL',
 }

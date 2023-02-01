@@ -5,7 +5,7 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { provider } from 'web3-core';
 import { MetaMaskInpageProvider } from '@metamask/providers';
-import { AbiItem } from 'web3-utils';
+import { AbiItem, AbiType } from 'web3-utils';
 import {
   TContractOperation,
   ContractOperationCallback,
@@ -21,6 +21,7 @@ import {
 } from '@interfaces/wallet';
 import { WalletError, WalletErrorCode } from '@enums/wallet-error';
 import { WalletEvent } from '@enums/wallet-event';
+import DAOTresuryContractABI from '@services/contract-abis/gen-dao-treasury.json';
 
 const LOG_PREFIX = 'WalletManager';
 
@@ -82,7 +83,7 @@ export class WalletManager {
       const currentChainID = await this.getWeb3Provider().eth.getChainId();
       return chainID === currentChainID;
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Error, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       return false;
     }
   }
@@ -125,7 +126,7 @@ export class WalletManager {
         data: null,
       };
     } catch (err: unknown) {
-      log('failed to connect to wallet', LogLevel.Error, LOG_PREFIX);
+      log('failed to connect to wallet', LogLevel.ERROR, LOG_PREFIX);
       return {
         isError: true,
         isSuccess: false,
@@ -165,7 +166,7 @@ export class WalletManager {
         data: signature,
       };
     } catch (err: unknown) {
-      log('failed to sign message', LogLevel.Error, LOG_PREFIX);
+      log('failed to sign message', LogLevel.ERROR, LOG_PREFIX);
       return {
         isError: true,
         isSuccess: false,
@@ -192,7 +193,7 @@ export class WalletManager {
           ],
         });
       } catch (err: unknown) {
-        log(err as Error, LogLevel.Error, LOG_PREFIX);
+        log(err as Error, LogLevel.ERROR, LOG_PREFIX);
 
         if ((err as ProviderRpcError).code !== WalletErrorCode.USER_REJECTED) {
           this.requestAddChain(chainID);
@@ -210,7 +211,7 @@ export class WalletManager {
     } catch (err: unknown) {
       log(
         `failed switch chain, request chain id ${chainID}`,
-        LogLevel.Error,
+        LogLevel.ERROR,
         LOG_PREFIX
       );
 
@@ -237,7 +238,7 @@ export class WalletManager {
         (c: IResourceChain) => c.chainId === chainID
       );
       if (!chain) {
-        log(`chain ${chainID} not found`, LogLevel.Error, LOG_PREFIX);
+        log(`chain ${chainID} not found`, LogLevel.ERROR, LOG_PREFIX);
         return {
           isError: true,
           isSuccess: false,
@@ -279,7 +280,7 @@ export class WalletManager {
         data: null,
       };
     } catch (_: unknown) {
-      log('failed to add chain', LogLevel.Error, LOG_PREFIX);
+      log('failed to add chain', LogLevel.ERROR, LOG_PREFIX);
       return {
         isError: true,
         isSuccess: false,
@@ -323,7 +324,7 @@ export class WalletManager {
         };
       }
     } catch (_: unknown) {
-      log('failed to add chain', LogLevel.Error, LOG_PREFIX);
+      log('failed to add chain', LogLevel.ERROR, LOG_PREFIX);
       return {
         isError: true,
         isSuccess: false,
@@ -331,6 +332,31 @@ export class WalletManager {
         data: null,
       };
     }
+  }
+
+  encodeFunctionCall(funcName: string, args: Array<string>) {
+    const { abi } = DAOTresuryContractABI;
+
+    const funcObj = abi.find(abiItem => {
+      return abiItem.name === funcName && abiItem.type === 'function';
+    });
+
+    if (!funcObj) {
+      return ['0x'];
+    }
+
+    const web3Provider = this.getWeb3Provider();
+
+    const encodedData = web3Provider.eth.abi.encodeFunctionCall(
+      {
+        name: funcObj.name ?? '',
+        type: (funcObj.type ?? 'function') as AbiType,
+        inputs: funcObj.inputs,
+      },
+      [...args]
+    );
+
+    return [encodedData];
   }
 
   /**
@@ -418,7 +444,7 @@ export class WalletManager {
       });
       return res;
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Error, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
 
       statusCallback?.(ContractOperationStatus.ERROR, {
         error: err,

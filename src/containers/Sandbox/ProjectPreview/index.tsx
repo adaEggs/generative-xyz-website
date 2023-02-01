@@ -18,7 +18,7 @@ const ProjectPreview = ({ filesSandbox }: IProps) => {
   const [previewSrc, setPreviewSrc] = useState('');
   const sandboxRef = useRef<ISandboxRef>(null);
   const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>(
-    PreviewDisplayMode.Animation
+    PreviewDisplayMode.ANIMATION
   );
   const [hash, setHash] = useState<string>(generateHash());
 
@@ -50,19 +50,19 @@ const ProjectPreview = ({ filesSandbox }: IProps) => {
   };
 
   const handlePlay = (): void => {
-    setDisplayMode(PreviewDisplayMode.Animation);
+    setDisplayMode(PreviewDisplayMode.ANIMATION);
   };
 
   const handlePause = (): void => {
-    setDisplayMode(PreviewDisplayMode.Thumbnail);
+    setDisplayMode(PreviewDisplayMode.THUMBNAIL);
   };
 
   const canPlay = useMemo(() => {
-    return !!filesSandbox && displayMode === PreviewDisplayMode.Thumbnail;
+    return !!filesSandbox && displayMode === PreviewDisplayMode.THUMBNAIL;
   }, [filesSandbox, displayMode]);
 
   const canPause = useMemo(() => {
-    return displayMode === PreviewDisplayMode.Animation;
+    return displayMode === PreviewDisplayMode.ANIMATION;
   }, [displayMode]);
 
   return (
@@ -71,7 +71,7 @@ const ProjectPreview = ({ filesSandbox }: IProps) => {
         <div className={s.sandboxWrapper}>
           <ClientOnly>
             <SandboxPreview
-              showIframe={displayMode === PreviewDisplayMode.Animation}
+              showIframe={displayMode === PreviewDisplayMode.ANIMATION}
               rawHtml={null}
               ref={sandboxRef}
               hash={hash}
@@ -79,7 +79,7 @@ const ProjectPreview = ({ filesSandbox }: IProps) => {
               onLoaded={handleIframeLoaded}
             />
           </ClientOnly>
-          {displayMode === PreviewDisplayMode.Thumbnail && (
+          {displayMode === PreviewDisplayMode.THUMBNAIL && (
             <Image fill src={DEFAULT_ART_THUMBNAIL} alt="thumbnail"></Image>
           )}
         </div>

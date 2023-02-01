@@ -5,7 +5,7 @@ import DatadogService from '@services/datadog';
 import { LogItem } from '@interfaces/log';
 
 const selectedLogLevel: LogLevel =
-  (APP_LOG_LEVEL as undefined | LogLevel) ?? LogLevel.Verbose;
+  (APP_LOG_LEVEL as undefined | LogLevel) ?? LogLevel.VERBOSE;
 
 const logLevelSufficient = (
   logLevel: LogLevel,
@@ -15,12 +15,12 @@ const logLevelSufficient = (
   const LOGLEVEL_PRIORITY: {
     [key: string]: number;
   } = {
-    [LogLevel.Test]: 0,
-    [LogLevel.Verbose]: 10,
-    [LogLevel.Debug]: 20,
-    [LogLevel.Info]: 30,
-    [LogLevel.Warning]: 40,
-    [LogLevel.Error]: 99,
+    [LogLevel.TEST]: 0,
+    [LogLevel.VERBOSE]: 10,
+    [LogLevel.DEBUG]: 20,
+    [LogLevel.INFO]: 30,
+    [LogLevel.WARNING]: 40,
+    [LogLevel.ERROR]: 99,
   };
 
   const logLevelPriority = LOGLEVEL_PRIORITY[logLevel];
@@ -57,7 +57,7 @@ const log = (
   };
 
   // Special case for error since we want to see the stacktrace
-  if (logLevel === LogLevel.Error) {
+  if (logLevel === LogLevel.ERROR) {
     if ((msg as Error).message) {
       eventLogItem.message = `${messagePrefix} ${(msg as Error).message}`;
     }
