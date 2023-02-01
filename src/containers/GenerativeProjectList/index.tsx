@@ -24,7 +24,7 @@ const GenerativeProjectList: React.FC = (): React.ReactElement => {
       setProjects(result);
       setLoaded(true);
     } catch (_: unknown) {
-      log('failed to fetch project list data', LogLevel.Error, LOG_PREFIX);
+      log('failed to fetch project list data', LogLevel.ERROR, LOG_PREFIX);
     }
   };
 

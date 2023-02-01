@@ -18,4 +18,5 @@ export const ROUTE_PATH = {
   LEADERBOARDS: isProduction()
     ? 'https://testnet.generative.xyz/leaderboards'
     : '/leaderboards',
+  DAO: '/dao',
 };

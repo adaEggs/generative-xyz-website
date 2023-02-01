@@ -27,7 +27,7 @@ export const getProjectDetail = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to get project detail', LogLevel.Error, LOG_PREFIX);
+    log('failed to get project detail', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get project detail');
   }
 };
@@ -38,7 +38,7 @@ export const getRandomProject =
       const res = await get<IGetProjectDetailResponse>(`${API_PATH}/random`);
       return res;
     } catch (err: unknown) {
-      log('failed to get project detail', LogLevel.Error, LOG_PREFIX);
+      log('failed to get project detail', LogLevel.ERROR, LOG_PREFIX);
       throw Error('Failed to get project detail');
     }
   };
@@ -54,7 +54,7 @@ export const getProjectItems = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to get project items', LogLevel.Error, LOG_PREFIX);
+    log('failed to get project items', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get project items');
   }
 };
@@ -69,7 +69,7 @@ export const createProjectMetadata = async (
     >(`${API_PATH}`, payload);
     return res;
   } catch (err: unknown) {
-    log('failed to create project metadata', LogLevel.Error, LOG_PREFIX);
+    log('failed to create project metadata', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to create project metadata');
   }
 };
@@ -82,7 +82,7 @@ export const getProjectList = async (
     const res = await get<IGetProjectListResponse>(`${API_PATH}${qs}`);
     return res;
   } catch (err: unknown) {
-    log('failed to get project list', LogLevel.Error, LOG_PREFIX);
+    log('failed to get project list', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get project list');
   }
 };
@@ -95,7 +95,7 @@ export const getProjectListMinited = async (
     const res = await get<IGetProjectListResponse>(`${API_PATH}${qs}`);
     return res;
   } catch (err: unknown) {
-    log('failed to get project list', LogLevel.Error, LOG_PREFIX);
+    log('failed to get project list', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get project list');
   }
 };

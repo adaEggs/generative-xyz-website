@@ -23,7 +23,7 @@ export const getTokenActivities = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to get token activities', LogLevel.Error, LOG_PREFIX);
+    log('failed to get token activities', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get token activities');
   }
 };
@@ -39,7 +39,7 @@ export const getNFTHolderList = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to get nft holder list', LogLevel.Error, LOG_PREFIX);
+    log('failed to get nft holder list', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get nft holder list');
   }
 };

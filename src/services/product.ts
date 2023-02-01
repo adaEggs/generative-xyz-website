@@ -15,7 +15,7 @@ export const getProductList = async (): Promise<IGetProductListResponse> => {
     });
     return res;
   } catch (err: unknown) {
-    log('failed to get product list', LogLevel.Error, LOG_PREFIX);
+    log('failed to get product list', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get product list');
   }
 };

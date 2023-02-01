@@ -14,7 +14,7 @@ const Marketplace = () => {
   //     const res = await getRandomProject();
   //     setProjectInfo(res);
   //   } catch (err: unknown) {
-  //     log('failed to fetch random project', LogLevel.Error, LOG_PREFIX);
+  //     log('failed to fetch random project', LogLevel.ERROR, LOG_PREFIX);
   //     throw Error();
   //   }
   // };

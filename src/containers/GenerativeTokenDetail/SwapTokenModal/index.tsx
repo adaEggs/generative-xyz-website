@@ -77,7 +77,7 @@ const SwapTokenModal: React.FC = (): React.ReactElement => {
       }
     } catch (err: unknown) {
       toast.error((err as Error).message);
-      log('failed to swap token', LogLevel.Error, LOG_PREFIX);
+      log('failed to swap token', LogLevel.ERROR, LOG_PREFIX);
     } finally {
       setIsProcessing(false);
     }

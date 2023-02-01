@@ -72,12 +72,12 @@
 @include mobile {
   .filter_wrapper {
     position: fixed;
-    top: 0;
+    top: rem(65);
     height: 100vh;
     background: $white;
     left: 0;
     width: 100%;
-    z-index: 10;
+    z-index: 7;
     padding: 16px;
   }
 }

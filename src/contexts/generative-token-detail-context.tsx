@@ -111,7 +111,7 @@ const initialValue: IGenerativeTokenDetailContext = {
     return;
   },
   handleListingToken: _ => new Promise(r => r()),
-  listingStep: ListingStep.InputInfo,
+  listingStep: ListingStep.INPUT_INFO,
   setListingStep: _ => {
     return;
   },
@@ -193,7 +193,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     open: boolean;
     offer: TokenOffer | null;
   }>({ open: false, offer: null });
-  const [listingStep, setListingStep] = useState(ListingStep.InputInfo);
+  const [listingStep, setListingStep] = useState(ListingStep.INPUT_INFO);
   const [listingPrice, setListingPrice] = useState(0);
   const [listingOffers, setListingOffers] = useState<Array<TokenOffer>>([]);
   const [marketplaceStats, setMarketplaceStats] =
@@ -271,7 +271,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   const hideListingModal = (): void => {
     // Reset state
     setShowListingModal(false);
-    setListingStep(ListingStep.InputInfo);
+    setListingStep(ListingStep.INPUT_INFO);
     setTxHash(null);
     setListingPrice(0);
 
@@ -350,7 +350,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     });
     if (isTokenApproved === null) {
       setErrorMessage('Transaction rejected.');
-      log('listing token transaction error.', LogLevel.Error, LOG_PREFIX);
+      log('listing token transaction error.', LogLevel.ERROR, LOG_PREFIX);
       return;
     }
     if (!isTokenApproved) {
@@ -361,7 +361,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
       });
       if (!status) {
         setErrorMessage('Transaction rejected.');
-        log('listing token transaction error.', LogLevel.Error, LOG_PREFIX);
+        log('listing token transaction error.', LogLevel.ERROR, LOG_PREFIX);
         return;
       }
     }
@@ -376,10 +376,10 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
 
     if (!tx) {
       setErrorMessage(ErrorMessage.DEFAULT);
-      log('listing token transaction error.', LogLevel.Error, LOG_PREFIX);
+      log('listing token transaction error.', LogLevel.ERROR, LOG_PREFIX);
       return;
     } else {
-      setListingStep(ListingStep.Success);
+      setListingStep(ListingStep.SUCCESS);
       setTxHash(tx.transactionHash);
 
       // Refresh listing offers
@@ -399,7 +399,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     });
     if (!tx) {
       toast.error(ErrorMessage.DEFAULT);
-      log('purchase token transaction error.', LogLevel.Error, LOG_PREFIX);
+      log('purchase token transaction error.', LogLevel.ERROR, LOG_PREFIX);
     } else {
       toast.success('You has bought this art successfully');
 
@@ -420,7 +420,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     });
 
     if (allowanceAmount === null) {
-      log('Can not get allowanceAmount.', LogLevel.Error, LOG_PREFIX);
+      log('Can not get allowanceAmount.', LogLevel.ERROR, LOG_PREFIX);
       throw Error(ErrorMessage.DEFAULT);
     }
 
@@ -432,7 +432,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
       });
 
       if (!approveTokenTx) {
-        log('User rejected WETH permission.', LogLevel.Error, LOG_PREFIX);
+        log('User rejected WETH permission.', LogLevel.ERROR, LOG_PREFIX);
         throw Error(ErrorMessage.DEFAULT);
       }
     }
@@ -447,7 +447,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     });
 
     if (!tx) {
-      log('Make token offer transaction error.', LogLevel.Error, LOG_PREFIX);
+      log('Make token offer transaction error.', LogLevel.ERROR, LOG_PREFIX);
       throw Error(ErrorMessage.DEFAULT);
     }
 
@@ -470,7 +470,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     });
     if (isTokenApproved === null) {
       setErrorMessage('Transaction rejected.');
-      log('listing token transaction error.', LogLevel.Error, LOG_PREFIX);
+      log('listing token transaction error.', LogLevel.ERROR, LOG_PREFIX);
       return;
     }
     if (!isTokenApproved) {
@@ -481,7 +481,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
       });
       if (!status) {
         setErrorMessage('Transaction rejected.');
-        log('listing token transaction error.', LogLevel.Error, LOG_PREFIX);
+        log('listing token transaction error.', LogLevel.ERROR, LOG_PREFIX);
         return;
       }
     }
@@ -493,7 +493,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     });
 
     if (!tx) {
-      log('Accept token offer transaction error.', LogLevel.Error, LOG_PREFIX);
+      log('Accept token offer transaction error.', LogLevel.ERROR, LOG_PREFIX);
       throw Error(ErrorMessage.DEFAULT);
     }
 
@@ -508,7 +508,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     });
 
     if (!tx) {
-      log('Cancel token offer transaction error.', LogLevel.Error, LOG_PREFIX);
+      log('Cancel token offer transaction error.', LogLevel.ERROR, LOG_PREFIX);
       throw Error(ErrorMessage.DEFAULT);
     }
 
@@ -532,7 +532,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     });
 
     if (!tx) {
-      log('Cancel token offer transaction error.', LogLevel.Error, LOG_PREFIX);
+      log('Cancel token offer transaction error.', LogLevel.ERROR, LOG_PREFIX);
       throw Error(ErrorMessage.DEFAULT);
     }
 
@@ -549,7 +549,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     if (!tx) {
       log(
         'Cancel listing token offer transaction error.',
-        LogLevel.Error,
+        LogLevel.ERROR,
         LOG_PREFIX
       );
       throw Error(ErrorMessage.DEFAULT);
@@ -568,7 +568,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     });
 
     if (!tx) {
-      log('Deposit weth transaction error.', LogLevel.Error, LOG_PREFIX);
+      log('Deposit weth transaction error.', LogLevel.ERROR, LOG_PREFIX);
       throw Error(ErrorMessage.DEFAULT);
     }
 
@@ -582,7 +582,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     });
 
     if (!tx) {
-      log('Withdraw weth transaction error.', LogLevel.Error, LOG_PREFIX);
+      log('Withdraw weth transaction error.', LogLevel.ERROR, LOG_PREFIX);
       throw Error(ErrorMessage.DEFAULT);
     }
 
@@ -599,7 +599,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
         setTokenData(res);
       }
     } catch (err: unknown) {
-      log('failed to fetch item detail', LogLevel.Error, LOG_PREFIX);
+      log('failed to fetch item detail', LogLevel.ERROR, LOG_PREFIX);
     }
   };
 
@@ -616,7 +616,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
         }
       }
     } catch (e) {
-      log('can not fetch offers', LogLevel.Error, LOG_PREFIX);
+      log('can not fetch offers', LogLevel.ERROR, LOG_PREFIX);
     }
   };
 
@@ -629,7 +629,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
         if (res) setMarketplaceStats(res?.stats);
       }
     } catch (e) {
-      log('can not fetch price', LogLevel.Error, '');
+      log('can not fetch price', LogLevel.ERROR, '');
     }
   };
 
@@ -655,7 +655,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
         }
       }
     } catch (e) {
-      log('can not fetch price', LogLevel.Error, '');
+      log('can not fetch price', LogLevel.ERROR, '');
     }
   };
 
@@ -669,7 +669,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
         if (res) setTokenActivities(res);
       }
     } catch (err: unknown) {
-      log('failed to ', LogLevel.Error, LOG_PREFIX);
+      log('failed to ', LogLevel.ERROR, LOG_PREFIX);
       throw Error();
     }
   };

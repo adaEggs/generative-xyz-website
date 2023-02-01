@@ -27,7 +27,7 @@ const Sandbox: React.FC = (): ReactElement => {
       readSandboxFileContent(files);
       setFilesSandbox(files);
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Error, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       let errorMessage =
         'There is a problem with your zip file. Please check and try again. ';
       if ((err as Error).message === SandboxFileError.NO_INDEX_HTML) {

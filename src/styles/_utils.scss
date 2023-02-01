@@ -81,6 +81,10 @@
 
 .gap-24 {
   gap: rem(24px);
+
+  @include mobile {
+    gap: rem(10);
+  }
 }
 
 .cursor-pointer {
@@ -196,6 +200,10 @@
 
 .text-green-c {
   color: #00aa6c;
+}
+
+.text-primary-333 {
+  color: $primary-333;
 }
 
 .h-divider {

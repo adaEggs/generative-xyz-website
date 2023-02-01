@@ -19,7 +19,7 @@ const CollectionList = ({
   projectInfo?: Project | null;
   isLoaded?: boolean;
 }) => {
-  const { isMobile } = useWindowSize();
+  const { mobileScreen } = useWindowSize();
 
   const { showFilter } = useContext(GenerativeProjectDetailContext);
 
@@ -53,7 +53,7 @@ const CollectionList = ({
           className={cs(
             s.collectionList,
             `grid gap-24 animate-grid ${
-              isMobile
+              mobileScreen
                 ? 'grid-cols-2'
                 : showFilter
                 ? 'grid-cols-3'
@@ -61,8 +61,11 @@ const CollectionList = ({
             }`
           )}
         >
-          {listData?.map((item, index) => (
-            <CollectionItem key={index} data={item} />
+          {listData?.map(item => (
+            <CollectionItem
+              key={`collection-item-${item.tokenID}`}
+              data={item}
+            />
           ))}
         </div>
         {listData?.length && (
