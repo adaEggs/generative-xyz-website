@@ -245,7 +245,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         setIsLoadedProfileActivity(true);
       }
     } catch (ex) {
-      log('can not fetch listing tokens', LogLevel.Error, LOG_PREFIX);
+      log('can not fetch listing tokens', LogLevel.ERROR, LOG_PREFIX);
     }
   }, [currentUser]);
 
