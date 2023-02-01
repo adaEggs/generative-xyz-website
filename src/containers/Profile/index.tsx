@@ -56,6 +56,14 @@ const Profile: React.FC = (): React.ReactElement => {
               >
                 <ListingTab />
               </Tab>
+
+              <Tab
+                tabClassName={s.tab}
+                eventKey="activity-tab"
+                title={`Activity (${profileListing?.total || 0})`}
+              >
+                <ListingTab />
+              </Tab>
             </Tabs>
           </div>
         </ClientOnly>
