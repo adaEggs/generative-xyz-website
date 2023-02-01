@@ -42,3 +42,27 @@ a {
     color: $black-100;
   }
 }
+
+.toast-error {
+  justify-content: center;
+
+  [role="status"] {
+    justify-content: flex-start;
+    margin: 0;
+    margin-left: rem(4);
+    font-size: rem(14);
+    font-weight: 500;
+    width: fit-content;
+  }
+}
+
+.toast-success {
+  [role="status"] {
+    justify-content: flex-start;
+    margin: 0;
+    font-size: rem(16);
+    font-weight: 500;
+    width: fit-content;
+    flex: unset;
+  }
+}

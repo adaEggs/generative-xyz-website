@@ -38,7 +38,7 @@ export const makeOrder = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to make order', LogLevel.Error, LOG_PREFIX);
+    log('failed to make order', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to make order');
   }
 };

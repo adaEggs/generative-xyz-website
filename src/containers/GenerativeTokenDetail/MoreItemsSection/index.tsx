@@ -57,7 +57,7 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
         setIsLoaded(true);
         setListItems(res.result);
       } catch (_: unknown) {
-        log('failed to fetch project items data', LogLevel.Error, LOG_PREFIX);
+        log('failed to fetch project items data', LogLevel.ERROR, LOG_PREFIX);
       }
     }
   };

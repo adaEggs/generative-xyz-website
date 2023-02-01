@@ -1,5 +1,6 @@
 import { ROUTE_PATH } from '@constants/route-path';
 import { SOCIALS } from '@constants/common';
+import { isProduction } from '@utils/common';
 
 export const MENU_HEADER = [
   {
@@ -37,7 +38,7 @@ export const RIGHT_MENU = [
   },
   {
     id: 'menu-7',
-    name: 'Leaderboards',
+    name: `${isProduction() ? 'Testnet' : ''} Leaderboard`,
     route: ROUTE_PATH.LEADERBOARDS,
     activePath: 'leaderboards',
   },

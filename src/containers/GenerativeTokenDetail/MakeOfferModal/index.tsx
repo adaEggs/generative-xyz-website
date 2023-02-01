@@ -53,7 +53,7 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
   };
 
   const handleAddFundByNetwork = (): void => {
-    if (NETWORK_CHAIN_ID === Chain.Mumbai) {
+    if (NETWORK_CHAIN_ID === Chain.MUMBAI) {
       window.open(UNISWAP_PAGE);
     } else {
       openSwapTokenModal();

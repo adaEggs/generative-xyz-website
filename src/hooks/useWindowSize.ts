@@ -7,7 +7,7 @@ interface Size {
 }
 
 interface CheckMobile {
-  isMobile: boolean;
+  mobileScreen: boolean;
 }
 
 function useWindowSize(): Size & CheckMobile {
@@ -15,7 +15,7 @@ function useWindowSize(): Size & CheckMobile {
     sreenWidth: undefined,
     heightWidth: undefined,
   });
-  const [isMobile, setIsMobile] = useState(false);
+  const [mobileScreen, setMobileScreen] = useState(false);
 
   useEffect(() => {
     function handleResize() {
@@ -31,16 +31,16 @@ function useWindowSize(): Size & CheckMobile {
 
   useEffect(() => {
     if (windowSize?.sreenWidth && windowSize.sreenWidth <= MOBILE_SCREEN) {
-      setIsMobile(true);
+      setMobileScreen(true);
     } else {
-      setIsMobile(false);
+      setMobileScreen(false);
     }
   }, [windowSize.sreenWidth]);
 
   return {
     sreenWidth: windowSize.sreenWidth,
     heightWidth: windowSize.heightWidth,
-    isMobile,
+    mobileScreen,
   };
 }
 

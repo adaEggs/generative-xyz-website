@@ -12,7 +12,6 @@ import ButtonIcon from '@components/ButtonIcon';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import SvgInset from '@components/SvgInset';
-import { isProduction } from '@utils/common';
 
 interface IProp {
   theme?: 'light' | 'dark';
@@ -61,22 +60,20 @@ const MenuMobile = React.forwardRef(
                 </li>
               ))}
 
-            {!isProduction() && (
-              <li
-                className={cs(
-                  activePath === RIGHT_MENU[2].activePath && s.active
-                )}
-                key={`header-${RIGHT_MENU[2].id}`}
+            <li
+              className={cs(
+                activePath === RIGHT_MENU[2].activePath && s.active
+              )}
+              key={`header-${RIGHT_MENU[2].id}`}
+            >
+              <a
+                href={getUrlWithQueryParams(RIGHT_MENU[2].route)}
+                target={'_blank'}
+                rel="noreferrer"
               >
-                <a
-                  href={getUrlWithQueryParams(RIGHT_MENU[2].route)}
-                  target={'_blank'}
-                  rel="noreferrer"
-                >
-                  {RIGHT_MENU[2].name}
-                </a>
-              </li>
-            )}
+                {RIGHT_MENU[2].name}
+              </a>
+            </li>
             <li>
               <a href={SOCIALS.whitepaper} target={'_blank'} rel="noreferrer">
                 Whitepaper

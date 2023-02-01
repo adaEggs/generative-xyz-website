@@ -23,7 +23,7 @@ const Header: React.FC = (): React.ReactElement => {
       setIsConnecting(true);
       await walletCtx.connect();
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Debug, LOG_PREFIX);
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
     } finally {
       setIsConnecting(false);
     }

@@ -99,7 +99,7 @@ const useContractOperation = <
     if (walletCtx.walletManager) {
       const isInstalled = walletCtx.walletManager.isInstalled();
       if (!isInstalled) {
-        log(WalletError.NO_METAMASK, LogLevel.Error, LOG_PREFIX);
+        log(WalletError.NO_METAMASK, LogLevel.ERROR, LOG_PREFIX);
         statusCallback(ContractOperationStatus.ERROR, {
           message: WalletError.NO_METAMASK,
         });
@@ -126,7 +126,7 @@ const useContractOperation = <
           chainID: params.chainID,
         });
       } catch (err: unknown) {
-        log(err as Error, LogLevel.Error, LOG_PREFIX);
+        log(err as Error, LogLevel.ERROR, LOG_PREFIX);
         statusCallback(ContractOperationStatus.ERROR, {
           message: (err as Error).message,
         });
@@ -139,7 +139,7 @@ const useContractOperation = <
         statusCallback
       );
     } else {
-      log(WalletError.NO_INSTANCE, LogLevel.Error, LOG_PREFIX);
+      log(WalletError.NO_INSTANCE, LogLevel.ERROR, LOG_PREFIX);
       statusCallback(ContractOperationStatus.ERROR, {
         message: WalletError.NO_INSTANCE,
       });

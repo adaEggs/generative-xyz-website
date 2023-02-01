@@ -48,10 +48,23 @@
 
         h4 {
           line-height: (34 / 24);
+          width: 100%;
 
           @include calcFontAuto(18px, 24px);
 
           font-weight: 600;
+
+          //todo
+          //display: flex;
+          //gap: 5px;
+          //
+          //span{
+          //  white-space: nowrap;
+          //  text-overflow: ellipsis;
+          //  max-width: 80%;
+          //  display: block;
+          //  overflow: hidden;
+          //}
         }
       }
 

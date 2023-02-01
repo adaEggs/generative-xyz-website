@@ -30,7 +30,7 @@ const FormEditProfile = () => {
     try {
       await walletCtx.connect();
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Debug, LOG_PREFIX);
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
     }
   };
 
@@ -64,7 +64,7 @@ const FormEditProfile = () => {
     try {
       return;
     } catch (err: unknown) {
-      log('Failed to update profile ', LogLevel.Error, LOG_PREFIX);
+      log('Failed to update profile ', LogLevel.ERROR, LOG_PREFIX);
     }
   };
 

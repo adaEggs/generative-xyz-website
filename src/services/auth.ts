@@ -22,7 +22,7 @@ export const generateNonceMessage = async (
     >(`${API_PATH}/nonce`, payload);
     return res;
   } catch (err: unknown) {
-    log('failed to generate nonce message', LogLevel.Error, LOG_PREFIX);
+    log('failed to generate nonce message', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to generate nonce message');
   }
 };
@@ -37,7 +37,7 @@ export const verifyNonceMessage = async (
     >(`${API_PATH}/nonce/verify`, payload);
     return res;
   } catch (err: unknown) {
-    log('failed to verify nonce message', LogLevel.Error, LOG_PREFIX);
+    log('failed to verify nonce message', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to verify nonce message');
   }
 };

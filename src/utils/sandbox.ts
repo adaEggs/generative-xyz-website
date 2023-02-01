@@ -106,7 +106,7 @@ export const readSandboxFileContent = async (
             ? minifiedFiles[fileName].deflate
             : minifiedFiles[fileName].content;
         } catch (err: unknown) {
-          log(err as Error, LogLevel.Error, LOG_PREFIX);
+          log(err as Error, LogLevel.ERROR, LOG_PREFIX);
         }
 
         fileContent = `<script>${minifiedContent}</script>`;

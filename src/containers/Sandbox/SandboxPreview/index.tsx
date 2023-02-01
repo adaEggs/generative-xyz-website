@@ -68,7 +68,7 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
             setWorkerIns(reg);
           })
           .catch((err: Error) => {
-            log(err, LogLevel.Error, LOG_PREFIX);
+            log(err, LogLevel.ERROR, LOG_PREFIX);
           });
       }
     }, []);

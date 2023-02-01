@@ -41,9 +41,9 @@ const ListingTokenModal: React.FC = (): React.ReactElement => {
             </Button>
           </div>
           <div className={s.modalBody}>
-            {listingStep === ListingStep.InputInfo && <ListingForm />}
-            {listingStep === ListingStep.Processing && <ListingProcess />}
-            {listingStep === ListingStep.Success && <ListingSuccess />}
+            {listingStep === ListingStep.INPUT_INFO && <ListingForm />}
+            {listingStep === ListingStep.PROCESSING && <ListingProcess />}
+            {listingStep === ListingStep.SUCCESS && <ListingSuccess />}
           </div>
         </div>
       </div>

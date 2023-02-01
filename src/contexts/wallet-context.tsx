@@ -156,7 +156,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
       const userRes = await getProfile();
       dispatch(setUser(userRes));
     } catch (err: unknown) {
-      log('failed to connect wallet', LogLevel.Error, LOG_PREFIX);
+      log('failed to connect wallet', LogLevel.ERROR, LOG_PREFIX);
       throw Error(WalletError.FAILED_LINK_WALLET);
     }
   }, [dispatch]);
@@ -166,7 +166,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
       clearAuthStorage();
       dispatch(resetUser());
     } catch (err: unknown) {
-      log('failed to disconnect wallet', LogLevel.Error, LOG_PREFIX);
+      log('failed to disconnect wallet', LogLevel.ERROR, LOG_PREFIX);
       throw Error(WalletError.FAILED_UNLINK_WALLET);
     }
   }, [dispatch]);
@@ -199,7 +199,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
           chainID: NETWORK_CHAIN_ID,
         });
       } catch (err: unknown) {
-        log('failed to switch chain', LogLevel.Error, LOG_PREFIX);
+        log('failed to switch chain', LogLevel.ERROR, LOG_PREFIX);
         throw Error(WalletError.FAILED_SWITCH_CHAIN);
       }
 
@@ -215,7 +215,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
         }
         return transferRes.data;
       } catch (err: unknown) {
-        log('failed to transfer', LogLevel.Error, LOG_PREFIX);
+        log('failed to transfer', LogLevel.ERROR, LOG_PREFIX);
         throw Error(WalletError.FAILED_TRANSFER);
       }
     },

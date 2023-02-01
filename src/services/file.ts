@@ -22,7 +22,7 @@ export const uploadFile = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to upload file', LogLevel.Error, LOG_PREFIX);
+    log('failed to upload file', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to upload file');
   }
 };
@@ -37,7 +37,7 @@ export const minifyFile = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to minify file', LogLevel.Error, LOG_PREFIX);
+    log('failed to minify file', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to minify file');
   }
 };

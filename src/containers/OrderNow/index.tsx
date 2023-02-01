@@ -29,7 +29,7 @@ export const OrderNowTemplate = (): JSX.Element => {
     try {
       await connect();
     } catch (err: unknown) {
-      log(err as Error, LogLevel.Debug, LOG_PREFIX);
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
     }
   };
 
@@ -47,7 +47,7 @@ export const OrderNowTemplate = (): JSX.Element => {
         setProducts(products);
       }
     } catch (_: unknown) {
-      log('failed to get products', LogLevel.Error, LOG_PREFIX);
+      log('failed to get products', LogLevel.ERROR, LOG_PREFIX);
     }
   }, []);
 
