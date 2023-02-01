@@ -34,7 +34,7 @@ import s from './styles.module.scss';
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
   const { projectID } = router.query;
-  const { isMobile } = useWindowSize();
+  const { mobileScreen } = useWindowSize();
 
   const {
     tokenData,
@@ -187,7 +187,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   )}
               </Link>
             </Text>
-            {isMobile && <ThumbnailPreview data={tokenData} previewToken />}
+            {mobileScreen && <ThumbnailPreview data={tokenData} previewToken />}
             <div className={s.prices}>
               {isTokenListing && (
                 <div>
@@ -340,7 +340,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             </Text>
           </div>
           <div></div>
-          {!isMobile && (
+          {!mobileScreen && (
             <div>
               <ThumbnailPreview data={tokenData} previewToken />
             </div>

@@ -27,7 +27,7 @@ const CollectionItem = ({ data }: { data: Token }) => {
   const tokenID = useMemo(() => data.name.split('#')[1], [data.name]);
   const [listingTokenPrice, setListingTokenPrice] = useState('0');
   const { currentUser } = useContext(ProfileContext);
-  const { isMobile } = useWindowSize();
+  const { mobileScreen } = useWindowSize();
   const { filterBuyNow } = useContext(GenerativeProjectDetailContext);
 
   const handleFetchListingTokenPrice = async () => {
@@ -85,7 +85,7 @@ const CollectionItem = ({ data }: { data: Token }) => {
             loading={'lazy'}
           />
         </div>
-        {isMobile ? (
+        {mobileScreen ? (
           <div className={cs(s.collectionCard_info, s.mobile)}>
             <Text size="11" fontWeight="medium">
               {data?.owner?.displayName ||

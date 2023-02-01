@@ -4,13 +4,13 @@ import cs from 'classnames';
 import s from './ProjectCard.module.scss';
 
 const ProjectCardSkeleton = () => {
-  const { isMobile } = useWindowSize();
+  const { mobileScreen } = useWindowSize();
 
   return (
     <div className={s.projectCard}>
       <div className={s.projectCard_inner}>
         <div className={`${s.projectCard_thumb} ${s.isDefault}`}></div>
-        {isMobile ? (
+        {mobileScreen ? (
           <div className={cs(s.projectCard_info, s.mobile)}>
             <Skeleton height={14} width={50} />
             <div className={s.projectCard_info_title}>
