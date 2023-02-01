@@ -10,7 +10,6 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
-import { checkLines } from '@utils/string';
 import useContractOperation from '@hooks/useContractOperation';
 import useWindowSize from '@hooks/useWindowSize';
 import { IGetProjectDetailResponse } from '@interfaces/api/project';
@@ -23,6 +22,7 @@ import { isTestnet } from '@utils/chain';
 import { convertToETH } from '@utils/currency';
 import { base64ToUtf8, escapeSpecialChars, formatAddress } from '@utils/format';
 import log from '@utils/logger';
+import { checkLines } from '@utils/string';
 import dayjs from 'dayjs';
 import _get from 'lodash/get';
 import { useRouter } from 'next/router';
@@ -137,10 +137,6 @@ const ProjectIntroSection = ({ project }: Props) => {
   //   }
   //   return false;
   // }, [project?.mintingInfo?.index, project?.maxSupply]);
-
-  useEffect(() => {
-    handleFetchMarketplaceStats();
-  }, [projectDetail]);
 
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
@@ -378,6 +374,10 @@ const ProjectIntroSection = ({ project }: Props) => {
       );
     }
   };
+
+  useEffect(() => {
+    handleFetchMarketplaceStats();
+  }, [projectDetail]);
 
   useEffect(() => {
     if (errorMessage) {

@@ -8,11 +8,15 @@ import s from './styles.module.scss';
 import dayjs from 'dayjs';
 import { formatAddress } from '@utils/format';
 import { convertToETH } from '@utils/currency';
+import { getScanUrl } from '@utils/chain';
+import { Stack } from 'react-bootstrap';
+import Link from 'next/link';
 
 const TABLE_ACTIVITIES_HEADING = ['Event', 'Price', 'From', 'To', 'Date'];
 
 const TableActivities = () => {
   const { tokenActivities } = useContext(GenerativeTokenDetailContext);
+  const scanURL = getScanUrl();
 
   if (!tokenActivities?.items) return <NotFound infoText="No activity yet" />;
 
@@ -46,7 +50,17 @@ const TableActivities = () => {
               transaction.value === '0' ? '-' : convertToETH(transaction.value),
             form_address: formatAddress(fromAddress),
             to_address: formatAddress(toAddress),
-            updated_at: updatedAt,
+            updated_at: (
+              <Stack direction="horizontal" gap={3}>
+                {updatedAt}
+                <Link
+                  href={`${scanURL}/tx/${transaction.tx_hash}`}
+                  target="_blank"
+                >
+                  <SvgInset svgUrl={`${CDN_URL}/icons/ic-link.svg`} />
+                </Link>
+              </Stack>
+            ),
           },
         };
       }
@@ -65,7 +79,17 @@ const TableActivities = () => {
             transaction.value === '0' ? '-' : convertToETH(transaction.value),
           form_address: formatAddress(fromAddress),
           to_address: formatAddress(toAddress),
-          updated_at: updatedAt,
+          updated_at: (
+            <Stack direction="horizontal" gap={3}>
+              {updatedAt}
+              <Link
+                href={`${scanURL}/tx/${transaction.tx_hash}`}
+                target="_blank"
+              >
+                <SvgInset svgUrl={`${CDN_URL}/icons/ic-link.svg`} />
+              </Link>
+            </Stack>
+          ),
         },
       };
     }
