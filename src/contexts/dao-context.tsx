@@ -1,17 +1,18 @@
+import { CreateDAOProposalStep } from '@enums/dao';
 import { createContext, PropsWithChildren, useState } from 'react';
 
 export type TDAOContext = {
-  currentStep: number;
+  currentStep: CreateDAOProposalStep;
 };
 
 const initialValues: TDAOContext = {
-  currentStep: 1,
+  currentStep: CreateDAOProposalStep.INPUT_INFO,
 };
 
 export const DAOContext = createContext<TDAOContext>(initialValues);
 
 export const DAOContextProvider = ({ children }: PropsWithChildren) => {
-  const [currentStep] = useState(0);
+  const [currentStep] = useState(CreateDAOProposalStep.INPUT_INFO);
 
   return (
     <DAOContext.Provider
