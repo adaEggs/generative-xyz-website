@@ -3,10 +3,15 @@ import {
   NFT_REQUIRED_TO_DISCOUNT,
   PRINTS_REQUIRED_TO_DISCOUNT,
 } from '@constants/config';
-import { GENART_ADDRESS, PRINTS_ADDRESS } from '@constants/contract-address';
+import {
+  GENART_MEMBERSHIP_ADDRESS,
+  GENART_TOKEN_ADDRESS,
+  PRINTS_ADDRESS,
+} from '@constants/contract-address';
 import { getUserSelector } from '@redux/user/selector';
 import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
 import GetNFTBalanceOperation from '@services/contract-operations/erc721/get-token-balance';
+import GetGenArtMembershipOperation from '@services/contract-operations/gen-art-membership/get-gen-art-membership';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import useAsyncEffect from 'use-async-effect';
@@ -28,9 +33,14 @@ const useIsFrameDiscounted = (): boolean => {
     GetNFTBalanceOperation,
     false
   );
+  const { call: getGenArtMembership } = useContractOperation(
+    GetGenArtMembershipOperation,
+    false
+  );
 
+  // Check PRINT token balance
   useAsyncEffect(async () => {
-    if (!PRINTS_ADDRESS) {
+    if (!PRINTS_ADDRESS || !user) {
       return;
     }
 
@@ -54,21 +64,45 @@ const useIsFrameDiscounted = (): boolean => {
     }
   }, [user]);
 
+  // Check GENART NFT balance
   useAsyncEffect(async () => {
-    if (!GENART_ADDRESS) {
+    if (!GENART_TOKEN_ADDRESS || !user) {
       return;
     }
 
     try {
       const nftBalance = await getNFTBalance({
         chainID: NETWORK_CHAIN_ID,
-        erc721TokenAddress: GENART_ADDRESS,
+        erc721TokenAddress: GENART_TOKEN_ADDRESS,
       });
       if (!nftBalance) {
         return;
       }
 
       if (nftBalance >= NFT_REQUIRED_TO_DISCOUNT) {
+        setIsDiscounted(true);
+      }
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+    }
+  }, [user]);
+
+  // Check GENART membership
+  useAsyncEffect(async () => {
+    if (!GENART_MEMBERSHIP_ADDRESS || !user) {
+      return;
+    }
+
+    try {
+      const membershipData = await getGenArtMembership({
+        chainID: NETWORK_CHAIN_ID,
+      });
+
+      if (!membershipData) {
+        return;
+      }
+
+      if (membershipData.length > 0) {
         setIsDiscounted(true);
       }
     } catch (err: unknown) {

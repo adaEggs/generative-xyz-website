@@ -26,10 +26,12 @@ class DelegateGENTokenOperation extends ContractOperation<
       throw Error('Contract not found');
     }
 
+    const { delegateeAddress } = this.params;
+
     // Delegatee address
     const walletAddress = await this.walletManager.connectedAddress();
 
-    const data = await this.contract.methods.delegate(walletAddress).send({
+    const data = await this.contract.methods.delegate(delegateeAddress).send({
       from: walletAddress,
       to: this.contractAddress,
       value: '0',
