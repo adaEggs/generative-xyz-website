@@ -4,7 +4,7 @@ import ContractOperation from '@services/contract-operations/contract-operation'
 import { WalletManager } from '@services/wallet';
 
 export type ContractSendTransactionReturn = TransactionReceipt;
-export type ContractCallTransactionReturn = number | string | boolean;
+export type ContractCallTransactionReturn = number | string | boolean | unknown;
 export type ContractOperationReturn =
   | ContractSendTransactionReturn
   | ContractCallTransactionReturn;

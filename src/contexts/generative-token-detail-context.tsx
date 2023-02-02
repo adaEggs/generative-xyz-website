@@ -680,7 +680,12 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   }, [tokenData, user]);
 
   const isTokenListing = useMemo(() => {
-    if (!user?.walletAddress || !listingOffers || listingOffers.length === 0)
+    if (
+      !user?.walletAddress ||
+      !listingOffers ||
+      listingOffers.length === 0 ||
+      listingOffers[0].seller !== tokenData?.ownerAddr
+    )
       return false;
     return listingOffers.length > 0;
   }, [user, listingOffers]);

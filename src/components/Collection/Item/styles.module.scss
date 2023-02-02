@@ -1,6 +1,6 @@
 .collectionCard {
   text-decoration: none;
-  height: fit-content;
+  height: 100%;
 
   &_inner {
     padding: rem(16px);
@@ -92,4 +92,25 @@
   &:hover {
     cursor: pointer;
   }
+}
+
+.collectionCard_owner {
+  &_avatar {
+    height: rem(34px);
+    width: rem(34px);
+    border-radius: 50%;
+    overflow: hidden;
+  }
+}
+
+.collectionCard_info_skeleton {
+  display: flex;
+  align-items: center;
+  gap: rem(6);
+}
+
+.collectionCard_info_title_loading {
+  width: 100%;
+  height: rem(30);
+  margin-top: rem(5);
 }
