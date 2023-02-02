@@ -23,7 +23,13 @@ import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 
-const CollectionItem = ({ data }: { data: Token }) => {
+const CollectionItem = ({
+  data,
+  className,
+}: {
+  data: Token;
+  className?: string;
+}) => {
   const tokenID = useMemo(() => data.name.split('#')[1], [data.name]);
   const [listingTokenPrice, setListingTokenPrice] = useState('0');
   const { currentUser } = useContext(ProfileContext);
@@ -70,7 +76,7 @@ const CollectionItem = ({ data }: { data: Token }) => {
       href={`${ROUTE_PATH.GENERATIVE}/${getProjectIdFromTokenId(
         parseInt(tokenID)
       )}/${tokenID}`}
-      className={s.collectionCard}
+      className={`${s.collectionCard} ${className}`}
     >
       <div className={s.collectionCard_inner}>
         <div
@@ -118,10 +124,13 @@ const CollectionItem = ({ data }: { data: Token }) => {
                 direction="horizontal"
               >
                 <Heading as={'h4'} className="token_id ml-auto">
-                  <span className={s.collectionCard_info_title_name}>
+                  <span
+                    title={data?.project?.name}
+                    className={s.collectionCard_info_title_name}
+                  >
                     {currentUser && `${data?.project?.name} `}
                   </span>
-                  #{formatTokenId(tokenID)}
+                  <span>#{formatTokenId(tokenID)}</span>
                 </Heading>
                 {listingTokenPrice !== '0' && (
                   <Stack

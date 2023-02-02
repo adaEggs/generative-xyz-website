@@ -256,3 +256,19 @@
     fill: $white;
   }
 }
+
+.col-wide-2_5 {
+  @media (min-width: map-get($grid-breakpoints, wide)) {
+    flex: 0 0 20%;
+    width: 20%;
+  }
+}
+
+.row {
+  --bs-gutter-y: #{rem(24px)};
+
+  @include mobile {
+    --bs-gutter-x: #{rem(10px)};
+    --bs-gutter-y: #{rem(10px)};
+  }
+}
