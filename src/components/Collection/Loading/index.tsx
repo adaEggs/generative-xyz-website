@@ -1,7 +1,7 @@
-import ProjectCardSkeleton from '@components/ProjectCard/skeleton';
 import { v4 } from 'uuid';
+import CollectionItemSkeleton from '../Item/skeleton';
 
-const ProjectListLoading = ({
+const CollectionListLoading = ({
   numOfItems = 8,
   cols = 4,
 }: {
@@ -11,10 +11,10 @@ const ProjectListLoading = ({
   return (
     <div className={`grid grid-cols-${cols} gap-24`}>
       {[...Array(numOfItems)].map(() => (
-        <ProjectCardSkeleton key={`token-loading-${v4()}`} />
+        <CollectionItemSkeleton key={`token-loading-${v4()}`} />
       ))}
     </div>
   );
 };
 
-export default ProjectListLoading;
+export default CollectionListLoading;
