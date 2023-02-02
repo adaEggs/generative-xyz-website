@@ -1,6 +1,6 @@
 .collectionCard {
   text-decoration: none;
-  height: fit-content;
+  height: 100%;
 
   &_inner {
     padding: rem(16px);
@@ -53,18 +53,25 @@
           @include calcFontAuto(18px, 24px);
 
           font-weight: 600;
+          display: flex;
+          gap: rem(5px);
 
-          //todo
-          //display: flex;
-          //gap: 5px;
-          //
-          //span{
-          //  white-space: nowrap;
-          //  text-overflow: ellipsis;
-          //  max-width: 80%;
-          //  display: block;
-          //  overflow: hidden;
-          //}
+          @include min-pc-wide {
+            gap: rem(5px);
+          }
+
+          span {
+            flex: 0 0 auto;
+          }
+
+          span:nth-child(1) {
+            flex: 1;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            //max-width: 80%;
+            display: block;
+            overflow: hidden;
+          }
         }
       }
 
@@ -85,4 +92,25 @@
   &:hover {
     cursor: pointer;
   }
+}
+
+.collectionCard_owner {
+  &_avatar {
+    height: rem(34px);
+    width: rem(34px);
+    border-radius: 50%;
+    overflow: hidden;
+  }
+}
+
+.collectionCard_info_skeleton {
+  display: flex;
+  align-items: center;
+  gap: rem(6);
+}
+
+.collectionCard_info_title_loading {
+  width: 100%;
+  height: rem(30);
+  margin-top: rem(5);
 }

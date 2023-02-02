@@ -5,6 +5,11 @@
   position: relative;
   z-index: 7;
 
+  .filterLoading {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
   .inputWrapper {
     position: relative;
     border: 2px solid $black-20;
@@ -55,6 +60,7 @@
   .selectInput {
     :global(.select__control) {
       background-color: $white-100;
+      cursor: pointer;
       outline: none;
       box-shadow: none;
       border-radius: 0;

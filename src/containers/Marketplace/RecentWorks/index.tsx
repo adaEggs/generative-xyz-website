@@ -104,22 +104,11 @@ export const RecentWorks = (): JSX.Element => {
             Explore collections
           </Heading>
         </Col>
-        <Col xs={'auto'}>
-          {/*<CsSelect*/}
-          {/*  isSearchable={false}*/}
-          {/*  isClearable={false}*/}
-          {/*  defaultValue={selectedOption}*/}
-          {/*  options={SORT_OPTIONS}*/}
-          {/*  classNamePrefix="select"*/}
-          {/*  onChange={(val: SingleValue<any>) => {*/}
-          {/*    sortChange(val.value);*/}
-          {/*  }}*/}
-          {/*/>*/}
-        </Col>
+        <Col xs={'auto'} />
       </Row>
       <Row className={s.recentWorks_projects}>
         {/* <Loading isLoaded={isLoaded} /> */}
-        {!isLoaded && <ProjectListLoading />}
+        {!isLoaded && <ProjectListLoading numOfItems={12} />}
         {isLoaded && (
           <div className={s.recentWorks_projects_list}>
             <ProjectList listData={listData} />

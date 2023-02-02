@@ -1,6 +1,6 @@
 import { ContractOperationRequiredParams } from '@interfaces/contract';
 
-export interface IDelegateGENTokenParams
+export interface IExecuteProposalParams
   extends ContractOperationRequiredParams {
-  delegateeAddress: string;
+  proposalId: string;
 }

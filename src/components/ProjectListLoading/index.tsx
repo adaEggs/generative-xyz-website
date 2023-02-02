@@ -1,13 +1,14 @@
 import ProjectCardSkeleton from '@components/ProjectCard/skeleton';
-import { useId } from 'react';
+import { v4 } from 'uuid';
 
-const ProjectListLoading = ({ numOfItems = 8 }: { numOfItems?: number }) => {
-  const id = useId();
-
+const ProjectListLoading = ({ numOfItems = 12 }: { numOfItems?: number }) => {
   return (
-    <div className="grid grid-list">
+    <div className={'row'}>
       {[...Array(numOfItems)].map(() => (
-        <ProjectCardSkeleton key={id} />
+        <ProjectCardSkeleton
+          className={'col-wide-2_5 col-xl-3 col-lg-5 col-6'}
+          key={`token-loading-${v4()}`}
+        />
       ))}
     </div>
   );

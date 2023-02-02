@@ -4,6 +4,6 @@ export enum CreateDAOProposalStep {
 }
 
 export enum VoteType {
-  NO = 0,
-  YES = 1,
+  AGAINST = 0,
+  FOR = 1,
 }

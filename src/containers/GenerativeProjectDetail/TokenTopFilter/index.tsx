@@ -60,7 +60,7 @@ const TokenTopFilter: React.FC<IProps> = ({
 
   return (
     <div className={cs(s.tokenTopFilter, className)}>
-      <div className={s.filterWrapper}>
+      <div className={cs(s.filterWrapper)}>
         <ButtonIcon
           variants={showFilter ? 'primary' : 'outline'}
           startIcon={
