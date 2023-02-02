@@ -12,7 +12,8 @@ import { Benchmark } from './Benchmark';
 import { CDN_URL } from '@constants/config';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import ScrollyVideo from 'scrolly-video/dist/ScrollyVideo.jsx';
+// import ScrollyVideo from 'scrolly-video/dist/ScrollyVideo.jsx';
+import { ScrollyVideoComp } from '@containers/Display/ScrollyVideo';
 
 export const HardWare = (): JSX.Element => {
   const refOptions = useRef({ isCPUIn: false, isFirst: false });
@@ -95,7 +96,8 @@ export const HardWare = (): JSX.Element => {
         <MaskerStart className={s.hardWare_content}>
           <div>
             <div className={s.hardWare_content_video}>
-              <ScrollyVideo
+              <ScrollyVideoComp
+                id={'hardWare_content_video'}
                 src={`${CDN_URL}/pages/landingpage/block_3_video_test.mp4`}
               />
             </div>

@@ -6,7 +6,7 @@ import React from 'react';
 import { CDN_URL } from '@constants/config';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import ScrollyVideo from 'scrolly-video/dist/ScrollyVideo.jsx';
+// import ScrollyVideo from 'scrolly-video/dist/ScrollyVideo.jsx';
 
 export const LifeStyle = () => {
   // const refOptions = useRef({ isIn: false });
@@ -54,9 +54,9 @@ export const LifeStyle = () => {
       <div className={s.lifeStyle_inner}>
         <MaskerStart className={s.lifeStyle_canvas}>
           <div className={s.lifeStyle_canvas_video}>
-            <ScrollyVideo
-              src={`${CDN_URL}/pages/landingpage/block_4_video_test.mp4`}
-            />
+            {/*<ScrollyVideo*/}
+            {/*  src={`${CDN_URL}/pages/landingpage/block_4_video_test.mp4`}*/}
+            {/*/>*/}
           </div>
           {/*<Frames*/}
           {/*  width={1920}*/}
