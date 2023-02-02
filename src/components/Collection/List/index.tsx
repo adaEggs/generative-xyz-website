@@ -1,6 +1,5 @@
 import { Empty } from '@components/Collection/Empty';
 import CollectionItem from '@components/Collection/Item';
-import { Loading } from '@components/Loading';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import useWindowSize from '@hooks/useWindowSize';
 import { Project } from '@interfaces/project';
@@ -8,6 +7,7 @@ import { Token } from '@interfaces/token';
 import cs from 'classnames';
 import { useContext } from 'react';
 import FilterOptions from '../FilterOptions';
+import CollectionListLoading from '../Loading';
 import s from './CollectionList.module.scss';
 
 const CollectionList = ({
@@ -28,47 +28,41 @@ const CollectionList = ({
       {showFilter && <FilterOptions attributes={projectInfo?.traitStat} />}
       {/* {listData && listData?.length > 0 ? ( */}
       <div className="position-relative">
-        <div>
+        {!isLoaded && (
+          <>
+            {mobileScreen ? (
+              <CollectionListLoading numOfItems={4} cols={2} />
+            ) : (
+              <CollectionListLoading
+                numOfItems={showFilter ? 6 : 8}
+                cols={showFilter ? 3 : 4}
+              />
+            )}
+          </>
+        )}
+
+        {isLoaded && (
           <div
-            style={
-              !isLoaded
-                ? {
-                    width: '100%',
-                    minHeight: '100%',
-                    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-                    zIndex: '1',
-                    position: 'absolute',
-                    top: '0',
-                  }
-                : {
-                    visibility: 'hidden',
-                    pointerEvents: 'none',
-                  }
-            }
+            className={cs(
+              s.collectionList,
+              `grid gap-24 ${
+                mobileScreen
+                  ? 'grid-cols-2'
+                  : showFilter
+                  ? 'grid-cols-3'
+                  : 'grid-cols-4'
+              }`
+            )}
           >
-            <Loading isLoaded={isLoaded} className={s.projectDetail_loading} />
+            {listData?.map(item => (
+              <CollectionItem
+                key={`collection-item-${item.tokenID}`}
+                data={item}
+              />
+            ))}
           </div>
-        </div>
-        <div
-          className={cs(
-            s.collectionList,
-            `grid gap-24 animate-grid ${
-              mobileScreen
-                ? 'grid-cols-2'
-                : showFilter
-                ? 'grid-cols-3'
-                : 'grid-cols-4'
-            }`
-          )}
-        >
-          {listData?.map(item => (
-            <CollectionItem
-              key={`collection-item-${item.tokenID}`}
-              data={item}
-            />
-          ))}
-        </div>
-        {listData?.length && (
+        )}
+        {listData?.length === 0 && (
           <Empty projectInfo={projectInfo} className={s.list_empty} />
         )}
       </div>

@@ -30,12 +30,15 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   );
 
   const handleDelegateGENToken = async (): Promise<void> => {
-    await delegateGENToken({ chainID: NETWORK_CHAIN_ID });
+    await delegateGENToken({
+      chainID: NETWORK_CHAIN_ID,
+      delegateeAddress: '',
+    });
 
     await submitProposal({
-      targets: ['0xBc785D855012105820Be6D8fFA7f644062a91bcA'],
+      targets: ['0x0000000000000000000000000000000000000000'],
       values: ['0'],
-      description: 'Proposal #1 Proposal #1',
+      description: 'Test #1',
       calldatas: {
         funcName: 'transfer',
         args: [

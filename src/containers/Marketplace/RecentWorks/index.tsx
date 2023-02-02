@@ -119,7 +119,7 @@ export const RecentWorks = (): JSX.Element => {
       </Row>
       <Row className={s.recentWorks_projects}>
         {/* <Loading isLoaded={isLoaded} /> */}
-        {!isLoaded && <ProjectListLoading />}
+        {!isLoaded && <ProjectListLoading numOfItems={12} />}
         {isLoaded && (
           <div className={s.recentWorks_projects_list}>
             <ProjectList listData={listData} />
