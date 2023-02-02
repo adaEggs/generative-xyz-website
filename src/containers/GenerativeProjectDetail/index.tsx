@@ -8,7 +8,7 @@ import {
 } from '@contexts/generative-project-detail-context';
 import React, { useContext } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
-
+import cs from 'classnames';
 import styles from './styles.module.scss';
 import TokenTopFilter from './TokenTopFilter';
 
@@ -33,7 +33,7 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
         <ClientOnly>
           <Tabs className={styles.tabs} defaultActiveKey="outputs">
             <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">
-              <div className={styles.filterWrapper}>
+              <div className={cs(styles.filterWrapper)}>
                 <TokenTopFilter
                   keyword=""
                   sort=""

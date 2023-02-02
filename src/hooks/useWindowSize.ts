@@ -2,8 +2,8 @@ import { MOBILE_SCREEN } from '@constants/breakpoint';
 import { useEffect, useState } from 'react';
 
 interface Size {
-  sreenWidth: number | undefined;
-  heightWidth: number | undefined;
+  sreenWidth: number;
+  heightWidth: number;
 }
 
 interface CheckMobile {
@@ -12,10 +12,10 @@ interface CheckMobile {
 
 function useWindowSize(): Size & CheckMobile {
   const [windowSize, setWindowSize] = useState<Size>({
-    sreenWidth: undefined,
-    heightWidth: undefined,
+    sreenWidth: 0,
+    heightWidth: 0,
   });
-  const [mobileScreen, setMobileScreen] = useState(false);
+  const [mobileScreen, setMobileScreen] = useState(true);
 
   useEffect(() => {
     function handleResize() {
