@@ -54,11 +54,10 @@
 
           @include calcFontAuto(18px, 24px);
 
-          //todo
-          //white-space: nowrap;
-          //text-overflow: ellipsis;
-          //display: block;
-          //overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          display: block;
+          overflow: hidden;
         }
       }
 

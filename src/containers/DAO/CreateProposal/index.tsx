@@ -7,7 +7,13 @@ import ProposalPreview from '../ProposalPreview';
 import s from './styles.module.scss';
 
 const CreateProposal: React.FC = (): React.ReactElement => {
-  const { currentStep, handleDelegateGENToken } = useContext(DAOContext);
+  const {
+    currentStep,
+    handleDelegateGENToken,
+    handleExecuteProposal,
+    handleCastVote,
+    handleSubmitProposal,
+  } = useContext(DAOContext);
 
   return (
     <div className={s.createProposal}>
@@ -25,7 +31,10 @@ const CreateProposal: React.FC = (): React.ReactElement => {
         )}
       </div>
       <div>
-        <Button onClick={handleDelegateGENToken}>Test</Button>
+        <Button onClick={handleDelegateGENToken}>Delegate</Button>
+        <Button onClick={handleSubmitProposal}>Submit proposal</Button>
+        <Button onClick={handleCastVote}>Vote FOR</Button>
+        <Button onClick={handleExecuteProposal}>Execute proposal</Button>
       </div>
     </div>
   );

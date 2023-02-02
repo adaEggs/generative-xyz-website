@@ -1,7 +1,6 @@
 import { Empty } from '@components/Collection/Empty';
 import CollectionItem from '@components/Collection/Item';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import useWindowSize from '@hooks/useWindowSize';
 import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 import cs from 'classnames';
@@ -19,43 +18,26 @@ const CollectionList = ({
   projectInfo?: Project | null;
   isLoaded?: boolean;
 }) => {
-  const { mobileScreen } = useWindowSize();
-
   const { showFilter } = useContext(GenerativeProjectDetailContext);
-
   return (
     <div className={`grid  ${showFilter ? s.showFilter : 'grid-cols-1'}`}>
       {showFilter && <FilterOptions attributes={projectInfo?.traitStat} />}
-      {/* {listData && listData?.length > 0 ? ( */}
       <div className="position-relative">
         {!isLoaded && (
           <>
-            {mobileScreen ? (
-              <CollectionListLoading numOfItems={4} cols={2} />
-            ) : (
-              <CollectionListLoading
-                numOfItems={showFilter ? 6 : 8}
-                cols={showFilter ? 3 : 4}
-              />
-            )}
+            <CollectionListLoading numOfItems={12} showFilter={showFilter} />
           </>
         )}
 
         {isLoaded && (
-          <div
-            className={cs(
-              s.collectionList,
-              `grid gap-24 ${
-                mobileScreen
-                  ? 'grid-cols-2'
-                  : showFilter
-                  ? 'grid-cols-3'
-                  : 'grid-cols-4'
-              }`
-            )}
-          >
+          <div className={cs(s.collectionList, `row animate-grid`)}>
             {listData?.map(item => (
               <CollectionItem
+                className={`${
+                  showFilter
+                    ? 'col-wide-3 col-xl-4 col-6'
+                    : 'col-wide-2_5 col-xl-3 col-lg-4 col-6'
+                } `}
                 key={`collection-item-${item.tokenID}`}
                 data={item}
               />

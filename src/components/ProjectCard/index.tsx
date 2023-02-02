@@ -18,9 +18,10 @@ import { formatAddress } from '@utils/format';
 
 interface IPros {
   project: Project;
+  className?: string;
 }
 
-export const ProjectCard = ({ project }: IPros): JSX.Element => {
+export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const [creator, setCreator] = useState<User | null>(null);
 
   const { mobileScreen } = useWindowSize();
@@ -40,7 +41,7 @@ export const ProjectCard = ({ project }: IPros): JSX.Element => {
   return (
     <Link
       href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
-      className={s.projectCard}
+      className={`${s.projectCard} ${className}`}
     >
       <div className={s.projectCard_inner}>
         <div
@@ -78,7 +79,9 @@ export const ProjectCard = ({ project }: IPros): JSX.Element => {
         ) : (
           <div className={cs(s.projectCard_info, s.desktop)}>
             <div className={s.projectCard_info_title}>
-              <Heading as={'h4'}>{project.name}</Heading>
+              <Heading as={'h4'}>
+                <span title={project.name}>{project.name}</span>
+              </Heading>
             </div>
             {creator && <CreatorInfo creator={creator} />}
             <ProgressBar
