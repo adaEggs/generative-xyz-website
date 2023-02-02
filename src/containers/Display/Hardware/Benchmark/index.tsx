@@ -27,17 +27,7 @@ export const Benchmark = (): JSX.Element => {
             target1={{ title: 'Generative Display', value: 59 }}
             target2={{ title: 'Macbook Pro 16 2019', value: 14 }}
           />
-          <BenchmarkItem
-            className={s.hardWare_benchmark_item}
-            title={'Act of Emotion #200'}
-            artLink={
-              'https://generator.artblocks.io/0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270/364000200'
-            }
-            color={'dep-blue'}
-            artCreatorName={`Kelly Milligan`}
-            target1={{ title: 'Generative Display', value: 58 }}
-            target2={{ title: 'Macbook Pro 16 2019', value: 12 }}
-          />
+
           <BenchmarkItem
             className={s.hardWare_benchmark_item}
             color={'yellow'}
@@ -46,6 +36,18 @@ export const Benchmark = (): JSX.Element => {
             artCreatorName={`Beervangeer`}
             target1={{ title: 'Generative Display', value: 58.5 }}
             target2={{ title: 'Macbook Pro 16 2019', value: 6 }}
+          />
+
+          <BenchmarkItem
+            className={s.hardWare_benchmark_item}
+            title={'Aurora IV #52'}
+            artLink={
+              'https://generator.artblocks.io/0xa7d8d9ef8d8ce8992df33d8b8cf4aebabd5bd270/56000052'
+            }
+            color={'dep-blue'}
+            artCreatorName={`ge1doot`}
+            target1={{ title: 'Generative Display', value: 58.4 }}
+            target2={{ title: 'Macbook Pro 16 2019', value: 29 }}
           />
         </div>
       </div>
