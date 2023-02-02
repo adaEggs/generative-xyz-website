@@ -1,7 +1,15 @@
 .createProposal {
-  text-align: center;
+  padding-top: 16px;
+  padding-bottom: 16px;
 
-  button {
-    margin: 10px;
+  .pageHeader {
+    margin-bottom: rem(18px);
+  }
+
+  .backLink {
+    font-weight: 500;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: $black-60;
   }
 }

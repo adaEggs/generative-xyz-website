@@ -1,0 +1,58 @@
+.createProposalForm {
+  max-width: rem(630px);
+  margin: 0 auto;
+
+  .formTitle {
+    font-weight: 500;
+    font-size: rem(34px);
+    line-height: rem(44px);
+    color: $black-100;
+    margin-bottom: rem(16px);
+  }
+
+  .formItem {
+    margin-bottom: 16px;
+  }
+
+  .label {
+    font-weight: 500;
+    font-size: rem(12px);
+    line-height: rem(20px);
+    color: $black-60;
+    display: block;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .input {
+    background-color: $white-100;
+    font-weight: 400;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: $black-100;
+    padding: rem(11px) rem(14px);
+    border: 1px solid $black-10;
+    border-radius: 2px;
+    width: 100%;
+
+    &::placeholder {
+      /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: $black-40;
+      opacity: 1; /* Firefox */
+    }
+
+    &:input-placeholder {
+      /* Internet Explorer 10-11 */
+      color: $black-40;
+    }
+
+    &::input-placeholder {
+      /* Microsoft Edge */
+      color: $black-40;
+    }
+  }
+
+  .requiredTag {
+    color: $secondary-red;
+  }
+}
