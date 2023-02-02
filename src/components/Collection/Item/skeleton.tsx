@@ -3,13 +3,13 @@ import useWindowSize from '@hooks/useWindowSize';
 import cs from 'classnames';
 import s from './styles.module.scss';
 
-const CollectionItemSkeleton = () => {
+const CollectionItemSkeleton = ({ className = '' }: { className: string }) => {
   const { mobileScreen } = useWindowSize();
 
   return (
-    <div className={s.collectionCard}>
+    <div className={`${s.collectionCard} ${className}`}>
       <div className={s.collectionCard_inner}>
-        <div className={`${s.collectionCard_thumb} ${s.isDefault}`}></div>
+        <div className={`${s.collectionCard_thumb} ${s.isDefault}`} />
         {mobileScreen ? (
           <div className={cs(s.collectionCard_info, s.mobile)}>
             <Skeleton height={18} width={100} />
