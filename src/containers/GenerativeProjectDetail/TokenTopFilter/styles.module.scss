@@ -63,10 +63,20 @@
       cursor: pointer;
       outline: none;
       box-shadow: none;
-      border-radius: 0;
+      border-radius: 2px;
       min-height: 52px;
       border: 2px solid $black-20;
       min-width: rem(250px);
+    }
+
+    :global(.select__menu) {
+      border-radius: 2px;
+      border: 2px solid #cecece;
+      box-shadow: 8px 7px 24px rgb(0 0 0 / 15%);
+    }
+
+    :global(.select__menu-list) {
+      padding: 0;
     }
 
     :global(.select__indicator-separator) {
@@ -89,10 +99,32 @@
 
     :global(.select__input-container) {
       color: $black-100;
-      font-weight: 500;
+    }
+
+    :global(.select__option) {
+      padding: rem(10) rem(16);
+      font-weight: 400;
       line-height: (26/16);
 
       @include calcFontAuto(14px, 16px);
+
+      &:hover {
+        background-color: $black-5;
+      }
+    }
+
+    :global(.select__option--is-focused) {
+      background-color: $white;
+    }
+
+    :global(.select__option--is-selected) {
+      background-color: $white;
+      color: $black-100;
+
+      &:hover {
+        background-color: $black-5;
+        color: $black-100;
+      }
     }
   }
 

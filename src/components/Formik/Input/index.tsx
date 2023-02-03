@@ -39,7 +39,7 @@ const Input: React.FC<
     endIcon,
     placeholder,
     className,
-    size,
+    size = 'medium',
     errors,
     useFormik = false,
     required,
