@@ -17,6 +17,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 
 const CreateProposalForm: React.FC = (): React.ReactElement => {
   const {
+    formValues,
     setFormValues,
     setDisplayMode,
     setIsFormValid,
@@ -81,7 +82,10 @@ const CreateProposalForm: React.FC = (): React.ReactElement => {
           <div className={s.createProposalForm}>
             <Formik
               key="createProposalForm"
-              initialValues={INITIAL_FORM_VALUES}
+              initialValues={{
+                ...INITIAL_FORM_VALUES,
+                ...formValues,
+              }}
               validate={validateForm}
               onSubmit={handleSubmit}
               enableReinitialize

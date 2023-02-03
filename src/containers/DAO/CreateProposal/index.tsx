@@ -1,3 +1,4 @@
+import ClientOnly from '@components/Utils/ClientOnly';
 import { DAOContext, DAOContextProvider } from '@contexts/dao-context';
 import { CreateProposalDisplayMode } from '@enums/dao';
 import React, { useContext } from 'react';
@@ -9,16 +10,18 @@ const CreateProposal: React.FC = (): React.ReactElement => {
   const { displayMode } = useContext(DAOContext);
 
   return (
-    <div className={s.createProposal}>
-      <div className={s.mainContent}>
-        {displayMode === CreateProposalDisplayMode.INPUT_INFO && (
-          <CreateProposalForm />
-        )}
-        {displayMode === CreateProposalDisplayMode.PREVIEW && (
-          <ProposalPreview />
-        )}
+    <ClientOnly>
+      <div className={s.createProposal}>
+        <div className={s.mainContent}>
+          {displayMode === CreateProposalDisplayMode.INPUT_INFO && (
+            <CreateProposalForm />
+          )}
+          {displayMode === CreateProposalDisplayMode.PREVIEW && (
+            <ProposalPreview />
+          )}
+        </div>
       </div>
-    </div>
+    </ClientOnly>
   );
 };
 

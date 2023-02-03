@@ -109,6 +109,9 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
       await createProposal({
         title,
         description,
+        amount,
+        tokenType,
+        receiverAddress,
       });
 
       const funcName =
