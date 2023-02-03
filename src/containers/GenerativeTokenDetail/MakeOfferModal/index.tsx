@@ -43,7 +43,6 @@ const MakeOfferModal: React.FC = (): React.ReactElement => {
     openSwapTokenModal,
     wethBalance,
   } = useContext(GenerativeTokenDetailContext);
-
   const [isProcessing, setIsProcessing] = useState(false);
   const [isEnoughBalance, setIsEnoughBalance] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

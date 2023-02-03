@@ -5,14 +5,65 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: rem(62);
+  }
 
-    .mainTitle {
-      font-size: rem(48px);
-      font-weight: 700;
-    }
+  .rightContent {
+    display: flex;
+    gap: rem(8);
+    flex-direction: column;
+    align-items: flex-end;
 
-    .mainDescription {
-      margin-top: 8px;
+    > button {
+      width: fit-content;
     }
   }
+}
+
+.dropDownWrapper {
+  @include w-max(500px) {
+    width: 100%;
+  }
+
+  .selectInput {
+    :global(.select__control) {
+      background-color: $white-100;
+      outline: none;
+      box-shadow: none;
+      border-radius: 0;
+      min-height: 52px;
+      border: 2px solid $black-20;
+      min-width: rem(250px);
+    }
+
+    :global(.select__indicator-separator) {
+      display: none;
+    }
+
+    :global(.select__placeholder) {
+      color: $black-40;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 26px;
+    }
+
+    :global(.select__multi-value__label) {
+      font-size: 14px;
+      line-height: 14px;
+      font-weight: 400;
+    }
+
+    :global(.select__input-container) {
+      color: $black-100;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 26px;
+    }
+  }
+}
+
+.proposalList_container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: rem(40);
 }

@@ -3,28 +3,58 @@ import {
   GEN_DAO_TREASURY_ADDRESS,
   GEN_TOKEN_ADDRESS,
 } from '@constants/contract-address';
-import { CreateDAOProposalStep, VoteType } from '@enums/dao';
+import { INITIAL_FORM_VALUES } from '@constants/dao';
+import { CreateProposalDisplayMode, VoteType } from '@enums/dao';
+import { LogLevel } from '@enums/log-level';
+import { TokenType } from '@enums/token-type';
 import useContractOperation from '@hooks/useContractOperation';
+import { IFormValue } from '@interfaces/dao';
 import { getUserSelector } from '@redux/user/selector';
 import CastVoteProposalOperation from '@services/contract-operations/gen-dao/cast-vote-proposal';
 import ExecuteProposalOperation from '@services/contract-operations/gen-dao/execute-proposal';
 import SubmitProposalOperation from '@services/contract-operations/gen-dao/submit-proposal';
 import DelegateGENTokenOperation from '@services/contract-operations/gen-token/delegate-token';
-import { createContext, PropsWithChildren, useState } from 'react';
+import { createProposal } from '@services/dao';
+import log from '@utils/logger';
+import {
+  createContext,
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  useState,
+} from 'react';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import Web3 from 'web3';
 
+const LOG_PREFIX = 'DAOContext';
+
 export type TDAOContext = {
-  currentStep: CreateDAOProposalStep;
+  isFormValid: boolean;
+  setIsFormValid: Dispatch<SetStateAction<boolean>>;
+  displayMode: CreateProposalDisplayMode;
+  setDisplayMode: Dispatch<SetStateAction<CreateProposalDisplayMode>>;
+  formValues: Partial<IFormValue>;
+  setFormValues: Dispatch<SetStateAction<Partial<IFormValue>>>;
   handleDelegateGENToken: () => Promise<void>;
-  handleSubmitProposal: () => Promise<void>;
+  handleSubmitProposal: (_: IFormValue) => Promise<void>;
   handleCastVote: () => Promise<void>;
   handleExecuteProposal: () => Promise<void>;
 };
 
 const initialValues: TDAOContext = {
-  currentStep: CreateDAOProposalStep.INPUT_INFO,
+  isFormValid: false,
+  setIsFormValid: _ => {
+    return;
+  },
+  displayMode: CreateProposalDisplayMode.INPUT_INFO,
+  setDisplayMode: _ => {
+    return;
+  },
+  formValues: INITIAL_FORM_VALUES,
+  setFormValues: _ => {
+    return;
+  },
   handleDelegateGENToken: () => new Promise<void>(r => r()),
   handleSubmitProposal: () => new Promise<void>(r => r()),
   handleCastVote: () => new Promise<void>(r => r()),
@@ -35,7 +65,12 @@ export const DAOContext = createContext<TDAOContext>(initialValues);
 
 export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   const user = useSelector(getUserSelector);
-  const [currentStep] = useState(CreateDAOProposalStep.INPUT_INFO);
+  const [displayMode, setDisplayMode] = useState(
+    CreateProposalDisplayMode.INPUT_INFO
+  );
+  const [formValues, setFormValues] =
+    useState<Partial<IFormValue>>(INITIAL_FORM_VALUES);
+  const [isFormValid, setIsFormValid] = useState(false);
   const { call: delegateGENToken } = useContractOperation(
     DelegateGENTokenOperation,
     true
@@ -66,23 +101,44 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const handleSubmitProposal = async (): Promise<void> => {
-    const tx = await submitProposal({
-      targets: [GEN_DAO_TREASURY_ADDRESS],
-      values: ['0'],
-      description: 'Test #3',
-      calldatas: {
-        funcName: 'transferERC20',
-        args: [
-          '0xBc785D855012105820Be6D8fFA7f644062a91bcA',
-          GEN_TOKEN_ADDRESS,
-          Web3.utils.toWei('0.001', 'ether').toString(),
-        ],
-      },
-      chainID: NETWORK_CHAIN_ID,
-    });
-    // eslint-disable-next-line no-console
-    console.log(tx);
+  const handleSubmitProposal = async (payload: IFormValue): Promise<void> => {
+    try {
+      const { title, description, amount, tokenType, receiverAddress } =
+        payload;
+
+      await createProposal({
+        title,
+        description,
+      });
+
+      const funcName =
+        tokenType === TokenType.NATIVE ? 'transfer' : 'transferERC20';
+      const args =
+        tokenType === TokenType.NATIVE
+          ? [
+              receiverAddress,
+              Web3.utils.toWei(amount.toString(), 'ether').toString(),
+            ]
+          : [
+              receiverAddress,
+              GEN_TOKEN_ADDRESS,
+              Web3.utils.toWei(amount.toString(), 'ether').toString(),
+            ];
+
+      await submitProposal({
+        targets: [GEN_DAO_TREASURY_ADDRESS],
+        values: ['0'],
+        description: title,
+        calldatas: {
+          funcName,
+          args,
+        },
+        chainID: NETWORK_CHAIN_ID,
+      });
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      throw Error('Can not submit proposal');
+    }
   };
 
   const handleCastVote = async (): Promise<void> => {
@@ -108,7 +164,12 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   return (
     <DAOContext.Provider
       value={{
-        currentStep,
+        isFormValid,
+        setIsFormValid,
+        displayMode,
+        setDisplayMode,
+        formValues,
+        setFormValues,
         handleDelegateGENToken,
         handleSubmitProposal,
         handleCastVote,

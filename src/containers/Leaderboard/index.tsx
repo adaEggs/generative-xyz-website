@@ -1,22 +1,32 @@
-import s from './styles.module.scss';
-import { NFTHolder } from '@interfaces/nft';
-import React, { useState } from 'react';
-import useAsyncEffect from 'use-async-effect';
+import Avatar from '@components/Avatar';
+import Link from '@components/Link';
 import { Loading } from '@components/Loading';
-import { CDN_URL } from '@constants/config';
 import Table from '@components/Table';
-import Image from 'next/image';
-import { formatCurrency, formatLongAddress } from '@utils/format';
-import { getNFTHolderList } from '@services/nfts';
-import Web3 from 'web3';
+import Text from '@components/Text';
+import { CDN_URL } from '@constants/config';
 import {
   GEN_TOKEN_ADDRESS,
   IGNORABLE_GEN_HOLDER_ADDRESS_LIST,
 } from '@constants/contract-address';
-import Link from '@components/Link';
 import { ROUTE_PATH } from '@constants/route-path';
+import { NFTHolder } from '@interfaces/nft';
+import { getNFTHolderList } from '@services/nfts';
+import { formatCurrency, formatLongAddress } from '@utils/format';
+import Image from 'next/image';
+import React, { useState } from 'react';
+import useAsyncEffect from 'use-async-effect';
+import Web3 from 'web3';
+import s from './styles.module.scss';
+import Heading from '@components/Heading';
 
-const TABLE_LEADERBOARD_HEADING = ['Rank', 'Artist', 'GEN Balance'];
+const TABLE_LEADERBOARD_HEADING = [
+  'Rank',
+  'Nickname',
+  ' ',
+  'GEN Balance',
+  'Collections',
+  'Outputs Minted',
+];
 
 const Leaderboard: React.FC = (): React.ReactElement => {
   const [userList, setUserList] = useState<Array<NFTHolder>>([]);
@@ -51,52 +61,78 @@ const Leaderboard: React.FC = (): React.ReactElement => {
     }
   }, []);
 
+  const renderBadges = (position: number) => {
+    switch (position) {
+      case 0:
+        return (
+          <Image
+            className={s.trophyIcon}
+            alt="trophy gold"
+            width={38}
+            height={36}
+            src={`${CDN_URL}/icons/ic-badge-gold.svg`}
+          />
+        );
+      case 1:
+        return (
+          <Image
+            className={s.trophyIcon}
+            alt="trophy silver"
+            width={38}
+            height={36}
+            src={`${CDN_URL}/icons/ic-badge-silver.svg`}
+          />
+        );
+      case 2:
+        return (
+          <Image
+            className={s.trophyIcon}
+            alt="trophy bronze"
+            width={38}
+            height={36}
+            src={`${CDN_URL}/icons/ic-badge-bronze.svg`}
+          />
+        );
+
+      default:
+        return (
+          <Image
+            className={s.trophyIcon}
+            alt="trophy iron"
+            width={38}
+            height={36}
+            src={`${CDN_URL}/icons/ic-badge-iron.svg`}
+          />
+        );
+    }
+  };
+
   const tableData = userList.map((item, index) => {
     const displayName = item.profile?.display_name
       ? item.profile.display_name
       : formatLongAddress(item.address);
+
     return {
       id: index.toString(),
       render: {
         rank: index + 1,
         walletAddress: (
           <div className={s.artistCol}>
-            {index === 0 && (
-              <Image
-                className={s.trophyIcon}
-                alt="trophy gold"
-                width={20}
-                height={20}
-                src={`${CDN_URL}/icons/ic-trophy-gold-20x20.svg`}
-              />
-            )}
-            {index === 1 && (
-              <Image
-                className={s.trophyIcon}
-                alt="trophy silver"
-                width={20}
-                height={20}
-                src={`${CDN_URL}/icons/ic-trophy-silver-20x20.svg`}
-              />
-            )}
-            {index === 2 && (
-              <Image
-                className={s.trophyIcon}
-                alt="trophy bronze"
-                width={20}
-                height={20}
-                src={`${CDN_URL}/icons/ic-trophy-bronze-20x20.svg`}
-              />
-            )}
+            <Avatar imgSrcs={item?.profile?.avatar || ''} />
             <Link
               className={s.displayName}
               href={`${ROUTE_PATH.PROFILE}/${item.address}`}
             >
-              {displayName}
+              <Text as="span" size="14" fontWeight="medium">
+                {displayName}
+              </Text>
             </Link>
           </div>
         ),
+        trophy: <div className={s.badgesCol}>{renderBadges(index)}</div>,
         balance: item.balance,
+        colletions: item.profile?.stats?.collection_created || '-',
+        minted: item.profile?.stats?.nft_minted || '-',
       },
     };
   });
@@ -105,12 +141,17 @@ const Leaderboard: React.FC = (): React.ReactElement => {
     <div className={s.leaderboard}>
       <div className="container">
         <div className={s.pageHeader}>
-          <h1 className={s.pageTitle}>Leaderboards</h1>
-          <h2 className={s.pageDescription}>
-            The artists featured below have shown tremendous passion for
-            generative art, promoted the movement of generative art, and made
-            significant contributions to the community.
-          </h2>
+          <Heading as="h2" className={s.pageTitle} fontWeight="medium">
+            Testnet Leaderboard
+          </Heading>
+          <div className={s.pageDescription}>
+            <Text>
+              The fellows below have shown tremendous passion for generative art
+              by promoting the movement and making significant contributions to
+              the community.
+            </Text>
+            <Text>Earn GEN and start climbing the ladder today!</Text>
+          </div>
         </div>
         <div className={s.pageBody}>
           <Loading isLoaded={!isLoading} />
@@ -125,9 +166,9 @@ const Leaderboard: React.FC = (): React.ReactElement => {
                     src={`${CDN_URL}/icons/ic-empty.svg`}
                     alt="empty.svg"
                   />
-                  <p className={s.emptyText}>
+                  <Text className={s.emptyText}>
                     {errorMessage ? errorMessage : 'No available data'}
-                  </p>
+                  </Text>
                 </div>
               )}
               {userList.length > 0 && (

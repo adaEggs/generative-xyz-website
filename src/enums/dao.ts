@@ -1,6 +1,6 @@
-export enum CreateDAOProposalStep {
+export enum CreateProposalDisplayMode {
   INPUT_INFO = 'INPUT_INFO',
-  PREVIEW_INFO = 'PREVIEW_INFO',
+  PREVIEW = 'PREVIEW',
 }
 
 export enum VoteType {
