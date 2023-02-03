@@ -17,6 +17,7 @@ import React, { useState } from 'react';
 import useAsyncEffect from 'use-async-effect';
 import Web3 from 'web3';
 import s from './styles.module.scss';
+import Heading from '@components/Heading';
 
 const TABLE_LEADERBOARD_HEADING = ['Rank', 'Nickname', ' ', 'GEN Balance'];
 
@@ -130,12 +131,17 @@ const Leaderboard: React.FC = (): React.ReactElement => {
     <div className={s.leaderboard}>
       <div className="container">
         <div className={s.pageHeader}>
-          <h1 className={s.pageTitle}>Leaderboards</h1>
-          <h2 className={s.pageDescription}>
-            The artists featured below have shown tremendous passion for
-            generative art, promoted the movement of generative art, and made
-            significant contributions to the community.
-          </h2>
+          <Heading as="h2" className={s.pageTitle} fontWeight="medium">
+            Testnet Leaderboard
+          </Heading>
+          <div className={s.pageDescription}>
+            <Text>
+              The fellows below have shown tremendous passion for generative art
+              by promoting the movement and making significant contributions to
+              the community.
+            </Text>
+            <Text>Earn GEN and start climbing the ladder today!</Text>
+          </div>
         </div>
         <div className={s.pageBody}>
           <Loading isLoaded={!isLoading} />
@@ -150,9 +156,9 @@ const Leaderboard: React.FC = (): React.ReactElement => {
                     src={`${CDN_URL}/icons/ic-empty.svg`}
                     alt="empty.svg"
                   />
-                  <p className={s.emptyText}>
+                  <Text className={s.emptyText}>
                     {errorMessage ? errorMessage : 'No available data'}
-                  </p>
+                  </Text>
                 </div>
               )}
               {userList.length > 0 && (
