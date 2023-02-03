@@ -19,7 +19,14 @@ import Web3 from 'web3';
 import s from './styles.module.scss';
 import Heading from '@components/Heading';
 
-const TABLE_LEADERBOARD_HEADING = ['Rank', 'Nickname', ' ', 'GEN Balance'];
+const TABLE_LEADERBOARD_HEADING = [
+  'Rank',
+  'Nickname',
+  ' ',
+  'GEN Balance',
+  'Collections',
+  'Outputs Minted',
+];
 
 const Leaderboard: React.FC = (): React.ReactElement => {
   const [userList, setUserList] = useState<Array<NFTHolder>>([]);
@@ -104,6 +111,7 @@ const Leaderboard: React.FC = (): React.ReactElement => {
     const displayName = item.profile?.display_name
       ? item.profile.display_name
       : formatLongAddress(item.address);
+
     return {
       id: index.toString(),
       render: {
@@ -123,6 +131,8 @@ const Leaderboard: React.FC = (): React.ReactElement => {
         ),
         trophy: <div className={s.badgesCol}>{renderBadges(index)}</div>,
         balance: item.balance,
+        colletions: item.profile?.stats?.collection_created || '-',
+        minted: item.profile?.stats?.nft_minted || '-',
       },
     };
   });
