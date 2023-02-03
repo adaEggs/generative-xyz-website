@@ -1,0 +1,9 @@
+.markdownEditor {
+  width: 100%;
+
+  :global(.w-md-editor-toolbar) {
+    height: auto !important;
+    padding-top: rem(8px);
+    padding-bottom: rem(8);
+  }
+}

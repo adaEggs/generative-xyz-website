@@ -12,20 +12,20 @@ const CreateProposal: React.FC = (): React.ReactElement => {
 
   return (
     <div className={s.createProposal}>
-      <header className={s.pageHeader}>
-        <div className="container">
+      <div className="container">
+        <header className={s.pageHeader}>
           <Link className={s.backLink} href={ROUTE_PATH.DAO}>
             Back
           </Link>
+        </header>
+        <div className={s.mainContent}>
+          {currentStep === CreateDAOProposalStep.INPUT_INFO && (
+            <CreateProposalForm />
+          )}
+          {currentStep === CreateDAOProposalStep.PREVIEW_INFO && (
+            <ProposalPreview />
+          )}
         </div>
-      </header>
-      <div className={s.mainContent}>
-        {currentStep === CreateDAOProposalStep.INPUT_INFO && (
-          <CreateProposalForm />
-        )}
-        {currentStep === CreateDAOProposalStep.PREVIEW_INFO && (
-          <ProposalPreview />
-        )}
       </div>
     </div>
   );
