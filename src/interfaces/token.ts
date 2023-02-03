@@ -23,6 +23,9 @@ export type Token = {
   ownerAddr: string;
   creator: User;
   tokenID: string;
+  stats: {
+    price: string;
+  };
 };
 
 export type TokenOffer = {

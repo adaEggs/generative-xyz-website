@@ -156,8 +156,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
             limit: FETCH_NUM,
             page: page,
             sort,
-            keyword: searchToken,
-            attributes: filterTraits,
+            keyword: searchToken || '',
+            attributes: filterTraits || '',
+            has_price: filterBuyNow || '',
           }
         );
         if (res.result) {
@@ -182,7 +183,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
 
   useEffect(() => {
     fetchProjectItems();
-  }, [projectData, page, sort, searchToken, filterTraits]);
+  }, [projectData, page, sort, searchToken, filterTraits, filterBuyNow]);
 
   const contextValues = useMemo((): IGenerativeProjectDetailContext => {
     return {
