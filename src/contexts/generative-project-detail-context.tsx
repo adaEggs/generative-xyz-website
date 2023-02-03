@@ -15,6 +15,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 
 const LOG_PREFIX = 'GenerativeProjectDetailContext';
@@ -45,6 +46,16 @@ export interface IGenerativeProjectDetailContext {
   setQuery: Dispatch<SetStateAction<Map<string, string> | null>>;
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
+  filterPrice: {
+    from_price: string;
+    to_price: string;
+  };
+  setFilterPrice: Dispatch<
+    React.SetStateAction<{
+      from_price: string;
+      to_price: string;
+    }>
+  >;
 }
 
 const initialValue: IGenerativeProjectDetailContext = {
@@ -93,6 +104,13 @@ const initialValue: IGenerativeProjectDetailContext = {
   setPage: _ => {
     return;
   },
+  filterPrice: {
+    from_price: '',
+    to_price: '',
+  },
+  setFilterPrice: _ => {
+    return;
+  },
 };
 
 export const GenerativeProjectDetailContext =
@@ -115,6 +133,10 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const [showFilter, setShowFilter] = useState(false);
   const [filterTraits, setFilterTraits] = useState('');
   const [query, setQuery] = useState<Map<string, string> | null>(null);
+  const [filterPrice, setFilterPrice] = useState({
+    from_price: '',
+    to_price: '',
+  });
 
   const router = useRouter();
   const { projectID } = router.query as {
@@ -148,6 +170,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
         } else {
           setIsLoaded(false);
         }
+
         const res = await getProjectItems(
           {
             contractAddress: projectData.genNFTAddr,
@@ -159,6 +182,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
             keyword: searchToken || '',
             attributes: filterTraits || '',
             has_price: filterBuyNow || '',
+            from_price: filterPrice.from_price || '',
+            to_price: filterPrice.to_price || '',
           }
         );
         if (res.result) {
@@ -182,8 +207,20 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   }, [projectID]);
 
   useEffect(() => {
-    fetchProjectItems();
-  }, [projectData, page, sort, searchToken, filterTraits, filterBuyNow]);
+    if (filterPrice.to_price && filterPrice.to_price < filterPrice.from_price) {
+      toast.error('Max price must be larger than min price');
+    } else {
+      fetchProjectItems();
+    }
+  }, [
+    projectData,
+    page,
+    sort,
+    searchToken,
+    filterTraits,
+    filterBuyNow,
+    filterPrice,
+  ]);
 
   const contextValues = useMemo((): IGenerativeProjectDetailContext => {
     return {
@@ -210,6 +247,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       setQuery,
       page,
       setPage,
+      filterPrice,
+      setFilterPrice,
     };
   }, [
     projectData,
@@ -235,6 +274,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     setQuery,
     page,
     setPage,
+    filterPrice,
+    setFilterPrice,
   ]);
 
   return (
