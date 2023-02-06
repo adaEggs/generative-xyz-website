@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { formatTokenId } from '@utils/format';
 import { Formik } from 'formik';
 import { toast } from 'react-hot-toast';
+import { validateWalletAddress } from '@utils/validate';
 
 interface IFormValues {
   toAddress: string;
@@ -33,7 +34,7 @@ const TransferTokenModal: React.FC = () => {
 
     if (!values.toAddress) {
       errors.toAddress = 'Receiver address is required.';
-    } else if (!/^0x[a-fA-F0-9]{40}$/.test(values.toAddress)) {
+    } else if (!validateWalletAddress(values.toAddress)) {
       errors.toAddress = 'Invalid address.';
     }
 

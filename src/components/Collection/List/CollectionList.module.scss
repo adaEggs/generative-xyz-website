@@ -1,5 +1,5 @@
 .showFilter {
-  grid-template-columns: 0.25fr 1fr;
+  grid-template-columns: 0.2fr 1fr;
   gap: rem(42px);
 
   @include mobile {
@@ -16,7 +16,6 @@
   z-index: 1;
   position: relative;
   background-color: $white;
-  // height: 100%;
 }
 
 .list_empty {

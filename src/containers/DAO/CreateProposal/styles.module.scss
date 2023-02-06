@@ -1,15 +1,3 @@
 .createProposal {
-  padding-top: 16px;
-  padding-bottom: 64px;
-
-  .pageHeader {
-    margin-bottom: rem(18px);
-  }
-
-  .backLink {
-    font-weight: 500;
-    font-size: rem(16px);
-    line-height: rem(26px);
-    color: $black-60;
-  }
+  display: block;
 }

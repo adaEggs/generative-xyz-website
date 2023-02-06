@@ -12,5 +12,9 @@ export type NFTHolder = {
   profile: {
     avatar: string;
     display_name: string;
+    stats: {
+      collection_created: number;
+      nft_minted: number;
+    };
   } | null;
 };

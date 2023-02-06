@@ -18,8 +18,16 @@ import useAsyncEffect from 'use-async-effect';
 import Web3 from 'web3';
 import s from './styles.module.scss';
 import Heading from '@components/Heading';
+import ButtonIcon from '@components/ButtonIcon';
 
-const TABLE_LEADERBOARD_HEADING = ['Rank', 'Nickname', ' ', 'GEN Balance'];
+const TABLE_LEADERBOARD_HEADING = [
+  'Rank',
+  'Nickname',
+  ' ',
+  'GEN Balance',
+  'Collections',
+  'Outputs Minted',
+];
 
 const Leaderboard: React.FC = (): React.ReactElement => {
   const [userList, setUserList] = useState<Array<NFTHolder>>([]);
@@ -104,6 +112,7 @@ const Leaderboard: React.FC = (): React.ReactElement => {
     const displayName = item.profile?.display_name
       ? item.profile.display_name
       : formatLongAddress(item.address);
+
     return {
       id: index.toString(),
       render: {
@@ -122,7 +131,19 @@ const Leaderboard: React.FC = (): React.ReactElement => {
           </div>
         ),
         trophy: <div className={s.badgesCol}>{renderBadges(index)}</div>,
-        balance: item.balance,
+        balance: <div className={s.dataCol}> {item.balance} </div>,
+        colletions: (
+          <div className={s.dataCol}>
+            {' '}
+            {item.profile?.stats?.collection_created || '-'}{' '}
+          </div>
+        ),
+        minted: (
+          <div className={s.dataCol}>
+            {' '}
+            {item.profile?.stats?.nft_minted || '-'}{' '}
+          </div>
+        ),
       },
     };
   });
@@ -141,6 +162,14 @@ const Leaderboard: React.FC = (): React.ReactElement => {
               the community.
             </Text>
             <Text>Earn GEN and start climbing the ladder today!</Text>
+            <ButtonIcon className={s.testnetBtn}>
+              <Link
+                href="https://docs.generative.xyz/overview/incentivized-testnet"
+                target="_blank"
+              >
+                Join testnet
+              </Link>
+            </ButtonIcon>
           </div>
         </div>
         <div className={s.pageBody}>
