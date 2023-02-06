@@ -18,7 +18,9 @@ const GenerativeLogo = ({
           width={64}
           height={64}
         />
-        <iframe className={s.generativeLogo} src={'/logo/index.html'} />
+        <div className={s.generativeLogoWrap_iframe}>
+          <iframe className={s.generativeLogo} src={'/logo/index.html'} />
+        </div>
       </ClientOnly>
     </div>
   );
