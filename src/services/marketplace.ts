@@ -63,14 +63,16 @@ export const getListingTokensByWallet = async ({
 
 export const getMakeOffersByWallet = async ({
   walletAddress,
+  isNftOwner = false,
   closed = false,
 }: {
   walletAddress: string;
   closed: boolean;
+  isNftOwner: boolean;
 }): Promise<ITokenOfferListResponse> => {
   try {
     return await get<ITokenOfferListResponse>(
-      `${API_PATH}/wallet/${walletAddress}/offer?closed=${closed}`
+      `${API_PATH}/wallet/${walletAddress}/offer?closed=${closed}&is_nft_owner=${isNftOwner}`
     );
   } catch (err: unknown) {
     log('failed to get listing token', LogLevel.ERROR, LOG_PREFIX);

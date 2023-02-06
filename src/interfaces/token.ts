@@ -39,6 +39,7 @@ export type TokenOffer = {
   durationTime: string;
   token?: Token;
   buyer?: string;
+  buyerInfo?: User;
 };
 
 export type TokenActivities = IGetTokenActivitiesResponse;
