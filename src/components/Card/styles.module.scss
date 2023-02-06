@@ -4,8 +4,24 @@
   box-shadow: 16px 16px 0 #cecece;
   border-radius: 2px;
   transition: all 0.2s ease;
+  overflow: hidden;
 
   &:hover {
     box-shadow: 16px 16px 0 #4f43e2;
   }
+}
+
+.Card_heading {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.Card_desc_skeleton {
+  display: flex;
+  margin-top: rem(16);
+  flex-direction: column;
+  gap: rem(5);
+  overflow: hidden;
 }

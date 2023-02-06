@@ -3,11 +3,11 @@ import {
   ICreateProposalPayload,
   ICreateProposalResponse,
   IGetProposalListParams,
+  IGetProposalListResponse,
   IUpdateProposalIDPayload,
   IUpdateProposalIDResponse,
 } from '@interfaces/api/dao';
-import { IGetProductListResponse } from '@interfaces/api/product';
-import { post, get, put } from '@services/http-client';
+import { get, post, put } from '@services/http-client';
 import log from '@utils/logger';
 import queryString from 'query-string';
 
@@ -17,10 +17,10 @@ const API_PATH = '/dao';
 
 export const getProposalList = async (
   query: IGetProposalListParams
-): Promise<IGetProductListResponse> => {
+): Promise<IGetProposalListResponse> => {
   try {
     const qs = '?' + queryString.stringify(query);
-    const res = await get<IGetProductListResponse>(
+    const res = await get<IGetProposalListResponse>(
       `${API_PATH}/proposals${qs}`
     );
 

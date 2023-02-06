@@ -24,6 +24,7 @@ enum SortType {
 export interface IGetProposalListParams extends IPagingParams {
   proposer?: string;
   sort?: SortType;
+  state?: string[];
 }
 
 export interface IGetProposalListResponse extends IPagingResponse {
