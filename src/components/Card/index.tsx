@@ -1,21 +1,20 @@
-import React, { ReactNode } from 'react';
-import s from './styles.module.scss';
-import { Stack } from 'react-bootstrap';
 import Heading from '@components/Heading';
-import cs from 'classnames';
-import CardStatus from './Status';
 import Skeleton from '@components/Skeleton';
+import cs from 'classnames';
+import { PropsWithChildren } from 'react';
+import { Stack } from 'react-bootstrap';
+import CardStatus from './Status';
+import s from './styles.module.scss';
 
 type Props = {
   heading?: string;
-  body?: ReactNode;
   status?: number;
   className?: string;
   isLoading?: boolean;
 };
 
-const Card = (props: Props) => {
-  const { heading, body, status, className, isLoading } = props;
+const Card = (props: PropsWithChildren<Props>) => {
+  const { heading, children, status, className, isLoading } = props;
 
   if (isLoading)
     return (
@@ -37,7 +36,7 @@ const Card = (props: Props) => {
         </Heading>
         {status && <CardStatus status={status} />}
       </Stack>
-      {body}
+      {children}
     </div>
   );
 };
