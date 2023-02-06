@@ -130,9 +130,19 @@ const Leaderboard: React.FC = (): React.ReactElement => {
           </div>
         ),
         trophy: <div className={s.badgesCol}>{renderBadges(index)}</div>,
-        balance: item.balance,
-        colletions: item.profile?.stats?.collection_created || '-',
-        minted: item.profile?.stats?.nft_minted || '-',
+        balance: <div className={s.dataCol}> {item.balance} </div>,
+        colletions: (
+          <div className={s.dataCol}>
+            {' '}
+            {item.profile?.stats?.collection_created || '-'}{' '}
+          </div>
+        ),
+        minted: (
+          <div className={s.dataCol}>
+            {' '}
+            {item.profile?.stats?.nft_minted || '-'}{' '}
+          </div>
+        ),
       },
     };
   });

@@ -50,6 +50,16 @@
   .badgesCol {
     position: relative;
     width: rem(200px);
+
+    @include mobile {
+      width: rem(150px);
+    }
+  }
+
+  .dataCol {
+    @include mobile {
+      min-width: rem(100px);
+    }
   }
 
   .displayName {
