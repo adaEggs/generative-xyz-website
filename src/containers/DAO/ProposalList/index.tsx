@@ -19,6 +19,12 @@ import useAsyncEffect from 'use-async-effect';
 import { v4 } from 'uuid';
 import ProposalItem from '../ProposalItem';
 import s from './styles.module.scss';
+import useContractOperation from '@hooks/useContractOperation';
+import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
+import { NETWORK_CHAIN_ID } from '@constants/config';
+import { GEN_TOKEN_ADDRESS } from '@constants/contract-address';
+import { toast } from 'react-hot-toast';
+import Link from '@components/Link';
 
 const FILTER_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -67,10 +73,20 @@ const ProposalList: React.FC = (): React.ReactElement => {
   const [filterState, setFilterState] = useState<string[]>();
   const [proposalList, setProposalList] = useState<Proposal[]>();
   const [isLoading, setIsLoading] = useState(false);
+  const [genBalance, setGenBalance] = useState(0);
+
+  const { call: getTokenBalance } = useContractOperation(
+    GetTokenBalanceOperation,
+    false
+  );
 
   const handleNavigateToCreatePage = (): void => {
     // TODO Check wallet GEN token balance
-    router.push(`${ROUTE_PATH.DAO}/create`);
+    if (genBalance > 0) {
+      router.push(`${ROUTE_PATH.DAO}/create`);
+    } else {
+      toast.error('Not enough GEN to submit proposal.');
+    }
   };
 
   useAsyncEffect(async () => {
@@ -89,6 +105,16 @@ const ProposalList: React.FC = (): React.ReactElement => {
       setIsLoading(false);
     }
   }, [filterState]);
+
+  useAsyncEffect(async () => {
+    const balance = await getTokenBalance({
+      chainID: NETWORK_CHAIN_ID,
+      erc20TokenAddress: GEN_TOKEN_ADDRESS,
+    });
+    if (balance !== null) {
+      setGenBalance(balance);
+    }
+  }, [user]);
 
   return (
     <div className={s.proposalList}>
@@ -159,12 +185,17 @@ const ProposalList: React.FC = (): React.ReactElement => {
             proposalList &&
             proposalList?.length > 0 &&
             proposalList.map(item => (
-              <Card
-                heading={item?.title}
-                body={<ProposalItem data={item} />}
-                status={item?.state}
+              <Link
+                href={`${ROUTE_PATH.DAO}/${item.proposalID}`}
+                className="no-underline"
                 key={`proposal-item-${v4()}`}
-              />
+              >
+                <Card
+                  heading={item?.title || 'Title Here'}
+                  body={<ProposalItem data={item} />}
+                  status={item?.state}
+                />
+              </Link>
             ))}
 
           {!proposalList ||
