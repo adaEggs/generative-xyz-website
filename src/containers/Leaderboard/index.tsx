@@ -18,6 +18,7 @@ import useAsyncEffect from 'use-async-effect';
 import Web3 from 'web3';
 import s from './styles.module.scss';
 import Heading from '@components/Heading';
+import ButtonIcon from '@components/ButtonIcon';
 
 const TABLE_LEADERBOARD_HEADING = [
   'Rank',
@@ -161,6 +162,14 @@ const Leaderboard: React.FC = (): React.ReactElement => {
               the community.
             </Text>
             <Text>Earn GEN and start climbing the ladder today!</Text>
+            <ButtonIcon className={s.testnetBtn}>
+              <Link
+                href="https://docs.generative.xyz/overview/incentivized-testnet"
+                target="_blank"
+              >
+                Join testnet
+              </Link>
+            </ButtonIcon>
           </div>
         </div>
         <div className={s.pageBody}>
