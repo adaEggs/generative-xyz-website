@@ -8,14 +8,14 @@ import Skeleton from '@components/Skeleton';
 
 type Props = {
   heading?: string;
-  body?: ReactNode;
+  children?: ReactNode;
   status?: number;
   className?: string;
   isLoading?: boolean;
 };
 
 const Card = (props: Props) => {
-  const { heading, body, status, className, isLoading } = props;
+  const { heading, children, status, className, isLoading } = props;
 
   if (isLoading)
     return (
@@ -31,13 +31,20 @@ const Card = (props: Props) => {
 
   return (
     <div className={cs(s.Card_wrapper, className)}>
-      <Stack direction="horizontal" className="justify-between" gap={3}>
+      {status ? (
+        <Stack direction="horizontal" className="justify-between" gap={3}>
+          <Heading as="h4" className={s.Card_heading}>
+            {heading}
+          </Heading>
+          <CardStatus status={status} />
+        </Stack>
+      ) : (
         <Heading as="h4" className={s.Card_heading}>
           {heading}
         </Heading>
-        {status && <CardStatus status={status} />}
-      </Stack>
-      {body}
+      )}
+
+      {children}
     </div>
   );
 };

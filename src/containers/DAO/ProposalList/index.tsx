@@ -192,9 +192,10 @@ const ProposalList: React.FC = (): React.ReactElement => {
               >
                 <Card
                   heading={item?.title || 'Title Here'}
-                  body={<ProposalItem data={item} />}
                   status={item?.state}
-                />
+                >
+                  <ProposalItem data={item} />
+                </Card>
               </Link>
             ))}
 
