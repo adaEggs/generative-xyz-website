@@ -3,7 +3,7 @@ import MarketplaceLayout from '@layouts/Marketplace';
 import { CDN_URL } from '@constants/config';
 import ProposalList from '@containers/DAO/ProposalList';
 
-const MarketplacePage: NextPage = () => {
+const DAOProposalListPage: NextPage = () => {
   return (
     <MarketplaceLayout>
       <ProposalList />
@@ -11,7 +11,7 @@ const MarketplacePage: NextPage = () => {
   );
 };
 
-export default MarketplacePage;
+export default DAOProposalListPage;
 
 export async function getServerSideProps() {
   return {

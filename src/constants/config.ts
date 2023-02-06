@@ -9,6 +9,7 @@ export const NETWORK_CHAIN_ID: number = parseInt(
   10
 );
 export const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL!;
+export const APP_TOKEN_SYMBOL = 'GEN';
 
 // Datadog config
 export const DD_APP_ID = process.env.DD_APP_ID!;

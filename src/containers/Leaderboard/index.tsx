@@ -3,7 +3,7 @@ import Link from '@components/Link';
 import { Loading } from '@components/Loading';
 import Table from '@components/Table';
 import Text from '@components/Text';
-import { CDN_URL } from '@constants/config';
+import { APP_TOKEN_SYMBOL, CDN_URL } from '@constants/config';
 import {
   GEN_TOKEN_ADDRESS,
   IGNORABLE_GEN_HOLDER_ADDRESS_LIST,
@@ -24,7 +24,7 @@ const TABLE_LEADERBOARD_HEADING = [
   'Rank',
   'Nickname',
   ' ',
-  'GEN Balance',
+  `${APP_TOKEN_SYMBOL} Balance`,
   'Collections',
   'Outputs Minted',
 ];
@@ -71,7 +71,7 @@ const Leaderboard: React.FC = (): React.ReactElement => {
             alt="trophy gold"
             width={38}
             height={36}
-            src={`${CDN_URL}/icons/ic-badge-gold.svg`}
+            src={`${CDN_URL} / icons / ic - badge - gold.svg`}
           />
         );
       case 1:
@@ -81,7 +81,7 @@ const Leaderboard: React.FC = (): React.ReactElement => {
             alt="trophy silver"
             width={38}
             height={36}
-            src={`${CDN_URL}/icons/ic-badge-silver.svg`}
+            src={`${CDN_URL} / icons / ic - badge - silver.svg`}
           />
         );
       case 2:
@@ -91,7 +91,7 @@ const Leaderboard: React.FC = (): React.ReactElement => {
             alt="trophy bronze"
             width={38}
             height={36}
-            src={`${CDN_URL}/icons/ic-badge-bronze.svg`}
+            src={`${CDN_URL} / icons / ic - badge - bronze.svg`}
           />
         );
 
@@ -102,7 +102,7 @@ const Leaderboard: React.FC = (): React.ReactElement => {
             alt="trophy iron"
             width={38}
             height={36}
-            src={`${CDN_URL}/icons/ic-badge-iron.svg`}
+            src={`${CDN_URL} / icons / ic - badge - iron.svg`}
           />
         );
     }
@@ -122,7 +122,7 @@ const Leaderboard: React.FC = (): React.ReactElement => {
             <Avatar imgSrcs={item?.profile?.avatar || ''} />
             <Link
               className={s.displayName}
-              href={`${ROUTE_PATH.PROFILE}/${item.address}`}
+              href={`${ROUTE_PATH.PROFILE} / ${item.address}`}
             >
               <Text as="span" size="14" fontWeight="medium">
                 {displayName}
@@ -161,7 +161,9 @@ const Leaderboard: React.FC = (): React.ReactElement => {
               by promoting the movement and making significant contributions to
               the community.
             </Text>
-            <Text>Earn GEN and start climbing the ladder today!</Text>
+            <Text>
+              Earn {APP_TOKEN_SYMBOL} and start climbing the ladder today!
+            </Text>
             <ButtonIcon className={s.testnetBtn}>
               <Link
                 href="https://docs.generative.xyz/overview/incentivized-testnet"
@@ -182,7 +184,7 @@ const Leaderboard: React.FC = (): React.ReactElement => {
                     className={s.emptyImage}
                     width={74}
                     height={100}
-                    src={`${CDN_URL}/icons/ic-empty.svg`}
+                    src={`${CDN_URL} / icons / ic - empty.svg`}
                     alt="empty.svg"
                   />
                   <Text className={s.emptyText}>

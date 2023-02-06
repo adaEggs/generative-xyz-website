@@ -4,13 +4,12 @@ import {
   GEN_TOKEN_ADDRESS,
 } from '@constants/contract-address';
 import { INITIAL_FORM_VALUES } from '@constants/dao';
-import { CreateProposalDisplayMode, VoteType } from '@enums/dao';
+import { CreateProposalDisplayMode } from '@enums/dao';
 import { LogLevel } from '@enums/log-level';
 import { TokenType } from '@enums/token-type';
 import useContractOperation from '@hooks/useContractOperation';
 import { IFormValue } from '@interfaces/dao';
 import { getUserSelector } from '@redux/user/selector';
-import CastVoteProposalOperation from '@services/contract-operations/gen-dao/cast-vote-proposal';
 import ExecuteProposalOperation from '@services/contract-operations/gen-dao/execute-proposal';
 import SubmitProposalOperation from '@services/contract-operations/gen-dao/submit-proposal';
 import DelegateGENTokenOperation from '@services/contract-operations/gen-token/delegate-token';
@@ -41,8 +40,8 @@ export type TDAOContext = {
   setFormValues: Dispatch<SetStateAction<Partial<IFormValue>>>;
   handleDelegateGENToken: () => Promise<void>;
   handleSubmitProposal: (_: IFormValue) => Promise<void>;
-  handleCastVote: () => Promise<void>;
   handleExecuteProposal: () => Promise<void>;
+  proposalThreshold: number;
 };
 
 const initialValues: TDAOContext = {
@@ -60,8 +59,8 @@ const initialValues: TDAOContext = {
   },
   handleDelegateGENToken: () => new Promise<void>(r => r()),
   handleSubmitProposal: () => new Promise<void>(r => r()),
-  handleCastVote: () => new Promise<void>(r => r()),
   handleExecuteProposal: () => new Promise<void>(r => r()),
+  proposalThreshold: Number.MAX_VALUE,
 };
 
 export const DAOContext = createContext<TDAOContext>(initialValues);
@@ -72,6 +71,7 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   const [displayMode, setDisplayMode] = useState(
     CreateProposalDisplayMode.INPUT_INFO
   );
+  const [proposalThreshold] = useState(Number.MAX_VALUE);
   const [formValues, setFormValues] =
     useState<Partial<IFormValue>>(INITIAL_FORM_VALUES);
   const [isFormValid, setIsFormValid] = useState(false);
@@ -81,10 +81,6 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   );
   const { call: submitProposal } = useContractOperation(
     SubmitProposalOperation,
-    true
-  );
-  const { call: castVote } = useContractOperation(
-    CastVoteProposalOperation,
     true
   );
   const { call: executeProposal } = useContractOperation(
@@ -159,16 +155,6 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const handleCastVote = async (): Promise<void> => {
-    const tx = await castVote({
-      chainID: NETWORK_CHAIN_ID,
-      proposalId: '',
-      support: VoteType.FOR,
-    });
-    // eslint-disable-next-line no-console
-    console.log(tx);
-  };
-
   const handleExecuteProposal = async (): Promise<void> => {
     const tx = await executeProposal({
       chainID: NETWORK_CHAIN_ID,
@@ -190,8 +176,8 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
         setFormValues,
         handleDelegateGENToken,
         handleSubmitProposal,
-        handleCastVote,
         handleExecuteProposal,
+        proposalThreshold,
       }}
     >
       {children}

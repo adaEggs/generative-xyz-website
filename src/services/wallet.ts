@@ -139,13 +139,25 @@ export class WalletManager {
   async getBalance(
     walletAddress: string
   ): Promise<WalletOperationReturn<string | null>> {
-    const balance = await this.getWeb3Provider().eth.getBalance(walletAddress);
-    return {
-      isError: false,
-      isSuccess: true,
-      message: '',
-      data: balance,
-    };
+    try {
+      const balance = await this.getWeb3Provider().eth.getBalance(
+        walletAddress
+      );
+      return {
+        isError: false,
+        isSuccess: true,
+        message: '',
+        data: balance,
+      };
+    } catch (err: unknown) {
+      log('failed to get wallet balance', LogLevel.ERROR, LOG_PREFIX);
+      return {
+        isError: true,
+        isSuccess: false,
+        message: '',
+        data: null,
+      };
+    }
   }
 
   async signMessage(
@@ -334,7 +346,7 @@ export class WalletManager {
     }
   }
 
-  encodeFunctionCall(funcName: string, args: Array<string>) {
+  encodeFunctionCall(funcName: string, args: Array<string>): Array<string> {
     const { abi } = DAOTresuryContractABI;
 
     const funcObj = abi.find(abiItem => {
@@ -383,6 +395,26 @@ export class WalletManager {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     return this.contracts[contractAddress]!;
   }
+
+  getBlockNumber = async (): Promise<WalletOperationReturn<number | null>> => {
+    try {
+      const blockNumber = await this.getWeb3Provider().eth.getBlockNumber();
+      return {
+        isError: false,
+        isSuccess: true,
+        message: '',
+        data: blockNumber,
+      };
+    } catch (err: unknown) {
+      log('failed to get block number', LogLevel.ERROR, LOG_PREFIX);
+      return {
+        isError: true,
+        isSuccess: false,
+        message: '',
+        data: null,
+      };
+    }
+  };
 
   // Wallet events
   registerEvent(eventName: WalletEvent, handler: (args: unknown) => void) {

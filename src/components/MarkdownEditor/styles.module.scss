@@ -1,5 +1,6 @@
 .markdownEditor {
   width: 100%;
+  overflow: hidden;
 
   :global(.w-md-editor-toolbar) {
     height: auto !important;
