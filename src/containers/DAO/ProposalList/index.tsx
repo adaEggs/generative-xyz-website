@@ -190,11 +190,9 @@ const ProposalList: React.FC = (): React.ReactElement => {
                 className="no-underline"
                 key={`proposal-item-${v4()}`}
               >
-                <Card
-                  heading={item?.title || 'Title Here'}
-                  body={<ProposalItem data={item} />}
-                  status={item?.state}
-                />
+                <Card heading={item?.title} status={item?.state}>
+                  <ProposalItem data={item} />
+                </Card>
               </Link>
             ))}
 
