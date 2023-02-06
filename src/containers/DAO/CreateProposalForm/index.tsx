@@ -43,8 +43,8 @@ const CreateProposalForm: React.FC = (): React.ReactElement => {
 
     if (!values.amount.toString()) {
       errors.amount = 'Funding amount is required.';
-    } else if (parseFloat(values.amount) < 0) {
-      errors.amount = 'Invalid number.';
+    } else if (parseFloat(values.amount) <= 0) {
+      errors.amount = 'Invalid number. Must be greater than 0.';
     }
 
     if (!values.receiverAddress) {
@@ -59,8 +59,10 @@ const CreateProposalForm: React.FC = (): React.ReactElement => {
   const handleSubmit = async (values: IFormValue) => {
     try {
       setIsSubmitting(true);
-      await handleSubmitProposal(values);
-      // TODO Handle navigate
+      await handleSubmitProposal({
+        ...values,
+        amount: values.amount.toString(),
+      });
     } catch (err: unknown) {
       toast.error(ErrorMessage.DEFAULT);
     } finally {

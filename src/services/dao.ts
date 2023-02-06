@@ -3,8 +3,11 @@ import {
   ICreateProposalPayload,
   ICreateProposalResponse,
   IGetProposalListParams,
+  IUpdateProposalIDPayload,
+  IUpdateProposalIDResponse,
 } from '@interfaces/api/dao';
-import { post, get } from '@services/http-client';
+import { IGetProductListResponse } from '@interfaces/api/product';
+import { post, get, put } from '@services/http-client';
 import log from '@utils/logger';
 import queryString from 'query-string';
 
@@ -14,10 +17,12 @@ const API_PATH = '/dao';
 
 export const getProposalList = async (
   query: IGetProposalListParams
-): Promise<Array<unknown>> => {
+): Promise<IGetProductListResponse> => {
   try {
     const qs = '?' + queryString.stringify(query);
-    const res = await get<Array<unknown>>(`${API_PATH}/proposals${qs}`);
+    const res = await get<IGetProductListResponse>(
+      `${API_PATH}/proposals${qs}`
+    );
 
     return res;
   } catch (err: unknown) {
@@ -26,12 +31,28 @@ export const getProposalList = async (
   }
 };
 
+export const updateProposalID = async (
+  payload: IUpdateProposalIDPayload
+): Promise<IUpdateProposalIDResponse> => {
+  try {
+    const { id, proposalID } = payload;
+    const res = await put<unknown, IUpdateProposalIDResponse>(
+      `${API_PATH}/proposals/${id}/${proposalID}`,
+      {}
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to update proposal id', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to to update proposal id');
+  }
+};
+
 export const createProposal = async (
   payload: ICreateProposalPayload
 ): Promise<ICreateProposalResponse> => {
   try {
     const res = await post<ICreateProposalPayload, ICreateProposalResponse>(
-      API_PATH,
+      `${API_PATH}/proposals`,
       payload
     );
 

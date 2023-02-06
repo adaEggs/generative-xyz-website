@@ -1,6 +1,6 @@
 import { TokenType } from '@enums/token-type';
 import { Proposal } from '@interfaces/dao';
-import { IPagingParams } from './paging';
+import { IPagingParams, IPagingResponse } from './paging';
 
 export interface ICreateProposalPayload {
   title: string;
@@ -25,3 +25,14 @@ export interface IGetProposalListParams extends IPagingParams {
   proposer?: string;
   sort?: SortType;
 }
+
+export interface IGetProposalListResponse extends IPagingResponse {
+  result: Array<Proposal>;
+}
+
+export interface IUpdateProposalIDPayload {
+  id: string;
+  proposalID: string;
+}
+
+export type IUpdateProposalIDResponse = Proposal;

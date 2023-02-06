@@ -1,3 +1,4 @@
+import { ProposalState } from '@enums/dao';
 import { TokenType } from '@enums/token-type';
 
 export interface IFormValue {
@@ -9,5 +10,19 @@ export interface IFormValue {
 }
 
 export type Proposal = {
+  id: string;
   title: string;
+  amount: string;
+  calldatas: string | null;
+  description: string;
+  startBlock: number;
+  endBlock: number;
+  isDraft: boolean;
+  proposalID: string;
+  proposer: string;
+  receiverAddress: string;
+  state: ProposalState;
+  targets: null;
+  values: string | null;
+  tokenType: TokenType;
 };
