@@ -1,0 +1,15 @@
+.status {
+  font-size: rem(14);
+  font-weight: 500;
+  color: $white;
+  padding: rem(4) rem(12);
+  background-color: $black-20;
+
+  &.active {
+    background-color: $secondary-green-c;
+  }
+
+  &.pending {
+    background-color: $secondary-blue-c;
+  }
+}
