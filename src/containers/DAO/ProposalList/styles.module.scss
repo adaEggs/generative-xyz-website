@@ -4,8 +4,19 @@
   .header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: rem(62);
+    flex-wrap: wrap;
+    gap: rem(30);
+
+    @include w-max($screen-lg) {
+      flex-direction: column;
+    }
+  }
+
+  .leftContent {
+    flex: 1;
+    width: 100%;
   }
 
   .rightContent {
@@ -14,9 +25,26 @@
     flex-direction: column;
     align-items: flex-end;
 
-    > button {
-      width: fit-content;
+    @include w-max($screen-lg) {
+      align-items: flex-start;
     }
+
+    .CTA_btns {
+      display: flex;
+      gap: rem(10);
+
+      > button {
+        width: fit-content;
+      }
+    }
+  }
+
+  &_title {
+    display: flex;
+    gap: rem(20);
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 }
 
@@ -63,7 +91,13 @@
 }
 
 .proposalList_container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
+  flex-direction: column;
   gap: rem(40);
+  margin-top: rem(50);
+
+  @include w-min($screen-xs) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(rem(460px), 1fr));
+  }
 }

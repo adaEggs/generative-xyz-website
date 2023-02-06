@@ -279,3 +279,11 @@
     --bs-gutter-y: #{rem(10px)};
   }
 }
+
+.line-clamp-3 {
+  @include line-clamp(3);
+}
+
+.no-underline {
+  text-decoration: none;
+}

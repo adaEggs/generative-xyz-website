@@ -12,13 +12,8 @@ import { ListingTab } from '@containers/Profile/Listing';
 // import TableActivities from '@containers/Profile/Activity';
 
 const Profile: React.FC = (): React.ReactElement => {
-  const {
-    isLoaded,
-    profileTokens,
-    profileProjects,
-    profileMakeOffer,
-    profileListing,
-  } = useContext(ProfileContext);
+  const { isLoaded, profileTokens, profileProjects, profileListing } =
+    useContext(ProfileContext);
 
   return (
     <div className={s.profile}>
@@ -43,11 +38,7 @@ const Profile: React.FC = (): React.ReactElement => {
                 <CreatedTab />
               </Tab>
 
-              <Tab
-                tabClassName={s.tab}
-                eventKey="offerTab"
-                title={`Offer (${profileMakeOffer?.total || 0})`}
-              >
+              <Tab tabClassName={s.tab} eventKey="offerTab" title={`Offer`}>
                 <OfferTab />
               </Tab>
               <Tab
@@ -57,14 +48,6 @@ const Profile: React.FC = (): React.ReactElement => {
               >
                 <ListingTab />
               </Tab>
-
-              {/*<Tab*/}
-              {/*  tabClassName={s.tab}*/}
-              {/*  eventKey="activity-tab"*/}
-              {/*  title={`Activity (${profileListing?.total || 0})`}*/}
-              {/*>*/}
-              {/*  <TableActivities />*/}
-              {/*</Tab>*/}
             </Tabs>
           </div>
         </ClientOnly>

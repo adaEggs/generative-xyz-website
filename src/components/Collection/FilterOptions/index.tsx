@@ -111,6 +111,7 @@ const FilterOptions = ({ attributes }: Props) => {
           <input
             placeholder="Min"
             type="number"
+            step="any"
             onChange={debounce(e => {
               handleMinPriceChange(e.target.value);
             }, 1000)}
@@ -122,6 +123,7 @@ const FilterOptions = ({ attributes }: Props) => {
             }
             placeholder="Max"
             type="number"
+            step="any"
             onChange={debounce(e => {
               handleMaxPriceChange(e.target.value);
             }, 1000)}

@@ -19,6 +19,7 @@ import Web3 from 'web3';
 import s from './styles.module.scss';
 import Heading from '@components/Heading';
 import ButtonIcon from '@components/ButtonIcon';
+import SvgInset from '@components/SvgInset';
 
 const TABLE_LEADERBOARD_HEADING = [
   'Rank',
@@ -66,43 +67,35 @@ const Leaderboard: React.FC = (): React.ReactElement => {
     switch (position) {
       case 0:
         return (
-          <Image
+          <SvgInset
             className={s.trophyIcon}
-            alt="trophy gold"
-            width={38}
-            height={36}
-            src={`${CDN_URL} / icons / ic - badge - gold.svg`}
+            size={38}
+            svgUrl={`${CDN_URL}/icons/ic-badge-gold.svg`}
           />
         );
       case 1:
         return (
-          <Image
+          <SvgInset
             className={s.trophyIcon}
-            alt="trophy silver"
-            width={38}
-            height={36}
-            src={`${CDN_URL} / icons / ic - badge - silver.svg`}
+            size={38}
+            svgUrl={`${CDN_URL}/icons/ic-badge-silver.svg`}
           />
         );
       case 2:
         return (
-          <Image
+          <SvgInset
             className={s.trophyIcon}
-            alt="trophy bronze"
-            width={38}
-            height={36}
-            src={`${CDN_URL} / icons / ic - badge - bronze.svg`}
+            size={38}
+            svgUrl={`${CDN_URL}/icons/ic-badge-bronze.svg`}
           />
         );
 
       default:
         return (
-          <Image
+          <SvgInset
             className={s.trophyIcon}
-            alt="trophy iron"
-            width={38}
-            height={36}
-            src={`${CDN_URL} / icons / ic - badge - iron.svg`}
+            size={38}
+            svgUrl={`${CDN_URL}/icons/ic-badge-iron.svg`}
           />
         );
     }
