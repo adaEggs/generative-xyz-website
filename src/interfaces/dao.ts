@@ -9,6 +9,14 @@ export interface IFormValue {
   receiverAddress: string;
 }
 
+export type ProposalVote = {
+  for: number;
+  against: number;
+  total: number;
+  percentFor: number;
+  percentAgainst: number;
+};
+
 export type Proposal = {
   id: string;
   title: string;
@@ -18,6 +26,7 @@ export type Proposal = {
   startBlock: number;
   endBlock: number;
   isDraft: boolean;
+  vote: ProposalVote;
   proposalID: string;
   proposer: string;
   receiverAddress: string;

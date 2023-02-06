@@ -283,3 +283,7 @@
 .line-clamp-3 {
   @include line-clamp(3);
 }
+
+.no-underline {
+  text-decoration: none;
+}
