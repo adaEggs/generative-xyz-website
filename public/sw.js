@@ -99,7 +99,9 @@ self.addEventListener("activate", (event) => {
           '/logo/p5.min.js',
           '/logo/p5.svg.min.js',
           '/logo/sketch.js',
+          '/logo/sketch-white.js',
           '/logo/index.html',
+          '/logo/index-white.html',
         ]);
       })
   );
