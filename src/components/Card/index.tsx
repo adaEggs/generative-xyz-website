@@ -43,7 +43,6 @@ const Card = (props: Props) => {
           {heading}
         </Heading>
       )}
-
       {children}
     </div>
   );
