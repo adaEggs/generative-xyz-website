@@ -4,7 +4,8 @@ let radiuses = [];
 let xc;
 let yc;
 let poly;
-let excitement;
+let excitementX;
+let excitementY;
 let startAngle;
 let angle;
 let fx;
@@ -12,33 +13,37 @@ let rotateAngle;
 let mainRadius;
 let shadowColor = [210, 255, 255];
 let hourColor = [10, 210, 210]
-let bgColor = [28, 28, 28, 0];
+let bgColor = [28, 28, 28];
 let logoStyle
 let palette = [];
+let strokeThickness
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);  
+  //createCanvas(300, 64);
+  createCanvas(windowWidth, windowHeight);
   frameRate(fps);
   xc = width / 2;
   yc = height / 2;
+  strokeThickness = height / 200;
 
-  logoStyle = 1; // 0 - custom color, 1 - White logo, 2 - Black logo, 3 - Random color 
-  
+  logoStyle = 1; // 0 - custom color, 1 - White logo, 2 - Black logo, 3 - Random color
+
   poly = getRandomInt(1, 4);
   //poly = 2; // 1, 2, 3, 4, 5
-  if (poly == 1){    
-    mainRadius = height*0.05*4
+  if (poly == 1){
+    mainRadius = height*0.05*5
   }
   else {
-    
-    mainRadius = height*0.05*getRandomInt(1,6);
-    //mainRadius = height*0.05*3;
+
+    //mainRadius = height*0.05*getRandomInt(3,6);
+    mainRadius = height*0.05*3;
   }
 
-  
+
   startAngle = PI / (2.5+0.5*getRandomInt(1,5));
   //startAngle = PI / (2.5+0.5*4);
-  excitement = height*0.05; 
+  excitementX = height*0.2;
+  excitementY = height*0.1;
   angle = (PI / 2 - startAngle) / poly;
   for (let a = startAngle; a < PI / 2; a += angle) {
     if (a == startAngle) {
@@ -54,7 +59,7 @@ function setup() {
   if (logoStyle == 2){
     shadowColor = [0,0,0];
     hourColor = 80;
-    bgColor = 28;
+    bgColor = 255;
   }
   else if (logoStyle == 1) {
     shadowColor = [255, 255, 255];
@@ -62,17 +67,17 @@ function setup() {
     bgColor = 28;
   }
   else if (logoStyle == 3){
-    //colorMode(HSL,360,100,100); 
+    //colorMode(HSL,360,100,100);
     h = getRandomInt(0,361);
     s = getRandomInt(30,101);
     b = getRandomInt(50,81);
     getPalette();
-    
+
     shadowColor = hexToRgb(palette[2]);
     //shadowColor = [255, 255, 255];
     hourColor = hexToRgb(palette[2]);
-    bgColor = 28;//hexToRgb(palette[3]);
-    
+    bgColor = hexToRgb(28);
+
   }
 
 
@@ -82,10 +87,13 @@ function draw() {
 
   background(bgColor);
   //clear();
-  // for (let i=0; i<5; i++) { 
+  // for (let i=0; i<5; i++) {
   // fill(palette[i]);
   // square (i*100,0,100);
   // }
+  translate(xc, yc);
+  scale(1.5);
+  translate(-xc,-yc);
   if (fx == 1){
     push();
     //noFill();
@@ -99,25 +107,25 @@ function draw() {
     fill(shadowColor);
     polygon(0,mainRadius*2.5, poly, 1);
     polygon(0,-mainRadius*2.5, poly, 2);
-    
+
     rotate(PI/3);
     shadowColor[3] = 50;
     fill(shadowColor);
     polygon(0,mainRadius*2.5, poly, 1);
     polygon(0,-mainRadius*2.5, poly, 2);
-    
+
     rotate(PI/3);
     shadowColor[3] = 20;
     fill(shadowColor);
     polygon(0,mainRadius*2.5, poly, 1);
     polygon(0,-mainRadius*2.5, poly, 2);
-    
+
     rotateAngle+=PI/30;
     pop();
-    
+
     push();
     noFill();
-    strokeWeight(2);
+    strokeWeight(strokeThickness);
     translate(xc,yc);
     //rotate(PI);
     //scale(0.5);
@@ -126,141 +134,87 @@ function draw() {
     stroke(shadowColor);
     polygon(0,-mainRadius/2, poly, 1);
     polygon(0,mainRadius/2, poly, 2);
-    
+
     rotate(-PI/3);
     shadowColor[3] = 250;
     stroke(shadowColor);
     polygon(0,-mainRadius/2, poly, 1);
     polygon(0,mainRadius/2, poly, 2);
-    
+
     rotate(-PI/3);
     shadowColor[3] = 20;
     stroke(shadowColor);
     polygon(0,-mainRadius/2, poly, 1);
     polygon(0,mainRadius/2, poly, 2);
-    
+
     rotateAngle+=PI/30;
     pop();
-    
+
   }
   if (fx == 0){
-    
+
     noFill();
-    strokeWeight(2);
+    strokeWeight(strokeThickness);
     shadowColor[3] = 20;
     stroke(shadowColor);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 1);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 2);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 1);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 2);
 
     shadowColor[3] = 50;
     stroke(shadowColor);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 1);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 2);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 1);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 2);
     shadowColor[3] = 100;
     stroke(shadowColor);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 1);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 2);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 1);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 2);
   }
-  
 
-  
+
+
   if (fx == 2){
     noStroke();
     shadowColor[3] = 20;
     fill(shadowColor);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 1);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 2);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 1);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 2);
     shadowColor[3] = 50;
     fill(shadowColor);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 1);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 2);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 1);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 2);
     shadowColor[3] = 100;
     fill(shadowColor);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 1);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 2);
-    
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 1);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 2);
+
     noFill();
-    strokeWeight(2);
+    strokeWeight(strokeThickness);
     shadowColor[3] = 20;
     stroke(shadowColor);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 1);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 2);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 1);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 2);
 
     shadowColor[3] = 50;
     stroke(shadowColor);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 1);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 2);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 1);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 2);
     shadowColor[3] = 100;
     stroke(shadowColor);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 1);
-    polygon(xc - random(-excitement, excitement), yc - random(-excitement, excitement), poly, 2);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 1);
+    polygon(xc - random(-excitementX, excitementX), yc - random(-excitementY, excitementY), poly, 2);
   }
-    //draw main shape
+  //draw main shape
   noStroke();
   fill(hourColor);
   polygon(xc, yc, poly, 0);
+
 }
 
-function polycurve(x, y, npoints, part) {
-  let angle = (PI / 2 - startAngle) / npoints;
-  let id = 0;
-  if (part == 0 || part == 2){
-    beginShape();
-    id = poly - 1;
-    let sx = x + cos(PI/2) * radiuses[id];
-    let sy = y + sin(PI/2) * radiuses[id];
-    curveVertex(sx, sy);
-    curveVertex(sx, sy);
-    for (let a = PI/2 - angle; a >= startAngle; a -= angle) {
-      radius = radiuses[id];
-      id -= 1;
-      let sx = x + cos(a) * radius;
-      let sy = y + sin(a) * radius;
-      curveVertex(sx, sy);
-    }
-    curveVertex(x,y);
-    id = 0;
-    for (let a = PI - startAngle; a >= PI/2+ angle; a -= angle) {
-      radius = radiuses[id];
-      id += 1;
-      let sx = x + cos(a) * radius;
-      let sy = y + sin(a) * radius;
-      curveVertex(sx, sy);
-    }
-    endShape(CLOSE);
-  }
-  
-  if (part == 0 || part == 1){
-    beginShape();
-    id = poly - 1;
-    sx = x + cos(PI/2) * radiuses[id];
-    sy = y - sin(PI/2) * radiuses[id];
-    curveVertex(sx, sy);
-    curveVertex(sx, sy);
-    for (let a = PI/2 - angle; a >= startAngle; a -= angle) {
-      radius = radiuses[id];
-      id -= 1;
-      let sx = x + cos(a) * radius;
-      let sy = y - sin(a) * radius;
-      curveVertex(sx, sy);
-    }
-    curveVertex(x,y);
-    id = 0;
-    for (let a = PI - startAngle; a >= PI/2+ angle; a -= angle) {
-      radius = radiuses[id];
-      id += 1;
-      let sx = x + cos(a) * radius;
-      let sy = y - sin(a) * radius;
-      curveVertex(sx, sy);
-    }
-    endShape(CLOSE);
-  }
-}
 
 function polygon(x, y, npoints, part) {
   let angle = (PI / 2 - startAngle) / npoints;
   let id = 0;
-  
+
   if (part == 0 || part == 2){
     beginShape();
     vertex(x, y);
@@ -283,7 +237,7 @@ function polygon(x, y, npoints, part) {
     vertex(x, y);
     endShape();
   }
-  if (part == 0 || part == 1){  
+  if (part == 0 || part == 1){
     beginShape();
     id = 0;
     vertex(x, y);
@@ -328,13 +282,13 @@ function drawCenter(){
 }
 
 function keyPressed(){
-  
+
   //if the key is a s
   if(key == 's'){
     //save out to a file
     save('my-great-proejct.png');
   }
-  
+
 }
 
 function getPalette() {
@@ -402,7 +356,7 @@ function fillSquare(colorOrder) {
   } else if (hValue > 360) {
     hValue-=360;
   }
-  if (sValue > 100) { 
+  if (sValue > 100) {
     sValue-=20;
   }
   bValue = b;
@@ -494,13 +448,13 @@ function hslToHex(h, s, l) {
 }
 
 function hexToRgb(hex) {
-    hex = hex.replace('#', '');
+  hex = hex.replace('#', '');
 
-    var bigint = parseInt(hex, 16);
+  var bigint = parseInt(hex, 16);
 
-    var r = (bigint >> 16) & 255;
-    var g = (bigint >> 8) & 255;
-    var b = bigint & 255;
+  var r = (bigint >> 16) & 255;
+  var g = (bigint >> 8) & 255;
+  var b = bigint & 255;
 
-    return [r, g, b];
+  return [r, g, b];
 }

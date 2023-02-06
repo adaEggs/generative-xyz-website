@@ -1,0 +1,48 @@
+.proposalPreview {
+  padding: rem(60) 0;
+
+  @include max-tablet {
+    padding: rem(32px) 0;
+  }
+
+  .title {
+    font-weight: 500;
+    font-size: rem(34px);
+    line-height: rem(44px);
+    color: $black-100;
+    margin-bottom: rem(24px);
+  }
+
+  .titleSkeleton {
+    height: rem(34px);
+    width: 50%;
+    margin-bottom: rem(24px);
+  }
+
+  .descriptionLabel {
+    font-weight: 500;
+    font-size: rem(14px);
+    line-height: rem(24px);
+    margin-bottom: rem(2px);
+    color: $black-40;
+    text-transform: uppercase;
+  }
+
+  .descriptionLabelSkeleton {
+    height: rem(14px);
+    width: rem(100px);
+    margin-bottom: rem(8px);
+  }
+
+  .description {
+    font-weight: 400;
+    font-size: rem(18px);
+    line-height: rem(28px);
+    color: $black-80;
+  }
+
+  .descriptionSkeleton {
+    height: rem(180px);
+    width: 100%;
+  }
+}

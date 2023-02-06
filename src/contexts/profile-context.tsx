@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useMemo,
   useState,
+  useEffect,
 } from 'react';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
@@ -33,7 +34,7 @@ import { NETWORK_CHAIN_ID } from '@constants/config';
 import { ErrorMessage } from '@enums/error-message';
 import useContractOperation from '@hooks/useContractOperation';
 import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
-import { IGetTokenActivitiesResponse } from '@interfaces/api/nfts';
+import AcceptTokenOffer from '@services/contract-operations/generative-marketplace/accept-token-offer';
 
 const LOG_PREFIX = 'ProfileContext';
 
@@ -44,7 +45,6 @@ export interface IProfileContext {
   profileProjects?: IGetProjectItemsResponse;
   profileMakeOffer?: ITokenOfferListResponse;
   profileListing?: IListingTokensResponse;
-  profileActivity?: IGetTokenActivitiesResponse;
 
   isLoaded: boolean;
 
@@ -52,14 +52,16 @@ export interface IProfileContext {
   isLoadedProfileProjects: boolean;
   isLoadedProfileMakeOffer: boolean;
   isLoadedProfileListing: boolean;
-  isLoadedProfileActivity: boolean;
 
   handleFetchTokens: () => void;
   handleFetchProjects: () => void;
-  handleFetchMakeOffers: () => void;
+  handleFetchMakeOffers: (r?: boolean) => void;
   handleFetchListingTokens: () => void;
-  handleFetchProfileActivity: () => void;
   handleCancelOffer: (offer: TokenOffer) => void;
+  handleAcceptOfferReceived: (offer: TokenOffer) => void;
+
+  isOfferReceived: boolean;
+  setIsOfferReceived: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const initialValue: IProfileContext = {
@@ -69,13 +71,17 @@ const initialValue: IProfileContext = {
   isLoadedProfileProjects: false,
   isLoadedProfileMakeOffer: false,
   isLoadedProfileListing: false,
-  isLoadedProfileActivity: false,
   handleFetchTokens: () => new Promise<void>(r => r()),
   handleFetchProjects: () => new Promise<void>(r => r()),
   handleFetchMakeOffers: () => new Promise<void>(r => r()),
   handleFetchListingTokens: () => new Promise<void>(r => r()),
   handleCancelOffer: () => new Promise<void>(r => r()),
-  handleFetchProfileActivity: () => new Promise<void>(r => r()),
+  handleAcceptOfferReceived: () => new Promise<void>(r => r()),
+
+  isOfferReceived: false,
+  setIsOfferReceived: _ => {
+    return;
+  },
 };
 
 export const ProfileContext =
@@ -94,6 +100,11 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const { call: cancelOffer } = useContractOperation(
     CancelTokenOfferOperation,
+    true
+  );
+
+  const { call: acceptOfferReceived } = useContractOperation(
+    AcceptTokenOffer,
     true
   );
 
@@ -122,15 +133,10 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     IListingTokensResponse | undefined
   >();
 
-  const [profileActivity, _] = useState<
-    IGetTokenActivitiesResponse | undefined
-  >();
-
   const [isLoadedProfileListing, setIsLoadedProfileListing] =
     useState<boolean>(false);
 
-  const [isLoadedProfileActivity, setIsLoadedProfileActivity] =
-    useState<boolean>(false);
+  const [isOfferReceived, setIsOfferReceived] = useState<boolean>(false);
 
   const handleFetchProjects = useCallback(async () => {
     try {
@@ -184,8 +190,23 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         const makeOffers = await getMakeOffersByWallet({
           walletAddress: currentUser.walletAddress,
           closed: false,
+          isNftOwner: isOfferReceived,
         });
         if (makeOffers) {
+          if (isOfferReceived) {
+            const filteredData = makeOffers.result.filter(
+              (data: TokenOffer) => {
+                return (
+                  data &&
+                  data.buyerInfo &&
+                  data.buyerInfo.walletAddress !== currentUser.walletAddress
+                );
+              }
+            );
+
+            makeOffers.result = filteredData;
+          }
+
           setProfileMakeOffer(makeOffers);
           setIsLoadedProfileMakeOffer(true);
         }
@@ -194,7 +215,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       log('can not fetch listing tokens', LogLevel.ERROR, LOG_PREFIX);
       setIsLoadedProfileMakeOffer(true);
     }
-  }, [currentUser]);
+  }, [currentUser, isOfferReceived]);
 
   const handleFetchTokens = useCallback(async () => {
     try {
@@ -223,32 +244,6 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     }
   }, [currentUser, profileTokens]);
 
-  const handleFetchProfileActivity = useCallback(async () => {
-    try {
-      if (currentUser?.walletAddress) {
-        // const profileActivity = await getListingTokensByWallet({
-        //   walletAddress: currentUser.walletAddress,
-        //   closed: false,
-        // });
-        // if (listingTokens && listingTokens) {
-        //   setProfileListing(listingTokens);
-        // }
-
-        // setProfileActivity({
-        //   updated_at: '11/11/2022';
-        //   items: [
-        //     nft_transactions: Array<unknown>;
-        //     [x: string]: unknown;
-        //   ],
-        //   pagination: unknown;
-        // });
-        setIsLoadedProfileActivity(true);
-      }
-    } catch (ex) {
-      log('can not fetch listing tokens', LogLevel.ERROR, LOG_PREFIX);
-    }
-  }, [currentUser]);
-
   const handleFetchProfileByWallet = useCallback(async () => {
     try {
       if (walletAddress) {
@@ -268,6 +263,23 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const handleCancelOffer = async (offer: TokenOffer): Promise<void> => {
     const tx = await cancelOffer({
+      offerId: offer.offeringID,
+      chainID: NETWORK_CHAIN_ID,
+    });
+
+    if (!tx) {
+      log('Cancel token offer transaction error.', LogLevel.ERROR, LOG_PREFIX);
+      throw Error(ErrorMessage.DEFAULT);
+    }
+
+    // Refresh offers data
+    handleFetchMakeOffers();
+  };
+
+  const handleAcceptOfferReceived = async (
+    offer: TokenOffer
+  ): Promise<void> => {
+    const tx = await acceptOfferReceived({
       offerId: offer.offeringID,
       chainID: NETWORK_CHAIN_ID,
     });
@@ -311,6 +323,10 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     await handleFetchListingTokens();
   }, [currentUser, user]);
 
+  useEffect(() => {
+    handleFetchMakeOffers();
+  }, [isOfferReceived]);
+
   const contextValues = useMemo((): IProfileContext => {
     return {
       currentUser,
@@ -319,22 +335,21 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       profileProjects,
       profileMakeOffer,
       profileListing,
-      profileActivity,
 
       isLoaded,
-
       isLoadedProfileTokens,
       isLoadedProfileProjects,
       isLoadedProfileMakeOffer,
       isLoadedProfileListing,
-      isLoadedProfileActivity,
+      isOfferReceived,
 
       handleFetchTokens,
       handleFetchProjects,
       handleFetchMakeOffers,
       handleFetchListingTokens,
       handleCancelOffer,
-      handleFetchProfileActivity,
+      setIsOfferReceived,
+      handleAcceptOfferReceived,
     };
   }, [
     currentUser,
@@ -343,22 +358,21 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     profileProjects,
     profileMakeOffer,
     profileListing,
-    profileActivity,
 
     isLoaded,
-
     isLoadedProfileTokens,
     isLoadedProfileProjects,
     isLoadedProfileMakeOffer,
     isLoadedProfileListing,
-    isLoadedProfileActivity,
+    isOfferReceived,
 
     handleFetchTokens,
     handleFetchProjects,
     handleFetchMakeOffers,
     handleFetchListingTokens,
     handleCancelOffer,
-    handleFetchProfileActivity,
+    setIsOfferReceived,
+    handleAcceptOfferReceived,
   ]);
 
   return (

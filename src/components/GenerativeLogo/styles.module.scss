@@ -1,27 +1,19 @@
 .generativeLogo {
-  width: 120%;
-  height: 120%;
-  margin-left: -10%;
-  margin-top: -10%;
+  width: rem(54px);
+  height: rem(54px);
+  position: relative;
+  z-index: 2;
+
+  @include min-tablet {
+    width: rem(64px);
+    height: rem(64px);
+    max-width: 64px;
+    max-height: 64px;
+  }
 }
 
 .generativeLogoWrap {
   position: relative;
-
-  &_iframe {
-    overflow: hidden;
-    width: rem(54px);
-    height: rem(54px);
-    position: relative;
-    z-index: 2;
-
-    @include min-tablet {
-      width: rem(64px);
-      height: rem(64px);
-      max-width: 64px;
-      max-height: 64px;
-    }
-  }
 
   img {
     position: absolute;

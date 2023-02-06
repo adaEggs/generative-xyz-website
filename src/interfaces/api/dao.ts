@@ -37,3 +37,5 @@ export interface IUpdateProposalIDPayload {
 }
 
 export type IUpdateProposalIDResponse = Proposal;
+
+export type IGetProposalByOnChainIDResponse = Proposal;
