@@ -38,4 +38,7 @@ export const NFT_REQUIRED_TO_DISCOUNT = 1;
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
 export const GN_API_BASE_URL = process.env.NEXT_PUBLIC_GN_API_URL ?? '';
 
+// DAO
+export const GEN_REQUIRE_TO_VOTE = 1;
+
 /* eslint-enable @typescript-eslint/no-non-null-assertion */
