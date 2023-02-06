@@ -1,24 +1,24 @@
 import { NextPage } from 'next';
 import MarketplaceLayout from '@layouts/Marketplace';
 import { CDN_URL } from '@constants/config';
-import CreateProposal from '@containers/DAO/CreateProposal';
+import ProposalDetail from '@containers/DAO/ProposalDetail';
 
-const DAOCreateProposalPage: NextPage = () => {
+const DAOProposalDetailPage: NextPage = () => {
   return (
     <MarketplaceLayout>
-      <CreateProposal />
+      <ProposalDetail />
     </MarketplaceLayout>
   );
 };
 
-export default DAOCreateProposalPage;
+export default DAOProposalDetailPage;
 
 export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: 'Generative | Create Proposal',
-        description: 'Generative | Create Proposal',
+        title: 'Generative | DAO',
+        description: 'Generative | DAO',
         image: `${CDN_URL}/images/collect.jpg`,
       },
     },

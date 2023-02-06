@@ -11,6 +11,7 @@ import { IFormValue } from '@interfaces/dao';
 import { TokenType } from '@enums/token-type';
 import { getChainCurrency } from '@utils/chain';
 import { formatCurrency } from '@utils/format';
+import { APP_TOKEN_SYMBOL } from '@constants/config';
 
 const ProposalPreview: React.FC = (): React.ReactElement => {
   const { formValues, isFormValid, setDisplayMode, handleSubmitProposal } =
@@ -19,7 +20,9 @@ const ProposalPreview: React.FC = (): React.ReactElement => {
 
   const fundingAmount = useMemo((): string => {
     const currency =
-      formValues.tokenType === TokenType.ERC20 ? 'GEN' : getChainCurrency();
+      formValues.tokenType === TokenType.ERC20
+        ? APP_TOKEN_SYMBOL
+        : getChainCurrency();
     return `${formatCurrency(
       parseFloat(formValues.amount ?? '0')
     )} ${currency}`;
@@ -37,7 +40,10 @@ const ProposalPreview: React.FC = (): React.ReactElement => {
 
     try {
       setIsSubmitting(true);
-      await handleSubmitProposal(formValues as IFormValue);
+      await handleSubmitProposal({
+        ...formValues,
+        amount: formValues.amount?.toString(),
+      } as IFormValue);
     } catch (err: unknown) {
       toast.error(ErrorMessage.DEFAULT);
     } finally {
@@ -84,10 +90,6 @@ const ProposalPreview: React.FC = (): React.ReactElement => {
                 <div className={s.summaryInfoItem}>
                   <span className={s.summaryLabel}>Voting duration</span>
                   <span className={s.summaryValue}>7 days</span>
-                </div>
-                <div className={s.summaryInfoItem}>
-                  <span className={s.summaryLabel}>Creator fee</span>
-                  <span className={s.summaryValue}>0 ETH</span>
                 </div>
               </div>
               <div className={s.actionWrapper}>

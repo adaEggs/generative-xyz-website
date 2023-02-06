@@ -2,6 +2,7 @@ import { LogLevel } from '@enums/log-level';
 import {
   ICreateProposalPayload,
   ICreateProposalResponse,
+  IGetProposalByOnChainIDResponse,
   IGetProposalListParams,
   IUpdateProposalIDPayload,
   IUpdateProposalIDResponse,
@@ -28,6 +29,21 @@ export const getProposalList = async (
   } catch (err: unknown) {
     log('failed to get proposal list', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get proposal list');
+  }
+};
+
+export const getProposalByOnChainID = async (
+  proposalID: string
+): Promise<IGetProposalByOnChainIDResponse> => {
+  try {
+    const res = await get<IGetProposalByOnChainIDResponse>(
+      `${API_PATH}/proposals/${proposalID}`
+    );
+
+    return res;
+  } catch (err: unknown) {
+    log('failed to get proposal by on-chain id', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get proposal by on-chain id');
   }
 };
 
