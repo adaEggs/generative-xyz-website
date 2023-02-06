@@ -84,10 +84,26 @@ self.addEventListener("message", async (event) => {
 
 
 // Cache
-const CACHE_VERSION = 'v1.1.11';
+const CACHE_VERSION = 'v1.1.12';
+const STATIC_VERSION = 'v1.0.7';
+
 const CURRENT_CACHES = {
   assets: `assets-cache-${CACHE_VERSION}`,
+  static: `static-cache-${STATIC_VERSION}`,
 };
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+      caches.open(CURRENT_CACHES.static).then(function(cache) {
+        return cache.addAll([
+          '/logo/p5.min.js',
+          '/logo/p5.svg.min.js',
+          '/logo/sketch.js',
+          '/logo/index.html',
+        ]);
+      })
+  );
+});
 
 self.addEventListener("activate", (event) => {
   const expectedCacheNamesSet = new Set(Object.values(CURRENT_CACHES));
