@@ -74,6 +74,7 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
       });
       if (tx) {
         toast.success('Your vote has been recorded.');
+        setShowCastVoteModal(false);
       } else {
         toast.error(ErrorMessage.DEFAULT);
       }
@@ -158,14 +159,14 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
 
     if (proposal.state === ProposalState.Pending) {
       const seconds = (startBlock - currentBlock) * SECONDS_PER_BLOCK;
-      const startAt = dayjs().add(seconds, 'seconds');
+      const startAt = dayjs(proposal.createdAt).add(seconds, 'seconds');
       return `Start voting period at ${startAt.format('MMM DD YYYY HH:mm')}`;
     }
 
     if (proposal.state === ProposalState.Active) {
-      const seconds = (currentBlock - endBlock) * SECONDS_PER_BLOCK;
-      const endAt = dayjs().add(seconds, 'seconds');
-      return `End voting period at ${endAt.format('MMM DD YYYY HH:mm')}`;
+      const seconds = (endBlock - currentBlock) * SECONDS_PER_BLOCK;
+      const endAt = dayjs(proposal.createdAt).add(seconds, 'seconds');
+      return `End voting period at ${endAt.format('MMM DD, YYYY HH:mm')}`;
     }
 
     return null;
@@ -179,7 +180,7 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
     <div className={s.currentResult}>
       <h2 className={s.sectionTitle}>Current results</h2>
 
-      {!user && (
+      {!user && proposal.state === ProposalState.Pending && (
         <>
           {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
           <Button
