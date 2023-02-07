@@ -1,31 +1,32 @@
 import Button from '@components/ButtonIcon';
 import Card from '@components/Card';
 import Heading from '@components/Heading';
+import Link from '@components/Link';
 import NotFound from '@components/NotFound';
 import Text from '@components/Text';
+import { NETWORK_CHAIN_ID } from '@constants/config';
+import { GEN_TOKEN_ADDRESS } from '@constants/contract-address';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProposalState } from '@enums/dao';
 import { LogLevel } from '@enums/log-level';
+import useContractOperation from '@hooks/useContractOperation';
+import useOnClickOutside from '@hooks/useOnClickOutSide';
 import { Proposal } from '@interfaces/dao';
 import { SelectOption } from '@interfaces/select-input';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
+import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
 import { getProposalList } from '@services/dao';
 import log from '@utils/logger';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import Select, { SingleValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 import { v4 } from 'uuid';
 import ProposalItem from '../ProposalItem';
-import s from './styles.module.scss';
-import useContractOperation from '@hooks/useContractOperation';
-import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
-import { NETWORK_CHAIN_ID } from '@constants/config';
-import { GEN_TOKEN_ADDRESS } from '@constants/contract-address';
-import { toast } from 'react-hot-toast';
-import Link from '@components/Link';
 import DelegateVoteModal from './DelegateVoteModal';
+import s from './styles.module.scss';
 
 const FILTER_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -71,11 +72,13 @@ const LOG_PREFIX = 'ProposalList';
 const ProposalList: React.FC = (): React.ReactElement => {
   const router = useRouter();
   const user = useAppSelector(getUserSelector);
+  const dropdownRef = useRef<HTMLButtonElement>(null);
   const [filterState, setFilterState] = useState<string[]>();
   const [proposalList, setProposalList] = useState<Proposal[]>();
   const [isLoading, setIsLoading] = useState(false);
   const [genBalance, setGenBalance] = useState(0);
   const [showDelegateVoteModal, setShowDelegateVoteModal] = useState(false);
+  const [showDelegateOptions, setShowDelegateOptions] = useState(false);
 
   const { call: getTokenBalance } = useContractOperation(
     GetTokenBalanceOperation,
@@ -83,12 +86,15 @@ const ProposalList: React.FC = (): React.ReactElement => {
   );
 
   const handleNavigateToCreatePage = (): void => {
-    // TODO Check wallet GEN token balance
     if (genBalance > 0) {
       router.push(`${ROUTE_PATH.DAO}/create`);
     } else {
       toast.error('Not enough GEN to submit proposal.');
     }
+  };
+
+  const handleShowDelegateOptions = (): void => {
+    setShowDelegateOptions(!showDelegateOptions);
   };
 
   useAsyncEffect(async () => {
@@ -117,6 +123,8 @@ const ProposalList: React.FC = (): React.ReactElement => {
       setGenBalance(balance);
     }
   }, [user]);
+
+  useOnClickOutside(dropdownRef, () => setShowDelegateOptions(false));
 
   return (
     <>
@@ -154,13 +162,28 @@ const ProposalList: React.FC = (): React.ReactElement => {
                 <Button onClick={handleNavigateToCreatePage} disabled={!user}>
                   Submit proposal
                 </Button>
-                <Button
-                  variants="secondary"
-                  disabled={!user}
-                  onClick={() => setShowDelegateVoteModal(true)}
-                >
-                  Delegate vote
-                </Button>
+
+                <div className="position-relative">
+                  <Button
+                    variants="outline"
+                    disabled={!user}
+                    ref={dropdownRef}
+                    onClick={handleShowDelegateOptions}
+                  >
+                    Delegate vote
+                  </Button>
+                  {showDelegateOptions && (
+                    <ul className={`${s.delegate_dropdown}`}>
+                      <li className="dropdown-item">Delegate to myself</li>
+                      <li
+                        className="dropdown-item"
+                        onClick={() => setShowDelegateVoteModal(true)}
+                      >
+                        Delegate to address
+                      </li>
+                    </ul>
+                  )}
+                </div>
               </div>
               {!user && <Text>Connect wallet to make a proposal.</Text>}
             </div>
