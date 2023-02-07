@@ -19,6 +19,8 @@ import { VoteType } from '@enums/dao';
 import cs from 'classnames';
 import CastVoteProposalOperation from '@services/contract-operations/gen-dao/cast-vote-proposal';
 import { toast } from 'react-hot-toast';
+import CastVoteModal from '../CastVoteModal';
+import { ErrorMessage } from '@enums/error-message';
 
 const LOG_PREFIX = 'CurrentResult';
 
@@ -31,9 +33,11 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
   const router = useRouter();
   const { connect } = useContext(WalletContext);
   const user = useSelector(getUserSelector);
+  const [showCastVoteModal, setShowCastVoteModal] = useState(false);
   const [support, setSupport] = useState(VoteType.FOR);
   const [genBalance, setGenBalance] = useState(0);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [isVoting, setIsVoting] = useState(false);
   const { call: getTokenBalance } = useContractOperation(
     GetTokenBalanceOperation,
     false
@@ -45,17 +49,38 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
 
   const handleCastVote = async (): Promise<void> => {
     if (!proposal) {
-      toast.error('Proposal not found');
+      toast.error('Proposal not found.');
       return;
     }
 
-    const _tx = await castVote({
-      chainID: NETWORK_CHAIN_ID,
-      proposalId: proposal.proposalID,
-      support,
-    });
+    try {
+      setIsVoting(true);
+      const tx = await castVote({
+        chainID: NETWORK_CHAIN_ID,
+        proposalId: proposal.proposalID,
+        support,
+      });
+      if (tx) {
+        toast.success('Your vote has been recorded.');
+      } else {
+        toast.error(ErrorMessage.DEFAULT);
+      }
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      toast.error(ErrorMessage.DEFAULT);
+    } finally {
+      setIsVoting(false);
+    }
+  };
 
-    // console.log(tx);
+  const handleCloseVoteModal = (): void => {
+    setShowCastVoteModal(false);
+    document.body.style.overflow = 'auto';
+  };
+
+  const handleOpenVoteModal = (): void => {
+    setShowCastVoteModal(true);
+    document.body.style.overflow = 'hidden';
   };
 
   const handleConnectWallet = async (): Promise<void> => {
@@ -146,12 +171,20 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
                 <span className={s.checkmark}></span>
               </div>
             </div>
-            <Button onClick={handleCastVote} className={s.connectBtn}>
+            <Button onClick={handleOpenVoteModal} className={s.connectBtn}>
               Cast your vote
             </Button>
           </div>
         </>
       )}
+      <CastVoteModal
+        support={support}
+        genBalance={genBalance}
+        isShow={showCastVoteModal}
+        isVoting={isVoting}
+        handleClose={handleCloseVoteModal}
+        handleVote={handleCastVote}
+      />
     </div>
   );
 };

@@ -15,7 +15,7 @@
 
   .input {
     display: flex;
-    padding: rem(11px) rem(16px);
+    // padding: rem(11px) rem(16px);
     align-items: center;
     gap: rem(11px);
     border-radius: 2px;
@@ -70,6 +70,24 @@
       input {
         color: inherit;
       }
+    }
+  }
+
+  &.large {
+    input {
+      padding: rem(20px) rem(17px);
+    }
+  }
+
+  &.medium {
+    input {
+      padding: rem(16px) rem(17px);
+    }
+  }
+
+  &.small {
+    input {
+      padding: rem(10px) rem(12px);
     }
   }
 }

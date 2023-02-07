@@ -1,10 +1,10 @@
 import React, { ReactNode } from 'react';
-import s from './styles.module.scss';
-import { Stack } from 'react-bootstrap';
 import Heading from '@components/Heading';
-import cs from 'classnames';
-import CardStatus from './Status';
 import Skeleton from '@components/Skeleton';
+import cs from 'classnames';
+import { Stack } from 'react-bootstrap';
+import CardStatus from './Status';
+import s from './styles.module.scss';
 
 type Props = {
   heading?: string;
