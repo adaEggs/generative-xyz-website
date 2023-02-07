@@ -21,7 +21,7 @@ export type Proposal = {
   id: string;
   title: string;
   amount: string;
-  calldatas: string | null;
+  calldatas: Array<string> | null;
   description: string;
   startBlock: number;
   endBlock: number;

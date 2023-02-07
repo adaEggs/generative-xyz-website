@@ -39,10 +39,40 @@
     font-size: rem(18px);
     line-height: rem(28px);
     color: $black-80;
+    margin-bottom: rem(24px);
   }
 
   .descriptionSkeleton {
     height: rem(180px);
     width: 100%;
+    margin-bottom: rem(24px);
+  }
+
+  .proposerInfoWrapper {
+    margin-bottom: rem(24px);
+  }
+
+  .proposerInfo {
+    font-weight: 400;
+    font-size: rem(14px);
+    line-height: rem(22px);
+    color: $black-40;
+  }
+
+  .proposerInfoSkeleton {
+    max-width: rem(300px);
+    height: rem(16px);
+    margin-bottom: rem(8px);
+  }
+
+  .socialWrapper {
+    display: flex;
+    align-items: center;
+    gap: rem(10px);
+  }
+
+  .socialSkeleton {
+    max-width: rem(200px);
+    height: rem(34px);
   }
 }

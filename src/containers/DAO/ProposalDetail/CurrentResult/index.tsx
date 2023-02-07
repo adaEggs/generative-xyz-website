@@ -9,15 +9,16 @@ import useContractOperation from '@hooks/useContractOperation';
 import { Proposal } from '@interfaces/dao';
 import { getUserSelector } from '@redux/user/selector';
 import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
+import ExecuteProposalOperation from '@services/contract-operations/gen-dao/execute-proposal';
+import CastVoteProposalOperation from '@services/contract-operations/gen-dao/cast-vote-proposal';
 import log from '@utils/logger';
 import { useRouter } from 'next/router';
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useAsyncEffect from 'use-async-effect';
 import SvgInset from '@components/SvgInset';
-import { VoteType } from '@enums/dao';
+import { ProposalState, VoteType } from '@enums/dao';
 import cs from 'classnames';
-import CastVoteProposalOperation from '@services/contract-operations/gen-dao/cast-vote-proposal';
 import { toast } from 'react-hot-toast';
 import CastVoteModal from '../CastVoteModal';
 import { ErrorMessage } from '@enums/error-message';
@@ -38,12 +39,17 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
   const [genBalance, setGenBalance] = useState(0);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isVoting, setIsVoting] = useState(false);
+  const [isExecuting, setIsExecuting] = useState(false);
   const { call: getTokenBalance } = useContractOperation(
     GetTokenBalanceOperation,
     false
   );
   const { call: castVote } = useContractOperation(
     CastVoteProposalOperation,
+    true
+  );
+  const { call: executeProposal } = useContractOperation(
+    ExecuteProposalOperation,
     true
   );
 
@@ -70,6 +76,31 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
       toast.error(ErrorMessage.DEFAULT);
     } finally {
       setIsVoting(false);
+    }
+  };
+
+  const handleExecuteProposal = async (): Promise<void> => {
+    if (!proposal) {
+      toast.error('Proposal not found.');
+      return;
+    }
+
+    try {
+      setIsExecuting(true);
+      const tx = await executeProposal({
+        chainID: NETWORK_CHAIN_ID,
+        proposalId: proposal.proposalID,
+      });
+      if (tx) {
+        toast.success('Proposal has been executed.');
+      } else {
+        toast.error(ErrorMessage.DEFAULT);
+      }
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      toast.error(ErrorMessage.DEFAULT);
+    } finally {
+      setIsExecuting(false);
     }
   };
 
@@ -112,6 +143,10 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
     }
   }, [user]);
 
+  if (!proposal) {
+    return <></>;
+  }
+
   return (
     <div className={s.currentResult}>
       <h2 className={s.sectionTitle}>Current results</h2>
@@ -145,35 +180,48 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
         </>
       )}
 
-      {user && genBalance > 0 && (
+      {user && (
         <>
           <div className={s.currentVotingResultWrapper}>
             <p className={s.startDate}>Yes: 90%</p>
             <p className={s.startDate}>No: 10%</p>
             <p className={s.startDate}>{`Start in 1 day`}</p>
-            <div className={s.choiceList}>
-              <div
-                onClick={() => handleChooseSupport(VoteType.FOR)}
-                className={cs(s.choiceItem, {
-                  [`${s.choiceItem__active}`]: support === VoteType.FOR,
-                })}
+            {genBalance > 0 && proposal.state === ProposalState.Active && (
+              <>
+                <div className={s.choiceList}>
+                  <div
+                    onClick={() => handleChooseSupport(VoteType.FOR)}
+                    className={cs(s.choiceItem, {
+                      [`${s.choiceItem__active}`]: support === VoteType.FOR,
+                    })}
+                  >
+                    Yes
+                    <span className={s.checkmark}></span>
+                  </div>
+                  <div
+                    onClick={() => handleChooseSupport(VoteType.AGAINST)}
+                    className={cs(s.choiceItem, {
+                      [`${s.choiceItem__active}`]: support === VoteType.AGAINST,
+                    })}
+                  >
+                    No
+                    <span className={s.checkmark}></span>
+                  </div>
+                </div>
+                <Button onClick={handleOpenVoteModal} className={s.connectBtn}>
+                  Cast your vote
+                </Button>
+              </>
+            )}
+            {proposal.state === ProposalState.Succeeded && (
+              <Button
+                disabled={isExecuting}
+                onClick={handleExecuteProposal}
+                className={s.connectBtn}
               >
-                Yes
-                <span className={s.checkmark}></span>
-              </div>
-              <div
-                onClick={() => handleChooseSupport(VoteType.AGAINST)}
-                className={cs(s.choiceItem, {
-                  [`${s.choiceItem__active}`]: support === VoteType.AGAINST,
-                })}
-              >
-                No
-                <span className={s.checkmark}></span>
-              </div>
-            </div>
-            <Button onClick={handleOpenVoteModal} className={s.connectBtn}>
-              Cast your vote
-            </Button>
+                {isExecuting ? 'Executing...' : 'Execute this proposal'}
+              </Button>
+            )}
           </div>
         </>
       )}

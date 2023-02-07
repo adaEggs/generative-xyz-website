@@ -17,6 +17,10 @@
     line-height: rem(26px);
     color: $black-80;
     margin-bottom: rem(16px);
+
+    &:last-child {
+      margin-bottom: rem(0);
+    }
   }
 
   .connectBtn {

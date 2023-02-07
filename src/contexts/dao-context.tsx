@@ -10,7 +10,6 @@ import { TokenType } from '@enums/token-type';
 import useContractOperation from '@hooks/useContractOperation';
 import { IFormValue } from '@interfaces/dao';
 import { getUserSelector } from '@redux/user/selector';
-import ExecuteProposalOperation from '@services/contract-operations/gen-dao/execute-proposal';
 import SubmitProposalOperation from '@services/contract-operations/gen-dao/submit-proposal';
 import DelegateGENTokenOperation from '@services/contract-operations/gen-token/delegate-token';
 import { createProposal, updateProposalID } from '@services/dao';
@@ -40,7 +39,6 @@ export type TDAOContext = {
   setFormValues: Dispatch<SetStateAction<Partial<IFormValue>>>;
   handleDelegateGENToken: () => Promise<void>;
   handleSubmitProposal: (_: IFormValue) => Promise<void>;
-  handleExecuteProposal: () => Promise<void>;
   proposalThreshold: number;
 };
 
@@ -59,7 +57,6 @@ const initialValues: TDAOContext = {
   },
   handleDelegateGENToken: () => new Promise<void>(r => r()),
   handleSubmitProposal: () => new Promise<void>(r => r()),
-  handleExecuteProposal: () => new Promise<void>(r => r()),
   proposalThreshold: Number.MAX_VALUE,
 };
 
@@ -81,10 +78,6 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   );
   const { call: submitProposal } = useContractOperation(
     SubmitProposalOperation,
-    true
-  );
-  const { call: executeProposal } = useContractOperation(
-    ExecuteProposalOperation,
     true
   );
 
@@ -155,16 +148,6 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
     }
   };
 
-  const handleExecuteProposal = async (): Promise<void> => {
-    const tx = await executeProposal({
-      chainID: NETWORK_CHAIN_ID,
-      proposalId:
-        '4409996933815001893737690734715286661540230475573519619383200946537493431632',
-    });
-    // eslint-disable-next-line no-console
-    console.log(tx);
-  };
-
   return (
     <DAOContext.Provider
       value={{
@@ -176,7 +159,6 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
         setFormValues,
         handleDelegateGENToken,
         handleSubmitProposal,
-        handleExecuteProposal,
         proposalThreshold,
       }}
     >

@@ -84,13 +84,20 @@
 
   .summaryChoice {
     padding: rem(4px) rem(12px);
-    background: $secondary-purple-c;
     border-radius: 2px;
     font-weight: 500;
     font-size: rem(14px);
     line-height: rem(22px);
     color: $white;
     text-transform: uppercase;
+
+    &__yes {
+      background: $secondary-purple-c;
+    }
+
+    &__no {
+      background: $secondary-red;
+    }
   }
 
   .divider {
