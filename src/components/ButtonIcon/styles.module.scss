@@ -211,6 +211,26 @@
     }
   }
 
+  &.outline-small {
+    background-color: transparent;
+    border: 1px inset $black-100;
+    color: $black-100;
+
+    &.medium {
+      padding-top: rem(9px);
+      padding-bottom: rem(9px);
+    }
+
+    &:hover {
+      border-color: $black-40;
+    }
+
+    &:disabled {
+      border-color: $black-10;
+      color: $black-20;
+    }
+  }
+
   &.filter {
     background-color: transparent;
     border: 1px solid $black-outline;
