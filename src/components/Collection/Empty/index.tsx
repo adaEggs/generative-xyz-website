@@ -108,7 +108,16 @@ export const Empty = ({
           <img src={`${CDN_URL}/icons/ic-empty.svg`} alt="empty.svg" />
         </div>
         <div className={s.empty_desc}>
-          Bring your unique vision to life. Mint your first NFT now
+          {mintedOut ? (
+            <>
+              <p>
+                Unfortunately, all outputs of this collection have been minted.
+              </p>
+              <p>Please browse other collections for availability.</p>
+            </>
+          ) : (
+            'Bring your unique vision to life. Mint your first NFT now'
+          )}
         </div>
         {projectInfo && !mintedOut && (
           <ButtonIcon
