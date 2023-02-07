@@ -13,6 +13,8 @@ import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { useRouter } from 'next/router';
 import { SOCIALS } from '@constants/common';
+import Link from 'next/link';
+import { EXTERNAL_LINK } from '@constants/external-link';
 
 export const SectionHero = (): JSX.Element => {
   const router = useRouter();
@@ -102,6 +104,16 @@ export const SectionHero = (): JSX.Element => {
             </AnimFade>
           </li>
         </ul>
+        <AnimFade screen={0.6}>
+          <Link
+            href={EXTERNAL_LINK.CALENDLY}
+            target={'_blank'}
+            className={s.Home_video_content_connect_cta}
+          >
+            TALK TO OUR TEAM
+          </Link>
+        </AnimFade>
+
         {/*<AnimFade className={s.Home_video_content_ctas_play} screen={0.6}>*/}
         {/*  <Button*/}
         {/*    size="xs"*/}
