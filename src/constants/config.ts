@@ -40,5 +40,6 @@ export const GN_API_BASE_URL = process.env.NEXT_PUBLIC_GN_API_URL ?? '';
 
 // DAO
 export const GEN_REQUIRE_TO_VOTE = 1;
+export const SECONDS_PER_BLOCK = 13;
 
 /* eslint-enable @typescript-eslint/no-non-null-assertion */

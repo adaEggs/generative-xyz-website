@@ -13,6 +13,11 @@ import { formatLongAddress } from '@utils/format';
 import DiscordShare from '@components/DiscordShare';
 import LinkShare from '@components/LinkShare';
 import TwitterShare from '@components/TwitterShare';
+import Link from 'next/link';
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
+import { ProposalState } from '@enums/dao';
+import cs from 'classnames';
 
 const ProposalDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -42,10 +47,36 @@ const ProposalDetail: React.FC = (): React.ReactElement => {
     <div className={s.proposalPreview}>
       <div className="container">
         <div className="row">
+          <div className="col-12">
+            <Link className={s.backLink} href={ROUTE_PATH.DAO}>
+              <SvgInset
+                className={s.arrowIcon}
+                size={18}
+                svgUrl={`${CDN_URL}/icons/ic-arrow-left-18x18.svg`}
+              />
+              All proposals
+            </Link>
+          </div>
+        </div>
+        <div className="row">
           <div className="col-xl-8">
             <div className={s.proposalInfoWrapper}>
               {proposal?.title ? (
-                <h1 className={s.title}>{proposal?.title}</h1>
+                <>
+                  <h1 className={s.title}>
+                    <span>{proposal?.title}</span>
+                    <span
+                      className={cs(s.state, {
+                        [`${s.active}`]:
+                          proposal.state === ProposalState.Active,
+                        [`${s.pending}`]:
+                          proposal.state === ProposalState.Pending,
+                      })}
+                    >
+                      {ProposalState[proposal?.state]}
+                    </span>
+                  </h1>
+                </>
               ) : (
                 <div className={s.titleSkeleton}>
                   <Skeleton fill />

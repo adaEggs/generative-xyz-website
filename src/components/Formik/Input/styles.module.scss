@@ -51,6 +51,10 @@
     }
   }
 
+  .required {
+    color: $secondary-red;
+  }
+
   &.filled {
     .input {
       background-color: #f8f8f8;

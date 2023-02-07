@@ -1,6 +1,10 @@
 import s from './styles.module.scss';
 import Button from '@components/ButtonIcon';
-import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
+import {
+  CDN_URL,
+  NETWORK_CHAIN_ID,
+  SECONDS_PER_BLOCK,
+} from '@constants/config';
 import { GEN_TOKEN_ADDRESS } from '@constants/contract-address';
 import { EXTERNAL_LINK } from '@constants/external-link';
 import { WalletContext } from '@contexts/wallet-context';
@@ -13,7 +17,7 @@ import ExecuteProposalOperation from '@services/contract-operations/gen-dao/exec
 import CastVoteProposalOperation from '@services/contract-operations/gen-dao/cast-vote-proposal';
 import log from '@utils/logger';
 import { useRouter } from 'next/router';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useAsyncEffect from 'use-async-effect';
 import SvgInset from '@components/SvgInset';
@@ -22,6 +26,7 @@ import cs from 'classnames';
 import { toast } from 'react-hot-toast';
 import CastVoteModal from '../CastVoteModal';
 import { ErrorMessage } from '@enums/error-message';
+import dayjs from 'dayjs';
 
 const LOG_PREFIX = 'CurrentResult';
 
@@ -143,6 +148,28 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
     }
   }, [user]);
 
+  const proposalTime = useMemo((): string | null => {
+    if (!proposal) {
+      return null;
+    }
+
+    const { currentBlock, startBlock, endBlock } = proposal;
+
+    if (proposal.state === ProposalState.Pending) {
+      const seconds = (startBlock - currentBlock) * SECONDS_PER_BLOCK;
+      const startAt = dayjs().add(seconds, 'seconds');
+      return `Start voting period at ${startAt.format('MMM DD YYYY HH:mm')}`;
+    }
+
+    if (proposal.state === ProposalState.Active) {
+      const seconds = (currentBlock - endBlock) * SECONDS_PER_BLOCK;
+      const endAt = dayjs().add(seconds, 'seconds');
+      return `End voting period at ${endAt.format('MMM DD YYYY HH:mm')}`;
+    }
+
+    return null;
+  }, [proposal]);
+
   if (!proposal) {
     return <></>;
   }
@@ -153,7 +180,7 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
 
       {!user && (
         <>
-          <p className={s.startDate}>{`Start in 1 day`}</p>
+          {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
           <Button
             disabled={isConnecting}
             onClick={handleConnectWallet}
@@ -166,7 +193,7 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
 
       {user && genBalance === 0 && (
         <>
-          <p className={s.startDate}>{`Start in 1 day`}</p>
+          {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
           <Button onClick={navigateToDocsPage} className={s.connectBtn}>
             Earn GEN
           </Button>
@@ -185,7 +212,7 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
           <div className={s.currentVotingResultWrapper}>
             <p className={s.startDate}>Yes: 90%</p>
             <p className={s.startDate}>No: 10%</p>
-            <p className={s.startDate}>{`Start in 1 day`}</p>
+            {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
             {genBalance > 0 && proposal.state === ProposalState.Active && (
               <>
                 <div className={s.choiceList}>

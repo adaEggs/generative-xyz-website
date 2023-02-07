@@ -25,6 +25,7 @@ export type Proposal = {
   description: string;
   startBlock: number;
   endBlock: number;
+  currentBlock: number;
   isDraft: boolean;
   vote: ProposalVote;
   proposalID: string;

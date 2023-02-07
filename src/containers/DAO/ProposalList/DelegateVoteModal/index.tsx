@@ -10,6 +10,7 @@ import useContractOperation from '@hooks/useContractOperation';
 import DelegateGENTokenOperation from '@services/contract-operations/gen-token/delegate-token';
 import { toast } from 'react-hot-toast';
 import { debounce } from 'lodash';
+import { ErrorMessage } from '@enums/error-message';
 
 type Props = {
   isShow: boolean;
@@ -22,7 +23,6 @@ const DelegateVoteModal = (props: Props) => {
     DelegateGENTokenOperation,
     true
   );
-
   const [isDelegating, setIsDelegating] = useState(false);
   const [delegateAddress, setDelegateAddress] = useState('');
 
@@ -34,11 +34,14 @@ const DelegateVoteModal = (props: Props) => {
           chainID: NETWORK_CHAIN_ID,
           delegateeAddress: delegateAddress,
         });
-        // eslint-disable-next-line no-console
-        console.log(tx);
+        if (tx) {
+          toast.success('Delegated successfully.');
+        } else {
+          toast.error(ErrorMessage.DEFAULT);
+        }
       }
     } catch (err: unknown) {
-      toast.error('Delegate unsuccessful.');
+      toast.error(ErrorMessage.DEFAULT);
       throw Error();
     } finally {
       setIsDelegating(false);
@@ -68,10 +71,12 @@ const DelegateVoteModal = (props: Props) => {
           name={'address'}
           label="Address"
           sizes={'small'}
+          required
           className={s.delegate_input}
           onChange={debounce(e => {
             setDelegateAddress(e.target.value);
           }, 500)}
+          placeholder="Enter delegatee's address"
         />
         <div className="divider"></div>
         <div className={s.actionWrapper}>
