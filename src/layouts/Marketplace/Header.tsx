@@ -52,7 +52,7 @@ const Header: React.FC<IProp> = ({
   const activePath = router.asPath.split('/')[1];
   const [openProfile, setOpenProfile] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const dropdownRef = useRef<HTMLUListElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [isFaucet, _] = useState<boolean>(isShowFaucet);
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const refMenu = useRef<HTMLDivElement | null>(null);
@@ -125,7 +125,7 @@ const Header: React.FC<IProp> = ({
 
   const ProfileDropdown = () => {
     return (
-      <ul className={`${styles.dropdown} dropdown`} ref={dropdownRef}>
+      <ul className={`${styles.dropdown} dropdown`}>
         {PROFILE_MENU?.length > 0 &&
           PROFILE_MENU.map(
             item =>
@@ -243,7 +243,7 @@ const Header: React.FC<IProp> = ({
                     </li>
                   </ul>
                   {user ? (
-                    <div className="position-relative">
+                    <div className="position-relative" ref={dropdownRef}>
                       <AvatarInfo
                         imgSrc={user.avatar}
                         width={48}

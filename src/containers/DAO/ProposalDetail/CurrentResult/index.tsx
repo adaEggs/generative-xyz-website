@@ -26,6 +26,7 @@ import cs from 'classnames';
 import { toast } from 'react-hot-toast';
 import CastVoteModal from '../CastVoteModal';
 import { ErrorMessage } from '@enums/error-message';
+import VoteProgress from '@components/VoteProgress';
 import dayjs from 'dayjs';
 
 const LOG_PREFIX = 'CurrentResult';
@@ -191,8 +192,7 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
           </Button>
         </>
       )}
-
-      {user && genBalance === 0 && (
+      {user && Number(genBalance) === 0 && (
         <>
           {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
           <Button onClick={navigateToDocsPage} className={s.connectBtn}>
@@ -211,8 +211,7 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
       {user && (
         <>
           <div className={s.currentVotingResultWrapper}>
-            <p className={s.startDate}>Yes: 90%</p>
-            <p className={s.startDate}>No: 10%</p>
+            <VoteProgress stats={proposal?.vote} />
             {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
             {genBalance > 0 && proposal.state === ProposalState.Active && (
               <>

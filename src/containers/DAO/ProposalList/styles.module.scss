@@ -1,5 +1,6 @@
 .proposalList {
   padding: 64px 0;
+  overflow: hi;
 
   .header {
     display: flex;
@@ -100,4 +101,13 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(rem(460px), 1fr));
   }
+}
+
+.delegate_dropdown {
+  position: absolute;
+  border-radius: 2px;
+  background-color: $white;
+  border: 2px solid $black-10;
+  box-shadow: 8px 7px 24px 0 #00000026;
+  transform: translateY(10px);
 }
