@@ -1,7 +1,7 @@
-import { NextPage } from 'next';
-import MarketplaceLayout from '@layouts/Marketplace';
 import { CDN_URL } from '@constants/config';
 import ProposalList from '@containers/DAO/ProposalList';
+import MarketplaceLayout from '@layouts/Marketplace';
+import { NextPage } from 'next';
 
 const DAOProposalListPage: NextPage = () => {
   return (

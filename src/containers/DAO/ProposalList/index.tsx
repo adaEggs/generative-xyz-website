@@ -25,6 +25,7 @@ import { NETWORK_CHAIN_ID } from '@constants/config';
 import { GEN_TOKEN_ADDRESS } from '@constants/contract-address';
 import { toast } from 'react-hot-toast';
 import Link from '@components/Link';
+import DelegateVoteModal from './DelegateVoteModal';
 
 const FILTER_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -74,6 +75,7 @@ const ProposalList: React.FC = (): React.ReactElement => {
   const [proposalList, setProposalList] = useState<Proposal[]>();
   const [isLoading, setIsLoading] = useState(false);
   const [genBalance, setGenBalance] = useState(0);
+  const [showDelegateVoteModal, setShowDelegateVoteModal] = useState(false);
 
   const { call: getTokenBalance } = useContractOperation(
     GetTokenBalanceOperation,
@@ -117,92 +119,102 @@ const ProposalList: React.FC = (): React.ReactElement => {
   }, [user]);
 
   return (
-    <div className={s.proposalList}>
-      <div className="container">
-        <div className={s.header}>
-          <div className={s.leftContent}>
-            <Heading as="h2" fontWeight="medium">
-              Generative DAO
+    <>
+      <DelegateVoteModal
+        isShow={showDelegateVoteModal}
+        onHideModal={() => setShowDelegateVoteModal(false)}
+      />
+      <div className={s.proposalList}>
+        <div className="container">
+          <div className={s.header}>
+            <div className={s.leftContent}>
+              <Heading as="h2" fontWeight="medium">
+                Generative DAO
+              </Heading>
+              <div className={s.DAO_description}>
+                <Text>
+                  At Generative, our goal is to create a generative art
+                  infrastructure that artists and collectors can rely on —
+                  forever.
+                </Text>
+                <Text>
+                  The GEN token enables shared community ownership and active
+                  stewardship of the Generative protocol. GEN holders govern the
+                  protocol through an on-chain governance process.
+                </Text>
+                <Text>
+                  Artists and collectors are no longer just users. They become
+                  co-owners and co-operators. They help to build and shape the
+                  Generative protocol.
+                </Text>
+              </div>
+            </div>
+            <div className={s.rightContent}>
+              <div className={s.CTA_btns}>
+                <Button onClick={handleNavigateToCreatePage} disabled={!user}>
+                  Submit proposal
+                </Button>
+                <Button
+                  variants="secondary"
+                  disabled={!user}
+                  onClick={() => setShowDelegateVoteModal(true)}
+                >
+                  Delegate vote
+                </Button>
+              </div>
+              {!user && <Text>Connect wallet to make a proposal.</Text>}
+            </div>
+          </div>
+          <div className={s.proposalList_title}>
+            <Heading as="h4" fontWeight="semibold">
+              Proposals
             </Heading>
-            <div className={s.DAO_description}>
-              <Text>
-                At Generative, our goal is to create a generative art
-                infrastructure that artists and collectors can rely on —
-                forever.
-              </Text>
-              <Text>
-                The GEN token enables shared community ownership and active
-                stewardship of the Generative protocol. GEN holders govern the
-                protocol through an on-chain governance process.
-              </Text>
-              <Text>
-                Artists and collectors are no longer just users. They become
-                co-owners and co-operators. They help to build and shape the
-                Generative protocol.
-              </Text>
+            <div className={s.dropDownWrapper}>
+              <Select
+                isSearchable={false}
+                isClearable={false}
+                defaultValue={FILTER_OPTIONS[0]}
+                options={FILTER_OPTIONS}
+                className={s.selectInput}
+                classNamePrefix="select"
+                onChange={(op: SingleValue<SelectOption>) => {
+                  if (op) setFilterState([op.value]);
+                }}
+              />
             </div>
           </div>
-          <div className={s.rightContent}>
-            <div className={s.CTA_btns}>
-              <Button onClick={handleNavigateToCreatePage} disabled={!user}>
-                Submit proposal
-              </Button>
-              <Button variants="secondary" disabled={!user}>
-                Delegate vote
-              </Button>
-            </div>
-            {!user && <Text>Connect wallet to make a proposal.</Text>}
-          </div>
-        </div>
-        <div className={s.proposalList_title}>
-          <Heading as="h4" fontWeight="semibold">
-            Proposals
-          </Heading>
-          <div className={s.dropDownWrapper}>
-            <Select
-              isSearchable={false}
-              isClearable={false}
-              defaultValue={FILTER_OPTIONS[0]}
-              options={FILTER_OPTIONS}
-              className={s.selectInput}
-              classNamePrefix="select"
-              onChange={(op: SingleValue<SelectOption>) => {
-                if (op) setFilterState([op.value]);
-              }}
-            />
-          </div>
-        </div>
 
-        <div className={`${s.proposalList_container}`}>
-          {isLoading && (
-            <>
-              {[...Array(6)].map(() => (
-                <Card isLoading key={`proposal-skeleton-${v4()}`} />
+          <div className={`${s.proposalList_container}`}>
+            {isLoading && (
+              <>
+                {[...Array(6)].map(() => (
+                  <Card isLoading key={`proposal-skeleton-${v4()}`} />
+                ))}
+              </>
+            )}
+            {!isLoading &&
+              proposalList &&
+              proposalList?.length > 0 &&
+              proposalList.map(item => (
+                <Link
+                  href={`${ROUTE_PATH.DAO}/${item.proposalID}`}
+                  className="no-underline"
+                  key={`proposal-item-${v4()}`}
+                >
+                  <Card heading={item?.title} status={item?.state}>
+                    <ProposalItem data={item} />
+                  </Card>
+                </Link>
               ))}
-            </>
-          )}
-          {!isLoading &&
-            proposalList &&
-            proposalList?.length > 0 &&
-            proposalList.map(item => (
-              <Link
-                href={`${ROUTE_PATH.DAO}/${item.proposalID}`}
-                className="no-underline"
-                key={`proposal-item-${v4()}`}
-              >
-                <Card heading={item?.title} status={item?.state}>
-                  <ProposalItem data={item} />
-                </Card>
-              </Link>
-            ))}
 
-          {!proposalList ||
-            (proposalList?.length === 0 && (
-              <NotFound infoText={'No Proposal found'} />
-            ))}
+            {!proposalList ||
+              (proposalList?.length === 0 && (
+                <NotFound infoText={'No Proposal found'} />
+              ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
