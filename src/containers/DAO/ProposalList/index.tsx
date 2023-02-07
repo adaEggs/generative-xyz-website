@@ -27,6 +27,8 @@ import { v4 } from 'uuid';
 import ProposalItem from '../ProposalItem';
 import DelegateVoteModal from './DelegateVoteModal';
 import s from './styles.module.scss';
+import DelegateGENTokenOperation from '@services/contract-operations/gen-token/delegate-token';
+import { ErrorMessage } from '@enums/error-message';
 
 const FILTER_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -85,6 +87,11 @@ const ProposalList: React.FC = (): React.ReactElement => {
     false
   );
 
+  const { call: delegateGENToken } = useContractOperation(
+    DelegateGENTokenOperation,
+    true
+  );
+
   const handleNavigateToCreatePage = (): void => {
     if (genBalance > 0) {
       router.push(`${ROUTE_PATH.DAO}/create`);
@@ -95,6 +102,23 @@ const ProposalList: React.FC = (): React.ReactElement => {
 
   const handleShowDelegateOptions = (): void => {
     setShowDelegateOptions(!showDelegateOptions);
+  };
+
+  const handleDelegateGENToken = async (): Promise<void> => {
+    if (user) {
+      const tx = await delegateGENToken({
+        chainID: NETWORK_CHAIN_ID,
+        delegateeAddress: user?.walletAddress,
+      });
+      // eslint-disable-next-line no-console
+      if (tx) {
+        toast.success('Delegated successfully.');
+      } else {
+        toast.error(ErrorMessage.DEFAULT);
+      }
+    } else {
+      toast.error('Login');
+    }
   };
 
   const handleShowDelegateModal = (): void => {
@@ -178,7 +202,12 @@ const ProposalList: React.FC = (): React.ReactElement => {
                   </Button>
                   {showDelegateOptions && (
                     <ul className={`${s.delegate_dropdown} `}>
-                      <li className="dropdown-item">Delegate to myself</li>
+                      <li
+                        className="dropdown-item"
+                        onClick={handleDelegateGENToken}
+                      >
+                        Delegate to myself
+                      </li>
                       <li
                         className="dropdown-item"
                         onClick={handleShowDelegateModal}
