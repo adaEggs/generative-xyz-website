@@ -21,6 +21,7 @@ import CastVoteProposalOperation from '@services/contract-operations/gen-dao/cas
 import { toast } from 'react-hot-toast';
 import CastVoteModal from '../CastVoteModal';
 import { ErrorMessage } from '@enums/error-message';
+import VoteProgress from '@components/VoteProgress';
 
 const LOG_PREFIX = 'CurrentResult';
 
@@ -128,8 +129,8 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
           </Button>
         </>
       )}
-
-      {user && genBalance === 0 && (
+      {/* TODO: Revert code */}
+      {user && Number(genBalance) > 0 && (
         <>
           <p className={s.startDate}>{`Start in 1 day`}</p>
           <Button onClick={navigateToDocsPage} className={s.connectBtn}>
@@ -145,11 +146,12 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
         </>
       )}
 
-      {user && genBalance > 0 && (
+      {user && Number(genBalance) === 0 && (
         <>
           <div className={s.currentVotingResultWrapper}>
-            <p className={s.startDate}>Yes: 90%</p>
-            <p className={s.startDate}>No: 10%</p>
+            {/* <p className={s.startDate}>Yes: 90%</p>
+            <p className={s.startDate}>No: 10%</p> */}
+            <VoteProgress stats={proposal?.vote} />
             <p className={s.startDate}>{`Start in 1 day`}</p>
             <div className={s.choiceList}>
               <div
