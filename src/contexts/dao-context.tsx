@@ -82,14 +82,6 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
     SubmitProposalOperation,
     true
   );
-  const { call: castVote } = useContractOperation(
-    CastVoteProposalOperation,
-    true
-  );
-  const { call: executeProposal } = useContractOperation(
-    ExecuteProposalOperation,
-    true
-  );
 
   const handleDelegateGENToken = async (): Promise<void> => {
     if (user) {
@@ -103,7 +95,6 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
       toast.error('Login');
     }
   };
-
 
   const handleSubmitProposal = async (payload: IFormValue): Promise<void> => {
     try {
