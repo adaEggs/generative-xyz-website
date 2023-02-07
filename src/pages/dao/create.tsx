@@ -18,7 +18,8 @@ export async function getServerSideProps() {
     props: {
       seoInfo: {
         title: 'Generative | Create Proposal',
-        description: 'Generative | Create Proposal',
+        description:
+          'Collectively contribute to the development of the Generative protocol',
         image: `${CDN_URL}/images/collect.jpg`,
       },
     },

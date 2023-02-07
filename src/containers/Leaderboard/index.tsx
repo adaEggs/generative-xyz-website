@@ -116,7 +116,7 @@ const Leaderboard: React.FC = (): React.ReactElement => {
             <Avatar imgSrcs={item?.profile?.avatar || ''} />
             <Link
               className={s.displayName}
-              href={`${ROUTE_PATH.PROFILE} / ${item.address}`}
+              href={`${ROUTE_PATH.PROFILE}/${item.address}`}
             >
               <Text as="span" size="14" fontWeight="medium">
                 {displayName}
