@@ -9,6 +9,7 @@ import { SOCIALS } from '@constants/common';
 import ButtonIcon from '@components/ButtonIcon';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
+import Link from '@components/Link';
 
 const IncentivizedTestnet = (): JSX.Element => {
   const rounter = useRouter();
@@ -35,16 +36,24 @@ const IncentivizedTestnet = (): JSX.Element => {
         >
           Incentivized Testnet
         </Heading>
-        <Text
-          className={s.incentivized_desc}
-          as="p"
-          size={'16'}
-          animOption={{ screen: 0.3, offset: 0, type: 'paragraph' }}
-        >
-          Help get Generative ready for the mainnet launch and earn GEN testnet
-          tokens that can be converted into GEN mainnet tokens. The exchange
-          rate will be announced prior to the {`mainnet's`} launch.
-        </Text>
+        <div className={s.incentivized_desc}>
+          <Text
+            as="p"
+            size={'16'}
+            animOption={{ screen: 0.3, offset: 0, type: 'paragraph' }}
+          >
+            Help get Generative ready for the mainnet launch and earn GEN
+            testnet tokens that can be converted into GEN mainnet tokens. The
+            exchange rate will be announced prior to the {`mainnet's`} launch.
+          </Text>
+          <AnimFade screen={0.4}>
+            <ButtonIcon className={s.leaderboards_btn}>
+              <Link href={ROUTE_PATH.LEADERBOARDS} className="no-underline">
+                Leaderboard
+              </Link>
+            </ButtonIcon>
+          </AnimFade>
+        </div>
         <div className="container">
           <div className="row">
             <div

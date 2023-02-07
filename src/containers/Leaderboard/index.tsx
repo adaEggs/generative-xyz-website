@@ -1,6 +1,9 @@
+import { AnimFade } from '@animations/fade';
 import Avatar from '@components/Avatar';
+import ButtonIcon from '@components/ButtonIcon';
+import Heading from '@components/Heading';
 import Link from '@components/Link';
-import { Loading } from '@components/Loading';
+import SvgInset from '@components/SvgInset';
 import Table from '@components/Table';
 import Text from '@components/Text';
 import { APP_TOKEN_SYMBOL, CDN_URL } from '@constants/config';
@@ -9,6 +12,7 @@ import {
   IGNORABLE_GEN_HOLDER_ADDRESS_LIST,
 } from '@constants/contract-address';
 import { ROUTE_PATH } from '@constants/route-path';
+import { LoadingProvider } from '@contexts/loading-context';
 import { NFTHolder } from '@interfaces/nft';
 import { getNFTHolderList } from '@services/nfts';
 import { formatCurrency, formatLongAddress } from '@utils/format';
@@ -17,9 +21,6 @@ import React, { useState } from 'react';
 import useAsyncEffect from 'use-async-effect';
 import Web3 from 'web3';
 import s from './styles.module.scss';
-import Heading from '@components/Heading';
-import ButtonIcon from '@components/ButtonIcon';
-import SvgInset from '@components/SvgInset';
 
 const TABLE_LEADERBOARD_HEADING = [
   'Rank',
@@ -142,61 +143,67 @@ const Leaderboard: React.FC = (): React.ReactElement => {
   });
 
   return (
-    <div className={s.leaderboard}>
-      <div className="container">
-        <div className={s.pageHeader}>
-          <Heading as="h2" className={s.pageTitle} fontWeight="medium">
-            Testnet Leaderboard
-          </Heading>
-          <div className={s.pageDescription}>
-            <Text>
-              The fellows below have shown tremendous passion for generative art
-              by promoting the movement and making significant contributions to
-              the community.
-            </Text>
-            <Text>
-              Earn {APP_TOKEN_SYMBOL} and start climbing the ladder today!
-            </Text>
-            <ButtonIcon className={s.testnetBtn}>
-              <Link
-                href="https://docs.generative.xyz/overview/incentivized-testnet"
-                target="_blank"
-              >
-                Join testnet
-              </Link>
-            </ButtonIcon>
+    <LoadingProvider simple={{ theme: 'light', isCssLoading: false }}>
+      <div className={s.leaderboard}>
+        <div className="container">
+          <div className={s.pageHeader}>
+            <Heading
+              as="h2"
+              className={s.pageTitle}
+              fontWeight="medium"
+              animOption={{ screen: 0.1, offset: 0, type: 'heading' }}
+            >
+              Testnet Leaderboard
+            </Heading>
+            <div className={s.pageDescription}>
+              <Text animOption={{ screen: 0.3, offset: 0, type: 'paragraph' }}>
+                The fellows below have shown tremendous passion for generative
+                art by promoting the movement and making significant
+                contributions to the community.
+              </Text>
+              <Text animOption={{ screen: 0.3, offset: 0, type: 'paragraph' }}>
+                Earn {APP_TOKEN_SYMBOL} and start climbing the ladder today!
+              </Text>
+              <AnimFade screen={0.4}>
+                <ButtonIcon className={s.testnetBtn}>
+                  <Link href={ROUTE_PATH.INCENTIVIZED_TESTNET}>
+                    Join testnet
+                  </Link>
+                </ButtonIcon>
+              </AnimFade>
+            </div>
+          </div>
+          <div className={s.pageBody}>
+            {/* <Loading isLoaded={!isLoading} /> */}
+            {!isLoading && (
+              <>
+                {userList.length === 0 && (
+                  <div className={s.emptyDataWrapper}>
+                    <Image
+                      className={s.emptyImage}
+                      width={74}
+                      height={100}
+                      src={`${CDN_URL} / icons / ic - empty.svg`}
+                      alt="empty.svg"
+                    />
+                    <Text className={s.emptyText}>
+                      {errorMessage ? errorMessage : 'No available data'}
+                    </Text>
+                  </div>
+                )}
+                {userList.length > 0 && (
+                  <Table
+                    className={s.dataTable}
+                    tableHead={TABLE_LEADERBOARD_HEADING}
+                    data={tableData}
+                  />
+                )}
+              </>
+            )}
           </div>
         </div>
-        <div className={s.pageBody}>
-          <Loading isLoaded={!isLoading} />
-          {!isLoading && (
-            <>
-              {userList.length === 0 && (
-                <div className={s.emptyDataWrapper}>
-                  <Image
-                    className={s.emptyImage}
-                    width={74}
-                    height={100}
-                    src={`${CDN_URL} / icons / ic - empty.svg`}
-                    alt="empty.svg"
-                  />
-                  <Text className={s.emptyText}>
-                    {errorMessage ? errorMessage : 'No available data'}
-                  </Text>
-                </div>
-              )}
-              {userList.length > 0 && (
-                <Table
-                  className={s.dataTable}
-                  tableHead={TABLE_LEADERBOARD_HEADING}
-                  data={tableData}
-                />
-              )}
-            </>
-          )}
-        </div>
       </div>
-    </div>
+    </LoadingProvider>
   );
 };
 

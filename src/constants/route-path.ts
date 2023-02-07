@@ -19,4 +19,7 @@ export const ROUTE_PATH = {
     ? 'https://testnet.generative.xyz/leaderboards'
     : '/leaderboards',
   DAO: '/dao',
+  INCENTIVIZED_TESTNET: isProduction()
+    ? 'https://testnet.generative.xyz/incentivized-testnet'
+    : '/incentivized-testnet',
 };

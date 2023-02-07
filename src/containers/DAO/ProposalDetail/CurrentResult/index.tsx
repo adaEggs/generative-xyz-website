@@ -129,8 +129,7 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
           </Button>
         </>
       )}
-      {/* TODO: Revert code */}
-      {user && Number(genBalance) > 0 && (
+      {user && Number(genBalance) === 0 && (
         <>
           <p className={s.startDate}>{`Start in 1 day`}</p>
           <Button onClick={navigateToDocsPage} className={s.connectBtn}>
@@ -146,11 +145,9 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
         </>
       )}
 
-      {user && Number(genBalance) === 0 && (
+      {user && Number(genBalance) > 0 && (
         <>
           <div className={s.currentVotingResultWrapper}>
-            {/* <p className={s.startDate}>Yes: 90%</p>
-            <p className={s.startDate}>No: 10%</p> */}
             <VoteProgress stats={proposal?.vote} />
             <p className={s.startDate}>{`Start in 1 day`}</p>
             <div className={s.choiceList}>
