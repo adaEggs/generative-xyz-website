@@ -21,7 +21,9 @@ const CreateProposal: React.FC = (): React.ReactElement => {
           )}
         </div>
       </div>
+
     </ClientOnly>
+
   );
 };
 

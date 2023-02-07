@@ -109,6 +109,7 @@ const CollectionItem = ({
                       {data?.project?.name}
                     </span>
                   )}
+
                   <span>#{formatTokenId(tokenID)}</span>
                 </Heading>
                 {!!data.stats?.price && (

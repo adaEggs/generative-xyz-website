@@ -2,6 +2,7 @@ import { v4 } from 'uuid';
 import CollectionItemSkeleton from '../Item/skeleton';
 import s from './styles.module.scss';
 
+
 const CollectionListLoading = ({
   numOfItems = 8,
   showFilter,
@@ -10,6 +11,7 @@ const CollectionListLoading = ({
   showFilter?: boolean;
 }) => {
   return (
+
     <div className={`row ${s.list_loading}`}>
       {[...Array(numOfItems)].map(() => (
         <CollectionItemSkeleton

@@ -64,6 +64,7 @@ export const DAOContext = createContext<TDAOContext>(initialValues);
 
 export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   const user = useSelector(getUserSelector);
+
   const router = useRouter();
   const [displayMode, setDisplayMode] = useState(
     CreateProposalDisplayMode.INPUT_INFO
@@ -72,12 +73,21 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   const [formValues, setFormValues] =
     useState<Partial<IFormValue>>(INITIAL_FORM_VALUES);
   const [isFormValid, setIsFormValid] = useState(false);
+
   const { call: delegateGENToken } = useContractOperation(
     DelegateGENTokenOperation,
     true
   );
   const { call: submitProposal } = useContractOperation(
     SubmitProposalOperation,
+    true
+  );
+  const { call: castVote } = useContractOperation(
+    CastVoteProposalOperation,
+    true
+  );
+  const { call: executeProposal } = useContractOperation(
+    ExecuteProposalOperation,
     true
   );
 
@@ -93,6 +103,7 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
       toast.error('Login');
     }
   };
+
 
   const handleSubmitProposal = async (payload: IFormValue): Promise<void> => {
     try {
