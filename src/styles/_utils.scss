@@ -284,6 +284,10 @@
   }
 }
 
+.line-clamp-1 {
+  @include line-clamp(1);
+}
+
 .line-clamp-3 {
   @include line-clamp(3);
 }

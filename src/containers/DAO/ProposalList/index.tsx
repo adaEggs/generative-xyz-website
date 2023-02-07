@@ -97,6 +97,11 @@ const ProposalList: React.FC = (): React.ReactElement => {
     setShowDelegateOptions(!showDelegateOptions);
   };
 
+  const handleShowDelegateModal = (): void => {
+    setShowDelegateVoteModal(true);
+    setShowDelegateOptions(false);
+  };
+
   useAsyncEffect(async () => {
     try {
       setIsLoading(true);
@@ -167,17 +172,16 @@ const ProposalList: React.FC = (): React.ReactElement => {
                   <Button
                     variants="outline"
                     disabled={!user}
-                    ref={dropdownRef}
                     onClick={handleShowDelegateOptions}
                   >
                     Delegate vote
                   </Button>
                   {showDelegateOptions && (
-                    <ul className={`${s.delegate_dropdown}`}>
+                    <ul className={`${s.delegate_dropdown} `}>
                       <li className="dropdown-item">Delegate to myself</li>
                       <li
                         className="dropdown-item"
-                        onClick={() => setShowDelegateVoteModal(true)}
+                        onClick={handleShowDelegateModal}
                       >
                         Delegate to address
                       </li>

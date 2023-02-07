@@ -32,8 +32,8 @@ const Card = (props: Props) => {
   return (
     <div className={cs(s.Card_wrapper, className)}>
       {status ? (
-        <Stack direction="horizontal" className="justify-between" gap={3}>
-          <Heading as="h4" className={s.Card_heading}>
+        <Stack direction="horizontal" className={'justify-between'} gap={3}>
+          <Heading as="h4" className={'line-clamp-1'}>
             {heading}
           </Heading>
           <CardStatus status={status} />
