@@ -1,9 +1,9 @@
-import { NextPage } from 'next';
-import MarketplaceLayout from '@layouts/Marketplace';
 import { CDN_URL } from '@constants/config';
 import ProposalList from '@containers/DAO/ProposalList';
+import MarketplaceLayout from '@layouts/Marketplace';
+import { NextPage } from 'next';
 
-const MarketplacePage: NextPage = () => {
+const DAOProposalListPage: NextPage = () => {
   return (
     <MarketplaceLayout>
       <ProposalList />
@@ -11,14 +11,15 @@ const MarketplacePage: NextPage = () => {
   );
 };
 
-export default MarketplacePage;
+export default DAOProposalListPage;
 
 export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
         title: 'Generative | DAO',
-        description: 'Generative | DAO',
+        description:
+          'Collectively contribute to the development of the Generative protocol',
         image: `${CDN_URL}/images/collect.jpg`,
       },
     },

@@ -1,6 +1,10 @@
 .proposalPreview {
   padding: rem(60) 0;
 
+  @include max-tablet {
+    padding: rem(32px) 0;
+  }
+
   .title {
     font-weight: 500;
     font-size: rem(34px);
@@ -40,5 +44,52 @@
   .descriptionSkeleton {
     height: rem(180px);
     width: 100%;
+  }
+
+  .summaryWrapper {
+    width: 100%;
+    padding: rem(32px) rem(32px) rem(48px);
+    border: 1px solid $black-20;
+    min-height: rem(680px);
+
+    @include max-tablet {
+      margin-top: rem(24px);
+      padding: rem(16px);
+      min-height: auto;
+    }
+  }
+
+  .summaryInfoList {
+    margin-bottom: rem(16px);
+  }
+
+  .summaryInfoItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &:not(:last-child) {
+      margin-bottom: rem(6px);
+    }
+  }
+
+  .sectionTitle {
+    font-weight: 500;
+    font-size: rem(18px);
+    line-height: rem(28px);
+    color: $primary-brand;
+    margin-bottom: rem(8px);
+  }
+
+  .actionWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: rem(10px);
+
+    .actionBtn {
+      width: 100%;
+      justify-content: center;
+    }
   }
 }

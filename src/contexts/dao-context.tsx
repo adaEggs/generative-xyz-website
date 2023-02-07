@@ -4,17 +4,15 @@ import {
   GEN_TOKEN_ADDRESS,
 } from '@constants/contract-address';
 import { INITIAL_FORM_VALUES } from '@constants/dao';
-import { CreateProposalDisplayMode, VoteType } from '@enums/dao';
+import { CreateProposalDisplayMode } from '@enums/dao';
 import { LogLevel } from '@enums/log-level';
 import { TokenType } from '@enums/token-type';
 import useContractOperation from '@hooks/useContractOperation';
 import { IFormValue } from '@interfaces/dao';
 import { getUserSelector } from '@redux/user/selector';
-import CastVoteProposalOperation from '@services/contract-operations/gen-dao/cast-vote-proposal';
-import ExecuteProposalOperation from '@services/contract-operations/gen-dao/execute-proposal';
 import SubmitProposalOperation from '@services/contract-operations/gen-dao/submit-proposal';
 import DelegateGENTokenOperation from '@services/contract-operations/gen-token/delegate-token';
-import { createProposal } from '@services/dao';
+import { createProposal, updateProposalID } from '@services/dao';
 import log from '@utils/logger';
 import {
   createContext,
@@ -26,6 +24,9 @@ import {
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import Web3 from 'web3';
+import _get from 'lodash/get';
+import { useRouter } from 'next/router';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const LOG_PREFIX = 'DAOContext';
 
@@ -38,8 +39,7 @@ export type TDAOContext = {
   setFormValues: Dispatch<SetStateAction<Partial<IFormValue>>>;
   handleDelegateGENToken: () => Promise<void>;
   handleSubmitProposal: (_: IFormValue) => Promise<void>;
-  handleCastVote: () => Promise<void>;
-  handleExecuteProposal: () => Promise<void>;
+  proposalThreshold: number;
 };
 
 const initialValues: TDAOContext = {
@@ -57,17 +57,18 @@ const initialValues: TDAOContext = {
   },
   handleDelegateGENToken: () => new Promise<void>(r => r()),
   handleSubmitProposal: () => new Promise<void>(r => r()),
-  handleCastVote: () => new Promise<void>(r => r()),
-  handleExecuteProposal: () => new Promise<void>(r => r()),
+  proposalThreshold: Number.MAX_VALUE,
 };
 
 export const DAOContext = createContext<TDAOContext>(initialValues);
 
 export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   const user = useSelector(getUserSelector);
+  const router = useRouter();
   const [displayMode, setDisplayMode] = useState(
     CreateProposalDisplayMode.INPUT_INFO
   );
+  const [proposalThreshold] = useState(Number.MAX_VALUE);
   const [formValues, setFormValues] =
     useState<Partial<IFormValue>>(INITIAL_FORM_VALUES);
   const [isFormValid, setIsFormValid] = useState(false);
@@ -77,14 +78,6 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   );
   const { call: submitProposal } = useContractOperation(
     SubmitProposalOperation,
-    true
-  );
-  const { call: castVote } = useContractOperation(
-    CastVoteProposalOperation,
-    true
-  );
-  const { call: executeProposal } = useContractOperation(
-    ExecuteProposalOperation,
     true
   );
 
@@ -106,26 +99,26 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
       const { title, description, amount, tokenType, receiverAddress } =
         payload;
 
-      await createProposal({
+      const proposal = await createProposal({
         title,
         description,
+        amount: amount,
+        tokenType,
+        receiverAddress,
       });
 
       const funcName =
         tokenType === TokenType.NATIVE ? 'transfer' : 'transferERC20';
       const args =
         tokenType === TokenType.NATIVE
-          ? [
-              receiverAddress,
-              Web3.utils.toWei(amount.toString(), 'ether').toString(),
-            ]
+          ? [receiverAddress, Web3.utils.toWei(amount, 'ether').toString()]
           : [
               receiverAddress,
               GEN_TOKEN_ADDRESS,
-              Web3.utils.toWei(amount.toString(), 'ether').toString(),
+              Web3.utils.toWei(amount, 'ether').toString(),
             ];
 
-      await submitProposal({
+      const tx = await submitProposal({
         targets: [GEN_DAO_TREASURY_ADDRESS],
         values: ['0'],
         description: title,
@@ -135,30 +128,24 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
         },
         chainID: NETWORK_CHAIN_ID,
       });
+
+      const proposalID: string | null = _get(
+        tx,
+        'events.ProposalCreated.returnValues.proposalId',
+        null
+      );
+
+      if (proposalID) {
+        await updateProposalID({ id: proposal.id, proposalID: proposalID });
+      }
+
+      toast.success('Proposal created successfully');
+      // TODO - Update url to proposal detail page
+      router.push(ROUTE_PATH.DAO);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       throw Error('Can not submit proposal');
     }
-  };
-
-  const handleCastVote = async (): Promise<void> => {
-    const tx = await castVote({
-      chainID: NETWORK_CHAIN_ID,
-      proposalId: '',
-      support: VoteType.FOR,
-    });
-    // eslint-disable-next-line no-console
-    console.log(tx);
-  };
-
-  const handleExecuteProposal = async (): Promise<void> => {
-    const tx = await executeProposal({
-      chainID: NETWORK_CHAIN_ID,
-      proposalId:
-        '4409996933815001893737690734715286661540230475573519619383200946537493431632',
-    });
-    // eslint-disable-next-line no-console
-    console.log(tx);
   };
 
   return (
@@ -172,8 +159,7 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
         setFormValues,
         handleDelegateGENToken,
         handleSubmitProposal,
-        handleCastVote,
-        handleExecuteProposal,
+        proposalThreshold,
       }}
     >
       {children}

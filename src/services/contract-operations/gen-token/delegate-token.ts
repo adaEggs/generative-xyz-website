@@ -17,7 +17,8 @@ class DelegateGENTokenOperation extends ContractOperation<
   async prepare(): Promise<void> {
     this.contract = await this.walletManager.getContract(
       this.contractAddress,
-      ContractABI.abi as Array<AbiItem>
+      ContractABI.abi as Array<AbiItem>,
+      false
     );
   }
 

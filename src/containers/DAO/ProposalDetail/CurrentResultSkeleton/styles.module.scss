@@ -1,0 +1,22 @@
+.currentResultSkeleton {
+  padding: rem(32px) rem(32px) rem(48px);
+  border: 1px solid $black-20;
+  // min-height: rem(680px);
+
+  .titleSkeleton {
+    height: rem(28px);
+    width: 100%;
+    margin-bottom: rem(8px);
+  }
+
+  .descriptionSkeleton {
+    height: rem(26px);
+    width: 60%;
+    margin-bottom: rem(16px);
+  }
+
+  .actionSkeleton {
+    height: rem(48px);
+    width: 100%;
+  }
+}
