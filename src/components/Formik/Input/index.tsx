@@ -83,7 +83,7 @@ const Input: React.FC<
       {label && (
         <label htmlFor={name}>
           {label}
-          {required && ' * '}
+          {required && <sup className={s.required}>*</sup>}
         </label>
       )}
       {desc && <p>{desc}</p>}

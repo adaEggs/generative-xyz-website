@@ -1,5 +1,6 @@
 .proposalPreview {
-  padding: rem(60) 0;
+  padding-top: rem(16);
+  padding-bottom: rem(60);
 
   @include max-tablet {
     padding: rem(32px) 0;
@@ -10,7 +11,28 @@
     font-size: rem(34px);
     line-height: rem(44px);
     color: $black-100;
+    display: flex;
+    gap: rem(16px);
+    align-items: center;
     margin-bottom: rem(24px);
+
+    .state {
+      padding: rem(4px) rem(12px);
+      border-radius: 2px;
+      background-color: $black-20;
+      font-weight: 500;
+      font-size: rem(14px);
+      line-height: rem(22px);
+      color: $white;
+
+      &.active {
+        background-color: $secondary-green-c;
+      }
+
+      &.pending {
+        background-color: $secondary-blue-c;
+      }
+    }
   }
 
   .titleSkeleton {
@@ -39,10 +61,60 @@
     font-size: rem(18px);
     line-height: rem(28px);
     color: $black-80;
+    margin-bottom: rem(24px);
   }
 
   .descriptionSkeleton {
     height: rem(180px);
     width: 100%;
+    margin-bottom: rem(24px);
+  }
+
+  .proposerInfoWrapper {
+    margin-bottom: rem(24px);
+  }
+
+  .proposerInfo {
+    font-weight: 400;
+    font-size: rem(14px);
+    line-height: rem(22px);
+    color: $black-40;
+  }
+
+  .proposerInfoSkeleton {
+    max-width: rem(300px);
+    height: rem(16px);
+    margin-bottom: rem(8px);
+  }
+
+  .socialWrapper {
+    display: flex;
+    align-items: center;
+    gap: rem(10px);
+  }
+
+  .socialSkeleton {
+    max-width: rem(200px);
+    height: rem(34px);
+  }
+
+  .backLink {
+    display: inline-flex;
+    gap: rem(10px);
+    align-items: center;
+    margin-bottom: rem(18px);
+    color: $black-60;
+
+    :global(svg path) {
+      stroke: $black-60;
+    }
+
+    &:hover {
+      color: $black-100;
+
+      :global(svg path) {
+        stroke: $black-100;
+      }
+    }
   }
 }

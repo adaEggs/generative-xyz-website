@@ -14,7 +14,8 @@ class GetTokenBalanceOperation extends ContractOperation<
   async prepare(): Promise<void> {
     this.contract = await this.walletManager.getContract(
       this.params.erc20TokenAddress,
-      ContractABI.abi as Array<AbiItem>
+      ContractABI.abi as Array<AbiItem>,
+      false
     );
   }
 
