@@ -13,6 +13,10 @@
     margin-left: auto;
     margin-right: auto;
     margin-bottom: rem(50px);
+
+    > button {
+      margin-top: rem(16px);
+    }
   }
 
   &_col {
@@ -20,7 +24,6 @@
     padding-right: rem(20px);
 
     &_left {
-
       //@include tablet{
       //  padding-right: rem(100px);
       //  padding-left: rem(100px);
@@ -86,4 +89,8 @@
     justify-content: center;
     margin-top: rem(24px);
   }
+}
+
+.leaderboards_btn {
+  margin-top: rem(16);
 }

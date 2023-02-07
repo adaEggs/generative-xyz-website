@@ -102,6 +102,10 @@
   }
 }
 
+.pointer-none {
+  pointer-events: none;
+}
+
 .skeleton {
   background-color: #a5a5a5;
 }
@@ -278,6 +282,10 @@
     --bs-gutter-x: #{rem(10px)};
     --bs-gutter-y: #{rem(10px)};
   }
+}
+
+.line-clamp-1 {
+  @include line-clamp(1);
 }
 
 .line-clamp-3 {
