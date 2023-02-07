@@ -109,8 +109,8 @@ const ProposalDetail: React.FC = (): React.ReactElement => {
                 )}
                 {proposal?.proposer ? (
                   <p className={s.proposerInfo}>{`Proposed on: ${dayjs(
-                    proposal.proposer
-                  ).format('MMM dd YYYY')}`}</p>
+                    proposal.createdAt
+                  ).format('MMM DD, YYYY')}`}</p>
                 ) : (
                   <div className={s.proposerInfoSkeleton}>
                     <Skeleton fill />

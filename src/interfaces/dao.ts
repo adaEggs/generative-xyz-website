@@ -35,4 +35,5 @@ export type Proposal = {
   targets: null;
   values: string | null;
   tokenType: TokenType;
+  createdAt: string;
 };
