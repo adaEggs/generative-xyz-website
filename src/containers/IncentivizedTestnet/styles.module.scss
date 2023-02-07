@@ -1,0 +1,89 @@
+.incentivized {
+  padding-bottom: rem(120px);
+  padding-top: rem(80px);
+
+  &_heading {
+    text-align: center;
+    margin-bottom: rem(16px);
+  }
+
+  &_desc {
+    text-align: center;
+    max-width: rem(632px);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: rem(50px);
+  }
+
+  &_col {
+    padding-left: rem(20px);
+    padding-right: rem(20px);
+
+    &_left {
+
+      //@include tablet{
+      //  padding-right: rem(100px);
+      //  padding-left: rem(100px);
+      //}
+
+      @include min-pc {
+        padding-left: rem(100px);
+      }
+    }
+
+    &_right {
+      //@include tablet{
+      //  padding-right: rem(100px);
+      //  padding-left: rem(100px);
+      //}
+      @include min-pc {
+        padding-right: rem(100px);
+      }
+    }
+  }
+}
+
+.incentivized_card {
+  margin-bottom: rem(40px);
+
+  &_content {
+    line-height: (28/18);
+
+    @include calcFontAuto(14px, 18px);
+  }
+
+  ul {
+    margin-bottom: rem(16px);
+
+    li {
+      position: relative;
+      display: flex;
+      padding-left: rem(12px);
+
+      &::before {
+        content: "";
+        border-radius: 50%;
+        background: $primary-brand;
+        border: rem(3px) solid $primary-brand;
+        height: 0;
+        width: 0;
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transform: translateY(0.5em);
+      }
+    }
+  }
+
+  p {
+    margin-bottom: rem(10px);
+  }
+
+  button {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    margin-top: rem(24px);
+  }
+}

@@ -7,6 +7,7 @@ type ButtonVariantsType =
   | 'primary'
   | 'secondary'
   | 'outline'
+  | 'outline-small'
   | 'ghost'
   | 'filter';
 type ButtonSizesType = 'large' | 'medium' | 'mid' | 'small' | 'xsmall';

@@ -1,19 +1,20 @@
+import React, { ReactNode } from 'react';
 import Heading from '@components/Heading';
 import Skeleton from '@components/Skeleton';
 import cs from 'classnames';
-import { PropsWithChildren } from 'react';
 import { Stack } from 'react-bootstrap';
 import CardStatus from './Status';
 import s from './styles.module.scss';
 
 type Props = {
   heading?: string;
+  children?: ReactNode;
   status?: number;
   className?: string;
   isLoading?: boolean;
 };
 
-const Card = (props: PropsWithChildren<Props>) => {
+const Card = (props: Props) => {
   const { heading, children, status, className, isLoading } = props;
 
   if (isLoading)
@@ -30,12 +31,18 @@ const Card = (props: PropsWithChildren<Props>) => {
 
   return (
     <div className={cs(s.Card_wrapper, className)}>
-      <Stack direction="horizontal" className="justify-between" gap={3}>
+      {status ? (
+        <Stack direction="horizontal" className="justify-between" gap={3}>
+          <Heading as="h4" className={s.Card_heading}>
+            {heading}
+          </Heading>
+          <CardStatus status={status} />
+        </Stack>
+      ) : (
         <Heading as="h4" className={s.Card_heading}>
           {heading}
         </Heading>
-        {status && <CardStatus status={status} />}
-      </Stack>
+      )}
       {children}
     </div>
   );
