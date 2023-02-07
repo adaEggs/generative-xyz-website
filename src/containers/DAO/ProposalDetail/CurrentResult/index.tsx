@@ -28,6 +28,7 @@ import CastVoteModal from '../CastVoteModal';
 import { ErrorMessage } from '@enums/error-message';
 import VoteProgress from '@components/VoteProgress';
 import dayjs from 'dayjs';
+import Web3 from 'web3';
 
 const LOG_PREFIX = 'CurrentResult';
 
@@ -146,7 +147,9 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
       erc20TokenAddress: GEN_TOKEN_ADDRESS,
     });
     if (balance !== null) {
-      setGenBalance(balance);
+      setGenBalance(
+        parseFloat(Web3.utils.fromWei(balance.toString(), 'ether'))
+      );
     }
   }, [user]);
 
@@ -167,6 +170,8 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
       const seconds = (endBlock - currentBlock) * SECONDS_PER_BLOCK;
       const endAt = dayjs(proposal.createdAt).add(seconds, 'seconds');
       return `End voting period at ${endAt.format('MMM DD, YYYY HH:mm')}`;
+    } else {
+      return 'Voting period ended';
     }
 
     return null;
@@ -192,27 +197,14 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
           </Button>
         </>
       )}
-      {user && Number(genBalance) === 0 && (
-        <>
-          {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
-          <Button onClick={navigateToDocsPage} className={s.connectBtn}>
-            Earn GEN
-          </Button>
-          <div className={s.insufficientBalanceWrapper}>
-            <SvgInset
-              size={18}
-              svgUrl={`${CDN_URL}/icons/ic-wallet-24x24.svg`}
-            />
-            <span>Not enough GEN to vote</span>
-          </div>
-        </>
-      )}
 
-      {user && (
-        <>
-          <div className={s.currentVotingResultWrapper}>
-            <VoteProgress stats={proposal?.vote} />
-            {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
+      <div className={s.currentVotingResultWrapper}>
+        <div className={s.votingProgressWrapper}>
+          <VoteProgress stats={proposal?.vote} />
+        </div>
+        {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
+        {user && (
+          <>
             {genBalance > 0 && proposal.state === ProposalState.Active && (
               <>
                 <div className={s.choiceList}>
@@ -240,6 +232,20 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
                 </Button>
               </>
             )}
+            {genBalance === 0 && (
+              <>
+                <Button onClick={navigateToDocsPage} className={s.connectBtn}>
+                  Earn GEN
+                </Button>
+                <div className={s.insufficientBalanceWrapper}>
+                  <SvgInset
+                    size={18}
+                    svgUrl={`${CDN_URL}/icons/ic-wallet-24x24.svg`}
+                  />
+                  <span>Not enough GEN to vote</span>
+                </div>
+              </>
+            )}
             {proposal.state === ProposalState.Succeeded && (
               <Button
                 disabled={isExecuting}
@@ -249,9 +255,10 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
                 {isExecuting ? 'Executing...' : 'Execute this proposal'}
               </Button>
             )}
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
+
       <CastVoteModal
         support={support}
         genBalance={genBalance}

@@ -109,4 +109,10 @@
       }
     }
   }
+
+  .votingProgressWrapper {
+    &:not(:last-child) {
+      margin-bottom: rem(16px);
+    }
+  }
 }
