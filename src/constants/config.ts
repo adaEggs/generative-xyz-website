@@ -9,6 +9,7 @@ export const NETWORK_CHAIN_ID: number = parseInt(
   10
 );
 export const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL!;
+export const APP_TOKEN_SYMBOL = 'GEN';
 
 // Datadog config
 export const DD_APP_ID = process.env.DD_APP_ID!;
@@ -36,5 +37,12 @@ export const NFT_REQUIRED_TO_DISCOUNT = 1;
 // API
 export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? '';
 export const GN_API_BASE_URL = process.env.NEXT_PUBLIC_GN_API_URL ?? '';
+
+// DAO
+export const GEN_REQUIRE_TO_VOTE = 1;
+export const SECONDS_PER_BLOCK = parseInt(
+  process.env.NEXT_PUBLIC_SECONDS_PER_BLOCK!,
+  10
+);
 
 /* eslint-enable @typescript-eslint/no-non-null-assertion */

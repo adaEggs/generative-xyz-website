@@ -1,42 +1,27 @@
-import Button from '@components/ButtonIcon';
+import ClientOnly from '@components/Utils/ClientOnly';
 import { DAOContext, DAOContextProvider } from '@contexts/dao-context';
-import { CreateDAOProposalStep } from '@enums/dao';
+import { CreateProposalDisplayMode } from '@enums/dao';
 import React, { useContext } from 'react';
 import CreateProposalForm from '../CreateProposalForm';
 import ProposalPreview from '../ProposalPreview';
 import s from './styles.module.scss';
 
 const CreateProposal: React.FC = (): React.ReactElement => {
-  const {
-    currentStep,
-    handleDelegateGENToken,
-    handleExecuteProposal,
-    handleCastVote,
-    handleSubmitProposal,
-  } = useContext(DAOContext);
+  const { displayMode } = useContext(DAOContext);
 
   return (
-    <div className={s.createProposal}>
-      <header>
-        <div className="container">
-          <Button>Back</Button>
+    <ClientOnly>
+      <div className={s.createProposal}>
+        <div className={s.mainContent}>
+          {displayMode === CreateProposalDisplayMode.INPUT_INFO && (
+            <CreateProposalForm />
+          )}
+          {displayMode === CreateProposalDisplayMode.PREVIEW && (
+            <ProposalPreview />
+          )}
         </div>
-      </header>
-      <div className={s.mainContent}>
-        {currentStep === CreateDAOProposalStep.INPUT_INFO && (
-          <CreateProposalForm />
-        )}
-        {currentStep === CreateDAOProposalStep.PREVIEW_INFO && (
-          <ProposalPreview />
-        )}
       </div>
-      <div>
-        <Button onClick={handleDelegateGENToken}>Delegate</Button>
-        <Button onClick={handleSubmitProposal}>Submit proposal</Button>
-        <Button onClick={handleCastVote}>Vote FOR</Button>
-        <Button onClick={handleExecuteProposal}>Execute proposal</Button>
-      </div>
-    </div>
+    </ClientOnly>
   );
 };
 

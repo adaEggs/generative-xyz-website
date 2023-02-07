@@ -1,14 +1,14 @@
-import React, { useContext, useMemo } from 'react';
-import s from './styles.module.scss';
-import Image from 'next/image';
+import ButtonIcon from '@components/ButtonIcon';
+import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
-import Select, { SingleValue } from 'react-select';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { SelectOption } from '@interfaces/select-input';
 import cs from 'classnames';
 import { debounce } from 'lodash';
-import ButtonIcon from '@components/ButtonIcon';
-import SvgInset from '@components/SvgInset';
-import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import Image from 'next/image';
+import React, { useContext, useMemo } from 'react';
+import Select, { SingleValue } from 'react-select';
+import s from './styles.module.scss';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -19,18 +19,14 @@ const SORT_OPTIONS: Array<{ value: string; label: string }> = [
     value: 'minted-newest',
     label: 'Date minted: Newest',
   },
-  // {
-  //   value: 'price-desc',
-  //   label: 'Price: High to Low',
-  // },
-  // {
-  //   value: 'rarity-asc',
-  //   label: 'Rarity: Low to High',
-  // },
-  // {
-  //   value: 'rarity-desc',
-  //   label: 'Rarity: High to Low',
-  // },
+  {
+    value: 'token-price-desc',
+    label: 'Price: High to Low',
+  },
+  {
+    value: 'token-price-asc',
+    label: 'Price: Low to High',
+  },
 ];
 
 interface IProps {
@@ -100,7 +96,7 @@ const TokenTopFilter: React.FC<IProps> = ({
           isClearable={false}
           defaultValue={selectedOption}
           options={SORT_OPTIONS}
-          className={s.selectInput}
+          className={'select-input'}
           classNamePrefix="select"
           onChange={(op: SingleValue<SelectOption>) => {
             if (op) onSortChange(op.value);

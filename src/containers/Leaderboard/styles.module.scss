@@ -6,11 +6,9 @@
   }
 
   .pageTitle {
-    font-weight: 700;
-    font-size: rem(48px);
-    line-height: rem(58px);
     color: $neutral-80;
     text-align: center;
+    margin-bottom: rem(16);
   }
 
   .pageDescription,
@@ -22,6 +20,16 @@
     text-align: center;
     margin: 0 auto;
     max-width: rem(632px);
+  }
+
+  .testnetBtn {
+    margin-top: rem(16);
+    font-size: rem(16);
+    font-weight: 500;
+
+    a {
+      text-decoration: none;
+    }
   }
 
   .pageBody {
@@ -38,18 +46,30 @@
   }
 
   .dataTable {
-    max-width: rem(888px);
+    max-width: rem(1194px);
     margin: 0 auto;
   }
 
   .artistCol {
     position: relative;
+    display: flex;
+    gap: rem(10);
+    align-items: center;
   }
 
-  .trophyIcon {
-    position: absolute;
-    left: rem(-30px);
-    top: 0;
+  .badgesCol {
+    position: relative;
+    width: rem(200px);
+
+    @include mobile {
+      width: rem(150px);
+    }
+  }
+
+  .dataCol {
+    @include mobile {
+      min-width: rem(100px);
+    }
   }
 
   .displayName {

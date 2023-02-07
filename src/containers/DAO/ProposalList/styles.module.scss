@@ -1,18 +1,113 @@
 .proposalList {
   padding: 64px 0;
+  overflow: hi;
 
   .header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    margin-bottom: rem(62);
+    flex-wrap: wrap;
+    gap: rem(30);
 
-    .mainTitle {
-      font-size: rem(48px);
-      font-weight: 700;
-    }
-
-    .mainDescription {
-      margin-top: 8px;
+    @include w-max($screen-lg) {
+      flex-direction: column;
     }
   }
+
+  .leftContent {
+    flex: 1;
+    width: 100%;
+  }
+
+  .rightContent {
+    display: flex;
+    gap: rem(8);
+    flex-direction: column;
+    align-items: flex-end;
+
+    @include w-max($screen-lg) {
+      align-items: flex-start;
+    }
+
+    .CTA_btns {
+      display: flex;
+      gap: rem(10);
+
+      > button {
+        width: fit-content;
+      }
+    }
+  }
+
+  &_title {
+    display: flex;
+    gap: rem(20);
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+}
+
+.dropDownWrapper {
+  @include w-max(500px) {
+    width: 100%;
+  }
+
+  .selectInput {
+    :global(.select__control) {
+      background-color: $white-100;
+      outline: none;
+      box-shadow: none;
+      border-radius: 0;
+      min-height: 52px;
+      border: 2px solid $black-20;
+      min-width: rem(250px);
+    }
+
+    :global(.select__indicator-separator) {
+      display: none;
+    }
+
+    :global(.select__placeholder) {
+      color: $black-40;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 26px;
+    }
+
+    :global(.select__multi-value__label) {
+      font-size: 14px;
+      line-height: 14px;
+      font-weight: 400;
+    }
+
+    :global(.select__input-container) {
+      color: $black-100;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 26px;
+    }
+  }
+}
+
+.proposalList_container {
+  display: flex;
+  flex-direction: column;
+  gap: rem(40);
+  margin-top: rem(50);
+
+  @include w-min($screen-xs) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(rem(460px), 1fr));
+  }
+}
+
+.delegate_dropdown {
+  position: absolute;
+  border-radius: 2px;
+  background-color: $white;
+  border: 2px solid $black-10;
+  box-shadow: 8px 7px 24px 0 #00000026;
+  transform: translateY(10px);
 }

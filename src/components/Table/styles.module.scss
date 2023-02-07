@@ -1,5 +1,6 @@
 .table {
   position: relative;
+  overflow: scroll;
 
   .tableHead {
     border-bottom: 1px solid $black-10;
@@ -9,6 +10,10 @@
       font-weight: 500;
       line-height: rem(24px);
       color: $black-40;
+
+      @include mobile {
+        white-space: nowrap;
+      }
     }
   }
 
@@ -26,6 +31,7 @@
       font-size: rem(16px);
       line-height: rem(26px);
       font-weight: 600;
+      vertical-align: middle;
     }
   }
 }

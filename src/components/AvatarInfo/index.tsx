@@ -1,6 +1,6 @@
 import Avatar from '@components/Avatar';
 import { convertIpfsToHttp } from '@utils/image';
-import { CSSProperties, ReactNode } from 'react';
+import { CSSProperties, LegacyRef, ReactNode } from 'react';
 import styles from './styles.module.scss';
 
 type Props = {
@@ -11,6 +11,7 @@ type Props = {
   wrapperStyle?: CSSProperties;
   onClick?: () => void;
   theme?: 'light' | 'dark';
+  ref?: LegacyRef<HTMLDivElement> | undefined;
 };
 
 const AvatarInfo = ({
@@ -21,12 +22,14 @@ const AvatarInfo = ({
   wrapperStyle,
   onClick,
   theme = 'light',
+  ref,
 }: Props) => {
   return (
     <div
       className={`horizontalStack ${styles[theme]}`}
       style={wrapperStyle}
       onClick={onClick}
+      ref={ref}
     >
       <div className={`${styles.avatar} avatar`}>
         <Avatar

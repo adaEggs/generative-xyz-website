@@ -9,6 +9,8 @@ import { useCallback, useContext, useEffect } from 'react';
 import { Stack } from 'react-bootstrap';
 import { v4 } from 'uuid';
 import styles from './styles.module.scss';
+import { debounce } from 'lodash';
+import Web3 from 'web3';
 
 type Props = {
   attributes?: TraitStats[];
@@ -25,6 +27,8 @@ const FilterOptions = ({ attributes }: Props) => {
     setPage,
     showFilter,
     setShowFilter,
+    filterPrice,
+    setFilterPrice,
   } = useContext(GenerativeProjectDetailContext);
 
   const initialAttributesMap = useCallback(() => {
@@ -56,6 +60,33 @@ const FilterOptions = ({ attributes }: Props) => {
     initialAttributesMap();
   };
 
+  const handleMinPriceChange = (value: string) => {
+    if (value) {
+      setFilterPrice({
+        ...filterPrice,
+        from_price: `${Web3.utils.toWei(value, 'ether') || ''}`,
+      });
+    } else {
+      setFilterPrice({
+        ...filterPrice,
+        from_price: '',
+      });
+    }
+  };
+  const handleMaxPriceChange = (value: string) => {
+    if (value) {
+      setFilterPrice({
+        ...filterPrice,
+        to_price: `${Web3.utils.toWei(value, 'ether')}`,
+      });
+    } else {
+      setFilterPrice({
+        ...filterPrice,
+        to_price: '',
+      });
+    }
+  };
+
   useEffect(() => {
     initialAttributesMap();
   }, [attributes]);
@@ -65,12 +96,41 @@ const FilterOptions = ({ attributes }: Props) => {
       <Heading fontWeight="semibold" className={styles.filter_title}>
         Filter
       </Heading>
-      {/* )} */}
       <div className={styles.filter_buy}>
         <Text size="18" fontWeight="medium">
           Buy now
         </Text>
         <ToogleSwitch onChange={() => setFilterBuyNow(!filterBuyNow)} />
+      </div>
+      <div className="divider"></div>
+      <div className={styles.filter_price}>
+        <Text size="18" fontWeight="medium">
+          Price range
+        </Text>
+        <div className={styles.filter_price_input}>
+          <input
+            placeholder="Min"
+            type="number"
+            step="any"
+            onChange={debounce(e => {
+              handleMinPriceChange(e.target.value);
+            }, 1000)}
+          ></input>
+          <div>-</div>
+          <input
+            min={
+              Number(Web3.utils.fromWei(filterPrice?.from_price, 'ether')) || 0
+            }
+            placeholder="Max"
+            type="number"
+            step="any"
+            onChange={debounce(e => {
+              handleMaxPriceChange(e.target.value);
+            }, 1000)}
+          ></input>
+          <Text>ETH</Text>
+        </div>
+        {/* <ToogleSwitch onChange={() => setFilterBuyNow(!filterBuyNow)} /> */}
       </div>
       <div className="divider"></div>
       {attributes && (

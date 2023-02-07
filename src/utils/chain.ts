@@ -12,6 +12,7 @@ export const getChainName = (): string | null => {
 
   return chain.name;
 };
+
 export const getOpenseaAssetUrl = (): string | null => {
   const chain = EVM_CHAINS.find(
     (item: Chain) => item.chainID === NETWORK_CHAIN_ID
@@ -21,6 +22,17 @@ export const getOpenseaAssetUrl = (): string | null => {
   }
 
   return chain.openseaAssetUrl;
+};
+
+export const getChainCurrency = (): string => {
+  const chain = EVM_CHAINS.find(
+    (item: Chain) => item.chainID === NETWORK_CHAIN_ID
+  );
+  if (!chain) {
+    return '';
+  }
+
+  return chain.currency;
 };
 
 export const getScanUrl = (): string | null => {

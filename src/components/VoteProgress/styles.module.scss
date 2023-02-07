@@ -1,0 +1,26 @@
+.wrapper {
+  > div {
+    color: $white;
+    padding: rem(5) rem(10);
+  }
+
+  .voteFor {
+    margin-bottom: rem(6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rightContent {
+    display: flex;
+    align-items: center;
+    gap: rem(10);
+    // background-color: #4f43e2;
+  }
+
+  .voteAgainst {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

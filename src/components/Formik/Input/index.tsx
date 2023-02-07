@@ -9,7 +9,7 @@ interface IInputProps {
   name: string;
   label?: string;
   desc?: string;
-  size?: 'large' | 'medium';
+  sizes?: 'large' | 'medium' | 'small';
   variant?: 'filled' | 'outline';
   className?: string;
   placeholder?: string;
@@ -39,7 +39,7 @@ const Input: React.FC<
     endIcon,
     placeholder,
     className,
-    size,
+    sizes = 'medium',
     errors,
     useFormik = false,
     required,
@@ -75,7 +75,7 @@ const Input: React.FC<
       className={cs(
         s.wrapper,
         s[`${variant}`],
-        s[`${size}`],
+        s[`${sizes}`],
         className,
         isError ? s.error : s.default
       )}
@@ -83,7 +83,7 @@ const Input: React.FC<
       {label && (
         <label htmlFor={name}>
           {label}
-          {required && ' * '}
+          {required && <sup className={s.required}>*</sup>}
         </label>
       )}
       {desc && <p>{desc}</p>}

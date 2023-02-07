@@ -1,27 +1,23 @@
 import { CreatorInfo } from '@components/CreatorInfo';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
+import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
-import { LogLevel } from '@enums/log-level';
+import useWindowSize from '@hooks/useWindowSize';
 import { Token } from '@interfaces/token';
 import { User } from '@interfaces/user';
-import { getListing } from '@services/marketplace';
+import { convertToETH } from '@utils/currency';
 import {
   formatAddress,
   formatTokenId,
   getProjectIdFromTokenId,
 } from '@utils/format';
-import log from '@utils/logger';
-import { useContext, useEffect, useMemo, useState } from 'react';
-import { Stack } from 'react-bootstrap';
-import Web3 from 'web3';
-import s from './styles.module.scss';
 import cs from 'classnames';
-import useWindowSize from '@hooks/useWindowSize';
-import Text from '@components/Text';
-import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import { useContext, useMemo, useState } from 'react';
+import { Stack } from 'react-bootstrap';
+import s from './styles.module.scss';
 
 const CollectionItem = ({
   data,
@@ -31,45 +27,14 @@ const CollectionItem = ({
   className?: string;
 }) => {
   const tokenID = useMemo(() => data.name.split('#')[1], [data.name]);
-  const [listingTokenPrice, setListingTokenPrice] = useState('0');
   const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
-  const { filterBuyNow } = useContext(GenerativeProjectDetailContext);
-
-  const handleFetchListingTokenPrice = async () => {
-    try {
-      const listingTokens = await getListing(
-        {
-          genNFTAddr: data.genNFTAddr,
-          tokenId: tokenID,
-        },
-        {
-          closed: false,
-          sort_by: 'newest',
-          sort: -1,
-        }
-      );
-      if (listingTokens && listingTokens.result[0]) {
-        setListingTokenPrice(
-          Web3.utils.fromWei(listingTokens.result[0].price, 'ether')
-        );
-      }
-    } catch (e) {
-      log('can not fetch price', LogLevel.ERROR, '');
-    }
-  };
 
   const [thumb, setThumb] = useState<string>(data.image);
 
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
-
-  useEffect(() => {
-    handleFetchListingTokenPrice();
-  }, [data.genNFTAddr]);
-
-  if (filterBuyNow && listingTokenPrice === '0') return null;
 
   return (
     <Link
@@ -100,12 +65,18 @@ const CollectionItem = ({
                 )}
             </Text>
             <div className={s.collectionCard_info_title}>
-              <Text size="14" fontWeight="semibold">
+              <Text className={s.textOverflow} size="14" fontWeight="semibold">
+                <span
+                  title={data?.project?.name}
+                  className={s.collectionCard_info_title_name}
+                >
+                  {data?.project?.name}
+                </span>{' '}
                 #{formatTokenId(tokenID)}
               </Text>
 
               <Text size="14" fontWeight="bold">
-                {listingTokenPrice !== '0' ? `Ξ${listingTokenPrice}` : ''}
+                {data.stats?.price ? `${convertToETH(data.stats?.price)}` : ''}
               </Text>
             </div>
           </div>
@@ -123,21 +94,30 @@ const CollectionItem = ({
                 className={s.collectionCard_info_stack}
                 direction="horizontal"
               >
-                <Heading as={'h4'} className="token_id ml-auto">
-                  <span
-                    title={data?.project?.name}
-                    className={s.collectionCard_info_title_name}
-                  >
-                    {currentUser && `${data?.project?.name} `}
-                  </span>
+                <Heading
+                  as={'h4'}
+                  className={`token_id ml-auto ${s.textOverflow}}`}
+                  style={{
+                    maxWidth: data.stats?.price ? '70%' : '100%',
+                  }}
+                >
+                  {currentUser && (
+                    <span
+                      title={data?.project?.name}
+                      className={s.collectionCard_info_title_name}
+                    >
+                      {data?.project?.name}
+                    </span>
+                  )}
+
                   <span>#{formatTokenId(tokenID)}</span>
                 </Heading>
-                {listingTokenPrice !== '0' && (
+                {!!data.stats?.price && (
                   <Stack
                     direction="horizontal"
                     className={s.collectionCard_info_listing}
                   >
-                    <b>Ξ{listingTokenPrice}</b>
+                    <b>{convertToETH(data.stats?.price)}</b>
                   </Stack>
                 )}
               </Stack>

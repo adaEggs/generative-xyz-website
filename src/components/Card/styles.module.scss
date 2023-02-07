@@ -1,0 +1,36 @@
+.Card_wrapper {
+  border: 1px solid #b6b6b6;
+  box-shadow: 16px 16px 0 #cecece;
+  border-radius: 2px;
+  transition: all 0.2s ease;
+  overflow: hidden;
+  padding: rem(24px);
+
+  @include tablet {
+    padding: rem(32px);
+  }
+
+  @include min-pc {
+    padding: rem(56) rem(48);
+  }
+
+  &:hover {
+    box-shadow: 16px 16px 0 #4f43e2;
+  }
+}
+
+.Card_heading {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: rem(16px);
+}
+
+.Card_desc_skeleton {
+  display: flex;
+  margin-top: rem(16);
+  flex-direction: column;
+  gap: rem(5);
+  overflow: hidden;
+}

@@ -23,6 +23,9 @@ export type Token = {
   ownerAddr: string;
   creator: User;
   tokenID: string;
+  stats: {
+    price: string;
+  };
 };
 
 export type TokenOffer = {
@@ -36,6 +39,7 @@ export type TokenOffer = {
   durationTime: string;
   token?: Token;
   buyer?: string;
+  buyerInfo?: User;
 };
 
 export type TokenActivities = IGetTokenActivitiesResponse;

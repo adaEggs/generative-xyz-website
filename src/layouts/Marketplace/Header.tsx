@@ -3,7 +3,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import Link from '@components/Link';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
-import { LOGO_JPG, SOCIALS } from '@constants/common';
+import { SOCIALS } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
@@ -15,7 +15,6 @@ import { getUserSelector } from '@redux/user/selector';
 import { formatAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
@@ -28,6 +27,11 @@ import { MENU_HEADER, RIGHT_MENU } from '@constants/header';
 import MenuMobile from '@layouts/Marketplace/MenuMobile';
 import { gsap } from 'gsap';
 import { isProduction } from '@utils/common';
+import GenerativeLogo from '@components/GenerativeLogo';
+
+// import dynamic from 'next/dynamic';
+// const GenerativeLogo = dynamic(() => import('@components/GenerativeLogo'));
+
 const LOG_PREFIX = 'MarketplaceHeader';
 
 interface IProp {
@@ -48,7 +52,7 @@ const Header: React.FC<IProp> = ({
   const activePath = router.asPath.split('/')[1];
   const [openProfile, setOpenProfile] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const dropdownRef = useRef<HTMLUListElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [isFaucet, _] = useState<boolean>(isShowFaucet);
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const refMenu = useRef<HTMLDivElement | null>(null);
@@ -121,7 +125,7 @@ const Header: React.FC<IProp> = ({
 
   const ProfileDropdown = () => {
     return (
-      <ul className={`${styles.dropdown} dropdown`} ref={dropdownRef}>
+      <ul className={`${styles.dropdown} dropdown`}>
         {PROFILE_MENU?.length > 0 &&
           PROFILE_MENU.map(
             item =>
@@ -198,13 +202,7 @@ const Header: React.FC<IProp> = ({
                   className={styles.logo}
                   href={getUrlWithQueryParams(ROUTE_PATH.HOME)}
                 >
-                  <Image
-                    className={styles.header_logo}
-                    src={LOGO_JPG[theme]}
-                    alt="LOGO_GENERATIVE"
-                    width={64}
-                    height={64}
-                  />
+                  <GenerativeLogo theme={theme} />
                 </Link>
 
                 <div className={styles.header_right}>
@@ -245,7 +243,7 @@ const Header: React.FC<IProp> = ({
                     </li>
                   </ul>
                   {user ? (
-                    <div className="position-relative">
+                    <div className="position-relative" ref={dropdownRef}>
                       <AvatarInfo
                         imgSrc={user.avatar}
                         width={48}

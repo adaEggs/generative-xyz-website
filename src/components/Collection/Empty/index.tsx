@@ -7,7 +7,7 @@ import useContractOperation from '@hooks/useContractOperation';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { TransactionReceipt } from 'web3-eth';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import toast from 'react-hot-toast';
@@ -88,6 +88,11 @@ export const Empty = ({
     }
   };
 
+  const mintedOut = useMemo(
+    () => projectInfo?.maxSupply === projectInfo?.mintingInfo.index,
+    [projectInfo?.maxSupply, projectInfo?.mintingInfo.index]
+  );
+
   useEffect(() => {
     if (errorMessage) {
       toast.remove();
@@ -103,9 +108,18 @@ export const Empty = ({
           <img src={`${CDN_URL}/icons/ic-empty.svg`} alt="empty.svg" />
         </div>
         <div className={s.empty_desc}>
-          Bring your unique vision to life. Mint your first NFT now
+          {mintedOut ? (
+            <>
+              <p>
+                Unfortunately, all outputs of this collection have been minted.
+              </p>
+              <p>Please browse other collections for availability.</p>
+            </>
+          ) : (
+            'Bring your unique vision to life. Mint your first NFT now'
+          )}
         </div>
-        {projectInfo && (
+        {projectInfo && !mintedOut && (
           <ButtonIcon
             onClick={handleMintToken}
             sizes="large"
