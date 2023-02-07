@@ -173,34 +173,36 @@ const Leaderboard: React.FC = (): React.ReactElement => {
               </AnimFade>
             </div>
           </div>
-          <div className={s.pageBody}>
-            {/* <Loading isLoaded={!isLoading} /> */}
-            {!isLoading && (
-              <>
-                {userList.length === 0 && (
-                  <div className={s.emptyDataWrapper}>
-                    <Image
-                      className={s.emptyImage}
-                      width={74}
-                      height={100}
-                      src={`${CDN_URL} / icons / ic - empty.svg`}
-                      alt="empty.svg"
+          <AnimFade screen={0.5}>
+            <div className={s.pageBody}>
+              {/* <Loading isLoaded={!isLoading} /> */}
+              {!isLoading && (
+                <>
+                  {userList.length === 0 && (
+                    <div className={s.emptyDataWrapper}>
+                      <Image
+                        className={s.emptyImage}
+                        width={74}
+                        height={100}
+                        src={`${CDN_URL} / icons / ic - empty.svg`}
+                        alt="empty.svg"
+                      />
+                      <Text className={s.emptyText}>
+                        {errorMessage ? errorMessage : 'No available data'}
+                      </Text>
+                    </div>
+                  )}
+                  {userList.length > 0 && (
+                    <Table
+                      className={s.dataTable}
+                      tableHead={TABLE_LEADERBOARD_HEADING}
+                      data={tableData}
                     />
-                    <Text className={s.emptyText}>
-                      {errorMessage ? errorMessage : 'No available data'}
-                    </Text>
-                  </div>
-                )}
-                {userList.length > 0 && (
-                  <Table
-                    className={s.dataTable}
-                    tableHead={TABLE_LEADERBOARD_HEADING}
-                    data={tableData}
-                  />
-                )}
-              </>
-            )}
-          </div>
+                  )}
+                </>
+              )}
+            </div>
+          </AnimFade>
         </div>
       </div>
     </LoadingProvider>
