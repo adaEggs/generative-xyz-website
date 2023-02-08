@@ -62,6 +62,7 @@ export const RecentWorks = (): JSX.Element => {
       setCurrentTotal(tmpProject.total || 0);
     }
   }, [projects]);
+
   const onLoadMore = async () => {
     switch (sort) {
       default:
