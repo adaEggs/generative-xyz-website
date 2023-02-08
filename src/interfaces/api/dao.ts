@@ -1,5 +1,6 @@
+import { VoteType } from '@enums/dao';
 import { TokenType } from '@enums/token-type';
-import { Proposal } from '@interfaces/dao';
+import { Proposal, Vote } from '@interfaces/dao';
 import { IPagingParams, IPagingResponse } from './paging';
 
 export interface ICreateProposalPayload {
@@ -39,3 +40,14 @@ export interface IUpdateProposalIDPayload {
 export type IUpdateProposalIDResponse = Proposal;
 
 export type IGetProposalByOnChainIDResponse = Proposal;
+
+export interface IGetVoteListParams {
+  proposalID: string;
+  voter?: string;
+  support?: VoteType;
+  sort?: SortType;
+}
+
+export interface IGetVoteListResponse {
+  result: Array<Vote>;
+}

@@ -10,7 +10,7 @@ import { EXTERNAL_LINK } from '@constants/external-link';
 import { WalletContext } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
 import useContractOperation from '@hooks/useContractOperation';
-import { Proposal } from '@interfaces/dao';
+import { Proposal, Vote } from '@interfaces/dao';
 import { getUserSelector } from '@redux/user/selector';
 import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
 import ExecuteProposalOperation from '@services/contract-operations/gen-dao/execute-proposal';
@@ -34,10 +34,12 @@ const LOG_PREFIX = 'CurrentResult';
 
 interface IProps {
   proposal: Proposal | null;
+  votes: Array<Vote>;
+  updateProposal: () => Promise<void>;
 }
 
 const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
-  const { proposal } = props;
+  const { proposal, votes, updateProposal } = props;
   const router = useRouter();
   const { connect } = useContext(WalletContext);
   const user = useSelector(getUserSelector);
@@ -76,6 +78,7 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
       if (tx) {
         toast.success('Your vote has been recorded.');
         setShowCastVoteModal(false);
+        updateProposal();
       } else {
         toast.error(ErrorMessage.DEFAULT);
       }
@@ -164,18 +167,19 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
       const seconds = (startBlock - currentBlock) * SECONDS_PER_BLOCK;
       const startAt = dayjs(proposal.createdAt).add(seconds, 'seconds');
       return `Start voting period at ${startAt.format('MMM DD YYYY HH:mm')}`;
-    }
-
-    if (proposal.state === ProposalState.Active) {
+    } else if (proposal.state === ProposalState.Active) {
       const seconds = (endBlock - currentBlock) * SECONDS_PER_BLOCK;
       const endAt = dayjs(proposal.createdAt).add(seconds, 'seconds');
       return `End voting period at ${endAt.format('MMM DD, YYYY HH:mm')}`;
     } else {
       return 'Voting period ended';
     }
-
-    return null;
   }, [proposal]);
+
+  const currentUserVote = useMemo((): Vote | undefined => {
+    if (!user) return undefined;
+    return votes.find((vote: Vote) => vote.voter === user.walletAddress);
+  }, [votes, user]);
 
   if (!proposal) {
     return <></>;
@@ -199,40 +203,61 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
       )}
 
       <div className={s.currentVotingResultWrapper}>
-        <div className={s.votingProgressWrapper}>
-          <VoteProgress stats={proposal?.vote} />
-        </div>
+        {proposal.state > ProposalState.Pending && (
+          <div className={s.votingProgressWrapper}>
+            <VoteProgress stats={proposal?.vote} />
+          </div>
+        )}
         {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
         {user && (
           <>
-            {genBalance > 0 && proposal.state === ProposalState.Active && (
-              <>
-                <div className={s.choiceList}>
-                  <div
-                    onClick={() => handleChooseSupport(VoteType.FOR)}
-                    className={cs(s.choiceItem, {
-                      [`${s.choiceItem__active}`]: support === VoteType.FOR,
-                    })}
-                  >
-                    Yes
-                    <span className={s.checkmark}></span>
-                  </div>
-                  <div
-                    onClick={() => handleChooseSupport(VoteType.AGAINST)}
-                    className={cs(s.choiceItem, {
-                      [`${s.choiceItem__active}`]: support === VoteType.AGAINST,
-                    })}
-                  >
-                    No
-                    <span className={s.checkmark}></span>
-                  </div>
-                </div>
-                <Button onClick={handleOpenVoteModal} className={s.connectBtn}>
-                  Cast your vote
-                </Button>
-              </>
+            {currentUserVote && (
+              <p className={s.voteInfo}>
+                <span>You voted:</span>
+                <span
+                  className={cs(s.voteType, {
+                    [`${s.voteType__yes}`]: support === VoteType.FOR,
+                    [`${s.voteType__no}`]: support === VoteType.AGAINST,
+                  })}
+                >
+                  {VoteType[currentUserVote.support]}
+                </span>
+              </p>
             )}
-            {genBalance === 0 && (
+            {genBalance > 0 &&
+              proposal.state === ProposalState.Active &&
+              !currentUserVote && (
+                <>
+                  <div className={s.choiceList}>
+                    <div
+                      onClick={() => handleChooseSupport(VoteType.FOR)}
+                      className={cs(s.choiceItem, {
+                        [`${s.choiceItem__active}`]: support === VoteType.FOR,
+                      })}
+                    >
+                      Yes
+                      <span className={s.checkmark}></span>
+                    </div>
+                    <div
+                      onClick={() => handleChooseSupport(VoteType.AGAINST)}
+                      className={cs(s.choiceItem, {
+                        [`${s.choiceItem__active}`]:
+                          support === VoteType.AGAINST,
+                      })}
+                    >
+                      No
+                      <span className={s.checkmark}></span>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleOpenVoteModal}
+                    className={s.connectBtn}
+                  >
+                    Cast your vote
+                  </Button>
+                </>
+              )}
+            {genBalance === 0 && !currentUserVote && (
               <>
                 <Button onClick={navigateToDocsPage} className={s.connectBtn}>
                   Earn GEN

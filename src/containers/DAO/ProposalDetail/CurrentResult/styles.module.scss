@@ -115,4 +115,37 @@
       margin-bottom: rem(16px);
     }
   }
+
+  .voteInfo {
+    display: flex;
+    align-items: center;
+    gap: rem(10px);
+    font-weight: 400;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: $black-80;
+    margin-bottom: rem(16px);
+
+    &:last-child {
+      margin-bottom: rem(0);
+    }
+
+    .voteType {
+      padding: rem(4px) rem(12px);
+      border-radius: 2px;
+      font-weight: 500;
+      font-size: rem(14px);
+      line-height: rem(22px);
+      color: $white;
+      text-transform: uppercase;
+
+      &__yes {
+        background: $secondary-purple-c;
+      }
+
+      &__no {
+        background: $secondary-red;
+      }
+    }
+  }
 }

@@ -1,4 +1,4 @@
-import { ProposalState } from '@enums/dao';
+import { ProposalState, VoteType } from '@enums/dao';
 import { TokenType } from '@enums/token-type';
 
 export interface IFormValue {
@@ -15,6 +15,16 @@ export type ProposalVote = {
   total: number;
   percentFor: number;
   percentAgainst: number;
+};
+
+export type Vote = {
+  id: string;
+  proposalID: string;
+  voter: string;
+  support: VoteType;
+  weight: string;
+  reason: string;
+  createdAt: string;
 };
 
 export type Proposal = {

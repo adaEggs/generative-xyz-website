@@ -74,10 +74,11 @@ const LOG_PREFIX = 'ProposalList';
 const ProposalList: React.FC = (): React.ReactElement => {
   const router = useRouter();
   const user = useAppSelector(getUserSelector);
-  const dropdownRef = useRef<HTMLButtonElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [filterState, setFilterState] = useState<string[]>();
   const [proposalList, setProposalList] = useState<Proposal[]>();
   const [isLoading, setIsLoading] = useState(false);
+  const [isProccessing, setIsProccessing] = useState(false);
   const [genBalance, setGenBalance] = useState(0);
   const [showDelegateVoteModal, setShowDelegateVoteModal] = useState(false);
   const [showDelegateOptions, setShowDelegateOptions] = useState(false);
@@ -105,23 +106,27 @@ const ProposalList: React.FC = (): React.ReactElement => {
   };
 
   const handleDelegateGENToken = async (): Promise<void> => {
+    if (isProccessing) return;
     if (user) {
+      setIsProccessing(true);
       const tx = await delegateGENToken({
         chainID: NETWORK_CHAIN_ID,
         delegateeAddress: user?.walletAddress,
       });
-      // eslint-disable-next-line no-console
       if (tx) {
         toast.success('Delegated successfully.');
       } else {
         toast.error(ErrorMessage.DEFAULT);
       }
+      setIsProccessing(false);
     } else {
       toast.error('Login');
     }
   };
 
   const handleShowDelegateModal = (): void => {
+    if (isProccessing) return;
+
     setShowDelegateVoteModal(true);
     setShowDelegateOptions(false);
   };
@@ -192,7 +197,7 @@ const ProposalList: React.FC = (): React.ReactElement => {
                   Submit proposal
                 </Button>
 
-                <div className="position-relative">
+                <div ref={dropdownRef} className="position-relative">
                   <Button
                     variants="outline"
                     disabled={!user}

@@ -5,6 +5,8 @@ import {
   IGetProposalByOnChainIDResponse,
   IGetProposalListParams,
   IGetProposalListResponse,
+  IGetVoteListParams,
+  IGetVoteListResponse,
   IUpdateProposalIDPayload,
   IUpdateProposalIDResponse,
 } from '@interfaces/api/dao';
@@ -76,5 +78,22 @@ export const createProposal = async (
   } catch (err: unknown) {
     log('failed to create proposal', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to create proposal');
+  }
+};
+
+export const getVoteList = async (
+  query: IGetVoteListParams
+): Promise<IGetVoteListResponse> => {
+  try {
+    const { proposalID, ...params } = query;
+    const qs = '?' + queryString.stringify(params);
+    const res = await get<IGetVoteListResponse>(
+      `${API_PATH}/proposals/${proposalID}/votes${qs}`
+    );
+
+    return res;
+  } catch (err: unknown) {
+    log('failed to get proposal list', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get proposal list');
   }
 };
