@@ -88,10 +88,12 @@ export const Empty = ({
     }
   };
 
-  const mintedOut = useMemo(
-    () => projectInfo?.maxSupply === projectInfo?.mintingInfo.index,
-    [projectInfo?.maxSupply, projectInfo?.mintingInfo.index]
-  );
+  const mintedOut = useMemo(() => {
+    if (projectInfo) {
+      return projectInfo?.maxSupply === projectInfo?.mintingInfo.index;
+    }
+    return false;
+  }, [projectInfo?.maxSupply, projectInfo?.mintingInfo.index]);
 
   useEffect(() => {
     if (errorMessage) {
