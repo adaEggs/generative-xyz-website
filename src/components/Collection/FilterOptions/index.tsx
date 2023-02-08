@@ -132,9 +132,9 @@ const FilterOptions = ({ attributes }: Props) => {
         </div>
         {/* <ToogleSwitch onChange={() => setFilterBuyNow(!filterBuyNow)} /> */}
       </div>
-      <div className="divider"></div>
-      {attributes && (
+      {attributes && attributes?.length > 0 && (
         <>
+          <div className="divider"></div>
           <div className={styles.filter_traits}>
             <Stack direction="horizontal" className="justify-between">
               <Text size="18" fontWeight="medium">

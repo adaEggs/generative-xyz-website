@@ -103,7 +103,7 @@ export const Empty = ({
 
   return (
     <div className={cs(s.empty, 'empty', className)}>
-      <div className={s.empty_inner}>
+      <div className={cs(s.empty_inner, mintedOut && s.minted_out)}>
         <div className={s.empty_thumb}>
           <img src={`${CDN_URL}/icons/ic-empty.svg`} alt="empty.svg" />
         </div>
