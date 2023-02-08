@@ -45,7 +45,7 @@ const Leaderboard: React.FC = (): React.ReactElement => {
           return {
             ...item,
             profile: item.profile,
-            balance: formatCurrency(
+            genBalance: formatCurrency(
               parseFloat(Web3.utils.fromWei(item.balance))
             ),
           };

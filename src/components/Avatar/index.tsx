@@ -4,15 +4,23 @@ import React from 'react';
 import styles from './styles.module.scss';
 import { v4 } from 'uuid';
 import { convertIpfsToHttp } from '@utils/image';
+import cs from 'classnames';
 
 type Props = {
   imgSrcs: string | string[];
   width?: number;
   height?: number;
   fill?: boolean;
+  className?: string;
 };
 
-const Avatar = ({ imgSrcs, width = 48, height = 48, fill = false }: Props) => {
+const Avatar = ({
+  imgSrcs,
+  width = 48,
+  height = 48,
+  fill = false,
+  className,
+}: Props) => {
   const SingleAvatar = ({ src }: { src: string }) => {
     return (
       <div
@@ -59,7 +67,7 @@ const Avatar = ({ imgSrcs, width = 48, height = 48, fill = false }: Props) => {
 
   if (imgSrcs?.length > 0 && typeof imgSrcs === 'object') {
     return (
-      <div className={styles.avatarStack}>
+      <div className={cs(styles.avatarStack, className)}>
         {imgSrcs.map(src => (
           <SingleAvatar src={src} key={`avatar-${v4()}`} />
         ))}

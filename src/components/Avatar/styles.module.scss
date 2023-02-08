@@ -3,6 +3,10 @@
   position: relative;
   align-items: center;
 
+  .avatarWrapper {
+    border: 1px solid $white;
+  }
+
   > div {
     position: absolute;
     top: 0;

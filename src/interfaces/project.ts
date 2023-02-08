@@ -42,6 +42,7 @@ export type Project = {
   mintedTime: number;
   stats: MarketplaceStats;
   traitStat: TraitStats[];
+  thumbnail?: string;
 };
 
 export type TraitStats = {

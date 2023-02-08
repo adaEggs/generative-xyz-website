@@ -5,15 +5,17 @@ import Text from '@components/Text';
 import { APP_TOKEN_SYMBOL, CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { NFTHolder } from '@interfaces/nft';
-import { formatLongAddress } from '@utils/format';
+import { formatCurrency, formatLongAddress } from '@utils/format';
 import cs from 'classnames';
 import { useCallback } from 'react';
+import Accordion from 'react-bootstrap/Accordion';
 import { v4 } from 'uuid';
+import Web3 from 'web3';
 import s from './styles.module.scss';
 
 type Props = {
   className?: string;
-  userList: NFTHolder[];
+  userList: (NFTHolder & { genBalance?: string })[];
 };
 
 const LeaderboardTable = (props: Props) => {
@@ -77,10 +79,26 @@ const LeaderboardTable = (props: Props) => {
     []
   );
 
+  //   const ExpandTableToggle = ({
+  //     children,
+  //     eventKey,
+  //   }: PropsWithChildren<{ eventKey: string }>) => {
+  //     const decoratedOnClick = useAccordionButton(eventKey);
+
+  //     return (
+  //       <button type="button" onClick={decoratedOnClick}>
+  //         {children}
+  //       </button>
+  //     );
+  //   };
+
   const data = userList.map((item, index) => {
     const displayName = item.profile?.display_name
       ? item.profile.display_name
       : formatLongAddress(item.address);
+
+    const balanceChange =
+      parseFloat(item.balance) - parseFloat(item.old_balance);
 
     return {
       id: index.toString(),
@@ -94,7 +112,11 @@ const LeaderboardTable = (props: Props) => {
         artist: (
           <div className={s.artistCol}>
             <Avatar
-              imgSrcs={item?.profile?.avatar || ''}
+              imgSrcs={
+                item?.profile?.avatar ||
+                (item?.projects && item?.projects[0]?.creatorProfile?.avatar) ||
+                ''
+              }
               width={34}
               height={34}
             />
@@ -108,22 +130,52 @@ const LeaderboardTable = (props: Props) => {
             </Link>
           </div>
         ),
-        collections: (
+        collections: !item.projects ? (
+          <div className={s.collectionsCol}>-</div>
+        ) : item?.projects?.length === 1 ? (
           <div className={s.collectionsCol}>
             <Avatar
-              imgSrcs={item?.profile?.avatar || ''}
+              imgSrcs={item?.projects[0]?.thumbnail || ''}
               width={34}
               height={34}
             />
-            <div className="">Show All</div>
-            {/* <Link
+            {/* <ExpandTableToggle eventKey={'0'}>Show All</ExpandTableToggle> */}
+            <Link
               className={s.displayName}
-              href={`${ROUTE_PATH.PROFILE}/${item.address}`}
+              href={`${ROUTE_PATH.GENERATIVE}/${item.projects[0].tokenID}`}
             >
               <Text as="span" size="16" fontWeight="medium">
-                {displayName}
+                {item?.projects[0].name}
               </Text>
-            </Link> */}
+            </Link>
+          </div>
+        ) : (
+          <div className={s.collectionsCol}>
+            <Avatar
+              imgSrcs={
+                item?.projects?.length > 2
+                  ? [
+                      item?.projects[0]?.thumbnail || '',
+                      item?.projects[1]?.thumbnail || '',
+                      item?.projects[2]?.thumbnail || '',
+                    ]
+                  : [
+                      item?.projects[0]?.thumbnail || '',
+                      item?.projects[1]?.thumbnail || '',
+                    ]
+              }
+              width={34}
+              height={34}
+              className={s.collection_thumbnail}
+            />
+            <Text
+              as="span"
+              size="16"
+              fontWeight="medium"
+              className={s.displayName}
+            >
+              Show All
+            </Text>
           </div>
         ),
         owners: (
@@ -142,12 +194,16 @@ const LeaderboardTable = (props: Props) => {
                 svgUrl={`${CDN_URL}/icons/ic-gen-token.svg`}
               />
               <Text as="span" size="16" fontWeight="medium">
-                {item.balance}
+                {item.genBalance}
               </Text>
             </div>
-            <Text color="green-c" as="span" size="16" fontWeight="medium">
-              +1000
-            </Text>
+            {balanceChange > 0 ? (
+              <Text color="green-c" as="span" size="16" fontWeight="medium">
+                +{formatCurrency(parseFloat(Web3.utils.fromWei(item.balance)))}
+              </Text>
+            ) : (
+              <div className={s.balanceChange}></div>
+            )}
           </div>
         ),
       },
@@ -189,8 +245,8 @@ const LeaderboardTable = (props: Props) => {
         {data &&
           data?.length > 0 &&
           data.map(rowData => (
-            <>
-              <div className={s.tableData} key={`trowData-${v4()}`}>
+            <Accordion className={s.tableBody_row} key={`trowData-${v4()}`}>
+              <div className={s.tableData}>
                 {rowData.render &&
                   Object.values(rowData.render).map(value => (
                     <div key={`tdata-${v4()}`} className={s.tableData_item}>
@@ -198,7 +254,10 @@ const LeaderboardTable = (props: Props) => {
                     </div>
                   ))}
               </div>
-            </>
+              <Accordion.Collapse eventKey="0">
+                <Text>Hello! I am another body</Text>
+              </Accordion.Collapse>
+            </Accordion>
           ))}
       </div>
     </div>

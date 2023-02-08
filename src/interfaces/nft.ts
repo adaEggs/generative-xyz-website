@@ -1,4 +1,7 @@
+import { Project } from './project';
+
 export type NFTHolder = {
+  old_balance: string;
   contract_decimals: number;
   contract_name: string;
   contract_ticker_symbol: string;
@@ -20,4 +23,5 @@ export type NFTHolder = {
       nft_minted: number;
     };
   } | null;
+  projects: Project[];
 };

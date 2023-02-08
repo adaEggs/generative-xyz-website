@@ -33,12 +33,7 @@ $balance-col-width: rem(300);
     gap: rem(4);
   }
 
-  .tableData {
-    display: flex;
-    align-items: center;
-    gap: rem(11);
-    padding-top: rem(18);
-    padding-bottom: rem(18);
+  .tableBody_row {
     background: $black-5;
 
     &:nth-of-type(1) {
@@ -52,6 +47,14 @@ $balance-col-width: rem(300);
     &:nth-of-type(3) {
       background: rgb(0 170 108 / 30%);
     }
+  }
+
+  .tableData {
+    display: flex;
+    align-items: center;
+    gap: rem(11);
+    padding-top: rem(18);
+    padding-bottom: rem(18);
   }
 }
 
@@ -75,13 +78,13 @@ $balance-col-width: rem(300);
   align-items: center;
   gap: rem(16);
   width: $artist-col-width;
+}
 
-  .displayName {
-    text-decoration: none;
+.displayName {
+  text-decoration: none;
 
-    &:hover {
-      text-decoration: underline;
-    }
+  &:hover {
+    text-decoration: underline;
   }
 }
 
@@ -100,7 +103,7 @@ $balance-col-width: rem(300);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: calc($balance-col-width - rem(40));
+  width: rem(170);
 }
 
 .balanceCol {
@@ -128,4 +131,13 @@ $balance-col-width: rem(300);
 
 .balanceHead {
   width: $balance-col-width;
+}
+
+.collection_thumbnail {
+  height: rem(34px);
+  width: rem(70px);
+}
+
+.balanceChange {
+  min-width: rem(100px);
 }
