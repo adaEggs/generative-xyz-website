@@ -12,6 +12,7 @@ type Props = {
   status?: number;
   className?: string;
   isLoading?: boolean;
+  size?: 'small' | 'large';
 };
 
 const Card = (props: Props) => {
@@ -31,7 +32,9 @@ const Card = (props: Props) => {
 
   return (
     <div className={cs(s.Card_wrapper, className)}>
-      {status ? (
+      {!heading ? (
+        <></>
+      ) : status ? (
         <Stack direction="horizontal" className={'justify-between'} gap={3}>
           <Heading as="h4" className={'line-clamp-1'}>
             {heading}

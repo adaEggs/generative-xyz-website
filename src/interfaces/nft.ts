@@ -9,6 +9,9 @@ export type NFTHolder = {
   balance: string;
   total_supply: string;
   block_height: number;
+  current_rank: number;
+  old_rank: number;
+  owner_count: number;
   profile: {
     avatar: string;
     display_name: string;

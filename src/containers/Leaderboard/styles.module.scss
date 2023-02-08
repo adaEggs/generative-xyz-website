@@ -1,13 +1,13 @@
 .leaderboard {
   padding: rem(56px) 0;
+  padding-right: rem(80);
 
   .pageHeader {
-    margin-bottom: rem(56px);
+    margin-bottom: rem(16px);
   }
 
   .pageTitle {
     color: $neutral-80;
-    text-align: center;
     margin-bottom: rem(16);
   }
 
@@ -17,9 +17,6 @@
     font-size: rem(16px);
     line-height: rem(26px);
     color: $neutral-80;
-    text-align: center;
-    margin: 0 auto;
-    max-width: rem(632px);
   }
 
   .testnetBtn {
@@ -77,6 +74,45 @@
 
     &:hover {
       text-decoration: underline;
+    }
+  }
+}
+
+.earnGen {
+  padding-left: rem(62);
+  border-left: 1px solid $black-10;
+  padding-top: rem(75);
+
+  &_title {
+    margin-bottom: rem(50);
+  }
+
+  &_list {
+    display: flex;
+    flex-direction: column;
+    gap: rem(24);
+  }
+
+  &_card {
+    padding: rem(24);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 10px 10px 0 #cecece !important;
+
+    &:hover {
+      box-shadow: 10px 10px 0 #4f43e2 !important;
+    }
+
+    > button {
+      height: fit-content;
+      padding: rem(11) rem(20) !important;
+      min-width: rem(192);
+      justify-content: center;
+    }
+
+    &_info h5 {
+      margin-bottom: rem(2);
     }
   }
 }
