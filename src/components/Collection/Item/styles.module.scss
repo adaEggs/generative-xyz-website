@@ -76,11 +76,9 @@
           display: flex;
           gap: rem(5px);
 
-
           @include min-pc-wide {
             gap: rem(5px);
           }
-
 
           span {
             flex: 0 0 auto;
