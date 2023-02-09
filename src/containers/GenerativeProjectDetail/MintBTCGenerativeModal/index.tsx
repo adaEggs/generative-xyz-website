@@ -46,6 +46,7 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>();
   const [_isMinting, setIsMinting] = useState(false);
+  const [step, setsTep] = useState<'info' | 'mint'>('info');
 
   const getBTCAddress = async (walletAddress: string): Promise<void> => {
     if (!projectData) return;
@@ -116,7 +117,10 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
           <div className={s.modalContainer}>
             <div className={s.modalHeader}>
               <Button
-                onClick={hideMintBTCModal}
+                onClick={() => {
+                  hideMintBTCModal();
+                  setsTep('info');
+                }}
                 className={s.closeBtn}
                 variants="ghost"
               >
@@ -127,105 +131,130 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
               </Button>
             </div>
             <div className={s.modalBody}>
-              <h3 className={s.modalTitle}>Mint NFT</h3>
-              <div className={s.formWrapper}>
-                <Formik
-                  key="mintBTCGenerativeForm"
-                  initialValues={{
-                    address: '',
-                  }}
-                  validate={validateForm}
-                  onSubmit={handleSubmit}
-                >
-                  {({
-                    values,
-                    errors,
-                    touched,
-                    handleChange,
-                    handleBlur,
-                    handleSubmit,
-                  }) => (
-                    <form onSubmit={handleSubmit}>
-                      <div className={s.formItem}>
-                        <label className={s.label} htmlFor="address">
-                          Transfer NFT to <sup className={s.requiredTag}>*</sup>
-                        </label>
-                        <div className={s.inputContainer}>
-                          <input
-                            id="address"
-                            type="address"
-                            name="address"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.address}
-                            className={s.input}
-                            placeholder="Enter your BTC wallet address"
-                          />
-                        </div>
-                        {errors.address && touched.address && (
-                          <p className={s.inputError}>{errors.address}</p>
-                        )}
-                      </div>
-                      {isLoading && (
-                        <div className={s.loadingWrapper}>
-                          <Loading isLoaded={false}></Loading>
-                        </div>
-                      )}
-                      {receiverAddress && price && !isLoading && (
-                        <>
+              {step === 'info' ? (
+                <div className={s.modalBody_nextStep}>
+                  <h3 className={s.modalTitle}>Setup BTC wallet address</h3>
+                  <div className={s.formWrapper}>
+                    <p>
+                      Please follow this step-by-step{' '}
+                      <a
+                        href="https://gist.github.com/windsok/5b53a1ced6ef3eddbde260337de28980"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        guide
+                      </a>{' '}
+                      to create an ord compatible wallet with Sparrow Wallet in
+                      order to receive ordinals and inscriptions.
+                    </p>
+                    <p>Disregard this step if you have already set it up.</p>
+
+                    <div className={s.ctas}>
+                      <Button
+                        type="submit"
+                        variants={'ghost'}
+                        onClick={() => setsTep('mint')}
+                        className={s.submitBtn}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <h3 className={s.modalTitle}>Mint NFT</h3>
+                  <div className={s.alert_info}>
+                    Do not spend any satoshis from this wallet unless you
+                    understand what you are doing. If you ignore this warning,
+                    you could inadvertently lose access to your ordinals and
+                    inscriptions.
+                  </div>
+                  <div className={s.formWrapper}>
+                    <Formik
+                      key="mintBTCGenerativeForm"
+                      initialValues={{
+                        address: '',
+                      }}
+                      validate={validateForm}
+                      onSubmit={handleSubmit}
+                    >
+                      {({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                      }) => (
+                        <form onSubmit={handleSubmit}>
                           <div className={s.formItem}>
-                            <label className={s.label} htmlFor="price">
-                              Set a price <sup className={s.requiredTag}>*</sup>
+                            <label className={s.label} htmlFor="address">
+                              Transfer NFT to{' '}
+                              <sup className={s.requiredTag}>*</sup>
                             </label>
                             <div className={s.inputContainer}>
                               <input
-                                disabled
-                                id="price"
-                                type="number"
+                                id="address"
+                                type="address"
+                                name="address"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={covertPriceToBTC(Number(price))}
+                                value={values.address}
                                 className={s.input}
+                                placeholder="Enter your BTC wallet address"
                               />
-                              <div className={s.inputPostfix}>BTC</div>
                             </div>
+                            {errors.address && touched.address && (
+                              <p className={s.inputError}>{errors.address}</p>
+                            )}
                           </div>
-                          <div className={s.qrCodeWrapper}>
-                            <p className={s.qrTitle}>
-                              Send BTC to this deposit address
-                            </p>
-                            <QRCodeGenerator
-                              className={s.qrCodeGenerator}
-                              size={128}
-                              value={receiverAddress}
-                            />
-                          </div>
-                        </>
+                          {isLoading && (
+                            <div className={s.loadingWrapper}>
+                              <Loading isLoaded={false}></Loading>
+                            </div>
+                          )}
+                          {receiverAddress && price && !isLoading && (
+                            <>
+                              <div className={s.formItem}>
+                                <label className={s.label} htmlFor="price">
+                                  Set a price{' '}
+                                  <sup className={s.requiredTag}>*</sup>
+                                </label>
+                                <div className={s.inputContainer}>
+                                  <input
+                                    disabled
+                                    id="price"
+                                    type="number"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={covertPriceToBTC(Number(price))}
+                                    className={s.input}
+                                  />
+                                  <div className={s.inputPostfix}>BTC</div>
+                                </div>
+                              </div>
+                              <div className={s.qrCodeWrapper}>
+                                <p className={s.qrTitle}>
+                                  Send BTC to this deposit address
+                                </p>
+                                <QRCodeGenerator
+                                  className={s.qrCodeGenerator}
+                                  size={128}
+                                  value={receiverAddress}
+                                />
+                                <p className={s.btcAddress}>
+                                  {receiverAddress}
+                                </p>
+                              </div>
+                            </>
+                          )}
+                        </form>
                       )}
-
-                      <div className={s.actionWrapper}>
-                        <Button
-                          type="button"
-                          // variants="ghost"
-                          onClick={hideMintBTCModal}
-                          className={s.cancelBtn}
-                        >
-                          Never mind
-                        </Button>
-                        {/*<Button*/}
-                        {/*  disabled={!receiverAddress || isMinting}*/}
-                        {/*  type="submit"*/}
-                        {/*  className={s.submitBtn}*/}
-                        {/*>*/}
-                        {/*  {isMinting*/}
-                        {/*    ? 'Processing...'*/}
-                        {/*    : 'Transaction completed'}*/}
-                        {/*</Button>*/}
-                      </div>
-                    </form>
-                  )}
-                </Formik>
-              </div>
+                    </Formik>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
