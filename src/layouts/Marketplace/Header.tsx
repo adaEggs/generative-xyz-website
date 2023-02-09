@@ -193,7 +193,7 @@ const Header: React.FC<IProp> = ({
                       {MENU_HEADER[0].name}
                     </Link>
                   </li>
-                  {!isProduction && (
+                  {!isProduction() && (
                     <li
                       className={cs(
                         activePath === MENU_HEADER[1].activePath &&
@@ -242,7 +242,7 @@ const Header: React.FC<IProp> = ({
                         </Link>
                       </li>
                     )}
-                    {!isProduction && (
+                    {!isProduction() && (
                       <li>
                         <a
                           href={SOCIALS.whitepaper}
@@ -306,7 +306,7 @@ const Header: React.FC<IProp> = ({
           </Container>
         </div>
       </header>
-      {isFaucet && !isProduction && (
+      {isFaucet && !isProduction() && (
         <div className={styles.testNet}>
           <img
             src={`${CDN_URL}/icons/star-shooting-horizontal.svg`}

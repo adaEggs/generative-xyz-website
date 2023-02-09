@@ -70,7 +70,7 @@ const MenuMobile = React.forwardRef(
                 {MENU_HEADER[0].name}
               </Link>
             </li>
-            {!isProduction && (
+            {!isProduction() && (
               <li
                 className={cs(
                   activePath === MENU_HEADER[1].activePath && s.active
@@ -108,7 +108,7 @@ const MenuMobile = React.forwardRef(
                 {RIGHT_MENU[2].name}
               </a>
             </li>
-            {!isProduction && (
+            {!isProduction() && (
               <li>
                 <a href={SOCIALS.whitepaper} target={'_blank'} rel="noreferrer">
                   Whitepaper

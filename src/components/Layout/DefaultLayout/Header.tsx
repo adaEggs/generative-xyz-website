@@ -40,7 +40,7 @@ const Header: React.FC = (): React.ReactElement => {
                 <Link href={ROUTE_PATH.HOME}>G</Link>
               </h1>
               <ul className={styles.navBar}>
-                {!isProduction && (
+                {!isProduction() && (
                   <li>
                     <Link href={ROUTE_PATH.CREATE_PROJECT}>Create</Link>
                   </li>
