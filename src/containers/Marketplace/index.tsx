@@ -25,9 +25,6 @@ const Marketplace = () => {
 
   return (
     <>
-      {/* <Container className={s.marketplaceContainer}>
-        <ProjectIntroSection project={projectInfo} />
-      </Container> */}
       <div className={s.marketplaceContainer_recentWorks}>
         <Container>
           <RecentWorks />

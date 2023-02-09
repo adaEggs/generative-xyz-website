@@ -12,6 +12,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import SvgInset from '@components/SvgInset';
+import { isProduction } from '@utils/common';
 
 interface IProp {
   theme?: 'light' | 'dark';
@@ -48,7 +49,7 @@ const MenuMobile = React.forwardRef(
       <div ref={ref} className={`${s.menuMobile} ${s[theme || 'light']}`}>
         <div className={s.menuMobile_inner}>
           <ul className={`${s.navBar}`}>
-            {MENU_HEADER?.length > 0 &&
+            {/* {MENU_HEADER?.length > 0 &&
               MENU_HEADER.map(item => (
                 <li
                   className={cs(activePath === item.activePath && s.active)}
@@ -58,7 +59,40 @@ const MenuMobile = React.forwardRef(
                     {item.name}
                   </Link>
                 </li>
-              ))}
+              ))} */}
+            <li
+              className={cs(
+                activePath === MENU_HEADER[0].activePath && s.active
+              )}
+              key={`header-${MENU_HEADER[0].id}`}
+            >
+              <Link href={getUrlWithQueryParams(MENU_HEADER[0].route)}>
+                {MENU_HEADER[0].name}
+              </Link>
+            </li>
+            {!isProduction() && (
+              <li
+                className={cs(
+                  activePath === MENU_HEADER[1].activePath && s.active
+                )}
+                key={`header-${MENU_HEADER[1].id}`}
+              >
+                <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>
+                  {MENU_HEADER[1].name}
+                </Link>
+              </li>
+            )}
+
+            <li
+              className={cs(
+                activePath === MENU_HEADER[2].activePath && s.active
+              )}
+              key={`header-${MENU_HEADER[2].id}`}
+            >
+              <Link href={getUrlWithQueryParams(MENU_HEADER[2].route)}>
+                {MENU_HEADER[2].name}
+              </Link>
+            </li>
 
             <li
               className={cs(
@@ -74,11 +108,13 @@ const MenuMobile = React.forwardRef(
                 {RIGHT_MENU[2].name}
               </a>
             </li>
-            <li>
-              <a href={SOCIALS.whitepaper} target={'_blank'} rel="noreferrer">
-                Whitepaper
-              </a>
-            </li>
+            {!isProduction() && (
+              <li>
+                <a href={SOCIALS.whitepaper} target={'_blank'} rel="noreferrer">
+                  Whitepaper
+                </a>
+              </li>
+            )}
           </ul>
           <div className={`${s.menuMobile_bottom} ${user ? s.hasUser : ''}`}>
             <div className={`${s.connectWallet}`}>

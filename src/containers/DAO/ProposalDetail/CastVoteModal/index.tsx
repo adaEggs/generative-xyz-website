@@ -9,7 +9,6 @@ import {
 } from '@constants/config';
 import { VoteType } from '@enums/dao';
 import cs from 'classnames';
-import Web3 from 'web3';
 import { formatCurrency } from '@utils/format';
 
 interface IProps {
@@ -63,9 +62,7 @@ const CastVoteModal: React.FC<IProps> = (props: IProps): React.ReactElement => {
                 <div className={s.summaryItem}>
                   <span className={s.summaryText}>Your tokens</span>
                   <span className={s.summaryText}>{`${formatCurrency(
-                    parseFloat(
-                      Web3.utils.fromWei(genBalance.toString(), 'ether')
-                    )
+                    genBalance
                   )} ${APP_TOKEN_SYMBOL}`}</span>
                 </div>
                 <div className={s.summaryItem}>

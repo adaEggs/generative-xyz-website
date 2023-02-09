@@ -61,9 +61,9 @@ const TokenTopFilter: React.FC<IProps> = ({
           variants={showFilter ? 'primary' : 'outline'}
           startIcon={
             showFilter ? (
-              <SvgInset svgUrl={`${CDN_URL}/icons/ic-close.svg`} />
+              <SvgInset size={16} svgUrl={`${CDN_URL}/icons/ic-close.svg`} />
             ) : (
-              <SvgInset svgUrl={`${CDN_URL}/icons/ic-filter.svg`} />
+              <SvgInset size={16} svgUrl={`${CDN_URL}/icons/ic-filter.svg`} />
             )
           }
           onClick={() => setShowFilter(!showFilter)}

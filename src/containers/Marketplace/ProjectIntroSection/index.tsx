@@ -21,12 +21,13 @@ import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
 import { convertToETH } from '@utils/currency';
 import { base64ToUtf8, escapeSpecialChars, formatAddress } from '@utils/format';
+import { checkIsBitcoinProject } from '@utils/generative';
 import log from '@utils/logger';
 import { checkLines } from '@utils/string';
 import dayjs from 'dayjs';
 import _get from 'lodash/get';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
@@ -36,15 +37,15 @@ const LOG_PREFIX = 'ProjectIntroSection';
 
 type Props = {
   project?: IGetProjectDetailResponse | null;
+  openMintBTCModal: () => void;
 };
 
-const ProjectIntroSection = ({ project }: Props) => {
+const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   const { getWalletBalance } = useContext(WalletContext);
   const { mobileScreen } = useWindowSize();
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
   const [showMore, setShowMore] = useState(false);
-
   const [marketplaceStats, setMarketplaceStats] =
     useState<MarketplaceStats | null>(null);
   const mintedTime = project?.mintedTime;
@@ -62,6 +63,11 @@ const ProjectIntroSection = ({ project }: Props) => {
     true
   );
   const [isMinting, setIsMinting] = useState(false);
+
+  const isBitcoinProject = useMemo((): boolean => {
+    if (!project) return false;
+    return checkIsBitcoinProject(project.tokenID);
+  }, [project]);
 
   const handleFetchMarketplaceStats = async () => {
     try {
@@ -178,24 +184,37 @@ const ProjectIntroSection = ({ project }: Props) => {
           )}
           {project?.status && (
             <div className={s.CTA}>
-              <ButtonIcon
-                sizes="large"
-                className={s.mint_btn}
-                disabled={isMinting}
-                onClick={handleMintToken}
-              >
-                <Text as="span" size="14" fontWeight="medium">
-                  {isMinting && 'Minting...'}
-                  {!isMinting && project?.mintPrice && (
-                    <>
-                      {`Mint now Ξ${Web3.utils.fromWei(
-                        project?.mintPrice,
-                        'ether'
-                      )}`}
-                    </>
-                  )}
-                </Text>
-              </ButtonIcon>
+              {!isBitcoinProject && (
+                <ButtonIcon
+                  sizes="large"
+                  className={s.mint_btn}
+                  disabled={isMinting}
+                  onClick={handleMintToken}
+                >
+                  <Text as="span" size="14" fontWeight="medium">
+                    {isMinting && 'Minting...'}
+                    {!isMinting && project?.mintPrice && (
+                      <>
+                        {`Mint now Ξ${Web3.utils.fromWei(
+                          project?.mintPrice,
+                          'ether'
+                        )}`}
+                      </>
+                    )}
+                  </Text>
+                </ButtonIcon>
+              )}
+              {isBitcoinProject && (
+                <ButtonIcon
+                  sizes="large"
+                  className={s.mint_btn}
+                  onClick={openMintBTCModal}
+                >
+                  <Text as="span" size="14" fontWeight="medium">
+                    Mint now
+                  </Text>
+                </ButtonIcon>
+              )}
             </div>
           )}
           <div className={s.stats}>
@@ -393,7 +412,11 @@ const ProjectIntroSection = ({ project }: Props) => {
       project.projectURI.replace('data:application/json;base64,', '')
     );
     if (_projectDetail) {
-      const projectDetailObj = JSON.parse(escapeSpecialChars(_projectDetail));
+      let projectDetailJSON = _projectDetail;
+      if (!isBitcoinProject) {
+        projectDetailJSON = escapeSpecialChars(_projectDetail);
+      }
+      const projectDetailObj = JSON.parse(projectDetailJSON);
       setProjectDetail(projectDetailObj);
     }
   }, [project?.id]);

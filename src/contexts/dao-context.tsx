@@ -64,6 +64,7 @@ export const DAOContext = createContext<TDAOContext>(initialValues);
 
 export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   const user = useSelector(getUserSelector);
+
   const router = useRouter();
   const [displayMode, setDisplayMode] = useState(
     CreateProposalDisplayMode.INPUT_INFO
@@ -72,6 +73,7 @@ export const DAOContextProvider = ({ children }: PropsWithChildren) => {
   const [formValues, setFormValues] =
     useState<Partial<IFormValue>>(INITIAL_FORM_VALUES);
   const [isFormValid, setIsFormValid] = useState(false);
+
   const { call: delegateGENToken } = useContractOperation(
     DelegateGENTokenOperation,
     true

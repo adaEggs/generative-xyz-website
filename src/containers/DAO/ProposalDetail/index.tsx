@@ -2,9 +2,9 @@ import Skeleton from '@components/Skeleton';
 import React, { useEffect, useState } from 'react';
 import s from './styles.module.scss';
 import MarkdownPreview from '@components/MarkdownPreview';
-import { Proposal } from '@interfaces/dao';
+import { Proposal, Vote } from '@interfaces/dao';
 import { useRouter } from 'next/router';
-import { getProposalByOnChainID } from '@services/dao';
+import { getProposalByOnChainID, getVoteList } from '@services/dao';
 import { ROUTE_PATH } from '@constants/route-path';
 import CurrentResultSkeleton from './CurrentResultSkeleton';
 import CurrentResult from './CurrentResult';
@@ -21,11 +21,12 @@ import cs from 'classnames';
 
 const ProposalDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
+  const { proposalID } = router.query;
   const [proposal, setProposal] = useState<Proposal | null>(null);
+  const [votes, setVotes] = useState<Array<Vote>>([]);
 
-  const fetchProposal = async () => {
+  const fetchProposal = async (): Promise<void> => {
     try {
-      const { proposalID } = router.query;
       const res = await getProposalByOnChainID(proposalID as string);
       setProposal(res);
     } catch (err: unknown) {
@@ -33,10 +34,27 @@ const ProposalDetail: React.FC = (): React.ReactElement => {
     }
   };
 
+  const fetchVotes = async (): Promise<void> => {
+    try {
+      const { result } = await getVoteList({
+        proposalID: proposalID as string,
+      });
+      setVotes(result);
+    } catch (err: unknown) {
+      router.push(ROUTE_PATH.DAO);
+    }
+  };
+
+  const fetchData = async (): Promise<void> => {
+    await fetchProposal();
+    await fetchVotes();
+  };
+
   useEffect(() => {
     if (!router.isReady) return;
-    fetchProposal();
-    const intervalID = setInterval(fetchProposal, 60000);
+
+    fetchData();
+    const intervalID = setInterval(fetchData, 60000);
 
     return () => {
       clearInterval(intervalID);
@@ -136,7 +154,13 @@ const ProposalDetail: React.FC = (): React.ReactElement => {
           </div>
           <div className="col-xl-3 offset-xl-1">
             {!proposal && <CurrentResultSkeleton />}
-            {proposal && <CurrentResult proposal={proposal} />}
+            {proposal && (
+              <CurrentResult
+                updateProposal={fetchData}
+                votes={votes}
+                proposal={proposal}
+              />
+            )}
           </div>
         </div>
       </div>
