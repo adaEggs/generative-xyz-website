@@ -2,7 +2,13 @@ import Button from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import React, { useCallback, useContext, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
 import { Formik } from 'formik';
 import s from './styles.module.scss';
 // import Web3 from 'web3';
@@ -24,9 +30,15 @@ interface IFormValue {
   address: string;
 }
 
+interface IProp {
+  setIsShowSuccess: Dispatch<SetStateAction<boolean>>;
+}
+
 const LOG_PREFIX = 'MintBTCGenerativeModal';
 
-const MintBTCGenerativeModal: React.FC = (): React.ReactElement => {
+const MintBTCGenerativeModal: React.FC<IProp> = ({
+  setIsShowSuccess,
+}): React.ReactElement => {
   const { projectData, hideMintBTCModal } = useContext(
     GenerativeProjectDetailContext
   );
@@ -83,7 +95,8 @@ const MintBTCGenerativeModal: React.FC = (): React.ReactElement => {
         address: receiverAddress,
       });
       hideMintBTCModal();
-      toast.success('Mint success');
+      setIsShowSuccess(true);
+      // toast.success('Mint success');
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       toast.error(ErrorMessage.DEFAULT);

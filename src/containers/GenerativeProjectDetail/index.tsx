@@ -6,12 +6,13 @@ import {
   GenerativeProjectDetailContext,
   GenerativeProjectDetailProvider,
 } from '@contexts/generative-project-detail-context';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
 import cs from 'classnames';
 import styles from './styles.module.scss';
 import TokenTopFilter from './TokenTopFilter';
 import MintBTCGenerativeModal from './MintBTCGenerativeModal';
+import { TransactionSuccessModal } from './TransactionSuccessModal';
 
 // const LOG_PREFIX = 'GenerativeProjectDetail';
 
@@ -28,6 +29,8 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
     showMintBTCModal,
     isShowMintBTCModal,
   } = useContext(GenerativeProjectDetailContext);
+
+  const [isShowSuccess, setIsShowSuccess] = useState<boolean>(false);
 
   return (
     <>
@@ -72,7 +75,13 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
           </ClientOnly>
         </Container>
       </section>
-      {isShowMintBTCModal && <MintBTCGenerativeModal />}
+      {isShowMintBTCModal && (
+        <MintBTCGenerativeModal setIsShowSuccess={setIsShowSuccess} />
+      )}
+      <TransactionSuccessModal
+        isSuccessShow={isShowSuccess}
+        setIsSuccessShow={setIsShowSuccess}
+      />
     </>
   );
 };

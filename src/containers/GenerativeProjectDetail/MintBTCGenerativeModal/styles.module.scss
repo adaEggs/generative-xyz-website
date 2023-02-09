@@ -56,9 +56,9 @@
   }
 
   .modalTitle {
-    font-weight: 500;
+    font-weight: 700;
     color: $black-100;
-    margin-bottom: rem(12px);
+    margin-bottom: rem(24px);
     line-height: (34 / 24);
 
     @include calcFontAuto(18px, 24px);

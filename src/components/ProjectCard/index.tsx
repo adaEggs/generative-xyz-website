@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import s from './ProjectCard.module.scss';
 
@@ -15,6 +15,7 @@ import cs from 'classnames';
 import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
 import { formatAddress } from '@utils/format';
+import { checkIsBitcoinProject } from '@utils/generative';
 
 interface IPros {
   project: Project;
@@ -25,12 +26,16 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const [creator, setCreator] = useState<User | null>(null);
 
   const { mobileScreen } = useWindowSize();
-
   const [thumb, setThumb] = useState<string>(project.image);
 
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
+
+  const isBitcoinProject = useMemo((): boolean => {
+    if (!project) return false;
+    return checkIsBitcoinProject(project.tokenID);
+  }, [project]);
 
   useEffect(() => {
     if (project.creatorProfile) {
@@ -68,13 +73,15 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 {project.name}
               </Text>
             </div>
-            <ProgressBar
-              size={'small'}
-              current={
-                project.mintingInfo.index + project.mintingInfo.indexReserve
-              }
-              total={project.limit}
-            />
+            {!isBitcoinProject && (
+              <ProgressBar
+                size={'small'}
+                current={
+                  project.mintingInfo.index + project.mintingInfo.indexReserve
+                }
+                total={project.limit}
+              />
+            )}
           </div>
         ) : (
           <div className={cs(s.projectCard_info, s.desktop)}>
@@ -84,13 +91,15 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               </Heading>
             </div>
             {creator && <CreatorInfo creator={creator} />}
-            <ProgressBar
-              size={'small'}
-              current={
-                project.mintingInfo.index + project.mintingInfo.indexReserve
-              }
-              total={project.limit}
-            />
+            {!isBitcoinProject && (
+              <ProgressBar
+                size={'small'}
+                current={
+                  project.mintingInfo.index + project.mintingInfo.indexReserve
+                }
+                total={project.limit}
+              />
+            )}
           </div>
         )}
       </div>
