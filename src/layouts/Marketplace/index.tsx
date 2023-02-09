@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import styles from './styles.module.scss';
+import { BitcoinProvider } from '@contexts/bitcoin-context';
 
 interface IProps {
   children: ReactNode;
@@ -23,7 +24,9 @@ const MarketplaceLayout: React.FC<IProps> = ({
         isShowFaucet={!isHideFaucet}
         isDisplay={isDisplay}
       />
-      <main className={styles.main}>{children}</main>
+      <BitcoinProvider>
+        <main className={styles.main}>{children}</main>
+      </BitcoinProvider>
       <Footer theme={theme} />
     </div>
   );

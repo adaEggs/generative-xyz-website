@@ -33,6 +33,7 @@ import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
+import { BitcoinContext } from '@contexts/bitcoin-context';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -43,6 +44,7 @@ type Props = {
 
 const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   const { getWalletBalance } = useContext(WalletContext);
+  const { aVailable } = useContext(BitcoinContext);
   const { mobileScreen } = useWindowSize();
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
@@ -208,7 +210,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                   </Text>
                 </ButtonIcon>
               )}
-              {isBitcoinProject && (
+              {isBitcoinProject && aVailable && (
                 <ButtonIcon
                   sizes="large"
                   className={s.mint_btn}

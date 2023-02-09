@@ -105,3 +105,13 @@
     height: rem(32);
   }
 }
+
+.countDown {
+  background: $primary-brand;
+  color: white;
+  display: inline-block;
+  min-width: rem(160px);
+  text-align: center;
+  padding: rem(7px);
+  border-radius: 2px;
+}

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useContext, useEffect, useMemo, useState } from 'react';
 
 import s from './ProjectCard.module.scss';
 
@@ -16,6 +16,7 @@ import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
 import { formatAddress } from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
+import { BitcoinContext } from '@contexts/bitcoin-context';
 
 interface IPros {
   project: Project;
@@ -23,6 +24,8 @@ interface IPros {
 }
 
 export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
+  const { countDown } = useContext(BitcoinContext);
+
   const [creator, setCreator] = useState<User | null>(null);
 
   const { mobileScreen } = useWindowSize();
@@ -43,6 +46,10 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     }
   }, [project]);
 
+  const creatorMemo = useMemo((): User | null => {
+    return creator;
+  }, [creator]);
+
   return (
     <Link
       href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
@@ -61,47 +68,50 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             loading={'lazy'}
           />
         </div>
-        {mobileScreen ? (
-          <div className={cs(s.projectCard_info, s.mobile)}>
-            {creator && (
-              <Text size="11" fontWeight="medium">
-                {creator.displayName || formatAddress(creator.walletAddress)}
-              </Text>
-            )}
-            <div className={s.projectCard_info_title}>
-              <Text size="14" fontWeight="semibold">
-                {project.name}
-              </Text>
+        <div className={s.projectCard_inner_info}>
+          {isBitcoinProject && <div className={s.countDown}>{countDown}</div>}
+          {mobileScreen ? (
+            <div className={cs(s.projectCard_info, s.mobile)}>
+              {creator && (
+                <Text size="11" fontWeight="medium">
+                  {creator.displayName || formatAddress(creator.walletAddress)}
+                </Text>
+              )}
+              <div className={s.projectCard_info_title}>
+                <Text size="14" fontWeight="semibold">
+                  {project.name}
+                </Text>
+              </div>
+              {!isBitcoinProject && (
+                <ProgressBar
+                  size={'small'}
+                  current={
+                    project.mintingInfo.index + project.mintingInfo.indexReserve
+                  }
+                  total={project.limit}
+                />
+              )}
             </div>
-            {!isBitcoinProject && (
-              <ProgressBar
-                size={'small'}
-                current={
-                  project.mintingInfo.index + project.mintingInfo.indexReserve
-                }
-                total={project.limit}
-              />
-            )}
-          </div>
-        ) : (
-          <div className={cs(s.projectCard_info, s.desktop)}>
-            <div className={s.projectCard_info_title}>
-              <Heading as={'h4'}>
-                <span title={project.name}>{project.name}</span>
-              </Heading>
+          ) : (
+            <div className={cs(s.projectCard_info, s.desktop)}>
+              <div className={s.projectCard_info_title}>
+                <Heading as={'h4'}>
+                  <span title={project.name}>{project.name}</span>
+                </Heading>
+              </div>
+              {creator && <CreatorInfo creator={creatorMemo} />}
+              {!isBitcoinProject && (
+                <ProgressBar
+                  size={'small'}
+                  current={
+                    project.mintingInfo.index + project.mintingInfo.indexReserve
+                  }
+                  total={project.limit}
+                />
+              )}
             </div>
-            {creator && <CreatorInfo creator={creator} />}
-            {!isBitcoinProject && (
-              <ProgressBar
-                size={'small'}
-                current={
-                  project.mintingInfo.index + project.mintingInfo.indexReserve
-                }
-                total={project.limit}
-              />
-            )}
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </Link>
   );
