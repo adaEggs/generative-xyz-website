@@ -28,6 +28,7 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
     isNextPageLoaded,
     showMintBTCModal,
     isShowMintBTCModal,
+    isBitcoinProject,
   } = useContext(GenerativeProjectDetailContext);
 
   const [isShowSuccess, setIsShowSuccess] = useState<boolean>(false);
@@ -40,21 +41,24 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
             openMintBTCModal={showMintBTCModal}
             project={projectInfo}
           />
+
           <ClientOnly>
             <Tabs className={styles.tabs} defaultActiveKey="outputs">
               <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">
-                <div className={cs(styles.filterWrapper)}>
-                  <TokenTopFilter
-                    keyword=""
-                    sort=""
-                    onKeyWordChange={setSearchToken}
-                    onSortChange={value => {
-                      setSort(value);
-                    }}
-                    placeholderSearch="Search by token id..."
-                    className={styles.filter_sort}
-                  />
-                </div>
+                {!isBitcoinProject && (
+                  <div className={cs(styles.filterWrapper)}>
+                    <TokenTopFilter
+                      keyword=""
+                      sort=""
+                      onKeyWordChange={setSearchToken}
+                      onSortChange={value => {
+                        setSort(value);
+                      }}
+                      placeholderSearch="Search by token id..."
+                      className={styles.filter_sort}
+                    />
+                  </div>
+                )}
                 <div className={styles.tokenListWrapper}>
                   <div className={styles.tokenList}>
                     <CollectionList
