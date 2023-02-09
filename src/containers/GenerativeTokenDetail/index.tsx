@@ -10,11 +10,11 @@ import {
   GenerativeTokenDetailContext,
   GenerativeTokenDetailProvider,
 } from '@contexts/generative-token-detail-context';
-import { checkLines } from '@utils/string';
 import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
 import { formatAddress, formatTokenId } from '@utils/format';
+import { checkLines } from '@utils/string';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import React, { useContext, useState } from 'react';
@@ -371,7 +371,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           <div></div>
           {!mobileScreen && (
             <div>
-              <ThumbnailPreview data={tokenData} previewToken />
+              <ThumbnailPreview
+                data={tokenData}
+                isBitcoinProject={isBitcoinProject}
+                previewToken
+              />
             </div>
           )}
         </div>
