@@ -1,6 +1,5 @@
 import { CreatorInfo } from '@components/CreatorInfo';
 import Heading from '@components/Heading';
-import Link from '@components/Link';
 import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
@@ -18,6 +17,8 @@ import cs from 'classnames';
 import { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import { router } from 'next/client';
 
 const CollectionItem = ({
   data,
@@ -26,9 +27,13 @@ const CollectionItem = ({
   data: Token;
   className?: string;
 }) => {
-  const tokenID = useMemo(() => data.name.split('#')[1], [data.name]);
+  const tokenID = useMemo(
+    () => data.name.split('#')[1] || data.name,
+    [data.name]
+  );
   const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
+  const { isBitcoinProject } = useContext(GenerativeProjectDetailContext);
 
   const [thumb, setThumb] = useState<string>(data.image);
 
@@ -36,13 +41,19 @@ const CollectionItem = ({
     setThumb(LOGO_MARKETPLACE_URL);
   };
 
+  const clickDetail = () => {
+    if (isBitcoinProject) return;
+    router.push(
+      `${ROUTE_PATH.GENERATIVE}/${
+        isBitcoinProject
+          ? data.project.tokenID
+          : getProjectIdFromTokenId(parseInt(tokenID))
+      }/${tokenID}`
+    );
+  };
+
   return (
-    <Link
-      href={`${ROUTE_PATH.GENERATIVE}/${getProjectIdFromTokenId(
-        parseInt(tokenID)
-      )}/${tokenID}`}
-      className={`${s.collectionCard} ${className}`}
-    >
+    <div onClick={clickDetail} className={`${s.collectionCard} ${className}`}>
       <div className={s.collectionCard_inner}>
         <div
           className={`${s.collectionCard_thumb} ${
@@ -72,7 +83,9 @@ const CollectionItem = ({
                 >
                   {data?.project?.name}
                 </span>{' '}
-                #{formatTokenId(tokenID)}
+                <span className={s.textOverflow}>
+                  #{formatTokenId(tokenID, !isBitcoinProject)}
+                </span>
               </Text>
 
               <Text size="14" fontWeight="bold">
@@ -110,7 +123,7 @@ const CollectionItem = ({
                     </span>
                   )}
 
-                  <span>#{formatTokenId(tokenID)}</span>
+                  <span>#{formatTokenId(tokenID, !isBitcoinProject)}</span>
                 </Heading>
                 {!!data.stats?.price && (
                   <Stack
@@ -124,8 +137,28 @@ const CollectionItem = ({
             </div>
           </div>
         )}
+        {isBitcoinProject && (
+          <ul className={s.ordinalsLinks}>
+            <li>
+              <a
+                className={s.inscription}
+                href={`https://ordinals.com/inscription/${tokenID}`}
+              >
+                Inscription
+              </a>
+            </li>
+            <li>
+              <a
+                className={s.content}
+                href={`https://ordinals.com/content/${tokenID}`}
+              >
+                Content
+              </a>
+            </li>
+          </ul>
+        )}
       </div>
-    </Link>
+    </div>
   );
 };
 

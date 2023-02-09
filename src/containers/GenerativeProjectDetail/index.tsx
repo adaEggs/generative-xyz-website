@@ -6,12 +6,13 @@ import {
   GenerativeProjectDetailContext,
   GenerativeProjectDetailProvider,
 } from '@contexts/generative-project-detail-context';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
 import cs from 'classnames';
 import styles from './styles.module.scss';
 import TokenTopFilter from './TokenTopFilter';
 import MintBTCGenerativeModal from './MintBTCGenerativeModal';
+import { TransactionSuccessModal } from './TransactionSuccessModal';
 
 // const LOG_PREFIX = 'GenerativeProjectDetail';
 
@@ -27,7 +28,10 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
     isNextPageLoaded,
     showMintBTCModal,
     isShowMintBTCModal,
+    isBitcoinProject,
   } = useContext(GenerativeProjectDetailContext);
+
+  const [isShowSuccess, setIsShowSuccess] = useState<boolean>(false);
 
   return (
     <>
@@ -37,21 +41,24 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
             openMintBTCModal={showMintBTCModal}
             project={projectInfo}
           />
+
           <ClientOnly>
             <Tabs className={styles.tabs} defaultActiveKey="outputs">
               <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">
-                <div className={cs(styles.filterWrapper)}>
-                  <TokenTopFilter
-                    keyword=""
-                    sort=""
-                    onKeyWordChange={setSearchToken}
-                    onSortChange={value => {
-                      setSort(value);
-                    }}
-                    placeholderSearch="Search by token id..."
-                    className={styles.filter_sort}
-                  />
-                </div>
+                {!isBitcoinProject && (
+                  <div className={cs(styles.filterWrapper)}>
+                    <TokenTopFilter
+                      keyword=""
+                      sort=""
+                      onKeyWordChange={setSearchToken}
+                      onSortChange={value => {
+                        setSort(value);
+                      }}
+                      placeholderSearch="Search by token id..."
+                      className={styles.filter_sort}
+                    />
+                  </div>
+                )}
                 <div className={styles.tokenListWrapper}>
                   <div className={styles.tokenList}>
                     <CollectionList
@@ -72,7 +79,13 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
           </ClientOnly>
         </Container>
       </section>
-      {isShowMintBTCModal && <MintBTCGenerativeModal />}
+      {isShowMintBTCModal && (
+        <MintBTCGenerativeModal setIsShowSuccess={setIsShowSuccess} />
+      )}
+      <TransactionSuccessModal
+        isSuccessShow={isShowSuccess}
+        setIsSuccessShow={setIsShowSuccess}
+      />
     </>
   );
 };

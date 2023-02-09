@@ -11,7 +11,11 @@ export const base64ToUtf8 = (str: string): string => {
   if (!isBrowser()) {
     return '';
   }
-  return decodeURIComponent(escape(window.atob(str)));
+  try {
+    return decodeURIComponent(escape(window.atob(str)));
+  } catch (e) {
+    return '';
+  }
 };
 
 export const escapeSpecialChars = (str: string): string => {
@@ -50,8 +54,8 @@ export const getProjectIdFromTokenId = (tokenId: number): number => {
   return Math.floor(tokenId / 1000000);
 };
 
-export const formatTokenId = (tokenId: string): string => {
-  const id = Number(tokenId) % 1000000;
+export const formatTokenId = (tokenId: string, isNumber = true): string => {
+  const id = isNumber ? Number(tokenId) % 1000000 : tokenId;
   return id.toString();
 };
 

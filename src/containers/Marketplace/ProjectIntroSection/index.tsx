@@ -16,6 +16,7 @@ import { IGetProjectDetailResponse } from '@interfaces/api/project';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
 import { Token } from '@interfaces/token';
+import { covertPriceToBTC } from '@services/btc';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
@@ -32,6 +33,7 @@ import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
+import { BitcoinContext } from '@contexts/bitcoin-context';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -42,6 +44,7 @@ type Props = {
 
 const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   const { getWalletBalance } = useContext(WalletContext);
+  const { aVailable, countDown } = useContext(BitcoinContext);
   const { mobileScreen } = useWindowSize();
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
@@ -161,6 +164,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
           <Heading as="h4" fontWeight="medium">
             {project?.name}
           </Heading>
+
           <Text size={'18'} color={'black-60'} style={{ marginBottom: '10px' }}>
             <Link
               className={s.info_creatorLink}
@@ -175,13 +179,16 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
               <ThumbnailPreview data={projectDetail as Token} allowVariantion />
             </div>
           )}
-          {project?.mintingInfo.index !== project?.maxSupply && (
-            <ProgressBar
-              current={project?.mintingInfo?.index}
-              total={project?.maxSupply}
-              className={s.progressBar}
-            />
-          )}
+
+          {!isBitcoinProject &&
+            project?.mintingInfo.index !== project?.maxSupply && (
+              <ProgressBar
+                current={project?.mintingInfo?.index}
+                total={project?.maxSupply}
+                className={s.progressBar}
+              />
+            )}
+
           {project?.status && (
             <div className={s.CTA}>
               {!isBitcoinProject && (
@@ -204,54 +211,65 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                   </Text>
                 </ButtonIcon>
               )}
-              {isBitcoinProject && (
+              {isBitcoinProject && aVailable && (
                 <ButtonIcon
                   sizes="large"
                   className={s.mint_btn}
                   onClick={openMintBTCModal}
                 >
                   <Text as="span" size="14" fontWeight="medium">
-                    Mint now
+                    {isMinting && 'Minting...'}
+                    {!isMinting && project?.mintPrice && (
+                      <>{`Mint now ${covertPriceToBTC(
+                        Number(project?.mintPrice)
+                      )} BTC`}</>
+                    )}
                   </Text>
                 </ButtonIcon>
               )}
             </div>
           )}
-          <div className={s.stats}>
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="medium">
-                Outputs
-              </Text>
-              <Heading as="h6" fontWeight="medium">
-                {project?.mintingInfo?.index}
-              </Heading>
-            </div>
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="medium">
-                Total Volume
-              </Text>
-              <Heading as="h6" fontWeight="medium">
-                {convertToETH(marketplaceStats?.totalTradingVolumn || '')}
-              </Heading>
-            </div>
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="medium">
-                Floor price
-              </Text>
-              <Heading as="h6" fontWeight="medium">
-                {convertToETH(marketplaceStats?.floorPrice || '')}
-              </Heading>
-            </div>
 
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="medium">
-                royalty
-              </Text>
-              <Heading as="h6" fontWeight="medium">
-                {(project?.royalty || 0) / 100}%
-              </Heading>
+          {isBitcoinProject && <div className={s.countDown}>{countDown}</div>}
+
+          {!isBitcoinProject && (
+            <div className={s.stats}>
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  Outputs
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {project?.mintingInfo?.index}
+                </Heading>
+              </div>
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  Total Volume
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {convertToETH(marketplaceStats?.totalTradingVolumn || '')}
+                </Heading>
+              </div>
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  Floor price
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {convertToETH(marketplaceStats?.floorPrice || '')}
+                </Heading>
+              </div>
+
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  royalty
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {(project?.royalty || 0) / 100}%
+                </Heading>
+              </div>
             </div>
-          </div>
+          )}
+
           <div className={s.project_info}>
             <div className={s.project_desc}>
               <Text
@@ -269,7 +287,8 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
               >
                 {project?.desc}
               </Text>
-              {project?.desc && checkLines(project.desc) > 7 && (
+              {((project?.desc && checkLines(project.desc) > 7) ||
+                isBitcoinProject) && (
                 <>
                   {!showMore ? (
                     <Text
@@ -291,21 +310,26 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 </>
               )}
             </div>
-
-            <Text size="14" color="black-40">
-              Created date: {mintedDate}
-            </Text>
-            <Text size="14" color="black-40" className={s.project_owner}>
-              Collected by:{' '}
-              {project?.stats?.uniqueOwnerCount === 1
-                ? `${project?.stats?.uniqueOwnerCount} owner`
-                : `${project?.stats?.uniqueOwnerCount}+ owners`}
-              {/* </Text> */}
-            </Text>
+            {!isBitcoinProject && (
+              <>
+                <Text size="14" color="black-40">
+                  Created date: {mintedDate}
+                </Text>
+                <Text size="14" color="black-40" className={s.project_owner}>
+                  Collected by:{' '}
+                  {project?.stats?.uniqueOwnerCount === 1
+                    ? `${project?.stats?.uniqueOwnerCount} owner`
+                    : `${project?.stats?.uniqueOwnerCount}+ owners`}
+                  {/* </Text> */}
+                </Text>
+              </>
+            )}
           </div>
-          <div className={s.license}>
-            <Text size="14">License: {project?.license}</Text>
-          </div>
+          {!isBitcoinProject && (
+            <div className={s.license}>
+              <Text size="14">License: {project?.license}</Text>
+            </div>
+          )}
         </div>
       );
     } else {
