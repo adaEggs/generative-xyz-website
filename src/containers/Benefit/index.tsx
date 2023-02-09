@@ -59,10 +59,11 @@ const BenefitPage = (): JSX.Element => {
               promote the generative art movement.
             </ImageContent>
             <ImageContent
-              heading={`Everlasting artwork.`}
-              imageUrl={`${CDN_URL}/images/BENEFIT-FOR-ARTIST3%201.png`}
+              heading={`Most popular libraries are supported.`}
+              imageUrl={`${CDN_URL}/images/bitcoin.png`}
             >
-              All generative scripts are stored permanently on Ethereum.
+              Effortlessly create art with any of the following libraries p5js,
+              threejs, c2.min.js, chromajs, p5.grain.js and tonejs.
             </ImageContent>
           </div>
         </div>
