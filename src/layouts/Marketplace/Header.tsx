@@ -154,6 +154,13 @@ const Header: React.FC<IProp> = ({
     }
   };
 
+  const showWalletButton = (): boolean => {
+    if (!isProduction()) return true;
+    if (router.pathname === ROUTE_PATH.ORDER_NOW) {
+      return true;
+    } else return false;
+  };
+
   useEffect(() => {
     if (refMenu.current) {
       if (isOpenMenu) {
@@ -183,19 +190,39 @@ const Header: React.FC<IProp> = ({
                 className={`d-flex align-items-center justify-content-between w-100 ${styles.header_row}`}
               >
                 <ul className={`${styles.navBar} ${styles[theme]}`}>
-                  {MENU_HEADER?.length > 0 &&
-                    MENU_HEADER.map(item => (
-                      <li
-                        className={cs(
-                          activePath === item.activePath && styles.active
-                        )}
-                        key={`header-${item.id}`}
-                      >
-                        <Link href={getUrlWithQueryParams(item.route)}>
-                          {item.name}
-                        </Link>
-                      </li>
-                    ))}
+                  <li
+                    className={cs(
+                      activePath === MENU_HEADER[0].activePath && styles.active
+                    )}
+                    key={`header-${MENU_HEADER[0].id}`}
+                  >
+                    <Link href={getUrlWithQueryParams(MENU_HEADER[0].route)}>
+                      {MENU_HEADER[0].name}
+                    </Link>
+                  </li>
+                  {!isProduction() && (
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[1].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[1].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>
+                        {MENU_HEADER[1].name}
+                      </Link>
+                    </li>
+                  )}
+                  <li
+                    className={cs(
+                      activePath === MENU_HEADER[2].activePath && styles.active
+                    )}
+                    key={`header-${MENU_HEADER[2].id}`}
+                  >
+                    <Link href={getUrlWithQueryParams(MENU_HEADER[2].route)}>
+                      {MENU_HEADER[2].name}
+                    </Link>
+                  </li>
                 </ul>
 
                 <Link
@@ -222,16 +249,18 @@ const Header: React.FC<IProp> = ({
                         </Link>
                       </li>
                     )}
+                    {!isProduction() && (
+                      <li>
+                        <a
+                          href={SOCIALS.whitepaper}
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          Whitepaper
+                        </a>
+                      </li>
+                    )}
 
-                    <li>
-                      <a
-                        href={SOCIALS.whitepaper}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        Whitepaper
-                      </a>
-                    </li>
                     <li>
                       <a
                         href={SOCIALS.discord}
@@ -242,29 +271,35 @@ const Header: React.FC<IProp> = ({
                       </a>
                     </li>
                   </ul>
-                  {user ? (
-                    <div className="position-relative" ref={dropdownRef}>
-                      <AvatarInfo
-                        imgSrc={user.avatar}
-                        width={48}
-                        height={48}
-                        leftContent={renderProfileHeader()}
-                        onClick={() => setOpenProfile(!openProfile)}
-                        wrapperStyle={{ cursor: 'pointer' }}
-                      />
-                      {openProfile && <ProfileDropdown />}
-                    </div>
-                  ) : (
-                    <div className={'d-xl-block d-none'}>
-                      <ButtonIcon
-                        disabled={isConnecting}
-                        sizes="small"
-                        variants={theme === 'dark' ? 'secondary' : 'primary'}
-                        onClick={handleConnectWallet}
-                      >
-                        {isConnecting ? 'Connecting...' : 'Connect wallet'}
-                      </ButtonIcon>
-                    </div>
+                  {showWalletButton() && (
+                    <>
+                      {user ? (
+                        <div className="position-relative" ref={dropdownRef}>
+                          <AvatarInfo
+                            imgSrc={user.avatar}
+                            width={48}
+                            height={48}
+                            leftContent={renderProfileHeader()}
+                            onClick={() => setOpenProfile(!openProfile)}
+                            wrapperStyle={{ cursor: 'pointer' }}
+                          />
+                          {openProfile && <ProfileDropdown />}
+                        </div>
+                      ) : (
+                        <div className={'d-xl-block d-none'}>
+                          <ButtonIcon
+                            disabled={isConnecting}
+                            sizes="small"
+                            variants={
+                              theme === 'dark' ? 'secondary' : 'primary'
+                            }
+                            onClick={handleConnectWallet}
+                          >
+                            {isConnecting ? 'Connecting...' : 'Connect wallet'}
+                          </ButtonIcon>
+                        </div>
+                      )}
+                    </>
                   )}
 
                   <button
@@ -284,7 +319,7 @@ const Header: React.FC<IProp> = ({
           </Container>
         </div>
       </header>
-      {isFaucet && (
+      {isFaucet && !isProduction() && (
         <div className={styles.testNet}>
           <img
             src={`${CDN_URL}/icons/star-shooting-horizontal.svg`}
