@@ -45,7 +45,7 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>();
-  const [isMinting, setIsMinting] = useState(false);
+  const [_isMinting, setIsMinting] = useState(false);
 
   const getBTCAddress = async (walletAddress: string): Promise<void> => {
     if (!projectData) return;
