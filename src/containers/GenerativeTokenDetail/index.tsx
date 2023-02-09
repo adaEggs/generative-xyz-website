@@ -364,14 +364,24 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           )}
         </div>
         <div className="h-divider"></div>
-        <TokenActivities></TokenActivities>
-        <MoreItemsSection genNFTAddr={tokenData?.project.genNFTAddr || ''} />
+        {!isBitcoinProject && (
+          <>
+            <TokenActivities></TokenActivities>
+            <MoreItemsSection
+              genNFTAddr={tokenData?.project.genNFTAddr || ''}
+            />
+          </>
+        )}
       </Container>
-      <ListingTokenModal />
-      <MakeOfferModal />
-      <CancelListingModal />
-      <TransferTokenModal />
-      <SwapTokenModal />
+      {!isBitcoinProject && (
+        <>
+          <ListingTokenModal />
+          <MakeOfferModal />
+          <CancelListingModal />
+          <TransferTokenModal />
+          <SwapTokenModal />
+        </>
+      )}
     </>
   );
 };
