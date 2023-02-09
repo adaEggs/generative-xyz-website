@@ -10,6 +10,7 @@ import { LogLevel } from '@enums/log-level';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { formatAddress } from '@utils/format';
+import { isProduction } from '@utils/common';
 
 const LOG_PREFIX = 'Header';
 
@@ -39,9 +40,12 @@ const Header: React.FC = (): React.ReactElement => {
                 <Link href={ROUTE_PATH.HOME}>G</Link>
               </h1>
               <ul className={styles.navBar}>
-                <li>
-                  <Link href={ROUTE_PATH.CREATE_PROJECT}>Create</Link>
-                </li>
+                {!isProduction() && (
+                  <li>
+                    <Link href={ROUTE_PATH.CREATE_PROJECT}>Create</Link>
+                  </li>
+                )}
+
                 <li>
                   <Link href={ROUTE_PATH.GENERATIVE}>Projects</Link>
                 </li>
