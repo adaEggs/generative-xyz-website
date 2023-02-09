@@ -29,11 +29,7 @@ const ProgressBar = ({
         {size === 'regular' && (
           <>
             <Heading as="h6" fontWeight="medium">
-              {total ? (
-                `${current}/${total}`
-              ) : (
-                <Skeleton width={60} height={34} />
-              )}
+              {total ? `${current}` : <Skeleton width={60} height={34} />}
             </Heading>
             <Text color="black-60">minted</Text>
           </>
@@ -41,7 +37,7 @@ const ProgressBar = ({
         {size === 'small' && (
           <>
             <Text size="18" fontWeight="bold" as="span">
-              {current}/{total}
+              {current}
             </Text>
             <Text size="12" fontWeight="regular">
               minted

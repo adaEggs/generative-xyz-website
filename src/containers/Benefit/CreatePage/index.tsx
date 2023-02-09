@@ -24,22 +24,13 @@ export const CreatePageSection = (): JSX.Element => {
           <Col xl={{ span: 5, order: 0 }} xs={{ span: 12, order: 1 }}>
             <div className={s.createPage_content}>
               <Heading
-                as={'h5'}
-                color={'purple-a'}
-                className={'spacing__small'}
-                fontWeight={'medium'}
-                animOption={{ screen: 0, offset: 0, type: 'random' }}
-              >
-                Incentivized testnet
-              </Heading>
-              <Heading
                 as={'h1'}
                 color={'white'}
                 fontWeight={'medium'}
                 className={'spacing__small'}
                 animOption={{ screen: 0.2, offset: 0, type: 'heading' }}
               >
-                Empowers generative artists and powers generative artworks.
+                {`Launch your artwork on Bitcoin. It's easy!`}
               </Heading>
               <Text
                 size="20"
@@ -49,10 +40,12 @@ export const CreatePageSection = (): JSX.Element => {
                 as="p"
                 animOption={{ screen: 0.4, offset: 0, type: 'paragraph' }}
               >
-                Generative is a community-run platform that is fully open and
-                permissionless. Allowing artists to transform creative code into
-                a variety of generative art that evolves with each minting of a
-                collection.
+                {`Generative gives you the tools to transform your creative code
+                into a variety of generative art that’s stored securely on
+                Bitcoin's blockchain.`}
+                <br />
+                <br />
+                Be one of the first to discover this new frontier today!
               </Text>
               <AnimFade screen={0.6}>
                 <ButtonIcon

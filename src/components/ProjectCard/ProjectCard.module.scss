@@ -9,6 +9,7 @@
     background: #fff;
     border: 1px solid rgb(0 0 0 / 20%);
     border-radius: 2px;
+    min-height: 100%;
     transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
 
     @include mobile {
@@ -103,4 +104,14 @@
     width: 100%;
     height: rem(32);
   }
+}
+
+.countDown {
+  background: $primary-brand;
+  color: white;
+  display: inline-block;
+  min-width: rem(160px);
+  text-align: center;
+  padding: rem(7px);
+  border-radius: 2px;
 }

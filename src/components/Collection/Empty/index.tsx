@@ -18,6 +18,7 @@ import { ErrorMessage } from '@enums/error-message';
 import { WalletContext } from '@contexts/wallet-context';
 import Web3 from 'web3';
 import cs from 'classnames';
+import { checkIsBitcoinProject } from '@utils/generative';
 
 const LOG_PREFIX = 'Empty';
 
@@ -39,6 +40,11 @@ export const Empty = ({
     true
   );
   const [isMinting, setIsMinting] = useState(false);
+
+  const isBitcoinProject = useMemo((): boolean => {
+    if (!projectInfo) return false;
+    return checkIsBitcoinProject(projectInfo.tokenID);
+  }, [projectInfo]);
 
   const handleMintToken = async () => {
     try {
@@ -121,7 +127,7 @@ export const Empty = ({
             'Bring your unique vision to life. Mint your first NFT now'
           )}
         </div>
-        {projectInfo && !mintedOut && (
+        {!isBitcoinProject && projectInfo && !mintedOut && (
           <ButtonIcon
             onClick={handleMintToken}
             sizes="large"

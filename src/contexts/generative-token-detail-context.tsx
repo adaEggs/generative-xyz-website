@@ -48,6 +48,7 @@ import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import Web3 from 'web3';
 import useAsyncEffect from 'use-async-effect';
+import { checkIsBitcoinProject } from '@utils/generative';
 
 const LOG_PREFIX = 'GenerativeTokenDetailContext';
 
@@ -95,6 +96,7 @@ export interface IGenerativeTokenDetailContext {
   handleDepositToken: (_amount: string) => Promise<void>;
   handleWithdrawToken: (_amount: string) => Promise<void>;
   wethBalance: number | null;
+  isBitcoinProject: boolean;
 }
 
 const initialValue: IGenerativeTokenDetailContext = {
@@ -173,6 +175,7 @@ const initialValue: IGenerativeTokenDetailContext = {
   handleDepositToken: _ => new Promise(r => r()),
   handleWithdrawToken: _ => new Promise(r => r()),
   wethBalance: null,
+  isBitcoinProject: false,
 };
 
 export const GenerativeTokenDetailContext =
@@ -262,6 +265,11 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   const { tokenID } = router.query as {
     tokenID: string;
   };
+
+  const isBitcoinProject = useMemo((): boolean => {
+    if (!tokenData?.project) return false;
+    return checkIsBitcoinProject(tokenData?.project.tokenID);
+  }, [tokenData?.project]);
 
   const openListingModal = (): void => {
     setShowListingModal(true);
@@ -759,6 +767,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
       handleDepositToken,
       handleWithdrawToken,
       wethBalance,
+      isBitcoinProject,
     };
   }, [
     tokenData,
@@ -803,6 +812,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     handleDepositToken,
     handleWithdrawToken,
     wethBalance,
+    isBitcoinProject,
   ]);
 
   return (
