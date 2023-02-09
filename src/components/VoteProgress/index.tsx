@@ -4,6 +4,8 @@ import s from './styles.module.scss';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL, APP_TOKEN_SYMBOL } from '@constants/config';
 import Text from '@components/Text';
+import { formatCurrency } from '@utils/format';
+import Web3 from 'web3';
 
 type TVoteProgress = {
   stats?: ProposalVote;
@@ -24,7 +26,13 @@ const VoteProgress = ({ stats }: TVoteProgress) => {
         <div className={s.rightContent}>
           <SvgInset size={20} svgUrl={`${CDN_URL}/icons/ic-check-white.svg`} />
           <Text size="14" fontWeight="medium">
-            Yes {stats?.for} {APP_TOKEN_SYMBOL}
+            Yes{' '}
+            {formatCurrency(
+              Number(
+                Web3.utils.fromWei((stats?.for ?? '0').toString(), 'ether')
+              )
+            )}{' '}
+            {APP_TOKEN_SYMBOL}
           </Text>
         </div>
         <div className={s.leftContent}>
@@ -37,7 +45,13 @@ const VoteProgress = ({ stats }: TVoteProgress) => {
         <div className={s.rightContent}>
           <SvgInset size={20} svgUrl={`${CDN_URL}/icons/ic-x-white.svg`} />
           <Text size="14" fontWeight="medium">
-            No {stats?.for} {APP_TOKEN_SYMBOL}
+            No{' '}
+            {formatCurrency(
+              Number(
+                Web3.utils.fromWei((stats?.against ?? '0').toString(), 'ether')
+              )
+            )}{' '}
+            {APP_TOKEN_SYMBOL}
           </Text>
         </div>
         <div className={s.leftContent}>

@@ -10,7 +10,7 @@ import { EXTERNAL_LINK } from '@constants/external-link';
 import { WalletContext } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
 import useContractOperation from '@hooks/useContractOperation';
-import { Proposal } from '@interfaces/dao';
+import { Proposal, Vote } from '@interfaces/dao';
 import { getUserSelector } from '@redux/user/selector';
 import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
 import ExecuteProposalOperation from '@services/contract-operations/gen-dao/execute-proposal';
@@ -28,15 +28,18 @@ import CastVoteModal from '../CastVoteModal';
 import { ErrorMessage } from '@enums/error-message';
 import VoteProgress from '@components/VoteProgress';
 import dayjs from 'dayjs';
+import Web3 from 'web3';
 
 const LOG_PREFIX = 'CurrentResult';
 
 interface IProps {
   proposal: Proposal | null;
+  votes: Array<Vote>;
+  updateProposal: () => Promise<void>;
 }
 
 const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
-  const { proposal } = props;
+  const { proposal, votes, updateProposal } = props;
   const router = useRouter();
   const { connect } = useContext(WalletContext);
   const user = useSelector(getUserSelector);
@@ -75,6 +78,7 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
       if (tx) {
         toast.success('Your vote has been recorded.');
         setShowCastVoteModal(false);
+        updateProposal();
       } else {
         toast.error(ErrorMessage.DEFAULT);
       }
@@ -146,7 +150,9 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
       erc20TokenAddress: GEN_TOKEN_ADDRESS,
     });
     if (balance !== null) {
-      setGenBalance(balance);
+      setGenBalance(
+        parseFloat(Web3.utils.fromWei(balance.toString(), 'ether'))
+      );
     }
   }, [user]);
 
@@ -161,16 +167,19 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
       const seconds = (startBlock - currentBlock) * SECONDS_PER_BLOCK;
       const startAt = dayjs(proposal.createdAt).add(seconds, 'seconds');
       return `Start voting period at ${startAt.format('MMM DD YYYY HH:mm')}`;
-    }
-
-    if (proposal.state === ProposalState.Active) {
+    } else if (proposal.state === ProposalState.Active) {
       const seconds = (endBlock - currentBlock) * SECONDS_PER_BLOCK;
       const endAt = dayjs(proposal.createdAt).add(seconds, 'seconds');
       return `End voting period at ${endAt.format('MMM DD, YYYY HH:mm')}`;
+    } else {
+      return 'Voting period ended';
     }
-
-    return null;
   }, [proposal]);
+
+  const currentUserVote = useMemo((): Vote | undefined => {
+    if (!user) return undefined;
+    return votes.find((vote: Vote) => vote.voter === user.walletAddress);
+  }, [votes, user]);
 
   if (!proposal) {
     return <></>;
@@ -192,52 +201,74 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
           </Button>
         </>
       )}
-      {user && Number(genBalance) === 0 && (
-        <>
-          {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
-          <Button onClick={navigateToDocsPage} className={s.connectBtn}>
-            Earn GEN
-          </Button>
-          <div className={s.insufficientBalanceWrapper}>
-            <SvgInset
-              size={18}
-              svgUrl={`${CDN_URL}/icons/ic-wallet-24x24.svg`}
-            />
-            <span>Not enough GEN to vote</span>
-          </div>
-        </>
-      )}
 
-      {user && (
-        <>
-          <div className={s.currentVotingResultWrapper}>
+      <div className={s.currentVotingResultWrapper}>
+        {proposal.state > ProposalState.Pending && (
+          <div className={s.votingProgressWrapper}>
             <VoteProgress stats={proposal?.vote} />
-            {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
-            {genBalance > 0 && proposal.state === ProposalState.Active && (
+          </div>
+        )}
+        {proposalTime && <p className={s.startDate}>{proposalTime}</p>}
+        {user && (
+          <>
+            {currentUserVote && (
+              <p className={s.voteInfo}>
+                <span>You voted:</span>
+                <span
+                  className={cs(s.voteType, {
+                    [`${s.voteType__yes}`]: support === VoteType.FOR,
+                    [`${s.voteType__no}`]: support === VoteType.AGAINST,
+                  })}
+                >
+                  {VoteType[currentUserVote.support]}
+                </span>
+              </p>
+            )}
+            {genBalance > 0 &&
+              proposal.state === ProposalState.Active &&
+              !currentUserVote && (
+                <>
+                  <div className={s.choiceList}>
+                    <div
+                      onClick={() => handleChooseSupport(VoteType.FOR)}
+                      className={cs(s.choiceItem, {
+                        [`${s.choiceItem__active}`]: support === VoteType.FOR,
+                      })}
+                    >
+                      Yes
+                      <span className={s.checkmark}></span>
+                    </div>
+                    <div
+                      onClick={() => handleChooseSupport(VoteType.AGAINST)}
+                      className={cs(s.choiceItem, {
+                        [`${s.choiceItem__active}`]:
+                          support === VoteType.AGAINST,
+                      })}
+                    >
+                      No
+                      <span className={s.checkmark}></span>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={handleOpenVoteModal}
+                    className={s.connectBtn}
+                  >
+                    Cast your vote
+                  </Button>
+                </>
+              )}
+            {genBalance === 0 && !currentUserVote && (
               <>
-                <div className={s.choiceList}>
-                  <div
-                    onClick={() => handleChooseSupport(VoteType.FOR)}
-                    className={cs(s.choiceItem, {
-                      [`${s.choiceItem__active}`]: support === VoteType.FOR,
-                    })}
-                  >
-                    Yes
-                    <span className={s.checkmark}></span>
-                  </div>
-                  <div
-                    onClick={() => handleChooseSupport(VoteType.AGAINST)}
-                    className={cs(s.choiceItem, {
-                      [`${s.choiceItem__active}`]: support === VoteType.AGAINST,
-                    })}
-                  >
-                    No
-                    <span className={s.checkmark}></span>
-                  </div>
-                </div>
-                <Button onClick={handleOpenVoteModal} className={s.connectBtn}>
-                  Cast your vote
+                <Button onClick={navigateToDocsPage} className={s.connectBtn}>
+                  Earn GEN
                 </Button>
+                <div className={s.insufficientBalanceWrapper}>
+                  <SvgInset
+                    size={18}
+                    svgUrl={`${CDN_URL}/icons/ic-wallet-24x24.svg`}
+                  />
+                  <span>Not enough GEN to vote</span>
+                </div>
               </>
             )}
             {proposal.state === ProposalState.Succeeded && (
@@ -249,9 +280,10 @@ const CurrentResult: React.FC<IProps> = (props: IProps): React.ReactElement => {
                 {isExecuting ? 'Executing...' : 'Execute this proposal'}
               </Button>
             )}
-          </div>
-        </>
-      )}
+          </>
+        )}
+      </div>
+
       <CastVoteModal
         support={support}
         genBalance={genBalance}

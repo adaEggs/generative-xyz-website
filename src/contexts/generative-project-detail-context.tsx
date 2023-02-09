@@ -4,6 +4,7 @@ import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 import { setProjectCurrent } from '@redux/project/action';
 import { getProjectDetail, getProjectItems } from '@services/project';
+import { checkIsBitcoinProject } from '@utils/generative';
 import log from '@utils/logger';
 import { useRouter } from 'next/router';
 import React, {
@@ -56,6 +57,10 @@ export interface IGenerativeProjectDetailContext {
       to_price: string;
     }>
   >;
+  isShowMintBTCModal: boolean;
+  showMintBTCModal: () => void;
+  hideMintBTCModal: () => void;
+  isBitcoinProject: boolean;
 }
 
 const initialValue: IGenerativeProjectDetailContext = {
@@ -111,6 +116,14 @@ const initialValue: IGenerativeProjectDetailContext = {
   setFilterPrice: _ => {
     return;
   },
+  isShowMintBTCModal: false,
+  showMintBTCModal: () => {
+    return;
+  },
+  hideMintBTCModal: () => {
+    return;
+  },
+  isBitcoinProject: false,
 };
 
 export const GenerativeProjectDetailContext =
@@ -120,7 +133,6 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   children,
 }: PropsWithChildren): React.ReactElement => {
   const dispatch = useDispatch();
-
   const [projectData, setProjectData] = useState<Project | null>(null);
   const [listItems, setListItems] = useState<Token[] | null>(null);
   const [total, setTotal] = useState(0);
@@ -129,6 +141,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const [filterBuyNow, setFilterBuyNow] = useState(false);
   const [searchToken, setSearchToken] = useState('');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isShowMintBTCModal, setIsShowMintBTCModal] = useState<boolean>(false);
   const [isNextPageLoaded, setIsNextPageLoaded] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const [filterTraits, setFilterTraits] = useState('');
@@ -137,7 +150,6 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     from_price: '',
     to_price: '',
   });
-
   const router = useRouter();
   const { projectID } = router.query as {
     projectID: string;
@@ -145,6 +157,16 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
 
   const handleFetchNextPage = () => {
     setPage(prev => prev + 1);
+  };
+
+  const showMintBTCModal = () => {
+    document.body.style.overflow = 'hidden';
+    setIsShowMintBTCModal(true);
+  };
+
+  const hideMintBTCModal = () => {
+    document.body.style.overflow = 'auto';
+    setIsShowMintBTCModal(false);
   };
 
   const fetchProjectDetail = async (): Promise<void> => {
@@ -222,6 +244,11 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     filterPrice,
   ]);
 
+  const isBitcoinProject = useMemo((): boolean => {
+    if (!projectData) return false;
+    return checkIsBitcoinProject(projectData.tokenID);
+  }, [projectData]);
+
   const contextValues = useMemo((): IGenerativeProjectDetailContext => {
     return {
       projectData,
@@ -249,6 +276,10 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       setPage,
       filterPrice,
       setFilterPrice,
+      isShowMintBTCModal,
+      showMintBTCModal,
+      hideMintBTCModal,
+      isBitcoinProject,
     };
   }, [
     projectData,
@@ -276,6 +307,10 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     setPage,
     filterPrice,
     setFilterPrice,
+    isShowMintBTCModal,
+    showMintBTCModal,
+    hideMintBTCModal,
+    isBitcoinProject,
   ]);
 
   return (

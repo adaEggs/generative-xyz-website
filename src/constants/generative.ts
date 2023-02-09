@@ -1,0 +1,1 @@
+export const BITCOIN_PROJECT_FLOOR_ID = 1000000;

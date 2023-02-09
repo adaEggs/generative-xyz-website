@@ -88,10 +88,12 @@ export const Empty = ({
     }
   };
 
-  const mintedOut = useMemo(
-    () => projectInfo?.maxSupply === projectInfo?.mintingInfo.index,
-    [projectInfo?.maxSupply, projectInfo?.mintingInfo.index]
-  );
+  const mintedOut = useMemo(() => {
+    if (projectInfo) {
+      return projectInfo?.maxSupply === projectInfo?.mintingInfo.index;
+    }
+    return false;
+  }, [projectInfo?.maxSupply, projectInfo?.mintingInfo.index]);
 
   useEffect(() => {
     if (errorMessage) {
@@ -103,7 +105,7 @@ export const Empty = ({
 
   return (
     <div className={cs(s.empty, 'empty', className)}>
-      <div className={s.empty_inner}>
+      <div className={cs(s.empty_inner, mintedOut && s.minted_out)}>
         <div className={s.empty_thumb}>
           <img src={`${CDN_URL}/icons/ic-empty.svg`} alt="empty.svg" />
         </div>
