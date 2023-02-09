@@ -211,3 +211,14 @@
 .project_info {
   margin-bottom: rem(24px);
 }
+
+.countDown {
+  background: #f2f2f2;
+  color: $primary-brand;
+  display: inline-block;
+  min-width: rem(160px);
+  text-align: center;
+  padding: rem(7px);
+  border-radius: 2px;
+  margin-bottom: rem(24px);
+}

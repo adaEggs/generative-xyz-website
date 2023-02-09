@@ -44,7 +44,7 @@ type Props = {
 
 const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   const { getWalletBalance } = useContext(WalletContext);
-  const { aVailable } = useContext(BitcoinContext);
+  const { aVailable, countDown } = useContext(BitcoinContext);
   const { mobileScreen } = useWindowSize();
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
@@ -164,6 +164,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
           <Heading as="h4" fontWeight="medium">
             {project?.name}
           </Heading>
+
           <Text size={'18'} color={'black-60'} style={{ marginBottom: '10px' }}>
             <Link
               className={s.info_creatorLink}
@@ -229,6 +230,8 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
             </div>
           )}
 
+          {isBitcoinProject && <div className={s.countDown}>{countDown}</div>}
+
           {!isBitcoinProject && (
             <div className={s.stats}>
               <div className={s.stats_item}>
@@ -284,7 +287,8 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
               >
                 {project?.desc}
               </Text>
-              {project?.desc && checkLines(project.desc) > 7 && (
+              {((project?.desc && checkLines(project.desc) > 7) ||
+                isBitcoinProject) && (
                 <>
                   {!showMore ? (
                     <Text

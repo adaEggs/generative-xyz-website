@@ -32,31 +32,21 @@ const BenefitPage = (): JSX.Element => {
         <div className={s.benefit_rows}>
           <div className={s.benefit_rows_inner}>
             <ImageContent
-              heading={`An open generative art platform.`}
+              heading={`Everlasting artwork.`}
               imageUrl={`${CDN_URL}/images/BENEFIT-FOR-ARTIST1%201.png`}
             >
-              Generative is fully open and permissionless. Anyone, from an
-              anonymous to a well-known artist, has equal access to create and
-              monetize their artwork.
-              <br />
-              <br />
-              More than a marketplace for artists and collectors, Generative
-              incorporates community, governance, and a DAO treasury.
+              Storing your generative art on the Bitcoin blockchain means it
+              will last forever! Since the dawn of crypto, Bitcoin has always
+              reigned king.
             </ImageContent>
             <ImageContent
               right={true}
-              heading={`Co-own and co-operate.`}
+              heading={`20x more on-chain storage.`}
               imageUrl={`${CDN_URL}/images/BENEFIT-FOR-ARTIST2%201.png`}
             >
-              Artists are no longer just users, they become co-owners—helping to
-              build and shape the platform.
-              <br />
-              <br />A portion of the platform fees are trustlessly sent to the
-              Generative DAO treasury that’s controlled exclusively by the
-              community via governance— meaning a proposal can be created by
-              anyone. The community will vote to fund a new artist, hire a
-              curation board, organize an IRL exhibition, or do anything else to
-              promote the generative art movement.
+              {`Bitcoin’s 4Mb of on-chain storage is huge! No more worries about
+              reducing your file size, which means you can make your art as
+              unique and sophisticated as you want.`}
             </ImageContent>
             <ImageContent
               heading={`Most popular libraries are supported.`}
