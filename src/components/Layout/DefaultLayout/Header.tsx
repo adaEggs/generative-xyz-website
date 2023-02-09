@@ -1,16 +1,16 @@
-import styles from './Header.module.scss';
 import Button from '@components/ButtonIcon';
 import Link from '@components/Link';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
-import React, { useContext, useState } from 'react';
-import { Container, Stack } from 'react-bootstrap';
-import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress } from '@utils/format';
 import { isProduction } from '@utils/common';
+import { formatAddress } from '@utils/format';
+import log from '@utils/logger';
+import React, { useContext, useState } from 'react';
+import { Container, Stack } from 'react-bootstrap';
+import styles from './Header.module.scss';
 
 const LOG_PREFIX = 'Header';
 
