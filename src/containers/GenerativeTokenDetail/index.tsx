@@ -202,7 +202,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             {isBitcoinProject && (
               <a
                 target="_blank"
-                href={`https://ordinals-explorer.generative.xyz/inscription/${tokenData?.tokenID}`}
+                href={`https://ordinals.com/inscription/${tokenData?.tokenID}`}
                 rel="noreferrer"
               >
                 Explorer

@@ -9,6 +9,8 @@
     border-radius: 2px;
     transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
     height: 100%;
+    position: relative;
+    overflow: hidden;
 
     @include mobile {
       padding: rem(8px);
@@ -139,4 +141,57 @@
   width: 100%;
   height: rem(30);
   margin-top: rem(5);
+}
+
+.ordinalsLinks {
+  display: flex;
+  justify-content: space-between;
+  background: #fff2f4;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  @include min-pc {
+    transform: translateY(101%);
+    transition: transform 0.4s;
+  }
+
+  li {
+    flex: 1;
+  }
+
+  a {
+    display: block;
+    padding: rem(20px);
+    text-align: center;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .inscription {
+    background: $primary-brand;
+    color: $white;
+
+    &:hover {
+      color: $white;
+    }
+  }
+
+  .content {
+    color: $primary-brand;
+
+    &:hover {
+      color: $primary-brand;
+    }
+  }
+}
+
+.collectionCard:hover {
+  .ordinalsLinks {
+    transform: translateY(0);
+  }
 }

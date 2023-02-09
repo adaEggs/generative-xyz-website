@@ -82,15 +82,13 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                   {project.name}
                 </Text>
               </div>
-              {!isBitcoinProject && (
-                <ProgressBar
-                  size={'small'}
-                  current={
-                    project.mintingInfo.index + project.mintingInfo.indexReserve
-                  }
-                  total={project.limit}
-                />
-              )}
+              <ProgressBar
+                size={'small'}
+                current={
+                  project.mintingInfo.index + project.mintingInfo.indexReserve
+                }
+                total={project.limit}
+              />
             </div>
           ) : (
             <div className={cs(s.projectCard_info, s.desktop)}>
@@ -100,15 +98,13 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 </Heading>
               </div>
               {creator && <CreatorInfo creator={creatorMemo} />}
-              {!isBitcoinProject && (
-                <ProgressBar
-                  size={'small'}
-                  current={
-                    project.mintingInfo.index + project.mintingInfo.indexReserve
-                  }
-                  total={project.limit}
-                />
-              )}
+              <ProgressBar
+                size={'small'}
+                current={
+                  project.mintingInfo.index + project.mintingInfo.indexReserve
+                }
+                total={project.limit}
+              />
             </div>
           )}
         </div>
