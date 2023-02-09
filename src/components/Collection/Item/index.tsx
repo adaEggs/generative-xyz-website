@@ -18,7 +18,7 @@ import { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import { router } from 'next/client';
+import { useRouter } from 'next/router';
 
 const CollectionItem = ({
   data,
@@ -36,6 +36,7 @@ const CollectionItem = ({
   const { isBitcoinProject } = useContext(GenerativeProjectDetailContext);
 
   const [thumb, setThumb] = useState<string>(data.image);
+  const router = useRouter();
 
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
