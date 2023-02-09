@@ -48,11 +48,13 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     listingPrice,
     listingOffers,
     isTokenOwner,
+    isBitcoinProject,
   } = useContext(GenerativeTokenDetailContext);
   // const scanURL = getScanUrl();
   const user = useSelector(getUserSelector);
   const mintedDate = dayjs(tokenData?.mintedTime).format('MMM DD, YYYY');
   const [isBuying, setIsBuying] = useState(false);
+
   // const tokenInfos = [
   //   {
   //     id: 'contract-address',
@@ -159,10 +161,18 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             <Loading isLoaded={!!tokenData} className={s.loading_token} />
             <Heading
               as="h4"
+              className={s.itemInfo_heading}
               fontWeight="medium"
               style={{ marginBottom: '20px' }}
             >
-              #{formatTokenId(tokenData?.tokenID || '')}
+              <span
+                title={`#${formatTokenId(
+                  tokenData?.tokenID || '',
+                  !isBitcoinProject
+                )}`}
+              >
+                #{formatTokenId(tokenData?.tokenID || '', !isBitcoinProject)}
+              </span>
             </Heading>
             <Heading as="h6" fontWeight="medium">
               <Link
@@ -188,130 +198,133 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               </Link>
             </Text>
             {mobileScreen && <ThumbnailPreview data={tokenData} previewToken />}
-            <div className={s.prices}>
-              {isTokenListing && (
-                <div>
-                  <Text size="12" fontWeight="medium" color="black-40">
-                    Price
-                  </Text>
-                  <Heading as="h6" fontWeight="medium">
-                    Ξ {listingPrice}
-                  </Heading>
-                </div>
-              )}
+            {!isBitcoinProject && (
+              <>
+                <div className={s.prices}>
+                  {isTokenListing && (
+                    <div>
+                      <Text size="12" fontWeight="medium" color="black-40">
+                        Price
+                      </Text>
+                      <Heading as="h6" fontWeight="medium">
+                        Ξ {listingPrice}
+                      </Heading>
+                    </div>
+                  )}
 
-              <div>
-                <Text size="12" fontWeight="medium" color="black-40">
-                  Royalty
-                </Text>
-                <Heading as="h6" fontWeight="medium">
-                  {(tokenData?.project?.royalty || 0) / 100}%
-                </Heading>
-              </div>
-            </div>
-            <div className={s.CTA_btn}>
-              {/* Due to owner and status of this token to render appropriate action */}
-              {isTokenOwner && !isTokenListing && (
-                <ButtonIcon
-                  disabled={!tokenData}
-                  onClick={handleOpenListingTokenModal}
-                >
-                  List for sale
-                </ButtonIcon>
-              )}
-              {isTokenOwner && isTokenListing && (
-                <ButtonIcon
-                  disabled={!tokenData}
-                  onClick={handleOpenCancelListingTokenModal}
-                >
-                  Cancel listing
-                </ButtonIcon>
-              )}
-              {isTokenOwner && (
-                <ButtonIcon
-                  onClick={handleOpenTransferTokenModal}
-                  disabled={!tokenData}
-                  variants="outline"
-                >
-                  Transfer
-                </ButtonIcon>
-              )}
-              {!isTokenOwner && isTokenListing && (
-                <>
-                  <ButtonIcon
-                    disabled={!listingOffers.length || isBuying}
-                    onClick={handleBuyToken}
-                  >
-                    Buy
-                  </ButtonIcon>
-                </>
-              )}
-              {!isTokenOwner && (
-                <ButtonIcon
-                  onClick={handleOpenMakeOfferModal}
-                  disabled={!tokenData}
-                  variants="outline"
-                >
-                  Make offer
-                </ButtonIcon>
-              )}
-            </div>
-            <div className={s.accordions}>
-              <div className={s.accordions_item}>
-                <Text
-                  size="14"
-                  color="black-40"
-                  fontWeight="medium"
-                  className="text-uppercase"
-                >
-                  description
-                </Text>
-                <Text
-                  size="18"
-                  className={s.token_description}
-                  style={{ WebkitLineClamp: showMore ? 'unset' : '3' }}
-                >
-                  {tokenDescription}
-                </Text>
-                {checkLines(tokenDescription) > 3 && (
-                  <>
-                    {!showMore ? (
-                      <Text
-                        as="span"
-                        onClick={() => setShowMore(!showMore)}
-                        size="18"
-                        fontWeight="semibold"
+                  <div>
+                    <Text size="12" fontWeight="medium" color="black-40">
+                      Royalty
+                    </Text>
+                    <Heading as="h6" fontWeight="medium">
+                      {(tokenData?.project?.royalty || 0) / 100}%
+                    </Heading>
+                  </div>
+                </div>
+                <div className={s.CTA_btn}>
+                  {/* Due to owner and status of this token to render appropriate action */}
+                  {isTokenOwner && !isTokenListing && (
+                    <ButtonIcon
+                      disabled={!tokenData}
+                      onClick={handleOpenListingTokenModal}
+                    >
+                      List for sale
+                    </ButtonIcon>
+                  )}
+                  {isTokenOwner && isTokenListing && (
+                    <ButtonIcon
+                      disabled={!tokenData}
+                      onClick={handleOpenCancelListingTokenModal}
+                    >
+                      Cancel listing
+                    </ButtonIcon>
+                  )}
+                  {isTokenOwner && (
+                    <ButtonIcon
+                      onClick={handleOpenTransferTokenModal}
+                      disabled={!tokenData}
+                      variants="outline"
+                    >
+                      Transfer
+                    </ButtonIcon>
+                  )}
+                  {!isTokenOwner && isTokenListing && (
+                    <>
+                      <ButtonIcon
+                        disabled={!listingOffers.length || isBuying}
+                        onClick={handleBuyToken}
                       >
-                        See more
-                      </Text>
-                    ) : (
-                      <Text
-                        as="span"
-                        onClick={() => setShowMore(!showMore)}
-                        size="18"
-                        fontWeight="semibold"
-                      >
-                        See less
-                      </Text>
+                        Buy
+                      </ButtonIcon>
+                    </>
+                  )}
+                  {!isTokenOwner && (
+                    <ButtonIcon
+                      onClick={handleOpenMakeOfferModal}
+                      disabled={!tokenData}
+                      variants="outline"
+                    >
+                      Make offer
+                    </ButtonIcon>
+                  )}
+                </div>
+                <div className={s.accordions}>
+                  <div className={s.accordions_item}>
+                    <Text
+                      size="14"
+                      color="black-40"
+                      fontWeight="medium"
+                      className="text-uppercase"
+                    >
+                      description
+                    </Text>
+                    <Text
+                      size="18"
+                      className={s.token_description}
+                      style={{ WebkitLineClamp: showMore ? 'unset' : '3' }}
+                    >
+                      {tokenDescription}
+                    </Text>
+                    {checkLines(tokenDescription) > 3 && (
+                      <>
+                        {!showMore ? (
+                          <Text
+                            as="span"
+                            onClick={() => setShowMore(!showMore)}
+                            size="18"
+                            fontWeight="semibold"
+                          >
+                            See more
+                          </Text>
+                        ) : (
+                          <Text
+                            as="span"
+                            onClick={() => setShowMore(!showMore)}
+                            size="18"
+                            fontWeight="semibold"
+                          >
+                            See less
+                          </Text>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </div>
-              {tokenData?.attributes && tokenData?.attributes?.length > 0 && (
-                <div className={s.accordions_item}>
-                  <Text
-                    size="14"
-                    color="black-40"
-                    fontWeight="medium"
-                    className="text-uppercase"
-                  >
-                    features
-                  </Text>
-                  <Stats data={featuresList()} />
-                </div>
-              )}
+                  </div>
+                  {tokenData?.attributes &&
+                    tokenData?.attributes?.length > 0 && (
+                      <div className={s.accordions_item}>
+                        <Text
+                          size="14"
+                          color="black-40"
+                          fontWeight="medium"
+                          className="text-uppercase"
+                        >
+                          features
+                        </Text>
+                        <Stats data={featuresList()} />
+                      </div>
+                    )}
 
-              {/* <div className={s.accordions_item}>
+                  {/* <div className={s.accordions_item}>
                 <Text
                   size="14"
                   color="black-40"
@@ -322,22 +335,26 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 </Text>
                 <Stats data={tokenInfos} />
               </div> */}
-            </div>
-            <Text size="14" color="black-40">
-              Minted on: {mintedDate}
-            </Text>
-            <Text size="14" color="black-40" className={s.owner}>
-              Owner:{' '}
-              <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
-                {tokenData?.owner?.displayName ||
-                  formatAddress(
-                    tokenData?.ownerAddr ||
-                      tokenData?.owner?.walletAddress ||
-                      ''
-                  )}
-              </Link>
-              {isTokenOwner && ' (by you)'}
-            </Text>
+                </div>
+                <Text size="14" color="black-40">
+                  Minted on: {mintedDate}
+                </Text>
+                <Text size="14" color="black-40" className={s.owner}>
+                  Owner:{' '}
+                  <Link
+                    href={handleLinkProfile(tokenData?.owner?.walletAddress)}
+                  >
+                    {tokenData?.owner?.displayName ||
+                      formatAddress(
+                        tokenData?.ownerAddr ||
+                          tokenData?.owner?.walletAddress ||
+                          ''
+                      )}
+                  </Link>
+                  {isTokenOwner && ' (by you)'}
+                </Text>
+              </>
+            )}
           </div>
           <div></div>
           {!mobileScreen && (

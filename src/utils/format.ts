@@ -54,8 +54,8 @@ export const getProjectIdFromTokenId = (tokenId: number): number => {
   return Math.floor(tokenId / 1000000);
 };
 
-export const formatTokenId = (tokenId: string): string => {
-  const id = Number(tokenId) % 1000000;
+export const formatTokenId = (tokenId: string, isNumber = true): string => {
+  const id = isNumber ? Number(tokenId) % 1000000 : tokenId;
   return id.toString();
 };
 
