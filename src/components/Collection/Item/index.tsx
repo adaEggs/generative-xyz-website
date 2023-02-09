@@ -18,6 +18,7 @@ import cs from 'classnames';
 import { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 
 const CollectionItem = ({
   data,
@@ -26,9 +27,13 @@ const CollectionItem = ({
   data: Token;
   className?: string;
 }) => {
-  const tokenID = useMemo(() => data.name.split('#')[1], [data.name]);
+  const tokenID = useMemo(
+    () => data.name.split('#')[1] || data.name,
+    [data.name]
+  );
   const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
+  const { isBitcoinProject } = useContext(GenerativeProjectDetailContext);
 
   const [thumb, setThumb] = useState<string>(data.image);
 
@@ -72,7 +77,7 @@ const CollectionItem = ({
                 >
                   {data?.project?.name}
                 </span>{' '}
-                #{formatTokenId(tokenID)}
+                #{formatTokenId(tokenID, !isBitcoinProject)}
               </Text>
 
               <Text size="14" fontWeight="bold">
@@ -110,7 +115,7 @@ const CollectionItem = ({
                     </span>
                   )}
 
-                  <span>#{formatTokenId(tokenID)}</span>
+                  <span>#{formatTokenId(tokenID, !isBitcoinProject)}</span>
                 </Heading>
                 {!!data.stats?.price && (
                   <Stack
