@@ -43,9 +43,11 @@ const CollectionItem = ({
 
   return (
     <Link
-      href={`${ROUTE_PATH.GENERATIVE}/${getProjectIdFromTokenId(
-        parseInt(tokenID)
-      )}/${tokenID}`}
+      href={`${ROUTE_PATH.GENERATIVE}/${
+        isBitcoinProject
+          ? data.project.tokenID
+          : getProjectIdFromTokenId(parseInt(tokenID))
+      }/${tokenID}`}
       className={`${s.collectionCard} ${className}`}
     >
       <div className={s.collectionCard_inner}>

@@ -206,21 +206,21 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
                       <div className={s.actionWrapper}>
                         <Button
                           type="button"
-                          variants="ghost"
+                          // variants="ghost"
                           onClick={hideMintBTCModal}
                           className={s.cancelBtn}
                         >
                           Never mind
                         </Button>
-                        <Button
-                          disabled={!receiverAddress || isMinting}
-                          type="submit"
-                          className={s.submitBtn}
-                        >
-                          {isMinting
-                            ? 'Processing...'
-                            : 'Transaction completed'}
-                        </Button>
+                        {/*<Button*/}
+                        {/*  disabled={!receiverAddress || isMinting}*/}
+                        {/*  type="submit"*/}
+                        {/*  className={s.submitBtn}*/}
+                        {/*>*/}
+                        {/*  {isMinting*/}
+                        {/*    ? 'Processing...'*/}
+                        {/*    : 'Transaction completed'}*/}
+                        {/*</Button>*/}
                       </div>
                     </form>
                   )}
