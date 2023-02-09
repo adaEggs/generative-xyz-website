@@ -174,6 +174,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 #{formatTokenId(tokenData?.tokenID || '', !isBitcoinProject)}
               </span>
             </Heading>
+
             <Heading as="h6" fontWeight="medium">
               <Link
                 href={`${ROUTE_PATH.GENERATIVE}/${projectID}`}
@@ -182,6 +183,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 {tokenData?.project.name}
               </Link>
             </Heading>
+
             <Text
               size={'18'}
               color={'black-60'}
@@ -197,6 +199,16 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   )}
               </Link>
             </Text>
+            {isBitcoinProject && (
+              <a
+                target="_blank"
+                href={`https://ordinals.com/inscription/${tokenData?.tokenID}`}
+                rel="noreferrer"
+              >
+                Explorer
+              </a>
+            )}
+
             {mobileScreen && <ThumbnailPreview data={tokenData} previewToken />}
             {!isBitcoinProject && (
               <>

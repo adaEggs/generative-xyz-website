@@ -1,6 +1,5 @@
 import { CreatorInfo } from '@components/CreatorInfo';
 import Heading from '@components/Heading';
-import Link from '@components/Link';
 import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
@@ -19,6 +18,7 @@ import { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import { useRouter } from 'next/router';
 
 const CollectionItem = ({
   data,
@@ -36,20 +36,25 @@ const CollectionItem = ({
   const { isBitcoinProject } = useContext(GenerativeProjectDetailContext);
 
   const [thumb, setThumb] = useState<string>(data.image);
+  const router = useRouter();
 
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
 
-  return (
-    <Link
-      href={`${ROUTE_PATH.GENERATIVE}/${
+  const clickDetail = () => {
+    if (isBitcoinProject) return;
+    router.push(
+      `${ROUTE_PATH.GENERATIVE}/${
         isBitcoinProject
           ? data.project.tokenID
           : getProjectIdFromTokenId(parseInt(tokenID))
-      }/${tokenID}`}
-      className={`${s.collectionCard} ${className}`}
-    >
+      }/${tokenID}`
+    );
+  };
+
+  return (
+    <div onClick={clickDetail} className={`${s.collectionCard} ${className}`}>
       <div className={s.collectionCard_inner}>
         <div
           className={`${s.collectionCard_thumb} ${
@@ -79,7 +84,9 @@ const CollectionItem = ({
                 >
                   {data?.project?.name}
                 </span>{' '}
-                #{formatTokenId(tokenID, !isBitcoinProject)}
+                <span className={s.textOverflow}>
+                  #{formatTokenId(tokenID, !isBitcoinProject)}
+                </span>
               </Text>
 
               <Text size="14" fontWeight="bold">
@@ -131,8 +138,28 @@ const CollectionItem = ({
             </div>
           </div>
         )}
+        {isBitcoinProject && (
+          <ul className={s.ordinalsLinks}>
+            <li>
+              <a
+                className={s.inscription}
+                href={`https://ordinals.com/inscription/${tokenID}`}
+              >
+                Inscription
+              </a>
+            </li>
+            <li>
+              <a
+                className={s.content}
+                href={`https://ordinals.com/content/${tokenID}`}
+              >
+                Content
+              </a>
+            </li>
+          </ul>
+        )}
       </div>
-    </Link>
+    </div>
   );
 };
 
