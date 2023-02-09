@@ -24,7 +24,15 @@
   }
 
   .modalBody {
-    padding: rem(48px);
+    padding: rem(24px) rem(16px);
+
+    @include tablet {
+      padding: rem(32px) rem(24px);
+    }
+
+    @include min-pc {
+      padding: rem(48px);
+    }
 
     button {
       width: 100%;
