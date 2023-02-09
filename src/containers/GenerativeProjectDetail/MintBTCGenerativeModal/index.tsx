@@ -5,12 +5,16 @@ import { GenerativeProjectDetailContext } from '@contexts/generative-project-det
 import React, { useCallback, useContext, useState } from 'react';
 import { Formik } from 'formik';
 import s from './styles.module.scss';
-import Web3 from 'web3';
+// import Web3 from 'web3';
 import QRCodeGenerator from '@components/QRCodeGenerator';
-import { generateReceiverAddress, mintBTCGenerative } from '@services/btc';
+import {
+  covertPriceToBTC,
+  generateReceiverAddress,
+  mintBTCGenerative,
+} from '@services/btc';
 import { Loading } from '@components/Loading';
 import _debounce from 'lodash/debounce';
-import { validateBTCWalletAddres } from '@utils/validate';
+import { validateBTCWalletAddress } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
@@ -41,9 +45,9 @@ const MintBTCGenerativeModal: React.FC = (): React.ReactElement => {
         walletAddress,
         projectID: projectData.tokenID,
       });
+
       setReceiverAddress(address);
-      // TODO Remove Hardcode
-      setPrice('1000000000000000000');
+      setPrice(projectData?.mintPrice);
     } catch (err: unknown) {
       setReceiverAddress(null);
     } finally {
@@ -61,7 +65,7 @@ const MintBTCGenerativeModal: React.FC = (): React.ReactElement => {
 
     if (!values.address) {
       errors.address = 'Wallet address is required.';
-    } else if (!validateBTCWalletAddres(values.address)) {
+    } else if (!validateBTCWalletAddress(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
       debounceGetBTCAddress(values.address);
@@ -167,10 +171,7 @@ const MintBTCGenerativeModal: React.FC = (): React.ReactElement => {
                                 type="number"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={Web3.utils.fromWei(
-                                  price.toString(),
-                                  'ether'
-                                )}
+                                value={covertPriceToBTC(Number(price))}
                                 className={s.input}
                               />
                               <div className={s.inputPostfix}>BTC</div>

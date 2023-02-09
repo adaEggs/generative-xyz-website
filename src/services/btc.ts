@@ -41,3 +41,7 @@ export const mintBTCGenerative = async (
     throw Error('Failed to mint btc generative');
   }
 };
+
+export const covertPriceToBTC = (price: number): string => {
+  return (Number(price) / 1e8).toString();
+};

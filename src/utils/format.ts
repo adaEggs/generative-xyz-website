@@ -11,7 +11,11 @@ export const base64ToUtf8 = (str: string): string => {
   if (!isBrowser()) {
     return '';
   }
-  return decodeURIComponent(escape(window.atob(str)));
+  try {
+    return decodeURIComponent(escape(window.atob(str)));
+  } catch (e) {
+    return '';
+  }
 };
 
 export const escapeSpecialChars = (str: string): string => {
