@@ -34,10 +34,10 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const validateForm = (values: IPostMarketplaceBtcListNFTParams) => {
     const errors: Record<string, string> = {};
 
-    if (!values.walletAddress) {
-      errors.address = 'Wallet address is required.';
-    } else if (!validateBTCWalletAddress(values.walletAddress)) {
-      errors.address = 'Invalid wallet address.';
+    if (!values.receiveAddress) {
+      errors.receiveAddress = 'Wallet address is required.';
+    } else if (!validateBTCWalletAddress(values.receiveAddress)) {
+      errors.receiveAddress = 'Invalid wallet address.';
     }
     if (!values.price) {
       errors.price = 'Price is required.';
@@ -109,7 +109,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         name: '',
                         description: '',
                         price: '',
-                        walletAddress: '',
+                        receiveAddress: '',
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}
@@ -204,27 +204,28 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                             )}
                           </div>
                           <div className={s.formItem}>
-                            <label className={s.label} htmlFor="walletAddress">
+                            <label className={s.label} htmlFor="receiveAddress">
                               Transfer BTC to{' '}
                               <sup className={s.requiredTag}>*</sup>
                             </label>
                             <div className={s.inputContainer}>
                               <input
-                                id="walletAddress"
+                                id="receiveAddress"
                                 type="address"
-                                name="walletAddress"
+                                name="receiveAddress"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.walletAddress}
+                                value={values.receiveAddress}
                                 className={s.input}
-                                placeholder="Paste your BTC Ordinal wallet address here"
+                                placeholder="Paste your BTC wallet address here"
                               />
                             </div>
-                            {errors.walletAddress && touched.walletAddress && (
-                              <p className={s.inputError}>
-                                {errors.walletAddress}
-                              </p>
-                            )}
+                            {errors.receiveAddress &&
+                              touched.receiveAddress && (
+                                <p className={s.inputError}>
+                                  {errors.receiveAddress}
+                                </p>
+                              )}
                           </div>
                           {isLoading && (
                             <div className={s.loadingWrapper}>

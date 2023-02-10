@@ -11,6 +11,10 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
+import BigNumber from 'bignumber.js';
+import { submitAddressBuyBTC } from '@services/marketplace-btc';
+import ButtonIcon from '@components/ButtonIcon';
+import Text from '@components/Text';
 
 interface IFormValue {
   address: string;
@@ -18,14 +22,24 @@ interface IFormValue {
 interface IProps {
   showModal: boolean;
   onClose: () => void;
+  inscriptionID: string;
+  price: number;
+  orderID: string;
 }
 
 const LOG_PREFIX = 'BuyModal';
 
-const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
+const ListForSaleModal = ({
+  showModal,
+  onClose,
+  price,
+  inscriptionID,
+  orderID,
+}: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
+  const [receiveAddress, setReceiveAddress] = useState('');
   const [step, setsTep] = useState<'info' | 'pasteAddress' | 'showAddress'>(
-    'info'
+    'pasteAddress'
   );
 
   const validateForm = (values: IFormValue) => {
@@ -42,16 +56,28 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const handleSubmit = async (_data: IFormValue) => {
     try {
       setIsLoading(true);
-      // todo: call api
-      // console.log(data);
-
-      setsTep('showAddress');
+      const data = await submitAddressBuyBTC({
+        walletAddress: _data.address,
+        inscriptionID,
+        orderID,
+      });
+      if (data?.receiveAddress) {
+        setReceiveAddress(data.receiveAddress);
+        setsTep('showAddress');
+      }
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       toast.error(ErrorMessage.DEFAULT);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleClose = () => {
+    setsTep('pasteAddress');
+    setIsLoading(false);
+    setReceiveAddress('');
+    onClose();
   };
 
   if (!showModal) {
@@ -65,12 +91,10 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
           <div className={s.modalContainer}>
             <div className={s.modalHeader}>
               <Button
-                onClick={() => {
-                  setsTep('info');
-                  onClose();
-                }}
+                onClick={handleClose}
                 className={s.closeBtn}
                 variants="ghost"
+                type="button"
               >
                 <SvgInset
                   className={s.closeIcon}
@@ -79,37 +103,15 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
               </Button>
             </div>
             <div className={s.modalBody}>
-              {step === 'info' && (
-                <div>
-                  <h3 className={s.modalTitle}>Setup BTC wallet address</h3>
-                  <div className={s.info_guild}>
-                    Please follow this step-by-step{' '}
-                    <span
-                      style={{ textDecoration: 'underline', cursor: 'pointer' }}
-                    >
-                      guide
-                    </span>{' '}
-                    to create an ord compatible wallet with Sparrow Wallet in
-                    order to receive ordinals and inscriptions.
-                    <div style={{ marginTop: 8 }}>
-                      Disregard this step if you have already set it up.
-                    </div>
-                  </div>
-                  <div className={s.ctas}>
-                    <Button
-                      type="submit"
-                      variants={'ghost'}
-                      className={s.submitBtn}
-                      onClick={() => setsTep('pasteAddress')}
-                    >
-                      Next
-                    </Button>
-                  </div>
-                </div>
-              )}
-              {step === 'pasteAddress' && (
+              {(step === 'pasteAddress' || step === 'showAddress') && (
                 <>
                   <h3 className={s.modalTitle}>Buy NFT</h3>
+                  <div className={s.alert_info}>
+                    Do not spend any satoshis from this wallet unless you
+                    understand what you are doing. If you ignore this warning,
+                    you could inadvertently lose access to your ordinals and
+                    inscriptions.
+                  </div>
                   <div className={s.formWrapper}>
                     <div className={s.formWrapper}>
                       <Formik
@@ -161,7 +163,9 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                   name="price"
                                   onChange={handleChange}
                                   onBlur={handleBlur}
-                                  value="0.1"
+                                  value={new BigNumber(price)
+                                    .div(1e8)
+                                    .toString()}
                                   className={s.input}
                                   disabled={true}
                                   placeholder="Paste your price here"
@@ -174,17 +178,18 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 <Loading isLoaded={false} />
                               </div>
                             )}
-
-                            <div className={s.ctas}>
-                              <Button
-                                type="submit"
-                                variants={'ghost'}
-                                className={s.submitBtn}
-                                disabled={isLoading}
-                              >
-                                Next
-                              </Button>
-                            </div>
+                            {step === 'pasteAddress' && (
+                              <div className={s.ctas}>
+                                <Button
+                                  type="submit"
+                                  variants={'ghost'}
+                                  className={s.submitBtn}
+                                  disabled={isLoading}
+                                >
+                                  Generate deposit address
+                                </Button>
+                              </div>
+                            )}
                           </form>
                         )}
                       </Formik>
@@ -194,8 +199,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
               )}
               {step === 'showAddress' && (
                 <>
-                  <h3 className={s.modalTitle}>Buy NFT</h3>
-                  <div className={s.formWrapper}>
+                  <div className={s.formWrapper} style={{ marginTop: 24 }}>
                     <div className={s.qrCodeWrapper}>
                       {/* <p className={s.qrTitle}>
                         Send NFT to this deposit address
@@ -203,15 +207,22 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                       <QRCodeGenerator
                         className={s.qrCodeGenerator}
                         size={128}
-                        value={'1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'}
+                        value={receiveAddress || ''}
                       />
                       <p className={s.sendBtcDesc}>
                         Send BTC to this deposit address
                       </p>
-                      <p className={s.btcAddress}>
-                        {'1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'}
-                      </p>
+                      <p className={s.btcAddress}>{receiveAddress || ''}</p>
                     </div>
+                    <ButtonIcon
+                      sizes="large"
+                      className={s.buyBtn}
+                      onClick={handleClose}
+                    >
+                      <Text as="span" size="14" fontWeight="medium">
+                        Already Deposited
+                      </Text>
+                    </ButtonIcon>
                   </div>
                 </>
               )}
