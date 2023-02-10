@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState, useMemo } from 'react';
 
 const useCountDown = (
   openMintUnixTimestamp = 0,
@@ -79,7 +79,14 @@ const useCountDown = (
     };
   }, [openMintUnixTimestamp, closeMintUnixTimestamp]);
 
-  return { available, countDown };
+  const availableMemo = useMemo((): boolean => {
+    return available;
+  }, [available]);
+  const countDownMemo = useMemo((): string => {
+    return countDown;
+  }, [countDown]);
+
+  return { available: availableMemo, countDown: countDownMemo };
 };
 
 export default useCountDown;

@@ -63,12 +63,14 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
           }`}
         >
-          <img
-            onError={onThumbError}
-            src={convertIpfsToHttp(thumb)}
-            alt={project.name}
-            loading={'lazy'}
-          />
+          <div className={s.projectCard_thumb_inner}>
+            <img
+              onError={onThumbError}
+              src={convertIpfsToHttp(thumb)}
+              alt={project.name}
+              loading={'lazy'}
+            />
+          </div>
         </div>
         <div className={s.projectCard_inner_info}>
           {isBitcoinProject && countDown !== '' && (

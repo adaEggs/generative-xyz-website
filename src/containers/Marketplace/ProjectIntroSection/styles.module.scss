@@ -19,6 +19,8 @@
     position: relative;
 
     @include fullViewScreen;
+
+    border-right: 1px solid #b6b6b6;
   }
 
   &::-webkit-scrollbar {
@@ -221,12 +223,22 @@
 }
 
 .countDown {
-  background: #f2f2f2;
-  color: $primary-brand;
+  background: #00aa6c;
+  color: white;
   display: inline-block;
   min-width: rem(160px);
   text-align: center;
-  padding: rem(7px);
+  padding: rem(10px);
   border-radius: 2px;
   margin-bottom: rem(24px);
+  line-height: (28/18);
+
+  @include calcFontAuto(16px, 18px);
+
+  width: 100%;
+}
+
+.shares {
+  display: flex;
+  gap: rem(8px);
 }

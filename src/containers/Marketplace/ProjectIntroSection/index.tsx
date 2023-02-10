@@ -39,6 +39,8 @@ import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
 import MarkdownPreview from '@components/MarkdownPreview';
 import useCountDown from '@hooks/useCountDown';
+import LinkShare from '@components/LinkShare';
+import TwitterShare from '@components/TwitterShare';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -150,6 +152,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
     project?.openMintUnixTimestamp || 0,
     project?.closeMintUnixTimestamp || 0
   );
+
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -164,6 +167,10 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
     if (isProjectDetailPage) {
       return (
         <div className={s.info}>
+          {isBitcoinProject && countDown !== '' && (
+            <div className={s.countDown}>{countDown}</div>
+          )}
+
           <Heading as="h4" fontWeight="medium">
             {project?.name}
           </Heading>
@@ -183,14 +190,13 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
             </div>
           )}
 
-          {!isBitcoinProject &&
-            project?.mintingInfo.index !== project?.maxSupply && (
-              <ProgressBar
-                current={project?.mintingInfo?.index}
-                total={project?.maxSupply}
-                className={s.progressBar}
-              />
-            )}
+          {project?.mintingInfo.index !== project?.maxSupply && (
+            <ProgressBar
+              current={project?.mintingInfo?.index}
+              total={project?.maxSupply}
+              className={s.progressBar}
+            />
+          )}
 
           {project?.status && (
             <div className={s.CTA}>
@@ -229,10 +235,6 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 </ButtonIcon>
               )}
             </div>
-          )}
-
-          {isBitcoinProject && countDown !== '' && (
-            <div className={s.countDown}>{countDown}</div>
           )}
 
           {!isBitcoinProject && (
@@ -315,26 +317,36 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 </>
               )}
             </div>
-            {!isBitcoinProject && (
-              <>
-                <Text size="14" color="black-40">
-                  Created date: {mintedDate}
-                </Text>
-                <Text size="14" color="black-40" className={s.project_owner}>
-                  Collected by:{' '}
-                  {project?.stats?.uniqueOwnerCount === 1
-                    ? `${project?.stats?.uniqueOwnerCount} owner`
-                    : `${project?.stats?.uniqueOwnerCount}+ owners`}
-                  {/* </Text> */}
-                </Text>
-              </>
-            )}
+            <>
+              <Text size="14" color="black-40">
+                Created date: {mintedDate}
+              </Text>
+              <Text size="14" color="black-40" className={s.project_owner}>
+                Collected by:{' '}
+                {project?.stats?.uniqueOwnerCount === 1
+                  ? `${project?.stats?.uniqueOwnerCount} owner`
+                  : `${project?.stats?.uniqueOwnerCount}+ owners`}
+                {/* </Text> */}
+              </Text>
+            </>
           </div>
           {!isBitcoinProject && (
             <div className={s.license}>
               <Text size="14">License: {project?.license}</Text>
             </div>
           )}
+          <ul className={s.shares}>
+            <li>
+              <LinkShare url={`${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`} />
+            </li>
+            <li>
+              <TwitterShare
+                url={`${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                title={''}
+                hashtags={[]}
+              />
+            </li>
+          </ul>
         </div>
       );
     } else {
@@ -453,7 +465,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   return (
     <div className={s.wrapper}>
       {renderLeftContent()}
-      <div></div>
+      <div />
       {!mobileScreen && (
         <div>
           <ThumbnailPreview data={projectDetail as Token} allowVariantion />
