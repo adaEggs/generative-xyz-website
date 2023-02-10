@@ -19,6 +19,7 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
+import TokenIDImage from '@containers/Bazaar/TokenID/TokenID.image';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -79,6 +80,12 @@ const TokenID: React.FC = (): React.ReactElement => {
         >
           {new BigNumber(tokenData?.price || 0).div(1e8).toString()} BTC
         </Text>
+        {mobileScreen && tokenData?.name && (
+          <TokenIDImage
+            image={'https://imageonline.co/image.jpg'}
+            name={tokenData?.name || ''}
+          />
+        )}
         <ButtonIcon
           sizes="large"
           className={s.info_buyBtn}
@@ -167,10 +174,12 @@ const TokenID: React.FC = (): React.ReactElement => {
     <Container className={s.wrapper}>
       {renderLeftContent()}
       <div />
-      {!mobileScreen && (
-        <div>
-          {/*<ThumbnailPreview data={projectDetail as Token} allowVariantion />*/}
-        </div>
+      {/*{!mobileScreen && <TokenIDImage image={''} name="" />}*/}
+      {!mobileScreen && tokenData?.name && (
+        <TokenIDImage
+          image={'https://imageonline.co/image.jpg'}
+          name={tokenData?.name || ''}
+        />
       )}
       {!!tokenData?.inscriptionID && !!tokenData?.price && (
         <BuyTokenModal
