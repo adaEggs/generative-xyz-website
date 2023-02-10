@@ -69,12 +69,14 @@ const CollectionItem = ({
               thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
             }`}
           >
-            <img
-              onError={onThumbError}
-              src={thumb}
-              alt={data.name}
-              loading={'lazy'}
-            />
+            <div className={s.collectionCard_thumb_inner}>
+              <img
+                onError={onThumbError}
+                src={thumb}
+                alt={data.name}
+                loading={'lazy'}
+              />
+            </div>
           </div>
           {mobileScreen ? (
             <div className={cs(s.collectionCard_info, s.mobile)}>

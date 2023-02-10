@@ -19,7 +19,6 @@ const CollectionList = ({
   isLoaded?: boolean;
 }) => {
   const { showFilter } = useContext(GenerativeProjectDetailContext);
-
   return (
     <div className={`grid  ${showFilter ? s.showFilter : 'grid-cols-1'}`}>
       {showFilter && <FilterOptions attributes={projectInfo?.traitStat} />}

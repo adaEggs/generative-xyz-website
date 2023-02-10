@@ -5,13 +5,14 @@ interface IProps {
   height?: number;
   isLoaded?: boolean;
   fill?: boolean;
+  className?: string;
 }
 
-const Skeleton = ({ width, height, isLoaded, fill }: IProps) => {
+const Skeleton = ({ width, height, isLoaded, fill, className }: IProps) => {
   if (isLoaded) return null;
   return (
     <div
-      className={s.skeleton}
+      className={`${s.skeleton} ${className}`}
       style={
         fill
           ? { width: '100%', height: '100%' }

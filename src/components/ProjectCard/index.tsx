@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import s from './ProjectCard.module.scss';
 
@@ -16,7 +16,7 @@ import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
 import { formatAddress } from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
-import { BitcoinContext } from '@contexts/bitcoin-context';
+import { CountDown } from '@components/CountDown';
 
 interface IPros {
   project: Project;
@@ -24,10 +24,7 @@ interface IPros {
 }
 
 export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
-  const { countDown } = useContext(BitcoinContext);
-
   const [creator, setCreator] = useState<User | null>(null);
-
   const { mobileScreen } = useWindowSize();
   const [thumb, setThumb] = useState<string>(project.image);
 
@@ -61,17 +58,24 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
           }`}
         >
-          <img
-            onError={onThumbError}
-            src={convertIpfsToHttp(thumb)}
-            alt={project.name}
-            loading={'lazy'}
-          />
+          <div className={s.projectCard_thumb_inner}>
+            <img
+              onError={onThumbError}
+              src={convertIpfsToHttp(thumb)}
+              alt={project.name}
+              loading={'lazy'}
+            />
+          </div>
         </div>
         <div className={s.projectCard_inner_info}>
-          {isBitcoinProject && <div className={s.countDown}>{countDown}</div>}
           {mobileScreen ? (
             <div className={cs(s.projectCard_info, s.mobile)}>
+              {isBitcoinProject && (
+                <CountDown
+                  openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}
+                  closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}
+                />
+              )}
               {creator && (
                 <Text size="11" fontWeight="medium">
                   {creator.displayName || formatAddress(creator.walletAddress)}
@@ -92,6 +96,12 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             </div>
           ) : (
             <div className={cs(s.projectCard_info, s.desktop)}>
+              {isBitcoinProject && (
+                <CountDown
+                  openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}
+                  closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}
+                />
+              )}
               <div className={s.projectCard_info_title}>
                 <Heading as={'h4'}>
                   <span title={project.name}>{project.name}</span>
