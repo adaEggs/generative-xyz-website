@@ -1,0 +1,18 @@
+.countDown {
+  background: $primary-brand;
+  color: white;
+  display: inline-block;
+  min-width: rem(160px);
+  text-align: center;
+  padding: rem(10px);
+  border-radius: 2px;
+  line-height: (28/18);
+
+  &.isDetail {
+    @include calcFontAuto(16px, 18px);
+
+    background: #00aa6c;
+    margin-bottom: rem(24px);
+    width: 100%;
+  }
+}

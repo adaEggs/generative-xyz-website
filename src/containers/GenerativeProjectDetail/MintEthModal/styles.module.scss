@@ -234,9 +234,10 @@
   border: 1px solid #c8c8c8;
   background: #f8f8f8;
   padding: 8px;
+  text-align: center;
 
   @include min-tablet {
-    padding-left: rem(40px);
-    padding-right: rem(40px);
+    padding-left: rem(20px);
+    padding-right: rem(20px);
   }
 }

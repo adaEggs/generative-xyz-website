@@ -1,0 +1,41 @@
+.dropFile {
+  border: none;
+  width: 100%;
+  text-align: center;
+  background-color: $primary-purple-50;
+
+  .dropZone {
+    padding: rem(48px) rem(24px);
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 2px;
+  }
+
+  .dropZoneThumbnail {
+    display: inline-block;
+    margin-bottom: rem(6px);
+    width: rem(100px);
+    height: rem(100px);
+  }
+
+  .dropZoneDescription {
+    font-weight: 500;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: $black-40;
+  }
+
+  &__drag {
+    background-color: $primary-purple;
+  }
+
+  &__error {
+    border: 1px solid $secondary-red;
+  }
+
+  .errorText {
+    color: $secondary-red;
+  }
+}
