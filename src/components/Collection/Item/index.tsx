@@ -143,7 +143,9 @@ const CollectionItem = ({
             <li>
               <a
                 className={s.inscription}
+                target="_blank"
                 href={`https://ordinals.com/inscription/${tokenID}`}
+                rel="noreferrer"
               >
                 Inscription
               </a>
@@ -151,7 +153,9 @@ const CollectionItem = ({
             <li>
               <a
                 className={s.content}
+                target="_blank"
                 href={`https://ordinals.com/content/${tokenID}`}
+                rel="noreferrer"
               >
                 Content
               </a>
