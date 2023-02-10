@@ -72,11 +72,11 @@ export interface IGetMarketplaceBtcNFTDetailResponse {
   data: IGetMarketplaceBtcNFTDetail;
 }
 export const getMarketplaceBtcNFTDetail = async (
-  slug: string
+  inscriptionID: string
 ): Promise<IGetMarketplaceBtcNFTDetailResponse> => {
   try {
     const res = await get<IGetMarketplaceBtcNFTDetailResponse>(
-      `/nft-detail/${slug}`
+      `${API_PATH}/nft-detail/${inscriptionID}`
     );
     return res;
   } catch (err: unknown) {
