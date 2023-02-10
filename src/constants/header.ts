@@ -17,7 +17,7 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-2',
-    name: 'Collect',
+    name: 'Drops',
     route: ROUTE_PATH.MARKETPLACE,
     activePath: 'marketplace',
   },

@@ -285,18 +285,14 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
               >
                 description
               </Text>
-              {/* <Text
-                size="18"
-                className={s.token_description}
-                style={{ WebkitLineClamp: showMore ? 'unset' : '5' }}
-              >
-                {project?.desc}
-              </Text> */}
               <div
                 className={s.token_description}
                 style={{ WebkitLineClamp: showMore ? 'unset' : '10' }}
               >
-                <MarkdownPreview source={project?.desc} />
+                <MarkdownPreview
+                  source={project?.desc}
+                  className={s.token_description_content}
+                />
               </div>
 
               {project?.desc && checkLines(project.desc) > 10 && (
