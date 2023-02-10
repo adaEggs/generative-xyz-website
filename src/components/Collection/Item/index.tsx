@@ -97,7 +97,7 @@ const CollectionItem = ({
                     {data?.project?.name}
                   </span>{' '}
                   <span className={s.textOverflow}>
-                    #{formatTokenId(tokenID, !isBitcoinProject)}
+                    #{formatTokenId(tokenID)}
                   </span>
                 </Text>
                 <Text size="14" fontWeight="bold">
@@ -136,7 +136,7 @@ const CollectionItem = ({
                         {data?.project?.name}
                       </span>
                     )}
-                    <span>#{formatTokenId(tokenID, !isBitcoinProject)}</span>
+                    <span>#{formatTokenId(tokenID)}</span>
                   </Heading>
                   {!!data.stats?.price && (
                     <Stack
