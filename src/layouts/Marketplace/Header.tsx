@@ -223,7 +223,7 @@ const Header: React.FC<IProp> = ({
                       {MENU_HEADER[2].name}
                     </Link>
                   </li>
-                  <li
+                  {/* <li
                     className={cs(
                       activePath === MENU_HEADER[3].activePath && styles.active
                     )}
@@ -232,7 +232,7 @@ const Header: React.FC<IProp> = ({
                     <Link href={getUrlWithQueryParams(MENU_HEADER[3].route)}>
                       {MENU_HEADER[3].name}
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
 
                 <Link

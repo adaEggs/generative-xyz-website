@@ -326,13 +326,12 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
               <Text size="14" color="black-40">
                 Created date: {mintedDate}
               </Text>
-              <Text size="14" color="black-40" className={s.project_owner}>
+              {/* <Text size="14" color="black-40" className={s.project_owner}>
                 Collected by:{' '}
                 {project?.stats?.uniqueOwnerCount === 1
                   ? `${project?.stats?.uniqueOwnerCount} owner`
                   : `${project?.stats?.uniqueOwnerCount}+ owners`}
-                {/* </Text> */}
-              </Text>
+              </Text> */}
             </>
           </div>
           {!isBitcoinProject && (

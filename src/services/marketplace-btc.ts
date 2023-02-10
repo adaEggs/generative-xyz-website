@@ -15,6 +15,7 @@ export interface IGetMarketplaceBtcListItem {
   name: string;
   description: string;
   image: string;
+  orderID: string;
 }
 export const getMarketplaceBtcList = async (
   params: IGetMarketplaceBtcListParams
@@ -32,7 +33,7 @@ export const getMarketplaceBtcList = async (
 };
 
 export interface IPostMarketplaceBtcListNFTParams {
-  walletAddress: string;
+  receiveAddress: string;
   inscriptionID: string;
   name: string;
   description: string;
@@ -61,33 +62,44 @@ export interface IGetMarketplaceBtcNFTDetail {
   price: string;
   name: string;
   description: string;
+  orderID: string;
 }
-export interface IGetMarketplaceBtcNFTDetailResponse {
-  error: string;
-  status: boolean;
-  data: IGetMarketplaceBtcNFTDetail;
-}
+
 export const getMarketplaceBtcNFTDetail = async (
   inscriptionID: string
-): Promise<IGetMarketplaceBtcNFTDetailResponse> => {
+): Promise<IGetMarketplaceBtcNFTDetail> => {
   try {
-    const res = await get<IGetMarketplaceBtcNFTDetailResponse>(
+    const res = await get<IGetMarketplaceBtcNFTDetail>(
       `${API_PATH}/nft-detail/${inscriptionID}`
     );
-    // const res = {
-    //   error: null,
-    //   status: true,
-    //   data: {
-    //     inscriptionID: 'dasdasd',
-    //     price: '1231234434',
-    //     name: 'abc',
-    //     description:
-    //       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-    //   },
-    // };
     return res;
   } catch (err: unknown) {
     log('failed to get MarketplaceBtc NFT Detail', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get MarketplaceBtc NFT Detail');
+  }
+};
+
+export interface ISubmitBTCAddressResponse {
+  receiveAddress: string;
+}
+
+export interface ISubmitBTCAddressPayload {
+  walletAddress: string;
+  inscriptionID: string;
+  orderID: string;
+}
+
+export const submitAddressBuyBTC = async (
+  payload: ISubmitBTCAddressPayload
+): Promise<ISubmitBTCAddressResponse> => {
+  try {
+    const res = await post<ISubmitBTCAddressPayload, ISubmitBTCAddressResponse>(
+      `${API_PATH}/nft-gen-order`,
+      payload
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to submit MarketplaceBtc Address', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to submit MarketplaceBtc Address');
   }
 };
