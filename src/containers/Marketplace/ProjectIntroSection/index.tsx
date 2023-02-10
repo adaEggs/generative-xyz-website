@@ -16,12 +16,16 @@ import { IGetProjectDetailResponse } from '@interfaces/api/project';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
 import { Token } from '@interfaces/token';
-import { covertPriceToBTC } from '@services/btc';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
 import { convertToETH } from '@utils/currency';
-import { base64ToUtf8, escapeSpecialChars, formatAddress } from '@utils/format';
+import {
+  base64ToUtf8,
+  escapeSpecialChars,
+  formatAddress,
+  formatBTCPrice,
+} from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
 import log from '@utils/logger';
 import { checkLines } from '@utils/string';
@@ -220,7 +224,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                   <Text as="span" size="14" fontWeight="medium">
                     {isMinting && 'Minting...'}
                     {!isMinting && project?.mintPrice && (
-                      <>{`Mint now ${covertPriceToBTC(
+                      <>{`Mint now ${formatBTCPrice(
                         Number(project?.mintPrice)
                       )} BTC`}</>
                     )}

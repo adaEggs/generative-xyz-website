@@ -6,11 +6,7 @@ import React, { useCallback, useContext, useState } from 'react';
 import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
-import {
-  covertPriceToBTC,
-  generateReceiverAddress,
-  mintBTCGenerative,
-} from '@services/btc';
+import { generateBTCReceiverAddress, mintBTCGenerative } from '@services/btc';
 import { Loading } from '@components/Loading';
 import _debounce from 'lodash/debounce';
 import { validateBTCWalletAddress } from '@utils/validate';
@@ -19,6 +15,7 @@ import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import { formatBTCPrice } from '@utils/format';
 
 interface IFormValue {
   address: string;
@@ -44,7 +41,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     try {
       setIsLoading(true);
       setReceiverAddress(null);
-      const { address, price: _price } = await generateReceiverAddress({
+      const { address, price: _price } = await generateBTCReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
       });
@@ -216,7 +213,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                                     type="number"
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={covertPriceToBTC(Number(price))}
+                                    value={formatBTCPrice(Number(price))}
                                     className={s.input}
                                   />
                                   <div className={s.inputPostfix}>BTC</div>

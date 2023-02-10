@@ -117,3 +117,7 @@ export const formatCurrency = (value: number): string => {
 };
 
 export const tokenID = (tokenName: string) => tokenName.split('#')[1];
+
+export const formatBTCPrice = (price: number): string => {
+  return (Number(price) / 1e8).toString();
+};
