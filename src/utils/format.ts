@@ -121,10 +121,17 @@ export const tokenID = (tokenName: string) => tokenName.split('#')[1];
 
 export const formatBTCPrice = (price: number): string => {
   if (!price) return '--';
-  return (price / 1e8).toString();
+  return ceilPrecised(price / 1e8).toString();
 };
 
 export const formatEthPrice = (price: string | null): string => {
   if (!price) return '--';
-  return Web3.utils.fromWei(price, 'ether');
+  return ceilPrecised(
+    parseFloat(Web3.utils.fromWei(price, 'ether'))
+  ).toString();
+};
+
+export const ceilPrecised = (number: number, precision = 6) => {
+  const power = Math.pow(10, precision);
+  return Math.ceil(Number(number) * power) / power;
 };
