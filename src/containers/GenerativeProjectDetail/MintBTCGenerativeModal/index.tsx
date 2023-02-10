@@ -60,7 +60,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     [projectData]
   );
 
-  const validateForm = (values: IFormValue) => {
+  const validateForm = (values: IFormValue): Record<string, string> => {
     const errors: Record<string, string> = {};
 
     if (!values.address) {
@@ -74,7 +74,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     return errors;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (!projectData || !receiverAddress) return;
 
     try {
@@ -184,7 +184,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                             <div className={s.inputContainer}>
                               <input
                                 id="address"
-                                type="address"
+                                type="text"
                                 name="address"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
