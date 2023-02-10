@@ -21,6 +21,12 @@ export const MENU_HEADER = [
     route: ROUTE_PATH.MARKETPLACE,
     activePath: 'marketplace',
   },
+  {
+    id: 'menu-3',
+    name: 'Bazaar',
+    route: ROUTE_PATH.BAZAAR,
+    activePath: 'bazaar',
+  },
 ];
 
 export const RIGHT_MENU = [
