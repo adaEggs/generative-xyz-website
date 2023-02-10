@@ -38,7 +38,9 @@ import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
 import MarkdownPreview from '@components/MarkdownPreview';
-import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import LinkShare from '@components/LinkShare';
+import TwitterShare from '@components/TwitterShare';
+import { CountDown } from '@components/CountDown';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -49,8 +51,8 @@ type Props = {
 
 const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   const { getWalletBalance } = useContext(WalletContext);
-  const { aVailable, countDown } = useContext(BitcoinProjectContext);
   const { mobileScreen } = useWindowSize();
+  const [isAvailable, setIsAvailable] = useState<boolean>(false);
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
   const [showMore, setShowMore] = useState(false);
@@ -141,16 +143,10 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   };
 
   const isProjectDetailPage = !!router.query.projectID;
-
-  // const offerAvailable = useMemo(() => {
-  //   if (project?.mintingInfo?.index && project?.maxSupply) {
-  //     return (
-  //       project?.mintingInfo?.index > 0 &&
-  //       project?.mintingInfo?.index <= project?.maxSupply
-  //     );
-  //   }
-  //   return false;
-  // }, [project?.mintingInfo?.index, project?.maxSupply]);
+  const priceMemo = useMemo(
+    () => formatBTCPrice(Number(project?.mintPrice)),
+    [project?.mintPrice]
+  );
 
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
@@ -166,6 +162,15 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
     if (isProjectDetailPage) {
       return (
         <div className={s.info}>
+          {isBitcoinProject && (
+            <CountDown
+              isDetail={true}
+              setIsAvailable={setIsAvailable}
+              openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}
+              closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}
+            />
+          )}
+
           <Heading as="h4" fontWeight="medium">
             {project?.name}
           </Heading>
@@ -185,14 +190,19 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
             </div>
           )}
 
-          {!isBitcoinProject &&
-            project?.mintingInfo.index !== project?.maxSupply && (
-              <ProgressBar
-                current={project?.mintingInfo?.index}
-                total={project?.maxSupply}
-                className={s.progressBar}
-              />
-            )}
+          {project?.mintingInfo.index !== project?.maxSupply && (
+            <ProgressBar
+              current={project?.mintingInfo?.index}
+              total={project?.maxSupply}
+              className={s.progressBar}
+            />
+          )}
+
+          {isBitcoinProject && (
+            <span className={s.priceBtc}>
+              {priceMemo} <small>BTC</small>
+            </span>
+          )}
 
           {project?.status && (
             <div className={s.CTA}>
@@ -216,7 +226,8 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                   </Text>
                 </ButtonIcon>
               )}
-              {isBitcoinProject && aVailable && (
+
+              {isBitcoinProject && isAvailable && (
                 <ButtonIcon
                   sizes="large"
                   className={s.mint_btn}
@@ -224,18 +235,12 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 >
                   <Text as="span" size="14" fontWeight="medium">
                     {isMinting && 'Minting...'}
-                    {!isMinting && project?.mintPrice && (
-                      <>{`Mint now ${formatBTCPrice(
-                        Number(project?.mintPrice)
-                      )} BTC`}</>
-                    )}
+                    {!isMinting && project?.mintPrice && <>{`Mint now`}</>}
                   </Text>
                 </ButtonIcon>
               )}
             </div>
           )}
-
-          {isBitcoinProject && <div className={s.countDown}>{countDown}</div>}
 
           {!isBitcoinProject && (
             <div className={s.stats}>
@@ -285,18 +290,14 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
               >
                 description
               </Text>
-              {/* <Text
-                size="18"
-                className={s.token_description}
-                style={{ WebkitLineClamp: showMore ? 'unset' : '5' }}
-              >
-                {project?.desc}
-              </Text> */}
               <div
                 className={s.token_description}
                 style={{ WebkitLineClamp: showMore ? 'unset' : '10' }}
               >
-                <MarkdownPreview source={project?.desc} />
+                <MarkdownPreview
+                  source={project?.desc}
+                  className={s.token_description_content}
+                />
               </div>
 
               {project?.desc && checkLines(project.desc) > 10 && (
@@ -321,26 +322,36 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 </>
               )}
             </div>
-            {!isBitcoinProject && (
-              <>
-                <Text size="14" color="black-40">
-                  Created date: {mintedDate}
-                </Text>
-                <Text size="14" color="black-40" className={s.project_owner}>
-                  Collected by:{' '}
-                  {project?.stats?.uniqueOwnerCount === 1
-                    ? `${project?.stats?.uniqueOwnerCount} owner`
-                    : `${project?.stats?.uniqueOwnerCount}+ owners`}
-                  {/* </Text> */}
-                </Text>
-              </>
-            )}
+            <>
+              <Text size="14" color="black-40">
+                Created date: {mintedDate}
+              </Text>
+              <Text size="14" color="black-40" className={s.project_owner}>
+                Collected by:{' '}
+                {project?.stats?.uniqueOwnerCount === 1
+                  ? `${project?.stats?.uniqueOwnerCount} owner`
+                  : `${project?.stats?.uniqueOwnerCount}+ owners`}
+                {/* </Text> */}
+              </Text>
+            </>
           </div>
           {!isBitcoinProject && (
             <div className={s.license}>
               <Text size="14">License: {project?.license}</Text>
             </div>
           )}
+          <ul className={s.shares}>
+            <li>
+              <LinkShare url={`${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`} />
+            </li>
+            <li>
+              <TwitterShare
+                url={`${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                title={''}
+                hashtags={[]}
+              />
+            </li>
+          </ul>
         </div>
       );
     } else {
@@ -459,7 +470,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   return (
     <div className={s.wrapper}>
       {renderLeftContent()}
-      <div></div>
+      <div />
       {!mobileScreen && (
         <div>
           <ThumbnailPreview data={projectDetail as Token} allowVariantion />

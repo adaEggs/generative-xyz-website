@@ -5,11 +5,17 @@
   text-decoration: none;
 
   &_inner {
+    padding: rem(16px);
     background: #fff;
     border: 1px solid rgb(0 0 0 / 20%);
     border-radius: 2px;
     min-height: 100%;
     transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
+    position: relative;
+
+    @include mobile {
+      padding: rem(8px);
+    }
 
     &:hover {
       box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
@@ -17,37 +23,37 @@
     }
   }
 
+  .btnBuyNow {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 26px;
+    letter-spacing: 0.01em;
+    color: #fff;
+    padding: rem(15);
+    background-color: #1c1c1c;
+    text-align: center;
+    position: absolute;
+    width: calc(100% - 8px);
+    bottom: 4px;
+    left: 4px;
+    opacity: 0;
+    transition: opacity 0.4s $easeOutCubic;
+  }
+
+  &:hover {
+    .btnBuyNow {
+      opacity: 1;
+    }
+  }
+
   &_thumb {
+    margin-bottom: rem(16px);
     position: relative;
+    padding-bottom: 100%;
     border-radius: 2px;
-    width: 100%;
-    padding: rem(16px);
-
-    @include mobile {
-      padding: rem(8px);
-    }
-
-    &_inner {
-      padding-bottom: 100%;
-      position: relative;
-      width: 100%;
-
-      &_sk {
-        height: 100%;
-        position: absolute;
-      }
-    }
 
     &.isDefault {
-      background: #fff;
-
-      img {
-        width: rem(200px);
-        height: rem(200px);
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-      }
+      background: #f2f2f2;
     }
 
     img {
@@ -61,16 +67,11 @@
   }
 
   &_info {
-    border-top: 1px solid rgb(0 0 0 / 20%);
-    padding: rem(16px);
-
-    @include mobile {
-      padding: rem(8px);
-    }
-
     &.desktop {
       .projectCard_info_title {
-        display: block;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin-top: rem(10px);
         margin-bottom: rem(10px);
 

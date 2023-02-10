@@ -13,7 +13,7 @@ import {
 import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress, formatTokenId } from '@utils/format';
+import { formatAddress, formatTokenId, formatLongAddress } from '@utils/format';
 import { checkLines } from '@utils/string';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
@@ -30,6 +30,8 @@ import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
+import MarkdownPreview from '@components/MarkdownPreview';
+import { EXTERNAL_LINK } from '@constants/external-link';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -55,32 +57,14 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const mintedDate = dayjs(tokenData?.mintedTime).format('MMM DD, YYYY');
   const [isBuying, setIsBuying] = useState(false);
 
-  // const tokenInfos = [
-  //   {
-  //     id: 'contract-address',
-  //     info: 'Contract Address',
-  //     value: formatAddress(tokenData?.project.genNFTAddr || ''),
-  //     link: `${scanURL}token/${tokenData?.project.genNFTAddr}`,
-  //   },
-  //   {
-  //     id: 'token-id',
-  //     info: 'Token ID',
-  //     value: formatTokenId(tokenID),
-  //     link: `${scanURL}token/${tokenData?.project.genNFTAddr}?a=${tokenID}`,
-  //   },
-  //   {
-  //     id: 'token-standard',
-  //     info: 'Token Standard',
-  //     value: 'ERC-721',
-  //     link: '',
-  //   },
-  //   {
-  //     id: 'blockchain',
-  //     info: 'Blockchain',
-  //     value: getChainName() || '',
-  //     link: '',
-  //   },
-  // ];
+  const tokenInfos = [
+    {
+      id: 'token-id',
+      info: 'ID',
+      value: formatLongAddress(formatTokenId(tokenData?.tokenID || '')),
+      link: `${EXTERNAL_LINK.ORDINALS}/inscription/${tokenData?.tokenID || ''}`,
+    },
+  ];
   const [showMore, setShowMore] = useState(false);
 
   const handleOpenListingTokenModal = (): void => {
@@ -194,15 +178,15 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   )}
               </Link>
             </Text>
-            {isBitcoinProject && (
-              <a
+            {/* {isBitcoinProject && (
+              <Link
                 target="_blank"
                 href={`https://ordinals.com/inscription/${tokenData?.tokenID}`}
                 rel="noreferrer"
               >
                 Explorer
-              </a>
-            )}
+              </Link>
+            )} */}
 
             {mobileScreen && <ThumbnailPreview data={tokenData} previewToken />}
             {!isBitcoinProject && (
@@ -275,92 +259,83 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     </ButtonIcon>
                   )}
                 </div>
-                <div className={s.accordions}>
-                  <div className={s.accordions_item}>
-                    <Text
-                      size="14"
-                      color="black-40"
-                      fontWeight="medium"
-                      className="text-uppercase"
-                    >
-                      description
-                    </Text>
-                    <Text
-                      size="18"
-                      className={s.token_description}
-                      style={{ WebkitLineClamp: showMore ? 'unset' : '3' }}
-                    >
-                      {tokenDescription}
-                    </Text>
-                    {checkLines(tokenDescription) > 3 && (
-                      <>
-                        {!showMore ? (
-                          <Text
-                            as="span"
-                            onClick={() => setShowMore(!showMore)}
-                            size="18"
-                            fontWeight="semibold"
-                          >
-                            See more
-                          </Text>
-                        ) : (
-                          <Text
-                            as="span"
-                            onClick={() => setShowMore(!showMore)}
-                            size="18"
-                            fontWeight="semibold"
-                          >
-                            See less
-                          </Text>
-                        )}
-                      </>
-                    )}
-                  </div>
-                  {tokenData?.attributes &&
-                    tokenData?.attributes?.length > 0 && (
-                      <div className={s.accordions_item}>
-                        <Text
-                          size="14"
-                          color="black-40"
-                          fontWeight="medium"
-                          className="text-uppercase"
-                        >
-                          features
-                        </Text>
-                        <Stats data={featuresList()} />
-                      </div>
-                    )}
+              </>
+            )}
 
-                  {/* <div className={s.accordions_item}>
+            <div className={s.accordions}>
+              <div className={s.accordions_item}>
                 <Text
                   size="14"
                   color="black-40"
-                  fontWeight="bold"
+                  fontWeight="medium"
                   className="text-uppercase"
                 >
-                  Token Info
+                  description
                 </Text>
-                <Stats data={tokenInfos} />
-              </div> */}
+                <div
+                  className={s.token_description}
+                  style={{ WebkitLineClamp: showMore ? 'unset' : '3' }}
+                >
+                  {/* {tokenDescription} */}
+                  <MarkdownPreview source={tokenDescription} />
                 </div>
-                <Text size="14" color="black-40">
-                  Minted on: {mintedDate}
-                </Text>
-                <Text size="14" color="black-40" className={s.owner}>
-                  Owner:{' '}
-                  <Link
-                    href={handleLinkProfile(tokenData?.owner?.walletAddress)}
+
+                {checkLines(tokenDescription) > 3 && (
+                  <>
+                    {!showMore ? (
+                      <Text
+                        as="span"
+                        onClick={() => setShowMore(!showMore)}
+                        fontWeight="semibold"
+                      >
+                        See more
+                      </Text>
+                    ) : (
+                      <Text
+                        as="span"
+                        onClick={() => setShowMore(!showMore)}
+                        fontWeight="semibold"
+                      >
+                        See less
+                      </Text>
+                    )}
+                  </>
+                )}
+              </div>
+              {tokenData?.attributes && tokenData?.attributes?.length > 0 && (
+                <div className={s.accordions_item}>
+                  <Text
+                    size="14"
+                    color="black-40"
+                    fontWeight="medium"
+                    className="text-uppercase"
                   >
-                    {tokenData?.owner?.displayName ||
-                      formatAddress(
-                        tokenData?.ownerAddr ||
-                          tokenData?.owner?.walletAddress ||
-                          ''
-                      )}
-                  </Link>
-                  {isTokenOwner && ' (by you)'}
-                </Text>
-              </>
+                    features
+                  </Text>
+                  <Stats data={featuresList()} />
+                </div>
+              )}
+
+              <div className={s.accordions_item}>
+                <Stats data={tokenInfos} />
+              </div>
+            </div>
+            <Text size="14" color="black-40">
+              Minted on: {mintedDate}
+            </Text>
+            {tokenData?.owner && (
+              <Text size="14" color="black-40" className={s.owner}>
+                Owner:{' '}
+                <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
+                  {tokenData?.owner?.displayName ||
+                    formatAddress(
+                      tokenData?.ownerAddr ||
+                        tokenData?.owner?.walletAddress ||
+                        ''
+                    )}
+                </Link>
+                {isTokenOwner && ' (by you)'}
+              </Text>
             )}
           </div>
           <div></div>
@@ -375,15 +350,19 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           )}
         </div>
         <div className="h-divider"></div>
-        {!isBitcoinProject && (
+        {!isBitcoinProject ? (
           <>
             <TokenActivities></TokenActivities>
             <MoreItemsSection
               genNFTAddr={tokenData?.project.genNFTAddr || ''}
             />
           </>
+        ) : (
+          // <></>
+          <div style={{ height: '20px' }}></div>
         )}
       </Container>
+
       {!isBitcoinProject && (
         <>
           <ListingTokenModal />

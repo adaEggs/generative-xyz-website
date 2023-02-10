@@ -9,11 +9,7 @@ const ProjectCardSkeleton = ({ className = '' }: { className: string }) => {
   return (
     <div className={`${s.projectCard} ${className}`}>
       <div className={s.projectCard_inner}>
-        <div className={`${s.projectCard_thumb} ${s.isDefault}`}>
-          <div className={s.projectCard_thumb_inner}>
-            <Skeleton fill className={s.projectCard_thumb_inner_sk} />
-          </div>
-        </div>
+        <div className={`${s.projectCard_thumb} ${s.isDefault}`} />
         {mobileScreen ? (
           <div className={cs(s.projectCard_info, s.mobile)}>
             <Skeleton height={14} width={50} />

@@ -5,4 +5,5 @@ export const EXTERNAL_LINK = {
     'https://docs.generative.xyz/the-gen-token/mining-with-proof-of-art',
   CALENDLY:
     'https://calendly.com/generative_xyz/online-chat-with-generative-partnership-team',
+  ORDINALS: 'https://ordinals.com',
 };

@@ -19,6 +19,8 @@
     position: relative;
 
     @include fullViewScreen;
+
+    border-right: 1px solid #b6b6b6;
   }
 
   &::-webkit-scrollbar {
@@ -106,6 +108,20 @@
   }
 }
 
+.priceBtc {
+  line-height: (44/34);
+  font-weight: 500;
+
+  @include calcFontAuto(24px, 34px);
+
+  display: block;
+  margin-bottom: rem(16px);
+
+  small {
+    font-size: 65% !important;
+  }
+}
+
 .usersInfo {
   margin-bottom: 16px;
   display: flex;
@@ -172,6 +188,14 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 
+  :global(.wmde-markdown) {
+    line-height: (26/16);
+
+    @include calcFontAuto(14px, 16px);
+
+    font-family: $font-paragraph;
+  }
+
   + span {
     text-decoration: underline;
     cursor: pointer;
@@ -212,13 +236,7 @@
   margin-bottom: rem(24px);
 }
 
-.countDown {
-  background: #f2f2f2;
-  color: $primary-brand;
-  display: inline-block;
-  min-width: rem(160px);
-  text-align: center;
-  padding: rem(7px);
-  border-radius: 2px;
-  margin-bottom: rem(24px);
+.shares {
+  display: flex;
+  gap: rem(8px);
 }

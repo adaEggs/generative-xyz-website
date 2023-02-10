@@ -7,7 +7,7 @@ export const LOGO_JPG = {
   dark: `/images/logo-black.png`,
 };
 
-export const LOGO_MARKETPLACE_URL = `${CDN_URL}/icons/logo-marketplace.svg`;
+export const LOGO_MARKETPLACE_URL = `${CDN_URL}/icons/genertive-placeholder.svg`;
 export const LOGO_GENERATIVE = `${CDN_URL}/pages/home/logo.jpg`;
 
 export const CLOUDFRONT_SERVER_NAME = `https://cdn.autonomous.ai/`;

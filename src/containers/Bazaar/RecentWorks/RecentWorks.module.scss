@@ -1,0 +1,21 @@
+.recentWorks {
+  &_projects {
+    margin-top: rem(50px);
+    position: relative;
+
+    @include mobile {
+      margin-top: rem(24px);
+    }
+  }
+
+  &_btn {
+    font-weight: 500;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    letter-spacing: 0.01em;
+    color: #fff;
+    background-color: #1c1c1c;
+    border-color: #1c1c1c;
+    padding: rem(15) rem(24);
+  }
+}

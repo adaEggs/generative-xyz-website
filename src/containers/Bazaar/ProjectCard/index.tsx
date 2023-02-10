@@ -5,18 +5,16 @@ import s from './ProjectCard.module.scss';
 import { CreatorInfo } from '@components/CreatorInfo';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
-import ProgressBar from '@components/ProgressBar';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
-import { Project } from '@interfaces/project';
 import { User } from '@interfaces/user';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
 import { formatAddress } from '@utils/format';
-import { checkIsBitcoinProject } from '@utils/generative';
-import { CountDown } from '@components/CountDown';
+// import { IGetMarketplaceBtcListItem } from '@services/marketplace-btc';
+import { Project } from '@interfaces/project';
 
 interface IPros {
   project: Project;
@@ -25,17 +23,13 @@ interface IPros {
 
 export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const [creator, setCreator] = useState<User | null>(null);
+
   const { mobileScreen } = useWindowSize();
   const [thumb, setThumb] = useState<string>(project.image);
 
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
-
-  const isBitcoinProject = useMemo((): boolean => {
-    if (!project) return false;
-    return checkIsBitcoinProject(project.tokenID);
-  }, [project]);
 
   useEffect(() => {
     if (project.creatorProfile) {
@@ -49,7 +43,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
 
   return (
     <Link
-      href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
+      href={`${ROUTE_PATH.BAZAAR}/${project.tokenID}`}
       className={`${s.projectCard} ${className}`}
     >
       <div className={s.projectCard_inner}>
@@ -58,24 +52,16 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
           }`}
         >
-          <div className={s.projectCard_thumb_inner}>
-            <img
-              onError={onThumbError}
-              src={convertIpfsToHttp(thumb)}
-              alt={project.name}
-              loading={'lazy'}
-            />
-          </div>
+          <img
+            onError={onThumbError}
+            src={convertIpfsToHttp(thumb)}
+            alt={project.name}
+            loading={'lazy'}
+          />
         </div>
         <div className={s.projectCard_inner_info}>
           {mobileScreen ? (
             <div className={cs(s.projectCard_info, s.mobile)}>
-              {isBitcoinProject && (
-                <CountDown
-                  openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}
-                  closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}
-                />
-              )}
               {creator && (
                 <Text size="11" fontWeight="medium">
                   {creator.displayName || formatAddress(creator.walletAddress)}
@@ -83,38 +69,25 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               )}
               <div className={s.projectCard_info_title}>
                 <Text size="14" fontWeight="semibold">
-                  {project.name}
+                  #{project.name}
+                </Text>
+                <Text size="12" fontWeight="semibold">
+                  0.2BTC
                 </Text>
               </div>
-              <ProgressBar
-                size={'small'}
-                current={
-                  project.mintingInfo.index + project.mintingInfo.indexReserve
-                }
-                total={project.limit}
-              />
             </div>
           ) : (
             <div className={cs(s.projectCard_info, s.desktop)}>
-              {isBitcoinProject && (
-                <CountDown
-                  openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}
-                  closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}
-                />
-              )}
+              {creator && <CreatorInfo creator={creatorMemo} />}
               <div className={s.projectCard_info_title}>
                 <Heading as={'h4'}>
                   <span title={project.name}>{project.name}</span>
                 </Heading>
+                <Heading as={'h4'}>
+                  <span>0.2BTC</span>
+                </Heading>
               </div>
-              {creator && <CreatorInfo creator={creatorMemo} />}
-              <ProgressBar
-                size={'small'}
-                current={
-                  project.mintingInfo.index + project.mintingInfo.indexReserve
-                }
-                total={project.limit}
-              />
+              <div className={cs(s.btnBuyNow)}>Buy Now</div>
             </div>
           )}
         </div>
