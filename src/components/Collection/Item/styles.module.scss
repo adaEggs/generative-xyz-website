@@ -1,16 +1,15 @@
 .collectionCard {
   text-decoration: none;
   height: 100%;
+  position: relative;
+  overflow: hidden;
 
-  &_inner {
+  &_inner_wrapper {
+    position: relative;
     padding: rem(16px);
-    background: #fff;
     border: 1px solid rgb(0 0 0 / 20%);
     border-radius: 2px;
     transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
 
     @include mobile {
       padding: rem(8px);
@@ -21,6 +20,23 @@
       border-color: #1c1c1c;
     }
   }
+
+  // &_inner {
+  //   // padding: rem(16px);
+  //   background: #fff;
+  //   height: 100%;
+  //   position: relative;
+  //   overflow: hidden;
+
+  //   @include mobile {
+  //     padding: rem(8px);
+  //   }
+
+  //   &:hover {
+  //     box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
+  //     border-color: #1c1c1c;
+  //   }
+  // }
 
   &_thumb {
     margin-bottom: rem(16px);
@@ -87,7 +103,6 @@
           }
 
           span:nth-child(1) {
-
             // flex: 1;
             // max-width: 50%;
 
@@ -148,7 +163,7 @@
   justify-content: space-between;
   background: #fff2f4;
   position: absolute;
-  bottom: 0;
+  bottom: -1px;
   left: 0;
   width: 100%;
 

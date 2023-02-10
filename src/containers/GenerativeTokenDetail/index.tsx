@@ -165,13 +165,8 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               fontWeight="medium"
               style={{ marginBottom: '20px' }}
             >
-              <span
-                title={`#${formatTokenId(
-                  tokenData?.tokenID || '',
-                  !isBitcoinProject
-                )}`}
-              >
-                #{formatTokenId(tokenData?.tokenID || '', !isBitcoinProject)}
+              <span title={`#${formatTokenId(tokenData?.tokenID || '')}`}>
+                #{formatTokenId(tokenData?.tokenID || '')}
               </span>
             </Heading>
 
