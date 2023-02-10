@@ -135,3 +135,22 @@ export const ceilPrecised = (number: number, precision = 6) => {
   const power = Math.pow(10, precision);
   return Math.ceil(Number(number) * power) / power;
 };
+
+export const ellipsisCenter = (payload: {
+  str: string;
+  limit?: number;
+  dots?: string;
+}) => {
+  const { str, limit = 5, dots = '...' } = payload;
+  try {
+    const size = str.length;
+    if (size < limit * 2 + dots.length) {
+      return str;
+    }
+    const leftStr = str.substring(0, limit);
+    const rightStr = str.substring(size - limit, size);
+    return leftStr + dots + rightStr;
+  } catch {
+    return str;
+  }
+};

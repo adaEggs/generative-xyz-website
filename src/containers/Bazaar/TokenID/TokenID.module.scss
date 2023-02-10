@@ -1,0 +1,115 @@
+@import "src/styles/_themes/mixins";
+
+.wrapper {
+  color: $black-100;
+  padding-top: rem(32px);
+
+  @include min-tablet {
+    display: grid;
+    grid-template-columns: rem(420px) 1px 1fr;
+    margin-bottom: rem(90px);
+    padding-top: rem(60px);
+  }
+}
+
+.info {
+  @include min-tablet {
+    overflow-y: scroll;
+    padding-right: rem(60px);
+    position: relative;
+
+    @include fullViewScreen;
+  }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    position: absolute;
+    left: 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: rgb(0 0 0 / 10%);
+  }
+
+  &_creatorLink {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &_labelPrice {
+    margin-top: 20px;
+    line-height: 140%;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  &_amountPrice {
+    font-weight: 500;
+    line-height: 140%;
+  }
+
+  &_buyBtn {
+    justify-content: center;
+    width: 100%;
+    margin-top: rem(35);
+  }
+
+  &_project_desc {
+    margin-top: rem(46px);
+    margin-bottom: rem(24px);
+  }
+}
+
+.token_description {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  :global(.wmde-markdown) {
+    line-height: (26/16);
+
+    @include calcFontAuto(14px, 16px);
+
+    font-family: $font-paragraph;
+  }
+
+  + span {
+    text-decoration: underline;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+.wrap_raw {
+  margin-top: 30px;
+}
+
+.wrap_info_row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: rem(12);
+}
+
+.loading_project {
+  background-color: $white;
+  max-height: rem(550px);
+}
+
+.owner {
+  margin-top: rem(34px);
+
+  > a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

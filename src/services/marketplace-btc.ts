@@ -74,6 +74,17 @@ export const getMarketplaceBtcNFTDetail = async (
     const res = await get<IGetMarketplaceBtcNFTDetailResponse>(
       `${API_PATH}/nft-detail/${inscriptionID}`
     );
+    // const res = {
+    //   error: null,
+    //   status: true,
+    //   data: {
+    //     inscriptionID: 'dasdasd',
+    //     price: '1231234434',
+    //     name: 'abc',
+    //     description:
+    //       'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+    //   },
+    // };
     return res;
   } catch (err: unknown) {
     log('failed to get MarketplaceBtc NFT Detail', LogLevel.ERROR, LOG_PREFIX);
