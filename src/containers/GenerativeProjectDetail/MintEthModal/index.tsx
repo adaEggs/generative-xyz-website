@@ -2,9 +2,16 @@ import Button from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import React, { useCallback, useContext, useState } from 'react';
+import React, {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
 import { Formik } from 'formik';
 import s from './styles.module.scss';
+// import Web3 from 'web3';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import {
   covertPriceToBTC,
@@ -18,20 +25,23 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 
 interface IFormValue {
   address: string;
 }
 
+interface IProp {
+  setIsShowSuccess: Dispatch<SetStateAction<boolean>>;
+}
+
 const LOG_PREFIX = 'MintBTCGenerativeModal';
 
-const MintBTCGenerativeModal: React.FC = () => {
+const MintBTCGenerativeModal: React.FC<IProp> = ({
+  setIsShowSuccess,
+}): React.ReactElement => {
   const { projectData, hideMintBTCModal } = useContext(
     GenerativeProjectDetailContext
   );
-
-  const { setIsPopupPayment } = useContext(BitcoinProjectContext);
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>();
@@ -86,6 +96,7 @@ const MintBTCGenerativeModal: React.FC = () => {
         address: receiverAddress,
       });
       hideMintBTCModal();
+      setIsShowSuccess(true);
       // toast.success('Mint success');
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -107,7 +118,7 @@ const MintBTCGenerativeModal: React.FC = () => {
             <div className={s.modalHeader}>
               <Button
                 onClick={() => {
-                  setIsPopupPayment(false);
+                  hideMintBTCModal();
                   setsTep('info');
                 }}
                 className={s.closeBtn}
@@ -191,7 +202,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                                 onBlur={handleBlur}
                                 value={values.address}
                                 className={s.input}
-                                placeholder="Paste your BTC Ordinal wallet address here"
+                                placeholder="Enter your BTC wallet address"
                               />
                             </div>
                             {errors.address && touched.address && (
@@ -207,7 +218,8 @@ const MintBTCGenerativeModal: React.FC = () => {
                             <>
                               <div className={s.formItem}>
                                 <label className={s.label} htmlFor="price">
-                                  Price <sup className={s.requiredTag}>*</sup>
+                                  Set a price{' '}
+                                  <sup className={s.requiredTag}>*</sup>
                                 </label>
                                 <div className={s.inputContainer}>
                                   <input

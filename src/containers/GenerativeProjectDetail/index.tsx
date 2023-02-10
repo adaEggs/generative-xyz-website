@@ -6,15 +6,14 @@ import {
   GenerativeProjectDetailContext,
   GenerativeProjectDetailProvider,
 } from '@contexts/generative-project-detail-context';
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
 import cs from 'classnames';
 import styles from './styles.module.scss';
 import TokenTopFilter from './TokenTopFilter';
-import MintBTCGenerativeModal from './MintBTCGenerativeModal';
-import { TransactionSuccessModal } from './TransactionSuccessModal';
-
-// const LOG_PREFIX = 'GenerativeProjectDetail';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import SelectPaymentModel from '@containers/GenerativeProjectDetail/SelectPaymenetModal';
+import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModal';
 
 const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
   const {
@@ -26,19 +25,18 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
     total,
     isLoaded,
     isNextPageLoaded,
-    showMintBTCModal,
-    isShowMintBTCModal,
     isBitcoinProject,
   } = useContext(GenerativeProjectDetailContext);
 
-  const [isShowSuccess, setIsShowSuccess] = useState<boolean>(false);
+  const { setIsPopupPayment, isPopupPayment, paymentStep, paymentMethod } =
+    useContext(BitcoinProjectContext);
 
   return (
     <>
       <section>
         <Container>
           <ProjectIntroSection
-            openMintBTCModal={showMintBTCModal}
+            openMintBTCModal={() => setIsPopupPayment(true)}
             project={projectInfo}
           />
 
@@ -79,13 +77,12 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
           </ClientOnly>
         </Container>
       </section>
-      {isShowMintBTCModal && (
-        <MintBTCGenerativeModal setIsShowSuccess={setIsShowSuccess} />
+      {isPopupPayment && (
+        <>
+          {paymentStep === 'switch' && <SelectPaymentModel />}
+          {paymentMethod === 'BTC' && <MintBTCGenerativeModal />}
+        </>
       )}
-      <TransactionSuccessModal
-        isSuccessShow={isShowSuccess}
-        setIsSuccessShow={setIsShowSuccess}
-      />
     </>
   );
 };

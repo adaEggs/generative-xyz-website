@@ -16,7 +16,7 @@ import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
 import { formatAddress } from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
-import { BitcoinContext } from '@contexts/bitcoin-context';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 
 interface IPros {
   project: Project;
@@ -24,7 +24,7 @@ interface IPros {
 }
 
 export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
-  const { countDown } = useContext(BitcoinContext);
+  const { countDown } = useContext(BitcoinProjectContext);
 
   const [creator, setCreator] = useState<User | null>(null);
 
