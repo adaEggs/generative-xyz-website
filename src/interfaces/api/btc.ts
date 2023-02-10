@@ -22,3 +22,22 @@ export interface IMintGenerativePayloadResponse {
   isConfirm: boolean;
   inscriptionID: string;
 }
+
+export interface IGenerateReceiverAddressV2Payload {
+  walletAddress: string;
+  file: string; // Base64
+  name: string;
+}
+
+export interface IGenerateReceiverAddressV2Response {
+  id: string;
+  userAddress: string;
+  amount: string;
+  mintFee: string;
+  sentTokenFee: string;
+  ordAddress: string;
+  fileURI: string;
+  isConfirm: boolean;
+  inscriptionID: string;
+  balance: string;
+}
