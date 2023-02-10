@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
-import s from './styles.module.scss';
 import Heading from '@components/Heading';
+import Skeleton from '@components/Skeleton';
 import Text from '@components/Text';
 import cs from 'classnames';
-import Skeleton from '@components/Skeleton';
+import s from './styles.module.scss';
 
 type TProgressBar = {
   current?: number;
@@ -18,10 +17,10 @@ const ProgressBar = ({
   size = 'regular',
   className,
 }: TProgressBar) => {
-  const calcMintProgress = useMemo(() => {
-    if (!current || !total) return 0;
-    return (current / total) * 100;
-  }, [total, current]);
+  // const calcMintProgress = useMemo(() => {
+  //   if (!current || !total) return 0;
+  //   return (current / total) * 100;
+  // }, [total, current]);
 
   return (
     <div className={cs(s.wrapper, className)}>
@@ -30,29 +29,33 @@ const ProgressBar = ({
           <>
             <Heading as="h6" fontWeight="medium">
               {total ? `${current}` : <Skeleton width={60} height={34} />}
+              <Text color="black-60" as="span">
+                {' '}
+                minted
+              </Text>
             </Heading>
-            <Text color="black-60">minted</Text>
           </>
         )}
         {size === 'small' && (
-          <>
-            <Text size="18" fontWeight="bold" as="span">
-              {current}
-            </Text>
-            <Text size="12" fontWeight="regular">
+          <Text size="18" fontWeight="bold">
+            {current}
+            <Text size="12" fontWeight="regular" as="span">
+              {' '}
               minted
             </Text>
-          </>
+          </Text>
         )}
       </div>
-      <div className={s.progressWrapper}>
-        <div
-          className={s.progressBar}
-          style={{
-            width: `${calcMintProgress}%`,
-          }}
-        ></div>
-      </div>
+      {/* {!isBitcoinProject && (
+        <div className={s.progressWrapper}>
+          <div
+            className={s.progressBar}
+            style={{
+              width: `${calcMintProgress}%`,
+            }}
+          ></div>
+        </div>
+      )} */}
     </div>
   );
 };
