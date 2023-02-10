@@ -34,6 +34,7 @@ import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
 import { BitcoinContext } from '@contexts/bitcoin-context';
+import MarkdownPreview from '@components/MarkdownPreview';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -280,13 +281,20 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
               >
                 description
               </Text>
-              <Text
+              {/* <Text
                 size="18"
                 className={s.token_description}
                 style={{ WebkitLineClamp: showMore ? 'unset' : '5' }}
               >
                 {project?.desc}
-              </Text>
+              </Text> */}
+              <div
+                className={s.token_description}
+                style={{ WebkitLineClamp: showMore ? 'unset' : '10' }}
+              >
+                <MarkdownPreview source={project?.desc} />
+              </div>
+
               {((project?.desc && checkLines(project.desc) > 7) ||
                 isBitcoinProject) && (
                 <>
