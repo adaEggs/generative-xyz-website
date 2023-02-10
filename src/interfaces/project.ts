@@ -42,6 +42,8 @@ export type Project = {
   mintedTime: number;
   stats: MarketplaceStats;
   traitStat: TraitStats[];
+  closeMintUnixTimestamp?: number;
+  openMintUnixTimestamp?: number;
 };
 
 export type TraitStats = {
