@@ -33,7 +33,7 @@ export const getMarketplaceBtcList = async (
 };
 
 export interface IPostMarketplaceBtcListNFTParams {
-  walletAddress: string;
+  receiveAddress: string;
   inscriptionID: string;
   name: string;
   description: string;
