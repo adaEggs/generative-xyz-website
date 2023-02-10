@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import s from './ProjectCard.module.scss';
 
@@ -16,7 +16,7 @@ import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
 import { formatAddress } from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
-import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import useCountDown from '@hooks/useCountDown';
 
 interface IPros {
   project: Project;
@@ -24,10 +24,7 @@ interface IPros {
 }
 
 export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
-  const { countDown } = useContext(BitcoinProjectContext);
-
   const [creator, setCreator] = useState<User | null>(null);
-
   const { mobileScreen } = useWindowSize();
   const [thumb, setThumb] = useState<string>(project.image);
 
@@ -50,6 +47,11 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     return creator;
   }, [creator]);
 
+  const { countDown } = useCountDown(
+    project?.openMintUnixTimestamp || 0,
+    project?.closeMintUnixTimestamp || 0
+  );
+
   return (
     <Link
       href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
@@ -69,7 +71,9 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
           />
         </div>
         <div className={s.projectCard_inner_info}>
-          {isBitcoinProject && <div className={s.countDown}>{countDown}</div>}
+          {isBitcoinProject && countDown !== '' && (
+            <div className={s.countDown}>{countDown}</div>
+          )}
           {mobileScreen ? (
             <div className={cs(s.projectCard_info, s.mobile)}>
               {creator && (

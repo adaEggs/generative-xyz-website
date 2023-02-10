@@ -6,7 +6,6 @@ import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import { Loading } from '@components/Loading';
-import _debounce from 'lodash/debounce';
 import { validateBTCWalletAddress } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
@@ -49,12 +48,12 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     return errors;
   };
 
-  const handleSubmit = async (data: IFormValue) => {
+  const handleSubmit = async (_data: IFormValue) => {
     try {
       setIsLoading(true);
       setsTep('list');
       // todo: call api
-      console.log(data);
+      // console.log(data);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       toast.error(ErrorMessage.DEFAULT);
