@@ -79,6 +79,11 @@ module.exports = removeImports(
           protocol: 'https',
           hostname: 'cloudflare-ipfs.com',
         },
+
+        {
+          protocol: 'https',
+          hostname: 'storage.googleapis.com',
+        },
         {
           protocol: 'https',
           hostname: '**.generative.xyz',
@@ -92,4 +97,5 @@ module.exports = removeImports(
       @import "@styles/_themes/_variables.scss";
     `,
     },
-  }));
+  })
+);

@@ -12,9 +12,9 @@ import { generateHash } from '@utils/generate-data';
 import { convertIpfsToHttp } from '@utils/image';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+
 import s from './styles.module.scss';
 
 type Props = {
@@ -29,10 +29,8 @@ const ThumbnailPreview = (props: Props) => {
     data,
     allowVariantion = false,
     previewToken = false,
-    isBitcoinProject,
+    // isBitcoinProject,
   } = props;
-
-  const router = useRouter();
 
   const animationUrl = data?.animationUrl || data?.animation_url || '';
 
@@ -87,15 +85,15 @@ const ThumbnailPreview = (props: Props) => {
 
   const openPreview = useMemo(() => !!previewSrc, [previewSrc]);
 
-  const showOnlyImage = isBitcoinProject && router.query.tokenID;
+  // const showOnlyImage = isBitcoinProject && router.query.tokenID;
 
   useEffect(() => {
-    if (showOnlyImage) {
-      setDisplayMode(PreviewDisplayMode.THUMBNAIL);
-    } else {
+    if (animationUrl) {
       setDisplayMode(PreviewDisplayMode.ANIMATION);
+    } else {
+      setDisplayMode(PreviewDisplayMode.THUMBNAIL);
     }
-  }, [isBitcoinProject, router.query.tokenID]);
+  }, [animationUrl]);
 
   return (
     <div className={s.ThumbnailPreview}>
@@ -110,7 +108,7 @@ const ThumbnailPreview = (props: Props) => {
                     showIframe={displayMode === PreviewDisplayMode.ANIMATION}
                     rawHtml={rawHtmlFile}
                     ref={sandboxRef}
-                    hash={previewToken ? '' : hash}
+                    hash={previewToken ? data.tokenID : hash}
                     sandboxFiles={null}
                     onLoaded={handleIframeLoaded}
                     className={s.thumbnail_iframe}
@@ -130,7 +128,7 @@ const ThumbnailPreview = (props: Props) => {
             </>
           )}
         </div>
-        {!showOnlyImage && (
+        {animationUrl && (
           <div className={s.actionWrapper}>
             <div className={s.sandboxControls}>
               {allowVariantion &&
