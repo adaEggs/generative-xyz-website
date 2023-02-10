@@ -14,18 +14,14 @@ export interface IGetMarketplaceBtcListItem {
   price: string;
   name: string;
   description: string;
-}
-export interface IGetMarketplaceBtcListResponse {
-  error: string;
-  status: boolean;
-  data: IGetMarketplaceBtcListItem[];
+  image: string;
 }
 export const getMarketplaceBtcList = async (
   params: IGetMarketplaceBtcListParams
-): Promise<IGetMarketplaceBtcListResponse> => {
+): Promise<IGetMarketplaceBtcListItem[]> => {
   try {
     const qs = '?' + querystring.stringify(params);
-    const res = await get<IGetMarketplaceBtcListResponse>(
+    const res = await get<IGetMarketplaceBtcListItem[]>(
       `${API_PATH}/list${qs}`
     );
     return res;
@@ -36,14 +32,14 @@ export const getMarketplaceBtcList = async (
 };
 
 export interface IPostMarketplaceBtcListNFTParams {
-  address: string;
-  ordinals: string;
+  walletAddress: string;
+  inscriptionID: string;
   name: string;
   description: string;
   price: string;
 }
 export interface IPostMarketplaceBtcListNFTResponse {
-  address: string;
+  receiveAddress: string;
 }
 export const postMarketplaceBtcListNFT = async (
   dataFrom: IPostMarketplaceBtcListNFTParams
@@ -52,7 +48,7 @@ export const postMarketplaceBtcListNFT = async (
     const res = await post<
       IPostMarketplaceBtcListNFTParams,
       IPostMarketplaceBtcListNFTResponse
-    >(`${API_PATH}/list`, dataFrom);
+    >(`${API_PATH}/nft-gen-order`, dataFrom);
     return res;
   } catch (err: unknown) {
     log('failed to post Marketplace Btc List NFT', LogLevel.ERROR, LOG_PREFIX);

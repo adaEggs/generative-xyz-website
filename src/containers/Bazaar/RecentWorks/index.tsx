@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import Heading from '@components/Heading';
 import ProjectListLoading from '../ProjectListLoading';
@@ -7,7 +7,6 @@ import ListForSaleModal from '../ListForSaleModal';
 
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
 import { Button } from 'react-bootstrap';
 import {
@@ -23,20 +22,25 @@ export const RecentWorks = (): JSX.Element => {
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const getListAll = async () => {
-    const tmpList = await getMarketplaceBtcList({
-      page: 1,
-    });
+    try {
+      const tmpList = await getMarketplaceBtcList({
+        page: 1,
+      });
 
-    if (tmpList.status) {
-      setListData(tmpList?.data || []);
-    } else {
-      toast.error(tmpList.error);
+      if (tmpList) {
+        setListData(tmpList || []);
+        setIsLoaded(true);
+      } else {
+        toast.error('Get List error');
+      }
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
     }
   };
 
-  useAsyncEffect(async () => {
-    await getListAll();
-    setIsLoaded(true);
+  useEffect(() => {
+    getListAll();
   }, []);
 
   return (
@@ -58,7 +62,6 @@ export const RecentWorks = (): JSX.Element => {
         </Col>
       </Row>
       <Row className={s.recentWorks_projects}>
-        {/* <Loading isLoaded={isLoaded} /> */}
         {!isLoaded && <ProjectListLoading numOfItems={12} />}
         {isLoaded && (
           <div className={s.recentWorks_projects_list}>

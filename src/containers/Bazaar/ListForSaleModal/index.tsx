@@ -11,16 +11,13 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
+import {
+  IPostMarketplaceBtcListNFTParams,
+  postMarketplaceBtcListNFT,
+} from '@services/marketplace-btc';
 // import { useRouter } from 'next/router';
 // import { ROUTE_PATH } from '@constants/route-path';
 
-interface IFormValue {
-  address: string;
-  ordinals: string;
-  name: string;
-  description: string;
-  price: string;
-}
 interface IProps {
   showModal: boolean;
   onClose: () => void;
@@ -30,15 +27,16 @@ const LOG_PREFIX = 'ListForSaleModal';
 
 const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
+  const [receiveAddress, setReceiveAddress] = useState('');
   const [step, setsTep] = useState<'info' | 'list'>('info');
   // const router = useRouter();
 
-  const validateForm = (values: IFormValue) => {
+  const validateForm = (values: IPostMarketplaceBtcListNFTParams) => {
     const errors: Record<string, string> = {};
 
-    if (!values.address) {
+    if (!values.walletAddress) {
       errors.address = 'Wallet address is required.';
-    } else if (!validateBTCWalletAddress(values.address)) {
+    } else if (!validateBTCWalletAddress(values.walletAddress)) {
       errors.address = 'Invalid wallet address.';
     }
     if (!values.price) {
@@ -48,11 +46,14 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     return errors;
   };
 
-  const handleSubmit = async (_data: IFormValue) => {
+  const handleSubmit = async (_data: IPostMarketplaceBtcListNFTParams) => {
     try {
       setIsLoading(true);
-      setsTep('list');
-      // todo: call api
+      const res = await postMarketplaceBtcListNFT(_data);
+      if (res.receiveAddress) {
+        setsTep('list');
+        setReceiveAddress(res.receiveAddress);
+      }
       // console.log(data);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -104,11 +105,11 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                     <Formik
                       key="mintBTCGenerativeForm"
                       initialValues={{
-                        ordinals: '',
+                        inscriptionID: '',
                         name: '',
                         description: '',
                         price: '',
-                        address: '',
+                        walletAddress: '',
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}
@@ -123,23 +124,25 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                       }) => (
                         <form onSubmit={handleSubmit}>
                           <div className={s.formItem}>
-                            <label className={s.label} htmlFor="ordinals">
-                              Ordinals Link{' '}
+                            <label className={s.label} htmlFor="inscriptionID">
+                              Ordinals ID{' '}
                             </label>
                             <div className={s.inputContainer}>
                               <input
-                                id="ordinals"
+                                id="inscriptionID"
                                 type="text"
-                                name="ordinals"
+                                name="inscriptionID"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.ordinals}
+                                value={values.inscriptionID}
                                 className={s.input}
-                                placeholder="Paste your BTC Ordinal link here"
+                                placeholder="Paste your BTC Ordinal ID here"
                               />
                             </div>
-                            {errors.ordinals && touched.ordinals && (
-                              <p className={s.inputError}>{errors.ordinals}</p>
+                            {errors.inscriptionID && touched.inscriptionID && (
+                              <p className={s.inputError}>
+                                {errors.inscriptionID}
+                              </p>
                             )}
                           </div>
                           <div className={s.formItem}>
@@ -178,9 +181,6 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 placeholder="Paste your description here"
                               />
                             </div>
-                            {errors.address && touched.address && (
-                              <p className={s.inputError}>{errors.ordinals}</p>
-                            )}
                           </div>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="price">
@@ -204,24 +204,26 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                             )}
                           </div>
                           <div className={s.formItem}>
-                            <label className={s.label} htmlFor="address">
-                              Transfer NFT to{' '}
+                            <label className={s.label} htmlFor="walletAddress">
+                              Transfer BTC to{' '}
                               <sup className={s.requiredTag}>*</sup>
                             </label>
                             <div className={s.inputContainer}>
                               <input
-                                id="address"
+                                id="walletAddress"
                                 type="address"
-                                name="address"
+                                name="walletAddress"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.address}
+                                value={values.walletAddress}
                                 className={s.input}
                                 placeholder="Paste your BTC Ordinal wallet address here"
                               />
                             </div>
-                            {errors.address && touched.address && (
-                              <p className={s.inputError}>{errors.address}</p>
+                            {errors.walletAddress && touched.walletAddress && (
+                              <p className={s.inputError}>
+                                {errors.walletAddress}
+                              </p>
                             )}
                           </div>
                           {isLoading && (
@@ -256,11 +258,9 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                       <QRCodeGenerator
                         className={s.qrCodeGenerator}
                         size={128}
-                        value={'1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'}
+                        value={receiveAddress}
                       />
-                      <p className={s.btcAddress}>
-                        {'1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa'}
-                      </p>
+                      <p className={s.btcAddress}>{receiveAddress}</p>
                     </div>
                     {/* <div className={s.ctas}>
                       <Button
