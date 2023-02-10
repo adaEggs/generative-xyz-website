@@ -7,13 +7,14 @@ import Heading from '@components/Heading';
 import Link from '@components/Link';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
-import { Project } from '@interfaces/project';
 import { User } from '@interfaces/user';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
 import { formatAddress } from '@utils/format';
+// import { IGetMarketplaceBtcListItem } from '@services/marketplace-btc';
+import { Project } from '@interfaces/project';
 
 interface IPros {
   project: Project;

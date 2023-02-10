@@ -11,8 +11,8 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-import { useRouter } from 'next/router';
-import { ROUTE_PATH } from '@constants/route-path';
+// import { useRouter } from 'next/router';
+// import { ROUTE_PATH } from '@constants/route-path';
 
 interface IFormValue {
   address: string;
@@ -31,7 +31,7 @@ const LOG_PREFIX = 'ListForSaleModal';
 const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [step, setsTep] = useState<'info' | 'list'>('info');
-  const router = useRouter();
+  // const router = useRouter();
 
   const validateForm = (values: IFormValue) => {
     const errors: Record<string, string> = {};
@@ -62,9 +62,9 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     }
   };
 
-  const _goBazaarPage = () => {
-    router.push(ROUTE_PATH.BAZAAR);
-  };
+  // const goBazaarPage = () => {
+  //   router.push(ROUTE_PATH.BAZAAR);
+  // };
 
   if (!showModal) {
     return <></>;

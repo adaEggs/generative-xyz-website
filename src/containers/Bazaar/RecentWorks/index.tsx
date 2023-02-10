@@ -1,53 +1,41 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import Heading from '@components/Heading';
 import ProjectListLoading from '../ProjectListLoading';
 import { ProjectList } from '../ProjectLists';
 import ListForSaleModal from '../ListForSaleModal';
 
-import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
-import { IGetProjectListResponse } from '@interfaces/api/project';
-import { Project } from '@interfaces/project';
-import { getProjectList } from '@services/project';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
 import { Button } from 'react-bootstrap';
+import {
+  getMarketplaceBtcList,
+  IGetMarketplaceBtcListItem,
+} from '@services/marketplace-btc';
+import { toast } from 'react-hot-toast';
 
 export const RecentWorks = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  const [projects, setProjects] = useState<IGetProjectListResponse>();
-  const [listData, setListData] = useState<Project[]>([]);
+  const [listData, setListData] = useState<IGetMarketplaceBtcListItem[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  // const selectedOption = useMemo(() => {
-  //   return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
-  // }, [sort]);
-
-  const getProjectAll = useCallback(async () => {
-    let page = (projects && projects?.page) || 0;
-    page += 1;
-
-    const tmpProject = await getProjectList({
-      contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
-      limit: 12,
-      page,
+  const getListAll = async () => {
+    const tmpList = await getMarketplaceBtcList({
+      page: 1,
     });
 
-    if (tmpProject) {
-      if (projects && projects?.result) {
-        tmpProject.result = [...projects.result, ...tmpProject.result];
-      }
-
-      setProjects(tmpProject);
-      setListData(tmpProject?.result || []);
+    if (tmpList.status) {
+      setListData(tmpList?.data || []);
+    } else {
+      toast.error(tmpList.error);
     }
-  }, [projects]);
+  };
 
   useAsyncEffect(async () => {
-    await getProjectAll();
+    await getListAll();
     setIsLoaded(true);
   }, []);
 
