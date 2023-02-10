@@ -82,7 +82,11 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 <Heading as={'h4'}>
                   <span title={project.name}>{project.name}</span>
                 </Heading>
+                <Heading as={'h4'}>
+                  <span>0.2BTC</span>
+                </Heading>
               </div>
+              <div className={cs(s.btnBuyNow)}>Buy Now</div>
             </div>
           )}
         </div>

@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import Heading from '@components/Heading';
 import ProjectListLoading from '../ProjectListLoading';
 import { ProjectList } from '../ProjectLists';
+import ListForSaleModal from '../ListForSaleModal';
 
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { IGetProjectListResponse } from '@interfaces/api/project';
@@ -19,6 +20,7 @@ export const RecentWorks = (): JSX.Element => {
 
   const [projects, setProjects] = useState<IGetProjectListResponse>();
   const [listData, setListData] = useState<Project[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   // const selectedOption = useMemo(() => {
   //   return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
@@ -58,7 +60,11 @@ export const RecentWorks = (): JSX.Element => {
           </Heading>
         </Col>
         <Col xs={'auto'}>
-          <Button className={s.recentWorks_btn} size="lg">
+          <Button
+            className={s.recentWorks_btn}
+            size="lg"
+            onClick={() => setShowModal(true)}
+          >
             List for sale
           </Button>
         </Col>
@@ -72,6 +78,10 @@ export const RecentWorks = (): JSX.Element => {
           </div>
         )}
       </Row>
+      <ListForSaleModal
+        showModal={showModal}
+        onClose={() => setShowModal(false)}
+      />
     </div>
   );
 };
