@@ -113,3 +113,13 @@
     }
   }
 }
+
+.row_right {
+  > a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

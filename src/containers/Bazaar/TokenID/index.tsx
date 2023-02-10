@@ -3,12 +3,11 @@ import { useRouter } from 'next/router';
 import s from './TokenID.module.scss';
 import { Loading } from '@components/Loading';
 import Heading from '@components/Heading';
-import Link from '@components/Link';
 import Text from '@components/Text';
 import { Container } from 'react-bootstrap';
 import ButtonIcon from '@components/ButtonIcon';
 import MarkdownPreview from '@components/MarkdownPreview';
-import { ellipsisCenter, formatAddress } from '@utils/format';
+import { ellipsisCenter } from '@utils/format';
 import useWindowSize from '@hooks/useWindowSize';
 import {
   getMarketplaceBtcNFTDetail,
@@ -16,9 +15,12 @@ import {
 } from '@services/marketplace-btc';
 import BigNumber from 'bignumber.js';
 import BuyTokenModal from '@containers/Bazaar/BuyTokenModal';
+import log from '@utils/logger';
+import { LogLevel } from '@enums/log-level';
+import { toast } from 'react-hot-toast';
+import { ErrorMessage } from '@enums/error-message';
 
-const DESC =
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
 const TokenID: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -45,9 +47,15 @@ const TokenID: React.FC = (): React.ReactElement => {
         <Text size={'18'} color={'text-black-80'}>
           {label}
         </Text>
-        <Text size={'18'} color={'text-black-80'}>
+        <a
+          color={'text-black-80'}
+          className={s.row_right}
+          href={`https://ordinals.com/inscription/${tokenData?.inscriptionID}`}
+          target="_blank"
+          rel="noreferrer"
+        >
           {value}
-        </Text>
+        </a>
       </div>
     );
   };
@@ -56,7 +64,6 @@ const TokenID: React.FC = (): React.ReactElement => {
     if (!tokenData) {
       return renderLoading();
     }
-    // render content after fetched data
     return (
       <div className={s.info}>
         <Heading as="h4" fontWeight="medium">
@@ -95,9 +102,9 @@ const TokenID: React.FC = (): React.ReactElement => {
             className={s.token_description}
             style={{ WebkitLineClamp: showMore ? 'unset' : '4' }}
           >
-            <MarkdownPreview source={DESC} />
+            <MarkdownPreview source={tokenData.description} />
           </div>
-          {DESC && DESC.length > 300 && (
+          {tokenData.description && tokenData.description.length > 300 && (
             <>
               {!showMore ? (
                 <Text
@@ -120,18 +127,15 @@ const TokenID: React.FC = (): React.ReactElement => {
           )}
           <div className={s.wrap_raw}>
             {renderRow(
-              'ID',
-              ellipsisCenter({
-                str: '0x2699ff693FA45234595b6a1CaB6650c849380893',
-              })
+              'Inscription',
+              tokenData.inscriptionID.length > 10
+                ? ellipsisCenter({ str: tokenData.inscriptionID })
+                : tokenData.inscriptionID
             )}
-            {renderRow('Address', '089')}
-            {renderRow('Output value', '10000')}
-            {renderRow('Sat', '123456789')}
           </div>
-          <Text size="14" color="black-40" className={s.owner}>
-            Owner: <Link href="/">{formatAddress('122222')}</Link>
-          </Text>
+          {/*<Text size="14" color="black-40" className={s.owner}>*/}
+          {/*  Owner: <Link href="/">{formatAddress('122222')}</Link>*/}
+          {/*</Text>*/}
         </div>
       </div>
     );
@@ -141,11 +145,12 @@ const TokenID: React.FC = (): React.ReactElement => {
     if (!tokenID || typeof tokenID !== 'string') return;
     try {
       const tokenData = await getMarketplaceBtcNFTDetail(tokenID);
-      if (tokenData && tokenData.data) {
-        setTokenData(tokenData.data);
+      if (tokenData) {
+        setTokenData(tokenData);
       }
-    } catch (e) {
-      // handle error
+    } catch (err) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      toast.error(ErrorMessage.DEFAULT);
     }
   };
 
@@ -167,10 +172,15 @@ const TokenID: React.FC = (): React.ReactElement => {
           {/*<ThumbnailPreview data={projectDetail as Token} allowVariantion />*/}
         </div>
       )}
-      <BuyTokenModal
-        showModal={showModal}
-        onClose={() => setShowModal(false)}
-      />
+      {!!tokenData?.inscriptionID && !!tokenData?.price && (
+        <BuyTokenModal
+          showModal={showModal}
+          onClose={() => setShowModal(false)}
+          inscriptionID={tokenData.inscriptionID || ''}
+          price={new BigNumber(tokenData?.price || 0).toNumber()}
+          orderID={tokenData.orderID}
+        />
+      )}
     </Container>
   );
 };
