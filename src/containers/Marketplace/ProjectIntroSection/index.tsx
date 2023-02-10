@@ -38,9 +38,9 @@ import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
 import MarkdownPreview from '@components/MarkdownPreview';
-import useCountDown from '@hooks/useCountDown';
 import LinkShare from '@components/LinkShare';
 import TwitterShare from '@components/TwitterShare';
+import { CountDown } from '@components/CountDown';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -52,6 +52,7 @@ type Props = {
 const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   const { getWalletBalance } = useContext(WalletContext);
   const { mobileScreen } = useWindowSize();
+  const [isAvailable, setIsAvailable] = useState<boolean>(false);
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
   const [showMore, setShowMore] = useState(false);
@@ -142,15 +143,9 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   };
 
   const isProjectDetailPage = !!router.query.projectID;
-
   const priceMemo = useMemo(
     () => formatBTCPrice(Number(project?.mintPrice)),
     [project?.mintPrice]
-  );
-
-  const { available, countDown } = useCountDown(
-    project?.openMintUnixTimestamp || 0,
-    project?.closeMintUnixTimestamp || 0
   );
 
   const renderLeftContent = () => {
@@ -167,8 +162,13 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
     if (isProjectDetailPage) {
       return (
         <div className={s.info}>
-          {isBitcoinProject && countDown !== '' && (
-            <div className={s.countDown}>{countDown}</div>
+          {isBitcoinProject && (
+            <CountDown
+              isDetail={true}
+              setIsAvailable={setIsAvailable}
+              openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}
+              closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}
+            />
           )}
 
           <Heading as="h4" fontWeight="medium">
@@ -198,6 +198,12 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
             />
           )}
 
+          {isBitcoinProject && (
+            <span className={s.priceBtc}>
+              {priceMemo} <small>BTC</small>
+            </span>
+          )}
+
           {project?.status && (
             <div className={s.CTA}>
               {!isBitcoinProject && (
@@ -220,7 +226,8 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                   </Text>
                 </ButtonIcon>
               )}
-              {isBitcoinProject && available && (
+
+              {isBitcoinProject && isAvailable && (
                 <ButtonIcon
                   sizes="large"
                   className={s.mint_btn}
@@ -228,9 +235,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 >
                   <Text as="span" size="14" fontWeight="medium">
                     {isMinting && 'Minting...'}
-                    {!isMinting && project?.mintPrice && (
-                      <>{`Mint now ${priceMemo} BTC`}</>
-                    )}
+                    {!isMinting && project?.mintPrice && <>{`Mint now`}</>}
                   </Text>
                 </ButtonIcon>
               )}
