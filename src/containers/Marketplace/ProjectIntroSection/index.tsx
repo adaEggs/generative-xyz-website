@@ -295,8 +295,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 <MarkdownPreview source={project?.desc} />
               </div>
 
-              {((project?.desc && checkLines(project.desc) > 7) ||
-                isBitcoinProject) && (
+              {project?.desc && checkLines(project.desc) > 10 && (
                 <>
                   {!showMore ? (
                     <Text
