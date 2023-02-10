@@ -63,9 +63,9 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     }
   };
 
-  const goBazaarPage = () => {
-    router.push(ROUTE_PATH.BAZAAR);
-  };
+  // const goBazaarPage = () => {
+  //   router.push(ROUTE_PATH.BAZAAR);
+  // };
 
   if (!showModal) {
     return <></>;
