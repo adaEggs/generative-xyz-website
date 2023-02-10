@@ -16,12 +16,16 @@ import { IGetProjectDetailResponse } from '@interfaces/api/project';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
 import { Token } from '@interfaces/token';
-import { covertPriceToBTC } from '@services/btc';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
 import { convertToETH } from '@utils/currency';
-import { base64ToUtf8, escapeSpecialChars, formatAddress } from '@utils/format';
+import {
+  base64ToUtf8,
+  escapeSpecialChars,
+  formatAddress,
+  formatBTCPrice,
+} from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
 import log from '@utils/logger';
 import { checkLines } from '@utils/string';
@@ -33,8 +37,8 @@ import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
-import { BitcoinContext } from '@contexts/bitcoin-context';
 import MarkdownPreview from '@components/MarkdownPreview';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -45,7 +49,7 @@ type Props = {
 
 const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   const { getWalletBalance } = useContext(WalletContext);
-  const { aVailable, countDown } = useContext(BitcoinContext);
+  const { aVailable, countDown } = useContext(BitcoinProjectContext);
   const { mobileScreen } = useWindowSize();
   const router = useRouter();
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
@@ -221,7 +225,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                   <Text as="span" size="14" fontWeight="medium">
                     {isMinting && 'Minting...'}
                     {!isMinting && project?.mintPrice && (
-                      <>{`Mint now ${covertPriceToBTC(
+                      <>{`Mint now ${formatBTCPrice(
                         Number(project?.mintPrice)
                       )} BTC`}</>
                     )}

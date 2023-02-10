@@ -4,15 +4,15 @@ import {
   IGenerateReceiverAddressResponse,
   IMintGenerativePayload,
   IMintGenerativePayloadResponse,
-} from '@interfaces/api/btc';
+} from '@interfaces/api/eth';
 import { post } from '@services/http-client';
 import log from '@utils/logger';
 
-const LOG_PREFIX = 'BTCService';
+const LOG_PREFIX = 'ETHService';
 
-const API_PATH = '/btc';
+const API_PATH = '/eth';
 
-export const generateBTCReceiverAddress = async (
+export const generateETHReceiverAddress = async (
   payload: IGenerateReceiverAddressPayload
 ): Promise<IGenerateReceiverAddressResponse> => {
   try {
@@ -27,7 +27,7 @@ export const generateBTCReceiverAddress = async (
   }
 };
 
-export const mintBTCGenerative = async (
+export const mintETHGenerative = async (
   payload: IMintGenerativePayload
 ): Promise<IMintGenerativePayloadResponse> => {
   try {

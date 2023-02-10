@@ -2,11 +2,11 @@ import Button from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, { useMemo, useCallback, useContext, useState } from 'react';
 import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
-import { generateBTCReceiverAddress, mintBTCGenerative } from '@services/btc';
+import { mintBTCGenerative } from '@services/btc';
 import { Loading } from '@components/Loading';
 import _debounce from 'lodash/debounce';
 import { validateBTCWalletAddress } from '@utils/validate';
@@ -15,15 +15,16 @@ import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
-import { formatBTCPrice } from '@utils/format';
+import { formatEthPrice } from '@utils/format';
+import { generateETHReceiverAddress } from '@services/eth';
 
 interface IFormValue {
   address: string;
 }
 
-const LOG_PREFIX = 'MintBTCGenerativeModal';
+const LOG_PREFIX = 'MintEthModal';
 
-const MintBTCGenerativeModal: React.FC = () => {
+const MintEthModal: React.FC = () => {
   const { projectData, hideMintBTCModal } = useContext(
     GenerativeProjectDetailContext
   );
@@ -41,7 +42,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     try {
       setIsLoading(true);
       setReceiverAddress(null);
-      const { address, price: price } = await generateBTCReceiverAddress({
+      const { address, price: price } = await generateETHReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
       });
@@ -92,7 +93,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     }
   };
 
-  const priceMemo = useMemo(() => formatBTCPrice(Number(price)), [price]);
+  const priceMemo = useMemo(() => formatEthPrice(price), [price]);
 
   if (!projectData) {
     return <></>;
@@ -218,12 +219,12 @@ const MintBTCGenerativeModal: React.FC = () => {
                                     value={priceMemo}
                                     className={s.input}
                                   />
-                                  <div className={s.inputPostfix}>BTC</div>
+                                  <div className={s.inputPostfix}>ETH</div>
                                 </div>
                               </div>
                               <div className={s.qrCodeWrapper}>
                                 <p className={s.qrTitle}>
-                                  Send BTC to this deposit address
+                                  Send ETH to this deposit address
                                 </p>
                                 <QRCodeGenerator
                                   className={s.qrCodeGenerator}
@@ -250,4 +251,4 @@ const MintBTCGenerativeModal: React.FC = () => {
   );
 };
 
-export default MintBTCGenerativeModal;
+export default MintEthModal;
