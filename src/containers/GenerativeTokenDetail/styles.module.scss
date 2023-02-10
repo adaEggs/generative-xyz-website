@@ -144,6 +144,14 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 
+  :global(.wmde-markdown) {
+    line-height: (26/16);
+
+    @include calcFontAuto(14px, 16px);
+
+    font-family: $font-paragraph;
+  }
+
   + span {
     text-decoration: underline;
     cursor: pointer;

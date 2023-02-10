@@ -1,4 +1,5 @@
 import { isBrowser } from '@utils/common';
+import Web3 from 'web3';
 
 export const utf8ToBase64 = (str: string): string => {
   if (!isBrowser()) {
@@ -117,3 +118,39 @@ export const formatCurrency = (value: number): string => {
 };
 
 export const tokenID = (tokenName: string) => tokenName.split('#')[1];
+
+export const formatBTCPrice = (price: number): string => {
+  if (!price) return '--';
+  return ceilPrecised(price / 1e8).toString();
+};
+
+export const formatEthPrice = (price: string | null): string => {
+  if (!price) return '--';
+  return ceilPrecised(
+    parseFloat(Web3.utils.fromWei(price, 'ether'))
+  ).toString();
+};
+
+export const ceilPrecised = (number: number, precision = 6) => {
+  const power = Math.pow(10, precision);
+  return Math.ceil(Number(number) * power) / power;
+};
+
+export const ellipsisCenter = (payload: {
+  str: string;
+  limit?: number;
+  dots?: string;
+}) => {
+  const { str, limit = 5, dots = '...' } = payload;
+  try {
+    const size = str.length;
+    if (size < limit * 2 + dots.length) {
+      return str;
+    }
+    const leftStr = str.substring(0, limit);
+    const rightStr = str.substring(size - limit, size);
+    return leftStr + dots + rightStr;
+  } catch {
+    return str;
+  }
+};

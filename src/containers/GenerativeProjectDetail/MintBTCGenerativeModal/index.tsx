@@ -2,22 +2,11 @@ import Button from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import React, {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useContext,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Formik } from 'formik';
 import s from './styles.module.scss';
-// import Web3 from 'web3';
 import QRCodeGenerator from '@components/QRCodeGenerator';
-import {
-  covertPriceToBTC,
-  generateReceiverAddress,
-  mintBTCGenerative,
-} from '@services/btc';
+import { generateBTCReceiverAddress, mintBTCGenerative } from '@services/btc';
 import { Loading } from '@components/Loading';
 import _debounce from 'lodash/debounce';
 import { validateBTCWalletAddress } from '@utils/validate';
@@ -25,26 +14,24 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import { formatBTCPrice } from '@utils/format';
 
 interface IFormValue {
   address: string;
 }
 
-interface IProp {
-  setIsShowSuccess: Dispatch<SetStateAction<boolean>>;
-}
-
 const LOG_PREFIX = 'MintBTCGenerativeModal';
 
-const MintBTCGenerativeModal: React.FC<IProp> = ({
-  setIsShowSuccess,
-}): React.ReactElement => {
+const MintBTCGenerativeModal: React.FC = () => {
   const { projectData, hideMintBTCModal } = useContext(
     GenerativeProjectDetailContext
   );
+
+  const { setIsPopupPayment } = useContext(BitcoinProjectContext);
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
-  const [price, setPrice] = useState<string | null>();
+  const [price, setPrice] = useState<string | null>(null);
   const [_isMinting, setIsMinting] = useState(false);
   const [step, setsTep] = useState<'info' | 'mint'>('info');
 
@@ -54,13 +41,13 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
     try {
       setIsLoading(true);
       setReceiverAddress(null);
-      const { address, price: _price } = await generateReceiverAddress({
+      const { address, price: price } = await generateBTCReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
       });
 
       setReceiverAddress(address);
-      setPrice(projectData?.mintPrice);
+      setPrice(price || projectData?.mintPrice);
     } catch (err: unknown) {
       setReceiverAddress(null);
     } finally {
@@ -73,7 +60,7 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
     [projectData]
   );
 
-  const validateForm = (values: IFormValue) => {
+  const validateForm = (values: IFormValue): Record<string, string> => {
     const errors: Record<string, string> = {};
 
     if (!values.address) {
@@ -87,7 +74,7 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
     return errors;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (!projectData || !receiverAddress) return;
 
     try {
@@ -96,7 +83,6 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
         address: receiverAddress,
       });
       hideMintBTCModal();
-      setIsShowSuccess(true);
       // toast.success('Mint success');
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -105,6 +91,8 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
       setIsMinting(false);
     }
   };
+
+  const priceMemo = useMemo(() => formatBTCPrice(Number(price)), [price]);
 
   if (!projectData) {
     return <></>;
@@ -118,7 +106,7 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
             <div className={s.modalHeader}>
               <Button
                 onClick={() => {
-                  hideMintBTCModal();
+                  setIsPopupPayment(false);
                   setsTep('info');
                 }}
                 className={s.closeBtn}
@@ -196,13 +184,13 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
                             <div className={s.inputContainer}>
                               <input
                                 id="address"
-                                type="address"
+                                type="text"
                                 name="address"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                                 value={values.address}
                                 className={s.input}
-                                placeholder="Enter your BTC wallet address"
+                                placeholder="Paste your BTC Ordinal wallet address here"
                               />
                             </div>
                             {errors.address && touched.address && (
@@ -218,8 +206,7 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
                             <>
                               <div className={s.formItem}>
                                 <label className={s.label} htmlFor="price">
-                                  Set a price{' '}
-                                  <sup className={s.requiredTag}>*</sup>
+                                  Price <sup className={s.requiredTag}>*</sup>
                                 </label>
                                 <div className={s.inputContainer}>
                                   <input
@@ -228,7 +215,7 @@ const MintBTCGenerativeModal: React.FC<IProp> = ({
                                     type="number"
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={covertPriceToBTC(Number(price))}
+                                    value={priceMemo}
                                     className={s.input}
                                   />
                                   <div className={s.inputPostfix}>BTC</div>
