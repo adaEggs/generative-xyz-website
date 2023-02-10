@@ -18,8 +18,8 @@ export interface IBitcoinProjectContext {
   isPopupPayment: boolean;
   setIsPopupPayment: Dispatch<SetStateAction<boolean>>;
 
-  paymentStep: 'switch' | 'info' | 'mint';
-  setPaymentStep: (s: 'switch' | 'info' | 'mint') => void;
+  paymentStep: 'switch' | 'mint';
+  setPaymentStep: (s: 'switch' | 'mint') => void;
 }
 
 const initialValue: IBitcoinProjectContext = {
@@ -51,9 +51,7 @@ export const BitcoinProjectProvider: React.FC<PropsWithChildren> = ({
   const refOg = useRef<ReturnType<typeof setInterval> | null>(null);
   const [countDown, setCountDown] = useState<string>('EXPIRED');
   const [aVailable, setAVailable] = useState<boolean>(false);
-  const [paymentStep, setPaymentStep] = useState<'switch' | 'info' | 'mint'>(
-    'switch'
-  );
+  const [paymentStep, setPaymentStep] = useState<'switch' | 'mint'>('switch');
   const [isPopupPayment, setIsPopupPayment] = useState<boolean>(false);
   const [paymentMethod, setPaymentMethod] = useState<'ETH' | 'BTC'>('BTC');
 
@@ -99,6 +97,12 @@ export const BitcoinProjectProvider: React.FC<PropsWithChildren> = ({
       refOg.current && clearInterval(refOg.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (!isPopupPayment) {
+      setPaymentStep('switch');
+    }
+  }, [isPopupPayment]);
 
   const contextValues = useMemo((): IBitcoinProjectContext => {
     return {

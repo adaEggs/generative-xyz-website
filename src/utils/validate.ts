@@ -4,5 +4,5 @@ export const validateWalletAddress = (address: string): boolean => {
 
 export const validateBTCWalletAddress = (_address: string): boolean => {
   return true;
-  // return /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/.test(address);
+  // return /^[13][a-zA-Z0-9]{26,33}$/.test(address);
 };

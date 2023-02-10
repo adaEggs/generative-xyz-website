@@ -14,6 +14,7 @@ import TokenTopFilter from './TokenTopFilter';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import SelectPaymentModel from '@containers/GenerativeProjectDetail/SelectPaymenetModal';
 import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModal';
+import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal';
 
 const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
   const {
@@ -80,7 +81,12 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
       {isPopupPayment && (
         <>
           {paymentStep === 'switch' && <SelectPaymentModel />}
-          {paymentMethod === 'BTC' && <MintBTCGenerativeModal />}
+          {paymentStep === 'mint' && paymentMethod === 'BTC' && (
+            <MintBTCGenerativeModal />
+          )}
+          {paymentStep === 'mint' && paymentMethod === 'ETH' && (
+            <MintETHModal />
+          )}
         </>
       )}
     </>

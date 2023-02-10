@@ -1,4 +1,5 @@
 import { isBrowser } from '@utils/common';
+import Web3 from 'web3';
 
 export const utf8ToBase64 = (str: string): string => {
   if (!isBrowser()) {
@@ -119,5 +120,11 @@ export const formatCurrency = (value: number): string => {
 export const tokenID = (tokenName: string) => tokenName.split('#')[1];
 
 export const formatBTCPrice = (price: number): string => {
-  return (Number(price) / 1e8).toString();
+  if (!price) return '--';
+  return (price / 1e8).toString();
+};
+
+export const formatEthPrice = (price: string | null): string => {
+  if (!price) return '--';
+  return Web3.utils.fromWei(price, 'ether');
 };

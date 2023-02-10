@@ -2,7 +2,7 @@ import Button from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
@@ -31,7 +31,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   const { setIsPopupPayment } = useContext(BitcoinProjectContext);
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
-  const [price, setPrice] = useState<string | null>();
+  const [price, setPrice] = useState<string | null>(null);
   const [_isMinting, setIsMinting] = useState(false);
   const [step, setsTep] = useState<'info' | 'mint'>('info');
 
@@ -41,13 +41,13 @@ const MintBTCGenerativeModal: React.FC = () => {
     try {
       setIsLoading(true);
       setReceiverAddress(null);
-      const { address, price: _price } = await generateBTCReceiverAddress({
+      const { address, price: price } = await generateBTCReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
       });
 
       setReceiverAddress(address);
-      setPrice(projectData?.mintPrice);
+      setPrice(price || projectData?.mintPrice);
     } catch (err: unknown) {
       setReceiverAddress(null);
     } finally {
@@ -91,6 +91,8 @@ const MintBTCGenerativeModal: React.FC = () => {
       setIsMinting(false);
     }
   };
+
+  const priceMemo = useMemo(() => formatBTCPrice(Number(price)), [price]);
 
   if (!projectData) {
     return <></>;
@@ -213,7 +215,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                                     type="number"
                                     onChange={handleChange}
                                     onBlur={handleBlur}
-                                    value={formatBTCPrice(Number(price))}
+                                    value={priceMemo}
                                     className={s.input}
                                   />
                                   <div className={s.inputPostfix}>BTC</div>
