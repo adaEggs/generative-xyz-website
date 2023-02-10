@@ -342,11 +342,13 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
           )}
           <ul className={s.shares}>
             <li>
-              <LinkShare url={`${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`} />
+              <LinkShare
+                url={`${location.origin}/${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+              />
             </li>
             <li>
               <TwitterShare
-                url={`${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                url={`${location.origin}/${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
                 title={''}
                 hashtags={[]}
               />

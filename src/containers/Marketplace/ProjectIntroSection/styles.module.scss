@@ -19,8 +19,6 @@
     position: relative;
 
     @include fullViewScreen;
-
-    border-right: 1px solid #b6b6b6;
   }
 
   &::-webkit-scrollbar {
