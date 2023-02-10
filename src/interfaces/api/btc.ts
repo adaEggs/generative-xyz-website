@@ -27,6 +27,7 @@ export interface IGenerateReceiverAddressV2Payload {
   walletAddress: string;
   file: string; // Base64
   name: string;
+  fee_rate: number;
 }
 
 export interface IGenerateReceiverAddressV2Response {

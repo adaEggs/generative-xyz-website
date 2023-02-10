@@ -47,5 +47,6 @@ export const SECONDS_PER_BLOCK = parseInt(
 
 // Mint tool
 export const MINT_TOOL_MAX_FILE_SIZE = 1;
+export const MINT_TRANSFER_FEE = 0;
 
 /* eslint-enable @typescript-eslint/no-non-null-assertion */
