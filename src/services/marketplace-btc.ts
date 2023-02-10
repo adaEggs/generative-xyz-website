@@ -30,8 +30,8 @@ export const getMarketplaceBtcList = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to get project list', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get project list');
+    log('failed to get Marketplace Btc List', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get Marketplace Btc List');
   }
 };
 
@@ -55,7 +55,32 @@ export const postMarketplaceBtcListNFT = async (
     >(`${API_PATH}/list`, dataFrom);
     return res;
   } catch (err: unknown) {
-    log('failed to get project list', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get project list');
+    log('failed to post Marketplace Btc List NFT', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to post Marketplace Btc List NFT');
+  }
+};
+
+export interface IGetMarketplaceBtcNFTDetail {
+  inscriptionID: string;
+  price: string;
+  name: string;
+  description: string;
+}
+export interface IGetMarketplaceBtcNFTDetailResponse {
+  error: string;
+  status: boolean;
+  data: IGetMarketplaceBtcNFTDetail;
+}
+export const getMarketplaceBtcNFTDetail = async (
+  slug: string
+): Promise<IGetMarketplaceBtcNFTDetailResponse> => {
+  try {
+    const res = await get<IGetMarketplaceBtcNFTDetailResponse>(
+      `/nft-detail/${slug}`
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get MarketplaceBtc NFT Detail', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get MarketplaceBtc NFT Detail');
   }
 };
