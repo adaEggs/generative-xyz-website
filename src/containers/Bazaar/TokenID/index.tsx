@@ -82,7 +82,9 @@ const TokenID: React.FC = (): React.ReactElement => {
         </Text>
         {mobileScreen && tokenData?.name && (
           <TokenIDImage
-            image={'https://imageonline.co/image.jpg'}
+            image={
+              'https://ordinals.com/content/2696948882cc088f2d1c160981501a48b3744d8d5df0e8d9a71557e716c634dci0'
+            }
             name={tokenData?.name || ''}
           />
         )}
@@ -175,9 +177,11 @@ const TokenID: React.FC = (): React.ReactElement => {
       {renderLeftContent()}
       <div />
       {/*{!mobileScreen && <TokenIDImage image={''} name="" />}*/}
-      {!mobileScreen && tokenData?.name && (
+      {!mobileScreen && (
         <TokenIDImage
-          image={'https://imageonline.co/image.jpg'}
+          image={
+            'https://ordinals.com/content/2696948882cc088f2d1c160981501a48b3744d8d5df0e8d9a71557e716c634dci0'
+          }
           name={tokenData?.name || ''}
         />
       )}

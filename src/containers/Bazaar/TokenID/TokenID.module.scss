@@ -135,17 +135,16 @@
 
 .img_inner {
   position: relative;
-  padding: rem(120px);
 
   @include tablet {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    height: calc(100vh - #{rem(260px)});
     padding: 0;
   }
 
   @include mobile {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    height: calc(100vh - #{rem(260px)});
     padding: 0;
   }
 }

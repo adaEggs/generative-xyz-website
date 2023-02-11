@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { convertIpfsToHttp } from '@utils/image';
 import s from './TokenID.module.scss';
+import Skeleton from '@components/Skeleton';
 
 interface IProps {
   image: string;
@@ -18,6 +19,7 @@ const TokenIDImage = React.memo((props: IProps) => {
   return (
     <div className={s.img_inner}>
       <div className={s.img_wrapper}>
+        <Skeleton fill isLoaded={!!props.name} />
         <img
           onError={onThumbError}
           src={convertIpfsToHttp(thumb)}
