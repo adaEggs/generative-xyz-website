@@ -25,9 +25,11 @@ const LOG_PREFIX = 'Empty';
 export const Empty = ({
   projectInfo,
   className,
+  content = 'Bring your unique vision to life. Mint your first NFT now',
 }: {
   projectInfo?: Project | null;
   className?: string;
+  content?: string;
 }): JSX.Element => {
   const { getWalletBalance } = useContext(WalletContext);
   const router = useRouter();
@@ -124,7 +126,7 @@ export const Empty = ({
               <p>Please browse other collections for availability.</p>
             </>
           ) : (
-            'Bring your unique vision to life. Mint your first NFT now'
+            content
           )}
         </div>
         {!isBitcoinProject && projectInfo && !mintedOut && (
