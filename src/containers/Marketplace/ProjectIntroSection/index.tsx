@@ -193,7 +193,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
           {project?.mintingInfo.index !== project?.maxSupply && (
             <ProgressBar
               current={project?.mintingInfo?.index}
-              total={project?.maxSupply}
+              total={project?.maxSupply || project?.limit}
               className={s.progressBar}
             />
           )}
