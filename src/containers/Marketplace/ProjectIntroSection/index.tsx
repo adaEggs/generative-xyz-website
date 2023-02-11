@@ -148,8 +148,8 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   );
 
   const priceEthMemo = useMemo(
-    () => formatEthPrice(project?.ethPrice || null),
-    [project?.ethPrice]
+    () => formatEthPrice(project?.mintPriceEth || null),
+    [project?.mintPriceEth]
   );
 
   const renderLeftContent = () => {
