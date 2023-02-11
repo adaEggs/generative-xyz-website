@@ -25,7 +25,7 @@ const TokenIDImage = React.memo((props: IProps) => {
             sandbox="allow-scripts"
             scrolling="no"
             loading="lazy"
-            src={'https://node1-staging.incognito.org/'}
+            src={thumb}
           />
         ) : (
           <img
