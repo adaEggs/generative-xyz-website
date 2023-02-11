@@ -177,7 +177,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.name}
                                 className={s.input}
-                                placeholder="Paste your NFT Name here"
+                                placeholder="Input your NFT Name here"
                               />
                             </div>
                             {errors.name && touched.name && (
@@ -197,7 +197,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.description}
                                 className={s.input}
-                                placeholder="Paste your description here"
+                                placeholder="Input your description here"
                               />
                             </div>
                           </div>
@@ -214,7 +214,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.price}
                                 className={s.input}
-                                placeholder="Paste your price here"
+                                placeholder="Input your price here"
                               />
                               <div className={s.inputPostfix}>BTC</div>
                             </div>
