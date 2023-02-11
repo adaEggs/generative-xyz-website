@@ -29,15 +29,25 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
     isBitcoinProject,
   } = useContext(GenerativeProjectDetailContext);
 
-  const { setIsPopupPayment, isPopupPayment, paymentStep, paymentMethod } =
-    useContext(BitcoinProjectContext);
+  const {
+    setIsPopupPayment,
+    isPopupPayment,
+    paymentStep,
+    paymentMethod,
+    setPaymentMethod,
+    setPaymentStep,
+  } = useContext(BitcoinProjectContext);
 
   return (
     <>
       <section>
         <Container>
           <ProjectIntroSection
-            openMintBTCModal={() => setIsPopupPayment(true)}
+            openMintBTCModal={(chain: 'BTC' | 'ETH') => {
+              setPaymentStep('mint');
+              setIsPopupPayment(true);
+              setPaymentMethod(chain);
+            }}
             project={projectInfo}
           />
 
