@@ -14,7 +14,6 @@ import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
 import { formatAddress, formatTokenId, formatLongAddress } from '@utils/format';
-import { checkLines } from '@utils/string';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import React, { useContext, useState } from 'react';
@@ -30,8 +29,8 @@ import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
-import MarkdownPreview from '@components/MarkdownPreview';
 import { EXTERNAL_LINK } from '@constants/external-link';
+import { SeeMore } from '@components/SeeMore';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -65,7 +64,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       link: `${EXTERNAL_LINK.ORDINALS}/inscription/${tokenData?.tokenID || ''}`,
     },
   ];
-  const [showMore, setShowMore] = useState(false);
 
   const handleOpenListingTokenModal = (): void => {
     openListingModal();
@@ -272,35 +270,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 >
                   description
                 </Text>
-                <div
-                  className={s.token_description}
-                  style={{ WebkitLineClamp: showMore ? 'unset' : '3' }}
-                >
-                  {/* {tokenDescription} */}
-                  <MarkdownPreview source={tokenDescription} />
-                </div>
-
-                {checkLines(tokenDescription) > 3 && (
-                  <>
-                    {!showMore ? (
-                      <Text
-                        as="span"
-                        onClick={() => setShowMore(!showMore)}
-                        fontWeight="semibold"
-                      >
-                        See more
-                      </Text>
-                    ) : (
-                      <Text
-                        as="span"
-                        onClick={() => setShowMore(!showMore)}
-                        fontWeight="semibold"
-                      >
-                        See less
-                      </Text>
-                    )}
-                  </>
-                )}
+                <SeeMore>{tokenDescription || ''}</SeeMore>
               </div>
               {tokenData?.attributes && tokenData?.attributes?.length > 0 && (
                 <div className={s.accordions_item}>

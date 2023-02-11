@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import Heading from '@components/Heading';
 import Skeleton from '@components/Skeleton';
 import Text from '@components/Text';
@@ -17,10 +19,10 @@ const ProgressBar = ({
   size = 'regular',
   className,
 }: TProgressBar) => {
-  // const calcMintProgress = useMemo(() => {
-  //   if (!current || !total) return 0;
-  //   return (current / total) * 100;
-  // }, [total, current]);
+  const calcMintProgress = useMemo(() => {
+    if (!current || !total) return 0;
+    return (current / total) * 100;
+  }, [total, current]);
 
   return (
     <div className={cs(s.wrapper, className)}>
@@ -51,14 +53,14 @@ const ProgressBar = ({
         )}
       </div>
       {
-        // <div className={s.progressWrapper}>
-        //   <div
-        //     className={s.progressBar}
-        //     style={{
-        //       width: `${calcMintProgress}%`,
-        //     }}
-        //   ></div>
-        // </div>
+        <div className={s.progressWrapper}>
+          <div
+            className={s.progressBar}
+            style={{
+              width: `${calcMintProgress}%`,
+            }}
+          ></div>
+        </div>
       }
     </div>
   );

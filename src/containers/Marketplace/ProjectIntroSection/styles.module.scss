@@ -6,9 +6,9 @@
 
   @include min-tablet {
     display: grid;
-    grid-template-columns: rem(420px) 1px 1fr;
-    margin-bottom: rem(90px);
-    padding-top: rem(60px);
+    grid-template-columns: rem(520px) 1px 1fr;
+    padding-top: rem(40px);
+    margin-bottom: rem(40px);
   }
 }
 
@@ -85,6 +85,22 @@
     @include mobile {
       width: 100%;
     }
+
+    &__eth {
+      background: #00AA6C !important;
+
+      &:hover {
+        background: #01b875 !important;
+      }
+    }
+
+    span:nth-child(2) {
+      margin-left: rem(20px);
+
+      span {
+        font-size: 120%;
+      }
+    }
   }
 
   .explore_btn {
@@ -104,6 +120,19 @@
       text-decoration: none;
     }
   }
+
+  ul {
+    display: flex;
+    gap: rem(12px);
+    flex-wrap: wrap;
+
+    li {
+      @include mobile {
+        flex: 0 0 100%;
+        width: 100%;
+      }
+    }
+  }
 }
 
 .priceBtc {
@@ -111,9 +140,8 @@
   font-weight: 500;
 
   @include calcFontAuto(24px, 34px);
-
   display: block;
-  margin-bottom: rem(16px);
+  margin-bottom: rem(5px);
 
   small {
     font-size: 65% !important;
@@ -181,28 +209,6 @@
   margin-bottom: rem(14px);
 }
 
-.token_description {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-
-  :global(.wmde-markdown) {
-    line-height: (26/16);
-
-    @include calcFontAuto(14px, 16px);
-
-    font-family: $font-paragraph;
-  }
-
-  + span {
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-      text-decoration: none;
-    }
-  }
-}
 
 .description {
   display: flex;
