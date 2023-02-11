@@ -46,6 +46,14 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
       errors.price = 'Price is required.';
     }
 
+    if (!values.inscriptionID) {
+      errors.inscriptionID = 'Ordinal link is required.';
+    }
+
+    if (!values.name) {
+      errors.name = 'Name is required.';
+    }
+
     return errors;
   };
 
@@ -136,6 +144,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="inscriptionID">
                               Ordinal Link{' '}
+                              <sup className={s.requiredTag}>*</sup>
                             </label>
                             <div className={s.inputContainer}>
                               <input
@@ -157,7 +166,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                           </div>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="name">
-                              NFT Name{' '}
+                              NFT Name <sup className={s.requiredTag}>*</sup>
                             </label>
                             <div className={s.inputContainer}>
                               <input
