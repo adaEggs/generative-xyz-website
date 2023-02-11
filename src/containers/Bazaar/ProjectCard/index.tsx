@@ -10,6 +10,7 @@ import { IGetMarketplaceBtcListItem } from '@services/marketplace-btc';
 import { convertIpfsToHttp } from '@utils/image';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { useState } from 'react';
+import BigNumber from 'bignumber.js';
 
 interface IPros {
   project: IGetMarketplaceBtcListItem;
@@ -21,6 +22,10 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const [thumb, setThumb] = useState<string>(project.image);
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
+  };
+
+  const convertBTCPrice = () => {
+    return new BigNumber(project.price || 0).div(1e8).toString();
   };
 
   return (
@@ -50,7 +55,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                   #{project.name}
                 </Text>
                 <Text size="12" fontWeight="semibold">
-                  {project.price}BTC
+                  {convertBTCPrice()}&nbsp;BTC
                 </Text>
               </div>
             </div>
@@ -61,9 +66,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 <Heading as={'h4'}>
                   <span title={project.name}>{project.name}</span>
                 </Heading>
-                <Heading as={'h4'}>
-                  <span>0.2BTC</span>
-                </Heading>
+                <Heading as={'h4'}>{convertBTCPrice()}&nbsp;BTC</Heading>
               </div>
               <div className={cs(s.btnBuyNow)}>Buy Now</div>
             </div>

@@ -201,17 +201,14 @@ const ListForSaleModal = ({
                 <>
                   <div className={s.formWrapper} style={{ marginTop: 24 }}>
                     <div className={s.qrCodeWrapper}>
-                      {/* <p className={s.qrTitle}>
+                      <p className={s.qrTitle}>
                         Send NFT to this deposit address
-                      </p> */}
+                      </p>
                       <QRCodeGenerator
                         className={s.qrCodeGenerator}
                         size={128}
                         value={receiveAddress || ''}
                       />
-                      <p className={s.sendBtcDesc}>
-                        Send BTC to this deposit address
-                      </p>
                       <p className={s.btcAddress}>{receiveAddress || ''}</p>
                     </div>
                     <ButtonIcon
