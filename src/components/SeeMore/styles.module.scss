@@ -5,14 +5,16 @@
   line-clamp: 8;
   -webkit-line-clamp: 8;
 
-  &.isShowMore{
+  &.isShowMore {
     line-clamp: unset;
     -webkit-line-clamp: unset;
   }
 
   :global(.wmde-markdown) {
     line-height: (26/16);
+
     @include calcFontAuto(14px, 16px);
+
     font-family: $font-paragraph;
 
     @include min-pc-superWide {
@@ -28,9 +30,4 @@
       text-decoration: none;
     }
   }
-}
-
-
-.token_description_content {
-
 }
