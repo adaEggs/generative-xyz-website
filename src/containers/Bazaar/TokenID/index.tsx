@@ -83,7 +83,7 @@ const TokenID: React.FC = (): React.ReactElement => {
           color={'primary-brand'}
           className={s.info_amountPrice}
         >
-          {new BigNumber(tokenData?.price || 0).div(1e8).toString()} BTC
+          {new BigNumber(tokenData?.price || 0).div(1e8).toFixed()} BTC
         </Text>
         {mobileScreen && tokenData?.name && (
           <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />

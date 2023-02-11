@@ -189,7 +189,7 @@ const ListForSaleModal = ({
                                   onBlur={handleBlur}
                                   value={new BigNumber(price)
                                     .div(1e8)
-                                    .toString()}
+                                    .toFixed()}
                                   className={s.input}
                                   disabled={true}
                                   placeholder="Paste your price here"

@@ -282,7 +282,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                             >
                               {new BigNumber(values.price || 0)
                                 .multipliedBy(FEE_CHARGE_PERCENT)
-                                .toString()}{' '}
+                                .toFixed()}{' '}
                               BTC
                             </Text>
                           </div>
