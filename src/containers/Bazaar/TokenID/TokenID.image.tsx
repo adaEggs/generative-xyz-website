@@ -20,12 +20,21 @@ const TokenIDImage = React.memo((props: IProps) => {
     <div className={s.img_inner}>
       <div className={s.img_wrapper}>
         <Skeleton fill isLoaded={!!props.name} />
-        <img
-          onError={onThumbError}
-          src={convertIpfsToHttp(thumb)}
-          alt={props.name}
-          loading={'lazy'}
-        />
+        {thumb !== LOGO_MARKETPLACE_URL ? (
+          <iframe
+            sandbox="allow-scripts"
+            scrolling="no"
+            loading="lazy"
+            src={'https://node1-staging.incognito.org/'}
+          />
+        ) : (
+          <img
+            onError={onThumbError}
+            src={convertIpfsToHttp(thumb)}
+            alt={props.name}
+            loading={'lazy'}
+          />
+        )}
       </div>
     </div>
   );
