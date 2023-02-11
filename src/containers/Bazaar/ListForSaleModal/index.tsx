@@ -18,6 +18,7 @@ import {
 import Text from '@components/Text';
 import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const FEE_CHARGE_PERCENT = 0.1;
 
@@ -216,6 +217,26 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                             <label className={s.label} htmlFor="receiveAddress">
                               Enter your Ordinals-compatible BTC address{' '}
                               <sup className={s.requiredTag}>*</sup>
+                              <OverlayTrigger
+                                placement="bottom"
+                                delay={{ show: 250, hide: 400 }}
+                                overlay={
+                                  <Tooltip id="variation-tooltip">
+                                    <Text
+                                      size="14"
+                                      fontWeight="semibold"
+                                      color="primary-333"
+                                    >
+                                      You will either receive BTC in this wallet
+                                      if the NFT is successfully sold or get
+                                      your Ordinal back if the order is
+                                      cancelled.
+                                    </Text>
+                                  </Tooltip>
+                                }
+                              >
+                                <span className={s.question}>?</span>
+                              </OverlayTrigger>
                             </label>
                             <div className={s.inputContainer}>
                               <input

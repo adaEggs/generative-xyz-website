@@ -16,6 +16,7 @@ import { submitAddressBuyBTC } from '@services/marketplace-btc';
 import ButtonIcon from '@components/ButtonIcon';
 import Text from '@components/Text';
 import { useRouter } from 'next/router';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 interface IFormValue {
   address: string;
@@ -138,6 +139,26 @@ const ListForSaleModal = ({
                               <label className={s.label} htmlFor="address">
                                 Enter your Ordinals-compatible BTC address
                                 <sup className={s.requiredTag}>*</sup>
+                                <OverlayTrigger
+                                  placement="bottom"
+                                  delay={{ show: 250, hide: 400 }}
+                                  overlay={
+                                    <Tooltip id="variation-tooltip">
+                                      <Text
+                                        size="14"
+                                        fontWeight="semibold"
+                                        color="primary-333"
+                                      >
+                                        You will either receive NFT in this
+                                        wallet if the NFT is successfully bought
+                                        or get your Ordinal back if the order is
+                                        cancelled.
+                                      </Text>
+                                    </Tooltip>
+                                  }
+                                >
+                                  <span className={s.question}>?</span>
+                                </OverlayTrigger>
                               </label>
                               <div className={s.inputContainer}>
                                 <input

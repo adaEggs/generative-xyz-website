@@ -269,3 +269,12 @@
   justify-content: center;
   margin-top: rem(35);
 }
+
+.question {
+  padding: 3px 7px;
+  border-radius: 30px;
+  background-color: #e3e2e2;
+  font-size: 10px;
+  color: $black-60-solid;
+  margin-left: 4px;
+}
