@@ -25,7 +25,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
 
   const getImgURL = () => {
     if (!project?.inscriptionID) return '';
-    return `https://ordinals-explorer.generative.xyz/preview/${project?.inscriptionID}`;
+    return `https://ordinals.com/preview/${project?.inscriptionID}`;
   };
 
   const [thumb, setThumb] = useState<string>(getImgURL());
@@ -35,10 +35,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   };
 
   return (
-    <Link
-      href={`${ROUTE_PATH.BAZAAR}/${project.inscriptionID}`}
-      className={`${s.projectCard} ${className}`}
-    >
+    <div className={`${s.projectCard} ${className}`}>
       <div className={s.projectCard_inner}>
         <div className={`${s.projectCard_thumb}`}>
           {thumb !== LOGO_MARKETPLACE_URL ? (
@@ -95,6 +92,10 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
           )}
         </div>
       </div>
-    </Link>
+      <Link
+        href={`${ROUTE_PATH.BAZAAR}/${project.inscriptionID}`}
+        className={s.mask}
+      />
+    </div>
   );
 };
