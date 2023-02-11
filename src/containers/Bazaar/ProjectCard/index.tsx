@@ -47,6 +47,13 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               scrolling="no"
               loading="lazy"
               src={thumb}
+              style={{
+                width: '100%',
+                height: '100%',
+                top: 0,
+                left: 0,
+                position: 'absolute',
+              }}
             />
           ) : (
             <img
