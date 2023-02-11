@@ -91,7 +91,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 current={
                   project.mintingInfo.index + project.mintingInfo.indexReserve
                 }
-                total={project.limit}
+                total={project.maxSupply || project.limit}
               />
             </div>
           ) : (
@@ -113,7 +113,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 current={
                   project.mintingInfo.index + project.mintingInfo.indexReserve
                 }
-                total={project.limit}
+                total={project.maxSupply || project.limit}
               />
             </div>
           )}

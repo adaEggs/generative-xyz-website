@@ -7,7 +7,7 @@ import { GetServerSidePropsContext, NextPage } from 'next';
 
 const GenerativeProjectDetailPage: NextPage = () => {
   return (
-    <MarketplaceLayout>
+    <MarketplaceLayout isDrops={true}>
       <GenerativeProjectDetailWrapper />
     </MarketplaceLayout>
   );

@@ -5,7 +5,7 @@ import { CDN_URL } from '@constants/config';
 
 const MarketplacePage: NextPage = () => {
   return (
-    <MarketplaceLayout>
+    <MarketplaceLayout isDrops={true}>
       <Marketplace />
     </MarketplaceLayout>
   );
