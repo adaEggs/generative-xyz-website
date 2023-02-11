@@ -15,6 +15,7 @@ import BigNumber from 'bignumber.js';
 import { submitAddressBuyBTC } from '@services/marketplace-btc';
 import ButtonIcon from '@components/ButtonIcon';
 import Text from '@components/Text';
+import { useRouter } from 'next/router';
 
 interface IFormValue {
   address: string;
@@ -38,9 +39,11 @@ const ListForSaleModal = ({
 }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
-  const [step, setsTep] = useState<'info' | 'pasteAddress' | 'showAddress'>(
-    'pasteAddress'
-  );
+  const router = useRouter();
+
+  const [step, setsTep] = useState<
+    'info' | 'pasteAddress' | 'showAddress' | 'thank'
+  >('pasteAddress');
 
   const validateForm = (values: IFormValue) => {
     const errors: Record<string, string> = {};
@@ -214,12 +217,35 @@ const ListForSaleModal = ({
                     <ButtonIcon
                       sizes="large"
                       className={s.buyBtn}
-                      onClick={handleClose}
+                      onClick={() => setsTep('thank')}
                     >
                       <Text as="span" size="14" fontWeight="medium">
                         Already Sent
                       </Text>
                     </ButtonIcon>
+                  </div>
+                </>
+              )}
+              {step === 'thank' && (
+                <>
+                  <h3 className={s.modalTitle}>Thank you for being patient.</h3>
+                  <div className={s.info_guild}>
+                    It might take a few minutes to completely buy the Ordinal on
+                    Bazaar.
+                  </div>
+                  <div className={s.ctas}>
+                    <Button
+                      type="button"
+                      variants={'ghost'}
+                      className={s.submitBtn}
+                      onClick={() => {
+                        router.push('/bazaar').then(() => {
+                          handleClose();
+                        });
+                      }}
+                    >
+                      Browse Ordinals on Bazaar
+                    </Button>
                   </div>
                 </>
               )}

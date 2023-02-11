@@ -31,8 +31,7 @@ const LOG_PREFIX = 'ListForSaleModal';
 const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
-  const [step, setsTep] = useState<'info' | 'list' | 'thank'>('thank');
-  // const router = useRouter();
+  const [step, setsTep] = useState<'info' | 'list' | 'thank'>('info');
 
   const validateForm = (values: IPostMarketplaceBtcListNFTParams) => {
     const errors: Record<string, string> = {};
