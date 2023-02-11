@@ -202,6 +202,7 @@
   }
 
   .testNet,
+  .topDiscord,
   :global(.divider) {
     transition: all 0.4s $easeOutCubic;
   }
@@ -250,7 +251,8 @@
   }
 }
 
-.testNet {
+.testNet,
+.topDiscord {
   background: #4f43e2;
   font-style: normal;
   font-weight: 400;
@@ -294,6 +296,10 @@
       color: rgba($white, 0.8);
     }
   }
+}
+
+.topDiscord {
+  padding-top: rem(8px);
 }
 
 .header {

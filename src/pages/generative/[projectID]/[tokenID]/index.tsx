@@ -8,7 +8,7 @@ import { GetServerSidePropsContext, NextPage } from 'next';
 
 const GenerativeTokenDetailPage: NextPage = () => {
   return (
-    <MarketplaceLayout>
+    <MarketplaceLayout isDrops={true}>
       <GenerativeTokenDetail />
     </MarketplaceLayout>
   );

@@ -9,13 +9,15 @@ interface IProps {
   theme?: 'light' | 'dark';
   isHideFaucet?: boolean;
   isDisplay?: boolean;
+  isDrops?: boolean;
 }
 
 const MarketplaceLayout: React.FC<IProps> = ({
   children,
   theme = 'light',
-  isHideFaucet = false,
+  isHideFaucet = true,
   isDisplay = false,
+  isDrops = false,
 }): React.ReactElement => {
   return (
     <div className={`${styles.wrapper} ${styles[theme]}`}>
@@ -23,6 +25,7 @@ const MarketplaceLayout: React.FC<IProps> = ({
         theme={theme}
         isShowFaucet={!isHideFaucet}
         isDisplay={isDisplay}
+        isDrops={isDrops}
       />
       <BitcoinProjectProvider>
         <main className={styles.main}>{children}</main>

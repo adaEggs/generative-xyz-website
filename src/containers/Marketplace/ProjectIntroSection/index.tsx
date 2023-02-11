@@ -300,7 +300,8 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 />
               </div>
 
-              {project?.desc && checkLines(project.desc) > 10 && (
+              {((project?.desc && checkLines(project.desc) > 10) ||
+                isBitcoinProject) && (
                 <>
                   {!showMore ? (
                     <Text
