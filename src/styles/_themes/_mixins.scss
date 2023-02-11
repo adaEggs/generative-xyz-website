@@ -363,7 +363,7 @@
 }
 
 @mixin fullViewScreen {
-  height: calc(100vh - #{rem(260px)});
+  height: calc(93vh - #{rem(260px)});
 }
 
 @function vhMathDiv($px, $base) {

@@ -15,6 +15,8 @@ import BigNumber from 'bignumber.js';
 import { submitAddressBuyBTC } from '@services/marketplace-btc';
 import ButtonIcon from '@components/ButtonIcon';
 import Text from '@components/Text';
+import { useRouter } from 'next/router';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 interface IFormValue {
   address: string;
@@ -38,9 +40,11 @@ const ListForSaleModal = ({
 }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
-  const [step, setsTep] = useState<'info' | 'pasteAddress' | 'showAddress'>(
-    'pasteAddress'
-  );
+  const router = useRouter();
+
+  const [step, setsTep] = useState<
+    'info' | 'pasteAddress' | 'showAddress' | 'thank'
+  >('pasteAddress');
 
   const validateForm = (values: IFormValue) => {
     const errors: Record<string, string> = {};
@@ -133,8 +137,28 @@ const ListForSaleModal = ({
                           <form onSubmit={handleSubmit}>
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
-                                TRANSFER NFT TO{' '}
+                                Enter your Ordinals-compatible BTC address
                                 <sup className={s.requiredTag}>*</sup>
+                                <OverlayTrigger
+                                  placement="bottom"
+                                  delay={{ show: 250, hide: 400 }}
+                                  overlay={
+                                    <Tooltip id="variation-tooltip">
+                                      <Text
+                                        size="14"
+                                        fontWeight="semibold"
+                                        color="primary-333"
+                                      >
+                                        You will either receive NFT in this
+                                        wallet if the NFT is successfully bought
+                                        or get your Ordinal back if the order is
+                                        cancelled.
+                                      </Text>
+                                    </Tooltip>
+                                  }
+                                >
+                                  <span className={s.question}>?</span>
+                                </OverlayTrigger>
                               </label>
                               <div className={s.inputContainer}>
                                 <input
@@ -186,7 +210,7 @@ const ListForSaleModal = ({
                                   className={s.submitBtn}
                                   disabled={isLoading}
                                 >
-                                  Generate deposit address
+                                  Generate payment address
                                 </Button>
                               </div>
                             )}
@@ -202,7 +226,7 @@ const ListForSaleModal = ({
                   <div className={s.formWrapper} style={{ marginTop: 24 }}>
                     <div className={s.qrCodeWrapper}>
                       <p className={s.qrTitle}>
-                        Send NFT to this deposit address
+                        Send BTC to this payment address
                       </p>
                       <QRCodeGenerator
                         className={s.qrCodeGenerator}
@@ -214,12 +238,35 @@ const ListForSaleModal = ({
                     <ButtonIcon
                       sizes="large"
                       className={s.buyBtn}
-                      onClick={handleClose}
+                      onClick={() => setsTep('thank')}
                     >
                       <Text as="span" size="14" fontWeight="medium">
-                        Already Deposited
+                        Already Sent
                       </Text>
                     </ButtonIcon>
+                  </div>
+                </>
+              )}
+              {step === 'thank' && (
+                <>
+                  <h3 className={s.modalTitle}>Thank you for being patient.</h3>
+                  <div className={s.info_guild}>
+                    It might take a few minutes to completely buy the Ordinal on
+                    Bazaar.
+                  </div>
+                  <div className={s.ctas}>
+                    <Button
+                      type="button"
+                      variants={'ghost'}
+                      className={s.submitBtn}
+                      onClick={() => {
+                        router.push('/bazaar').then(() => {
+                          handleClose();
+                        });
+                      }}
+                    >
+                      Browse Ordinals on Bazaar
+                    </Button>
                   </div>
                 </>
               )}

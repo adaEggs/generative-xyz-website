@@ -35,6 +35,7 @@ const MintEthModal: React.FC = () => {
   const [price, setPrice] = useState<string | null>(null);
   const [_isMinting, setIsMinting] = useState(false);
   const [step, setsTep] = useState<'info' | 'mint'>('info');
+  const [addressInput, setAddressInput] = useState<string>('');
 
   const getBTCAddress = async (walletAddress: string): Promise<void> => {
     if (!projectData) return;
@@ -69,7 +70,10 @@ const MintEthModal: React.FC = () => {
     } else if (!validateBTCWalletAddress(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
-      debounceGetBTCAddress(values.address);
+      if (addressInput !== values.address) {
+        setAddressInput(values.address);
+        debounceGetBTCAddress(values.address);
+      }
     }
 
     return errors;

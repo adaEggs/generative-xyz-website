@@ -41,6 +41,11 @@ const TokenID: React.FC = (): React.ReactElement => {
     );
   };
 
+  const getImgURL = () => {
+    if (!tokenData?.inscriptionID) return '';
+    return `https://ordinals.com/content/${tokenData?.inscriptionID}`;
+  };
+
   const renderRow = (label: string, value?: string | number) => {
     if (!value) return null;
     return (
@@ -81,12 +86,7 @@ const TokenID: React.FC = (): React.ReactElement => {
           {new BigNumber(tokenData?.price || 0).div(1e8).toString()} BTC
         </Text>
         {mobileScreen && tokenData?.name && (
-          <TokenIDImage
-            image={
-              'https://ordinals.com/content/2696948882cc088f2d1c160981501a48b3744d8d5df0e8d9a71557e716c634dci0'
-            }
-            name={tokenData?.name || ''}
-          />
+          <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
         )}
         <ButtonIcon
           sizes="large"
@@ -178,12 +178,7 @@ const TokenID: React.FC = (): React.ReactElement => {
       <div />
       {/*{!mobileScreen && <TokenIDImage image={''} name="" />}*/}
       {!mobileScreen && (
-        <TokenIDImage
-          image={
-            'https://ordinals.com/content/2696948882cc088f2d1c160981501a48b3744d8d5df0e8d9a71557e716c634dci0'
-          }
-          name={tokenData?.name || ''}
-        />
+        <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
       )}
       {!!tokenData?.inscriptionID && !!tokenData?.price && (
         <BuyTokenModal

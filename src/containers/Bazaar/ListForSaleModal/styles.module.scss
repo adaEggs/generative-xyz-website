@@ -12,6 +12,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-y: auto;
   }
 
   .modalWrapper {
@@ -21,6 +22,8 @@
     z-index: 20;
     border-radius: 2px;
     width: 90%;
+    overflow-y: scroll;
+    max-height: 90%;
 
     @include min-tablet {
       width: 520px;
@@ -240,4 +243,41 @@
     padding-left: rem(40px);
     padding-right: rem(40px);
   }
+}
+
+.divider {
+  margin-top: 26px;
+  margin-bottom: 26px;
+  width: 100%;
+  border: 1px solid #cecece;
+}
+
+.wrap_fee {
+  margin-bottom: 26px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.info_guild {
+  font-size: 18px;
+  line-height: 28px;
+  border-radius: 2px;
+  margin-top: rem(24px);
+  margin-bottom: rem(24px);
+  text-align: center;
+}
+
+.buyBtn {
+  width: 100%;
+  justify-content: center;
+  margin-top: rem(35);
+}
+
+.question {
+  padding: 3px 7px;
+  border-radius: 30px;
+  background-color: #e3e2e2;
+  font-size: 10px;
+  color: $black-60-solid;
+  margin-left: 4px;
 }

@@ -16,6 +16,7 @@ export type Project = {
   limit: number;
   mintPrice: string;
   mintPriceAddr: string;
+  mintPriceEth: string;
   name: string;
   creator: string;
   creatorAddr: string;
