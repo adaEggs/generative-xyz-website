@@ -49,7 +49,7 @@ export const postMarketplaceBtcListNFT = async (
     const res = await post<
       IPostMarketplaceBtcListNFTParams,
       IPostMarketplaceBtcListNFTResponse
-    >(`${API_PATH}/nft-gen-order`, dataFrom);
+    >(`${API_PATH}/listing`, dataFrom);
     return res;
   } catch (err: unknown) {
     log('failed to post Marketplace Btc List NFT', LogLevel.ERROR, LOG_PREFIX);

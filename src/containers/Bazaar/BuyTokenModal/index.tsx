@@ -133,7 +133,7 @@ const ListForSaleModal = ({
                           <form onSubmit={handleSubmit}>
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
-                                TRANSFER NFT TO{' '}
+                                Enter your Ordinals-compatible BTC address
                                 <sup className={s.requiredTag}>*</sup>
                               </label>
                               <div className={s.inputContainer}>
@@ -186,7 +186,7 @@ const ListForSaleModal = ({
                                   className={s.submitBtn}
                                   disabled={isLoading}
                                 >
-                                  Generate deposit address
+                                  Generate payment address
                                 </Button>
                               </div>
                             )}
@@ -202,7 +202,7 @@ const ListForSaleModal = ({
                   <div className={s.formWrapper} style={{ marginTop: 24 }}>
                     <div className={s.qrCodeWrapper}>
                       <p className={s.qrTitle}>
-                        Send NFT to this deposit address
+                        Send BTC to this payment address
                       </p>
                       <QRCodeGenerator
                         className={s.qrCodeGenerator}
@@ -217,7 +217,7 @@ const ListForSaleModal = ({
                       onClick={handleClose}
                     >
                       <Text as="span" size="14" fontWeight="medium">
-                        Already Deposited
+                        Already Sent
                       </Text>
                     </ButtonIcon>
                   </div>

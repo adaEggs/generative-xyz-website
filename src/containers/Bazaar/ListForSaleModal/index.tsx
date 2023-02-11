@@ -15,8 +15,11 @@ import {
   IPostMarketplaceBtcListNFTParams,
   postMarketplaceBtcListNFT,
 } from '@services/marketplace-btc';
-// import { useRouter } from 'next/router';
-// import { ROUTE_PATH } from '@constants/route-path';
+import Text from '@components/Text';
+import BigNumber from 'bignumber.js';
+import ButtonIcon from '@components/ButtonIcon';
+
+const FEE_CHARGE_PERCENT = 0.1;
 
 interface IProps {
   showModal: boolean;
@@ -28,7 +31,7 @@ const LOG_PREFIX = 'ListForSaleModal';
 const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
-  const [step, setsTep] = useState<'info' | 'list'>('info');
+  const [step, setsTep] = useState<'info' | 'list' | 'thank'>('thank');
   // const router = useRouter();
 
   const validateForm = (values: IPostMarketplaceBtcListNFTParams) => {
@@ -49,7 +52,10 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const handleSubmit = async (_data: IPostMarketplaceBtcListNFTParams) => {
     try {
       setIsLoading(true);
-      const res = await postMarketplaceBtcListNFT(_data);
+      const res = await postMarketplaceBtcListNFT({
+        ..._data,
+        price: new BigNumber(_data.price || 0).multipliedBy(1e8).toString(),
+      });
       if (res.receiveAddress) {
         setsTep('list');
         setReceiveAddress(res.receiveAddress);
@@ -61,6 +67,13 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleClose = () => {
+    setsTep('info');
+    setReceiveAddress('');
+    setIsLoading(false);
+    onClose();
   };
 
   // const goBazaarPage = () => {
@@ -78,10 +91,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
           <div className={s.modalContainer}>
             <div className={s.modalHeader}>
               <Button
-                onClick={() => {
-                  setsTep('info');
-                  onClose();
-                }}
+                onClick={handleClose}
                 className={s.closeBtn}
                 variants="ghost"
               >
@@ -92,7 +102,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
               </Button>
             </div>
             <div className={s.modalBody}>
-              {step === 'info' ? (
+              {step === 'info' && (
                 <div>
                   <h3 className={s.modalTitle}>List your NFT</h3>
                   <div className={s.alert_info}>
@@ -125,7 +135,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         <form onSubmit={handleSubmit}>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="inscriptionID">
-                              Ordinals ID{' '}
+                              Ordinal Link{' '}
                             </label>
                             <div className={s.inputContainer}>
                               <input
@@ -136,7 +146,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.inscriptionID}
                                 className={s.input}
-                                placeholder="Paste your BTC Ordinal ID here"
+                                placeholder="Paste your BTC Ordinal link here"
                               />
                             </div>
                             {errors.inscriptionID && touched.inscriptionID && (
@@ -205,7 +215,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                           </div>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="receiveAddress">
-                              Transfer BTC to{' '}
+                              Enter your Ordinals-compatible BTC address{' '}
                               <sup className={s.requiredTag}>*</sup>
                             </label>
                             <div className={s.inputContainer}>
@@ -227,9 +237,29 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 </p>
                               )}
                           </div>
+                          <div className={s.divider} />
+                          <div className={s.wrap_fee}>
+                            <Text
+                              size="16"
+                              fontWeight="medium"
+                              color="text-black-80"
+                            >
+                              Service fee
+                            </Text>
+                            <Text
+                              size="16"
+                              fontWeight="medium"
+                              color="text-black-80"
+                            >
+                              {new BigNumber(values.price || 0)
+                                .multipliedBy(FEE_CHARGE_PERCENT)
+                                .toString()}{' '}
+                              BTC
+                            </Text>
+                          </div>
                           {isLoading && (
                             <div className={s.loadingWrapper}>
-                              <Loading isLoaded={false}></Loading>
+                              <Loading isLoaded={false} />
                             </div>
                           )}
 
@@ -248,7 +278,8 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                     </Formik>
                   </div>
                 </div>
-              ) : (
+              )}
+              {step === 'list' && (
                 <>
                   <h3 className={s.modalTitle}>Send your NFT</h3>
                   <div className={s.formWrapper}>
@@ -262,6 +293,16 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         value={receiveAddress}
                       />
                       <p className={s.btcAddress}>{receiveAddress}</p>
+
+                      <ButtonIcon
+                        sizes="large"
+                        className={s.buyBtn}
+                        onClick={() => setsTep('thank')}
+                      >
+                        <Text as="span" size="14" fontWeight="medium">
+                          Already Sent
+                        </Text>
+                      </ButtonIcon>
                     </div>
                     {/* <div className={s.ctas}>
                       <Button
@@ -273,6 +314,25 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         Check out bazaar
                       </Button>
                     </div> */}
+                  </div>
+                </>
+              )}
+              {step === 'thank' && (
+                <>
+                  <h3 className={s.modalTitle}>Thank you for being patient.</h3>
+                  <div className={s.info_guild}>
+                    It might take a few minutes to completely list your Ordinal
+                    on Bazaar for sale.
+                  </div>
+                  <div className={s.ctas}>
+                    <Button
+                      type="button"
+                      variants={'ghost'}
+                      className={s.submitBtn}
+                      onClick={handleClose}
+                    >
+                      Browse Ordinals on Bazaar
+                    </Button>
                   </div>
                 </>
               )}
