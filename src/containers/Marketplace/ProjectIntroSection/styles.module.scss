@@ -96,7 +96,8 @@
 
     span:nth-child(2) {
       margin-left: rem(20px);
-      span{
+
+      span {
         font-size: 120%;
       }
     }
@@ -123,6 +124,14 @@
   ul {
     display: flex;
     gap: rem(12px);
+    flex-wrap: wrap;
+
+    li {
+      @include mobile {
+        flex: 0 0 100%;
+        width: 100%;
+      }
+    }
   }
 }
 
@@ -199,7 +208,6 @@
   margin-top: rem(24px);
   margin-bottom: rem(14px);
 }
-
 
 
 .description {
