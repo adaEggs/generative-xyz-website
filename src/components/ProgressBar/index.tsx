@@ -28,7 +28,11 @@ const ProgressBar = ({
         {size === 'regular' && (
           <>
             <Heading as="h6" fontWeight="medium">
-              {total ? `${current}` : <Skeleton width={60} height={34} />}
+              {total ? (
+                `${current}/${total}`
+              ) : (
+                <Skeleton width={60} height={34} />
+              )}
               <Text color="black-60" as="span">
                 {' '}
                 minted
@@ -38,7 +42,7 @@ const ProgressBar = ({
         )}
         {size === 'small' && (
           <Text size="18" fontWeight="bold">
-            {current}
+            {`${current}/${total}`}
             <Text size="12" fontWeight="regular" as="span">
               {' '}
               minted
@@ -46,16 +50,16 @@ const ProgressBar = ({
           </Text>
         )}
       </div>
-      {/* {!isBitcoinProject && (
-        <div className={s.progressWrapper}>
-          <div
-            className={s.progressBar}
-            style={{
-              width: `${calcMintProgress}%`,
-            }}
-          ></div>
-        </div>
-      )} */}
+      {
+        // <div className={s.progressWrapper}>
+        //   <div
+        //     className={s.progressBar}
+        //     style={{
+        //       width: `${calcMintProgress}%`,
+        //     }}
+        //   ></div>
+        // </div>
+      }
     </div>
   );
 };
