@@ -11,14 +11,13 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-import BigNumber from 'bignumber.js';
 import { submitAddressBuyBTC } from '@services/marketplace-btc';
 import ButtonIcon from '@components/ButtonIcon';
 import Text from '@components/Text';
 import { useRouter } from 'next/router';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { formatUnixDateTime } from '@utils/time';
 import { ROUTE_PATH } from '@constants/route-path';
+import { formatBTCPrice } from '@utils/format';
 
 interface IFormValue {
   address: string;
@@ -54,7 +53,7 @@ const ListForSaleModal = ({
     const errors: Record<string, string> = {};
 
     if (!values.address) {
-      errors.address = 'Wallet address is required.';
+      errors.address = 'Address is required.';
     } else if (!validateBTCWalletAddress(values.address)) {
       errors.address = 'Invalid wallet address.';
     }
@@ -151,28 +150,29 @@ const ListForSaleModal = ({
                           <form onSubmit={handleSubmit}>
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
-                                Your Ordinals-compatible BTC address
+                                Enter the Ordinals-compatible BTC address to
+                                receive your buying inscription.
                                 <sup className={s.requiredTag}>*</sup>
-                                <OverlayTrigger
-                                  placement="bottom"
-                                  delay={{ show: 250, hide: 400 }}
-                                  overlay={
-                                    <Tooltip id="variation-tooltip">
-                                      <Text
-                                        size="14"
-                                        fontWeight="semibold"
-                                        color="primary-333"
-                                      >
-                                        You will either receive inscription in
-                                        this wallet if the inscription is
-                                        successfully bought or get your Ordinal
-                                        back if the order is cancelled.
-                                      </Text>
-                                    </Tooltip>
-                                  }
-                                >
-                                  <span className={s.question}>?</span>
-                                </OverlayTrigger>
+                                {/*<OverlayTrigger*/}
+                                {/*  placement="bottom"*/}
+                                {/*  delay={{ show: 250, hide: 400 }}*/}
+                                {/*  overlay={*/}
+                                {/*    <Tooltip id="variation-tooltip">*/}
+                                {/*      <Text*/}
+                                {/*        size="14"*/}
+                                {/*        fontWeight="semibold"*/}
+                                {/*        color="primary-333"*/}
+                                {/*      >*/}
+                                {/*        You will either receive inscription in*/}
+                                {/*        this wallet if the inscription is*/}
+                                {/*        successfully bought or get your Ordinal*/}
+                                {/*        back if the order is cancelled.*/}
+                                {/*      </Text>*/}
+                                {/*    </Tooltip>*/}
+                                {/*  }*/}
+                                {/*>*/}
+                                {/*  <span className={s.question}>?</span>*/}
+                                {/*</OverlayTrigger>*/}
                               </label>
                               <div className={s.inputContainer}>
                                 <input
@@ -183,7 +183,7 @@ const ListForSaleModal = ({
                                   onBlur={handleBlur}
                                   value={values.address}
                                   className={s.input}
-                                  placeholder="Paste your BTC Ordinal wallet address here"
+                                  placeholder="Paste your Ordinals-compatible BTC address here"
                                 />
                               </div>
                               {errors.address && touched.address && (
@@ -201,9 +201,7 @@ const ListForSaleModal = ({
                                   name="price"
                                   onChange={handleChange}
                                   onBlur={handleBlur}
-                                  value={new BigNumber(price)
-                                    .div(1e8)
-                                    .toFixed()}
+                                  value={formatBTCPrice(price || 0)}
                                   className={s.input}
                                   disabled={true}
                                   placeholder="Paste your price here"
@@ -223,8 +221,9 @@ const ListForSaleModal = ({
                               <div className={s.ctas}>
                                 <Button
                                   type="button"
-                                  variants={'ghost'}
-                                  className={s.submitBtn}
+                                  sizes="large"
+                                  // variants={'ghost'}
+                                  className={s.buyBtn}
                                   disabled={isLoading}
                                   onClick={() => {
                                     handleClose();
@@ -235,14 +234,15 @@ const ListForSaleModal = ({
                               </div>
                             ) : receiveAddress ? null : (
                               <div className={s.ctas}>
-                                <Button
+                                <ButtonIcon
                                   type="submit"
-                                  variants={'ghost'}
-                                  className={s.submitBtn}
+                                  sizes="large"
+                                  // variants={'ghost'}
+                                  className={s.buyBtn}
                                   disabled={isLoading}
                                 >
                                   Generate payment address
-                                </Button>
+                                </ButtonIcon>
                               </div>
                             )}
                           </form>
@@ -292,10 +292,11 @@ const ListForSaleModal = ({
                     Trade.
                   </div>
                   <div className={s.ctas}>
-                    <Button
+                    <ButtonIcon
                       type="button"
-                      variants={'ghost'}
-                      className={s.submitBtn}
+                      sizes="large"
+                      // variants={'ghost'}
+                      className={s.buyBtn}
                       onClick={() => {
                         router.push(ROUTE_PATH.TRADE).then(() => {
                           handleClose();
@@ -303,7 +304,7 @@ const ListForSaleModal = ({
                       }}
                     >
                       Browse Ordinals on Trade
-                    </Button>
+                    </ButtonIcon>
                   </div>
                 </>
               )}

@@ -7,7 +7,7 @@ import Text from '@components/Text';
 import { Container } from 'react-bootstrap';
 import ButtonIcon from '@components/ButtonIcon';
 import MarkdownPreview from '@components/MarkdownPreview';
-import { ellipsisCenter } from '@utils/format';
+import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import useWindowSize from '@hooks/useWindowSize';
 import {
   getMarketplaceBtcNFTDetail,
@@ -78,28 +78,39 @@ const TokenID: React.FC = (): React.ReactElement => {
           {tokenData.name}
         </Heading>
         <Text size="14" color={'black-60'} className={s.info_labelPrice}>
-          PRICE
+          {tokenData?.isComplete ? 'LAST SALE' : 'PRICE'}
         </Text>
         <Text
           size={'20'}
-          color={'primary-brand'}
-          className={s.info_amountPrice}
-          style={{ marginBottom: tokenData.buyable ? 32 : 0 }}
+          className={
+            tokenData?.isComplete
+              ? s.info_amountPriceSuccess
+              : s.info_amountPrice
+          }
+          style={{
+            marginBottom: tokenData.buyable ? 32 : 0,
+          }}
         >
-          {new BigNumber(tokenData?.price || 0).div(1e8).toFixed()} BTC
+          {formatBTCPrice(new BigNumber(tokenData?.price || 0).toNumber())} BTC
         </Text>
         {mobileScreen && tokenData?.name && (
           <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
         )}
-        {!tokenData.buyable && (
-          <Text size={'14'} className={s.info_statusMsg}>
+        {!tokenData.buyable && !tokenData.isComplete && (
+          <Text size={'14'} className={s.info_statusIns}>
             The inscription is being purchased. ETA is in ~30 minutes.
+          </Text>
+        )}
+        {tokenData.isComplete && (
+          <Text size={'14'} className={s.info_statusComplete}>
+            This inscription is not available for buying now.
           </Text>
         )}
         <ButtonIcon
           sizes="large"
           className={s.info_buyBtn}
           onClick={() => {
+            // return setShowModal(true);
             if (tokenData.buyable) return setShowModal(true);
             router.push(ROUTE_PATH.TRADE);
           }}
