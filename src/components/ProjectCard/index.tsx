@@ -14,7 +14,7 @@ import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
-import { formatAddress } from '@utils/format';
+import { formatAddress, formatBTCPrice } from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
 import { CountDown } from '@components/CountDown';
 
@@ -86,6 +86,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                   {project.name}
                 </Text>
               </div>
+
               <ProgressBar
                 size={'small'}
                 current={
@@ -108,13 +109,35 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 </Heading>
               </div>
               {creator && <CreatorInfo creator={creatorMemo} />}
-              <ProgressBar
-                size={'small'}
-                current={
-                  project.mintingInfo.index + project.mintingInfo.indexReserve
-                }
-                total={project.maxSupply || project.limit}
-              />
+              {isBitcoinProject ? (
+                <div className={s.projectCard_info_price}>
+                  <div className={s.projectCard_info_price_price}>
+                    <span>
+                      {formatBTCPrice(Number(project.mintPrice))}
+                      <small>BTC</small>
+                    </span>
+                  </div>
+                  <div className={s.projectCard_info_price_bar}>
+                    <ProgressBar
+                      size={'small'}
+                      isHideBar={true}
+                      current={
+                        project.mintingInfo.index +
+                        project.mintingInfo.indexReserve
+                      }
+                      total={project.maxSupply || project.limit}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <ProgressBar
+                  size={'small'}
+                  current={
+                    project.mintingInfo.index + project.mintingInfo.indexReserve
+                  }
+                  total={project.maxSupply || project.limit}
+                />
+              )}
             </div>
           )}
         </div>

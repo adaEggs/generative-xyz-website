@@ -19,6 +19,7 @@ import Text from '@components/Text';
 import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { formatUnixDateTime } from '@utils/time';
 
 const FEE_CHARGE_PERCENT = 0.1;
 
@@ -32,6 +33,7 @@ const LOG_PREFIX = 'ListForSaleModal';
 const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
+  const [expireTime, setExpireTime] = useState('');
   const [step, setsTep] = useState<'info' | 'list' | 'thank'>('info');
 
   const validateForm = (values: IPostMarketplaceBtcListNFTParams) => {
@@ -42,6 +44,13 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     } else if (!validateBTCWalletAddress(values.receiveAddress)) {
       errors.receiveAddress = 'Invalid wallet address.';
     }
+
+    if (!values.receiveOrdAddress) {
+      errors.receiveOrdAddress = 'Wallet address is required.';
+    } else if (!validateBTCWalletAddress(values.receiveAddress)) {
+      errors.receiveOrdAddress = 'Invalid wallet address.';
+    }
+
     if (!values.price) {
       errors.price = 'Price is required.';
     }
@@ -67,6 +76,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
       if (res.receiveAddress) {
         setsTep('list');
         setReceiveAddress(res.receiveAddress);
+        setExpireTime(res.timeoutAt);
       }
       // console.log(data);
     } catch (err: unknown) {
@@ -80,6 +90,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const handleClose = () => {
     setsTep('info');
     setReceiveAddress('');
+    setExpireTime('');
     setIsLoading(false);
     onClose();
   };
@@ -112,13 +123,13 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
             <div className={s.modalBody}>
               {step === 'info' && (
                 <div>
-                  <h3 className={s.modalTitle}>List your NFT</h3>
-                  <div className={s.alert_info}>
-                    Do not spend any satoshis from this wallet unless you
-                    understand what you are doing. If you ignore this warning,
-                    you could inadvertently lose access to your ordinals and
-                    inscriptions.
-                  </div>
+                  <h3 className={s.modalTitle}>List your inscription</h3>
+                  {/*<div className={s.alert_info}>*/}
+                  {/*  Do not spend any satoshis from this wallet unless you*/}
+                  {/*  understand what you are doing. If you ignore this warning,*/}
+                  {/*  you could inadvertently lose access to your ordinals and*/}
+                  {/*  inscriptions.*/}
+                  {/*</div>*/}
                   <div className={s.formWrapper}>
                     <Formik
                       key="mintBTCGenerativeForm"
@@ -128,6 +139,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         description: '',
                         price: '',
                         receiveAddress: '',
+                        receiveOrdAddress: '',
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}
@@ -166,7 +178,8 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                           </div>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="name">
-                              NFT Name <sup className={s.requiredTag}>*</sup>
+                              Inscription Name{' '}
+                              <sup className={s.requiredTag}>*</sup>
                             </label>
                             <div className={s.inputContainer}>
                               <input
@@ -177,7 +190,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.name}
                                 className={s.input}
-                                placeholder="Paste your NFT Name here"
+                                placeholder="Input your Inscription Name here"
                               />
                             </div>
                             {errors.name && touched.name && (
@@ -197,7 +210,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.description}
                                 className={s.input}
-                                placeholder="Paste your description here"
+                                placeholder="Input your description here"
                               />
                             </div>
                           </div>
@@ -214,7 +227,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.price}
                                 className={s.input}
-                                placeholder="Paste your price here"
+                                placeholder="Input your price here"
                               />
                               <div className={s.inputPostfix}>BTC</div>
                             </div>
@@ -224,7 +237,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                           </div>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="receiveAddress">
-                              Enter your Ordinals-compatible BTC address{' '}
+                              YOUR BTC ADDRESS{' '}
                               <sup className={s.requiredTag}>*</sup>
                               <OverlayTrigger
                                 placement="bottom"
@@ -236,10 +249,8 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                       fontWeight="semibold"
                                       color="primary-333"
                                     >
-                                      You will either receive BTC in this wallet
-                                      if the NFT is successfully sold or get
-                                      your Ordinal back if the order is
-                                      cancelled.
+                                      This is the address you will receive BTC
+                                      for the inscription sale.
                                     </Text>
                                   </Tooltip>
                                 }
@@ -263,6 +274,52 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                               touched.receiveAddress && (
                                 <p className={s.inputError}>
                                   {errors.receiveAddress}
+                                </p>
+                              )}
+                          </div>
+                          <div className={s.formItem}>
+                            <label
+                              className={s.label}
+                              htmlFor="receiveOrdAddress"
+                            >
+                              Your Ordinals-compatible BTC address{' '}
+                              <sup className={s.requiredTag}>*</sup>
+                              <OverlayTrigger
+                                placement="bottom"
+                                delay={{ show: 250, hide: 400 }}
+                                overlay={
+                                  <Tooltip id="variation-tooltip">
+                                    <Text
+                                      size="14"
+                                      fontWeight="semibold"
+                                      color="primary-333"
+                                    >
+                                      This is the address you will receive your
+                                      inscription back if you cancel the sale in
+                                      the future.
+                                    </Text>
+                                  </Tooltip>
+                                }
+                              >
+                                <span className={s.question}>?</span>
+                              </OverlayTrigger>
+                            </label>
+                            <div className={s.inputContainer}>
+                              <input
+                                id="receiveOrdAddress"
+                                type="address"
+                                name="receiveOrdAddress"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.receiveOrdAddress}
+                                className={s.input}
+                                placeholder="Paste your BTC wallet address here"
+                              />
+                            </div>
+                            {errors.receiveOrdAddress &&
+                              touched.receiveOrdAddress && (
+                                <p className={s.inputError}>
+                                  {errors.receiveOrdAddress}
                                 </p>
                               )}
                           </div>
@@ -310,7 +367,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
               )}
               {step === 'list' && (
                 <>
-                  <h3 className={s.modalTitle}>Send your NFT</h3>
+                  <h3 className={s.modalTitle}>Send your inscription</h3>
                   <div className={s.formWrapper}>
                     <div className={s.qrCodeWrapper}>
                       {/* <p className={s.qrTitle}>
@@ -321,6 +378,12 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         size={128}
                         value={receiveAddress}
                       />
+                      {!!expireTime && (
+                        <p className={s.expire}>
+                          Expires at:{' '}
+                          {formatUnixDateTime({ dateTime: Number(expireTime) })}
+                        </p>
+                      )}
                       <p className={s.btcAddress}>{receiveAddress}</p>
 
                       <ButtonIcon
@@ -350,8 +413,8 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                 <>
                   <h3 className={s.modalTitle}>Thank you for being patient.</h3>
                   <div className={s.info_guild}>
-                    It might take a few minutes to completely list your Ordinal
-                    on Bazaar for sale.
+                    It might take ~10 minutes to completely list your Ordinal on
+                    Bazaar for sale.
                   </div>
                   <div className={s.ctas}>
                     <Button

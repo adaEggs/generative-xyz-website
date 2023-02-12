@@ -9,7 +9,7 @@ import Text from '@components/Text';
 import { IGetMarketplaceBtcListItem } from '@services/marketplace-btc';
 import { convertIpfsToHttp } from '@utils/image';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import BigNumber from 'bignumber.js';
 
 interface IPros {
@@ -19,28 +19,47 @@ interface IPros {
 
 export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
-  const [thumb, setThumb] = useState<string>(project.image);
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
+
+  const getImgURL = () => {
+    if (!project?.inscriptionID) return '';
+    return `https://ordinals.com/preview/${project?.inscriptionID}`;
+  };
+
+  const [thumb, setThumb] = useState<string>(getImgURL());
 
   const convertBTCPrice = () => {
     return new BigNumber(project.price || 0).div(1e8).toString();
   };
 
   return (
-    <Link
-      href={`${ROUTE_PATH.BAZAAR}/${project.inscriptionID}`}
-      className={`${s.projectCard} ${className}`}
-    >
+    <div className={`${s.projectCard} ${className}`}>
       <div className={s.projectCard_inner}>
         <div className={`${s.projectCard_thumb}`}>
-          <img
-            onError={onThumbError}
-            src={convertIpfsToHttp(thumb)}
-            alt={project.name}
-            loading={'lazy'}
-          />
+          {thumb !== LOGO_MARKETPLACE_URL ? (
+            <iframe
+              sandbox="allow-scripts"
+              scrolling="no"
+              loading="lazy"
+              src={thumb}
+              style={{
+                width: '100%',
+                height: '100%',
+                top: 0,
+                left: 0,
+                position: 'absolute',
+              }}
+            />
+          ) : (
+            <img
+              onError={onThumbError}
+              src={convertIpfsToHttp(thumb)}
+              alt={project.name}
+              loading={'lazy'}
+            />
+          )}
         </div>
         <div className={s.projectCard_inner_info}>
           {mobileScreen ? (
@@ -73,6 +92,10 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
           )}
         </div>
       </div>
-    </Link>
+      <Link
+        href={`${ROUTE_PATH.BAZAAR}/${project.inscriptionID}`}
+        className={s.mask}
+      />
+    </div>
   );
 };

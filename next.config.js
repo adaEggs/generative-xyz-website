@@ -31,7 +31,7 @@ module.exports = removeImports(
           headers: [
             {
               key: 'Content-Security-Policy',
-              value: `frame-ancestors 'self'; frame-src 'self';`,
+              value: `frame-ancestors 'self' https://ordinals.com; frame-src 'self' https://ordinals.com;`,
             },
             ...baseSecurityHeaders,
           ],
@@ -59,7 +59,7 @@ module.exports = removeImports(
           headers: [
             {
               key: 'Content-Security-Policy',
-              value: '',
+              value: `frame-ancestors 'self' https://ordinals.com; frame-src 'self' https://ordinals.com;`,
             },
             {
               key: 'Cross-Origin-Embedder-Policy',

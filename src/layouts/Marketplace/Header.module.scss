@@ -232,6 +232,7 @@
 
 .logo {
   display: block;
+
   @include min-pc {
     position: absolute;
     left: 50%;

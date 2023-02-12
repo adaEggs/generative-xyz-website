@@ -34,6 +34,7 @@ export const getMarketplaceBtcList = async (
 
 export interface IPostMarketplaceBtcListNFTParams {
   receiveAddress: string;
+  receiveOrdAddress: string;
   inscriptionID: string;
   name: string;
   description: string;
@@ -41,6 +42,7 @@ export interface IPostMarketplaceBtcListNFTParams {
 }
 export interface IPostMarketplaceBtcListNFTResponse {
   receiveAddress: string;
+  timeoutAt: string;
 }
 export const postMarketplaceBtcListNFT = async (
   dataFrom: IPostMarketplaceBtcListNFTParams
@@ -63,6 +65,7 @@ export interface IGetMarketplaceBtcNFTDetail {
   name: string;
   description: string;
   orderID: string;
+  buyable: boolean;
 }
 
 export const getMarketplaceBtcNFTDetail = async (
@@ -81,6 +84,7 @@ export const getMarketplaceBtcNFTDetail = async (
 
 export interface ISubmitBTCAddressResponse {
   receiveAddress: string;
+  timeoutAt: string;
 }
 
 export interface ISubmitBTCAddressPayload {
@@ -100,6 +104,10 @@ export const submitAddressBuyBTC = async (
     return res;
   } catch (err: unknown) {
     log('failed to submit MarketplaceBtc Address', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to submit MarketplaceBtc Address');
+    const message =
+      typeof err === 'string'
+        ? err || ''
+        : 'Failed to submit MarketplaceBtc Address';
+    throw Error(message);
   }
 };

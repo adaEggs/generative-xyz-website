@@ -35,10 +35,7 @@ export const SeeMore: React.FC<{ children: string }> = ({ children }) => {
         ref={refBox}
       >
         <div ref={refContent}>
-          <MarkdownPreview
-            source={children}
-            className={s.token_description_content}
-          />
+          <MarkdownPreview source={children} />
         </div>
       </div>
       {(contentOver || isShowMore) && (

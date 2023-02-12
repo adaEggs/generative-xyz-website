@@ -17,6 +17,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import Text from '@components/Text';
 import { useRouter } from 'next/router';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { formatUnixDateTime } from '@utils/time';
 
 interface IFormValue {
   address: string;
@@ -40,6 +41,8 @@ const ListForSaleModal = ({
 }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
+  const [expireTime, setExpireTime] = useState('');
+  const [errMessage, setErrMessage] = useState('');
   const router = useRouter();
 
   const [step, setsTep] = useState<
@@ -67,10 +70,18 @@ const ListForSaleModal = ({
       });
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);
+        setExpireTime(data.timeoutAt);
         setsTep('showAddress');
       }
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (err && err?.message) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        setErrMessage(err?.message);
+      }
       toast.error(ErrorMessage.DEFAULT);
     } finally {
       setIsLoading(false);
@@ -81,6 +92,8 @@ const ListForSaleModal = ({
     setsTep('pasteAddress');
     setIsLoading(false);
     setReceiveAddress('');
+    setExpireTime('');
+    setErrMessage('');
     onClose();
   };
 
@@ -109,7 +122,7 @@ const ListForSaleModal = ({
             <div className={s.modalBody}>
               {(step === 'pasteAddress' || step === 'showAddress') && (
                 <>
-                  <h3 className={s.modalTitle}>Buy NFT</h3>
+                  <h3 className={s.modalTitle}>Buy inscription</h3>
                   <div className={s.alert_info}>
                     Do not spend any satoshis from this wallet unless you
                     understand what you are doing. If you ignore this warning,
@@ -137,7 +150,7 @@ const ListForSaleModal = ({
                           <form onSubmit={handleSubmit}>
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
-                                Enter your Ordinals-compatible BTC address
+                                Your Ordinals-compatible BTC address
                                 <sup className={s.requiredTag}>*</sup>
                                 <OverlayTrigger
                                   placement="bottom"
@@ -149,10 +162,10 @@ const ListForSaleModal = ({
                                         fontWeight="semibold"
                                         color="primary-333"
                                       >
-                                        You will either receive NFT in this
-                                        wallet if the NFT is successfully bought
-                                        or get your Ordinal back if the order is
-                                        cancelled.
+                                        You will either receive inscription in
+                                        this wallet if the inscription is
+                                        successfully bought or get your Ordinal
+                                        back if the order is cancelled.
                                       </Text>
                                     </Tooltip>
                                   }
@@ -197,12 +210,29 @@ const ListForSaleModal = ({
                                 <div className={s.inputPostfix}>BTC</div>
                               </div>
                             </div>
+                            {!!errMessage && (
+                              <div className={s.error}>{errMessage}</div>
+                            )}
                             {isLoading && (
                               <div className={s.loadingWrapper}>
                                 <Loading isLoaded={false} />
                               </div>
                             )}
-                            {step === 'pasteAddress' && (
+                            {step === 'pasteAddress' && !!errMessage ? (
+                              <div className={s.ctas}>
+                                <Button
+                                  type="button"
+                                  variants={'ghost'}
+                                  className={s.submitBtn}
+                                  disabled={isLoading}
+                                  onClick={() => {
+                                    handleClose();
+                                  }}
+                                >
+                                  Sure thing
+                                </Button>
+                              </div>
+                            ) : (
                               <div className={s.ctas}>
                                 <Button
                                   type="submit"
@@ -233,6 +263,12 @@ const ListForSaleModal = ({
                         size={128}
                         value={receiveAddress || ''}
                       />
+                      {!!expireTime && (
+                        <p className={s.expire}>
+                          Expires at:{' '}
+                          {formatUnixDateTime({ dateTime: Number(expireTime) })}
+                        </p>
+                      )}
                       <p className={s.btcAddress}>{receiveAddress || ''}</p>
                     </div>
                     <ButtonIcon
@@ -251,7 +287,7 @@ const ListForSaleModal = ({
                 <>
                   <h3 className={s.modalTitle}>Thank you for being patient.</h3>
                   <div className={s.info_guild}>
-                    It might take a few minutes to completely buy the Ordinal on
+                    It might take ~30 minutes to completely buy the Ordinal on
                     Bazaar.
                   </div>
                   <div className={s.ctas}>

@@ -87,7 +87,7 @@
     }
 
     &__eth {
-      background: #00AA6C !important;
+      background: #00aa6c !important;
 
       &:hover {
         background: #01b875 !important;
@@ -95,7 +95,7 @@
     }
 
     span:nth-child(2) {
-      margin-left: rem(20px);
+      margin-left: rem(5px);
 
       span {
         font-size: 120%;
@@ -140,6 +140,7 @@
   font-weight: 500;
 
   @include calcFontAuto(24px, 34px);
+
   display: block;
   margin-bottom: rem(5px);
 
@@ -208,7 +209,6 @@
   margin-top: rem(24px);
   margin-bottom: rem(14px);
 }
-
 
 .description {
   display: flex;
