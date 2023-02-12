@@ -93,7 +93,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
         </div>
       </div>
       <Link
-        href={`${ROUTE_PATH.BAZAAR}/${project.inscriptionID}`}
+        href={`${ROUTE_PATH.TRADE}/${project.inscriptionID}`}
         className={s.mask}
       />
     </div>

@@ -20,5 +20,5 @@ export const ROUTE_PATH = {
   INCENTIVIZED_TESTNET: isProduction()
     ? 'https://testnet.generative.xyz/incentivized-testnet'
     : '/incentivized-testnet',
-  BAZAAR: '/bazaar',
+  TRADE: '/trade',
 };

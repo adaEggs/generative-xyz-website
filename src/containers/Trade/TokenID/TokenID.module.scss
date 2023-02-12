@@ -47,7 +47,7 @@
     font-weight: 500;
   }
 
-  &_statusMsg {
+  &_statusIns {
     line-height: 140%;
     font-weight: 500;
     color: $secondary-orange;
@@ -55,9 +55,32 @@
     margin-bottom: rem(12);
   }
 
+  &_statusComplete {
+    line-height: 140%;
+    font-weight: 500;
+    color: $primary-brand;
+    margin-top: rem(35);
+    margin-bottom: rem(12);
+  }
+
   &_amountPrice {
     font-weight: 500;
     line-height: 140%;
+    flex: 0 0 60%;
+    padding-right: rem(10px);
+    color: $primary-brand;
+
+    @include calcFontAuto(16px, 18px);
+  }
+
+  &_amountPriceSuccess {
+    font-weight: 500;
+    line-height: 140%;
+    flex: 0 0 60%;
+    padding-right: rem(10px);
+    color: #00aa6c;
+
+    @include calcFontAuto(16px, 18px);
   }
 
   &_buyBtn {

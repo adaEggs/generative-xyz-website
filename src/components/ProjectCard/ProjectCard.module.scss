@@ -116,6 +116,7 @@
         padding-right: rem(10px);
         color: #00aa6c;
         line-height: (28/18);
+
         @include calcFontAuto(16px, 18px);
 
         small {

@@ -1,13 +1,13 @@
 import React from 'react';
-import s from './Bazaar.module.scss';
+import s from './Trade.module.scss';
 import { RecentWorks } from './RecentWorks';
 import { Container } from 'react-bootstrap';
 
 import { LoadingProvider } from '@contexts/loading-context';
 
-const PageBazaar = (): JSX.Element => {
+const PageTrade = (): JSX.Element => {
   return (
-    <div className={s.bazaar}>
+    <div className={s.trade}>
       <Container>
         <RecentWorks />
       </Container>
@@ -15,12 +15,12 @@ const PageBazaar = (): JSX.Element => {
   );
 };
 
-const WrapperBazaar = (): JSX.Element => {
+const WrapperTrade = (): JSX.Element => {
   return (
     <LoadingProvider simple={{ theme: 'light', isCssLoading: false }}>
-      <PageBazaar />
+      <PageTrade />
     </LoadingProvider>
   );
 };
 
-export default WrapperBazaar;
+export default WrapperTrade;

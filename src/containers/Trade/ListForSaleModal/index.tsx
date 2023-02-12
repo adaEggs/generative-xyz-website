@@ -18,10 +18,10 @@ import {
 import Text from '@components/Text';
 import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { formatUnixDateTime } from '@utils/time';
 
 const FEE_CHARGE_PERCENT = 0.1;
+const MIN_PRICE = 0.005;
 
 interface IProps {
   showModal: boolean;
@@ -40,28 +40,29 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     const errors: Record<string, string> = {};
 
     if (!values.receiveAddress) {
-      errors.receiveAddress = 'Wallet address is required.';
+      errors.receiveAddress = 'Address is required.';
     } else if (!validateBTCWalletAddress(values.receiveAddress)) {
       errors.receiveAddress = 'Invalid wallet address.';
     }
 
     if (!values.receiveOrdAddress) {
-      errors.receiveOrdAddress = 'Wallet address is required.';
+      errors.receiveOrdAddress = 'Address is required.';
     } else if (!validateBTCWalletAddress(values.receiveAddress)) {
       errors.receiveOrdAddress = 'Invalid wallet address.';
     }
 
     if (!values.price) {
       errors.price = 'Price is required.';
+    } else if (new BigNumber(values.price).lt(MIN_PRICE)) {
+      errors.price = `Minimum price is ${MIN_PRICE} BTC.`;
     }
-
     if (!values.inscriptionID) {
-      errors.inscriptionID = 'Ordinal link is required.';
+      errors.inscriptionID = 'Inscription link is required.';
     }
 
-    if (!values.name) {
-      errors.name = 'Name is required.';
-    }
+    // if (!values.name) {
+    //   errors.name = 'Name is required.';
+    // }
 
     return errors;
   };
@@ -95,10 +96,6 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     onClose();
   };
 
-  // const goBazaarPage = () => {
-  //   router.push(ROUTE_PATH.BAZAAR);
-  // };
-
   if (!showModal) {
     return <></>;
   }
@@ -123,7 +120,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
             <div className={s.modalBody}>
               {step === 'info' && (
                 <div>
-                  <h3 className={s.modalTitle}>List your inscription</h3>
+                  <h3 className={s.modalTitle}>List for sale</h3>
                   {/*<div className={s.alert_info}>*/}
                   {/*  Do not spend any satoshis from this wallet unless you*/}
                   {/*  understand what you are doing. If you ignore this warning,*/}
@@ -155,7 +152,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         <form onSubmit={handleSubmit}>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="inscriptionID">
-                              Ordinal Link{' '}
+                              Enter your inscription link on ordinals.com{' '}
                               <sup className={s.requiredTag}>*</sup>
                             </label>
                             <div className={s.inputContainer}>
@@ -167,7 +164,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.inscriptionID}
                                 className={s.input}
-                                placeholder="Paste your BTC Ordinal link here"
+                                placeholder="https://ordinals.com/inscription/12345"
                               />
                             </div>
                             {errors.inscriptionID && touched.inscriptionID && (
@@ -177,46 +174,8 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                             )}
                           </div>
                           <div className={s.formItem}>
-                            <label className={s.label} htmlFor="name">
-                              Inscription Name{' '}
-                              <sup className={s.requiredTag}>*</sup>
-                            </label>
-                            <div className={s.inputContainer}>
-                              <input
-                                id="name"
-                                type="text"
-                                name="name"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.name}
-                                className={s.input}
-                                placeholder="Input your Inscription Name here"
-                              />
-                            </div>
-                            {errors.name && touched.name && (
-                              <p className={s.inputError}>{errors.name}</p>
-                            )}
-                          </div>
-                          <div className={s.formItem}>
-                            <label className={s.label} htmlFor="description">
-                              Description{' '}
-                            </label>
-                            <div className={s.inputContainer}>
-                              <input
-                                id="description"
-                                type="text"
-                                name="description"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.description}
-                                className={s.input}
-                                placeholder="Input your description here"
-                              />
-                            </div>
-                          </div>
-                          <div className={s.formItem}>
                             <label className={s.label} htmlFor="price">
-                              Price <sup className={s.requiredTag}>*</sup>
+                              Set a price<sup className={s.requiredTag}>*</sup>
                             </label>
                             <div className={s.inputContainer}>
                               <input
@@ -227,7 +186,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.price}
                                 className={s.input}
-                                placeholder="Input your price here"
+                                placeholder="0.00"
                               />
                               <div className={s.inputPostfix}>BTC</div>
                             </div>
@@ -237,26 +196,26 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                           </div>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="receiveAddress">
-                              YOUR BTC ADDRESS{' '}
+                              Enter your BTC address to receive payment{' '}
                               <sup className={s.requiredTag}>*</sup>
-                              <OverlayTrigger
-                                placement="bottom"
-                                delay={{ show: 250, hide: 400 }}
-                                overlay={
-                                  <Tooltip id="variation-tooltip">
-                                    <Text
-                                      size="14"
-                                      fontWeight="semibold"
-                                      color="primary-333"
-                                    >
-                                      This is the address you will receive BTC
-                                      for the inscription sale.
-                                    </Text>
-                                  </Tooltip>
-                                }
-                              >
-                                <span className={s.question}>?</span>
-                              </OverlayTrigger>
+                              {/*<OverlayTrigger*/}
+                              {/*  placement="bottom"*/}
+                              {/*  delay={{ show: 250, hide: 400 }}*/}
+                              {/*  overlay={*/}
+                              {/*    <Tooltip id="variation-tooltip">*/}
+                              {/*      <Text*/}
+                              {/*        size="14"*/}
+                              {/*        fontWeight="semibold"*/}
+                              {/*        color="primary-333"*/}
+                              {/*      >*/}
+                              {/*        This is the address you will receive BTC*/}
+                              {/*        for the inscription sale.*/}
+                              {/*      </Text>*/}
+                              {/*    </Tooltip>*/}
+                              {/*  }*/}
+                              {/*>*/}
+                              {/*  <span className={s.question}>?</span>*/}
+                              {/*</OverlayTrigger>*/}
                             </label>
                             <div className={s.inputContainer}>
                               <input
@@ -267,7 +226,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.receiveAddress}
                                 className={s.input}
-                                placeholder="Paste your BTC wallet address here"
+                                placeholder="Paste your BTC address here"
                               />
                             </div>
                             {errors.receiveAddress &&
@@ -282,27 +241,29 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                               className={s.label}
                               htmlFor="receiveOrdAddress"
                             >
-                              Your Ordinals-compatible BTC address{' '}
+                              Enter the return Ordinals-compatible BTC address
+                              to receive your inscription back in case you
+                              cancel this listing{' '}
                               <sup className={s.requiredTag}>*</sup>
-                              <OverlayTrigger
-                                placement="bottom"
-                                delay={{ show: 250, hide: 400 }}
-                                overlay={
-                                  <Tooltip id="variation-tooltip">
-                                    <Text
-                                      size="14"
-                                      fontWeight="semibold"
-                                      color="primary-333"
-                                    >
-                                      This is the address you will receive your
-                                      inscription back if you cancel the sale in
-                                      the future.
-                                    </Text>
-                                  </Tooltip>
-                                }
-                              >
-                                <span className={s.question}>?</span>
-                              </OverlayTrigger>
+                              {/*<OverlayTrigger*/}
+                              {/*  placement="bottom"*/}
+                              {/*  delay={{ show: 250, hide: 400 }}*/}
+                              {/*  overlay={*/}
+                              {/*    <Tooltip id="variation-tooltip">*/}
+                              {/*      <Text*/}
+                              {/*        size="14"*/}
+                              {/*        fontWeight="semibold"*/}
+                              {/*        color="primary-333"*/}
+                              {/*      >*/}
+                              {/*        This is the address you will receive your*/}
+                              {/*        inscription back if you cancel the sale in*/}
+                              {/*        the future.*/}
+                              {/*      </Text>*/}
+                              {/*    </Tooltip>*/}
+                              {/*  }*/}
+                              {/*>*/}
+                              {/*  <span className={s.question}>?</span>*/}
+                              {/*</OverlayTrigger>*/}
                             </label>
                             <div className={s.inputContainer}>
                               <input
@@ -313,7 +274,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.receiveOrdAddress}
                                 className={s.input}
-                                placeholder="Paste your BTC wallet address here"
+                                placeholder="Paste your Ordinals-compatible BTC address here"
                               />
                             </div>
                             {errors.receiveOrdAddress &&
@@ -323,6 +284,44 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 </p>
                               )}
                           </div>
+                          <div className={s.formItem}>
+                            <label className={s.label} htmlFor="name">
+                              Enter the inscription name (optional){' '}
+                              {/*<sup className={s.requiredTag}>*</sup>*/}
+                            </label>
+                            <div className={s.inputContainer}>
+                              <input
+                                id="name"
+                                type="text"
+                                name="name"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.name}
+                                className={s.input}
+                                // placeholder="Input your Inscription Name here"
+                              />
+                            </div>
+                            {errors.name && touched.name && (
+                              <p className={s.inputError}>{errors.name}</p>
+                            )}
+                          </div>
+                          <div className={s.formItem}>
+                            <label className={s.label} htmlFor="description">
+                              Enter the inscription description (optional){' '}
+                            </label>
+                            <div className={s.inputContainer}>
+                              <input
+                                id="description"
+                                type="text"
+                                name="description"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.description}
+                                className={s.input}
+                                // placeholder="Input your description here"
+                              />
+                            </div>
+                          </div>
                           <div className={s.divider} />
                           <div className={s.wrap_fee}>
                             <Text
@@ -330,7 +329,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                               fontWeight="medium"
                               color="text-black-80"
                             >
-                              Service fee
+                              Generative service fees
                             </Text>
                             <Text
                               size="16"
@@ -349,16 +348,16 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                             </div>
                           )}
 
-                          <div className={s.ctas}>
-                            <Button
-                              type="submit"
-                              variants={'ghost'}
-                              className={s.submitBtn}
-                              disabled={isLoading}
-                            >
-                              Next
-                            </Button>
-                          </div>
+                          {/*<div className={s.ctas}>*/}
+                          <ButtonIcon
+                            sizes="large"
+                            type="submit"
+                            className={s.ctaButton}
+                            disabled={isLoading}
+                          >
+                            Next
+                          </ButtonIcon>
+                          {/*</div>*/}
                         </form>
                       )}
                     </Formik>
@@ -388,7 +387,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
 
                       <ButtonIcon
                         sizes="large"
-                        className={s.buyBtn}
+                        className={s.ctaButton}
                         onClick={() => setsTep('thank')}
                       >
                         <Text as="span" size="14" fontWeight="medium">
@@ -414,17 +413,18 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                   <h3 className={s.modalTitle}>Thank you for being patient.</h3>
                   <div className={s.info_guild}>
                     It might take ~10 minutes to completely list your Ordinal on
-                    Bazaar for sale.
+                    Trade for sale.
                   </div>
                   <div className={s.ctas}>
-                    <Button
+                    <ButtonIcon
                       type="button"
-                      variants={'ghost'}
-                      className={s.submitBtn}
+                      sizes="large"
+                      // variants={'ghost'}
+                      className={s.ctaButton}
                       onClick={handleClose}
                     >
-                      Browse Ordinals on Bazaar
-                    </Button>
+                      Browse Ordinals on Trade
+                    </ButtonIcon>
                   </div>
                 </>
               )}
