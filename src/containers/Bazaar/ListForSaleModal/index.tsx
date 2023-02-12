@@ -282,7 +282,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                               className={s.label}
                               htmlFor="receiveOrdAddress"
                             >
-                              Enter your Ordinals-compatible BTC address{' '}
+                              Your Ordinals-compatible BTC address{' '}
                               <sup className={s.requiredTag}>*</sup>
                               <OverlayTrigger
                                 placement="bottom"

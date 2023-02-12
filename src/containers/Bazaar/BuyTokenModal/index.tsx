@@ -150,7 +150,7 @@ const ListForSaleModal = ({
                           <form onSubmit={handleSubmit}>
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
-                                Enter your Ordinals-compatible BTC address
+                                Your Ordinals-compatible BTC address
                                 <sup className={s.requiredTag}>*</sup>
                                 <OverlayTrigger
                                   placement="bottom"
