@@ -199,7 +199,7 @@ const Header: React.FC<IProp> = ({
                       {MENU_HEADER[0].name}
                     </Link>
                   </li>
-                  {
+                  {!isProduction() && (
                     <li
                       className={cs(
                         activePath === MENU_HEADER[3].activePath &&
@@ -211,7 +211,7 @@ const Header: React.FC<IProp> = ({
                         {MENU_HEADER[3].name}
                       </Link>
                     </li>
-                  }
+                  )}
                   {!isProduction() && (
                     <li
                       className={cs(

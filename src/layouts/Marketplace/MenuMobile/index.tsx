@@ -70,7 +70,7 @@ const MenuMobile = React.forwardRef(
                 {MENU_HEADER[0].name}
               </Link>
             </li>
-            {
+            {!isProduction() && (
               <li
                 className={cs(
                   activePath === MENU_HEADER[3].activePath && s.active
@@ -81,7 +81,7 @@ const MenuMobile = React.forwardRef(
                   {MENU_HEADER[3].name}
                 </Link>
               </li>
-            }
+            )}
             {!isProduction() && (
               <li
                 className={cs(
