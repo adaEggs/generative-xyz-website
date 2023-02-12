@@ -123,7 +123,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
             <div className={s.modalBody}>
               {step === 'info' && (
                 <div>
-                  <h3 className={s.modalTitle}>List your NFT</h3>
+                  <h3 className={s.modalTitle}>List your inscription</h3>
                   {/*<div className={s.alert_info}>*/}
                   {/*  Do not spend any satoshis from this wallet unless you*/}
                   {/*  understand what you are doing. If you ignore this warning,*/}
@@ -178,7 +178,8 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                           </div>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="name">
-                              NFT Name <sup className={s.requiredTag}>*</sup>
+                              Inscription Name{' '}
+                              <sup className={s.requiredTag}>*</sup>
                             </label>
                             <div className={s.inputContainer}>
                               <input
@@ -189,7 +190,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.name}
                                 className={s.input}
-                                placeholder="Input your NFT Name here"
+                                placeholder="Input your Inscription Name here"
                               />
                             </div>
                             {errors.name && touched.name && (
@@ -249,7 +250,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                       color="primary-333"
                                     >
                                       This is the address you will receive BTC
-                                      for the NFT sale.
+                                      for the inscription sale.
                                     </Text>
                                   </Tooltip>
                                 }
@@ -294,8 +295,8 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                       color="primary-333"
                                     >
                                       This is the address you will receive your
-                                      NFT back if you cancel the sale in the
-                                      future.
+                                      inscription back if you cancel the sale in
+                                      the future.
                                     </Text>
                                   </Tooltip>
                                 }
@@ -366,7 +367,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
               )}
               {step === 'list' && (
                 <>
-                  <h3 className={s.modalTitle}>Send your NFT</h3>
+                  <h3 className={s.modalTitle}>Send your inscription</h3>
                   <div className={s.formWrapper}>
                     <div className={s.qrCodeWrapper}>
                       {/* <p className={s.qrTitle}>

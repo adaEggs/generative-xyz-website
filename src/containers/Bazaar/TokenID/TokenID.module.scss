@@ -47,6 +47,14 @@
     font-weight: 500;
   }
 
+  &_statusMsg {
+    line-height: 140%;
+    font-weight: 500;
+    color: $secondary-orange;
+    margin-top: rem(35);
+    margin-bottom: rem(12);
+  }
+
   &_amountPrice {
     font-weight: 500;
     line-height: 140%;
@@ -55,7 +63,6 @@
   &_buyBtn {
     justify-content: center;
     width: 100%;
-    margin-top: rem(35);
 
     @include mobile {
       margin-top: rem(12);
