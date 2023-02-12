@@ -11,6 +11,7 @@ type TProgressBar = {
   total?: number;
   size?: 'regular' | 'small';
   className?: string;
+  isHideBar?: boolean;
 };
 
 const ProgressBar = ({
@@ -18,6 +19,7 @@ const ProgressBar = ({
   total,
   size = 'regular',
   className,
+  isHideBar = false,
 }: TProgressBar) => {
   const calcMintProgress = useMemo(() => {
     if (!current || !total) return 0;
@@ -52,7 +54,7 @@ const ProgressBar = ({
           </Text>
         )}
       </div>
-      {
+      {!isHideBar && (
         <div className={s.progressWrapper}>
           <div
             className={s.progressBar}
@@ -61,7 +63,7 @@ const ProgressBar = ({
             }}
           ></div>
         </div>
-      }
+      )}
     </div>
   );
 };
