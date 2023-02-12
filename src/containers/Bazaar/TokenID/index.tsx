@@ -91,11 +91,11 @@ const TokenID: React.FC = (): React.ReactElement => {
         <ButtonIcon
           sizes="large"
           className={s.info_buyBtn}
-          disabled={showModal}
+          disabled={!tokenData.buyable}
           onClick={() => setShowModal(true)}
         >
           <Text as="span" size="14" fontWeight="medium">
-            Buy Now
+            {tokenData.buyable ? 'Buy Now' : 'Not Available To Buy'}
           </Text>
         </ButtonIcon>
         <div className={s.info_project_desc}>
