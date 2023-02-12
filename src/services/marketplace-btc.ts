@@ -83,6 +83,7 @@ export const getMarketplaceBtcNFTDetail = async (
 
 export interface ISubmitBTCAddressResponse {
   receiveAddress: string;
+  timeoutAt: string;
 }
 
 export interface ISubmitBTCAddressPayload {

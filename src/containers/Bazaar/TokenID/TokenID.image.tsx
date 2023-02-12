@@ -10,16 +10,21 @@ interface IProps {
 }
 
 const TokenIDImage = React.memo((props: IProps) => {
-  const [thumb, setThumb] = useState<string>(
-    props.image || LOGO_MARKETPLACE_URL
-  );
+  const [thumb, setThumb] = useState<string>(props.image);
+
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
+
+  React.useEffect(() => {
+    if (props.image) {
+      setThumb(props.image);
+    }
+  }, [props.image]);
   return (
     <div className={s.img_inner}>
       <div className={s.img_wrapper}>
-        <Skeleton fill isLoaded={!!props.name} />
+        <Skeleton fill isLoaded={!!props.image} />
         {thumb !== LOGO_MARKETPLACE_URL ? (
           <iframe
             sandbox="allow-scripts"

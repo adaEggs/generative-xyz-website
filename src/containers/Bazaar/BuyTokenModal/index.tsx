@@ -17,6 +17,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import Text from '@components/Text';
 import { useRouter } from 'next/router';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { formatUnixDateTime } from '@utils/time';
 
 interface IFormValue {
   address: string;
@@ -40,6 +41,7 @@ const ListForSaleModal = ({
 }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
+  const [expireTime, setExpireTime] = useState('');
   const router = useRouter();
 
   const [step, setsTep] = useState<
@@ -67,6 +69,7 @@ const ListForSaleModal = ({
       });
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);
+        setExpireTime(data.timeoutAt);
         setsTep('showAddress');
       }
     } catch (err: unknown) {
@@ -81,6 +84,7 @@ const ListForSaleModal = ({
     setsTep('pasteAddress');
     setIsLoading(false);
     setReceiveAddress('');
+    setExpireTime('');
     onClose();
   };
 
@@ -233,6 +237,12 @@ const ListForSaleModal = ({
                         size={128}
                         value={receiveAddress || ''}
                       />
+                      {!!expireTime && (
+                        <p className={s.expire}>
+                          Expires at:{' '}
+                          {formatUnixDateTime({ dateTime: Number(expireTime) })}
+                        </p>
+                      )}
                       <p className={s.btcAddress}>{receiveAddress || ''}</p>
                     </div>
                     <ButtonIcon
