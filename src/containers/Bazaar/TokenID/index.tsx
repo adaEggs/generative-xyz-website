@@ -82,20 +82,26 @@ const TokenID: React.FC = (): React.ReactElement => {
           size={'20'}
           color={'primary-brand'}
           className={s.info_amountPrice}
+          style={{ marginBottom: tokenData.buyable ? 32 : 0 }}
         >
           {new BigNumber(tokenData?.price || 0).div(1e8).toFixed()} BTC
         </Text>
         {mobileScreen && tokenData?.name && (
           <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
         )}
+        <Text size={'14'} className={s.info_statusMsg}>
+          The inscription is being purchased. ETA is in ~30 minutes.
+        </Text>
         <ButtonIcon
           sizes="large"
           className={s.info_buyBtn}
-          disabled={!tokenData.buyable}
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            if (tokenData.buyable) return setShowModal(true);
+            router.push('/bazaar');
+          }}
         >
           <Text as="span" size="14" fontWeight="medium">
-            {tokenData.buyable ? 'Buy Now' : 'Not Available To Buy'}
+            {tokenData.buyable ? 'Buy Now' : 'Buy others'}
           </Text>
         </ButtonIcon>
         <div className={s.info_project_desc}>

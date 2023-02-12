@@ -122,7 +122,7 @@ const ListForSaleModal = ({
             <div className={s.modalBody}>
               {(step === 'pasteAddress' || step === 'showAddress') && (
                 <>
-                  <h3 className={s.modalTitle}>Buy NFT</h3>
+                  <h3 className={s.modalTitle}>Buy inscription</h3>
                   <div className={s.alert_info}>
                     Do not spend any satoshis from this wallet unless you
                     understand what you are doing. If you ignore this warning,
@@ -150,7 +150,7 @@ const ListForSaleModal = ({
                           <form onSubmit={handleSubmit}>
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
-                                Enter your Ordinals-compatible BTC address
+                                Your Ordinals-compatible BTC address
                                 <sup className={s.requiredTag}>*</sup>
                                 <OverlayTrigger
                                   placement="bottom"
@@ -162,10 +162,10 @@ const ListForSaleModal = ({
                                         fontWeight="semibold"
                                         color="primary-333"
                                       >
-                                        You will either receive NFT in this
-                                        wallet if the NFT is successfully bought
-                                        or get your Ordinal back if the order is
-                                        cancelled.
+                                        You will either receive inscription in
+                                        this wallet if the inscription is
+                                        successfully bought or get your Ordinal
+                                        back if the order is cancelled.
                                       </Text>
                                     </Tooltip>
                                   }
@@ -226,12 +226,10 @@ const ListForSaleModal = ({
                                   className={s.submitBtn}
                                   disabled={isLoading}
                                   onClick={() => {
-                                    router.push('/bazaar').then(() => {
-                                      handleClose();
-                                    });
+                                    handleClose();
                                   }}
                                 >
-                                  Browse more
+                                  Sure thing
                                 </Button>
                               </div>
                             ) : (
