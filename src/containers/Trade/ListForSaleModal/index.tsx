@@ -20,7 +20,7 @@ import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
 import { formatUnixDateTime } from '@utils/time';
 
-const FEE_CHARGE_PERCENT = 0.025;
+const FEE_CHARGE_PERCENT = 0.1;
 const MIN_PRICE = 0.005;
 
 interface IProps {
