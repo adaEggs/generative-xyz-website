@@ -246,7 +246,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                         {isMinting && 'Minting...'}
                         {!isMinting && (
                           <>
-                            <span>{`Mint output`}</span>
+                            <span>{`Mint `}</span>
                             <span>
                               <span>{priceMemo}</span>
                               {` BTC`}
@@ -268,7 +268,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                         {isMinting && 'Minting...'}
                         {!isMinting && (
                           <>
-                            <span>{`Mint output`}</span>
+                            <span>{`Mint `}</span>
                             <span>
                               <span>{priceEthMemo}</span>
                               {` ETH`}
