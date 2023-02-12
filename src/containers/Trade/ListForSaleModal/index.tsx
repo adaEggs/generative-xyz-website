@@ -47,7 +47,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
 
     if (!values.receiveOrdAddress) {
       errors.receiveOrdAddress = 'Address is required.';
-    } else if (!validateBTCWalletAddress(values.receiveAddress)) {
+    } else if (!validateBTCWalletAddress(values.receiveOrdAddress)) {
       errors.receiveOrdAddress = 'Invalid wallet address.';
     }
 
@@ -366,7 +366,9 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
               )}
               {step === 'list' && (
                 <>
-                  <h3 className={s.modalTitle}>Send your inscription</h3>
+                  <h3 className={s.modalTitle}>
+                    Send your inscription to the following address
+                  </h3>
                   <div className={s.formWrapper}>
                     <div className={s.qrCodeWrapper}>
                       {/* <p className={s.qrTitle}>
