@@ -22,7 +22,7 @@ export const ProjectList = ({
         </div>
       ) : (
         listData && (
-          <Empty content="Bring your unique vision to life. List your inscription for sale now" />
+          <Empty content="Bring your unique vision to life. List for sale now" />
         )
       )}
     </>
