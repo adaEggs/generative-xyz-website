@@ -47,7 +47,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
 
     if (!values.receiveOrdAddress) {
       errors.receiveOrdAddress = 'Address is required.';
-    } else if (!validateBTCWalletAddress(values.receiveAddress)) {
+    } else if (!validateBTCWalletAddress(values.receiveOrdAddress)) {
       errors.receiveOrdAddress = 'Invalid wallet address.';
     }
 
