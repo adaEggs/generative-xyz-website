@@ -18,6 +18,7 @@ import Text from '@components/Text';
 import { useRouter } from 'next/router';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { formatUnixDateTime } from '@utils/time';
+import { ROUTE_PATH } from '@constants/route-path';
 
 interface IFormValue {
   address: string;
@@ -232,7 +233,7 @@ const ListForSaleModal = ({
                                   Sure thing
                                 </Button>
                               </div>
-                            ) : (
+                            ) : receiveAddress ? null : (
                               <div className={s.ctas}>
                                 <Button
                                   type="submit"
@@ -288,7 +289,7 @@ const ListForSaleModal = ({
                   <h3 className={s.modalTitle}>Thank you for being patient.</h3>
                   <div className={s.info_guild}>
                     It might take ~30 minutes to completely buy the Ordinal on
-                    Bazaar.
+                    Trade.
                   </div>
                   <div className={s.ctas}>
                     <Button
@@ -296,12 +297,12 @@ const ListForSaleModal = ({
                       variants={'ghost'}
                       className={s.submitBtn}
                       onClick={() => {
-                        router.push('/bazaar').then(() => {
+                        router.push(ROUTE_PATH.TRADE).then(() => {
                           handleClose();
                         });
                       }}
                     >
-                      Browse Ordinals on Bazaar
+                      Browse Ordinals on Trade
                     </Button>
                   </div>
                 </>

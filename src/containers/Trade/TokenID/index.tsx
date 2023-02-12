@@ -14,12 +14,13 @@ import {
   IGetMarketplaceBtcNFTDetail,
 } from '@services/marketplace-btc';
 import BigNumber from 'bignumber.js';
-import BuyTokenModal from '@containers/Bazaar/BuyTokenModal';
+import BuyTokenModal from '@containers/Trade/BuyTokenModal';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-import TokenIDImage from '@containers/Bazaar/TokenID/TokenID.image';
+import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -100,7 +101,7 @@ const TokenID: React.FC = (): React.ReactElement => {
           className={s.info_buyBtn}
           onClick={() => {
             if (tokenData.buyable) return setShowModal(true);
-            router.push('/bazaar');
+            router.push(ROUTE_PATH.TRADE);
           }}
         >
           <Text as="span" size="14" fontWeight="medium">

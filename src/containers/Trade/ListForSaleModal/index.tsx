@@ -21,7 +21,8 @@ import ButtonIcon from '@components/ButtonIcon';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { formatUnixDateTime } from '@utils/time';
 
-const FEE_CHARGE_PERCENT = 0.1;
+const FEE_CHARGE_PERCENT = 0.025;
+const MIN_PRICE = 0.005;
 
 interface IProps {
   showModal: boolean;
@@ -53,15 +54,16 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
 
     if (!values.price) {
       errors.price = 'Price is required.';
+    } else if (new BigNumber(values.price).lt(MIN_PRICE)) {
+      errors.price = `Minimum price is ${MIN_PRICE} BTC.`;
     }
-
     if (!values.inscriptionID) {
       errors.inscriptionID = 'Ordinal link is required.';
     }
 
-    if (!values.name) {
-      errors.name = 'Name is required.';
-    }
+    // if (!values.name) {
+    //   errors.name = 'Name is required.';
+    // }
 
     return errors;
   };
@@ -94,10 +96,6 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     setIsLoading(false);
     onClose();
   };
-
-  // const goBazaarPage = () => {
-  //   router.push(ROUTE_PATH.BAZAAR);
-  // };
 
   if (!showModal) {
     return <></>;
@@ -179,7 +177,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="name">
                               Inscription Name{' '}
-                              <sup className={s.requiredTag}>*</sup>
+                              {/*<sup className={s.requiredTag}>*</sup>*/}
                             </label>
                             <div className={s.inputContainer}>
                               <input
@@ -414,7 +412,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                   <h3 className={s.modalTitle}>Thank you for being patient.</h3>
                   <div className={s.info_guild}>
                     It might take ~10 minutes to completely list your Ordinal on
-                    Bazaar for sale.
+                    Trade for sale.
                   </div>
                   <div className={s.ctas}>
                     <Button
@@ -423,7 +421,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                       className={s.submitBtn}
                       onClick={handleClose}
                     >
-                      Browse Ordinals on Bazaar
+                      Browse Ordinals on Trade
                     </Button>
                   </div>
                 </>

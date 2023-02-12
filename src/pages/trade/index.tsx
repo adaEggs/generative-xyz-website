@@ -1,23 +1,23 @@
-import { NextPage } from 'next';
+import TradeWrapper from '@containers/Trade';
 import MarketplaceLayout from '@layouts/Marketplace';
-import TokenID from '@containers/Bazaar/TokenID';
+import { NextPage } from 'next';
 import { CDN_URL } from '@constants/config';
 
-const TokenIDPage: NextPage = () => {
+const TradePage: NextPage = () => {
   return (
     <MarketplaceLayout>
-      <TokenID />
+      <TradeWrapper />
     </MarketplaceLayout>
   );
 };
 
-export default TokenIDPage;
+export default TradePage;
 
 export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: 'Generative | Bazaar',
+        title: 'Generative | Trade',
         description: 'Unique artwork at your fingertips to mint and buy',
         image: `${CDN_URL}/images/collect.jpg`,
       },
