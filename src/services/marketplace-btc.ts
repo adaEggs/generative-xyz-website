@@ -34,6 +34,7 @@ export const getMarketplaceBtcList = async (
 
 export interface IPostMarketplaceBtcListNFTParams {
   receiveAddress: string;
+  receiveOrdAddress: string;
   inscriptionID: string;
   name: string;
   description: string;
@@ -41,6 +42,7 @@ export interface IPostMarketplaceBtcListNFTParams {
 }
 export interface IPostMarketplaceBtcListNFTResponse {
   receiveAddress: string;
+  timeoutAt: string;
 }
 export const postMarketplaceBtcListNFT = async (
   dataFrom: IPostMarketplaceBtcListNFTParams

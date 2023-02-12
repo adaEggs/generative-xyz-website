@@ -37,6 +37,7 @@
     "gsap": "^3.11.3",
     "keccak256": "^1.0.6",
     "lodash": "^4.17.21",
+    "moment": "^2.29.4",
     "next": "13.0.6",
     "next-remove-imports": "^1.0.8",
     "nextjs-progressbar": "^0.0.16",

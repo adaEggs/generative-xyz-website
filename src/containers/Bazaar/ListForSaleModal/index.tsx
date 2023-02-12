@@ -19,6 +19,7 @@ import Text from '@components/Text';
 import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { formatUnixDateTime } from '@utils/time';
 
 const FEE_CHARGE_PERCENT = 0.1;
 
@@ -32,6 +33,7 @@ const LOG_PREFIX = 'ListForSaleModal';
 const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
+  const [expireTime, setExpireTime] = useState('');
   const [step, setsTep] = useState<'info' | 'list' | 'thank'>('info');
 
   const validateForm = (values: IPostMarketplaceBtcListNFTParams) => {
@@ -67,6 +69,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
       if (res.receiveAddress) {
         setsTep('list');
         setReceiveAddress(res.receiveAddress);
+        setExpireTime(res.timeoutAt);
       }
       // console.log(data);
     } catch (err: unknown) {
@@ -80,6 +83,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const handleClose = () => {
     setsTep('info');
     setReceiveAddress('');
+    setExpireTime('');
     setIsLoading(false);
     onClose();
   };
@@ -128,6 +132,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         description: '',
                         price: '',
                         receiveAddress: '',
+                        receiveOrdAddress: '',
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}
@@ -321,6 +326,12 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         size={128}
                         value={receiveAddress}
                       />
+                      {!!expireTime && (
+                        <p className={s.expire}>
+                          Expires at:{' '}
+                          {formatUnixDateTime({ dateTime: Number(expireTime) })}
+                        </p>
+                      )}
                       <p className={s.btcAddress}>{receiveAddress}</p>
 
                       <ButtonIcon
@@ -350,8 +361,8 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                 <>
                   <h3 className={s.modalTitle}>Thank you for being patient.</h3>
                   <div className={s.info_guild}>
-                    It might take a few minutes to completely list your Ordinal
-                    on Bazaar for sale.
+                    It might take ~10 minutes to completely list your Ordinal on
+                    Bazaar for sale.
                   </div>
                   <div className={s.ctas}>
                     <Button
