@@ -19,10 +19,9 @@ import Text from '@components/Text';
 import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
 import { formatUnixDateTime } from '@utils/time';
-import { isProduction } from '@utils/common';
 
 const FEE_CHARGE_PERCENT = 0.025;
-const MIN_PRICE = isProduction() ? 0.005 : 0.002;
+const MIN_PRICE = 0.005;
 
 interface IProps {
   showModal: boolean;
