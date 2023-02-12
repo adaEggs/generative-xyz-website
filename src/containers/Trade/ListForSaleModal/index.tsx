@@ -22,7 +22,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { formatUnixDateTime } from '@utils/time';
 
 const FEE_CHARGE_PERCENT = 0.025;
-const MIN_PRICE = 0.005;
+const MIN_PRICE = 0.002;
 
 interface IProps {
   showModal: boolean;
@@ -175,44 +175,6 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                             )}
                           </div>
                           <div className={s.formItem}>
-                            <label className={s.label} htmlFor="name">
-                              Inscription Name{' '}
-                              {/*<sup className={s.requiredTag}>*</sup>*/}
-                            </label>
-                            <div className={s.inputContainer}>
-                              <input
-                                id="name"
-                                type="text"
-                                name="name"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.name}
-                                className={s.input}
-                                placeholder="Input your Inscription Name here"
-                              />
-                            </div>
-                            {errors.name && touched.name && (
-                              <p className={s.inputError}>{errors.name}</p>
-                            )}
-                          </div>
-                          <div className={s.formItem}>
-                            <label className={s.label} htmlFor="description">
-                              Description{' '}
-                            </label>
-                            <div className={s.inputContainer}>
-                              <input
-                                id="description"
-                                type="text"
-                                name="description"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.description}
-                                className={s.input}
-                                placeholder="Input your description here"
-                              />
-                            </div>
-                          </div>
-                          <div className={s.formItem}>
                             <label className={s.label} htmlFor="price">
                               Price <sup className={s.requiredTag}>*</sup>
                             </label>
@@ -320,6 +282,44 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                   {errors.receiveOrdAddress}
                                 </p>
                               )}
+                          </div>
+                          <div className={s.formItem}>
+                            <label className={s.label} htmlFor="name">
+                              Inscription Name{' '}
+                              {/*<sup className={s.requiredTag}>*</sup>*/}
+                            </label>
+                            <div className={s.inputContainer}>
+                              <input
+                                id="name"
+                                type="text"
+                                name="name"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.name}
+                                className={s.input}
+                                placeholder="Input your Inscription Name here"
+                              />
+                            </div>
+                            {errors.name && touched.name && (
+                              <p className={s.inputError}>{errors.name}</p>
+                            )}
+                          </div>
+                          <div className={s.formItem}>
+                            <label className={s.label} htmlFor="description">
+                              Description{' '}
+                            </label>
+                            <div className={s.inputContainer}>
+                              <input
+                                id="description"
+                                type="text"
+                                name="description"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.description}
+                                className={s.input}
+                                placeholder="Input your description here"
+                              />
+                            </div>
                           </div>
                           <div className={s.divider} />
                           <div className={s.wrap_fee}>
