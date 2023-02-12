@@ -251,7 +251,7 @@ const ListForSaleModal = ({
                 <>
                   <h3 className={s.modalTitle}>Thank you for being patient.</h3>
                   <div className={s.info_guild}>
-                    It might take a few minutes to completely buy the Ordinal on
+                    It might take ~30 minutes to completely buy the Ordinal on
                     Bazaar.
                   </div>
                   <div className={s.ctas}>
