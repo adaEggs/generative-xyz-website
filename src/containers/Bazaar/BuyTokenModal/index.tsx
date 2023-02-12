@@ -42,6 +42,7 @@ const ListForSaleModal = ({
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
   const [expireTime, setExpireTime] = useState('');
+  const [errMessage, setErrMessage] = useState('');
   const router = useRouter();
 
   const [step, setsTep] = useState<
@@ -74,6 +75,13 @@ const ListForSaleModal = ({
       }
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (err && err?.message) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        setErrMessage(err?.message);
+      }
       toast.error(ErrorMessage.DEFAULT);
     } finally {
       setIsLoading(false);
@@ -85,6 +93,7 @@ const ListForSaleModal = ({
     setIsLoading(false);
     setReceiveAddress('');
     setExpireTime('');
+    setErrMessage('');
     onClose();
   };
 
@@ -201,12 +210,31 @@ const ListForSaleModal = ({
                                 <div className={s.inputPostfix}>BTC</div>
                               </div>
                             </div>
+                            {!!errMessage && (
+                              <div className={s.error}>{errMessage}</div>
+                            )}
                             {isLoading && (
                               <div className={s.loadingWrapper}>
                                 <Loading isLoaded={false} />
                               </div>
                             )}
-                            {step === 'pasteAddress' && (
+                            {step === 'pasteAddress' && !!errMessage ? (
+                              <div className={s.ctas}>
+                                <Button
+                                  type="button"
+                                  variants={'ghost'}
+                                  className={s.submitBtn}
+                                  disabled={isLoading}
+                                  onClick={() => {
+                                    router.push('/bazaar').then(() => {
+                                      handleClose();
+                                    });
+                                  }}
+                                >
+                                  Browse more
+                                </Button>
+                              </div>
+                            ) : (
                               <div className={s.ctas}>
                                 <Button
                                   type="submit"
