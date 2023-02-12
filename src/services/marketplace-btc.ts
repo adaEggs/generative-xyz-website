@@ -66,7 +66,7 @@ export interface IGetMarketplaceBtcNFTDetail {
   description: string;
   orderID: string;
   buyable: boolean;
-  isComplete: boolean;
+  isCompleted: boolean;
 }
 
 export const getMarketplaceBtcNFTDetail = async (

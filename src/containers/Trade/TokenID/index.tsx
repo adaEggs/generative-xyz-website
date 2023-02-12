@@ -78,12 +78,12 @@ const TokenID: React.FC = (): React.ReactElement => {
           {tokenData.name}
         </Heading>
         <Text size="14" color={'black-60'} className={s.info_labelPrice}>
-          {tokenData?.isComplete ? 'LAST SALE' : 'PRICE'}
+          {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}
         </Text>
         <Text
           size={'20'}
           className={
-            tokenData?.isComplete
+            tokenData?.isCompleted
               ? s.info_amountPriceSuccess
               : s.info_amountPrice
           }
@@ -96,12 +96,12 @@ const TokenID: React.FC = (): React.ReactElement => {
         {mobileScreen && tokenData?.name && (
           <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
         )}
-        {!tokenData.buyable && !tokenData.isComplete && (
+        {!tokenData.buyable && !tokenData.isCompleted && (
           <Text size={'14'} className={s.info_statusIns}>
             The inscription is being purchased. ETA is in ~30 minutes.
           </Text>
         )}
-        {tokenData.isComplete && (
+        {tokenData.isCompleted && (
           <Text size={'14'} className={s.info_statusComplete}>
             This inscription is not available for buying now.
           </Text>
