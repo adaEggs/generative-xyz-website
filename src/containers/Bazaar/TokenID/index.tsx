@@ -29,6 +29,7 @@ const TokenID: React.FC = (): React.ReactElement => {
   const [tokenData, setTokenData] = React.useState<
     IGetMarketplaceBtcNFTDetail | undefined
   >(undefined);
+
   const [showMore, setShowMore] = useState(false);
   const { mobileScreen } = useWindowSize();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -89,9 +90,11 @@ const TokenID: React.FC = (): React.ReactElement => {
         {mobileScreen && tokenData?.name && (
           <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
         )}
-        <Text size={'14'} className={s.info_statusMsg}>
-          The inscription is being purchased. ETA is in ~30 minutes.
-        </Text>
+        {!tokenData.buyable && (
+          <Text size={'14'} className={s.info_statusMsg}>
+            The inscription is being purchased. ETA is in ~30 minutes.
+          </Text>
+        )}
         <ButtonIcon
           sizes="large"
           className={s.info_buyBtn}
