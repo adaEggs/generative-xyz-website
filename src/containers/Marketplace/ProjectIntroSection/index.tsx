@@ -1,10 +1,17 @@
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
+import LinkShare from '@components/LinkShare';
 import { Loading } from '@components/Loading';
 import ProgressBar from '@components/ProgressBar';
+import ProjectDescription from '@components/ProjectDescription';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
+import TwitterShare from '@components/TwitterShare';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import { isProduction } from '@utils/common';
 import { NETWORK_CHAIN_ID } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
@@ -37,14 +44,6 @@ import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
-import LinkShare from '@components/LinkShare';
-import TwitterShare from '@components/TwitterShare';
-// import { CountDown } from '@components/CountDown';
-import { SeeMore } from '@components/SeeMore';
-import { useAppSelector } from '@redux';
-import { getUserSelector } from '@redux/user/selector';
-import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
-import { isProduction } from '@utils/common';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -65,6 +64,17 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   const [isAvailable, _setIsAvailable] = useState<boolean>(true);
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
+  const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
+
+  useEffect(() => {
+    const exists = project?.desc.includes('Interaction');
+    if (exists) {
+      setHasProjectInteraction(true);
+    } else {
+      setHasProjectInteraction(false);
+    }
+  }, [project?.desc]);
+
   const [marketplaceStats, setMarketplaceStats] =
     useState<MarketplaceStats | null>(null);
 
@@ -381,17 +391,10 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
           )}
 
           <div className={s.project_info}>
-            <div className={s.project_desc}>
-              <Text
-                size="14"
-                color="black-40"
-                fontWeight="medium"
-                className="text-uppercase"
-              >
-                description
-              </Text>
-              <SeeMore>{project?.desc || ''}</SeeMore>
-            </div>
+            <ProjectDescription
+              desc={project?.desc || ''}
+              hasInteraction={hasProjectInteraction}
+            />
             <>
               <Text size="14" color="black-40">
                 Created date: {mintedDate}

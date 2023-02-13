@@ -3,15 +3,25 @@ import s from './styles.module.scss';
 import MarkdownPreview from '@components/MarkdownPreview';
 import Text from '@components/Text';
 
-export const SeeMore: React.FC<{ children: string }> = ({ children }) => {
+export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
+  children,
+  render,
+}) => {
   const refBox = useRef<HTMLDivElement | null>(null);
   const refContent = useRef<HTMLDivElement | null>(null);
   const [contentOver, setContentOver] = useState<boolean>(false);
+
   const [isShowMore, setIsShowMore] = useState<boolean>(false);
 
   useLayoutEffect(() => {
     const obResize = new ResizeObserver(() => {
-      if (!refContent || !refContent.current || !refBox || !refBox.current)
+      if (
+        !refContent ||
+        !refContent.current ||
+        !refBox ||
+        !refBox.current ||
+        !children
+      )
         return;
 
       const { height } = refBox.current.getBoundingClientRect();
@@ -26,7 +36,7 @@ export const SeeMore: React.FC<{ children: string }> = ({ children }) => {
       obResize.unobserve(document.body);
       obResize.disconnect();
     };
-  }, [children, refBox, refContent]);
+  }, [children, refBox, refContent, render]);
 
   return (
     <div>
