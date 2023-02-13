@@ -12,9 +12,9 @@ import cs from 'classnames';
 import styles from './styles.module.scss';
 import TokenTopFilter from './TokenTopFilter';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
-import SelectPaymentModel from '@containers/GenerativeProjectDetail/SelectPaymenetModal';
 import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModal';
 import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal';
+import MintWalletModal from './MintWalletModal';
 
 const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
   const {
@@ -90,12 +90,14 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
       </section>
       {isPopupPayment && (
         <>
-          {paymentStep === 'switch' && <SelectPaymentModel />}
           {paymentStep === 'mint' && paymentMethod === 'BTC' && (
             <MintBTCGenerativeModal />
           )}
           {paymentStep === 'mint' && paymentMethod === 'ETH' && (
             <MintETHModal />
+          )}
+          {paymentStep === 'mint' && paymentMethod === 'WALLET' && (
+            <MintWalletModal />
           )}
         </>
       )}

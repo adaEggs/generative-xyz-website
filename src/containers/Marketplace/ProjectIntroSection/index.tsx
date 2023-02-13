@@ -32,15 +32,19 @@ import log from '@utils/logger';
 import dayjs from 'dayjs';
 import _get from 'lodash/get';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
 import LinkShare from '@components/LinkShare';
 import TwitterShare from '@components/TwitterShare';
-import { CountDown } from '@components/CountDown';
+// import { CountDown } from '@components/CountDown';
 import { SeeMore } from '@components/SeeMore';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import { isProduction } from '@utils/common';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -50,13 +54,20 @@ type Props = {
 };
 
 const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
-  const { getWalletBalance } = useContext(WalletContext);
-  const { mobileScreen } = useWindowSize();
-  const [isAvailable, setIsAvailable] = useState<boolean>(false);
   const router = useRouter();
+  const user = useAppSelector(getUserSelector);
+  const { mobileScreen } = useWindowSize();
+
+  const { getWalletBalance, connect } = useContext(WalletContext);
+  const { setPaymentMethod, setIsPopupPayment, setPaymentStep } = useContext(
+    BitcoinProjectContext
+  );
+  const [isAvailable, _setIsAvailable] = useState<boolean>(true);
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
   const [marketplaceStats, setMarketplaceStats] =
     useState<MarketplaceStats | null>(null);
+
   const mintedTime = project?.mintedTime;
   let mintDate = dayjs();
   if (mintedTime) {
@@ -76,6 +87,11 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   const isBitcoinProject = useMemo((): boolean => {
     if (!project) return false;
     return checkIsBitcoinProject(project.tokenID);
+  }, [project]);
+
+  const isLimitMinted = useMemo((): boolean => {
+    if (!project) return false;
+    return project?.mintingInfo?.index < project?.maxSupply;
   }, [project]);
 
   const handleFetchMarketplaceStats = async () => {
@@ -103,7 +119,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
 
       if (
         walletBalance <
-        parseFloat(Web3.utils.fromWei(project.mintPrice.toString()))
+        parseFloat(Web3.utils.fromWei(project.mintPriceEth.toString()))
       ) {
         if (isTestnet()) {
           toast.error(
@@ -117,7 +133,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
 
       const mintTx = await mintToken({
         projectAddress: project.genNFTAddr,
-        mintFee: project.mintPrice.toString(),
+        mintFee: project.mintPriceEth.toString(),
         chainID: NETWORK_CHAIN_ID,
       });
 
@@ -152,6 +168,35 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
     [project?.mintPriceEth]
   );
 
+  // pay with wallet project btc
+
+  const payWithWallet = () => {
+    setPaymentMethod('WALLET');
+    setIsPopupPayment(true);
+    setPaymentStep('mint');
+  };
+
+  const handleConnectWallet = async (): Promise<void> => {
+    try {
+      setIsConnecting(true);
+      await connect();
+      payWithWallet();
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const onHandlePaymentWithWallet = useCallback(() => {
+    if (isConnecting) return;
+    if (!user) {
+      handleConnectWallet();
+    } else {
+      payWithWallet();
+    }
+  }, [user, isConnecting]);
+
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -166,15 +211,15 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
     if (isProjectDetailPage) {
       return (
         <div className={s.info}>
-          {isBitcoinProject && (
-            <CountDown
-              prefix={'Drop ends in'}
-              isDetail={true}
-              setIsAvailable={setIsAvailable}
-              openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}
-              closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}
-            />
-          )}
+          {/*{isBitcoinProject && (*/}
+          {/*  <CountDown*/}
+          {/*    prefix={'Drop ends in'}*/}
+          {/*    isDetail={true}*/}
+          {/*    setIsAvailable={setIsAvailable}*/}
+          {/*    openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}*/}
+          {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
+          {/*  />*/}
+          {/*)}*/}
 
           <Heading as="h4" fontWeight="medium">
             {project?.name}
@@ -232,7 +277,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 </ButtonIcon>
               )}
 
-              {isBitcoinProject && isAvailable && (
+              {isBitcoinProject && isAvailable && isLimitMinted && (
                 <ul>
                   <li>
                     <ButtonIcon
@@ -278,6 +323,20 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                       </Text>
                     </ButtonIcon>
                   </li>
+                  {!isProduction() && (
+                    <li>
+                      <ButtonIcon
+                        sizes="large"
+                        variants={'filter'}
+                        className={`${s.mint_btn} ${s.mint_btn__wallet}`}
+                        onClick={onHandlePaymentWithWallet}
+                      >
+                        <Text as="span" size="14" fontWeight="medium">
+                          {isConnecting ? 'Connecting...' : 'Wallet'}
+                        </Text>
+                      </ButtonIcon>
+                    </li>
+                  )}
                 </ul>
               )}
             </div>
