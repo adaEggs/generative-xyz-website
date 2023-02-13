@@ -110,6 +110,7 @@
       @include min-pc {
         display: flex;
         gap: rem(24px);
+        align-items: center;
       }
 
       @include calcFontAuto(14px, 16px);
