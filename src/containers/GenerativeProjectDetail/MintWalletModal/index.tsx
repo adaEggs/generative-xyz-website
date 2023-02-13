@@ -1,22 +1,22 @@
 import Button from '@components/ButtonIcon';
+import { Loading } from '@components/Loading';
+import QRCodeGenerator from '@components/QRCodeGenerator';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
-import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import React, { useMemo, useCallback, useContext, useState } from 'react';
-import { Formik } from 'formik';
-import s from './styles.module.scss';
-import QRCodeGenerator from '@components/QRCodeGenerator';
-import { mintBTCGenerative } from '@services/btc';
-import { Loading } from '@components/Loading';
-import _debounce from 'lodash/debounce';
-import { validateBTCWalletAddress } from '@utils/validate';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
-import { toast } from 'react-hot-toast';
-import { ErrorMessage } from '@enums/error-message';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import { ErrorMessage } from '@enums/error-message';
+import { LogLevel } from '@enums/log-level';
+import { mintBTCGenerative } from '@services/btc';
+import { generateETHReceiverAddressWithWhitelist } from '@services/eth';
 import { formatEthPrice } from '@utils/format';
-import { generateETHReceiverAddressWithWallet } from '@services/eth';
+import log from '@utils/logger';
+import { validateBTCWalletAddress } from '@utils/validate';
+import { Formik } from 'formik';
+import _debounce from 'lodash/debounce';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import s from './styles.module.scss';
 
 interface IFormValue {
   address: string;
@@ -44,7 +44,7 @@ const MintWalletModal: React.FC = () => {
       setIsLoading(true);
       setReceiverAddress(null);
       const { address, price: price } =
-        await generateETHReceiverAddressWithWallet({
+        await generateETHReceiverAddressWithWhitelist({
           walletAddress,
           projectID: projectData.tokenID,
         });
