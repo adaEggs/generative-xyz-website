@@ -1,18 +1,18 @@
+import Avatar from '@components/Avatar';
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
+import Link from '@components/Link';
 import LinkShare from '@components/LinkShare';
 import { Loading } from '@components/Loading';
 import ProgressBar from '@components/ProgressBar';
 import ProjectDescription from '@components/ProjectDescription';
+import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
 import TwitterShare from '@components/TwitterShare';
-import { useAppSelector } from '@redux';
-import { getUserSelector } from '@redux/user/selector';
-import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
-import { isProduction } from '@utils/common';
 import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
@@ -22,6 +22,8 @@ import { IGetProjectDetailResponse } from '@interfaces/api/project';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
 import { Token } from '@interfaces/token';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
@@ -43,9 +45,6 @@ import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
-import Avatar from '@components/Avatar';
-import SvgInset from '@components/SvgInset';
-import Link from '@components/Link';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -377,7 +376,8 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                       </Text>
                     </ButtonIcon>
                   </li>
-                  {!isProduction() && !!project?.whiteListEthContracts && (
+
+                  {!!project?.whiteListEthContracts && (
                     <li>
                       <ButtonIcon
                         sizes="large"
