@@ -13,6 +13,7 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import SvgInset from '@components/SvgInset';
 import { isProduction } from '@utils/common';
+import { ROUTE_PATH } from '@constants/route-path';
 
 interface IProp {
   theme?: 'light' | 'dark';
@@ -43,6 +44,13 @@ const MenuMobile = React.forwardRef(
         return url;
       }
       return `${url}?${querystring.stringify(query)}`;
+    };
+
+    const showWalletButton = (): boolean => {
+      if (!isProduction()) return true;
+      if (router.pathname === ROUTE_PATH.ORDER_NOW) {
+        return true;
+      } else return false;
     };
 
     return (
@@ -105,21 +113,23 @@ const MenuMobile = React.forwardRef(
                 {MENU_HEADER[2].name}
               </Link>
             </li>
-
-            <li
-              className={cs(
-                activePath === RIGHT_MENU[2].activePath && s.active
-              )}
-              key={`header-${RIGHT_MENU[2].id}`}
-            >
-              <a
-                href={getUrlWithQueryParams(RIGHT_MENU[2].route)}
-                target={'_blank'}
-                rel="noreferrer"
+            {!isProduction() && (
+              <li
+                className={cs(
+                  activePath === RIGHT_MENU[2].activePath && s.active
+                )}
+                key={`header-${RIGHT_MENU[2].id}`}
               >
-                {RIGHT_MENU[2].name}
-              </a>
-            </li>
+                <a
+                  href={getUrlWithQueryParams(RIGHT_MENU[2].route)}
+                  target={'_blank'}
+                  rel="noreferrer"
+                >
+                  {RIGHT_MENU[2].name}
+                </a>
+              </li>
+            )}
+
             {!isProduction() && (
               <li>
                 <a href={SOCIALS.whitepaper} target={'_blank'} rel="noreferrer">
@@ -129,25 +139,28 @@ const MenuMobile = React.forwardRef(
             )}
           </ul>
           <div className={`${s.menuMobile_bottom} ${user ? s.hasUser : ''}`}>
-            <div className={`${s.connectWallet}`}>
-              {user ? (
-                <div className="position-relative">
-                  {renderProfileHeader()}
-                  {ProfileDropdown()}
-                </div>
-              ) : (
-                <div className={s.menuMobile_bottom_cta}>
-                  <ButtonIcon
-                    disabled={isConnecting}
-                    sizes="medium"
-                    variants={theme === 'dark' ? 'secondary' : 'primary'}
-                    onClick={handleConnectWallet}
-                  >
-                    {isConnecting ? 'Connecting...' : 'Connect wallet'}
-                  </ButtonIcon>
-                </div>
-              )}
-            </div>
+            {showWalletButton() && (
+              <div className={`${s.connectWallet}`}>
+                {user ? (
+                  <div className="position-relative">
+                    {renderProfileHeader()}
+                    {ProfileDropdown()}
+                  </div>
+                ) : (
+                  <div className={s.menuMobile_bottom_cta}>
+                    <ButtonIcon
+                      disabled={isConnecting}
+                      sizes="medium"
+                      variants={theme === 'dark' ? 'secondary' : 'primary'}
+                      onClick={handleConnectWallet}
+                    >
+                      {isConnecting ? 'Connecting...' : 'Connect wallet'}
+                    </ButtonIcon>
+                  </div>
+                )}
+              </div>
+            )}
+
             <ul className={s.menuMobile_bottom_socials}>
               <li>
                 <a href={SOCIALS.twitter} target={'_blank'} rel="noreferrer">
