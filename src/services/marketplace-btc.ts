@@ -2,12 +2,15 @@ import { LogLevel } from '@enums/log-level';
 import { get, post } from '@services/http-client';
 import log from '@utils/logger';
 import querystring from 'query-string';
+import { getOrdContentByInscriptionID } from '@utils/parseOrdHTML';
 
 const LOG_PREFIX = 'MarketplaceBtcService';
 
 const API_PATH = '/marketplace-btc';
 export interface IGetMarketplaceBtcListParams {
-  page: number;
+  limit: number;
+  offset: number;
+  'buyable-only': boolean;
 }
 export interface IGetMarketplaceBtcListItem {
   inscriptionID: string;
@@ -16,6 +19,9 @@ export interface IGetMarketplaceBtcListItem {
   description: string;
   image: string;
   orderID: string;
+  buyable: boolean;
+  isCompleted: boolean;
+  index: string;
 }
 export const getMarketplaceBtcList = async (
   params: IGetMarketplaceBtcListParams
@@ -25,7 +31,16 @@ export const getMarketplaceBtcList = async (
     const res = await get<IGetMarketplaceBtcListItem[]>(
       `${API_PATH}/list${qs}`
     );
-    return res;
+    const tasks = res.map(async data => {
+      const inscriptionID = data.inscriptionID;
+      const { index } = await getOrdContentByInscriptionID(inscriptionID);
+      return {
+        ...data,
+        index,
+      };
+    });
+    const data = await Promise.all(tasks);
+    return data;
   } catch (err: unknown) {
     log('failed to get Marketplace Btc List', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get Marketplace Btc List');
@@ -67,16 +82,23 @@ export interface IGetMarketplaceBtcNFTDetail {
   orderID: string;
   buyable: boolean;
   isCompleted: boolean;
+  index: string;
 }
 
 export const getMarketplaceBtcNFTDetail = async (
   inscriptionID: string
 ): Promise<IGetMarketplaceBtcNFTDetail> => {
   try {
-    const res = await get<IGetMarketplaceBtcNFTDetail>(
-      `${API_PATH}/nft-detail/${inscriptionID}`
-    );
-    return res;
+    const [res, data] = await Promise.all([
+      await get<IGetMarketplaceBtcNFTDetail>(
+        `${API_PATH}/nft-detail/${inscriptionID}`
+      ),
+      await getOrdContentByInscriptionID(inscriptionID),
+    ]);
+    return {
+      ...res,
+      index: data.index,
+    };
   } catch (err: unknown) {
     log('failed to get MarketplaceBtc NFT Detail', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get MarketplaceBtc NFT Detail');

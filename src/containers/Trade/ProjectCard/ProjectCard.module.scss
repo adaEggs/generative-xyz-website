@@ -107,6 +107,11 @@
         margin-top: rem(5);
       }
     }
+
+    &_price {
+      min-width: 100px;
+      text-align: end;
+    }
   }
 
   &:hover {
