@@ -12,14 +12,15 @@ type Props = {
 const ProjectDescription = ({ desc, hasInteraction = false }: Props) => {
   const [projectDescription, setProjectDescription] = useState('');
   const [projectInteraction, setProjectInteraction] = useState('');
+  const [render, setRender] = useState(false);
 
   useEffect(() => {
-    if (hasInteraction) {
-      const splitDesc = desc.split('Interaction') || '';
+    if (hasInteraction && desc) {
+      const splitDesc = desc.split('Interaction');
       setProjectDescription(splitDesc[0]);
       setProjectInteraction(splitDesc[1]);
     }
-  }, [desc]);
+  }, [desc, hasInteraction]);
 
   if (!hasInteraction) {
     return (
@@ -38,31 +39,19 @@ const ProjectDescription = ({ desc, hasInteraction = false }: Props) => {
   }
 
   return (
-    <Tabs className={s.tabs} defaultActiveKey="description">
+    <Tabs
+      className={s.tabs}
+      defaultActiveKey="description"
+      onSelect={() => setRender(!render)}
+    >
       <Tab tabClassName={s.tab} eventKey="description" title={`Description`}>
         <div className={s.project_desc}>
-          {/* <Text
-                    size="14"
-                    color="black-40"
-                    fontWeight="medium"
-                    className="text-uppercase"
-                  >
-                    description
-                  </Text> */}
           <SeeMore>{projectDescription || ''}</SeeMore>
         </div>
       </Tab>
       <Tab tabClassName={s.tab} eventKey="interaction" title={`Interaction`}>
         <div className={s.project_desc}>
-          {/* <Text
-                    size="14"
-                    color="black-40"
-                    fontWeight="medium"
-                    className="text-uppercase"
-                  >
-                    description
-                  </Text> */}
-          <SeeMore>{projectInteraction || ''}</SeeMore>
+          <SeeMore render={render}>{projectInteraction || ''}</SeeMore>
         </div>
       </Tab>
     </Tabs>
