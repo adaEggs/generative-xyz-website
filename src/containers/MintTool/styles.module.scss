@@ -131,7 +131,7 @@
 
   .actionWrapper {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
   }
 
   .loadingWrapper {
@@ -201,6 +201,7 @@
       font-weight: 400;
       font-size: rem(16px);
       line-height: rem(26px);
+      text-align: center;
     }
   }
 }
