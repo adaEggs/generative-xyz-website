@@ -332,7 +332,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                       </Text>
                     </ButtonIcon>
                   </li>
-                  {!isProduction() && (
+                  {!isProduction() && !!project?.whiteListEthContracts && (
                     <li>
                       <ButtonIcon
                         sizes="large"
