@@ -8,7 +8,6 @@ import {
 import { WalletProvider } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
 import store from '@redux';
-import DatadogService from '@services/datadog';
 import '@styles/index.scss';
 import log from '@utils/logger';
 import { NextComponentType, NextPageContext } from 'next';
@@ -40,14 +39,6 @@ export default function App({ Component, pageProps }: MyAppProps) {
           log(err as Error, LogLevel.ERROR, 'App');
         });
     }
-
-    const ddInstance = DatadogService.getInstance();
-    ddInstance.init();
-    ddInstance.startRUMTracking();
-
-    return () => {
-      ddInstance.stopRUMTracking();
-    };
   }, []);
 
   useEffect(() => {

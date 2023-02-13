@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import { LogLevel } from '@enums/log-level';
 import { APP_LOG_LEVEL } from '@constants/config';
-import DatadogService from '@services/datadog';
 import { LogItem } from '@interfaces/log';
 
 const selectedLogLevel: LogLevel =
@@ -29,9 +28,8 @@ const logLevelSufficient = (
   return logLevelPriority >= allowedLogLevelPriority;
 };
 
-const sendLogToSystem = (logRecord: LogItem): void => {
-  const ddInstance = DatadogService.getInstance();
-  ddInstance.ddLog(logRecord.message, logRecord);
+const sendLogToSystem = (_: LogItem): void => {
+  //
 };
 
 const log = (

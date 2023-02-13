@@ -162,9 +162,10 @@ const MintTool: React.FC = (): React.ReactElement => {
                         </label>
                         <div className={s.mintFeeWrapper}>
                           <div
-                            onClick={() =>
-                              handleChangeFee(InscribeMintFeeRate.Economy)
-                            }
+                            onClick={() => {
+                              handleChangeFee(InscribeMintFeeRate.Economy);
+                              setTimeout(handleSubmit, 0);
+                            }}
                             className={cs(s.mintFeeItem, {
                               [`${s.mintFeeItem__active}`]:
                                 feeRate === InscribeMintFeeRate.Economy,
@@ -184,9 +185,10 @@ const MintTool: React.FC = (): React.ReactElement => {
                             </p>
                           </div>
                           <div
-                            onClick={() =>
-                              handleChangeFee(InscribeMintFeeRate.Faster)
-                            }
+                            onClick={() => {
+                              handleChangeFee(InscribeMintFeeRate.Faster);
+                              setTimeout(handleSubmit, 0);
+                            }}
                             className={cs(s.mintFeeItem, {
                               [`${s.mintFeeItem__active}`]:
                                 feeRate === InscribeMintFeeRate.Faster,
@@ -206,9 +208,10 @@ const MintTool: React.FC = (): React.ReactElement => {
                             </p>
                           </div>
                           <div
-                            onClick={() =>
-                              handleChangeFee(InscribeMintFeeRate.Fastest)
-                            }
+                            onClick={() => {
+                              handleChangeFee(InscribeMintFeeRate.Fastest);
+                              setTimeout(handleSubmit, 0);
+                            }}
                             className={cs(s.mintFeeItem, {
                               [`${s.mintFeeItem__active}`]:
                                 feeRate === InscribeMintFeeRate.Fastest,

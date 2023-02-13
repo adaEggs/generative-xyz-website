@@ -1,0 +1,28 @@
+.project_desc {
+  margin-bottom: rem(24px);
+}
+
+.tabs {
+  margin-bottom: rem(24);
+  gap: rem(32);
+  border: none;
+
+  :global(.nav-link) {
+    text-transform: uppercase;
+    color: $black-40;
+    font-size: rem(14px);
+    font-weight: 500;
+    border: none;
+    padding: 0;
+    padding-bottom: rem(16);
+    padding-top: rem(16);
+
+    &:hover {
+      color: $black-60;
+    }
+  }
+
+  :global(.nav-link.active) {
+    border-bottom: 2px solid $primary-brand;
+  }
+}

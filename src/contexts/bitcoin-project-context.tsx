@@ -6,10 +6,12 @@ import React, {
   Dispatch,
   SetStateAction,
 } from 'react';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
 
 export interface IBitcoinProjectContext {
-  paymentMethod: 'ETH' | 'BTC';
-  setPaymentMethod: Dispatch<SetStateAction<'ETH' | 'BTC'>>;
+  paymentMethod: 'ETH' | 'BTC' | 'WALLET';
+  setPaymentMethod: Dispatch<SetStateAction<'ETH' | 'BTC' | 'WALLET'>>;
 
   isPopupPayment: boolean;
   setIsPopupPayment: Dispatch<SetStateAction<boolean>>;
@@ -46,9 +48,12 @@ export const BitcoinProjectContext =
 export const BitcoinProjectProvider: React.FC<PropsWithChildren> = ({
   children,
 }: PropsWithChildren): React.ReactElement => {
+  const user = useAppSelector(getUserSelector);
   const [paymentStep, setPaymentStep] = useState<'switch' | 'mint'>('switch');
   const [isPopupPayment, setIsPopupPayment] = useState<boolean>(false);
-  const [paymentMethod, setPaymentMethod] = useState<'ETH' | 'BTC'>('BTC');
+  const [paymentMethod, setPaymentMethod] = useState<'ETH' | 'BTC' | 'WALLET'>(
+    'BTC'
+  );
   const defaultCloseMintUnixTimestamp =
     new Date('Feb 16, 2023 16:00:00 UTC').getTime() / 1000;
 
@@ -57,6 +62,14 @@ export const BitcoinProjectProvider: React.FC<PropsWithChildren> = ({
       setPaymentStep('switch');
     }
   }, [isPopupPayment]);
+
+  useEffect(() => {
+    if (!user) {
+      setPaymentStep('switch');
+      setIsPopupPayment(false);
+      setPaymentMethod('BTC');
+    }
+  }, [user]);
 
   const contextValues = useMemo((): IBitcoinProjectContext => {
     return {

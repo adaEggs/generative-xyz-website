@@ -12,6 +12,8 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
+import log from '@utils/logger';
+import { LogLevel } from '@enums/log-level';
 
 // const SORT_OPTIONS: Array<{ value: string; label: string }> = [
 //   {
@@ -28,6 +30,8 @@ import s from './RecentWorks.module.scss';
 //   },
 // ];
 
+const LOG_PREFIX = 'RecentWorks';
+
 export const RecentWorks = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoadedMore, setIsLoadMore] = useState<boolean>(false);
@@ -41,25 +45,29 @@ export const RecentWorks = (): JSX.Element => {
   // }, [sort]);
 
   const getProjectAll = useCallback(async () => {
-    let page = (projects && projects?.page) || 0;
-    page += 1;
+    try {
+      let page = (projects && projects?.page) || 0;
+      page += 1;
 
-    setIsLoadMore(false);
-    const tmpProject = await getProjectList({
-      contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
-      limit: 12,
-      page,
-    });
+      setIsLoadMore(false);
+      const tmpProject = await getProjectList({
+        contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
+        limit: 12,
+        page,
+      });
 
-    if (tmpProject) {
-      if (projects && projects?.result) {
-        tmpProject.result = [...projects.result, ...tmpProject.result];
+      if (tmpProject) {
+        if (projects && projects?.result) {
+          tmpProject.result = [...projects.result, ...tmpProject.result];
+        }
+
+        setIsLoadMore(true);
+        setProjects(tmpProject);
+        setListData(tmpProject?.result || []);
+        setCurrentTotal(tmpProject.total || 0);
       }
-
-      setIsLoadMore(true);
-      setProjects(tmpProject);
-      setListData(tmpProject?.result || []);
-      setCurrentTotal(tmpProject.total || 0);
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
     }
   }, [projects]);
 
