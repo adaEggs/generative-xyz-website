@@ -7,9 +7,11 @@ interface IProps {
   closeMintUnixTimestamp: number;
   setIsAvailable?: (b: boolean) => void;
   isDetail?: boolean;
+  prefix?: string;
 }
 
 export const CountDown = ({
+  prefix,
   openMintUnixTimestamp,
   closeMintUnixTimestamp,
   setIsAvailable,
@@ -26,7 +28,7 @@ export const CountDown = ({
 
   return countDown !== '' ? (
     <div className={`${s.countDown} ${isDetail ? s.isDetail : ''}`}>
-      {countDown}
+      {`${prefix ? `${prefix} ` : ''}${countDown}`}
     </div>
   ) : (
     <></>

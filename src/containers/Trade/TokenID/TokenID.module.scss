@@ -47,20 +47,58 @@
     font-weight: 500;
   }
 
+  &_statusIns {
+    line-height: 140%;
+    font-weight: 500;
+    color: $secondary-orange;
+    margin-top: rem(35);
+    margin-bottom: rem(12);
+  }
+
+  &_statusComplete {
+    line-height: 140%;
+    font-weight: 500;
+    color: $primary-brand;
+    margin-top: rem(35);
+    margin-bottom: rem(12);
+  }
+
   &_amountPrice {
     font-weight: 500;
     line-height: 140%;
+    flex: 0 0 60%;
+    padding-right: rem(10px);
+    color: $primary-brand;
+
+    @include calcFontAuto(16px, 18px);
+  }
+
+  &_amountPriceSuccess {
+    font-weight: 500;
+    line-height: 140%;
+    flex: 0 0 60%;
+    padding-right: rem(10px);
+    color: #00aa6c;
+
+    @include calcFontAuto(16px, 18px);
   }
 
   &_buyBtn {
     justify-content: center;
     width: 100%;
-    margin-top: rem(35);
+
+    @include mobile {
+      margin-top: rem(12);
+    }
   }
 
   &_project_desc {
     margin-top: rem(46px);
     margin-bottom: rem(24px);
+
+    @include mobile {
+      margin-top: rem(16px);
+    }
   }
 }
 
@@ -122,5 +160,42 @@
     &:hover {
       text-decoration: underline;
     }
+  }
+}
+
+.img_inner {
+  position: relative;
+
+  @include tablet {
+    width: 100%;
+    height: calc(100vh - #{rem(260px)});
+    padding: 0;
+  }
+
+  @include mobile {
+    width: 100%;
+    height: calc(100vh - #{rem(260px)});
+    padding: 0;
+  }
+}
+
+.img_wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  img {
+    object-fit: contain;
+  }
+
+  img,
+  iframe,
+  canvas {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
   }
 }

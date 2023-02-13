@@ -11,10 +11,13 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-import BigNumber from 'bignumber.js';
 import { submitAddressBuyBTC } from '@services/marketplace-btc';
 import ButtonIcon from '@components/ButtonIcon';
 import Text from '@components/Text';
+import { useRouter } from 'next/router';
+import { formatUnixDateTime } from '@utils/time';
+import { ROUTE_PATH } from '@constants/route-path';
+import { formatBTCPrice } from '@utils/format';
 
 interface IFormValue {
   address: string;
@@ -38,15 +41,19 @@ const ListForSaleModal = ({
 }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
-  const [step, setsTep] = useState<'info' | 'pasteAddress' | 'showAddress'>(
-    'pasteAddress'
-  );
+  const [expireTime, setExpireTime] = useState('');
+  const [errMessage, setErrMessage] = useState('');
+  const router = useRouter();
+
+  const [step, setsTep] = useState<
+    'info' | 'pasteAddress' | 'showAddress' | 'thank'
+  >('pasteAddress');
 
   const validateForm = (values: IFormValue) => {
     const errors: Record<string, string> = {};
 
     if (!values.address) {
-      errors.address = 'Wallet address is required.';
+      errors.address = 'Address is required.';
     } else if (!validateBTCWalletAddress(values.address)) {
       errors.address = 'Invalid wallet address.';
     }
@@ -63,10 +70,18 @@ const ListForSaleModal = ({
       });
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);
+        setExpireTime(data.timeoutAt);
         setsTep('showAddress');
       }
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (err && err?.message) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        setErrMessage(err?.message);
+      }
       toast.error(ErrorMessage.DEFAULT);
     } finally {
       setIsLoading(false);
@@ -77,6 +92,8 @@ const ListForSaleModal = ({
     setsTep('pasteAddress');
     setIsLoading(false);
     setReceiveAddress('');
+    setExpireTime('');
+    setErrMessage('');
     onClose();
   };
 
@@ -105,7 +122,7 @@ const ListForSaleModal = ({
             <div className={s.modalBody}>
               {(step === 'pasteAddress' || step === 'showAddress') && (
                 <>
-                  <h3 className={s.modalTitle}>Buy NFT</h3>
+                  <h3 className={s.modalTitle}>Buy inscription</h3>
                   <div className={s.alert_info}>
                     Do not spend any satoshis from this wallet unless you
                     understand what you are doing. If you ignore this warning,
@@ -133,8 +150,29 @@ const ListForSaleModal = ({
                           <form onSubmit={handleSubmit}>
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
-                                TRANSFER NFT TO{' '}
+                                Enter the Ordinals-compatible BTC address to
+                                receive your buying inscription.
                                 <sup className={s.requiredTag}>*</sup>
+                                {/*<OverlayTrigger*/}
+                                {/*  placement="bottom"*/}
+                                {/*  delay={{ show: 250, hide: 400 }}*/}
+                                {/*  overlay={*/}
+                                {/*    <Tooltip id="variation-tooltip">*/}
+                                {/*      <Text*/}
+                                {/*        size="14"*/}
+                                {/*        fontWeight="semibold"*/}
+                                {/*        color="primary-333"*/}
+                                {/*      >*/}
+                                {/*        You will either receive inscription in*/}
+                                {/*        this wallet if the inscription is*/}
+                                {/*        successfully bought or get your Ordinal*/}
+                                {/*        back if the order is cancelled.*/}
+                                {/*      </Text>*/}
+                                {/*    </Tooltip>*/}
+                                {/*  }*/}
+                                {/*>*/}
+                                {/*  <span className={s.question}>?</span>*/}
+                                {/*</OverlayTrigger>*/}
                               </label>
                               <div className={s.inputContainer}>
                                 <input
@@ -145,7 +183,7 @@ const ListForSaleModal = ({
                                   onBlur={handleBlur}
                                   value={values.address}
                                   className={s.input}
-                                  placeholder="Paste your BTC Ordinal wallet address here"
+                                  placeholder="Paste your Ordinals-compatible BTC address here"
                                 />
                               </div>
                               {errors.address && touched.address && (
@@ -163,9 +201,7 @@ const ListForSaleModal = ({
                                   name="price"
                                   onChange={handleChange}
                                   onBlur={handleBlur}
-                                  value={new BigNumber(price)
-                                    .div(1e8)
-                                    .toString()}
+                                  value={formatBTCPrice(price || 0)}
                                   className={s.input}
                                   disabled={true}
                                   placeholder="Paste your price here"
@@ -173,21 +209,40 @@ const ListForSaleModal = ({
                                 <div className={s.inputPostfix}>BTC</div>
                               </div>
                             </div>
+                            {!!errMessage && (
+                              <div className={s.error}>{errMessage}</div>
+                            )}
                             {isLoading && (
                               <div className={s.loadingWrapper}>
                                 <Loading isLoaded={false} />
                               </div>
                             )}
-                            {step === 'pasteAddress' && (
+                            {step === 'pasteAddress' && !!errMessage ? (
                               <div className={s.ctas}>
                                 <Button
+                                  type="button"
+                                  sizes="large"
+                                  // variants={'ghost'}
+                                  className={s.buyBtn}
+                                  disabled={isLoading}
+                                  onClick={() => {
+                                    handleClose();
+                                  }}
+                                >
+                                  Sure thing
+                                </Button>
+                              </div>
+                            ) : receiveAddress ? null : (
+                              <div className={s.ctas}>
+                                <ButtonIcon
                                   type="submit"
-                                  variants={'ghost'}
-                                  className={s.submitBtn}
+                                  sizes="large"
+                                  // variants={'ghost'}
+                                  className={s.buyBtn}
                                   disabled={isLoading}
                                 >
-                                  Generate deposit address
-                                </Button>
+                                  Generate payment address
+                                </ButtonIcon>
                               </div>
                             )}
                           </form>
@@ -201,27 +256,54 @@ const ListForSaleModal = ({
                 <>
                   <div className={s.formWrapper} style={{ marginTop: 24 }}>
                     <div className={s.qrCodeWrapper}>
-                      {/* <p className={s.qrTitle}>
-                        Send NFT to this deposit address
-                      </p> */}
+                      <p className={s.qrTitle}>
+                        Send BTC to this payment address
+                      </p>
                       <QRCodeGenerator
                         className={s.qrCodeGenerator}
                         size={128}
                         value={receiveAddress || ''}
                       />
-                      <p className={s.sendBtcDesc}>
-                        Send BTC to this deposit address
-                      </p>
+                      {!!expireTime && (
+                        <p className={s.expire}>
+                          Expires at:{' '}
+                          {formatUnixDateTime({ dateTime: Number(expireTime) })}
+                        </p>
+                      )}
                       <p className={s.btcAddress}>{receiveAddress || ''}</p>
                     </div>
                     <ButtonIcon
                       sizes="large"
                       className={s.buyBtn}
-                      onClick={handleClose}
+                      onClick={() => setsTep('thank')}
                     >
                       <Text as="span" size="14" fontWeight="medium">
-                        Already Deposited
+                        Already Sent
                       </Text>
+                    </ButtonIcon>
+                  </div>
+                </>
+              )}
+              {step === 'thank' && (
+                <>
+                  <h3 className={s.modalTitle}>Thank you for being patient.</h3>
+                  <div className={s.info_guild}>
+                    It might take ~30 minutes to completely buy the Ordinal on
+                    Trade.
+                  </div>
+                  <div className={s.ctas}>
+                    <ButtonIcon
+                      type="button"
+                      sizes="large"
+                      // variants={'ghost'}
+                      className={s.buyBtn}
+                      onClick={() => {
+                        router.push(ROUTE_PATH.TRADE).then(() => {
+                          handleClose();
+                        });
+                      }}
+                    >
+                      Browse Ordinals on Trade
                     </ButtonIcon>
                   </div>
                 </>

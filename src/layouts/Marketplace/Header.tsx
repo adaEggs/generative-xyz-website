@@ -29,21 +29,20 @@ import { gsap } from 'gsap';
 import { isProduction } from '@utils/common';
 import GenerativeLogo from '@components/GenerativeLogo';
 
-// import dynamic from 'next/dynamic';
-// const GenerativeLogo = dynamic(() => import('@components/GenerativeLogo'));
-
 const LOG_PREFIX = 'MarketplaceHeader';
 
 interface IProp {
   theme?: 'light' | 'dark';
   isShowFaucet?: boolean;
   isDisplay?: boolean;
+  isDrops?: boolean;
 }
 
 const Header: React.FC<IProp> = ({
   theme = 'light',
   isShowFaucet = false,
   isDisplay = false,
+  isDrops = false,
 }): React.ReactElement => {
   const { connect, disconnect, walletBalance } = useContext(WalletContext);
   const user = useAppSelector(getUserSelector);
@@ -200,6 +199,19 @@ const Header: React.FC<IProp> = ({
                       {MENU_HEADER[0].name}
                     </Link>
                   </li>
+                  {
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[3].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[3].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[3].route)}>
+                        {MENU_HEADER[3].name}
+                      </Link>
+                    </li>
+                  }
                   {!isProduction() && (
                     <li
                       className={cs(
@@ -223,16 +235,6 @@ const Header: React.FC<IProp> = ({
                       {MENU_HEADER[2].name}
                     </Link>
                   </li>
-                  {/* <li
-                    className={cs(
-                      activePath === MENU_HEADER[3].activePath && styles.active
-                    )}
-                    key={`header-${MENU_HEADER[3].id}`}
-                  >
-                    <Link href={getUrlWithQueryParams(MENU_HEADER[3].route)}>
-                      {MENU_HEADER[3].name}
-                    </Link>
-                  </li> */}
                 </ul>
 
                 <Link
@@ -328,6 +330,14 @@ const Header: React.FC<IProp> = ({
             </div>
           </Container>
         </div>
+        {isDrops && (
+          <div className={styles.topDiscord}>
+            Want to launch your art on Bitcoin?
+            <a href={SOCIALS.discord} target="_blank" rel="noreferrer">
+              {' Join our Discord for direct support.'}
+            </a>
+          </div>
+        )}
       </header>
       {isFaucet && !isProduction() && (
         <div className={styles.testNet}>
@@ -342,6 +352,7 @@ const Header: React.FC<IProp> = ({
           </a>
         </div>
       )}
+
       {isDisplay && <QuickBuy />}
       <MenuMobile
         renderProfileHeader={renderProfileHeader}

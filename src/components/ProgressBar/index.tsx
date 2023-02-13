@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import Heading from '@components/Heading';
 import Skeleton from '@components/Skeleton';
 import Text from '@components/Text';
@@ -9,6 +11,7 @@ type TProgressBar = {
   total?: number;
   size?: 'regular' | 'small';
   className?: string;
+  isHideBar?: boolean;
 };
 
 const ProgressBar = ({
@@ -16,11 +19,12 @@ const ProgressBar = ({
   total,
   size = 'regular',
   className,
+  isHideBar = false,
 }: TProgressBar) => {
-  // const calcMintProgress = useMemo(() => {
-  //   if (!current || !total) return 0;
-  //   return (current / total) * 100;
-  // }, [total, current]);
+  const calcMintProgress = useMemo(() => {
+    if (!current || !total) return 0;
+    return (current / total) * 100;
+  }, [total, current]);
 
   return (
     <div className={cs(s.wrapper, className)}>
@@ -28,7 +32,11 @@ const ProgressBar = ({
         {size === 'regular' && (
           <>
             <Heading as="h6" fontWeight="medium">
-              {total ? `${current}` : <Skeleton width={60} height={34} />}
+              {total ? (
+                `${current}/${total}`
+              ) : (
+                <Skeleton width={60} height={34} />
+              )}
               <Text color="black-60" as="span">
                 {' '}
                 minted
@@ -38,7 +46,7 @@ const ProgressBar = ({
         )}
         {size === 'small' && (
           <Text size="18" fontWeight="bold">
-            {current}
+            {`${current}/${total}`}
             <Text size="12" fontWeight="regular" as="span">
               {' '}
               minted
@@ -46,7 +54,7 @@ const ProgressBar = ({
           </Text>
         )}
       </div>
-      {/* {!isBitcoinProject && (
+      {!isHideBar && (
         <div className={s.progressWrapper}>
           <div
             className={s.progressBar}
@@ -55,7 +63,7 @@ const ProgressBar = ({
             }}
           ></div>
         </div>
-      )} */}
+      )}
     </div>
   );
 };

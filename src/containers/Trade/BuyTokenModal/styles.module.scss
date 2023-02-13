@@ -241,3 +241,61 @@
     padding-right: rem(40px);
   }
 }
+
+.sendBtcDesc {
+  margin-top: rem(8px);
+  word-break: break-all;
+  text-align: center;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 28px;
+  color: $black-100;
+
+  @include min-tablet {
+    padding-left: rem(40px);
+    padding-right: rem(40px);
+  }
+}
+
+.info_guild {
+  font-size: 18px;
+  line-height: 28px;
+  border-radius: 2px;
+  margin-top: rem(24px);
+  margin-bottom: rem(24px);
+  text-align: center;
+}
+
+.buyBtn {
+  justify-content: center;
+  width: 100%;
+  margin-top: rem(35);
+}
+
+.question {
+  padding: 3px 7px;
+  border-radius: 30px;
+  background-color: #e3e2e2;
+  font-size: 10px;
+  color: $black-60-solid;
+  margin-left: 4px;
+}
+
+.expire {
+  text-align: center;
+  font-weight: 400;
+  font-size: rem(18px);
+  line-height: rem(28px);
+  margin-bottom: rem(8px);
+  margin-top: rem(18px);
+}
+
+.error {
+  text-align: center;
+  font-weight: 400;
+  font-size: rem(18px);
+  line-height: rem(28px);
+  margin-bottom: rem(8px);
+  margin-top: rem(18px);
+  color: $secondary-red;
+}

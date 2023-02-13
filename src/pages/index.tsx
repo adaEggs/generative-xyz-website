@@ -1,29 +1,25 @@
 import { NextPage } from 'next';
-
+import Marketplace from '@containers/Marketplace';
 import MarketplaceLayout from '@layouts/Marketplace';
-// import { Landingpage } from '@containers/Landingpage';
-import Display from '@containers/Display';
-import { NavigationProvider } from '@contexts/navigation-context';
+import { CDN_URL } from '@constants/config';
 
-const HomePage: NextPage = () => {
+const MarketplacePage: NextPage = () => {
   return (
-    <NavigationProvider>
-      <MarketplaceLayout isHideFaucet={true} theme={'dark'} isDisplay={true}>
-        <Display />
-      </MarketplaceLayout>
-    </NavigationProvider>
+    <MarketplaceLayout isDrops={true}>
+      <Marketplace />
+    </MarketplaceLayout>
   );
 };
 
-export default HomePage;
+export default MarketplacePage;
 
 export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: 'Generative',
-        description: 'Bring your generative art to life',
-        image: null,
+        title: 'Generative | Drops',
+        description: 'Unique artwork at your fingertips to mint and buy',
+        image: `${CDN_URL}/images/collect.jpg`,
       },
     },
   };

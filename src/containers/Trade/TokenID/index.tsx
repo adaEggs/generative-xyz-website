@@ -7,18 +7,20 @@ import Text from '@components/Text';
 import { Container } from 'react-bootstrap';
 import ButtonIcon from '@components/ButtonIcon';
 import MarkdownPreview from '@components/MarkdownPreview';
-import { ellipsisCenter } from '@utils/format';
+import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import useWindowSize from '@hooks/useWindowSize';
 import {
   getMarketplaceBtcNFTDetail,
   IGetMarketplaceBtcNFTDetail,
 } from '@services/marketplace-btc';
 import BigNumber from 'bignumber.js';
-import BuyTokenModal from '@containers/Bazaar/BuyTokenModal';
+import BuyTokenModal from '@containers/Trade/BuyTokenModal';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
+import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -28,6 +30,7 @@ const TokenID: React.FC = (): React.ReactElement => {
   const [tokenData, setTokenData] = React.useState<
     IGetMarketplaceBtcNFTDetail | undefined
   >(undefined);
+
   const [showMore, setShowMore] = useState(false);
   const { mobileScreen } = useWindowSize();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -38,6 +41,11 @@ const TokenID: React.FC = (): React.ReactElement => {
         <Loading isLoaded={!!tokenData} className={s.loading_project} />
       </div>
     );
+  };
+
+  const getImgURL = () => {
+    if (!tokenData?.inscriptionID) return '';
+    return `https://ordinals.com/preview/${tokenData?.inscriptionID}`;
   };
 
   const renderRow = (label: string, value?: string | number) => {
@@ -70,23 +78,45 @@ const TokenID: React.FC = (): React.ReactElement => {
           {tokenData.name}
         </Heading>
         <Text size="14" color={'black-60'} className={s.info_labelPrice}>
-          PRICE
+          {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}
         </Text>
         <Text
           size={'20'}
-          color={'primary-brand'}
-          className={s.info_amountPrice}
+          className={
+            tokenData?.isCompleted
+              ? s.info_amountPriceSuccess
+              : s.info_amountPrice
+          }
+          style={{
+            marginBottom: tokenData.buyable ? 32 : 0,
+          }}
         >
-          {new BigNumber(tokenData?.price || 0).div(1e8).toString()} BTC
+          {formatBTCPrice(new BigNumber(tokenData?.price || 0).toNumber())} BTC
         </Text>
+        {mobileScreen && tokenData?.name && (
+          <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
+        )}
+        {!tokenData.buyable && !tokenData.isCompleted && (
+          <Text size={'14'} className={s.info_statusIns}>
+            The inscription is being purchased. ETA is in ~30 minutes.
+          </Text>
+        )}
+        {tokenData.isCompleted && (
+          <Text size={'14'} className={s.info_statusComplete}>
+            This inscription is not available for buying now.
+          </Text>
+        )}
         <ButtonIcon
           sizes="large"
           className={s.info_buyBtn}
-          disabled={showModal}
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            // return setShowModal(true);
+            if (tokenData.buyable) return setShowModal(true);
+            router.push(ROUTE_PATH.TRADE);
+          }}
         >
           <Text as="span" size="14" fontWeight="medium">
-            Buy Now
+            {tokenData.buyable ? 'Buy Now' : 'Buy others'}
           </Text>
         </ButtonIcon>
         <div className={s.info_project_desc}>
@@ -167,10 +197,9 @@ const TokenID: React.FC = (): React.ReactElement => {
     <Container className={s.wrapper}>
       {renderLeftContent()}
       <div />
+      {/*{!mobileScreen && <TokenIDImage image={''} name="" />}*/}
       {!mobileScreen && (
-        <div>
-          {/*<ThumbnailPreview data={projectDetail as Token} allowVariantion />*/}
-        </div>
+        <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
       )}
       {!!tokenData?.inscriptionID && !!tokenData?.price && (
         <BuyTokenModal

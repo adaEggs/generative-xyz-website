@@ -4,15 +4,17 @@
   display: inline-block;
   min-width: rem(160px);
   text-align: center;
-  padding: rem(10px);
+  padding: rem(5px);
   border-radius: 2px;
   line-height: (28/18);
 
   &.isDetail {
     @include calcFontAuto(16px, 18px);
 
-    background: #00aa6c;
+    background: #f2f2f2;
+    color: $primary-brand;
     margin-bottom: rem(24px);
-    width: 100%;
+    border: 1px solid #c2c2c2;
+    min-width: rem(300px);
   }
 }

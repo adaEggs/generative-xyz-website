@@ -4,10 +4,10 @@ import { isProduction } from '@utils/common';
 
 export const MENU_HEADER = [
   {
-    id: 'menu-4',
-    name: 'Display',
-    route: ROUTE_PATH.DISPLAY,
-    activePath: 'display',
+    id: 'menu-2',
+    name: 'Drops',
+    route: ROUTE_PATH.MARKETPLACE,
+    activePath: 'marketplace',
   },
   {
     id: 'menu-1',
@@ -16,16 +16,16 @@ export const MENU_HEADER = [
     activePath: 'benefit',
   },
   {
-    id: 'menu-2',
-    name: 'Drops',
-    route: ROUTE_PATH.MARKETPLACE,
-    activePath: 'marketplace',
+    id: 'menu-4',
+    name: 'Display',
+    route: ROUTE_PATH.DISPLAY,
+    activePath: 'display',
   },
   {
     id: 'menu-3',
-    name: 'Bazaar',
-    route: ROUTE_PATH.BAZAAR,
-    activePath: 'bazaar',
+    name: 'Trade',
+    route: ROUTE_PATH.TRADE,
+    activePath: 'trade',
   },
 ];
 

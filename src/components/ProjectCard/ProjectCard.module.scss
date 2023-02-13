@@ -105,6 +105,32 @@
         margin-top: rem(5);
       }
     }
+
+    &_price {
+      display: flex;
+      justify-content: space-between;
+      margin-top: rem(20px);
+
+      &_price {
+        flex: 0 0 60%;
+        padding-right: rem(10px);
+        color: #00aa6c;
+        line-height: (28/18);
+
+        @include calcFontAuto(16px, 18px);
+
+        small {
+          font-size: 80%;
+          font-weight: bold;
+          margin-left: rem(5px);
+        }
+      }
+
+      &_bar {
+        flex: 0 0 40%;
+        text-align: right;
+      }
+    }
   }
 
   &:hover {
