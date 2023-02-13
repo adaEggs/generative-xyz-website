@@ -1,12 +1,17 @@
 import FileType from 'file-type/browser';
 import {
   HTML_EXTENSION,
+  IMAGE_FILE_EXT,
   JS_EXTENSION,
   NAIVE_MIMES,
   ZIP_MIMES,
 } from '@constants/file';
-import { SandboxFileError } from '@enums/sandbox';
-import { SandboxFileContent, SandboxFiles } from '@interfaces/sandbox';
+import { ImageFileError, SandboxFileError } from '@enums/sandbox';
+import {
+  ImageCollectionFiles,
+  SandboxFileContent,
+  SandboxFiles,
+} from '@interfaces/sandbox';
 import { getFileExtensionByFileName, unzipFile } from '@utils/file';
 import {
   SNIPPET_CONTRACT_HTML,
@@ -21,6 +26,7 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { utf8ToBase64 } from '@utils/format';
 import { THIRD_PARTY_SCRIPTS } from '@constants/mint-generative';
+import { SANDBOX_IMAGE_FILE_SIZE_LIMIT } from '@constants/config';
 
 const LOG_PREFIX = 'SandboxUtil';
 
@@ -165,4 +171,80 @@ export const detectUsedLibs = async (
   }
 
   return detectedLibs;
+};
+
+export const processImageCollectionZipFile = async (
+  file: File
+): Promise<ImageCollectionFiles> => {
+  const fileType = await FileType.fromBlob(file);
+
+  if (!fileType || !ZIP_MIMES.includes(fileType.mime)) {
+    throw Error(SandboxFileError.WRONG_FORMAT);
+  }
+
+  let files: Record<string, Blob>;
+  try {
+    files = await unzipFile(file);
+  } catch (err) {
+    throw Error(SandboxFileError.FAILED_UNZIP);
+  }
+
+  const record: ImageCollectionFiles = {};
+
+  for (const fileName in files) {
+    const file = files[fileName];
+    let error = null;
+
+    // Check file extension
+    const fileExt = getFileExtensionByFileName(fileName);
+    if (!fileExt || !IMAGE_FILE_EXT.includes(fileExt)) {
+      error = ImageFileError.INVALID_EXTENSION;
+    }
+
+    // Check file size is smaller than 100kb
+    const fileSizeInKb = file.size / 1024;
+    if (fileSizeInKb > SANDBOX_IMAGE_FILE_SIZE_LIMIT) {
+      error = ImageFileError.TOO_LARGE;
+    }
+
+    record[fileName] = {
+      blob: file,
+      error,
+      url: URL.createObjectURL(files[fileName]),
+    };
+  }
+
+  return record;
+};
+
+export const processHTMLFile = async (file: File): Promise<SandboxFiles> => {
+  const fileName = file.name;
+  const fileExt = getFileExtensionByFileName(fileName);
+
+  // Check file extension
+  if (!fileExt || fileExt !== HTML_EXTENSION) {
+    throw Error(SandboxFileError.WRONG_FORMAT);
+  }
+
+  // Check file size is smaller than 100kb
+  const fileSizeInKb = file.size / 1024;
+  if (fileSizeInKb > SANDBOX_IMAGE_FILE_SIZE_LIMIT) {
+    throw Error(SandboxFileError.TOO_LARGE);
+  }
+
+  const indexContents = await file.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(indexContents, 'text/html');
+
+  const newIndexContents = doc.documentElement.outerHTML;
+  const blobHtml = new Blob([newIndexContents], { type: 'text/html' });
+
+  const record: SandboxFiles = {
+    ['index.html']: {
+      blob: blobHtml,
+      url: URL.createObjectURL(file),
+    },
+  };
+
+  return record;
 };

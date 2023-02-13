@@ -4,7 +4,7 @@ export interface IUploadFilePayload {
 
 export interface IUploadFileResponse {
   fileName: string;
-  fileSize: 0;
+  fileSize: number;
   id: string;
   mimeType: string;
   uploadedBy: string;

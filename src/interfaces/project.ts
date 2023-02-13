@@ -47,6 +47,11 @@ export type Project = {
   openMintUnixTimestamp?: number;
 };
 
+export type BTCProject = Project & {
+  creatorName: string;
+  creatorAddrr: string;
+};
+
 export type TraitStats = {
   traitName: string;
   traitValuesStat: {

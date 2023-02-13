@@ -2,7 +2,7 @@ import ProjectListLoading from '@components/ProjectListLoading';
 import React, { useState } from 'react';
 import s from './styles.module.scss';
 
-const BTCGenerativeList: React.FC = (): React.ReactElement => {
+const InscribeList: React.FC = (): React.ReactElement => {
   const [isLoaded, _] = useState(false);
 
   return (
@@ -25,4 +25,4 @@ const BTCGenerativeList: React.FC = (): React.ReactElement => {
   );
 };
 
-export default BTCGenerativeList;
+export default InscribeList;

@@ -14,3 +14,5 @@ export const NAIVE_MIMES: Record<string, string> = {
 export const JS_EXTENSION = 'js';
 export const HTML_EXTENSION = 'html';
 export const CSS_EXTENSION = 'css';
+
+export const IMAGE_FILE_EXT = ['jpg', 'jpeg', 'png', 'gif'];
