@@ -16,7 +16,7 @@ import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
 import { formatAddress, formatBTCPrice } from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
-import { CountDown } from '@components/CountDown';
+// import { CountDown } from '@components/CountDown';
 
 interface IPros {
   project: Project;
@@ -70,12 +70,12 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
         <div className={s.projectCard_inner_info}>
           {mobileScreen ? (
             <div className={cs(s.projectCard_info, s.mobile)}>
-              {isBitcoinProject && (
-                <CountDown
-                  openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}
-                  closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}
-                />
-              )}
+              {/*{isBitcoinProject && (*/}
+              {/*  <CountDown*/}
+              {/*    openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}*/}
+              {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
+              {/*  />*/}
+              {/*)}*/}
               {creator && (
                 <Text size="11" fontWeight="medium">
                   {creator.displayName || formatAddress(creator.walletAddress)}
@@ -97,12 +97,12 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             </div>
           ) : (
             <div className={cs(s.projectCard_info, s.desktop)}>
-              {isBitcoinProject && (
-                <CountDown
-                  openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}
-                  closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}
-                />
-              )}
+              {/*{isBitcoinProject && (*/}
+              {/*  <CountDown*/}
+              {/*    openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}*/}
+              {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
+              {/*  />*/}
+              {/*)}*/}
               <div className={s.projectCard_info_title}>
                 <Heading as={'h4'}>
                   <span title={project.name}>{project.name}</span>
