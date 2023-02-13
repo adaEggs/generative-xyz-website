@@ -105,13 +105,12 @@
       padding: 0;
       display: none;
       flex-wrap: wrap;
-      font-weight: 500;
       color: $black-60-solid;
-      line-height: (26/16);
 
       @include min-pc {
         display: flex;
         gap: rem(24px);
+        align-items: center;
       }
 
       @include calcFontAuto(14px, 16px);
@@ -124,6 +123,11 @@
       }
 
       a {
+        font-weight: 500;
+        line-height: (26/16);
+        text-transform: uppercase;
+        font-size: rem(16);
+
         @include mobile {
           text-align: center;
           display: block;
@@ -154,6 +158,22 @@
         a:hover {
           transition: all 0.3s;
           color: $white;
+        }
+      }
+
+      &_center {
+        @include min-pc {
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+        }
+      }
+
+      .discord_icon {
+        svg,
+        path {
+          fill: #5865f2;
         }
       }
     }
@@ -233,12 +253,12 @@
 .logo {
   display: block;
 
-  @include min-pc {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
+  // @include min-pc {
+  //   position: absolute;
+  //   left: 50%;
+  //   top: 50%;
+  //   transform: translate(-50%, -50%);
+  // }
 
   iframe {
     pointer-events: none;

@@ -45,6 +45,7 @@ export type Project = {
   traitStat: TraitStats[];
   closeMintUnixTimestamp?: number;
   openMintUnixTimestamp?: number;
+  whiteListEthContracts?: string[];
 };
 
 export type BTCProject = Project & {

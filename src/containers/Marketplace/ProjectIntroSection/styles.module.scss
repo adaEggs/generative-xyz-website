@@ -67,13 +67,53 @@
   }
 }
 
+.creator {
+  display: flex;
+  align-items: center;
+  gap: rem(16);
+  margin-top: rem(4);
+  margin-bottom: rem(12);
+
+  &_divider {
+    width: 1px;
+    height: rem(16);
+    display: block;
+    background-color: $black-20;
+  }
+
+  &_info {
+    display: flex;
+    gap: rem(8);
+    align-items: center;
+  }
+
+  &_social {
+    display: flex;
+    gap: rem(20);
+    align-items: center;
+
+    &_item {
+      display: flex;
+      align-items: center;
+      gap: rem(6);
+    }
+
+    &_twitter {
+      svg,
+      path {
+        fill: #3cf;
+      }
+    }
+  }
+}
+
 .progressBar {
   margin-bottom: rem(24px);
 }
 
 .CTA {
   display: flex;
-  margin-bottom: rem(24px);
+  margin-bottom: rem(10px);
   gap: rem(24px);
   flex-wrap: wrap;
   align-items: center;
@@ -86,12 +126,17 @@
       width: 100%;
     }
 
-    &__eth {
-      background: #00aa6c !important;
+    // &__eth {
+    //   background: #00aa6c !important;
 
-      &:hover {
-        background: #01b875 !important;
-      }
+    //   &:hover {
+    //     background: #01b875 !important;
+    //   }
+    // }
+
+    &__wallet {
+      padding-top: rem(17px);
+      padding-bottom: rem(17px);
     }
 
     span:nth-child(2) {
@@ -135,6 +180,39 @@
   }
 }
 
+.whiteListWallet {
+  margin-top: rem(10);
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: rem(5);
+}
+
+.whiteList_tooltip {
+  // white-space: nowrap;
+  text-align: left;
+}
+
+.whiteList_icon {
+  cursor: pointer;
+}
+
+.whiteList_list {
+  color: $primary-333;
+  list-style: disc;
+  padding-left: rem(15px);
+}
+
+.whiteListWallet_connect {
+  color: $secondary-purple-c;
+
+  &:hover {
+    opacity: 0.8;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
 .priceBtc {
   line-height: (44/34);
   font-weight: 500;
@@ -142,7 +220,7 @@
   @include calcFontAuto(24px, 34px);
 
   display: block;
-  margin-bottom: rem(5px);
+  margin-bottom: rem(24px);
 
   small {
     font-size: 65% !important;
@@ -187,6 +265,7 @@
   column-gap: rem(69px);
   row-gap: rem(6px);
   margin-bottom: rem(24px);
+  margin-top: rem(24px);
   flex-wrap: wrap;
 
   @include mobile {
@@ -238,6 +317,7 @@
 
 .project_info {
   margin-bottom: rem(24px);
+  margin-top: rem(24px);
 }
 
 .shares {
