@@ -9,3 +9,8 @@ export enum PreviewDisplayMode {
   ANIMATION = 'ANIMATION',
   THUMBNAIL = 'THUMBNAIL',
 }
+
+export enum CollectionType {
+  GENERATIVE = 'GENERATIVE',
+  IMAGES = 'IMAGES',
+}

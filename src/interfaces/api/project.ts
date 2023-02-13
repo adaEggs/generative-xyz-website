@@ -1,5 +1,5 @@
 import { IPagingParams, IPagingResponse } from '@interfaces/api/paging';
-import { Project } from '@interfaces/project';
+import { BTCProject, Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 export interface IGetProjectDetailParams {
   contractAddress: string;
@@ -47,4 +47,47 @@ export interface IGetProjectListParams extends IPagingParams {
 
 export interface IGetProjectListResponse extends IPagingResponse {
   result: Array<Project>;
+}
+
+export interface ICreateBTCProjectPayload {
+  categories: Array<string>;
+  closeMintUnixTimestamp: number;
+  creatorAddrr: string;
+  creatorName: string;
+  description: string;
+  license: string;
+  limitSupply: number;
+  maxSupply: number;
+  mintPrice: string;
+  name: string;
+  openMintUnixTimestamp: number;
+  scripts: Array<string>;
+  socialDiscord: string;
+  socialInstagram: string;
+  socialMedium: string;
+  socialTwitter: string;
+  socialWeb: string;
+  styles: string;
+  tags: Array<string>;
+  thirdPartyScripts: Array<string>;
+  thumbnail: string;
+  tokenDescription: string;
+  zipLink: string;
+  royalty: number;
+}
+
+export type ICreateBTCProjectResponse = BTCProject;
+
+export interface IUploadBTCProjectFilePayload {
+  file: File;
+  projectName: string;
+}
+
+export interface IUploadBTCProjectFileResponse {
+  fileName: string;
+  fileSize: number;
+  id: string;
+  mimeType: string;
+  uploadedBy: string;
+  url: string;
 }
