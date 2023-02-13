@@ -11,7 +11,7 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { isProduction } from '@utils/common';
-import { NETWORK_CHAIN_ID } from '@constants/config';
+import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
@@ -43,6 +43,9 @@ import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
+import Avatar from '@components/Avatar';
+import SvgInset from '@components/SvgInset';
+import Link from '@components/Link';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -233,16 +236,44 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
           <Heading as="h4" fontWeight="medium">
             {project?.name}
           </Heading>
-
-          <Text size={'18'} color={'black-60'} style={{ marginBottom: '10px' }}>
-            <div
-            // className={s.info_creatorLink}
-            // href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
-            >
-              {project?.creatorProfile?.displayName ||
-                formatAddress(project?.creatorProfile?.walletAddress || '')}
+          <div className={s.creator}>
+            <div className={s.creator_info}>
+              <Avatar
+                imgSrcs={project?.creatorProfile?.avatar || ''}
+                width={24}
+                height={24}
+              />
+              <Text size={'18'} color={'black-60'}>
+                {project?.creatorProfile?.displayName ||
+                  formatAddress(project?.creatorProfile?.walletAddress || '')}
+              </Text>
             </div>
-          </Text>
+            {project?.creatorProfile?.profileSocial?.twitter && (
+              <div className={s.creator_social}>
+                <span className={s.creator_divider}></span>
+                <div className={s.creator_social_item}>
+                  <SvgInset
+                    className={s.creator_social_twitter}
+                    size={16}
+                    svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                  />
+                  <Text size={'18'} color="black-60">
+                    <Link
+                      href={
+                        project?.creatorProfile?.profileSocial?.twitter || ''
+                      }
+                      target="_blank"
+                    >
+                      @
+                      {project?.creatorProfile?.profileSocial?.twitter
+                        .split('/')
+                        .pop()}
+                    </Link>
+                  </Text>
+                </div>
+              </div>
+            )}
+          </div>
           {mobileScreen && (
             <div>
               <ThumbnailPreview data={projectDetail as Token} allowVariantion />
@@ -258,9 +289,23 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
           )}
 
           {isBitcoinProject && (
-            <span className={s.priceBtc}>
-              {priceMemo} <small>BTC</small>
-            </span>
+            <div className={s.priceInfo}>
+              <span className={s.priceBtc}>
+                {priceMemo} <small>BTC</small>
+              </span>
+              {project?.royalty === 0 && (
+                <div className={s.stats}>
+                  <div className={s.stats_item}>
+                    <Text size="12" fontWeight="medium">
+                      royalty
+                    </Text>
+                    <Heading as="h6" fontWeight="medium">
+                      {project?.royalty / 100}%
+                    </Heading>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
 
           {project?.status && (

@@ -67,6 +67,46 @@
   }
 }
 
+.creator {
+  display: flex;
+  align-items: center;
+  gap: rem(16);
+  margin-top: rem(4);
+  margin-bottom: rem(12);
+
+  &_divider {
+    width: 1px;
+    height: rem(16);
+    display: block;
+    background-color: $black-20;
+  }
+
+  &_info {
+    display: flex;
+    gap: rem(8);
+    align-items: center;
+  }
+
+  &_social {
+    display: flex;
+    gap: rem(20);
+    align-items: center;
+
+    &_item {
+      display: flex;
+      align-items: center;
+      gap: rem(6);
+    }
+
+    &_twitter {
+      svg,
+      path {
+        fill: #3cf;
+      }
+    }
+  }
+}
+
 .progressBar {
   margin-bottom: rem(24px);
 }
@@ -147,7 +187,7 @@
   @include calcFontAuto(24px, 34px);
 
   display: block;
-  margin-bottom: rem(5px);
+  margin-bottom: rem(24px);
 
   small {
     font-size: 65% !important;
