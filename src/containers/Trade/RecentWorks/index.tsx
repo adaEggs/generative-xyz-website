@@ -37,7 +37,7 @@ export const RecentWorks = (): JSX.Element => {
         'buyable-only': false,
       });
 
-      if (!tmpList || !tmpList.length) return;
+      if (!tmpList || !tmpList.length) return setIsLoaded(true);
       const newList = uniqBy(
         [...listData, ...tmpList],
         item => item.inscriptionID
