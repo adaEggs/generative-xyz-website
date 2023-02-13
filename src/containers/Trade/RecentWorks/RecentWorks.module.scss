@@ -6,6 +6,17 @@
     @include mobile {
       margin-top: rem(24px);
     }
+
+    &_list {
+      overflow: unset !important;
+    }
+
+    &_loader {
+      position: relative;
+      height: 80px;
+      width: 100%;
+      margin-top: rem(20px);
+    }
   }
 
   &_btn {
