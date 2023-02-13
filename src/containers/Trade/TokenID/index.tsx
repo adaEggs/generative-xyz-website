@@ -75,7 +75,7 @@ const TokenID: React.FC = (): React.ReactElement => {
     return (
       <div className={s.info}>
         <Heading as="h4" fontWeight="medium">
-          {tokenData.name}
+          Inscription {tokenData.index}
         </Heading>
         <Text size="14" color={'black-60'} className={s.info_labelPrice}>
           {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}
@@ -157,7 +157,7 @@ const TokenID: React.FC = (): React.ReactElement => {
           )}
           <div className={s.wrap_raw}>
             {renderRow(
-              'Inscription',
+              'ID',
               tokenData.inscriptionID.length > 10
                 ? ellipsisCenter({ str: tokenData.inscriptionID })
                 : tokenData.inscriptionID

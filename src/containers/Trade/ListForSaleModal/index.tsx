@@ -20,7 +20,7 @@ import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
 import { formatUnixDateTime } from '@utils/time';
 
-const FEE_CHARGE_PERCENT = 0.1;
+// const FEE_CHARGE_PERCENT = 0.1;
 const MIN_PRICE = 0.005;
 
 interface IProps {
@@ -284,27 +284,27 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 </p>
                               )}
                           </div>
-                          <div className={s.formItem}>
-                            <label className={s.label} htmlFor="name">
-                              Enter the inscription name (optional){' '}
-                              {/*<sup className={s.requiredTag}>*</sup>*/}
-                            </label>
-                            <div className={s.inputContainer}>
-                              <input
-                                id="name"
-                                type="text"
-                                name="name"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.name}
-                                className={s.input}
-                                // placeholder="Input your Inscription Name here"
-                              />
-                            </div>
-                            {errors.name && touched.name && (
-                              <p className={s.inputError}>{errors.name}</p>
-                            )}
-                          </div>
+                          {/*<div className={s.formItem}>*/}
+                          {/*  <label className={s.label} htmlFor="name">*/}
+                          {/*    Enter the inscription name (optional){' '}*/}
+                          {/*    <sup className={s.requiredTag}>*</sup>*/}
+                          {/*  </label>*/}
+                          {/*  <div className={s.inputContainer}>*/}
+                          {/*    <input*/}
+                          {/*      id="name"*/}
+                          {/*      type="text"*/}
+                          {/*      name="name"*/}
+                          {/*      onChange={handleChange}*/}
+                          {/*      onBlur={handleBlur}*/}
+                          {/*      value={values.name}*/}
+                          {/*      className={s.input}*/}
+                          {/*      // placeholder="Input your Inscription Name here"*/}
+                          {/*    />*/}
+                          {/*  </div>*/}
+                          {/*  {errors.name && touched.name && (*/}
+                          {/*    <p className={s.inputError}>{errors.name}</p>*/}
+                          {/*  )}*/}
+                          {/*</div>*/}
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="description">
                               Enter the inscription description (optional){' '}
@@ -334,12 +334,14 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                             <Text
                               size="16"
                               fontWeight="medium"
-                              color="text-black-80"
+                              color="text-secondary-color"
+                              className={s.free_fee}
                             >
-                              {new BigNumber(values.price || 0)
-                                .multipliedBy(FEE_CHARGE_PERCENT)
-                                .toFixed()}{' '}
-                              BTC
+                              {/*{new BigNumber(values.price || 0)*/}
+                              {/*  .multipliedBy(FEE_CHARGE_PERCENT)*/}
+                              {/*  .toFixed()}{' '}*/}
+                              {/*BTC*/}
+                              FREE
                             </Text>
                           </div>
                           {isLoading && (
