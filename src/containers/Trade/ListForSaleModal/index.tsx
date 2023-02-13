@@ -284,27 +284,27 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 </p>
                               )}
                           </div>
-                          <div className={s.formItem}>
-                            <label className={s.label} htmlFor="name">
-                              Enter the inscription name (optional){' '}
-                              {/*<sup className={s.requiredTag}>*</sup>*/}
-                            </label>
-                            <div className={s.inputContainer}>
-                              <input
-                                id="name"
-                                type="text"
-                                name="name"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.name}
-                                className={s.input}
-                                // placeholder="Input your Inscription Name here"
-                              />
-                            </div>
-                            {errors.name && touched.name && (
-                              <p className={s.inputError}>{errors.name}</p>
-                            )}
-                          </div>
+                          {/*<div className={s.formItem}>*/}
+                          {/*  <label className={s.label} htmlFor="name">*/}
+                          {/*    Enter the inscription name (optional){' '}*/}
+                          {/*    <sup className={s.requiredTag}>*</sup>*/}
+                          {/*  </label>*/}
+                          {/*  <div className={s.inputContainer}>*/}
+                          {/*    <input*/}
+                          {/*      id="name"*/}
+                          {/*      type="text"*/}
+                          {/*      name="name"*/}
+                          {/*      onChange={handleChange}*/}
+                          {/*      onBlur={handleBlur}*/}
+                          {/*      value={values.name}*/}
+                          {/*      className={s.input}*/}
+                          {/*      // placeholder="Input your Inscription Name here"*/}
+                          {/*    />*/}
+                          {/*  </div>*/}
+                          {/*  {errors.name && touched.name && (*/}
+                          {/*    <p className={s.inputError}>{errors.name}</p>*/}
+                          {/*  )}*/}
+                          {/*</div>*/}
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="description">
                               Enter the inscription description (optional){' '}

@@ -6,8 +6,8 @@ export const MENU_HEADER = [
   {
     id: 'menu-2',
     name: 'Drops',
-    route: ROUTE_PATH.MARKETPLACE,
-    activePath: 'marketplace',
+    route: ROUTE_PATH.DROPS,
+    activePath: 'drops',
   },
   {
     id: 'menu-1',
@@ -23,9 +23,9 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-3',
-    name: 'Trade',
+    name: 'Marketplace',
     route: ROUTE_PATH.TRADE,
-    activePath: 'trade',
+    activePath: 'marketplace',
   },
 ];
 

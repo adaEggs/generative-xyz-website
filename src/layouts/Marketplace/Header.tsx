@@ -188,7 +188,16 @@ const Header: React.FC<IProp> = ({
               <div
                 className={`d-flex align-items-center justify-content-between w-100 ${styles.header_row}`}
               >
-                <ul className={`${styles.navBar} ${styles[theme]}`}>
+                <Link
+                  className={styles.logo}
+                  href={getUrlWithQueryParams(ROUTE_PATH.HOME)}
+                >
+                  <GenerativeLogo theme={theme} />
+                </Link>
+
+                <ul
+                  className={`${styles.navBar} ${styles.navBar_center} ${styles[theme]}`}
+                >
                   <li
                     className={cs(
                       activePath === MENU_HEADER[0].activePath && styles.active
@@ -250,13 +259,6 @@ const Header: React.FC<IProp> = ({
                   </li>
                 </ul>
 
-                <Link
-                  className={styles.logo}
-                  href={getUrlWithQueryParams(ROUTE_PATH.HOME)}
-                >
-                  <GenerativeLogo theme={theme} />
-                </Link>
-
                 <div className={styles.header_right}>
                   <ul
                     className={`${styles.navBar} ${styles.header_right_links} ${styles[theme]}`}
@@ -287,13 +289,16 @@ const Header: React.FC<IProp> = ({
                     )}
 
                     <li>
-                      <a
+                      <Link
                         href={SOCIALS.discord}
                         target="_blank"
                         rel="noreferrer"
                       >
-                        Discord
-                      </a>
+                        <SvgInset
+                          svgUrl={`${CDN_URL}/icons/ic-discord-20x20.svg`}
+                          className={styles.discord_icon}
+                        />
+                      </Link>
                     </li>
                   </ul>
                   {showWalletButton() && (

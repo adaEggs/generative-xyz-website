@@ -56,7 +56,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             <img
               onError={onThumbError}
               src={convertIpfsToHttp(thumb)}
-              alt={project.name}
+              alt={project.inscriptionID}
               loading={'lazy'}
             />
           )}
@@ -71,7 +71,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               )} */}
               <div className={s.projectCard_info_title}>
                 <Text size="14" fontWeight="semibold">
-                  #{project.name}
+                  #{project.index}
                 </Text>
                 <Text size="12" fontWeight="semibold">
                   {convertBTCPrice()}&nbsp;BTC
@@ -83,11 +83,15 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               {/* {creator && <CreatorInfo creator={creatorMemo} />} */}
               <div className={s.projectCard_info_title}>
                 <Heading as={'h4'}>
-                  <span title={project.name}>{project.name}</span>
+                  <span title={project.name}>#{project.index}</span>
                 </Heading>
-                <Heading as={'h4'}>{convertBTCPrice()}&nbsp;BTC</Heading>
+                <Heading as={'h4'} className={s.projectCard_info_price}>
+                  {convertBTCPrice()}&nbsp;BTC
+                </Heading>
               </div>
-              <div className={cs(s.btnBuyNow)}>Buy Now</div>
+              <div className={cs(s.btnBuyNow)}>
+                {project?.buyable ? 'Buy Now' : 'Transaction in progress'}
+              </div>
             </div>
           )}
         </div>
