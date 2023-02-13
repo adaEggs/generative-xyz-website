@@ -8,7 +8,7 @@ import QRCodeGenerator from '@components/QRCodeGenerator';
 import Button from '@components/ButtonIcon';
 import { formatBTCPrice } from '@utils/format';
 import _debounce from 'lodash/debounce';
-import { generateBTCReceiverAddressV2 } from '@services/btc';
+import { generateReceiverAddress } from '@services/inscribe';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import useAsyncEffect from 'use-async-effect';
@@ -16,6 +16,9 @@ import { fileToBase64 } from '@utils/file';
 import { InscribeMintFeeRate } from '@enums/inscribe';
 import { calculateMintFee } from '@utils/inscribe';
 import cs from 'classnames';
+import { InscriptionInfo } from '@interfaces/inscribe';
+import { formatUnixDateTime } from '@utils/time';
+import ThankModal from '@containers/MintTool/Modal';
 
 const LOG_PREFIX = 'MintTool';
 
@@ -26,9 +29,10 @@ interface IFormValue {
 const MintTool: React.FC = (): React.ReactElement => {
   const [file, setFile] = useState<File | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
+  const [show, setShow] = useState<boolean>(false);
+  const [inscriptionInfo, setInscriptionInfo] =
+    useState<InscriptionInfo | null>();
   const [isMinting, setIsMinting] = useState(false);
-  const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
-  const [price, setPrice] = useState<string | null>();
   const [fileError, setFileError] = useState<string | null>(null);
   const [feeRate, setFeeRate] = useState<InscribeMintFeeRate>(
     InscribeMintFeeRate.Fastest
@@ -66,16 +70,14 @@ const MintTool: React.FC = (): React.ReactElement => {
     try {
       const { address } = values;
       setIsMinting(true);
-      setReceiverAddress(null);
-      const { amount, ordAddress } = await generateBTCReceiverAddressV2({
+      setInscriptionInfo(null);
+      const res = await generateReceiverAddress({
         walletAddress: address,
         name: '',
         file: fileBase64,
         fee_rate: feeRate,
       });
-
-      setReceiverAddress(ordAddress);
-      setPrice(amount);
+      setInscriptionInfo(res);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
     } finally {
@@ -128,8 +130,8 @@ const MintTool: React.FC = (): React.ReactElement => {
                   </div>
                   <div className={s.formItem}>
                     <label className={s.label} htmlFor="address">
-                      Transfer the inscription (Bitcoin NFT) to{' '}
-                      <sup className={s.requiredTag}>*</sup>
+                      ENTER THE ORDINALS-COMPATIBLE BTC ADDRESS TO RECEIVE YOUR
+                      INSCRIPTION <sup className={s.requiredTag}>*</sup>
                     </label>
                     <div className={s.inputContainer}>
                       <input
@@ -140,7 +142,7 @@ const MintTool: React.FC = (): React.ReactElement => {
                         onBlur={handleBlur}
                         value={values.address}
                         className={s.input}
-                        placeholder="Enter your Ordinals-compatible BTC address"
+                        placeholder="Paste your Ordinals-compatible address here"
                       />
                     </div>
                     {errors.address && touched.address && (
@@ -232,10 +234,17 @@ const MintTool: React.FC = (): React.ReactElement => {
                           </div>
                         </div>
                       </div>
-                      <div className={s.formItem}>
+                      <div
+                        className={s.formItem}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                        }}
+                      >
                         <label className={s.label} htmlFor="">
-                          Generative fees: <strong>FREE</strong>
+                          Generative fees:
                         </label>
+                        <strong>FREE</strong>
                       </div>
                     </>
                   )}
@@ -244,7 +253,7 @@ const MintTool: React.FC = (): React.ReactElement => {
                       <Loading isLoaded={false}></Loading>
                     </div>
                   )}
-                  {receiverAddress && price && !isMinting && (
+                  {inscriptionInfo && !isMinting && (
                     <>
                       <div className={s.qrCodeWrapper}>
                         <p className={s.qrTitle}>
@@ -253,16 +262,34 @@ const MintTool: React.FC = (): React.ReactElement => {
                         <QRCodeGenerator
                           className={s.qrCodeGenerator}
                           size={128}
-                          value={receiverAddress}
+                          value={inscriptionInfo.segwitAddress}
                         />
-                        <p className={s.btcAddress}>{receiverAddress}</p>
+                        <p className={s.btcAddress}>
+                          {inscriptionInfo.segwitAddress}
+                        </p>
+                      </div>
+                      <div className={s.inscriptionInfoWrapper}>
+                        <p className={s.expiredAt}>
+                          Expires at:{' '}
+                          <b>
+                            {formatUnixDateTime({
+                              dateTime: Number(inscriptionInfo.timeout_at),
+                            })}
+                          </b>
+                        </p>
                       </div>
                     </>
                   )}
                   <div className={s.actionWrapper}>
-                    <Button disabled={isMinting} type="submit">
-                      Inscribe
-                    </Button>
+                    {inscriptionInfo?.segwitAddress ? (
+                      <Button type="button" onClick={() => setShow(true)}>
+                        Already sent
+                      </Button>
+                    ) : (
+                      <Button disabled={isMinting} type="submit">
+                        Inscribe
+                      </Button>
+                    )}
                   </div>
                 </form>
               )}
@@ -270,6 +297,7 @@ const MintTool: React.FC = (): React.ReactElement => {
           </div>
         </div>
       </div>
+      <ThankModal showModal={show} onClose={() => setShow(false)} />
     </div>
   );
 };

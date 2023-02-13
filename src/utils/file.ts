@@ -1,6 +1,7 @@
 import FileType from 'file-type/browser';
 import { NAIVE_MIMES } from '@constants/file';
 import { unzip } from 'unzipit';
+import { MASOX_SYSTEM_PREFIX } from '@constants/sandbox';
 
 export function getNaiveMimeType(filename: string): string | false {
   const ext = filename.split('.').pop();
@@ -12,6 +13,10 @@ export async function unzipFile(file: File): Promise<Record<string, Blob>> {
 
   const blobs: Record<string, Blob> = {};
   for (const name in entries) {
+    if (name.includes(MASOX_SYSTEM_PREFIX)) {
+      continue;
+    }
+
     let mime = getNaiveMimeType(name);
     if (!mime) {
       const buffer = await entries[name].arrayBuffer();

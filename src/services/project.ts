@@ -1,5 +1,7 @@
 import { LogLevel } from '@enums/log-level';
 import {
+  ICreateBTCProjectPayload,
+  ICreateBTCProjectResponse,
   ICreateProjectMetadataPayload,
   ICreateProjectMetadataResponse,
   IGetProjectDetailParams,
@@ -9,8 +11,10 @@ import {
   IGetProjectListParams,
   IGetProjectListResponse,
   IGetProjectTokensResponse,
+  IUploadBTCProjectFilePayload,
+  IUploadBTCProjectFileResponse,
 } from '@interfaces/api/project';
-import { get, post } from '@services/http-client';
+import { get, post, postFile } from '@services/http-client';
 import log from '@utils/logger';
 import querystring from 'query-string';
 
@@ -97,5 +101,35 @@ export const getProjectListMinited = async (
   } catch (err: unknown) {
     log('failed to get project list minted', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get project list minted');
+  }
+};
+
+export const createBTCProject = async (
+  payload: ICreateBTCProjectPayload
+): Promise<ICreateBTCProjectResponse> => {
+  try {
+    const res = await post<ICreateBTCProjectPayload, ICreateBTCProjectResponse>(
+      `${API_PATH}/btc`,
+      payload
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to create btc project', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to create btc project');
+  }
+};
+
+export const uploadBTCProjectFiles = async (
+  payload: IUploadBTCProjectFilePayload
+): Promise<IUploadBTCProjectFileResponse> => {
+  try {
+    const res = await postFile<
+      IUploadBTCProjectFilePayload,
+      IUploadBTCProjectFileResponse
+    >(`${API_PATH}/btc/files`, payload);
+    return res;
+  } catch (err: unknown) {
+    log('failed to upload btc project file', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to upload btc project file');
   }
 };
