@@ -2,9 +2,11 @@ import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
 import { Loading } from '@components/Loading';
+import ProjectDescription from '@components/ProjectDescription';
 import Stats from '@components/Stats';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
+import { EXTERNAL_LINK } from '@constants/external-link';
 import { ROUTE_PATH } from '@constants/route-path';
 import {
   GenerativeTokenDetailContext,
@@ -13,10 +15,10 @@ import {
 import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress, formatTokenId, formatLongAddress } from '@utils/format';
+import { formatAddress, formatLongAddress, formatTokenId } from '@utils/format';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -29,8 +31,6 @@ import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
-import { EXTERNAL_LINK } from '@constants/external-link';
-import { SeeMore } from '@components/SeeMore';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -55,6 +55,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const user = useSelector(getUserSelector);
   const mintedDate = dayjs(tokenData?.mintedTime).format('MMM DD, YYYY');
   const [isBuying, setIsBuying] = useState(false);
+  const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
 
   const tokenInfos = [
     {
@@ -132,6 +133,15 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     await handlePurchaseToken(listingOffers[0]);
     setIsBuying(false);
   };
+
+  useEffect(() => {
+    const exists = tokenDescription.includes('Interaction');
+    if (exists) {
+      setHasProjectInteraction(true);
+    } else {
+      setHasProjectInteraction(false);
+    }
+  }, [tokenDescription]);
 
   // const checkLines = tokenDescription.split(/\r\n|\r|\n/).length;
 
@@ -262,7 +272,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
 
             <div className={s.accordions}>
               <div className={s.accordions_item}>
-                <Text
+                {/* <Text
                   size="14"
                   color="black-40"
                   fontWeight="medium"
@@ -270,8 +280,13 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 >
                   description
                 </Text>
-                <SeeMore>{tokenDescription || ''}</SeeMore>
+                <SeeMore>{tokenDescription || ''}</SeeMore> */}
+                <ProjectDescription
+                  desc={tokenDescription || ''}
+                  hasInteraction={hasProjectInteraction}
+                />
               </div>
+
               {tokenData?.attributes && tokenData?.attributes?.length > 0 && (
                 <div className={s.accordions_item}>
                   <Text
