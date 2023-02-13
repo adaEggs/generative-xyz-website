@@ -40,6 +40,7 @@ const ThumbnailPreview = (props: Props) => {
   const playBtnRef = useRef<HTMLButtonElement>(null);
   const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>();
   const [hash, setHash] = useState<string>(generateHash());
+  const [isVideo, setIsVideo] = useState(false);
 
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
 
@@ -95,6 +96,13 @@ const ThumbnailPreview = (props: Props) => {
     }
   }, [animationUrl]);
 
+  useEffect(() => {
+    if (data?.image) {
+      const checkMP4 = data?.image.split('.').pop() === 'mp4';
+      setIsVideo(checkMP4);
+    }
+  }, [data?.image]);
+
   return (
     <div className={s.ThumbnailPreview}>
       <div className={s.wrapper}>
@@ -118,11 +126,17 @@ const ThumbnailPreview = (props: Props) => {
               {displayMode === PreviewDisplayMode.THUMBNAIL &&
                 thumbnailPreviewUrl && (
                   <div className={s.thumbnail_image}>
-                    <Image
-                      fill
-                      src={convertIpfsToHttp(thumbnailPreviewUrl)}
-                      alt="thumbnail"
-                    ></Image>
+                    {isVideo ? (
+                      <video autoPlay loop muted playsInline preload="auto">
+                        <source src={thumbnailPreviewUrl} type="video/mp4" />
+                      </video>
+                    ) : (
+                      <Image
+                        fill
+                        src={convertIpfsToHttp(thumbnailPreviewUrl)}
+                        alt="thumbnail"
+                      ></Image>
+                    )}
                   </div>
                 )}
             </>

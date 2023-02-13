@@ -27,6 +27,21 @@ export const generateETHReceiverAddress = async (
   }
 };
 
+export const generateETHReceiverAddressWithWallet = async (
+  payload: IGenerateReceiverAddressPayload
+): Promise<IGenerateReceiverAddressResponse> => {
+  try {
+    const res = await post<
+      IGenerateReceiverAddressPayload,
+      IGenerateReceiverAddressResponse
+    >(`${API_PATH}/receive-address/wallet/`, payload);
+    return res;
+  } catch (err: unknown) {
+    log('failed to generate receiver address', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to generate receiver address');
+  }
+};
+
 export const mintETHGenerative = async (
   payload: IMintGenerativePayload
 ): Promise<IMintGenerativePayloadResponse> => {

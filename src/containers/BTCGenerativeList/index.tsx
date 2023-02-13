@@ -1,11 +1,15 @@
-import React from 'react';
+import ProjectListLoading from '@components/ProjectListLoading';
+import React, { useState } from 'react';
 import s from './styles.module.scss';
 
 const BTCGenerativeList: React.FC = (): React.ReactElement => {
+  const [isLoaded, _] = useState(false);
+
   return (
     <div className={s.btcGenerativeList}>
-      {/* {!isLoaded && <ProjectListLoading numOfItems={12} />}
-        {isLoaded && (
+      <div className="container">
+        {!isLoaded && <ProjectListLoading numOfItems={12} />}
+        {/* {isLoaded && (
           <div className={s.recentWorks_projects_list}>
             <ProjectList listData={listData} />
             <TriggerLoad
@@ -16,6 +20,7 @@ const BTCGenerativeList: React.FC = (): React.ReactElement => {
             />
           </div>
         )} */}
+      </div>
     </div>
   );
 };

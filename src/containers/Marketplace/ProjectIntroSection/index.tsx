@@ -1,10 +1,16 @@
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
-import Link from '@components/Link';
+import LinkShare from '@components/LinkShare';
 import { Loading } from '@components/Loading';
 import ProgressBar from '@components/ProgressBar';
+import ProjectDescription from '@components/ProjectDescription';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
+import TwitterShare from '@components/TwitterShare';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import { isProduction } from '@utils/common';
 import { NETWORK_CHAIN_ID } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
@@ -32,15 +38,11 @@ import log from '@utils/logger';
 import dayjs from 'dayjs';
 import _get from 'lodash/get';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
-import LinkShare from '@components/LinkShare';
-import TwitterShare from '@components/TwitterShare';
-import { CountDown } from '@components/CountDown';
-import { SeeMore } from '@components/SeeMore';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -50,13 +52,31 @@ type Props = {
 };
 
 const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
-  const { getWalletBalance } = useContext(WalletContext);
-  const { mobileScreen } = useWindowSize();
-  const [isAvailable, setIsAvailable] = useState<boolean>(false);
   const router = useRouter();
+  const user = useAppSelector(getUserSelector);
+  const { mobileScreen } = useWindowSize();
+
+  const { getWalletBalance, connect } = useContext(WalletContext);
+  const { setPaymentMethod, setIsPopupPayment, setPaymentStep } = useContext(
+    BitcoinProjectContext
+  );
+  const [isAvailable, _setIsAvailable] = useState<boolean>(true);
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
+  const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
+
+  useEffect(() => {
+    const exists = project?.desc.includes('Interaction');
+    if (exists) {
+      setHasProjectInteraction(true);
+    } else {
+      setHasProjectInteraction(false);
+    }
+  }, [project?.desc]);
+
   const [marketplaceStats, setMarketplaceStats] =
     useState<MarketplaceStats | null>(null);
+
   const mintedTime = project?.mintedTime;
   let mintDate = dayjs();
   if (mintedTime) {
@@ -76,6 +96,11 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   const isBitcoinProject = useMemo((): boolean => {
     if (!project) return false;
     return checkIsBitcoinProject(project.tokenID);
+  }, [project]);
+
+  const isLimitMinted = useMemo((): boolean => {
+    if (!project) return false;
+    return project?.mintingInfo?.index < project?.maxSupply;
   }, [project]);
 
   const handleFetchMarketplaceStats = async () => {
@@ -103,7 +128,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
 
       if (
         walletBalance <
-        parseFloat(Web3.utils.fromWei(project.mintPrice.toString()))
+        parseFloat(Web3.utils.fromWei(project.mintPriceEth.toString()))
       ) {
         if (isTestnet()) {
           toast.error(
@@ -117,7 +142,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
 
       const mintTx = await mintToken({
         projectAddress: project.genNFTAddr,
-        mintFee: project.mintPrice.toString(),
+        mintFee: project.mintPriceEth.toString(),
         chainID: NETWORK_CHAIN_ID,
       });
 
@@ -152,6 +177,35 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
     [project?.mintPriceEth]
   );
 
+  // pay with wallet project btc
+
+  const payWithWallet = () => {
+    setPaymentMethod('WALLET');
+    setIsPopupPayment(true);
+    setPaymentStep('mint');
+  };
+
+  const handleConnectWallet = async (): Promise<void> => {
+    try {
+      setIsConnecting(true);
+      await connect();
+      payWithWallet();
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const onHandlePaymentWithWallet = useCallback(() => {
+    if (isConnecting) return;
+    if (!user) {
+      handleConnectWallet();
+    } else {
+      payWithWallet();
+    }
+  }, [user, isConnecting]);
+
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -166,28 +220,28 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
     if (isProjectDetailPage) {
       return (
         <div className={s.info}>
-          {isBitcoinProject && (
-            <CountDown
-              prefix={'Drop ends in'}
-              isDetail={true}
-              setIsAvailable={setIsAvailable}
-              openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}
-              closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}
-            />
-          )}
+          {/*{isBitcoinProject && (*/}
+          {/*  <CountDown*/}
+          {/*    prefix={'Drop ends in'}*/}
+          {/*    isDetail={true}*/}
+          {/*    setIsAvailable={setIsAvailable}*/}
+          {/*    openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}*/}
+          {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
+          {/*  />*/}
+          {/*)}*/}
 
           <Heading as="h4" fontWeight="medium">
             {project?.name}
           </Heading>
 
           <Text size={'18'} color={'black-60'} style={{ marginBottom: '10px' }}>
-            <Link
-              className={s.info_creatorLink}
-              href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
+            <div
+            // className={s.info_creatorLink}
+            // href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
             >
               {project?.creatorProfile?.displayName ||
                 formatAddress(project?.creatorProfile?.walletAddress || '')}
-            </Link>
+            </div>
           </Text>
           {mobileScreen && (
             <div>
@@ -232,7 +286,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 </ButtonIcon>
               )}
 
-              {isBitcoinProject && isAvailable && (
+              {isBitcoinProject && isAvailable && isLimitMinted && (
                 <ul>
                   <li>
                     <ButtonIcon
@@ -278,6 +332,20 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                       </Text>
                     </ButtonIcon>
                   </li>
+                  {!isProduction() && (
+                    <li>
+                      <ButtonIcon
+                        sizes="large"
+                        variants={'filter'}
+                        className={`${s.mint_btn} ${s.mint_btn__wallet}`}
+                        onClick={onHandlePaymentWithWallet}
+                      >
+                        <Text as="span" size="14" fontWeight="medium">
+                          {isConnecting ? 'Connecting...' : 'Wallet'}
+                        </Text>
+                      </ButtonIcon>
+                    </li>
+                  )}
                 </ul>
               )}
             </div>
@@ -322,17 +390,10 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
           )}
 
           <div className={s.project_info}>
-            <div className={s.project_desc}>
-              <Text
-                size="14"
-                color="black-40"
-                fontWeight="medium"
-                className="text-uppercase"
-              >
-                description
-              </Text>
-              <SeeMore>{project?.desc || ''}</SeeMore>
-            </div>
+            <ProjectDescription
+              desc={project?.desc || ''}
+              hasInteraction={hasProjectInteraction}
+            />
             <>
               <Text size="14" color="black-40">
                 Created date: {mintedDate}
@@ -353,12 +414,12 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
           <ul className={s.shares}>
             <li>
               <LinkShare
-                url={`${location.origin}/${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                url={`${location.origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
               />
             </li>
             <li>
               <TwitterShare
-                url={`${location.origin}/${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                url={`${location.origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
                 title={''}
                 hashtags={[]}
               />
