@@ -18,7 +18,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import debounce from 'lodash/debounce';
 import uniqBy from 'lodash/uniqBy';
 
-const LIMIT = 100;
+const LIMIT = 20;
 
 export const RecentWorks = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -63,7 +63,7 @@ export const RecentWorks = (): JSX.Element => {
       <Row style={{ justifyContent: 'space-between' }}>
         <Col xs={'auto'}>
           <Heading as="h4" fontWeight="semibold">
-            Trade
+            Marketplace
           </Heading>
         </Col>
         <Col xs={'auto'}>
