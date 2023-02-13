@@ -20,7 +20,7 @@ import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
 import { formatUnixDateTime } from '@utils/time';
 
-const FEE_CHARGE_PERCENT = 0.1;
+// const FEE_CHARGE_PERCENT = 0.1;
 const MIN_PRICE = 0.005;
 
 interface IProps {
@@ -334,12 +334,14 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                             <Text
                               size="16"
                               fontWeight="medium"
-                              color="text-black-80"
+                              color="text-secondary-color"
+                              className={s.free_fee}
                             >
-                              {new BigNumber(values.price || 0)
-                                .multipliedBy(FEE_CHARGE_PERCENT)
-                                .toFixed()}{' '}
-                              BTC
+                              {/*{new BigNumber(values.price || 0)*/}
+                              {/*  .multipliedBy(FEE_CHARGE_PERCENT)*/}
+                              {/*  .toFixed()}{' '}*/}
+                              {/*BTC*/}
+                              FREE
                             </Text>
                           </div>
                           {isLoading && (
