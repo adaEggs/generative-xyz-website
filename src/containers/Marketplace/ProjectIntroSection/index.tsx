@@ -7,12 +7,9 @@ import ProjectDescription from '@components/ProjectDescription';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
 import TwitterShare from '@components/TwitterShare';
-import { useAppSelector } from '@redux';
-import { getUserSelector } from '@redux/user/selector';
-import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
-import { isProduction } from '@utils/common';
 import { NETWORK_CHAIN_ID } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
@@ -22,6 +19,8 @@ import { IGetProjectDetailResponse } from '@interfaces/api/project';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
 import { Token } from '@interfaces/token';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
@@ -332,7 +331,8 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                       </Text>
                     </ButtonIcon>
                   </li>
-                  {!isProduction() && !!project?.whiteListEthContracts && (
+
+                  {!!project?.whiteListEthContracts && (
                     <li>
                       <ButtonIcon
                         sizes="large"
