@@ -288,23 +288,11 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
           )}
 
           {isBitcoinProject && (
-            <div className={s.priceInfo}>
+            <>
               <span className={s.priceBtc}>
                 {priceMemo} <small>BTC</small>
               </span>
-              {project?.royalty === 0 && (
-                <div className={s.stats}>
-                  <div className={s.stats_item}>
-                    <Text size="12" fontWeight="medium">
-                      royalty
-                    </Text>
-                    <Heading as="h6" fontWeight="medium">
-                      {project?.royalty / 100}%
-                    </Heading>
-                  </div>
-                </div>
-              )}
-            </div>
+            </>
           )}
 
           {project?.status && (
@@ -357,6 +345,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                   <li>
                     <ButtonIcon
                       sizes="large"
+                      variants="outline"
                       className={`${s.mint_btn} ${s.mint_btn__eth}`}
                       onClick={() => {
                         openMintBTCModal('ETH');
@@ -395,6 +384,18 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
               )}
             </div>
           )}
+          {project?.royalty ? (
+            <div className={s.stats}>
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  royalty
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {(project?.royalty || 0) / 100}%
+                </Heading>
+              </div>
+            </div>
+          ) : null}
 
           {!isBitcoinProject && (
             <div className={s.stats}>
