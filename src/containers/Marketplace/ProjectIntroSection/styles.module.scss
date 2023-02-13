@@ -113,7 +113,7 @@
 
 .CTA {
   display: flex;
-  margin-bottom: rem(24px);
+  margin-bottom: rem(10px);
   gap: rem(24px);
   flex-wrap: wrap;
   align-items: center;
@@ -180,6 +180,39 @@
   }
 }
 
+.whiteListWallet {
+  margin-top: rem(10);
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: rem(5);
+}
+
+.whiteList_tooltip {
+  // white-space: nowrap;
+  text-align: left;
+}
+
+.whiteList_icon {
+  cursor: pointer;
+}
+
+.whiteList_list {
+  color: $primary-333;
+  list-style: disc;
+  padding-left: rem(15px);
+}
+
+.whiteListWallet_connect {
+  color: $secondary-purple-c;
+
+  &:hover {
+    opacity: 0.8;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}
+
 .priceBtc {
   line-height: (44/34);
   font-weight: 500;
@@ -232,6 +265,7 @@
   column-gap: rem(69px);
   row-gap: rem(6px);
   margin-bottom: rem(24px);
+  margin-top: rem(24px);
   flex-wrap: wrap;
 
   @include mobile {
@@ -283,6 +317,7 @@
 
 .project_info {
   margin-bottom: rem(24px);
+  margin-top: rem(24px);
 }
 
 .shares {

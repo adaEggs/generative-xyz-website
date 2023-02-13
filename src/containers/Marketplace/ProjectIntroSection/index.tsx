@@ -45,6 +45,7 @@ import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -366,7 +367,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                     </ButtonIcon>
                   </li>
 
-                  {!!project?.whiteListEthContracts && (
+                  {/* {!!project?.whiteListEthContracts && (
                     <li>
                       <ButtonIcon
                         sizes="large"
@@ -379,11 +380,134 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                         </Text>
                       </ButtonIcon>
                     </li>
-                  )}
+                  )} */}
                 </ul>
               )}
             </div>
           )}
+          {!!project?.whiteListEthContracts && (
+            // <OverlayTrigger
+            //   placement="bottom"
+            //   delay={{ show: 250, hide: 400 }}
+            //   overlay={
+            //     <Tooltip id="whitelist-tooltip">
+            //       <div className={s.whiteList_tooltip}>
+            //         <Text size="14" fontWeight="semibold" color="primary-333">
+            //           Available for owner of the following collections:
+            //         </Text>
+            //         <ul className={s.whiteList_list}>
+            //           <li>
+            //             <Text
+            //               size="14"
+            //               fontWeight="semibold"
+            //               color="primary-333"
+            //             >
+            //               Punk
+            //             </Text>
+            //           </li>
+            //           <li>
+            //             <Text
+            //               size="14"
+            //               fontWeight="semibold"
+            //               color="primary-333"
+            //             >
+            //               BAYC
+            //             </Text>
+            //           </li>
+            //           <li>
+            //             <Text
+            //               size="14"
+            //               fontWeight="semibold"
+            //               color="primary-333"
+            //             >
+            //               Mutant
+            //             </Text>
+            //           </li>
+            //           <li>
+            //             <Text
+            //               size="14"
+            //               fontWeight="semibold"
+            //               color="primary-333"
+            //             >
+            //               Meebits
+            //             </Text>
+            //           </li>
+            //           <li>
+            //             <Text
+            //               size="14"
+            //               fontWeight="semibold"
+            //               color="primary-333"
+            //             >
+            //               Proof
+            //             </Text>
+            //           </li>
+            //           <li>
+            //             <Text
+            //               size="14"
+            //               fontWeight="semibold"
+            //               color="primary-333"
+            //             >
+            //               Moonbirds
+            //             </Text>
+            //           </li>
+            //           <li>
+            //             <Text
+            //               size="14"
+            //               fontWeight="semibold"
+            //               color="primary-333"
+            //             >
+            //               Moonbirds Oddities
+            //             </Text>
+            //           </li>
+            //           <li>
+            //             <Text
+            //               size="14"
+            //               fontWeight="semibold"
+            //               color="primary-333"
+            //             >
+            //               CloneX
+            //             </Text>
+            //           </li>
+            //         </ul>
+            //       </div>
+            //     </Tooltip>
+            //   }
+            // >
+
+            <div className={s.whiteListWallet}>
+              <Text fontWeight="medium">
+                CryptoPunks owner?{' '}
+                <Text
+                  className={s.whiteListWallet_connect}
+                  as="span"
+                  fontWeight="medium"
+                  onClick={onHandlePaymentWithWallet}
+                >
+                  Claim your free mint.{' '}
+                </Text>
+              </Text>
+              <OverlayTrigger
+                placement="bottom"
+                delay={{ show: 250, hide: 400 }}
+                overlay={
+                  <Tooltip id="whitelist-tooltip">
+                    <Text size="14" fontWeight="semibold" color="primary-333">
+                      It’s a free mint. You only need to pay for inscription
+                      fee, which is about 0.001 BTC (0.001ETH)
+                    </Text>
+                  </Tooltip>
+                }
+              >
+                <div className={s.whiteList_icon}>
+                  <SvgInset
+                    size={16}
+                    svgUrl={`${CDN_URL}/icons/ic-question-circle.svg`}
+                  />
+                </div>
+              </OverlayTrigger>
+            </div>
+          )}
+
           {project?.royalty ? (
             <div className={s.stats}>
               <div className={s.stats_item}>

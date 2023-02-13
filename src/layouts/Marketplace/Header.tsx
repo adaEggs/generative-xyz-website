@@ -274,7 +274,13 @@ const Header: React.FC<IProp> = ({
                         </a>
                       </li>
                     )}
-
+                    {!isProduction() && (
+                      <li>
+                        <Link href={ROUTE_PATH.ORDER_NOW} rel="noreferrer">
+                          Earn 5%
+                        </Link>
+                      </li>
+                    )}
                     <li>
                       <Link
                         href={SOCIALS.discord}
