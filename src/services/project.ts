@@ -95,7 +95,7 @@ export const getProjectListMinited = async (
     const res = await get<IGetProjectListResponse>(`${API_PATH}${qs}`);
     return res;
   } catch (err: unknown) {
-    log('failed to get project list', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get project list');
+    log('failed to get project list minted', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get project list minted');
   }
 };

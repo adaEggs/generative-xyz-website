@@ -432,33 +432,6 @@
   resolved "https://registry.npmjs.org/@csstools/selector-specificity/-/selector-specificity-2.0.2.tgz"
   integrity sha512-IkpVW/ehM1hWKln4fCA3NzJU8KwD+kIOvPZA4cqxoJHtE21CCzjyp+Kxbu0i5I4tBNOlXPL9mjwnWlL0VEG4Fg==
 
-"@datadog/browser-core@4.28.1":
-  version "4.28.1"
-  resolved "https://registry.npmjs.org/@datadog/browser-core/-/browser-core-4.28.1.tgz"
-  integrity sha512-BmMJA3SpZtI5VVukuxMKYc7ALBLcydnG+tRh5pXP/Tjjejh9sx611TdspeAd00rfpYQ4c51CcHkhem3oU/WJCQ==
-
-"@datadog/browser-logs@^4.28.1":
-  version "4.28.1"
-  resolved "https://registry.npmjs.org/@datadog/browser-logs/-/browser-logs-4.28.1.tgz"
-  integrity sha512-3TUybhC1apfGnyAREBuqOI6LA96tlrdgilKoPGR/8wf9wvpRJ/zXx0gm4WgzRPilEDFfJxWfvB/IUYg0MYh/GA==
-  dependencies:
-    "@datadog/browser-core" "4.28.1"
-
-"@datadog/browser-rum-core@4.28.1":
-  version "4.28.1"
-  resolved "https://registry.npmjs.org/@datadog/browser-rum-core/-/browser-rum-core-4.28.1.tgz"
-  integrity sha512-uN9rjaQodDmYBF0LPeOzW5nH2z7Zcsrn/r0+PgEtdKuZKugGBF5vmFx8LthzFTF1F7e7LXsm1MbuDQS7LCYjiQ==
-  dependencies:
-    "@datadog/browser-core" "4.28.1"
-
-"@datadog/browser-rum@^4.28.1":
-  version "4.28.1"
-  resolved "https://registry.npmjs.org/@datadog/browser-rum/-/browser-rum-4.28.1.tgz"
-  integrity sha512-pHFgutFeFKDe4akDRhVE28wcqDSzlr2JBEOesSy6eJQOw9W006zUTC4c9zkjSlZpBved8ndj6zjcy9DAuQ7+7g==
-  dependencies:
-    "@datadog/browser-core" "4.28.1"
-    "@datadog/browser-rum-core" "4.28.1"
-
 "@emotion/babel-plugin@^11.7.1":
   version "11.10.5"
   resolved "https://registry.npmjs.org/@emotion/babel-plugin/-/babel-plugin-11.10.5.tgz"
