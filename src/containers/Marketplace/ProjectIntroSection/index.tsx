@@ -492,8 +492,9 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 overlay={
                   <Tooltip id="whitelist-tooltip">
                     <Text size="14" fontWeight="semibold" color="primary-333">
-                      It’s a free mint. You only need to pay for inscription
-                      fee, which is about 0.001 BTC (0.001ETH)
+                      This is a free mint. You only need to pay for the
+                      inscription fees, which are similar to gas fees on
+                      Ethereum. The amount is 0.033 ETH (~0.0023 BTC).
                     </Text>
                   </Tooltip>
                 }
