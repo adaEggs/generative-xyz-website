@@ -17,6 +17,7 @@ import { InscribeMintFeeRate } from '@enums/inscribe';
 import { calculateMintFee } from '@utils/inscribe';
 import cs from 'classnames';
 import { InscriptionInfo } from '@interfaces/inscribe';
+import { formatUnixDateTime } from '@utils/time';
 
 const LOG_PREFIX = 'MintTool';
 
@@ -127,8 +128,8 @@ const MintTool: React.FC = (): React.ReactElement => {
                   </div>
                   <div className={s.formItem}>
                     <label className={s.label} htmlFor="address">
-                      Transfer the inscription (Bitcoin NFT) to{' '}
-                      <sup className={s.requiredTag}>*</sup>
+                      ENTER THE ORDINALS-COMPATIBLE BTC ADDRESS TO RECEIVE YOUR
+                      INSCRIPTION <sup className={s.requiredTag}>*</sup>
                     </label>
                     <div className={s.inputContainer}>
                       <input
@@ -139,7 +140,7 @@ const MintTool: React.FC = (): React.ReactElement => {
                         onBlur={handleBlur}
                         value={values.address}
                         className={s.input}
-                        placeholder="Enter your Ordinals-compatible BTC address"
+                        placeholder="Paste your Ordinals-compatible address here"
                       />
                     </div>
                     {errors.address && touched.address && (
@@ -256,6 +257,16 @@ const MintTool: React.FC = (): React.ReactElement => {
                         />
                         <p className={s.btcAddress}>
                           {inscriptionInfo.segwitAddress}
+                        </p>
+                      </div>
+                      <div className={s.inscriptionInfoWrapper}>
+                        <p className={s.expiredAt}>
+                          Expires at:{' '}
+                          <b>
+                            {formatUnixDateTime({
+                              dateTime: Number(inscriptionInfo.timeout_at),
+                            })}
+                          </b>
                         </p>
                       </div>
                     </>

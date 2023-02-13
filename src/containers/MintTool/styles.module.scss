@@ -193,4 +193,14 @@
       }
     }
   }
+
+  .inscriptionInfoWrapper {
+    margin-bottom: rem(24px);
+
+    .expiredAt {
+      font-weight: 400;
+      font-size: rem(16px);
+      line-height: rem(26px);
+    }
+  }
 }
