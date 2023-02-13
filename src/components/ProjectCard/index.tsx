@@ -2,20 +2,20 @@ import { useEffect, useMemo, useState } from 'react';
 
 import s from './ProjectCard.module.scss';
 
-import { CreatorInfo } from '@components/CreatorInfo';
+import Avatar from '@components/Avatar';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
 import ProgressBar from '@components/ProgressBar';
+import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
+import useWindowSize from '@hooks/useWindowSize';
 import { Project } from '@interfaces/project';
 import { User } from '@interfaces/user';
-import { convertIpfsToHttp } from '@utils/image';
-import cs from 'classnames';
-import useWindowSize from '@hooks/useWindowSize';
-import Text from '@components/Text';
 import { formatAddress, formatBTCPrice } from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
+import { convertIpfsToHttp } from '@utils/image';
+import cs from 'classnames';
 // import { CountDown } from '@components/CountDown';
 
 interface IPros {
@@ -103,12 +103,25 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
               {/*  />*/}
               {/*)}*/}
+              {creator && (
+                <div className={s.projectCard_creator}>
+                  <Avatar
+                    imgSrcs={creatorMemo?.avatar || ''}
+                    width={24}
+                    height={24}
+                  />
+                  <Text fontWeight="medium" color="black-60">
+                    {creatorMemo?.displayName || creatorMemo?.walletAddress}
+                  </Text>
+                </div>
+              )}
+              {/* {creator && <CreatorInfo creator={creatorMemo} />} */}
+
               <div className={s.projectCard_info_title}>
-                <Heading as={'h4'}>
+                <Heading as={'h5'} fontWeight="medium">
                   <span title={project.name}>{project.name}</span>
                 </Heading>
               </div>
-              {creator && <CreatorInfo creator={creatorMemo} />}
               {isBitcoinProject ? (
                 <div className={s.projectCard_info_price}>
                   <div className={s.projectCard_info_price_price}>
