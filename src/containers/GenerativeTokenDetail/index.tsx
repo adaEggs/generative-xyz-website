@@ -176,15 +176,15 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               color={'black-60'}
               style={{ marginBottom: '16px' }}
             >
-              <Link
-                className={s.info_creatorLink}
-                href={handleLinkProfile(tokenData?.project?.creatorAddr)}
+              <div
+              // className={s.info_creatorLink}
+              // href={handleLinkProfile(tokenData?.project?.creatorAddr)}
               >
                 {tokenData?.project?.creatorProfile?.displayName ||
                   formatAddress(
                     tokenData?.project?.creatorProfile?.walletAddress || ''
                   )}
-              </Link>
+              </div>
             </Text>
             {/* {isBitcoinProject && (
               <Link

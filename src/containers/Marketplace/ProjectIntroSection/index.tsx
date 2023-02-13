@@ -1,7 +1,6 @@
 import ButtonIcon from '@components/ButtonIcon';
 import { CountDown } from '@components/CountDown';
 import Heading from '@components/Heading';
-import Link from '@components/Link';
 import LinkShare from '@components/LinkShare';
 import { Loading } from '@components/Loading';
 import ProgressBar from '@components/ProgressBar';
@@ -192,13 +191,13 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
           </Heading>
 
           <Text size={'18'} color={'black-60'} style={{ marginBottom: '10px' }}>
-            <Link
-              className={s.info_creatorLink}
-              href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
+            <div
+            // className={s.info_creatorLink}
+            // href={`${ROUTE_PATH.PROFILE}/${project?.creatorAddr}`}
             >
               {project?.creatorProfile?.displayName ||
                 formatAddress(project?.creatorProfile?.walletAddress || '')}
-            </Link>
+            </div>
           </Text>
           {mobileScreen && (
             <div>
