@@ -78,8 +78,8 @@ const SetPrice = () => {
 
     if (!values.royalty.toString()) {
       errors.royalty = 'Royalty is required.';
-    } else if (values.royalty < 10 || values.royalty > 25) {
-      errors.royalty = 'Invalid number. Must be between 10 and 25.';
+    } else if (values.royalty > 25) {
+      errors.royalty = 'Invalid number. Must be  less then 25.';
     }
 
     return errors;
@@ -120,9 +120,9 @@ const SetPrice = () => {
       }
 
       const payload: ICreateBTCProjectPayload = {
-        creatorAddrr: creatorWalletAddress ?? '',
+        creatorAddrrBTC: creatorWalletAddress ?? '',
         maxSupply: maxSupply ?? 0,
-        limitSupply: maxSupply ?? 0,
+        limitSupply: 0,
         mintPrice: mintPrice?.toString() ? mintPrice.toString() : '0',
         name: name ?? '',
         description: description ?? '',
@@ -144,7 +144,7 @@ const SetPrice = () => {
         tags: tags ?? [],
         zipLink: '',
         animationURL: '',
-        isFullChain: false,
+        isFullChain: true,
       };
 
       if (collectionType === CollectionType.IMAGES) {
