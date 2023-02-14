@@ -88,6 +88,8 @@
 
   .zipFileList {
     padding-left: 42px;
+    max-height: rem(400px);
+    overflow: auto;
   }
 
   .fileItem {

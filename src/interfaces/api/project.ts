@@ -52,7 +52,7 @@ export interface IGetProjectListResponse extends IPagingResponse {
 export interface ICreateBTCProjectPayload {
   categories: Array<string>;
   closeMintUnixTimestamp: number;
-  creatorAddrr: string;
+  creatorAddrrBTC: string;
   description: string;
   license: string;
   limitSupply: number;
