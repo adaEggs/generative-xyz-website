@@ -12,8 +12,8 @@ export const MENU_HEADER = [
   {
     id: 'menu-1',
     name: 'Create',
-    route: ROUTE_PATH.BENEFIT,
-    activePath: 'benefit',
+    route: ROUTE_PATH.CREATE_BTC_PROJECT,
+    activePath: 'create',
   },
   {
     id: 'menu-4',

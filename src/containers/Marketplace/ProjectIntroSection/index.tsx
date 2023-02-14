@@ -50,7 +50,6 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { EXTERNAL_LINK } from '@constants/external-link';
-import { Label } from '@components/Label';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -251,8 +250,6 @@ const ProjectIntroSection = ({
         {/*  />*/}
         {/*)}*/}
 
-        {!isFullonChain && <Label label={'On Chain'} vars={'blue'} />}
-
         <Heading as="h4" fontWeight="medium">
           {project?.name}
         </Heading>
@@ -305,14 +302,37 @@ const ProjectIntroSection = ({
             className={s.progressBar}
           />
         )}
-
-        {isBitcoinProject && isLimitMinted && (
+        {isBitcoinProject && (
+          <div className={s.stats}>
+            {isLimitMinted && (
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  Mint Price
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {priceMemo} BTC
+                </Heading>
+              </div>
+            )}
+            {project?.royalty && (
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  royalty
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {project.royalty / 100}%
+                </Heading>
+              </div>
+            )}
+          </div>
+        )}
+        {/* {isBitcoinProject && (
           <>
             <span className={s.priceBtc}>
               {priceMemo} <small>BTC</small>
             </span>
           </>
-        )}
+        )} */}
 
         {!isWhitelist && project?.status && (
           <div className={s.CTA}>
@@ -407,11 +427,15 @@ const ProjectIntroSection = ({
           !!project?.whiteListEthContracts &&
           project?.whiteListEthContracts.length > 0 && (
             <>
-              <ButtonIcon sizes="large" onClick={onHandlePaymentWithWallet}>
+              <ButtonIcon
+                sizes="large"
+                onClick={onHandlePaymentWithWallet}
+                className={s.mint_free}
+              >
                 Mint Satoshi free
               </ButtonIcon>
               <div className={s.whiteListWallet}>
-                <Text as="span" fontWeight="medium">
+                <Text size="12" as="span" color="black-60">
                   If you’re a member of{' '}
                 </Text>
                 <OverlayTrigger
@@ -419,7 +443,7 @@ const ProjectIntroSection = ({
                   delay={{ show: 100, hide: 300 }}
                   overlay={
                     <Tooltip id="whitelist-tooltip">
-                      <Text size="14" fontWeight="semibold" color="primary-333">
+                      <Text size="12" fontWeight="semibold" color="primary-333">
                         ArtBlocks, CryptoPunks, BAYC, MAYC, Meebits, Proof,
                         Moonbirds, Moonbirds Oddities, CloneX, Gen Art, gmDAO,
                         FingerprintsDAO.
@@ -428,21 +452,24 @@ const ProjectIntroSection = ({
                   }
                 >
                   <div className="d-inline cursor-pointer">
-                    <Text as="span" fontWeight="medium">
+                    <Text size="12" as="span" color="purple-c">
                       these communities
                     </Text>
-                    <SvgInset
-                      className={s.infoIcon}
-                      size={12}
-                      svgUrl={`${CDN_URL}/icons/ic-info-circle-18x18.svg`}
-                    />
+                    <Text size="12" as="span" color="black-60">
+                      *
+                    </Text>
                   </div>
                 </OverlayTrigger>
-                <Text as="span" fontWeight="medium">
+                <Text size="12" as="span" color="black-60">
+                  {' '}
                   (ArtBlocks, CryptoPunks, BAYC, etc.), you can claim your
                   Satoshi for free. Only pay the network inscription fees, which
                   are 0.033 ETH (~0.0023 BTC). Generative integrates with{' '}
-                  <Link href={EXTERNAL_LINK.DELEGATE_CASH} target="_blank">
+                  <Link
+                    href={EXTERNAL_LINK.DELEGATE_CASH}
+                    target="_blank"
+                    className="hover-underline"
+                  >
                     delegate.cash
                   </Link>{' '}
                   to prove ownership.
@@ -470,19 +497,6 @@ const ProjectIntroSection = ({
               </div>
             </>
           )}
-
-        {project?.royalty ? (
-          <div className={s.stats}>
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="medium">
-                royalty
-              </Text>
-              <Heading as="h6" fontWeight="medium">
-                {(project?.royalty || 0) / 100}%
-              </Heading>
-            </div>
-          </div>
-        ) : null}
 
         {!isBitcoinProject && (
           <div className={s.stats}>
@@ -526,11 +540,17 @@ const ProjectIntroSection = ({
           <ProjectDescription
             desc={project?.desc || ''}
             hasInteraction={hasProjectInteraction}
+            profileBio={project?.creatorProfile?.bio || ''}
           />
           <>
             <Text size="14" color="black-40">
               Created date: {mintedDate}
             </Text>
+            {isFullonChain && (
+              <Text size="14" color="black-40">
+                Fully on-chain: Yes
+              </Text>
+            )}
             {/* <Text size="14" color="black-40" className={s.project_owner}>
                 Collected by:{' '}
                 {project?.stats?.uniqueOwnerCount === 1

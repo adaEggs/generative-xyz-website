@@ -16,7 +16,6 @@ import { formatAddress, formatBTCPrice } from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
-import { Label } from '@components/Label';
 // import { CountDown } from '@components/CountDown';
 
 interface IPros {
@@ -72,7 +71,6 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               loading={'lazy'}
             />
           </div>
-          {project.isFullChain && <Label label={'On chain'} vars={'blue'} />}
         </div>
         <div className={s.projectCard_inner_info}>
           {mobileScreen ? (
