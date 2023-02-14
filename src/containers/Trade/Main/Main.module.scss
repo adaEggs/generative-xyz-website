@@ -1,0 +1,78 @@
+.wrapper {
+  &_header {
+    padding-bottom: rem(43px);
+    justify-content: space-between;
+  }
+
+  &_btn {
+    font-weight: 500;
+    padding: rem(15) rem(24);
+    font-size: rem(16px);
+    line-height: rem(26px);
+    letter-spacing: 0.01em;
+    color: $white;
+    background-color: $primary-brand;
+    border-color: $primary-brand;
+  }
+}
+
+.tabs {
+  --bs-nav-tabs-border-width: 0;
+  --bs-nav-tabs-border-color: transparent;
+  --bs-nav-tabs-border-radius: transparent;
+  --bs-nav-tabs-link-hover-border-color: transparent transparent transparent;
+  --bs-nav-tabs-link-active-color: $primary-brand;
+  --bs-nav-tabs-link-active-bg: transparent;
+  --bs-nav-tabs-link-active-border-color: transparent transparent transparent;
+
+  border-bottom: 1px solid $black-10;
+
+  --bs-nav-link-color: #{rgba(#000, 0.4)};
+  --bs-nav-link-hover-color: #{$primary-brand};
+
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+
+  :global(.active) {
+    &::after {
+      width: 100%;
+    }
+  }
+
+  display: flex;
+  flex-wrap: wrap;
+
+  @include mobile {
+    row-gap: rem(10px);
+  }
+
+  :global(.nav-item) {
+    @include mobile {
+      flex: 0 0 50%;
+      width: 50%;
+    }
+  }
+}
+
+.tab {
+  font-style: normal;
+  font-weight: 700;
+  line-height: (28/18);
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-right: rem(48px);
+  position: relative;
+
+  @include calcFontAuto(16px, 18px);
+
+  &::after {
+    content: "";
+    display: block;
+    border-bottom: 2px solid $primary-brand;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    transform: translateX(-50%);
+  }
+}

@@ -7,6 +7,10 @@ import { getOrdContentByInscriptionID } from '@utils/parseOrdHTML';
 const LOG_PREFIX = 'MarketplaceBtcService';
 
 const API_PATH = '/marketplace-btc';
+
+// ------------------------------------------------
+// LISTING SITE
+// ------------------------------------------------
 export interface IGetMarketplaceBtcListParams {
   limit: number;
   offset: number;
@@ -39,11 +43,34 @@ export const getMarketplaceBtcList = async (
         index,
       };
     });
-    const data = await Promise.all(tasks);
-    return data;
+    return Promise.all(tasks);
   } catch (err: unknown) {
     log('failed to get Marketplace Btc List', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get Marketplace Btc List');
+  }
+};
+export interface IListingFeePayload {
+  inscriptionID: string;
+}
+export interface IListingFee {
+  serviceFee: number;
+  royaltyFee: number;
+}
+export const getListingFee = async (
+  payload: IListingFeePayload
+): Promise<IListingFee> => {
+  try {
+    const res = await post<IListingFeePayload, IListingFee>(
+      `${API_PATH}/listing-fee`,
+      payload
+    );
+    return {
+      royaltyFee: Number(res.royaltyFee || 0),
+      serviceFee: Number(res.serviceFee || 0),
+    };
+  } catch (err: unknown) {
+    log('failed to get get fee', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get fee');
   }
 };
 
@@ -63,17 +90,19 @@ export const postMarketplaceBtcListNFT = async (
   dataFrom: IPostMarketplaceBtcListNFTParams
 ): Promise<IPostMarketplaceBtcListNFTResponse> => {
   try {
-    const res = await post<
+    return post<
       IPostMarketplaceBtcListNFTParams,
       IPostMarketplaceBtcListNFTResponse
     >(`${API_PATH}/listing`, dataFrom);
-    return res;
   } catch (err: unknown) {
     log('failed to post Marketplace Btc List NFT', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to post Marketplace Btc List NFT');
   }
 };
 
+// ------------------------------------------------
+// TOKEN DETAIL
+// ------------------------------------------------
 export interface IGetMarketplaceBtcNFTDetail {
   inscriptionID: string;
   price: string;
@@ -84,7 +113,6 @@ export interface IGetMarketplaceBtcNFTDetail {
   isCompleted: boolean;
   index: string;
 }
-
 export const getMarketplaceBtcNFTDetail = async (
   inscriptionID: string
 ): Promise<IGetMarketplaceBtcNFTDetail> => {
@@ -120,11 +148,10 @@ export const submitAddressBuyBTC = async (
   payload: ISubmitBTCAddressPayload
 ): Promise<ISubmitBTCAddressResponse> => {
   try {
-    const res = await post<ISubmitBTCAddressPayload, ISubmitBTCAddressResponse>(
+    return post<ISubmitBTCAddressPayload, ISubmitBTCAddressResponse>(
       `${API_PATH}/nft-gen-order`,
       payload
     );
-    return res;
   } catch (err: unknown) {
     log('failed to submit MarketplaceBtc Address', LogLevel.ERROR, LOG_PREFIX);
     const message =
@@ -135,29 +162,41 @@ export const submitAddressBuyBTC = async (
   }
 };
 
-export interface IListingFeePayload {
+// ------------------------------------------------
+// COLLECTION
+// ------------------------------------------------
+export interface IGetCollectionBtcListParams {
+  limit: number;
+  offset: number;
+  'buyable-only': boolean;
+}
+export interface IGetCollectionBtcListItem {
+  name: string;
+  total: string;
   inscriptionID: string;
 }
-
-export interface IListingFee {
-  serviceFee: number;
-  royaltyFee: number;
-}
-
-export const getListingFee = async (
-  payload: IListingFeePayload
-): Promise<IListingFee> => {
+export const getCollectionBtcList = async (
+  params: IGetCollectionBtcListParams
+): Promise<IGetCollectionBtcListItem[]> => {
   try {
-    const res = await post<IListingFeePayload, IListingFee>(
-      `${API_PATH}/listing-fee`,
-      payload
-    );
-    return {
-      royaltyFee: Number(res.royaltyFee || 0),
-      serviceFee: Number(res.serviceFee || 0),
-    };
+    return [
+      {
+        name: 'Ordinal Shards',
+        total: '100',
+        inscriptionID:
+          '93c3bc43274241958f61565a58ed043128d6f54db564508cbe9956e9096275aei0',
+      },
+      {
+        name: 'Planetary Ordinals',
+        total: '69',
+        inscriptionID:
+          'af0b19432a676551223e300e7197348b7c225cb7b31d0d7c6e246e382cbf6f81i0',
+      },
+    ];
+    const qs = '?' + querystring.stringify(params);
+    return get<IGetCollectionBtcListItem[]>(`${API_PATH}/collection${qs}`);
   } catch (err: unknown) {
-    log('failed to get get fee', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get fee');
+    log('failed to get Marketplace Btc List', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get Marketplace Btc List');
   }
 };
