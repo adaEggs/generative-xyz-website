@@ -164,6 +164,10 @@
     line-height: rem(34px);
     margin-bottom: rem(24px);
     color: $black-100;
+
+    @include mobile {
+      text-align: center;
+    }
   }
 
   .qrCodeWrapper {
@@ -172,6 +176,7 @@
 
     @include mobile {
       flex-direction: column;
+      align-items: center;
     }
 
     .qrCodeGenerator {
@@ -185,11 +190,21 @@
       flex-direction: column;
       justify-content: space-between;
 
+      @include mobile {
+        width: 100%;
+        min-height: 130px;
+        margin-top: rem(24px);
+      }
+
       .btcSent {
         font-weight: 500;
         font-size: rem(18px);
         line-height: rem(28px);
         color: $black-100;
+
+        @include mobile {
+          text-align: center;
+        }
 
         span {
           color: #4f43e2;
@@ -304,6 +319,10 @@
       font-size: rem(16px);
       line-height: rem(26px);
       text-align: center;
+
+      @include mobile {
+        text-align: center;
+      }
     }
   }
 }
