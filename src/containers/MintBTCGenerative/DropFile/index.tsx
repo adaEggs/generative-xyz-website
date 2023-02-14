@@ -3,7 +3,7 @@ import cs from 'classnames';
 import { FileUploader } from 'react-drag-drop-files';
 import { useState } from 'react';
 import { prettyPrintBytes } from '@utils/units';
-import { APP_MAX_FILESIZE, CDN_URL } from '@constants/config';
+import { SANDBOX_BTC_FILE_SIZE_LIMIT, CDN_URL } from '@constants/config';
 import SvgInset from '@components/SvgInset';
 
 export interface IProps {
@@ -11,6 +11,7 @@ export interface IProps {
   acceptedFileType?: Array<string>;
   fileOrFiles?: File[] | null;
   labelText: string;
+  maxSize: number;
   onChange: (files: File | null) => void;
 }
 
@@ -19,6 +20,7 @@ const DropFile: React.FC<IProps> = ({
   fileOrFiles,
   className,
   labelText,
+  maxSize,
   onChange,
 }: IProps) => {
   const [file, setFile] = useState<File | null>(null);
@@ -31,11 +33,13 @@ const DropFile: React.FC<IProps> = ({
   };
 
   const onSizeError = (): void => {
-    setError('File size error, maximum file size is 5MB');
+    setError(
+      `File size error, maximum file size is ${SANDBOX_BTC_FILE_SIZE_LIMIT}kb.`
+    );
   };
 
   const onTypeError = (): void => {
-    setError('Invalid file, supported file extensions is ZIP');
+    setError('Invalid file extension.');
   };
 
   return (
@@ -48,11 +52,11 @@ const DropFile: React.FC<IProps> = ({
       <FileUploader
         handleChange={onChangeFile}
         name={'zipFileUploader'}
-        maxSize={parseInt(APP_MAX_FILESIZE, 10)}
+        maxSize={maxSize}
         minSize={0}
         types={acceptedFileType}
-        onSizeError={onSizeError}
         onTypeError={onTypeError}
+        onSizeError={onSizeError}
         fileOrFiles={fileOrFiles}
         classes={s.dropZone}
       >

@@ -341,6 +341,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
                   ? ['html']
                   : ['zip']
               }
+              maxSize={
+                collectionType === CollectionType.GENERATIVE ? 0.4 : 9999999
+              }
               onChange={handleChangeFile}
               fileOrFiles={rawFile ? [rawFile] : null}
             />
