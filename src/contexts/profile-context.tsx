@@ -308,7 +308,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         setIsLoaded(true);
       }, 400);
     }
-  }, [walletAddress, router]);
+  }, [walletAddress, router, user]);
 
   useAsyncEffect(async () => {
     if (!router.isReady) return;
