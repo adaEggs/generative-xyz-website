@@ -153,12 +153,12 @@ const Header: React.FC<IProp> = ({
     }
   };
 
-  const showWalletButton = (): boolean => {
-    if (!isProduction()) return true;
-    if (router.pathname === ROUTE_PATH.ORDER_NOW) {
-      return true;
-    } else return false;
-  };
+  // const showWalletButton = (): boolean => {
+  //   if (!isProduction()) return true;
+  //   if (router.pathname === ROUTE_PATH.ORDER_NOW) {
+  //     return true;
+  //   } else return false;
+  // };
 
   useEffect(() => {
     if (refMenu.current) {
@@ -287,13 +287,13 @@ const Header: React.FC<IProp> = ({
                         </a>
                       </li>
                     )}
-                    {!isProduction() && (
+                    {/* {!isProduction() && (
                       <li>
                         <Link href={ROUTE_PATH.ORDER_NOW} rel="noreferrer">
                           Earn 5%
                         </Link>
                       </li>
-                    )}
+                    )} */}
                     <li>
                       <Link
                         href={SOCIALS.discord}
@@ -307,36 +307,34 @@ const Header: React.FC<IProp> = ({
                       </Link>
                     </li>
                   </ul>
-                  {showWalletButton() && (
-                    <>
-                      {user ? (
-                        <div className="position-relative" ref={dropdownRef}>
-                          <AvatarInfo
-                            imgSrc={user.avatar}
-                            width={48}
-                            height={48}
-                            leftContent={renderProfileHeader()}
-                            onClick={() => setOpenProfile(!openProfile)}
-                            wrapperStyle={{ cursor: 'pointer' }}
-                          />
-                          {openProfile && <ProfileDropdown />}
-                        </div>
-                      ) : (
-                        <div className={'d-xl-block d-none'}>
-                          <ButtonIcon
-                            disabled={isConnecting}
-                            sizes="small"
-                            variants={
-                              theme === 'dark' ? 'secondary' : 'primary'
-                            }
-                            onClick={handleConnectWallet}
-                          >
-                            {isConnecting ? 'Connecting...' : 'Connect wallet'}
-                          </ButtonIcon>
-                        </div>
-                      )}
-                    </>
-                  )}
+                  {/* {showWalletButton() && ( */}
+                  <>
+                    {user ? (
+                      <div className="position-relative" ref={dropdownRef}>
+                        <AvatarInfo
+                          imgSrc={user.avatar}
+                          width={48}
+                          height={48}
+                          leftContent={renderProfileHeader()}
+                          onClick={() => setOpenProfile(!openProfile)}
+                          wrapperStyle={{ cursor: 'pointer' }}
+                        />
+                        {openProfile && <ProfileDropdown />}
+                      </div>
+                    ) : (
+                      <div className={'d-xl-block d-none'}>
+                        <ButtonIcon
+                          disabled={isConnecting}
+                          sizes="small"
+                          variants={theme === 'dark' ? 'secondary' : 'primary'}
+                          onClick={handleConnectWallet}
+                        >
+                          {isConnecting ? 'Connecting...' : 'Connect wallet'}
+                        </ButtonIcon>
+                      </div>
+                    )}
+                  </>
+                  {/* )} */}
 
                   <button
                     className={`${styles.btnMenuMobile} ${
