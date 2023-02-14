@@ -445,8 +445,7 @@ const ProjectIntroSection = ({
                     <Tooltip id="whitelist-tooltip">
                       <Text size="12" fontWeight="semibold" color="primary-333">
                         ArtBlocks, CryptoPunks, BAYC, MAYC, Meebits, Proof,
-                        Moonbirds, Moonbirds Oddities, CloneX, Gen Art, gmDAO,
-                        FingerprintsDAO.
+                        Moonbirds, Moonbirds Oddities, CloneX, gmDAO.
                       </Text>
                     </Tooltip>
                   }

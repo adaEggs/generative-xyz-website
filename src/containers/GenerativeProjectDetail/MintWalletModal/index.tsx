@@ -37,6 +37,7 @@ const MintWalletModal: React.FC = () => {
   const [_isMinting, setIsMinting] = useState(false);
   const [step, setsTep] = useState<'info' | 'mint'>('info');
   const [addressInput, setAddressInput] = useState<string>('');
+  const [errorMsg, seterrorMsg] = useState<string | null>(null);
 
   const getBTCAddress = async (walletAddress: string): Promise<void> => {
     if (!projectData && !isWhitelistProject) return;
@@ -54,6 +55,7 @@ const MintWalletModal: React.FC = () => {
       setPrice(price || projectData?.mintPrice || '');
     } catch (err: unknown) {
       setReceiverAddress(null);
+      seterrorMsg(err?.toString() || '');
     } finally {
       setIsLoading(false);
     }
@@ -203,6 +205,9 @@ const MintWalletModal: React.FC = () => {
                             </div>
                             {errors.address && touched.address && (
                               <p className={s.inputError}>{errors.address}</p>
+                            )}
+                            {errorMsg && (
+                              <p className={s.inputError}>{errorMsg}</p>
                             )}
                           </div>
                           {isLoading && (
