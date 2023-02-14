@@ -24,4 +24,5 @@ export const ROUTE_PATH = {
   REFERRAL: '/referral',
   NOT_FOUND: '/404',
   INSCRIBE: '/inscribe',
+  CREATE_BTC_PROJECT: '/create',
 };

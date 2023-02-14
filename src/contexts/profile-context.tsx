@@ -303,15 +303,10 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         setIsLoaded(true);
       }, 400);
     } else {
-      if (!user) {
-        router.push(ROUTE_PATH.DROPS);
-        return;
-      } else {
-        setCurrentUser(user);
-        setTimeout(() => {
-          setIsLoaded(true);
-        }, 400);
-      }
+      setCurrentUser(user);
+      setTimeout(() => {
+        setIsLoaded(true);
+      }, 400);
     }
   }, [walletAddress, router]);
 

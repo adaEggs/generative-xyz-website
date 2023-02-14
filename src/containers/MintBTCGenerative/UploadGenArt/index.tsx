@@ -78,11 +78,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
   };
 
   const handleGoToNextStep = (): void => {
-    router.push(
-      `/mint-btc-generative/${MintGenerativeStep.PROJECT_DETAIL}`,
-      undefined,
-      { shallow: true }
-    );
+    router.push(`/create/${MintGenerativeStep.PROJECT_DETAIL}`, undefined, {
+      shallow: true,
+    });
   };
 
   const handleReupload = (): void => {
