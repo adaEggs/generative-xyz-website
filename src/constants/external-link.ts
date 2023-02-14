@@ -6,4 +6,5 @@ export const EXTERNAL_LINK = {
   CALENDLY:
     'https://calendly.com/generative_xyz/online-chat-with-generative-partnership-team',
   ORDINALS: 'https://ordinals.com',
+  DELEGATE_CASH: 'https://delegate.cash',
 };

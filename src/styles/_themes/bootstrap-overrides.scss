@@ -35,4 +35,8 @@
     font-family: $font-heading;
     max-width: rem(260) !important;
   }
+
+  &.show {
+    opacity: 1;
+  }
 }

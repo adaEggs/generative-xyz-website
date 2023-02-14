@@ -1,22 +1,26 @@
 import CollectionList from '@components/Collection/List';
 import { TriggerLoad } from '@components/TriggerLoader';
 import ClientOnly from '@components/Utils/ClientOnly';
+import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModal';
+import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal';
 import ProjectIntroSection from '@containers/Marketplace/ProjectIntroSection';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import {
   GenerativeProjectDetailContext,
   GenerativeProjectDetailProvider,
 } from '@contexts/generative-project-detail-context';
+import { Project } from '@interfaces/project';
+import cs from 'classnames';
 import React, { useContext } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
-import cs from 'classnames';
-import styles from './styles.module.scss';
-import TokenTopFilter from './TokenTopFilter';
-import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
-import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModal';
-import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal';
 import MintWalletModal from './MintWalletModal';
+import TokenTopFilter from './TokenTopFilter';
+import styles from './styles.module.scss';
 
-const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
+const GenerativeProjectDetail: React.FC<{
+  isWhitelist?: boolean;
+  project?: Project;
+}> = ({ isWhitelist, project }): React.ReactElement => {
   const {
     projectData: projectInfo,
     listItems,
@@ -48,13 +52,14 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
               setIsPopupPayment(true);
               setPaymentMethod(chain);
             }}
-            project={projectInfo}
+            project={isWhitelist ? project : projectInfo}
+            isWhitelist={isWhitelist}
           />
 
           <ClientOnly>
             <Tabs className={styles.tabs} defaultActiveKey="outputs">
               <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">
-                {!isBitcoinProject && (
+                {!isBitcoinProject && !isWhitelist && (
                   <div className={cs(styles.filterWrapper)}>
                     <TokenTopFilter
                       keyword=""
@@ -105,10 +110,13 @@ const GenerativeProjectDetail: React.FC = (): React.ReactElement => {
   );
 };
 
-const GenerativeProjectDetailWrapper: React.FC = (): React.ReactElement => {
+const GenerativeProjectDetailWrapper: React.FC<{
+  isWhitelist?: boolean;
+  project?: Project;
+}> = ({ isWhitelist = false, project }): React.ReactElement => {
   return (
     <GenerativeProjectDetailProvider>
-      <GenerativeProjectDetail />
+      <GenerativeProjectDetail isWhitelist={isWhitelist} project={project} />
     </GenerativeProjectDetailProvider>
   );
 };
