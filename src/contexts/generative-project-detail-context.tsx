@@ -228,8 +228,14 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       } catch (_: unknown) {
         log('failed to fetch project items data', LogLevel.ERROR, LOG_PREFIX);
       }
+    } else {
+      setIsLoaded(true);
+      setIsNextPageLoaded(true);
+      setTotal(0);
+      setListItems([]);
     }
   };
+
   const fetchWhitelistProjectItems = async (): Promise<void> => {
     if (isWhitelistProject) {
       try {
