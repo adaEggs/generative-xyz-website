@@ -126,7 +126,7 @@ export const RecentWorks = (): JSX.Element => {
             variants={'primary'}
             sizes={'medium'}
           >
-            Create
+            Launch your art
           </ButtonIcon>
         </Col>
       </Row>
