@@ -7,7 +7,6 @@ import { Loading } from '@components/Loading';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import Button from '@components/ButtonIcon';
 import { formatBTCPrice } from '@utils/format';
-import _debounce from 'lodash/debounce';
 import { generateReceiverAddress } from '@services/inscribe';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
@@ -101,7 +100,9 @@ const Inscribe: React.FC = (): React.ReactElement => {
     <div className={s.mintTool}>
       <div className="container">
         <div className={s.wrapper}>
-          <h1 className={s.title}>Inscribe</h1>
+          <h1 className={s.title}>
+            Upload a file to begin, we will then inscribe and send it to you:
+          </h1>
           <div className={s.formWrapper}>
             <Formik
               key="mintBTCGenerativeForm"
@@ -149,12 +150,12 @@ const Inscribe: React.FC = (): React.ReactElement => {
                       <p className={s.inputError}>{errors.address}</p>
                     )}
                   </div>
-                  <div className={s.alertInfo}>
-                    Do not spend any satoshis from this wallet unless you
-                    understand what you are doing. If you ignore this warning,
-                    you could inadvertently lose access to your ordinals and
-                    inscriptions.
-                  </div>
+                  {/*<div className={s.alertInfo}>*/}
+                  {/*  Do not spend any satoshis from this wallet unless you*/}
+                  {/*  understand what you are doing. If you ignore this warning,*/}
+                  {/*  you could inadvertently lose access to your ordinals and*/}
+                  {/*  inscriptions.*/}
+                  {/*</div>*/}
                   {file && (
                     <>
                       <div className={s.formItem}>
@@ -245,6 +246,13 @@ const Inscribe: React.FC = (): React.ReactElement => {
                           Generative fees:
                         </label>
                         <strong>FREE</strong>
+                      </div>
+                      <div className={s.info}>
+                        (<span className={s.requiredTag}>*</span>) Bitcoin
+                        network fees are needed to create your inscription.
+                        Higher fees can help your inscription get created
+                        sooner, but even high fees can take hours or days, so be
+                        patient.
                       </div>
                     </>
                   )}

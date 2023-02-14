@@ -23,4 +23,5 @@ export const ROUTE_PATH = {
   TRADE: '/marketplace',
   REFERRAL: '/referral',
   NOT_FOUND: '/404',
+  INSCRIBE: '/inscribe',
 };

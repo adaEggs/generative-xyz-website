@@ -27,6 +27,12 @@ export const MENU_HEADER = [
     route: ROUTE_PATH.TRADE,
     activePath: 'marketplace',
   },
+  {
+    id: 'menu-4',
+    name: 'Inscribe',
+    route: ROUTE_PATH.INSCRIBE,
+    activePath: 'inscribe',
+  },
 ];
 
 export const RIGHT_MENU = [
