@@ -12,7 +12,7 @@ import ThumbnailPreview from '@components/ThumbnailPreview';
 import TwitterShare from '@components/TwitterShare';
 import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
-import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+// import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
@@ -22,8 +22,8 @@ import { IGetProjectDetailResponse } from '@interfaces/api/project';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
 import { Token } from '@interfaces/token';
-import { useAppSelector } from '@redux';
-import { getUserSelector } from '@redux/user/selector';
+// import { useAppSelector } from '@redux';
+// import { getUserSelector } from '@redux/user/selector';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
@@ -46,6 +46,10 @@ import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+// import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -223,7 +227,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
     if (isProjectDetailPage) {
       return (
         <div className={s.info}>
-          {/*{isBitcoinProject && (*/}
+          {/* {isBitcoinProject && ( */}
           {/*  <CountDown*/}
           {/*    prefix={'Drop ends in'}*/}
           {/*    isDetail={true}*/}
@@ -385,128 +389,42 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
               )}
             </div>
           )}
-          {!!project?.whiteListEthContracts && (
-            // <OverlayTrigger
-            //   placement="bottom"
-            //   delay={{ show: 250, hide: 400 }}
-            //   overlay={
-            //     <Tooltip id="whitelist-tooltip">
-            //       <div className={s.whiteList_tooltip}>
-            //         <Text size="14" fontWeight="semibold" color="primary-333">
-            //           Available for owner of the following collections:
-            //         </Text>
-            //         <ul className={s.whiteList_list}>
-            //           <li>
-            //             <Text
-            //               size="14"
-            //               fontWeight="semibold"
-            //               color="primary-333"
-            //             >
-            //               Punk
-            //             </Text>
-            //           </li>
-            //           <li>
-            //             <Text
-            //               size="14"
-            //               fontWeight="semibold"
-            //               color="primary-333"
-            //             >
-            //               BAYC
-            //             </Text>
-            //           </li>
-            //           <li>
-            //             <Text
-            //               size="14"
-            //               fontWeight="semibold"
-            //               color="primary-333"
-            //             >
-            //               Mutant
-            //             </Text>
-            //           </li>
-            //           <li>
-            //             <Text
-            //               size="14"
-            //               fontWeight="semibold"
-            //               color="primary-333"
-            //             >
-            //               Meebits
-            //             </Text>
-            //           </li>
-            //           <li>
-            //             <Text
-            //               size="14"
-            //               fontWeight="semibold"
-            //               color="primary-333"
-            //             >
-            //               Proof
-            //             </Text>
-            //           </li>
-            //           <li>
-            //             <Text
-            //               size="14"
-            //               fontWeight="semibold"
-            //               color="primary-333"
-            //             >
-            //               Moonbirds
-            //             </Text>
-            //           </li>
-            //           <li>
-            //             <Text
-            //               size="14"
-            //               fontWeight="semibold"
-            //               color="primary-333"
-            //             >
-            //               Moonbirds Oddities
-            //             </Text>
-            //           </li>
-            //           <li>
-            //             <Text
-            //               size="14"
-            //               fontWeight="semibold"
-            //               color="primary-333"
-            //             >
-            //               CloneX
-            //             </Text>
-            //           </li>
-            //         </ul>
-            //       </div>
-            //     </Tooltip>
-            //   }
-            // >
-
-            <div className={s.whiteListWallet}>
-              <Text fontWeight="medium">
-                CryptoPunks owner?{' '}
-                <Text
-                  className={s.whiteListWallet_connect}
-                  as="span"
-                  fontWeight="medium"
-                  onClick={onHandlePaymentWithWallet}
-                >
-                  Claim your free mint.{' '}
+          {!!project?.whiteListEthContracts &&
+            project?.whiteListEthContracts.length > 0 && (
+              <div className={s.whiteListWallet}>
+                <Text fontWeight="medium">
+                  CryptoPunks owner?{' '}
+                  <Text
+                    className={s.whiteListWallet_connect}
+                    as="span"
+                    fontWeight="medium"
+                    onClick={onHandlePaymentWithWallet}
+                  >
+                    Claim your free mint.{' '}
+                  </Text>
                 </Text>
-              </Text>
-              <OverlayTrigger
-                placement="bottom"
-                delay={{ show: 250, hide: 400 }}
-                overlay={
-                  <Tooltip id="whitelist-tooltip">
-                    <Text size="14" fontWeight="semibold" color="primary-333">
-                      It’s a free mint. You only need to pay for inscription
-                      fee, which is about 0.001 BTC (0.001ETH)
-                    </Text>
-                  </Tooltip>
-                }
-              >
-                <div className={s.whiteList_icon}>
-                  <SvgInset
-                    size={16}
-                    svgUrl={`${CDN_URL}/icons/ic-question-circle.svg`}
-                  />
-                </div>
-              </OverlayTrigger>
-            </div>
-          )}
+                <OverlayTrigger
+                  placement="bottom"
+                  delay={{ show: 250, hide: 400 }}
+                  overlay={
+                    <Tooltip id="whitelist-tooltip">
+                      <Text size="14" fontWeight="semibold" color="primary-333">
+                        This is a free mint. You only need to pay for the
+                        inscription fees, which are similar to gas fees on
+                        Ethereum. The amount is 0.033 ETH (~0.0023 BTC).
+                      </Text>
+                    </Tooltip>
+                  }
+                >
+                  <div className={s.whiteList_icon}>
+                    <SvgInset
+                      size={16}
+                      svgUrl={`${CDN_URL}/icons/ic-question-circle.svg`}
+                    />
+                  </div>
+                </OverlayTrigger>
+              </div>
+            )}
 
           {project?.royalty ? (
             <div className={s.stats}>
@@ -573,7 +491,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 {project?.stats?.uniqueOwnerCount === 1
                   ? `${project?.stats?.uniqueOwnerCount} owner`
                   : `${project?.stats?.uniqueOwnerCount}+ owners`}
-              </Text> */}
+                </Text> */}
             </>
           </div>
           {!isBitcoinProject && (

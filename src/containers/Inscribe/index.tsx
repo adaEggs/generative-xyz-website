@@ -18,6 +18,7 @@ import { calculateMintFee } from '@utils/inscribe';
 import cs from 'classnames';
 import { InscriptionInfo } from '@interfaces/inscribe';
 import { formatUnixDateTime } from '@utils/time';
+import ThankModal from '@containers/Inscribe/Modal';
 
 const LOG_PREFIX = 'Inscribe';
 
@@ -28,6 +29,7 @@ interface IFormValue {
 const Inscribe: React.FC = (): React.ReactElement => {
   const [file, setFile] = useState<File | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
+  const [show, setShow] = useState<boolean>(false);
   const [inscriptionInfo, setInscriptionInfo] =
     useState<InscriptionInfo | null>();
   const [isMinting, setIsMinting] = useState(false);
@@ -232,10 +234,17 @@ const Inscribe: React.FC = (): React.ReactElement => {
                           </div>
                         </div>
                       </div>
-                      <div className={s.formItem}>
+                      <div
+                        className={s.formItem}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                        }}
+                      >
                         <label className={s.label} htmlFor="">
-                          Generative fees: <strong>FREE</strong>
+                          Generative fees:
                         </label>
+                        <strong>FREE</strong>
                       </div>
                     </>
                   )}
@@ -272,9 +281,15 @@ const Inscribe: React.FC = (): React.ReactElement => {
                     </>
                   )}
                   <div className={s.actionWrapper}>
-                    <Button disabled={isMinting} type="submit">
-                      Inscribe
-                    </Button>
+                    {inscriptionInfo?.segwitAddress ? (
+                      <Button type="button" onClick={() => setShow(true)}>
+                        Already sent
+                      </Button>
+                    ) : (
+                      <Button disabled={isMinting} type="submit">
+                        Inscribe
+                      </Button>
+                    )}
                   </div>
                 </form>
               )}
@@ -282,6 +297,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
           </div>
         </div>
       </div>
+      <ThankModal showModal={show} onClose={() => setShow(false)} />
     </div>
   );
 };
