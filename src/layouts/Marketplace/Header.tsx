@@ -236,6 +236,7 @@ const Header: React.FC<IProp> = ({
                     key={`header-${MENU_HEADER[4].id}`}
                   >
                     <Link href={getUrlWithQueryParams(MENU_HEADER[4].route)}>
+                      <div className={s.sub_header}>Free</div>
                       {MENU_HEADER[4].name}
                     </Link>
                   </li>
