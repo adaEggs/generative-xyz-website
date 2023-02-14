@@ -45,6 +45,10 @@
       &:hover {
         color: var(--color-hover);
       }
+
+      &.inscribe {
+        color: #4f43e2 !important;
+      }
     }
   }
 
@@ -128,5 +132,22 @@
         }
       }
     }
+  }
+}
+
+.sub_header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  &_content {
+    background-color: $secondary-blue-c;
+    color: $white;
+    bottom: rem(26px);
+    padding: 2px 4px;
+    font-size: rem(12px);
+    line-height: 100%;
+    border-radius: 2px;
+    width: fit-content;
   }
 }

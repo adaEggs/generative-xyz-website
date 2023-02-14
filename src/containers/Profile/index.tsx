@@ -20,7 +20,7 @@ const Profile: React.FC = (): React.ReactElement => {
       <Container>
         <ClientOnly>
           <div className={s.wrapTabs}>
-            <Tabs className={s.tabs} defaultActiveKey="ownedTab">
+            <Tabs className={s.tabs} defaultActiveKey="createdTab">
               {/*<Tab*/}
               {/*  tabClassName={s.tab}*/}
               {/*  eventKey="ownedTab"*/}

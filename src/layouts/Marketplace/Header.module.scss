@@ -123,25 +123,38 @@
       }
 
       a {
-        font-weight: 500;
+        font-weight: 600;
         line-height: (26/16);
         text-transform: uppercase;
         font-size: rem(16);
+        position: relative;
 
         @include mobile {
           text-align: center;
           display: block;
         }
 
-        sup {
-          font-weight: 500;
+        :global(.sub) {
+          font-weight: 400;
           letter-spacing: 0.01em;
-          color: #ff7e21;
+          color: #fff;
+          background: #4f43e2;
           display: inline-block;
           transform: translateY(-0.2em);
           text-transform: none;
+          line-height: 1;
 
           @include calcFontAuto(10px, 12px);
+
+          position: absolute;
+          padding: 2px 4px;
+          border-radius: 2px;
+          right: 0;
+          bottom: 100%;
+        }
+
+        &.inscribe {
+          color: #4f43e2;
         }
       }
 
@@ -405,4 +418,15 @@
   @include min-pc {
     display: none;
   }
+}
+
+.sub_header {
+  background-color: $secondary-blue-c;
+  color: $white;
+  bottom: rem(26px);
+  right: 0;
+  padding: 2px 4px;
+  font-size: rem(12px);
+  line-height: 100%;
+  border-radius: 2px;
 }
