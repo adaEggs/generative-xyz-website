@@ -40,11 +40,15 @@ import log from '@utils/logger';
 import dayjs from 'dayjs';
 import _get from 'lodash/get';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 // import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const LOG_PREFIX = 'ProjectIntroSection';
@@ -56,15 +60,15 @@ type Props = {
 
 const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
   const router = useRouter();
-  // const user = useAppSelector(getUserSelector);
+  const user = useAppSelector(getUserSelector);
   const { mobileScreen } = useWindowSize();
 
-  const { getWalletBalance } = useContext(WalletContext);
-  // const { setPaymentMethod, setIsPopupPayment, setPaymentStep } = useContext(
-  //   BitcoinProjectContext
-  // );
+  const { getWalletBalance, connect } = useContext(WalletContext);
+  const { setPaymentMethod, setIsPopupPayment, setPaymentStep } = useContext(
+    BitcoinProjectContext
+  );
   const [isAvailable, _setIsAvailable] = useState<boolean>(true);
-  // const [isConnecting, setIsConnecting] = useState<boolean>(false);
+  const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
   const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
 
@@ -182,32 +186,32 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
 
   // pay with wallet project btc
 
-  // const payWithWallet = () => {
-  //   setPaymentMethod('WALLET');
-  //   setIsPopupPayment(true);
-  //   setPaymentStep('mint');
-  // };
+  const payWithWallet = () => {
+    setPaymentMethod('WALLET');
+    setIsPopupPayment(true);
+    setPaymentStep('mint');
+  };
 
-  // const handleConnectWallet = async (): Promise<void> => {
-  //   try {
-  //     setIsConnecting(true);
-  //     await connect();
-  //     payWithWallet();
-  //   } catch (err: unknown) {
-  //     log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-  //   } finally {
-  //     setIsConnecting(false);
-  //   }
-  // };
+  const handleConnectWallet = async (): Promise<void> => {
+    try {
+      setIsConnecting(true);
+      await connect();
+      payWithWallet();
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+    } finally {
+      setIsConnecting(false);
+    }
+  };
 
-  // const onHandlePaymentWithWallet = useCallback(() => {
-  //   if (isConnecting) return;
-  //   if (!user) {
-  //     handleConnectWallet();
-  //   } else {
-  //     payWithWallet();
-  //   }
-  // }, [user, isConnecting]);
+  const onHandlePaymentWithWallet = useCallback(() => {
+    if (isConnecting) return;
+    if (!user) {
+      handleConnectWallet();
+    } else {
+      payWithWallet();
+    }
+  }, [user, isConnecting]);
 
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
@@ -385,129 +389,42 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
               )}
             </div>
           )}
-          {/*{!!project?.whiteListEthContracts && (*/}
-          {/*  // <OverlayTrigger*/}
-          {/*  //   placement="bottom"*/}
-          {/*  //   delay={{ show: 250, hide: 400 }}*/}
-          {/*  //   overlay={*/}
-          {/*  //     <Tooltip id="whitelist-tooltip">*/}
-          {/*  //       <div className={s.whiteList_tooltip}>*/}
-          {/*  //         <Text size="14" fontWeight="semibold" color="primary-333">*/}
-          {/*  //           Available for owner of the following collections:*/}
-          {/*  //         </Text>*/}
-          {/*  //         <ul className={s.whiteList_list}>*/}
-          {/*  //           <li>*/}
-          {/*  //             <Text*/}
-          {/*  //               size="14"*/}
-          {/*  //               fontWeight="semibold"*/}
-          {/*  //               color="primary-333"*/}
-          {/*  //             >*/}
-          {/*  //               Punk*/}
-          {/*  //             </Text>*/}
-          {/*  //           </li>*/}
-          {/*  //           <li>*/}
-          {/*  //             <Text*/}
-          {/*  //               size="14"*/}
-          {/*  //               fontWeight="semibold"*/}
-          {/*  //               color="primary-333"*/}
-          {/*  //             >*/}
-          {/*  //               BAYC*/}
-          {/*  //             </Text>*/}
-          {/*  //           </li>*/}
-          {/*  //           <li>*/}
-          {/*  //             <Text*/}
-          {/*  //               size="14"*/}
-          {/*  //               fontWeight="semibold"*/}
-          {/*  //               color="primary-333"*/}
-          {/*  //             >*/}
-          {/*  //               Mutant*/}
-          {/*  //             </Text>*/}
-          {/*  //           </li>*/}
-          {/*  //           <li>*/}
-          {/*  //             <Text*/}
-          {/*  //               size="14"*/}
-          {/*  //               fontWeight="semibold"*/}
-          {/*  //               color="primary-333"*/}
-          {/*  //             >*/}
-          {/*  //               Meebits*/}
-          {/*  //             </Text>*/}
-          {/*  //           </li>*/}
-          {/*  //           <li>*/}
-          {/*  //             <Text*/}
-          {/*  //               size="14"*/}
-          {/*  //               fontWeight="semibold"*/}
-          {/*  //               color="primary-333"*/}
-          {/*  //             >*/}
-          {/*  //               Proof*/}
-          {/*  //             </Text>*/}
-          {/*  //           </li>*/}
-          {/*  //           <li>*/}
-          {/*  //             <Text*/}
-          {/*  //               size="14"*/}
-          {/*  //               fontWeight="semibold"*/}
-          {/*  //               color="primary-333"*/}
-          {/*  //             >*/}
-          {/*  //               Moonbirds*/}
-          {/*  //             </Text>*/}
-          {/*  //           </li>*/}
-          {/*  //           <li>*/}
-          {/*  //             <Text*/}
-          {/*  //               size="14"*/}
-          {/*  //               fontWeight="semibold"*/}
-          {/*  //               color="primary-333"*/}
-          {/*  //             >*/}
-          {/*  //               Moonbirds Oddities*/}
-          {/*  //             </Text>*/}
-          {/*  //           </li>*/}
-          {/*  //           <li>*/}
-          {/*  //             <Text*/}
-          {/*  //               size="14"*/}
-          {/*  //               fontWeight="semibold"*/}
-          {/*  //               color="primary-333"*/}
-          {/*  //             >*/}
-          {/*  //               CloneX*/}
-          {/*  //             </Text>*/}
-          {/*  //           </li>*/}
-          {/*  //         </ul>*/}
-          {/*  //       </div>*/}
-          {/*  //     </Tooltip>*/}
-          {/*  //   }*/}
-          {/*  // >*/}
-
-          {/*  <div className={s.whiteListWallet}>*/}
-          {/*    <Text fontWeight="medium">*/}
-          {/*      CryptoPunks owner?{' '}*/}
-          {/*      <Text*/}
-          {/*        className={s.whiteListWallet_connect}*/}
-          {/*        as="span"*/}
-          {/*        fontWeight="medium"*/}
-          {/*        onClick={onHandlePaymentWithWallet}*/}
-          {/*      >*/}
-          {/*        Claim your free mint.{' '}*/}
-          {/*      </Text>*/}
-          {/*    </Text>*/}
-          {/*    <OverlayTrigger*/}
-          {/*      placement="bottom"*/}
-          {/*      delay={{ show: 250, hide: 400 }}*/}
-          {/*      overlay={*/}
-          {/*        <Tooltip id="whitelist-tooltip">*/}
-          {/*          <Text size="14" fontWeight="semibold" color="primary-333">*/}
-          {/*            This is a free mint. You only need to pay for the*/}
-          {/*            inscription fees, which are similar to gas fees on*/}
-          {/*            Ethereum. The amount is 0.033 ETH (~0.0023 BTC).*/}
-          {/*          </Text>*/}
-          {/*        </Tooltip>*/}
-          {/*      }*/}
-          {/*    >*/}
-          {/*      <div className={s.whiteList_icon}>*/}
-          {/*        <SvgInset*/}
-          {/*          size={16}*/}
-          {/*          svgUrl={`${CDN_URL}/icons/ic-question-circle.svg`}*/}
-          {/*        />*/}
-          {/*      </div>*/}
-          {/*    </OverlayTrigger>*/}
-          {/*  </div>*/}
-          {/*)}*/}
+          {!!project?.whiteListEthContracts &&
+            project?.whiteListEthContracts.length > 0 && (
+              <div className={s.whiteListWallet}>
+                <Text fontWeight="medium">
+                  CryptoPunks owner?{' '}
+                  <Text
+                    className={s.whiteListWallet_connect}
+                    as="span"
+                    fontWeight="medium"
+                    onClick={onHandlePaymentWithWallet}
+                  >
+                    Claim your free mint.{' '}
+                  </Text>
+                </Text>
+                <OverlayTrigger
+                  placement="bottom"
+                  delay={{ show: 250, hide: 400 }}
+                  overlay={
+                    <Tooltip id="whitelist-tooltip">
+                      <Text size="14" fontWeight="semibold" color="primary-333">
+                        This is a free mint. You only need to pay for the
+                        inscription fees, which are similar to gas fees on
+                        Ethereum. The amount is 0.033 ETH (~0.0023 BTC).
+                      </Text>
+                    </Tooltip>
+                  }
+                >
+                  <div className={s.whiteList_icon}>
+                    <SvgInset
+                      size={16}
+                      svgUrl={`${CDN_URL}/icons/ic-question-circle.svg`}
+                    />
+                  </div>
+                </OverlayTrigger>
+              </div>
+            )}
 
           {project?.royalty ? (
             <div className={s.stats}>
@@ -574,7 +491,7 @@ const ProjectIntroSection = ({ project, openMintBTCModal }: Props) => {
                 {project?.stats?.uniqueOwnerCount === 1
                   ? `${project?.stats?.uniqueOwnerCount} owner`
                   : `${project?.stats?.uniqueOwnerCount}+ owners`}
-              </Text> */}
+                </Text> */}
             </>
           </div>
           {!isBitcoinProject && (
