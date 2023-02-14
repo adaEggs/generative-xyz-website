@@ -21,7 +21,11 @@ const CollectionList = ({
   const { showFilter } = useContext(GenerativeProjectDetailContext);
 
   return (
-    <div className={`grid  ${showFilter ? s.showFilter : 'grid-cols-1'}`}>
+    <div
+      className={`${s.listToken} grid  ${
+        showFilter ? s.showFilter : 'grid-cols-1'
+      }`}
+    >
       {showFilter && <FilterOptions attributes={projectInfo?.traitStat} />}
       <div className="position-relative">
         {!isLoaded && (
@@ -36,8 +40,8 @@ const CollectionList = ({
               <CollectionItem
                 className={`${
                   showFilter
-                    ? 'col-wide-3 col-xl-4 col-6'
-                    : 'col-wide-2_5 col-xl-3 col-lg-4 col-6'
+                    ? 'col-wide-3 col-xl-4 col-12'
+                    : 'col-wide-2_5 col-xl-3 col-lg-4 col-12'
                 } `}
                 key={`collection-item-${item.tokenID}`}
                 data={item}

@@ -15,8 +15,8 @@ const CollectionListLoading = ({
         <CollectionItemSkeleton
           className={`${
             showFilter
-              ? 'col-wide-3 col-xl-4 col-6'
-              : 'col-wide-2_5 col-xl-3 col-lg-4 col-6'
+              ? 'col-wide-3 col-xl-4 col-12'
+              : 'col-wide-2_5 col-xl-3 col-lg-4 col-12'
           } `}
           key={`token-loading-${v4()}`}
         />
