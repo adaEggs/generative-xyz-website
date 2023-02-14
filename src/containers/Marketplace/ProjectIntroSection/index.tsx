@@ -519,6 +519,7 @@ const ProjectIntroSection = ({
           <ProjectDescription
             desc={project?.desc || ''}
             hasInteraction={hasProjectInteraction}
+            profileBio={project?.creatorProfile?.bio || ''}
           />
           <>
             <Text size="14" color="black-40">
