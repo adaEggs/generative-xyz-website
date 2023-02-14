@@ -3,6 +3,7 @@ import MarketplaceLayout from '@layouts/Marketplace';
 import { NextPage } from 'next';
 import { CDN_URL } from '@constants/config';
 
+// REDIRECT TRADE SCREEN
 const TradePage: NextPage = () => {
   return (
     <MarketplaceLayout>
