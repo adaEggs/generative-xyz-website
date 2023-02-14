@@ -1,5 +1,5 @@
 import s from './styles.module.scss';
-import { CDN_URL } from '@constants/config';
+import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
@@ -86,8 +86,8 @@ const SetPrice = () => {
 
     if (!values.mintPrice.toString()) {
       errors.mintPrice = 'Price is required.';
-    } else if (values.mintPrice < 0.005) {
-      errors.mintPrice = 'Invalid number. Must be equal or greater than 0.005.';
+    } else if (values.mintPrice < MIN_MINT_BTC_PROJECT_PRICE) {
+      errors.mintPrice = `Invalid number. Must be equal or greater than ${MIN_MINT_BTC_PROJECT_PRICE}.`;
     }
 
     if (!values.royalty.toString()) {
@@ -213,7 +213,7 @@ const SetPrice = () => {
       key="setPriceForm"
       initialValues={{
         maxSupply: formValues.maxSupply ?? 0,
-        mintPrice: parseFloat(formValues.mintPrice ?? '0.005'),
+        mintPrice: parseFloat(formValues.mintPrice ?? '0.01'),
         royalty: formValues.royalty ?? 10,
         creatorWalletAddress: formValues.creatorWalletAddress ?? '',
       }}
