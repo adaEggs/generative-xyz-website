@@ -216,6 +216,11 @@
   }
 }
 
+.mint_free {
+  width: 100%;
+  justify-content: center;
+}
+
 .priceBtc {
   line-height: (44/34);
   font-weight: 500;
@@ -265,7 +270,7 @@
 
 .stats {
   display: flex;
-  column-gap: rem(69px);
+  column-gap: rem(130px);
   row-gap: rem(6px);
   margin-bottom: rem(24px);
   margin-top: rem(24px);
@@ -277,7 +282,7 @@
 
   &_item {
     > p:first-of-type {
-      color: $black-60;
+      color: $black-40;
       text-transform: uppercase;
     }
   }

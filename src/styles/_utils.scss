@@ -201,6 +201,10 @@
   color: #95a4fc;
 }
 
+.text-purple-c {
+  color: $secondary-purple-c;
+}
+
 .text-black-002 {
   color: #000002;
 }
@@ -290,4 +294,10 @@
 
 .no-underline {
   text-decoration: none;
+}
+
+.hover-underline {
+  &:hover {
+    text-decoration: underline !important;
+  }
 }
