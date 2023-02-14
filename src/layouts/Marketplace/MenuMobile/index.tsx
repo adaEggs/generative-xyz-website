@@ -56,17 +56,6 @@ const MenuMobile = React.forwardRef(
       <div ref={ref} className={`${s.menuMobile} ${s[theme || 'light']}`}>
         <div className={s.menuMobile_inner}>
           <ul className={`${s.navBar}`}>
-            {/* {MENU_HEADER?.length > 0 &&
-              MENU_HEADER.map(item => (
-                <li
-                  className={cs(activePath === item.activePath && s.active)}
-                  key={`header-${item.id}`}
-                >
-                  <Link href={getUrlWithQueryParams(item.route)}>
-                    {item.name}
-                  </Link>
-                </li>
-              ))} */}
             <li
               className={cs(
                 activePath === MENU_HEADER[0].activePath && s.active
@@ -89,19 +78,6 @@ const MenuMobile = React.forwardRef(
                 </Link>
               </li>
             }
-            {!isProduction() && (
-              <li
-                className={cs(
-                  activePath === MENU_HEADER[1].activePath && s.active
-                )}
-                key={`header-${MENU_HEADER[1].id}`}
-              >
-                <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>
-                  {MENU_HEADER[1].name}
-                </Link>
-              </li>
-            )}
-
             <li
               className={cs(
                 activePath === MENU_HEADER[2].activePath && s.active
@@ -110,6 +86,16 @@ const MenuMobile = React.forwardRef(
             >
               <Link href={getUrlWithQueryParams(MENU_HEADER[2].route)}>
                 {MENU_HEADER[2].name}
+              </Link>
+            </li>
+            <li
+              className={cs(
+                activePath === MENU_HEADER[4].activePath && s.active
+              )}
+              key={`header-${MENU_HEADER[4].id}`}
+            >
+              <Link href={getUrlWithQueryParams(MENU_HEADER[4].route)}>
+                {MENU_HEADER[4].name}
               </Link>
             </li>
             {!isProduction() && (
