@@ -50,7 +50,6 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { EXTERNAL_LINK } from '@constants/external-link';
-import { Label } from '@components/Label';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -250,8 +249,6 @@ const ProjectIntroSection = ({
         {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
         {/*  />*/}
         {/*)}*/}
-
-        {isFullonChain && <Label label={'On Chain'} vars={'blue'} />}
 
         <Heading as="h4" fontWeight="medium">
           {project?.name}
@@ -549,6 +546,11 @@ const ProjectIntroSection = ({
             <Text size="14" color="black-40">
               Created date: {mintedDate}
             </Text>
+            {isFullonChain && (
+              <Text size="14" color="black-40">
+                Fully on-chain: Yes
+              </Text>
+            )}
             {/* <Text size="14" color="black-40" className={s.project_owner}>
                 Collected by:{' '}
                 {project?.stats?.uniqueOwnerCount === 1
