@@ -115,7 +115,7 @@ export const MintBTCGenerativeContextProvider = ({
   const sandboxRef = useRef<ISandboxRef | null>(null);
   const [hash, setHash] = useState<string>(generateHash());
   const [formValues, setFormValues] = useState<Partial<IBTCFormValue>>({
-    mintPrice: '0.0001',
+    mintPrice: '0.005',
   });
   const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(
     null

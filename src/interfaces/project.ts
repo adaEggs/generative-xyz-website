@@ -47,6 +47,7 @@ export type Project = {
   openMintUnixTimestamp?: number;
   whiteListEthContracts?: string[];
   isFullChain: boolean;
+  isHidden: boolean;
 };
 
 export type BTCProject = Project & {
