@@ -235,8 +235,14 @@ const Header: React.FC<IProp> = ({
                     )}
                     key={`header-${MENU_HEADER[4].id}`}
                   >
-                    <Link href={getUrlWithQueryParams(MENU_HEADER[4].route)}>
-                      <div className={s.sub_header}>Free</div>
+                    <Link
+                      className={
+                        MENU_HEADER[4].activePath === 'inscribe'
+                          ? styles.inscribe
+                          : ''
+                      }
+                      href={getUrlWithQueryParams(MENU_HEADER[4].route)}
+                    >
                       {MENU_HEADER[4].name}
                     </Link>
                   </li>

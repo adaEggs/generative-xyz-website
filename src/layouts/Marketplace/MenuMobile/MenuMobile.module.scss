@@ -45,6 +45,10 @@
       &:hover {
         color: var(--color-hover);
       }
+
+      &.inscribe {
+        color: #4f43e2 !important;
+      }
     }
   }
 
