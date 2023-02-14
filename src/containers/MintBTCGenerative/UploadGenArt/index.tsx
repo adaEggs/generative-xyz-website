@@ -3,7 +3,7 @@ import Checkbox from '@components/Checkbox';
 import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
-import { CDN_URL } from '@constants/config';
+import { CDN_URL, SANDBOX_BTC_FILE_SIZE_LIMIT } from '@constants/config';
 import DropFile from '../DropFile';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
 import { LogLevel } from '@enums/log-level';
@@ -51,7 +51,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
       if ((err as Error).message === SandboxFileError.WRONG_FORMAT) {
         errorMessage += 'Invalid file format.';
       } else if ((err as Error).message === SandboxFileError.TOO_LARGE) {
-        errorMessage += 'File size error, maximum file size is 100kb.';
+        errorMessage += `File size error, maximum file size is ${SANDBOX_BTC_FILE_SIZE_LIMIT}kb.`;
       }
       setShowErrorAlert({ open: true, message: errorMessage });
     }
@@ -179,7 +179,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
   const getFileError = (errorType: ImageFileError): string => {
     switch (errorType) {
       case ImageFileError.TOO_LARGE:
-        return 'File size error, maximum file size is 100kb.';
+        return `File size error, maximum file size is ${SANDBOX_BTC_FILE_SIZE_LIMIT}kb.`;
       case ImageFileError.INVALID_EXTENSION:
         return 'Invalid file format. Supported file extensions are JPG, JPEG, PNG, GIF.';
       default:
@@ -340,6 +340,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 collectionType === CollectionType.GENERATIVE
                   ? ['html']
                   : ['zip']
+              }
+              maxSize={
+                collectionType === CollectionType.GENERATIVE ? 0.4 : 9999999
               }
               onChange={handleChangeFile}
               fileOrFiles={rawFile ? [rawFile] : null}

@@ -3,7 +3,8 @@ import cs from 'classnames';
 import { FileUploader } from 'react-drag-drop-files';
 import { useState } from 'react';
 import { prettyPrintBytes } from '@utils/units';
-import { MINT_TOOL_MAX_FILE_SIZE } from '@constants/config';
+import { CDN_URL, MINT_TOOL_MAX_FILE_SIZE } from '@constants/config';
+import SvgInset from '@components/SvgInset';
 
 export interface IProps {
   className: string;
@@ -54,13 +55,23 @@ const DropFile: React.FC<IProps> = ({
       >
         <div>
           {file ? (
-            <p className={s.dropZoneDescription}>
+            <p className={s.dropZoneSize}>
               {`${file.name} (${prettyPrintBytes(file.size)})`}
             </p>
           ) : (
-            <p className={s.dropZoneDescription}>
-              Drag and drop image or text file here, or click to select file
-            </p>
+            <div className={s.wrap_loader}>
+              <SvgInset
+                size={80}
+                className={s.dropZoneThumbnail}
+                svgUrl={`${CDN_URL}/images/docs.svg`}
+              />
+              <div className={s.dropZoneWrapDescription}>
+                <p className={s.dropZoneDescription}>
+                  Select a file to inscribe
+                </p>
+                <p className={s.dropZoneDescription}>(text, jpg, mp3, etc.)</p>
+              </div>
+            </div>
           )}
           {error && (
             <p className={cs(s.dropZoneDescription, s.errorText)}>{error}</p>

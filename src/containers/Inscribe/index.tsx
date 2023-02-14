@@ -19,6 +19,9 @@ import { InscriptionInfo } from '@interfaces/inscribe';
 import { formatUnixDateTime } from '@utils/time';
 import ThankModal from '@containers/Inscribe/Modal';
 import ClientOnly from '@components/Utils/ClientOnly';
+import { toast } from 'react-hot-toast';
+import { ErrorMessage } from '@enums/error-message';
+import BigNumber from 'bignumber.js';
 
 const LOG_PREFIX = 'Inscribe';
 
@@ -80,6 +83,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
       setInscriptionInfo(res);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      toast.error(ErrorMessage.DEFAULT);
     } finally {
       setIsMinting(false);
     }
@@ -97,14 +101,28 @@ const Inscribe: React.FC = (): React.ReactElement => {
     }
   }, [file]);
 
+  const handleCopy = (): void => {
+    if (!inscriptionInfo) return;
+    navigator.clipboard.writeText(inscriptionInfo.segwitAddress);
+    toast.remove();
+    toast.success('Copied');
+  };
+
   return (
     <ClientOnly>
       <div className={s.mintTool}>
         <div className="container">
           <div className={s.wrapper}>
             <h1 className={s.title}>
-              Upload a file to begin, we will then inscribe and send it to you:
+              The easiest way to create an ordinal inscription
             </h1>
+            <h2 className={s.sub_title}>
+              • No full node needed. • No wallet needed. • And it’s free.
+            </h2>
+            <p className={s.upload_title}>What do you want to inscribe?</p>
+            <p className={s.upload_sub_title}>
+              Select an image. Upload a pdf. Inscribe anything.
+            </p>
             <div className={s.formWrapper}>
               <Formik
                 key="mintBTCGenerativeForm"
@@ -133,8 +151,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
                     </div>
                     <div className={s.formItem}>
                       <label className={s.label} htmlFor="address">
-                        ENTER THE ORDINALS-COMPATIBLE BTC ADDRESS TO RECEIVE
-                        YOUR INSCRIPTION <sup className={s.requiredTag}>*</sup>
+                        Where do we send the inscription to?
                       </label>
                       <div className={s.inputContainer}>
                         <input
@@ -152,19 +169,16 @@ const Inscribe: React.FC = (): React.ReactElement => {
                         <p className={s.inputError}>{errors.address}</p>
                       )}
                     </div>
-                    {/*<div className={s.alertInfo}>*/}
-                    {/*  Do not spend any satoshis from this wallet unless you*/}
-                    {/*  understand what you are doing. If you ignore this warning,*/}
-                    {/*  you could inadvertently lose access to your ordinals and*/}
-                    {/*  inscriptions.*/}
-                    {/*</div>*/}
                     {fileBase64 && (
                       <>
                         <div className={s.formItem}>
-                          <label className={s.label} htmlFor="price">
-                            Bitcoin transaction fees{' '}
-                            <sup className={s.requiredTag}>*</sup>
+                          <label className={s.labelNoBottom} htmlFor="price">
+                            How fast do you want to get it?
                           </label>
+                          <p className={s.upload_sub_title}>
+                            It’s free to inscribe with Generative. You pay only
+                            the network fees.
+                          </p>
                           <div className={s.mintFeeWrapper}>
                             <div
                               onClick={() => {
@@ -180,7 +194,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
                               <p
                                 className={s.feeDetail}
                               >{`${InscribeMintFeeRate.Economy} sats/vByte`}</p>
-                              <p className={s.total}>
+                              <p className={s.feeTotal}>
                                 {`${formatBTCPrice(
                                   calculateMintFee(
                                     InscribeMintFeeRate.Economy,
@@ -226,7 +240,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
                               <p
                                 className={s.feeDetail}
                               >{`${InscribeMintFeeRate.Fastest} sats/vByte`}</p>
-                              <p className={s.total}>
+                              <p className={s.feeTotal}>
                                 {`${formatBTCPrice(
                                   calculateMintFee(
                                     InscribeMintFeeRate.Fastest,
@@ -237,64 +251,57 @@ const Inscribe: React.FC = (): React.ReactElement => {
                             </div>
                           </div>
                         </div>
-                        <div
-                          className={s.formItem}
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                          }}
-                        >
-                          <label className={s.label} htmlFor="">
-                            Generative fees:
-                          </label>
-                          <strong>FREE</strong>
-                        </div>
-                        <div className={s.info}>
-                          (<span className={s.requiredTag}>*</span>) Bitcoin
-                          network fees are needed to create your inscription.
-                          Higher fees can help your inscription get created
-                          sooner, but even high fees can take hours or days, so
-                          be patient.
-                        </div>
                       </>
                     )}
                     {isMinting && (
                       <div className={s.loadingWrapper}>
-                        <Loading isLoaded={false}></Loading>
+                        <Loading isLoaded={false} />
                       </div>
                     )}
                     {inscriptionInfo && !isMinting && (
-                      <>
+                      <div className={s.qrCodeContainer}>
+                        <p className={s.qrTitle}>Payment</p>
                         <div className={s.qrCodeWrapper}>
-                          <p className={s.qrTitle}>
-                            Send Bitcoin transaction fees to this address
-                          </p>
                           <QRCodeGenerator
                             className={s.qrCodeGenerator}
                             size={128}
                             value={inscriptionInfo.segwitAddress}
                           />
-                          <p className={s.btcAddress}>
-                            {inscriptionInfo.segwitAddress}
-                          </p>
+                          <div className={s.qrCodeContentWrapper}>
+                            <p className={s.btcSent}>
+                              Send{' '}
+                              <span>
+                                {formatBTCPrice(
+                                  new BigNumber(
+                                    inscriptionInfo?.amount || 0
+                                  ).toNumber()
+                                )}
+                              </span>{' '}
+                              BTC to this address
+                            </p>
+                            <p className={s.btcAddress}>
+                              {inscriptionInfo.segwitAddress}
+                              <div className={s.btnCopy} onClick={handleCopy}>
+                                Copy
+                              </div>
+                            </p>
+                            <p className={s.expiredAt}>
+                              Expires at:{' '}
+                              <b>
+                                {formatUnixDateTime({
+                                  dateTime: Number(inscriptionInfo.timeout_at),
+                                })}
+                              </b>
+                            </p>
+                          </div>
                         </div>
-                        <div className={s.inscriptionInfoWrapper}>
-                          <p className={s.expiredAt}>
-                            Expires at:{' '}
-                            <b>
-                              {formatUnixDateTime({
-                                dateTime: Number(inscriptionInfo.timeout_at),
-                              })}
-                            </b>
-                          </p>
-                        </div>
-                      </>
+                      </div>
                     )}
                     <div className={s.actionWrapper}>
                       {inscriptionInfo?.segwitAddress ? (
-                        <Button type="button" onClick={() => setShow(true)}>
-                          Already sent
-                        </Button>
+                        <div className={s.end}>
+                          That’s it. Check your wallet in about an hour.
+                        </div>
                       ) : (
                         <Button disabled={isMinting} type="submit">
                           Inscribe

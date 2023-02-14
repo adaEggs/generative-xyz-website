@@ -3,7 +3,13 @@
   gap: rem(42px);
 
   @include mobile {
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
+  }
+}
+
+.listToken {
+  &:global(.grid-cols-1) {
+    grid-template-columns: 100%;
   }
 }
 
