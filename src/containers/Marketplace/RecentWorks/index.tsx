@@ -16,7 +16,7 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { ROUTE_PATH } from '@constants/route-path';
 import ButtonIcon from '@components/ButtonIcon';
-import { router } from 'next/client';
+import { useRouter } from 'next/router';
 
 // const SORT_OPTIONS: Array<{ value: string; label: string }> = [
 //   {
@@ -42,6 +42,7 @@ export const RecentWorks = (): JSX.Element => {
   const [listData, setListData] = useState<Project[]>([]);
   const [sort, _] = useState<string | null>('');
   const [currentTotal, setCurrentTotal] = useState<number>(0);
+  const router = useRouter();
 
   // const selectedOption = useMemo(() => {
   //   return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
