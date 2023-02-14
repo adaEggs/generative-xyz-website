@@ -10,6 +10,8 @@
     border-radius: 2px;
     min-height: 100%;
     transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
+    display: flex;
+    flex-direction: column;
 
     &:hover {
       box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
@@ -76,15 +78,10 @@
     &.desktop {
       .projectCard_info_title {
         display: block;
-        margin-top: rem(10px);
+        // margin-top: rem(10px);
         margin-bottom: rem(2px);
 
-        h4 {
-          font-weight: 600;
-          line-height: (34 / 24);
-
-          @include calcFontAuto(18px, 24px);
-
+        span {
           white-space: nowrap;
           text-overflow: ellipsis;
           display: block;
@@ -109,28 +106,10 @@
     }
 
     &_price {
-      display: flex;
-
+      // display: flex;
 
       &_price {
-        flex: 0 0 60%;
-        padding-right: rem(10px);
-        color: $secondary-purple-c;
-        line-height: (28/18);
-
-        @include calcFontAuto(16px, 18px);
-
-        small {
-          font-size: 80%;
-          font-weight: bold;
-          margin-left: rem(5px);
-        }
-      }
-
-      &_bar {
-        flex: 0 0 40%;
-        text-align: right;
-        margin-left: auto;
+        margin-bottom: rem(8);
       }
     }
   }
@@ -143,7 +122,7 @@
     display: flex;
     align-items: center;
     gap: rem(6);
-    margin-bottom: rem(7);
+    margin-bottom: rem(5);
   }
 
   &_avatar {

@@ -109,7 +109,7 @@ export const RecentWorks = (): JSX.Element => {
     <div className={s.recentWorks}>
       <Row style={{ justifyContent: 'space-between' }}>
         <Col xs={'auto'}>
-          <Heading as="h4" fontWeight="semibold">
+          <Heading as="h4" fontWeight="medium">
             Generative art on Bitcoin. Be the first to collect.
           </Heading>
         </Col>

@@ -129,12 +129,23 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               </div>
               {isBitcoinProject ? (
                 <div className={s.projectCard_info_price}>
-                  {isLimitMinted && (
+                  {isLimitMinted ? (
                     <div className={s.projectCard_info_price_price}>
-                      <span>
+                      <Text size="24" fontWeight="medium">
                         {formatBTCPrice(Number(project.mintPrice))}
-                        <small>BTC</small>
-                      </span>
+                        <Text as="span" fontWeight="medium">
+                          {' '}
+                          BTC
+                        </Text>
+                      </Text>
+                    </div>
+                  ) : (
+                    <div className={s.projectCard_info_price_price}>
+                      <Text size="24">
+                        <Text size="16" as="span" fontWeight="medium">
+                          Fully minted
+                        </Text>
+                      </Text>
                     </div>
                   )}
 

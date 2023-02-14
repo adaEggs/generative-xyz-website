@@ -47,8 +47,8 @@ const ProgressBar = ({
         {size === 'small' && (
           <Text size="18" fontWeight="medium">
             {`${current}/${total}`}
-            <Text size="12" fontWeight="regular" as="span" color="black-60">
-              &nbsp; minted
+            <Text size="16" fontWeight="regular" as="span" color="black-60">
+              &nbsp;minted
             </Text>
           </Text>
         )}
