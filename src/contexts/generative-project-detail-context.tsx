@@ -1,4 +1,5 @@
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { SATOSHIS_FREE_MINT, SATOSHIS_PROJECT_ID } from '@constants/generative';
 import { LogLevel } from '@enums/log-level';
 import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
@@ -61,6 +62,7 @@ export interface IGenerativeProjectDetailContext {
   showMintBTCModal: () => void;
   hideMintBTCModal: () => void;
   isBitcoinProject: boolean;
+  isWhitelistProject: boolean;
 }
 
 const initialValue: IGenerativeProjectDetailContext = {
@@ -124,6 +126,7 @@ const initialValue: IGenerativeProjectDetailContext = {
     return;
   },
   isBitcoinProject: false,
+  isWhitelistProject: false,
 };
 
 export const GenerativeProjectDetailContext =
@@ -155,6 +158,10 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     projectID: string;
   };
 
+  const isWhitelistProject = useMemo(() => {
+    return router.pathname === SATOSHIS_FREE_MINT;
+  }, []);
+
   const handleFetchNextPage = () => {
     setPage(prev => prev + 1);
   };
@@ -185,7 +192,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   };
 
   const fetchProjectItems = async (): Promise<void> => {
-    if (projectData?.genNFTAddr) {
+    if (projectData?.genNFTAddr && !isWhitelistProject) {
       try {
         if (page > 1) {
           setIsNextPageLoaded(false);
@@ -196,6 +203,51 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
         const res = await getProjectItems(
           {
             contractAddress: projectData.genNFTAddr,
+          },
+          {
+            limit: FETCH_NUM,
+            page: page,
+            sort,
+            keyword: searchToken || '',
+            attributes: filterTraits || '',
+            has_price: filterBuyNow || '',
+            from_price: filterPrice.from_price || '',
+            to_price: filterPrice.to_price || '',
+          }
+        );
+        if (res.result) {
+          if (page === 1) {
+            setListItems(res.result);
+          } else {
+            listItems && setListItems([...listItems, ...res.result]);
+          }
+          setTotal(res.total);
+        }
+        setIsLoaded(true);
+        setIsNextPageLoaded(true);
+      } catch (_: unknown) {
+        log('failed to fetch project items data', LogLevel.ERROR, LOG_PREFIX);
+      }
+    } else {
+      setIsLoaded(true);
+      setIsNextPageLoaded(true);
+      setTotal(0);
+      setListItems([]);
+    }
+  };
+
+  const fetchWhitelistProjectItems = async (): Promise<void> => {
+    if (isWhitelistProject) {
+      try {
+        if (page > 1) {
+          setIsNextPageLoaded(false);
+        } else {
+          setIsLoaded(false);
+        }
+
+        const res = await getProjectItems(
+          {
+            contractAddress: SATOSHIS_PROJECT_ID,
           },
           {
             limit: FETCH_NUM,
@@ -233,6 +285,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       toast.error('Max price must be larger than min price');
     } else {
       fetchProjectItems();
+      fetchWhitelistProjectItems();
     }
   }, [
     projectData,
@@ -242,12 +295,17 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     filterTraits,
     filterBuyNow,
     filterPrice,
+    isWhitelistProject,
   ]);
 
   const isBitcoinProject = useMemo((): boolean => {
     if (!projectData) return false;
-    return checkIsBitcoinProject(projectData.tokenID);
-  }, [projectData]);
+    if (isWhitelistProject) {
+      return true;
+    } else {
+      return checkIsBitcoinProject(projectData.tokenID);
+    }
+  }, [projectData, isWhitelistProject]);
 
   const contextValues = useMemo((): IGenerativeProjectDetailContext => {
     return {
@@ -280,6 +338,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       showMintBTCModal,
       hideMintBTCModal,
       isBitcoinProject,
+      isWhitelistProject,
     };
   }, [
     projectData,
@@ -311,6 +370,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     showMintBTCModal,
     hideMintBTCModal,
     isBitcoinProject,
+    isWhitelistProject,
   ]);
 
   return (

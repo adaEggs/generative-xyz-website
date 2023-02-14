@@ -284,6 +284,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 <ProjectDescription
                   desc={tokenDescription || ''}
                   hasInteraction={hasProjectInteraction}
+                  profileBio={tokenData?.project?.creatorProfile?.bio || ''}
                 />
               </div>
 

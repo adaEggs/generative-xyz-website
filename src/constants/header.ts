@@ -5,15 +5,15 @@ import { isProduction } from '@utils/common';
 export const MENU_HEADER = [
   {
     id: 'menu-2',
-    name: 'Drops',
-    route: ROUTE_PATH.DROPS,
-    activePath: 'drops',
+    name: 'Collections',
+    route: ROUTE_PATH.COLLECTIONS,
+    activePath: 'collections',
   },
   {
     id: 'menu-1',
     name: 'Create',
-    route: ROUTE_PATH.BENEFIT,
-    activePath: 'benefit',
+    route: ROUTE_PATH.CREATE_BTC_PROJECT,
+    activePath: 'create',
   },
   {
     id: 'menu-4',
@@ -23,9 +23,15 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-3',
-    name: 'Marketplace',
+    name: 'Bazaar',
     route: ROUTE_PATH.TRADE,
-    activePath: 'marketplace',
+    activePath: 'bazaar',
+  },
+  {
+    id: 'menu-4',
+    name: 'Inscribe for free',
+    route: ROUTE_PATH.INSCRIBE,
+    activePath: 'inscribe',
   },
 ];
 

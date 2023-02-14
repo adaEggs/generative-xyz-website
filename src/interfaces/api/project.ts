@@ -52,8 +52,7 @@ export interface IGetProjectListResponse extends IPagingResponse {
 export interface ICreateBTCProjectPayload {
   categories: Array<string>;
   closeMintUnixTimestamp: number;
-  creatorAddrr: string;
-  creatorName: string;
+  creatorAddrrBTC: string;
   description: string;
   license: string;
   limitSupply: number;
@@ -74,6 +73,8 @@ export interface ICreateBTCProjectPayload {
   tokenDescription: string;
   zipLink: string;
   royalty: number;
+  animationURL: string;
+  isFullChain: boolean;
 }
 
 export type ICreateBTCProjectResponse = BTCProject;

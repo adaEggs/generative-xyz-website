@@ -40,7 +40,7 @@ const MintGenerativeController: React.FC = (): React.ReactElement => {
 
   useEffect(() => {
     if (!filesSandbox) {
-      router.push('/mint-btc-generative/upload-project');
+      router.push('/create/upload-project');
     }
   }, [filesSandbox]);
 

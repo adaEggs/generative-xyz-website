@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { Tab, Tabs } from 'react-bootstrap';
 import { SeeMore } from '@components/SeeMore';
-import Text from '@components/Text';
+import { useEffect, useState } from 'react';
+import { Tab, Tabs } from 'react-bootstrap';
 import s from './styles.module.scss';
 
 type Props = {
   desc: string;
   hasInteraction?: boolean;
+  profileBio?: string;
 };
 
-const ProjectDescription = ({ desc, hasInteraction = false }: Props) => {
+const ProjectDescription = ({
+  desc,
+  hasInteraction = false,
+  profileBio,
+}: Props) => {
   const [projectDescription, setProjectDescription] = useState('');
   const [projectInteraction, setProjectInteraction] = useState('');
   const [render, setRender] = useState(false);
@@ -22,21 +26,21 @@ const ProjectDescription = ({ desc, hasInteraction = false }: Props) => {
     }
   }, [desc, hasInteraction]);
 
-  if (!hasInteraction) {
-    return (
-      <div className={s.project_desc}>
-        <Text
-          size="14"
-          color="black-40"
-          fontWeight="medium"
-          className="text-uppercase"
-        >
-          description
-        </Text>
-        <SeeMore>{desc || ''}</SeeMore>
-      </div>
-    );
-  }
+  // if (!hasInteraction) {
+  //   return (
+  //     <div className={s.project_desc}>
+  //       <Text
+  //         size="14"
+  //         color="black-40"
+  //         fontWeight="medium"
+  //         className="text-uppercase"
+  //       >
+  //         description
+  //       </Text>
+  //       <SeeMore>{desc || ''}</SeeMore>
+  //     </div>
+  //   );
+  // }
 
   return (
     <Tabs
@@ -46,14 +50,23 @@ const ProjectDescription = ({ desc, hasInteraction = false }: Props) => {
     >
       <Tab tabClassName={s.tab} eventKey="description" title={`Description`}>
         <div className={s.project_desc}>
-          <SeeMore>{projectDescription || ''}</SeeMore>
+          <SeeMore>{hasInteraction ? projectDescription : desc}</SeeMore>
         </div>
       </Tab>
-      <Tab tabClassName={s.tab} eventKey="interaction" title={`Interaction`}>
-        <div className={s.project_desc}>
-          <SeeMore render={render}>{projectInteraction || ''}</SeeMore>
-        </div>
-      </Tab>
+      {!!projectInteraction && (
+        <Tab tabClassName={s.tab} eventKey="interaction" title={`Interaction`}>
+          <div className={s.project_desc}>
+            <SeeMore render={render}>{projectInteraction || ''}</SeeMore>
+          </div>
+        </Tab>
+      )}
+      {!!profileBio && (
+        <Tab tabClassName={s.tab} eventKey="profile" title={`Artist Profile`}>
+          <div className={s.project_desc}>
+            <SeeMore render={render}>{profileBio || ''}</SeeMore>
+          </div>
+        </Tab>
+      )}
     </Tabs>
   );
 };

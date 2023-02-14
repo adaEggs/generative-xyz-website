@@ -25,7 +25,7 @@ const LOG_PREFIX = 'Empty';
 export const Empty = ({
   projectInfo,
   className,
-  content = 'Bring your unique vision to life. Mint your first NFT now',
+  content = 'Be the first to mint this collection',
 }: {
   projectInfo?: Project | null;
   className?: string;

@@ -53,7 +53,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
       });
       return;
     }
-    router.push('/mint-btc-generative/set-price', undefined, { shallow: true });
+    router.push('/create/set-price', undefined, { shallow: true });
   };
 
   return (

@@ -39,6 +39,10 @@
       text-decoration: underline;
     }
   }
+
+  :global(.label_text) {
+    margin-bottom: rem(12px);
+  }
 }
 
 .usersInfo {
@@ -182,10 +186,13 @@
 
 .whiteListWallet {
   margin-top: rem(10);
-  width: fit-content;
-  display: flex;
-  align-items: center;
-  gap: rem(5);
+
+  .infoIcon {
+    display: inline-block;
+    width: rem(12);
+    margin-right: rem(4);
+    margin-left: rem(1);
+  }
 }
 
 .whiteList_tooltip {
@@ -211,6 +218,11 @@
     cursor: pointer;
     text-decoration: underline;
   }
+}
+
+.mint_free {
+  width: 100%;
+  justify-content: center;
 }
 
 .priceBtc {
@@ -262,7 +274,7 @@
 
 .stats {
   display: flex;
-  column-gap: rem(69px);
+  column-gap: rem(130px);
   row-gap: rem(6px);
   margin-bottom: rem(24px);
   margin-top: rem(24px);
@@ -274,7 +286,7 @@
 
   &_item {
     > p:first-of-type {
-      color: $black-60;
+      color: $black-40;
       text-transform: uppercase;
     }
   }

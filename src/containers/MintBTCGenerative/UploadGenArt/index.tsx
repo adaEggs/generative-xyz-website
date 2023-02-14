@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
 import s from './styles.module.scss';
 import cs from 'classnames';
+import { SOCIALS } from '@constants/common';
 
 const LOG_PREFIX = 'UploadGenArt';
 
@@ -49,6 +50,8 @@ const UploadGenArt: React.FC = (): ReactElement => {
         'There is a problem with your file. Please check and try again. ';
       if ((err as Error).message === SandboxFileError.WRONG_FORMAT) {
         errorMessage += 'Invalid file format.';
+      } else if ((err as Error).message === SandboxFileError.TOO_LARGE) {
+        errorMessage += 'File size error, maximum file size is 100kb.';
       }
       setShowErrorAlert({ open: true, message: errorMessage });
     }
@@ -78,11 +81,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
   };
 
   const handleGoToNextStep = (): void => {
-    router.push(
-      `/mint-btc-generative/${MintGenerativeStep.PROJECT_DETAIL}`,
-      undefined,
-      { shallow: true }
-    );
+    router.push(`/create/${MintGenerativeStep.PROJECT_DETAIL}`, undefined, {
+      shallow: true,
+    });
   };
 
   const handleReupload = (): void => {
@@ -206,7 +207,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
                   color={'primary-color'}
                   className={s.zipFileName}
                 >
-                  {rawFile?.name} ({prettyPrintBytes(rawFile?.size || 0)})
+                  {rawFile?.name} (
+                  {fileList ? `${fileList.length} files - ` : ''}{' '}
+                  {prettyPrintBytes(rawFile?.size || 0)})
                 </Heading>
               </div>
               <ul className={s.zipFileList}>
@@ -289,6 +292,18 @@ const UploadGenArt: React.FC = (): ReactElement => {
             Upload file
           </Heading>
           <div className={s.collectionTypeWrapper}>
+            <div className={s.guideWrapper}>
+              <p>
+                New artist?&nbsp;
+                <a
+                  href={SOCIALS.docsForArtist}
+                  target={'_blank'}
+                  rel="noreferrer"
+                >
+                  Start here.
+                </a>
+              </p>
+            </div>
             <p className={s.collectionTypeLabel}>Choose collection type:</p>
             <div className={s.choiceList}>
               <div

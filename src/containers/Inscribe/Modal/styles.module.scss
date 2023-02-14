@@ -12,7 +12,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow-y: auto;
   }
 
   .modalWrapper {
@@ -22,8 +21,6 @@
     z-index: 20;
     border-radius: 2px;
     width: 90%;
-    overflow-y: scroll;
-    max-height: 90%;
 
     @include min-tablet {
       width: 520px;
@@ -175,15 +172,6 @@
       margin-bottom: rem(8px);
     }
 
-    .expire {
-      text-align: center;
-      font-weight: 400;
-      font-size: rem(18px);
-      line-height: rem(28px);
-      margin-bottom: rem(8px);
-      margin-top: rem(18px);
-    }
-
     .qrCodeGenerator {
       display: flex;
       justify-content: center;
@@ -254,21 +242,19 @@
   }
 }
 
-.divider {
-  margin-top: 26px;
-  margin-bottom: 26px;
-  width: 100%;
-  border: 1px solid #cecece;
-}
+.sendBtcDesc {
+  margin-top: rem(8px);
+  word-break: break-all;
+  text-align: center;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 28px;
+  color: $black-100;
 
-.wrap_fee {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.wrap_fee_margin_bottom {
-  margin-bottom: 26px;
+  @include min-tablet {
+    padding-left: rem(40px);
+    padding-right: rem(40px);
+  }
 }
 
 .info_guild {
@@ -280,10 +266,10 @@
   text-align: center;
 }
 
-.ctaButton {
-  width: 100%;
+.buyBtn {
   justify-content: center;
-  margin-top: rem(32);
+  width: 100%;
+  margin-top: rem(35);
 }
 
 .question {
@@ -295,6 +281,21 @@
   margin-left: 4px;
 }
 
-.free_fee {
+.expire {
+  text-align: center;
+  font-weight: 400;
+  font-size: rem(18px);
+  line-height: rem(28px);
+  margin-bottom: rem(8px);
+  margin-top: rem(18px);
+}
+
+.error {
+  text-align: center;
+  font-weight: 400;
+  font-size: rem(18px);
+  line-height: rem(28px);
+  margin-bottom: rem(8px);
+  margin-top: rem(18px);
   color: $secondary-red;
 }
