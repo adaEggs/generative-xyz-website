@@ -97,5 +97,14 @@ module.exports = removeImports(
       @import "@styles/_themes/_variables.scss";
     `,
     },
+    async redirects() {
+      return [
+        {
+          source: '/create',
+          destination: '/create/upload-project',
+          permanent: true,
+        },
+      ]
+    },
   })
 );

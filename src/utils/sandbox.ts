@@ -197,7 +197,7 @@ export const processImageCollectionZipFile = async (
 
     // Check file extension
     const fileExt = getFileExtensionByFileName(fileName);
-    if (!fileExt || !IMAGE_FILE_EXT.includes(fileExt)) {
+    if (!fileExt || !IMAGE_FILE_EXT.includes(fileExt.toLowerCase())) {
       error = ImageFileError.INVALID_EXTENSION;
     }
 
