@@ -45,7 +45,7 @@ const TokenID: React.FC = (): React.ReactElement => {
 
   const getImgURL = () => {
     if (!tokenData?.inscriptionID) return '';
-    return `https://ordinals-explorer.generative.xyz/${tokenData?.inscriptionID}`;
+    return `https://ordinals-explorer.generative.xyz/preview/${tokenData?.inscriptionID}`;
   };
 
   const renderRow = (label: string, value?: string | number) => {
