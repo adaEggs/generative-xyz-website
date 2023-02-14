@@ -2,7 +2,13 @@ import Button from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import React, { useMemo, useCallback, useContext, useState } from 'react';
+import React, {
+  useMemo,
+  useCallback,
+  useContext,
+  useState,
+  useEffect,
+} from 'react';
 import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
@@ -17,6 +23,9 @@ import { ErrorMessage } from '@enums/error-message';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { formatEthPrice } from '@utils/format';
 import { generateETHReceiverAddress } from '@services/eth';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import { WalletContext } from '@contexts/wallet-context';
 
 interface IFormValue {
   address: string;
@@ -25,10 +34,12 @@ interface IFormValue {
 const LOG_PREFIX = 'MintEthModal';
 
 const MintEthModal: React.FC = () => {
+  const user = useAppSelector(getUserSelector);
   const { projectData, hideMintBTCModal } = useContext(
     GenerativeProjectDetailContext
   );
 
+  const { connect, transfer } = useContext(WalletContext);
   const { setIsPopupPayment } = useContext(BitcoinProjectContext);
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
@@ -36,6 +47,29 @@ const MintEthModal: React.FC = () => {
   const [_isMinting, setIsMinting] = useState(false);
   const [step, setsTep] = useState<'info' | 'mint'>('info');
   const [addressInput, setAddressInput] = useState<string>('');
+  const [_isConnecting, setIsConnecting] = useState<boolean>(false);
+
+  const handleConnectWallet = async (): Promise<void> => {
+    try {
+      setIsConnecting(true);
+      await connect();
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const handleTransfer = async (
+    toAddress: string,
+    val: string
+  ): Promise<void> => {
+    try {
+      await transfer(toAddress, val);
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+    }
+  };
 
   const getBTCAddress = async (walletAddress: string): Promise<void> => {
     if (!projectData) return;
@@ -43,6 +77,7 @@ const MintEthModal: React.FC = () => {
     try {
       setIsLoading(true);
       setReceiverAddress(null);
+
       const { address, price: price } = await generateETHReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
@@ -78,7 +113,6 @@ const MintEthModal: React.FC = () => {
 
     return errors;
   };
-
   const handleSubmit = async () => {
     if (!projectData || !receiverAddress) return;
 
@@ -96,8 +130,14 @@ const MintEthModal: React.FC = () => {
       setIsMinting(false);
     }
   };
-
   const priceMemo = useMemo(() => formatEthPrice(price), [price]);
+  useEffect(() => {
+    if (!user && receiverAddress) {
+      handleConnectWallet();
+    } else if (user && receiverAddress && price) {
+      handleTransfer(receiverAddress, formatEthPrice(price));
+    }
+  }, [receiverAddress, user, price]);
 
   if (!projectData) {
     return <></>;
