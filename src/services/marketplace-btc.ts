@@ -134,3 +134,30 @@ export const submitAddressBuyBTC = async (
     throw Error(message);
   }
 };
+
+export interface IListingFeePayload {
+  inscriptionID: string;
+}
+
+export interface IListingFee {
+  serviceFee: number;
+  royaltyFee: number;
+}
+
+export const getListingFee = async (
+  payload: IListingFeePayload
+): Promise<IListingFee> => {
+  try {
+    const res = await post<IListingFeePayload, IListingFee>(
+      `${API_PATH}/listing-fee`,
+      payload
+    );
+    return {
+      royaltyFee: Number(res.royaltyFee || 0),
+      serviceFee: Number(res.serviceFee || 0),
+    };
+  } catch (err: unknown) {
+    log('failed to get get fee', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get fee');
+  }
+};
