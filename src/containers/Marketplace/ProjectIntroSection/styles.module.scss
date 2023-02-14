@@ -182,10 +182,13 @@
 
 .whiteListWallet {
   margin-top: rem(10);
-  width: fit-content;
-  display: flex;
-  align-items: center;
-  gap: rem(5);
+
+  .infoIcon {
+    display: inline-block;
+    width: rem(12);
+    margin-right: rem(4);
+    margin-left: rem(1);
+  }
 }
 
 .whiteList_tooltip {

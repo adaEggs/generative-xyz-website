@@ -11,6 +11,7 @@ export interface IGenerativeProjectSocial {
 export interface IGetGenerativeTokenUriParams {
   contractAddress: string;
   tokenID: string;
+  whitelist?: string;
 }
 
 export type IGetGenerativeTokenUriResponse = Token;

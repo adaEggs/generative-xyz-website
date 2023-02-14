@@ -17,6 +17,7 @@ import _debounce from 'lodash/debounce';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
+import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 
 interface IFormValue {
   address: string;
@@ -25,7 +26,7 @@ interface IFormValue {
 const LOG_PREFIX = 'MintWalletModal';
 
 const MintWalletModal: React.FC = () => {
-  const { projectData, hideMintBTCModal } = useContext(
+  const { projectData, hideMintBTCModal, isWhitelistProject } = useContext(
     GenerativeProjectDetailContext
   );
 
@@ -38,7 +39,7 @@ const MintWalletModal: React.FC = () => {
   const [addressInput, setAddressInput] = useState<string>('');
 
   const getBTCAddress = async (walletAddress: string): Promise<void> => {
-    if (!projectData) return;
+    if (!projectData && !isWhitelistProject) return;
 
     try {
       setIsLoading(true);
@@ -46,11 +47,11 @@ const MintWalletModal: React.FC = () => {
       const { address, price: price } =
         await generateETHReceiverAddressWithWhitelist({
           walletAddress,
-          projectID: projectData.tokenID,
+          projectID: projectData ? projectData.tokenID : SATOSHIS_PROJECT_ID,
         });
 
       setReceiverAddress(address);
-      setPrice(price || projectData?.mintPrice);
+      setPrice(price || projectData?.mintPrice || '');
     } catch (err: unknown) {
       setReceiverAddress(null);
     } finally {
@@ -81,26 +82,27 @@ const MintWalletModal: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (!projectData || !receiverAddress) return;
-
-    try {
-      setIsMinting(true);
-      await mintBTCGenerative({
-        address: receiverAddress,
-      });
-      hideMintBTCModal();
-      // toast.success('Mint success');
-    } catch (err: unknown) {
-      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
-      toast.error(ErrorMessage.DEFAULT);
-    } finally {
-      setIsMinting(false);
+    if (!projectData && !isWhitelistProject) return;
+    if (receiverAddress) {
+      try {
+        setIsMinting(true);
+        await mintBTCGenerative({
+          address: receiverAddress,
+        });
+        hideMintBTCModal();
+        // toast.success('Mint success');
+      } catch (err: unknown) {
+        log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+        toast.error(ErrorMessage.DEFAULT);
+      } finally {
+        setIsMinting(false);
+      }
     }
   };
 
   const priceMemo = useMemo(() => formatEthPrice(price), [price]);
 
-  if (!projectData) {
+  if (!projectData && !isWhitelistProject) {
     return <></>;
   }
 
