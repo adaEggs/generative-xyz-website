@@ -236,7 +236,7 @@ const SetPrice = () => {
               <h3 className={s.descriptionTitle}>
                 How will your piece be sold
               </h3>
-              <Text
+              {/* <Text
                 size={'16'}
                 as={'p'}
                 fontWeight={'regular'}
@@ -244,7 +244,7 @@ const SetPrice = () => {
               >
                 Name your price, the number of outputs and the royalties fee.
                 Remember, these numbers can be changed later after publishing.
-              </Text>
+              </Text> */}
             </div>
             <div className={s.divider} />
             <div className={s.formWrapper}>
@@ -349,7 +349,7 @@ const SetPrice = () => {
                 {errors.royalty && touched.royalty && (
                   <p className={s.error}>{errors.royalty}</p>
                 )}
-                <Text
+                {/* <Text
                   as={'p'}
                   size={'14'}
                   color={'black-60'}
@@ -357,7 +357,7 @@ const SetPrice = () => {
                 >
                   The payment artists receive every time a secondary sale of
                   their artworks occurs. This number ranges from 0% to 25%.
-                </Text>
+                </Text> */}
               </div>
             </div>
           </div>

@@ -1,29 +1,28 @@
 import Button from '@components/ButtonIcon';
-import Checkbox from '@components/Checkbox';
 import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
+import { SOCIALS } from '@constants/common';
 import { CDN_URL, SANDBOX_BTC_FILE_SIZE_LIMIT } from '@constants/config';
-import DropFile from '../DropFile';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
 import { LogLevel } from '@enums/log-level';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { ImageFileError, SandboxFileError } from '@enums/sandbox';
 import log from '@utils/logger';
-import { processImageCollectionZipFile, processHTMLFile } from '@utils/sandbox';
+import { processHTMLFile, processImageCollectionZipFile } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
+import cs from 'classnames';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
+import { ReactElement, useContext, useEffect, useMemo } from 'react';
+import DropFile from '../DropFile';
 import s from './styles.module.scss';
-import cs from 'classnames';
-import { SOCIALS } from '@constants/common';
 
 const LOG_PREFIX = 'UploadGenArt';
 
 const UploadGenArt: React.FC = (): ReactElement => {
   const router = useRouter();
-  const [isProjectWork, setIsProjectWork] = useState(true);
+  // const [isProjectWork, setIsProjectWork] = useState(true);
   const {
     collectionType,
     setCollectionType,
@@ -36,9 +35,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
     setImageCollectionFile,
   } = useContext(MintBTCGenerativeContext);
 
-  const handleChangeIsProjectWork = (): void => {
-    setIsProjectWork(!isProjectWork);
-  };
+  // const handleChangeIsProjectWork = (): void => {
+  //   setIsProjectWork(!isProjectWork);
+  // };
 
   const processGenerativeFile = async (file: File) => {
     try {
@@ -124,17 +123,17 @@ const UploadGenArt: React.FC = (): ReactElement => {
           </div>
           <div className={s.container}>
             <div className={s.checkboxWrapper}>
-              <Checkbox
+              {/* <Checkbox
                 checked={isProjectWork}
                 onClick={handleChangeIsProjectWork}
                 className={s.checkbox}
                 id="workProperly"
                 label="My NFT collection is ready to go!"
-              />
+              /> */}
             </div>
             <div className={s.actionWrapper}>
               <Button
-                disabled={!isProjectWork || !filesSandbox}
+                disabled={!filesSandbox}
                 onClick={handleGoToNextStep}
                 endIcon={
                   <SvgInset
@@ -257,17 +256,17 @@ const UploadGenArt: React.FC = (): ReactElement => {
           </div>
           <div className={s.container}>
             <div className={s.checkboxWrapper}>
-              <Checkbox
+              {/* <Checkbox
                 checked={isProjectWork}
                 onClick={handleChangeIsProjectWork}
                 className={s.checkbox}
                 id="workProperly"
                 label="My NFT collection is ready to go!"
-              />
+              /> */}
             </div>
             <div className={s.actionWrapper}>
               <Button
-                disabled={!isProjectWork || !isValidImageCollection}
+                disabled={!isValidImageCollection}
                 onClick={handleGoToNextStep}
                 endIcon={
                   <SvgInset
