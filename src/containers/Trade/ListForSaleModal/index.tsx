@@ -12,6 +12,8 @@ import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import {
+  getListingFee,
+  IListingFee,
   IPostMarketplaceBtcListNFTParams,
   postMarketplaceBtcListNFT,
 } from '@services/marketplace-btc';
@@ -19,9 +21,15 @@ import Text from '@components/Text';
 import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
 import { formatUnixDateTime } from '@utils/time';
+import { debounce } from 'lodash';
+import cs from 'classnames';
 
 // const FEE_CHARGE_PERCENT = 0.1;
 const MIN_PRICE = 0.005;
+const INITIAL_LISTING_FEE: IListingFee = {
+  serviceFee: 0,
+  royaltyFee: 0,
+};
 
 interface IProps {
   showModal: boolean;
@@ -35,6 +43,10 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const [receiveAddress, setReceiveAddress] = useState('');
   const [expireTime, setExpireTime] = useState('');
   const [step, setsTep] = useState<'info' | 'list' | 'thank'>('info');
+  const [ordLink, setOrdLink] = useState('');
+  const [listingFee, setListingFee] = React.useState<IListingFee>({
+    ...INITIAL_LISTING_FEE,
+  });
 
   const validateForm = (values: IPostMarketplaceBtcListNFTParams) => {
     const errors: Record<string, string> = {};
@@ -59,11 +71,6 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     if (!values.inscriptionID) {
       errors.inscriptionID = 'Inscription link is required.';
     }
-
-    // if (!values.name) {
-    //   errors.name = 'Name is required.';
-    // }
-
     return errors;
   };
 
@@ -88,13 +95,46 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     }
   };
 
+  const handleGetListingFee = async (ordLink: string) => {
+    if (!ordLink) return setListingFee({ ...INITIAL_LISTING_FEE });
+    try {
+      setIsLoading(true);
+      const listingFee = await getListingFee({
+        inscriptionID: ordLink,
+      });
+      setListingFee(listingFee);
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      toast.error(ErrorMessage.DEFAULT);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const debounceGetListingFee = React.useCallback(
+    debounce(handleGetListingFee, 500),
+    []
+  );
+
+  const convertFee = (price: number, charge: number) => {
+    return (
+      new BigNumber(price || 0).multipliedBy(charge / 100).toFixed() + ' BTC'
+    );
+  };
+
   const handleClose = () => {
     setsTep('info');
     setReceiveAddress('');
     setExpireTime('');
     setIsLoading(false);
+    setOrdLink('');
+    setListingFee({ ...INITIAL_LISTING_FEE });
     onClose();
   };
+
+  React.useEffect(() => {
+    debounceGetListingFee(ordLink);
+  }, [ordLink]);
 
   if (!showModal) {
     return <></>;
@@ -160,7 +200,10 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 id="inscriptionID"
                                 type="text"
                                 name="inscriptionID"
-                                onChange={handleChange}
+                                onChange={e => {
+                                  handleChange(e);
+                                  setOrdLink(e.target.value);
+                                }}
                                 onBlur={handleBlur}
                                 value={values.inscriptionID}
                                 className={s.input}
@@ -198,24 +241,6 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                             <label className={s.label} htmlFor="receiveAddress">
                               Enter your BTC address to receive payment{' '}
                               <sup className={s.requiredTag}>*</sup>
-                              {/*<OverlayTrigger*/}
-                              {/*  placement="bottom"*/}
-                              {/*  delay={{ show: 250, hide: 400 }}*/}
-                              {/*  overlay={*/}
-                              {/*    <Tooltip id="variation-tooltip">*/}
-                              {/*      <Text*/}
-                              {/*        size="14"*/}
-                              {/*        fontWeight="semibold"*/}
-                              {/*        color="primary-333"*/}
-                              {/*      >*/}
-                              {/*        This is the address you will receive BTC*/}
-                              {/*        for the inscription sale.*/}
-                              {/*      </Text>*/}
-                              {/*    </Tooltip>*/}
-                              {/*  }*/}
-                              {/*>*/}
-                              {/*  <span className={s.question}>?</span>*/}
-                              {/*</OverlayTrigger>*/}
                             </label>
                             <div className={s.inputContainer}>
                               <input
@@ -337,20 +362,49 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                               color="text-secondary-color"
                               className={s.free_fee}
                             >
-                              {/*{new BigNumber(values.price || 0)*/}
-                              {/*  .multipliedBy(FEE_CHARGE_PERCENT)*/}
-                              {/*  .toFixed()}{' '}*/}
-                              {/*BTC*/}
-                              FREE
+                              {listingFee.serviceFee
+                                ? convertFee(
+                                    Number(values.price || 0),
+                                    listingFee.serviceFee
+                                  )
+                                : 'FREE'}
                             </Text>
                           </div>
+                          {!!listingFee.royaltyFee &&
+                            !!Number(values.price || 0) && (
+                              <div
+                                className={cs(
+                                  s.wrap_fee,
+                                  s.wrap_fee_margin_bottom
+                                )}
+                              >
+                                <Text
+                                  size="16"
+                                  fontWeight="medium"
+                                  color="text-black-80"
+                                >
+                                  Royalty fees
+                                </Text>
+                                <Text
+                                  size="16"
+                                  fontWeight="medium"
+                                  color="text-secondary-color"
+                                >
+                                  {convertFee(
+                                    Number(values.price || 0),
+                                    listingFee.royaltyFee
+                                  )}
+                                  &nbsp;BTC
+                                </Text>
+                              </div>
+                            )}
+
                           {isLoading && (
                             <div className={s.loadingWrapper}>
                               <Loading isLoaded={false} />
                             </div>
                           )}
 
-                          {/*<div className={s.ctas}>*/}
                           <ButtonIcon
                             sizes="large"
                             type="submit"
@@ -359,7 +413,6 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                           >
                             Next
                           </ButtonIcon>
-                          {/*</div>*/}
                         </form>
                       )}
                     </Formik>
@@ -399,16 +452,6 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         </Text>
                       </ButtonIcon>
                     </div>
-                    {/* <div className={s.ctas}>
-                      <Button
-                        type="submit"
-                        variants={'ghost'}
-                        className={s.submitBtn}
-                        onClick={goBazaarPage}
-                      >
-                        Check out bazaar
-                      </Button>
-                    </div> */}
                   </div>
                 </>
               )}

@@ -1,19 +1,18 @@
-import s from './MenuMobile.module.scss';
-import { MENU_HEADER, RIGHT_MENU } from '@constants/header';
-import cs from 'classnames';
-import Link from '@components/Link';
-import React, { ForwardedRef, ReactNode } from 'react';
-import _isEmpty from 'lodash/isEmpty';
-import querystring from 'query-string';
-import { useRouter } from 'next/router';
-import { SOCIAL_ICONS } from '@constants/icons';
-import { SOCIALS } from '@constants/common';
 import ButtonIcon from '@components/ButtonIcon';
+import Link from '@components/Link';
+import SvgInset from '@components/SvgInset';
+import { SOCIALS } from '@constants/common';
+import { MENU_HEADER, RIGHT_MENU } from '@constants/header';
+import { SOCIAL_ICONS } from '@constants/icons';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import SvgInset from '@components/SvgInset';
 import { isProduction } from '@utils/common';
-import { ROUTE_PATH } from '@constants/route-path';
+import cs from 'classnames';
+import _isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
+import querystring from 'query-string';
+import React, { ForwardedRef, ReactNode } from 'react';
+import s from './MenuMobile.module.scss';
 
 interface IProp {
   theme?: 'light' | 'dark';
@@ -46,12 +45,12 @@ const MenuMobile = React.forwardRef(
       return `${url}?${querystring.stringify(query)}`;
     };
 
-    const showWalletButton = (): boolean => {
-      if (!isProduction()) return true;
-      if (router.pathname === ROUTE_PATH.ORDER_NOW) {
-        return true;
-      } else return false;
-    };
+    // const showWalletButton = (): boolean => {
+    //   if (!isProduction()) return true;
+    //   if (router.pathname === ROUTE_PATH.ORDER_NOW) {
+    //     return true;
+    //   } else return false;
+    // };
 
     return (
       <div ref={ref} className={`${s.menuMobile} ${s[theme || 'light']}`}>
@@ -139,27 +138,27 @@ const MenuMobile = React.forwardRef(
             )}
           </ul>
           <div className={`${s.menuMobile_bottom} ${user ? s.hasUser : ''}`}>
-            {showWalletButton() && (
-              <div className={`${s.connectWallet}`}>
-                {user ? (
-                  <div className="position-relative">
-                    {renderProfileHeader()}
-                    {ProfileDropdown()}
-                  </div>
-                ) : (
-                  <div className={s.menuMobile_bottom_cta}>
-                    <ButtonIcon
-                      disabled={isConnecting}
-                      sizes="medium"
-                      variants={theme === 'dark' ? 'secondary' : 'primary'}
-                      onClick={handleConnectWallet}
-                    >
-                      {isConnecting ? 'Connecting...' : 'Connect wallet'}
-                    </ButtonIcon>
-                  </div>
-                )}
-              </div>
-            )}
+            {/* {showWalletButton() && ( */}
+            <div className={`${s.connectWallet}`}>
+              {user ? (
+                <div className="position-relative">
+                  {renderProfileHeader()}
+                  {ProfileDropdown()}
+                </div>
+              ) : (
+                <div className={s.menuMobile_bottom_cta}>
+                  <ButtonIcon
+                    disabled={isConnecting}
+                    sizes="medium"
+                    variants={theme === 'dark' ? 'secondary' : 'primary'}
+                    onClick={handleConnectWallet}
+                  >
+                    {isConnecting ? 'Connecting...' : 'Connect wallet'}
+                  </ButtonIcon>
+                </div>
+              )}
+            </div>
+            {/* )} */}
 
             <ul className={s.menuMobile_bottom_socials}>
               <li>

@@ -31,7 +31,7 @@ module.exports = removeImports(
           headers: [
             {
               key: 'Content-Security-Policy',
-              value: `frame-ancestors 'self' https://ordinals.com; frame-src 'self' https://ordinals.com;`,
+              value: `frame-ancestors 'self' https://ordinals.com https://ordinals-explorer.generative.xyz; frame-src 'self' https://ordinals.com https://ordinals-explorer.generative.xyz;`,
             },
             ...baseSecurityHeaders,
           ],
