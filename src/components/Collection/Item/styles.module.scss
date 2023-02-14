@@ -94,6 +94,14 @@
           display: block;
           overflow: hidden;
         }
+
+        .textOverflow {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          display: block;
+          overflow: hidden;
+          flex: 0 0 100%;
+        }
       }
     }
 
