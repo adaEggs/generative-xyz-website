@@ -1,5 +1,5 @@
 import s from './styles.module.scss';
-import { CDN_URL } from '@constants/config';
+import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
@@ -12,12 +12,17 @@ import SvgInset from '@components/SvgInset';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
 import { uploadFile } from '@services/file';
 import { CollectionType } from '@enums/mint-generative';
-import { createBTCProject, uploadBTCProjectFiles } from '@services/project';
+import {
+  createBTCProject,
+  getProjectDetail,
+  uploadBTCProjectFiles,
+} from '@services/project';
 import { v4 as uuidv4 } from 'uuid';
 import { ICreateBTCProjectPayload } from '@interfaces/api/project';
 import { fileToBase64 } from '@utils/file';
 import { validateBTCWalletAddress } from '@utils/validate';
 import { detectUsedLibs } from '@utils/sandbox';
+import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -38,9 +43,13 @@ const SetPrice = () => {
     rawFile,
     collectionType,
     setMintedProjectID,
+    imageCollectionFile,
     filesSandbox,
   } = useContext(MintBTCGenerativeContext);
   const [isMinting, setIsMinting] = useState(false);
+  const numberOfFile = imageCollectionFile
+    ? Object.keys(imageCollectionFile).length
+    : 0;
 
   const validateForm = (values: ISetPriceFormValue): Record<string, string> => {
     const errors: Record<string, string> = {};
@@ -68,12 +77,17 @@ const SetPrice = () => {
       errors.maxSupply = 'Number of editions is required.';
     } else if (values.maxSupply <= 0) {
       errors.maxSupply = 'Invalid number. Must be greater than 0.';
+    } else if (
+      collectionType === CollectionType.IMAGES &&
+      values.maxSupply > numberOfFile
+    ) {
+      errors.maxSupply = `Invalid number. Must be equal or less than ${numberOfFile}.`;
     }
 
     if (!values.mintPrice.toString()) {
       errors.mintPrice = 'Price is required.';
-    } else if (values.mintPrice < 0) {
-      errors.mintPrice = 'Invalid number. Must be equal or greater than 0.';
+    } else if (values.mintPrice < MIN_MINT_BTC_PROJECT_PRICE) {
+      errors.mintPrice = `Invalid number. Must be equal or greater than ${MIN_MINT_BTC_PROJECT_PRICE}.`;
     }
 
     if (!values.royalty.toString()) {
@@ -83,6 +97,27 @@ const SetPrice = () => {
     }
 
     return errors;
+  };
+
+  const intervalGetProjectStatus = (projectID: string): void => {
+    const intervalID = setInterval(async () => {
+      try {
+        const projectRes = await getProjectDetail({
+          contractAddress: GENERATIVE_PROJECT_CONTRACT,
+          projectID,
+        });
+        if (projectRes && !projectRes.isHidden && projectRes.status) {
+          setMintedProjectID(projectRes.tokenID);
+          setIsMinting(false);
+          clearInterval(intervalID);
+          router.push('/create/mint-success', undefined, {
+            shallow: true,
+          });
+        }
+      } catch (err) {
+        log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      }
+    }, 5000);
   };
 
   const handleSubmit = async (): Promise<void> => {
@@ -165,14 +200,10 @@ const SetPrice = () => {
       }
 
       const projectRes = await createBTCProject(payload);
-      setMintedProjectID(projectRes.tokenID);
-      router.push('/create/mint-success', undefined, {
-        shallow: true,
-      });
+      intervalGetProjectStatus(projectRes.tokenID);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       setShowErrorAlert({ open: true, message: null });
-    } finally {
       setIsMinting(false);
     }
   };
@@ -182,7 +213,7 @@ const SetPrice = () => {
       key="setPriceForm"
       initialValues={{
         maxSupply: formValues.maxSupply ?? 0,
-        mintPrice: parseFloat(formValues.mintPrice ?? '0'),
+        mintPrice: parseFloat(formValues.mintPrice ?? '0.01'),
         royalty: formValues.royalty ?? 10,
         creatorWalletAddress: formValues.creatorWalletAddress ?? '',
       }}
@@ -325,7 +356,7 @@ const SetPrice = () => {
                   className={s.inputDesc}
                 >
                   The payment artists receive every time a secondary sale of
-                  their artworks occurs. This number ranges from 10% to 25%.
+                  their artworks occurs. This number ranges from 0% to 25%.
                 </Text>
               </div>
             </div>
@@ -343,7 +374,7 @@ const SetPrice = () => {
                   />
                 }
               >
-                {isMinting ? 'Minting...' : 'Publish collection'}
+                {isMinting ? 'Creating...' : 'Publish collection'}
               </ButtonIcon>
             </div>
           </div>
