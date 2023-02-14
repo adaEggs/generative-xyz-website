@@ -1,3 +1,4 @@
+import { MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { IBTCFormValue } from '@interfaces/mint-generative';
 import {
@@ -115,7 +116,7 @@ export const MintBTCGenerativeContextProvider = ({
   const sandboxRef = useRef<ISandboxRef | null>(null);
   const [hash, setHash] = useState<string>(generateHash());
   const [formValues, setFormValues] = useState<Partial<IBTCFormValue>>({
-    mintPrice: '0.005',
+    mintPrice: MIN_MINT_BTC_PROJECT_PRICE.toString(),
   });
   const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(
     null
