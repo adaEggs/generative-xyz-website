@@ -23,6 +23,8 @@ const GenerativeProjectDetailPage: NextPage<{ projectInfo: Project }> = ({
 export default GenerativeProjectDetailPage;
 
 export async function getServerSideProps() {
+  // const { query } = context;
+  // const { projectName } = query as { projectID: string };
   const res = await getProjectDetail({
     contractAddress: GENERATIVE_PROJECT_CONTRACT,
     projectID: SATOSHIS_PROJECT_ID,
