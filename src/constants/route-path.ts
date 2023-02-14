@@ -21,4 +21,7 @@ export const ROUTE_PATH = {
     ? 'https://testnet.generative.xyz/incentivized-testnet'
     : '/incentivized-testnet',
   TRADE: '/marketplace',
+  REFERRAL: '/referral',
+  NOT_FOUND: '/404',
+  INSCRIBE: '/inscribe',
 };

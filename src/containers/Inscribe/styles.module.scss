@@ -2,6 +2,11 @@
   padding-top: rem(60px);
   padding-bottom: rem(60px);
 
+  @include mobile {
+    padding-top: rem(24px);
+    padding-bottom: rem(24px);
+  }
+
   .wrapper {
     margin: auto;
     max-width: (500px);
@@ -25,6 +30,14 @@
     margin-bottom: rem(24px);
   }
 
+  .info {
+    font-size: rem(14px);
+    line-height: rem(22px);
+    color: $black-60;
+    border-radius: 2px;
+    margin-bottom: rem(24px);
+  }
+
   .formItem {
     margin-bottom: 16px;
     width: 100%;
@@ -38,10 +51,10 @@
     display: block;
     margin-bottom: 6px;
     text-transform: uppercase;
+  }
 
-    strong {
-      color: $black-100;
-    }
+  strong {
+    color: $secondary-red;
   }
 
   .inputContainer {
@@ -126,7 +139,7 @@
 
   .actionWrapper {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
   }
 
   .loadingWrapper {
@@ -150,6 +163,10 @@
     display: flex;
     gap: rem(12px);
 
+    @include mobile {
+      gap: (6px);
+    }
+
     .mintFeeItem {
       width: 100%;
       padding: rem(24px);
@@ -159,6 +176,10 @@
       flex-direction: column;
       align-items: center;
       cursor: pointer;
+
+      @include mobile {
+        padding: rem(10px) rem(8px);
+      }
 
       &__active {
         border: 2px solid #4185ec;
@@ -178,6 +199,17 @@
         margin-bottom: rem(8px);
         color: $black-60;
       }
+    }
+  }
+
+  .inscriptionInfoWrapper {
+    margin-bottom: rem(24px);
+
+    .expiredAt {
+      font-weight: 400;
+      font-size: rem(16px);
+      line-height: rem(26px);
+      text-align: center;
     }
   }
 }

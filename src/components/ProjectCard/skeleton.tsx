@@ -26,9 +26,6 @@ const ProjectCardSkeleton = ({ className = '' }: { className: string }) => {
           </div>
         ) : (
           <div className={cs(s.projectCard_info, s.desktop)}>
-            <div className={s.projectCard_info_title}>
-              <Skeleton width={180} height={30} />
-            </div>
             <div className={s.projectCard_creator}>
               <div className={s.projectCard_avatar}>
                 <Skeleton fill />
@@ -37,6 +34,10 @@ const ProjectCardSkeleton = ({ className = '' }: { className: string }) => {
                 <Skeleton width={80} height={14} />
               </div>
             </div>
+            <div className={s.projectCard_info_title}>
+              <Skeleton width={180} height={30} />
+            </div>
+
             <div className={s.projectCard_progress}>
               <Skeleton fill />
             </div>

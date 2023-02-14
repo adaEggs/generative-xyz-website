@@ -102,7 +102,9 @@ export const postFile = async <P, R>(
   config?: RequestConfig
 ): Promise<R> => {
   const formData = new FormData();
-  formData.append('file', body.file);
+  for (const [key, value] of Object.entries(body)) {
+    formData.append(key, value);
+  }
   const requestOptions: RequestInit = {
     ...getRequestOptions(HttpMethod.POST, config),
     body: formData,

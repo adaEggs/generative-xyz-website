@@ -21,9 +21,7 @@ export const ProjectList = ({
           ))}
         </div>
       ) : (
-        listData && (
-          <Empty content="Bring your unique vision to life. List for sale now" />
-        )
+        listData && <Empty content="Be the first to mint this collection" />
       )}
     </>
   );

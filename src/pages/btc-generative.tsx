@@ -1,11 +1,11 @@
 import { NextPage } from 'next';
-import BTCGenerativeList from '@containers/BTCGenerativeList';
+import InscribeList from '@containers/InscribeList';
 import MarketplaceLayout from '@layouts/Marketplace';
 
 const BTCGenerativePage: NextPage = () => {
   return (
     <MarketplaceLayout>
-      <BTCGenerativeList />
+      <InscribeList />
     </MarketplaceLayout>
   );
 };

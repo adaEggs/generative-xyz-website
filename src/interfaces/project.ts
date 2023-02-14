@@ -46,6 +46,12 @@ export type Project = {
   closeMintUnixTimestamp?: number;
   openMintUnixTimestamp?: number;
   whiteListEthContracts?: string[];
+  isFullChain: boolean;
+};
+
+export type BTCProject = Project & {
+  creatorName: string;
+  creatorAddrr: string;
 };
 
 export type TraitStats = {

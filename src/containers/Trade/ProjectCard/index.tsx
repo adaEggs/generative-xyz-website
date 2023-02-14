@@ -25,7 +25,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
 
   const getImgURL = () => {
     if (!project?.inscriptionID) return '';
-    return `https://ordinals.com/preview/${project?.inscriptionID}`;
+    return `https://ordinals-explorer.generative.xyz/preview/${project?.inscriptionID}`;
   };
 
   const [thumb, setThumb] = useState<string>(getImgURL());
