@@ -53,6 +53,10 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     return project?.mintingInfo?.index < project?.maxSupply;
   }, [project]);
 
+  const isFullonChain = useMemo(() => {
+    return project?.isFullChain || false;
+  }, [project?.isFullChain]);
+
   return (
     <Link
       href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
@@ -72,7 +76,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               loading={'lazy'}
             />
           </div>
-          {project.isFullChain && <Label label={'On chain'} vars={'blue'} />}
+          {isFullonChain && <Label label={'On chain'} vars={'blue'} />}
         </div>
         <div className={s.projectCard_inner_info}>
           {mobileScreen ? (

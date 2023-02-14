@@ -251,7 +251,7 @@ const ProjectIntroSection = ({
         {/*  />*/}
         {/*)}*/}
 
-        {!isFullonChain && <Label label={'On Chain'} vars={'blue'} />}
+        {isFullonChain && <Label label={'On Chain'} vars={'blue'} />}
 
         <Heading as="h4" fontWeight="medium">
           {project?.name}
