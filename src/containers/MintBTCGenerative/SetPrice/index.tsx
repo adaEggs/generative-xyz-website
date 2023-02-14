@@ -14,6 +14,10 @@ import { uploadFile } from '@services/file';
 import { CollectionType } from '@enums/mint-generative';
 import { createBTCProject, uploadBTCProjectFiles } from '@services/project';
 import { v4 as uuidv4 } from 'uuid';
+import { ICreateBTCProjectPayload } from '@interfaces/api/project';
+import { fileToBase64 } from '@utils/file';
+import { validateBTCWalletAddress } from '@utils/validate';
+import { detectUsedLibs } from '@utils/sandbox';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -21,7 +25,6 @@ type ISetPriceFormValue = {
   maxSupply: number;
   mintPrice: number;
   royalty: number;
-  creatorName: string;
   creatorWalletAddress: string;
 };
 
@@ -35,6 +38,7 @@ const SetPrice = () => {
     rawFile,
     collectionType,
     setMintedProjectID,
+    filesSandbox,
   } = useContext(MintBTCGenerativeContext);
   const [isMinting, setIsMinting] = useState(false);
 
@@ -45,7 +49,6 @@ const SetPrice = () => {
     setFormValues({
       ...formValues,
       ...{
-        creatorName: values.creatorName ?? '',
         creatorWalletAddress: values.creatorWalletAddress ?? '',
         maxSupply: values.maxSupply.toString() ? values.maxSupply : 0,
         mintPrice: values.mintPrice.toString()
@@ -54,6 +57,12 @@ const SetPrice = () => {
         royalty: values.royalty.toString() ? values.royalty : 10,
       },
     });
+
+    if (!values.creatorWalletAddress.toString()) {
+      errors.creatorWalletAddress = 'Creator wallet address is required.';
+    } else if (!validateBTCWalletAddress(values.creatorWalletAddress)) {
+      errors.creatorWalletAddress = 'Invalid BTC wallet address.';
+    }
 
     if (!values.maxSupply.toString()) {
       errors.maxSupply = 'Number of editions is required.';
@@ -86,7 +95,6 @@ const SetPrice = () => {
       setIsMinting(true);
 
       const {
-        creatorName,
         creatorWalletAddress,
         description,
         license,
@@ -111,9 +119,8 @@ const SetPrice = () => {
         thumbnailUrl = uploadRes.url;
       }
 
-      const payload = {
+      const payload: ICreateBTCProjectPayload = {
         creatorAddrr: creatorWalletAddress ?? '',
-        creatorName: creatorName ?? '',
         maxSupply: maxSupply ?? 0,
         limitSupply: maxSupply ?? 0,
         mintPrice: mintPrice?.toString() ? mintPrice.toString() : '0',
@@ -136,6 +143,8 @@ const SetPrice = () => {
         openMintUnixTimestamp: 0,
         tags: tags ?? [],
         zipLink: '',
+        animationURL: '',
+        isFullChain: false,
       };
 
       if (collectionType === CollectionType.IMAGES) {
@@ -147,13 +156,17 @@ const SetPrice = () => {
       }
 
       if (collectionType === CollectionType.GENERATIVE) {
-        // TODO Remove
-        payload.scripts = [];
+        const animationURL = await fileToBase64(rawFile);
+        payload.animationURL = animationURL as string;
+        if (filesSandbox) {
+          const libs = await detectUsedLibs(filesSandbox);
+          payload.isFullChain = libs.length === 0;
+        }
       }
 
       const projectRes = await createBTCProject(payload);
-      setMintedProjectID(projectRes.id);
-      router.push('/mint-generative/mint-success', undefined, {
+      setMintedProjectID(projectRes.tokenID);
+      router.push('/mint-btc-generative/mint-success', undefined, {
         shallow: true,
       });
     } catch (err: unknown) {
@@ -172,7 +185,6 @@ const SetPrice = () => {
         mintPrice: parseFloat(formValues.mintPrice ?? '0'),
         royalty: formValues.royalty ?? 10,
         creatorWalletAddress: formValues.creatorWalletAddress ?? '',
-        creatorName: formValues.creatorName ?? '',
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -205,34 +217,6 @@ const SetPrice = () => {
             </div>
             <div className={s.divider} />
             <div className={s.formWrapper}>
-              <div className={s.formItem}>
-                <label className={s.label} htmlFor="creatorName">
-                  Creator name <sup className={s.requiredTag}>*</sup>
-                </label>
-                <div className={s.inputContainer}>
-                  <input
-                    id="creatorName"
-                    type="text"
-                    name="creatorName"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.creatorName}
-                    className={s.input}
-                    placeholder="Provide a display name"
-                  />
-                </div>
-                {errors.creatorName && touched.creatorName && (
-                  <p className={s.error}>{errors.creatorName}</p>
-                )}
-                <Text
-                  as={'p'}
-                  size={'14'}
-                  color={'black-60'}
-                  className={s.inputDesc}
-                >
-                  Provide display name
-                </Text>
-              </div>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="creatorWalletAddress">
                   Creator BTC wallet address{' '}

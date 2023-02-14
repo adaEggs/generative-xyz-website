@@ -22,4 +22,6 @@ export const ROUTE_PATH = {
     : '/incentivized-testnet',
   TRADE: '/marketplace',
   REFERRAL: '/referral',
+  NOT_FOUND: '/404',
+  INSCRIBE: '/inscribe',
 };

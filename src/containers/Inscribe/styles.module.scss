@@ -30,6 +30,14 @@
     margin-bottom: rem(24px);
   }
 
+  .info {
+    font-size: rem(14px);
+    line-height: rem(22px);
+    color: $black-60;
+    border-radius: 2px;
+    margin-bottom: rem(24px);
+  }
+
   .formItem {
     margin-bottom: 16px;
     width: 100%;
@@ -43,10 +51,10 @@
     display: block;
     margin-bottom: 6px;
     text-transform: uppercase;
+  }
 
-    strong {
-      color: $black-100;
-    }
+  strong {
+    color: $secondary-red;
   }
 
   .inputContainer {
