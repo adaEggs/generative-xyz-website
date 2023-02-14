@@ -8,7 +8,6 @@ import ListForSaleModal from '@containers/Trade/ListForSaleModal';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import s from './RecentWorks.module.scss';
-import { Button } from 'react-bootstrap';
 import {
   getMarketplaceBtcList,
   IGetMarketplaceBtcListItem,
@@ -17,6 +16,7 @@ import { Loading } from '@components/Loading';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import debounce from 'lodash/debounce';
 import uniqBy from 'lodash/uniqBy';
+import ButtonIcon from '@components/ButtonIcon';
 
 const LIMIT = 20;
 
@@ -67,13 +67,13 @@ export const RecentWorks = (): JSX.Element => {
           </Heading>
         </Col>
         <Col xs={'auto'}>
-          <Button
+          <ButtonIcon
+            sizes="large"
             className={s.recentWorks_btn}
-            size="lg"
             onClick={() => setShowModal(true)}
           >
             List for sale
-          </Button>
+          </ButtonIcon>
         </Col>
       </Row>
       <Row className={s.recentWorks_projects}>
