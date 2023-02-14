@@ -40,6 +40,5 @@ export interface IBTCFormValue {
   license: string;
   tags: Array<string>;
   categories: Array<string>;
-  creatorName: string;
   creatorWalletAddress: string;
 }

@@ -19,13 +19,13 @@ import cs from 'classnames';
 import { InscriptionInfo } from '@interfaces/inscribe';
 import { formatUnixDateTime } from '@utils/time';
 
-const LOG_PREFIX = 'MintTool';
+const LOG_PREFIX = 'Inscribe';
 
 interface IFormValue {
   address: string;
 }
 
-const MintTool: React.FC = (): React.ReactElement => {
+const Inscribe: React.FC = (): React.ReactElement => {
   const [file, setFile] = useState<File | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
   const [inscriptionInfo, setInscriptionInfo] =
@@ -286,4 +286,4 @@ const MintTool: React.FC = (): React.ReactElement => {
   );
 };
 
-export default MintTool;
+export default Inscribe;

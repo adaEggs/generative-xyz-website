@@ -1,11 +1,11 @@
 import { NextPage } from 'next';
 import MarketplaceLayout from '@layouts/Marketplace';
-import MintTool from '@containers/MintTool';
+import Inscribe from '@containers/Inscribe';
 
 const MintToolPage: NextPage = () => {
   return (
     <MarketplaceLayout isHideFaucet={true}>
-      <MintTool />
+      <Inscribe />
     </MarketplaceLayout>
   );
 };
