@@ -26,7 +26,7 @@ export const MarketplaceSection = (): JSX.Element => {
 
   const router = useRouter();
   const onClick = () => {
-    router.push(ROUTE_PATH.DROPS);
+    router.push(ROUTE_PATH.COLLECTIONS);
   };
 
   useEffect(() => {

@@ -63,7 +63,7 @@ export const RecentWorks = (): JSX.Element => {
       <Row style={{ justifyContent: 'space-between' }}>
         <Col xs={'auto'}>
           <Heading as="h4" fontWeight="semibold">
-            Marketplace
+            Bazaar
           </Heading>
         </Col>
         <Col xs={'auto'}>

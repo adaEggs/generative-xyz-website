@@ -50,6 +50,7 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { EXTERNAL_LINK } from '@constants/external-link';
+import { Label } from '@components/Label';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -189,6 +190,10 @@ const ProjectIntroSection = ({
     [project?.mintPriceEth]
   );
 
+  const isFullonChain = useMemo(() => {
+    return project?.isFullChain || false;
+  }, [project?.isFullChain]);
+
   // pay with wallet project btc
 
   const payWithWallet = () => {
@@ -246,6 +251,8 @@ const ProjectIntroSection = ({
         {/*  />*/}
         {/*)}*/}
 
+        {!isFullonChain && <Label label={'On Chain'} vars={'blue'} />}
+
         <Heading as="h4" fontWeight="medium">
           {project?.name}
         </Heading>
@@ -300,14 +307,16 @@ const ProjectIntroSection = ({
         )}
         {isBitcoinProject && (
           <div className={s.stats}>
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="medium">
-                Mint Price
-              </Text>
-              <Heading as="h6" fontWeight="medium">
-                {priceMemo} BTC
-              </Heading>
-            </div>
+            {isLimitMinted && (
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  Mint Price
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {priceMemo} BTC
+                </Heading>
+              </div>
+            )}
             {project?.royalty && (
               <div className={s.stats_item}>
                 <Text size="12" fontWeight="medium">

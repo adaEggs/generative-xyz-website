@@ -39,6 +39,10 @@
       text-decoration: underline;
     }
   }
+
+  :global(.label_text) {
+    margin-bottom: rem(12px);
+  }
 }
 
 .usersInfo {

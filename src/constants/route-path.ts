@@ -2,7 +2,7 @@ import { isProduction, isStaging } from '@utils/common';
 
 export const ROUTE_PATH = {
   HOME: isStaging() ? 'https://generative.xyz' : '/',
-  DROPS: '/drops',
+  COLLECTIONS: '/collections',
   CREATE_PROJECT: isProduction()
     ? 'https://testnet.generative.xyz/mint-generative/upload-project'
     : '/mint-generative/upload-project',
@@ -20,7 +20,7 @@ export const ROUTE_PATH = {
   INCENTIVIZED_TESTNET: isProduction()
     ? 'https://testnet.generative.xyz/incentivized-testnet'
     : '/incentivized-testnet',
-  TRADE: '/marketplace',
+  TRADE: '/bazaar',
   REFERRAL: '/referral',
   NOT_FOUND: '/404',
   INSCRIBE: '/inscribe',

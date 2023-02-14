@@ -58,6 +58,11 @@
       top: 0;
       left: 0;
     }
+
+    :global(.label_text) {
+      position: absolute;
+      bottom: rem(16px);
+    }
   }
 
   &_info {

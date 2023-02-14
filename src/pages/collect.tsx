@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 const CollectPage: NextPage = () => {
   const router = useRouter();
   useEffect(() => {
-    router.push(`${ROUTE_PATH.DROPS}`);
+    router.push(`${ROUTE_PATH.COLLECTIONS}`);
   }, []);
   return <></>;
 };
