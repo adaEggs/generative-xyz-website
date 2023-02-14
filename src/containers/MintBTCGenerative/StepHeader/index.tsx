@@ -17,7 +17,7 @@ const StepHeader: React.FC = (): React.ReactElement => {
       if (currentStep <= step.stepIndex) {
         return;
       }
-      router.push(`/mint-btc-generative/${step.path}`, undefined, {
+      router.push(`/create/${step.path}`, undefined, {
         shallow: false,
       });
     },

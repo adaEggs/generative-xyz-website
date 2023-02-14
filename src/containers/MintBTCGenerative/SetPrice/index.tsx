@@ -166,7 +166,7 @@ const SetPrice = () => {
 
       const projectRes = await createBTCProject(payload);
       setMintedProjectID(projectRes.tokenID);
-      router.push('/mint-btc-generative/mint-success', undefined, {
+      router.push('/create/mint-success', undefined, {
         shallow: true,
       });
     } catch (err: unknown) {
