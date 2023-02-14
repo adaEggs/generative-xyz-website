@@ -58,7 +58,7 @@ const TokenID: React.FC = (): React.ReactElement => {
         <a
           color={'text-black-80'}
           className={s.row_right}
-          href={`https://ordinals.com/inscription/${tokenData?.inscriptionID}`}
+          href={`https://ordinals-explorer.generative.xyz/inscription/${tokenData?.inscriptionID}`}
           target="_blank"
           rel="noreferrer"
         >
