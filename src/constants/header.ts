@@ -28,7 +28,7 @@ export const MENU_HEADER = [
     activePath: 'marketplace',
   },
   {
-    id: 'menu-4',
+    id: 'menu-5',
     name: 'Inscribe',
     route: ROUTE_PATH.INSCRIBE,
     activePath: 'inscribe',
