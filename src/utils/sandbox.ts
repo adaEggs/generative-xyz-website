@@ -26,7 +26,7 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { utf8ToBase64 } from '@utils/format';
 import { THIRD_PARTY_SCRIPTS } from '@constants/mint-generative';
-import { SANDBOX_IMAGE_FILE_SIZE_LIMIT } from '@constants/config';
+import { SANDBOX_BTC_FILE_SIZE_LIMIT } from '@constants/config';
 
 const LOG_PREFIX = 'SandboxUtil';
 
@@ -201,9 +201,9 @@ export const processImageCollectionZipFile = async (
       error = ImageFileError.INVALID_EXTENSION;
     }
 
-    // Check file size is smaller than 100kb
+    // Check file size is smaller than SANDBOX_BTC_FILE_SIZE_LIMIT
     const fileSizeInKb = file.size / 1024;
-    if (fileSizeInKb > SANDBOX_IMAGE_FILE_SIZE_LIMIT) {
+    if (fileSizeInKb > SANDBOX_BTC_FILE_SIZE_LIMIT) {
       error = ImageFileError.TOO_LARGE;
     }
 
@@ -226,9 +226,9 @@ export const processHTMLFile = async (file: File): Promise<SandboxFiles> => {
     throw Error(SandboxFileError.WRONG_FORMAT);
   }
 
-  // Check file size is smaller than 100kb
+  // Check file size is smaller than SANDBOX_BTC_FILE_SIZE_LIMIT
   const fileSizeInKb = file.size / 1024;
-  if (fileSizeInKb > SANDBOX_IMAGE_FILE_SIZE_LIMIT) {
+  if (fileSizeInKb > SANDBOX_BTC_FILE_SIZE_LIMIT) {
     throw Error(SandboxFileError.TOO_LARGE);
   }
 

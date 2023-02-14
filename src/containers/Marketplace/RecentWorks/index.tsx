@@ -14,6 +14,9 @@ import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
+import { ROUTE_PATH } from '@constants/route-path';
+import ButtonIcon from '@components/ButtonIcon';
+import { router } from 'next/client';
 
 // const SORT_OPTIONS: Array<{ value: string; label: string }> = [
 //   {
@@ -107,13 +110,24 @@ export const RecentWorks = (): JSX.Element => {
 
   return (
     <div className={s.recentWorks}>
-      <Row style={{ justifyContent: 'space-between' }}>
-        <Col xs={'auto'}>
+      <Row
+        className={s.recentWorks_heading}
+        style={{ justifyContent: 'space-between', alignItems: 'center' }}
+      >
+        <Col className={s.recentWorks_heading_col} md={'auto'} xs={'12'}>
           <Heading as="h4" fontWeight="semibold">
             Generative art on Bitcoin. Be the first to collect.
           </Heading>
         </Col>
-        <Col xs={'auto'} />
+        <Col className={s.recentWorks_heading_col} md={'auto'} xs={'12'}>
+          <ButtonIcon
+            onClick={() => router.push(ROUTE_PATH.CREATE_BTC_PROJECT)}
+            variants={'primary'}
+            sizes={'medium'}
+          >
+            Create
+          </ButtonIcon>
+        </Col>
       </Row>
       <Row className={s.recentWorks_projects}>
         {/* <Loading isLoaded={isLoaded} /> */}

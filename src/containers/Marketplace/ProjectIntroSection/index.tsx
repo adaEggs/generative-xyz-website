@@ -227,6 +227,11 @@ const ProjectIntroSection = ({
       ? window.location.origin
       : '';
 
+  const isRoyalty = useMemo((): boolean => {
+    if (!project?.royalty) return false;
+    return project?.royalty > 0;
+  }, [project]);
+
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -314,13 +319,13 @@ const ProjectIntroSection = ({
                 </Heading>
               </div>
             )}
-            {project?.royalty && (
+            {isRoyalty && (
               <div className={s.stats_item}>
                 <Text size="12" fontWeight="medium">
                   royalty
                 </Text>
                 <Heading as="h6" fontWeight="medium">
-                  {project.royalty / 100}%
+                  {(project?.royalty || 0) / 100}%
                 </Heading>
               </div>
             )}
@@ -445,8 +450,7 @@ const ProjectIntroSection = ({
                     <Tooltip id="whitelist-tooltip">
                       <Text size="12" fontWeight="semibold" color="primary-333">
                         ArtBlocks, CryptoPunks, BAYC, MAYC, Meebits, Proof,
-                        Moonbirds, Moonbirds Oddities, CloneX, Gen Art, gmDAO,
-                        FingerprintsDAO.
+                        Moonbirds, Moonbirds Oddities, CloneX, gmDAO.
                       </Text>
                     </Tooltip>
                   }
@@ -546,11 +550,10 @@ const ProjectIntroSection = ({
             <Text size="14" color="black-40">
               Created date: {mintedDate}
             </Text>
-            {isFullonChain && (
-              <Text size="14" color="black-40">
-                Fully on-chain: Yes
-              </Text>
-            )}
+
+            <Text size="14" color="black-40">
+              Fully on-chain: {isFullonChain ? 'Yes' : 'No'}
+            </Text>
             {/* <Text size="14" color="black-40" className={s.project_owner}>
                 Collected by:{' '}
                 {project?.stats?.uniqueOwnerCount === 1

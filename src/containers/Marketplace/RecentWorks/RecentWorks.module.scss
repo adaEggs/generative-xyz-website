@@ -7,4 +7,16 @@
       margin-top: rem(24px);
     }
   }
+
+  &_heading {
+    &_col {
+      margin-top: 0;
+
+      &:nth-child(1) {
+        @include mobile {
+          margin-bottom: rem(16px);
+        }
+      }
+    }
+  }
 }
