@@ -35,11 +35,14 @@ const ProjectCardSkeleton = ({ className = '' }: { className: string }) => {
               </div>
             </div>
             <div className={s.projectCard_info_title}>
-              <Skeleton width={180} height={30} />
+              <Skeleton width={250} height={34} />
             </div>
 
+            <div className={s.projectCard_info_price_price}>
+              <Skeleton width={100} height={30} />
+            </div>
             <div className={s.projectCard_progress}>
-              <Skeleton fill />
+              <Skeleton width={150} height={28} />
             </div>
           </div>
         )}

@@ -116,7 +116,7 @@ export const RecentWorks = (): JSX.Element => {
         style={{ justifyContent: 'space-between', alignItems: 'center' }}
       >
         <Col className={s.recentWorks_heading_col} md={'auto'} xs={'12'}>
-          <Heading as="h4" fontWeight="semibold">
+          <Heading as="h4" fontWeight="medium">
             Generative art on Bitcoin. Be the first to collect.
           </Heading>
         </Col>
