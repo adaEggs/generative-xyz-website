@@ -180,7 +180,7 @@ const ProjectPreview = () => {
                 {formValues.mintPrice && currentStep > 2 ? (
                   <span
                     className={s.mintPrice}
-                  >{`${formValues.mintPrice} ETH`}</span>
+                  >{`${formValues.mintPrice} BTC`}</span>
                 ) : (
                   <Skeleton width={100} height={30}></Skeleton>
                 )}

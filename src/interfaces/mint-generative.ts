@@ -26,7 +26,7 @@ export interface IFormValue {
 
 export interface IBTCFormValue {
   maxSupply: number;
-  mintPrice: string;
+  mintPrice: number;
   name: string;
   description: string;
   thirdPartyScripts: Array<string>;
