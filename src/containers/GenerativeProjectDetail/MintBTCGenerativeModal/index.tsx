@@ -51,7 +51,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     try {
       setIsLoading(true);
       setReceiverAddress(null);
-      const { address, price: price } = await generateBTCReceiverAddress({
+      const { address, Price: price } = await generateBTCReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
       });

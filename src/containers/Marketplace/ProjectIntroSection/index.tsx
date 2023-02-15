@@ -18,12 +18,16 @@ import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
 import useContractOperation from '@hooks/useContractOperation';
 import useWindowSize from '@hooks/useWindowSize';
-import { IGetProjectDetailResponse } from '@interfaces/api/project';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
 import { Token } from '@interfaces/token';
 // import { useAppSelector } from '@redux';
 // import { getUserSelector } from '@redux/user/selector';
+import { EXTERNAL_LINK } from '@constants/external-link';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import { Project } from '@interfaces/project';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
@@ -41,20 +45,16 @@ import dayjs from 'dayjs';
 import _get from 'lodash/get';
 import { useRouter } from 'next/router';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { useAppSelector } from '@redux';
-import { getUserSelector } from '@redux/user/selector';
-import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
-import { EXTERNAL_LINK } from '@constants/external-link';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
 type Props = {
-  project?: IGetProjectDetailResponse | null;
+  project?: Project | null;
   openMintBTCModal: (s: 'BTC' | 'ETH') => void;
   isWhitelist?: boolean;
 };
@@ -365,49 +365,91 @@ const ProjectIntroSection = ({
             {isBitcoinProject && isAvailable && isLimitMinted && (
               <ul>
                 <li>
-                  <ButtonIcon
-                    sizes="large"
-                    className={s.mint_btn}
-                    onClick={() => {
-                      openMintBTCModal('BTC');
-                    }}
+                  <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 0, hide: 100 }}
+                    overlay={
+                      project?.networkFee ? (
+                        <Tooltip id="btc-fee-tooltip">
+                          <Text
+                            size="14"
+                            fontWeight="semibold"
+                            color="primary-333"
+                          >
+                            Network fee:{' '}
+                            {formatBTCPrice(Number(project?.networkFee))} BTC
+                          </Text>
+                        </Tooltip>
+                      ) : (
+                        <></>
+                      )
+                    }
                   >
-                    <Text as="span" size="14" fontWeight="medium">
-                      {isMinting && 'Minting...'}
-                      {!isMinting && (
-                        <>
-                          <span>{`Mint `}</span>
-                          <span>
-                            <span>{priceMemo}</span>
-                            {` BTC`}
-                          </span>
-                        </>
-                      )}
-                    </Text>
-                  </ButtonIcon>
+                    <ButtonIcon
+                      sizes="large"
+                      className={s.mint_btn}
+                      onClick={() => {
+                        openMintBTCModal('BTC');
+                      }}
+                    >
+                      <Text as="span" size="14" fontWeight="medium">
+                        {isMinting && 'Minting...'}
+                        {!isMinting && (
+                          <>
+                            <span>{`Mint `}</span>
+                            <span>
+                              <span>{priceMemo}</span>
+                              {` BTC`}
+                            </span>
+                          </>
+                        )}
+                      </Text>
+                    </ButtonIcon>
+                  </OverlayTrigger>
                 </li>
                 <li>
-                  <ButtonIcon
-                    sizes="large"
-                    variants="outline"
-                    className={`${s.mint_btn} ${s.mint_btn__eth}`}
-                    onClick={() => {
-                      openMintBTCModal('ETH');
-                    }}
+                  <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 0, hide: 100 }}
+                    overlay={
+                      project?.networkFeeEth ? (
+                        <Tooltip id="btc-fee-tooltip">
+                          <Text
+                            size="14"
+                            fontWeight="semibold"
+                            color="primary-333"
+                          >
+                            Network fee:{' '}
+                            {formatEthPrice(project?.networkFeeEth)} ETH
+                          </Text>
+                        </Tooltip>
+                      ) : (
+                        <></>
+                      )
+                    }
                   >
-                    <Text as="span" size="14" fontWeight="medium">
-                      {isMinting && 'Minting...'}
-                      {!isMinting && (
-                        <>
-                          <span>{`Mint `}</span>
-                          <span>
-                            <span>{priceEthMemo}</span>
-                            {` ETH`}
-                          </span>
-                        </>
-                      )}
-                    </Text>
-                  </ButtonIcon>
+                    <ButtonIcon
+                      sizes="large"
+                      variants="outline"
+                      className={`${s.mint_btn} ${s.mint_btn__eth}`}
+                      onClick={() => {
+                        openMintBTCModal('ETH');
+                      }}
+                    >
+                      <Text as="span" size="14" fontWeight="medium">
+                        {isMinting && 'Minting...'}
+                        {!isMinting && (
+                          <>
+                            <span>{`Mint `}</span>
+                            <span>
+                              <span>{priceEthMemo}</span>
+                              {` ETH`}
+                            </span>
+                          </>
+                        )}
+                      </Text>
+                    </ButtonIcon>
+                  </OverlayTrigger>
                 </li>
 
                 {/* {!!project?.whiteListEthContracts && (
