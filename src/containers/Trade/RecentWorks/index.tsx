@@ -109,7 +109,11 @@ export const RecentWorks = (): JSX.Element => {
             Explore Ordinal Inscriptions
           </Heading>
         </Col>
-        <Col xs={'auto'} style={{ display: 'flex', margin: 0 }}>
+        <Col
+          xs={'auto'}
+          style={{ display: 'flex', margin: 0 }}
+          className={s.wrap_btn}
+        >
           <Checkbox
             checked={isNFTBuy}
             onClick={handleChangeType}
