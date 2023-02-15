@@ -459,9 +459,6 @@ const ProjectIntroSection = ({
                     <Text size="12" as="span" color="purple-c">
                       these communities
                     </Text>
-                    <Text size="12" as="span" color="black-60">
-                      *
-                    </Text>
                   </div>
                 </OverlayTrigger>
                 <Text size="12" as="span" color="black-60">
