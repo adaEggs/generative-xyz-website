@@ -73,9 +73,11 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 <Text size="14" fontWeight="semibold">
                   #{project.index}
                 </Text>
-                <Text size="12" fontWeight="semibold">
-                  {convertBTCPrice()}&nbsp;BTC
-                </Text>
+                {(project?.price || 0) > 0 && (
+                  <Text size="12" fontWeight="semibold">
+                    {convertBTCPrice()}&nbsp;BTC
+                  </Text>
+                )}
               </div>
             </div>
           ) : (
@@ -85,9 +87,11 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 <Heading as={'h4'}>
                   <span title={project.name}>#{project.index}</span>
                 </Heading>
-                <Heading as={'h4'} className={s.projectCard_info_price}>
-                  {convertBTCPrice()}&nbsp;BTC
-                </Heading>
+                {(project?.price || 0) > 0 && (
+                  <Heading as={'h4'} className={s.projectCard_info_price}>
+                    {convertBTCPrice()}&nbsp;BTC
+                  </Heading>
+                )}
               </div>
               <div className={cs(s.btnBuyNow)}>
                 {project?.buyable ? 'Buy Now' : 'Transaction in progress'}

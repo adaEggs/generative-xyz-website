@@ -2,7 +2,7 @@ import { LogLevel } from '@enums/log-level';
 import { get, post } from '@services/http-client';
 import log from '@utils/logger';
 import querystring from 'query-string';
-import { getOrdContentByInscriptionID } from '@utils/parseOrdHTML';
+import { getOrdAddresByInscriptionID, getOrdContentByInscriptionID } from '@utils/parseOrdHTML';
 
 const LOG_PREFIX = 'MarketplaceBtcService';
 
@@ -155,6 +155,48 @@ export const getListingFee = async (
     return {
       royaltyFee: Number(res.royaltyFee || 0),
       serviceFee: Number(res.serviceFee || 0),
+    };
+  } catch (err: unknown) {
+    log('failed to get get fee', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get fee');
+  }
+};
+
+export interface IListingordinals {
+  inscriptions: string[];
+  prev: number;
+  next: number;
+  data: IGetMarketplaceBtcListItem[];
+}
+const HOST_ORDINALS_EXPLORER = 'https://ordinals-explorer-dev.generative.xyz';
+export const getListingOrdinals = async (
+  from: string | number = 0
+): Promise<IListingordinals> => {
+  try {
+    const res = await fetch(
+      `${HOST_ORDINALS_EXPLORER}/api/inscriptions${
+        from !== 0 ? `/${from}` : ''
+      }`
+    );
+    const dataRes = await res.json();
+    const tasks = dataRes.inscriptions.map(async (inscriptionID: string) => {
+      const data = await getOrdAddresByInscriptionID(inscriptionID);
+      return {
+        ...data,
+        inscriptionID: inscriptionID,
+        price: '',
+        name: data.ordinals_address || inscriptionID,
+        description: inscriptionID,
+        image: `${HOST_ORDINALS_EXPLORER}/content/${inscriptionID}`,
+        orderID: data.index,
+        buyable: false,
+        isCompleted: false,
+      };
+    });
+    const data = await Promise.all(tasks);
+    return {
+      ...dataRes,
+      data,
     };
   } catch (err: unknown) {
     log('failed to get get fee', LogLevel.ERROR, LOG_PREFIX);
