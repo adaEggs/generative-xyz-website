@@ -210,11 +210,14 @@ const FormEditProfile = () => {
               </>
             )}
             {user?.walletAddress ? (
-              <ButtonIcon onClick={() => walletCtx.disconnect()}>
+              <ButtonIcon
+                className={s.walletBtn}
+                onClick={() => walletCtx.disconnect()}
+              >
                 Disconnect wallet
               </ButtonIcon>
             ) : (
-              <ButtonIcon onClick={handleConnectWallet}>
+              <ButtonIcon className={s.walletBtn} onClick={handleConnectWallet}>
                 Connect wallet
               </ButtonIcon>
             )}
