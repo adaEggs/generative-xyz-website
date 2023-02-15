@@ -2,7 +2,13 @@ import Button from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
@@ -16,6 +22,8 @@ import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { formatBTCPrice } from '@utils/format';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
 
 interface IFormValue {
   address: string;
@@ -27,6 +35,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   const { projectData, hideMintBTCModal } = useContext(
     GenerativeProjectDetailContext
   );
+  const user = useAppSelector(getUserSelector);
 
   const { setIsPopupPayment } = useContext(BitcoinProjectContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -96,7 +105,15 @@ const MintBTCGenerativeModal: React.FC = () => {
     }
   };
 
+  const userBtcAddress = useMemo(() => user?.wallet_address_btc, [user]);
+
   const priceMemo = useMemo(() => formatBTCPrice(Number(price)), [price]);
+
+  useEffect(() => {
+    if (userBtcAddress) {
+      getBTCAddress(userBtcAddress);
+    }
+  }, [userBtcAddress]);
 
   if (!projectData) {
     return <></>;
@@ -166,7 +183,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                     <Formik
                       key="mintBTCGenerativeForm"
                       initialValues={{
-                        address: '',
+                        address: userBtcAddress || '',
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}
@@ -194,6 +211,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                                 onBlur={handleBlur}
                                 value={values.address}
                                 className={s.input}
+                                disabled={!!userBtcAddress}
                                 placeholder="Paste your BTC Ordinal wallet address here"
                               />
                             </div>

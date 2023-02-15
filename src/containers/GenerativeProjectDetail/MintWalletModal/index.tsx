@@ -77,6 +77,8 @@ const MintWalletModal: React.FC = () => {
     [projectData]
   );
 
+  const userBtcAddress = useMemo(() => user?.wallet_address_btc, [user]);
+
   const handleTransfer = async (
     toAddress: string,
     val: string
@@ -131,6 +133,12 @@ const MintWalletModal: React.FC = () => {
       handleTransfer(receiverAddress, formatEthPrice(price));
     }
   }, [receiverAddress, user, price]);
+
+  useEffect(() => {
+    if (userBtcAddress) {
+      getBTCAddress(userBtcAddress);
+    }
+  }, [userBtcAddress]);
 
   if (!projectData && !isWhitelistProject) {
     return <></>;
@@ -200,7 +208,7 @@ const MintWalletModal: React.FC = () => {
                     <Formik
                       key="mintBTCGenerativeForm"
                       initialValues={{
-                        address: '',
+                        address: userBtcAddress || '',
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}

@@ -49,6 +49,8 @@ const MintEthModal: React.FC = () => {
   const [addressInput, setAddressInput] = useState<string>('');
   const [_isConnecting, setIsConnecting] = useState<boolean>(false);
 
+  const userBtcAddress = useMemo(() => user?.wallet_address_btc, [user]);
+
   const handleConnectWallet = async (): Promise<void> => {
     try {
       setIsConnecting(true);
@@ -113,6 +115,7 @@ const MintEthModal: React.FC = () => {
 
     return errors;
   };
+
   const handleSubmit = async () => {
     if (!projectData || !receiverAddress) return;
 
@@ -131,6 +134,7 @@ const MintEthModal: React.FC = () => {
     }
   };
   const priceMemo = useMemo(() => formatEthPrice(price), [price]);
+
   useEffect(() => {
     if (!user && receiverAddress) {
       handleConnectWallet();
@@ -138,6 +142,12 @@ const MintEthModal: React.FC = () => {
       handleTransfer(receiverAddress, formatEthPrice(price));
     }
   }, [receiverAddress, user, price]);
+
+  useEffect(() => {
+    if (userBtcAddress) {
+      getBTCAddress(userBtcAddress);
+    }
+  }, [userBtcAddress]);
 
   if (!projectData) {
     return <></>;
@@ -207,7 +217,7 @@ const MintEthModal: React.FC = () => {
                     <Formik
                       key="mintBTCGenerativeForm"
                       initialValues={{
-                        address: '',
+                        address: userBtcAddress || '',
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}
