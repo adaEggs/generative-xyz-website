@@ -111,9 +111,9 @@ const Inscribe: React.FC = (): React.ReactElement => {
   return (
     <ClientOnly>
       <div className={s.mintTool}>
-        <div className="container">
+        <div className={s.container}>
           <div className={s.wrapper}>
-            <h1 className={s.title}>
+            {/* <h1 className={s.title}>
               The easiest way to create an ordinal inscription
             </h1>
             <h2 className={s.sub_title}>
@@ -122,7 +122,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
             <p className={s.upload_title}>What do you want to inscribe?</p>
             <p className={s.upload_sub_title}>
               Select an image. Upload a pdf. Inscribe anything.
-            </p>
+            </p> */}
             <div className={s.formWrapper}>
               <Formik
                 key="mintBTCGenerativeForm"
@@ -141,172 +141,192 @@ const Inscribe: React.FC = (): React.ReactElement => {
                   handleSubmit,
                 }) => (
                   <form onSubmit={handleSubmit}>
-                    <div className={s.formItem}>
-                      <DropFile
-                        className={s.dropZoneContainer}
-                        onChange={handleChangeFile}
-                        fileOrFiles={file ? [file] : null}
-                      />
-                      {fileError && <p className={s.inputError}>{fileError}</p>}
-                    </div>
-                    <div className={s.formItem}>
-                      <label className={s.label} htmlFor="address">
-                        Where do we send the inscription to?
-                      </label>
-                      <div className={s.inputContainer}>
-                        <input
-                          id="address"
-                          type="text"
-                          name="address"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.address}
-                          className={s.input}
-                          placeholder="Paste your Ordinals-compatible address here"
-                        />
-                      </div>
-                      {errors.address && touched.address && (
-                        <p className={s.inputError}>{errors.address}</p>
-                      )}
-                    </div>
-                    {fileBase64 && (
-                      <>
+                    <div className={s.formContent}>
+                      <div className={s.formLeft}>
                         <div className={s.formItem}>
-                          <label className={s.labelNoBottom} htmlFor="price">
-                            How fast do you want to get it?
-                          </label>
-                          <p className={s.upload_sub_title}>
-                            It’s free to inscribe with Generative. You pay only
-                            the network fees.
-                          </p>
-                          <div className={s.mintFeeWrapper}>
-                            <div
-                              onClick={() => {
-                                handleChangeFee(InscribeMintFeeRate.Economy);
-                                setTimeout(handleSubmit, 0);
-                              }}
-                              className={cs(s.mintFeeItem, {
-                                [`${s.mintFeeItem__active}`]:
-                                  feeRate === InscribeMintFeeRate.Economy,
-                              })}
-                            >
-                              <p className={s.feeTitle}>Economy</p>
-                              <p
-                                className={s.feeDetail}
-                              >{`${InscribeMintFeeRate.Economy} sats/vByte`}</p>
-                              <p className={s.feeTotal}>
-                                {`${formatBTCPrice(
-                                  calculateMintFee(
-                                    InscribeMintFeeRate.Economy,
-                                    fileBase64
-                                  )
-                                )} BTC`}
-                              </p>
-                            </div>
-                            <div
-                              onClick={() => {
-                                handleChangeFee(InscribeMintFeeRate.Faster);
-                                setTimeout(handleSubmit, 0);
-                              }}
-                              className={cs(s.mintFeeItem, {
-                                [`${s.mintFeeItem__active}`]:
-                                  feeRate === InscribeMintFeeRate.Faster,
-                              })}
-                            >
-                              <p className={s.feeTitle}>Faster</p>
-                              <p
-                                className={s.feeDetail}
-                              >{`${InscribeMintFeeRate.Faster} sats/vByte`}</p>
-                              <p className={s.feeTotal}>
-                                {`${formatBTCPrice(
-                                  calculateMintFee(
-                                    InscribeMintFeeRate.Faster,
-                                    fileBase64
-                                  )
-                                )} BTC`}
-                              </p>
-                            </div>
-                            <div
-                              onClick={() => {
-                                handleChangeFee(InscribeMintFeeRate.Fastest);
-                                setTimeout(handleSubmit, 0);
-                              }}
-                              className={cs(s.mintFeeItem, {
-                                [`${s.mintFeeItem__active}`]:
-                                  feeRate === InscribeMintFeeRate.Fastest,
-                              })}
-                            >
-                              <p className={s.feeTitle}>Fastest</p>
-                              <p
-                                className={s.feeDetail}
-                              >{`${InscribeMintFeeRate.Fastest} sats/vByte`}</p>
-                              <p className={s.feeTotal}>
-                                {`${formatBTCPrice(
-                                  calculateMintFee(
-                                    InscribeMintFeeRate.Fastest,
-                                    fileBase64
-                                  )
-                                )} BTC`}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    {isMinting && (
-                      <div className={s.loadingWrapper}>
-                        <Loading isLoaded={false} />
-                      </div>
-                    )}
-                    {inscriptionInfo && !isMinting && (
-                      <div className={s.qrCodeContainer}>
-                        <p className={s.qrTitle}>Payment</p>
-                        <div className={s.qrCodeWrapper}>
-                          <QRCodeGenerator
-                            className={s.qrCodeGenerator}
-                            size={128}
-                            value={inscriptionInfo.segwitAddress}
+                          <DropFile
+                            className={s.dropZoneContainer}
+                            onChange={handleChangeFile}
+                            fileOrFiles={file ? [file] : null}
                           />
-                          <div className={s.qrCodeContentWrapper}>
-                            <p className={s.btcSent}>
-                              Send{' '}
-                              <span>
-                                {formatBTCPrice(
-                                  new BigNumber(
-                                    inscriptionInfo?.amount || 0
-                                  ).toNumber()
-                                )}
-                              </span>{' '}
-                              BTC to this address
-                            </p>
-                            <p className={s.btcAddress}>
-                              {inscriptionInfo.segwitAddress}
-                              <div className={s.btnCopy} onClick={handleCopy}>
-                                Copy
-                              </div>
-                            </p>
-                            <p className={s.expiredAt}>
-                              Expires at:{' '}
-                              <b>
-                                {formatUnixDateTime({
-                                  dateTime: Number(inscriptionInfo.timeout_at),
-                                })}
-                              </b>
-                            </p>
-                          </div>
+                          {fileError && (
+                            <p className={s.inputError}>{fileError}</p>
+                          )}
                         </div>
                       </div>
-                    )}
-                    <div className={s.actionWrapper}>
-                      {inscriptionInfo?.segwitAddress ? (
-                        <div className={s.end}>
-                          That’s it. Check your wallet in about an hour.
+                      <div className={s.formRight}>
+                        <div className={s.formItem}>
+                          <label className={s.label} htmlFor="address">
+                            Where do we send the inscription to?
+                          </label>
+                          <div className={s.inputContainer}>
+                            <input
+                              id="address"
+                              type="text"
+                              name="address"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.address}
+                              className={s.input}
+                              placeholder="Paste your Ordinals-compatible address here"
+                            />
+                          </div>
+                          {errors.address && touched.address && (
+                            <p className={s.inputError}>{errors.address}</p>
+                          )}
                         </div>
-                      ) : (
-                        <Button disabled={isMinting} type="submit">
-                          Inscribe
-                        </Button>
-                      )}
+                        {fileBase64 && (
+                          <>
+                            <div className={s.formItem}>
+                              <label
+                                className={s.labelNoBottom}
+                                htmlFor="price"
+                              >
+                                How fast do you want to get it?
+                              </label>
+                              <p className={s.upload_sub_title}>
+                                It’s free to inscribe with Generative. You pay
+                                only the network fees.
+                              </p>
+                              <div className={s.mintFeeWrapper}>
+                                <div
+                                  onClick={() => {
+                                    handleChangeFee(
+                                      InscribeMintFeeRate.Economy
+                                    );
+                                    setTimeout(handleSubmit, 0);
+                                  }}
+                                  className={cs(s.mintFeeItem, {
+                                    [`${s.mintFeeItem__active}`]:
+                                      feeRate === InscribeMintFeeRate.Economy,
+                                  })}
+                                >
+                                  <p className={s.feeTitle}>Economy</p>
+                                  <p
+                                    className={s.feeDetail}
+                                  >{`${InscribeMintFeeRate.Economy} sats/vByte`}</p>
+                                  <p className={s.feeTotal}>
+                                    {`${formatBTCPrice(
+                                      calculateMintFee(
+                                        InscribeMintFeeRate.Economy,
+                                        fileBase64
+                                      )
+                                    )} BTC`}
+                                  </p>
+                                </div>
+                                <div
+                                  onClick={() => {
+                                    handleChangeFee(InscribeMintFeeRate.Faster);
+                                    setTimeout(handleSubmit, 0);
+                                  }}
+                                  className={cs(s.mintFeeItem, {
+                                    [`${s.mintFeeItem__active}`]:
+                                      feeRate === InscribeMintFeeRate.Faster,
+                                  })}
+                                >
+                                  <p className={s.feeTitle}>Faster</p>
+                                  <p
+                                    className={s.feeDetail}
+                                  >{`${InscribeMintFeeRate.Faster} sats/vByte`}</p>
+                                  <p className={s.feeTotal}>
+                                    {`${formatBTCPrice(
+                                      calculateMintFee(
+                                        InscribeMintFeeRate.Faster,
+                                        fileBase64
+                                      )
+                                    )} BTC`}
+                                  </p>
+                                </div>
+                                <div
+                                  onClick={() => {
+                                    handleChangeFee(
+                                      InscribeMintFeeRate.Fastest
+                                    );
+                                    setTimeout(handleSubmit, 0);
+                                  }}
+                                  className={cs(s.mintFeeItem, {
+                                    [`${s.mintFeeItem__active}`]:
+                                      feeRate === InscribeMintFeeRate.Fastest,
+                                  })}
+                                >
+                                  <p className={s.feeTitle}>Fastest</p>
+                                  <p
+                                    className={s.feeDetail}
+                                  >{`${InscribeMintFeeRate.Fastest} sats/vByte`}</p>
+                                  <p className={s.feeTotal}>
+                                    {`${formatBTCPrice(
+                                      calculateMintFee(
+                                        InscribeMintFeeRate.Fastest,
+                                        fileBase64
+                                      )
+                                    )} BTC`}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </>
+                        )}
+                        {isMinting && (
+                          <div className={s.loadingWrapper}>
+                            <Loading isLoaded={false} />
+                          </div>
+                        )}
+                        {inscriptionInfo && !isMinting && (
+                          <div className={s.qrCodeContainer}>
+                            <p className={s.qrTitle}>Payment</p>
+                            <div className={s.qrCodeWrapper}>
+                              <QRCodeGenerator
+                                className={s.qrCodeGenerator}
+                                size={128}
+                                value={inscriptionInfo.segwitAddress}
+                              />
+                              <div className={s.qrCodeContentWrapper}>
+                                <p className={s.btcSent}>
+                                  Send{' '}
+                                  <span>
+                                    {formatBTCPrice(
+                                      new BigNumber(
+                                        inscriptionInfo?.amount || 0
+                                      ).toNumber()
+                                    )}
+                                  </span>{' '}
+                                  BTC to this address
+                                </p>
+                                <p className={s.btcAddress}>
+                                  {inscriptionInfo.segwitAddress}
+                                  <div
+                                    className={s.btnCopy}
+                                    onClick={handleCopy}
+                                  >
+                                    Copy
+                                  </div>
+                                </p>
+                                <p className={s.expiredAt}>
+                                  Expires at:{' '}
+                                  <b>
+                                    {formatUnixDateTime({
+                                      dateTime: Number(
+                                        inscriptionInfo.timeout_at
+                                      ),
+                                    })}
+                                  </b>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        <div className={s.actionWrapper}>
+                          {inscriptionInfo?.segwitAddress ? (
+                            <div className={s.end}>
+                              That’s it. Check your wallet in about an hour.
+                            </div>
+                          ) : (
+                            <Button disabled={isMinting} type="submit">
+                              Inscribe
+                            </Button>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </form>
                 )}
