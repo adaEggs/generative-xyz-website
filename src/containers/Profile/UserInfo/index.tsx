@@ -3,23 +3,19 @@ import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
-import {
-  IC_EDIT_PROFILE,
-  IC_OFFER_SETTING,
-  SOCIAL_ICONS,
-} from '@constants/icons';
+import { IC_EDIT_PROFILE, SOCIAL_ICONS } from '@constants/icons';
+import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { formatAddress } from '@utils/format';
 import cn from 'classnames';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import s from './UserInfo.module.scss';
-import { useRouter } from 'next/router';
-import { ROUTE_PATH } from '@constants/route-path';
-import Link from 'next/link';
 
 export const UserInfo = (): JSX.Element => {
   const user = useAppSelector(getUserSelector);
@@ -80,7 +76,7 @@ export const UserInfo = (): JSX.Element => {
                         </Text>
                       </ButtonIcon>
                     </div>
-                    <div className={s.offerSetting}>
+                    {/* <div className={s.offerSetting}>
                       <ButtonIcon
                         sizes="large"
                         variants={'ghost'}
@@ -90,7 +86,7 @@ export const UserInfo = (): JSX.Element => {
                           Offer setting
                         </Text>
                       </ButtonIcon>
-                    </div>
+                    </div> */}
                   </>
                 )}
               </div>

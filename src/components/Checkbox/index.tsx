@@ -31,7 +31,7 @@ const Checkbox = ({
         onClick={onClick}
         {...props}
       />
-      <Text as={'label'} size={'16'} color={'black-60'} htmlFor={id}>
+      <Text as={'label'} size={'18'} color={'black-60'} htmlFor={id}>
         {label}
       </Text>
     </div>
