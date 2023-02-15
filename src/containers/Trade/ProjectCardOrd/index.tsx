@@ -93,9 +93,9 @@ export const ProjectCardOrd = ({ project, className }: IPros): JSX.Element => {
                   </Heading>
                 )}
               </div>
-              <div className={cs(s.btnBuyNow)}>
-                {project?.buyable ? 'Buy Now' : 'Transaction in progress'}
-              </div>
+              {project?.buyable && (
+                <div className={cs(s.btnBuyNow)}>Buy Now</div>
+              )}
             </div>
           )}
         </div>

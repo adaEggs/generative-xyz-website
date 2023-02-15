@@ -18,13 +18,13 @@ export const ProjectList = ({
           {listData?.map(project =>
             isNFTBuy ? (
               <ProjectCard
-                className={'col-wide-2_5 col-xl-3 col-lg-5 col-6'}
+                className={'col-wide-2_5 col-xl-2 col-lg-5 col-6'}
                 key={`project-item-${project.inscriptionID}`}
                 project={project}
               />
             ) : (
               <ProjectCardOrd
-                className={'col-wide-2_5 col-xl-3 col-lg-5 col-6'}
+                className={'col-wide-2_5 col-xl-2 col-lg-5 col-6'}
                 key={`project-item-${project.inscriptionID}`}
                 project={project}
               />

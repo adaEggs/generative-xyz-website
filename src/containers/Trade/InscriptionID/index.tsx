@@ -75,27 +75,35 @@ const InscriptionID: React.FC = (): React.ReactElement => {
     return (
       <div className={s.info}>
         <Heading as="h4" fontWeight="medium">
-          Inscription {tokenData?.index}
+          Inscription #{tokenData?.index}
         </Heading>
-        <Text size="14" color={'black-60'} className={s.info_labelPrice}>
-          {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}
-        </Text>
-        {(tokenData?.price || 0) > 0 && (
-          <Text
-            size={'20'}
-            className={
-              tokenData?.isCompleted
-                ? s.info_amountPriceSuccess
-                : s.info_amountPrice
-            }
-            style={{
-              marginBottom: tokenData?.buyable ? 32 : 0,
-            }}
-          >
-            {formatBTCPrice(new BigNumber(tokenData?.price || 0).toNumber())}{' '}
-            BTC
-          </Text>
+        {tokenData.buyable && (
+          <>
+            {' '}
+            <Text size="14" color={'black-60'} className={s.info_labelPrice}>
+              {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}
+            </Text>
+            {(tokenData?.price || 0) > 0 && (
+              <Text
+                size={'20'}
+                className={
+                  tokenData?.isCompleted
+                    ? s.info_amountPriceSuccess
+                    : s.info_amountPrice
+                }
+                style={{
+                  marginBottom: tokenData?.buyable ? 32 : 0,
+                }}
+              >
+                {formatBTCPrice(
+                  new BigNumber(tokenData?.price || 0).toNumber()
+                )}{' '}
+                BTC
+              </Text>
+            )}
+          </>
         )}
+
         {mobileScreen && tokenData?.name && (
           <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
         )}
@@ -123,39 +131,44 @@ const InscriptionID: React.FC = (): React.ReactElement => {
           </Text>
         </ButtonIcon> */}
         <div className={s.info_project_desc}>
-          <Text
-            size="14"
-            color="black-40"
-            fontWeight="medium"
-            className="text-uppercase"
-          >
-            description
-          </Text>
-          <div
-            className={s.token_description}
-            style={{ WebkitLineClamp: showMore ? 'unset' : '4' }}
-          >
-            <MarkdownPreview source={tokenData?.description} />
-          </div>
-          {tokenData?.description && tokenData?.description.length > 300 && (
+          {tokenData.buyable && (
             <>
-              {!showMore ? (
-                <Text
-                  as="span"
-                  onClick={() => setShowMore(!showMore)}
-                  fontWeight="semibold"
-                >
-                  See more
-                </Text>
-              ) : (
-                <Text
-                  as="span"
-                  onClick={() => setShowMore(!showMore)}
-                  fontWeight="semibold"
-                >
-                  See less
-                </Text>
-              )}
+              <Text
+                size="14"
+                color="black-40"
+                fontWeight="medium"
+                className="text-uppercase"
+              >
+                description
+              </Text>
+              <div
+                className={s.token_description}
+                style={{ WebkitLineClamp: showMore ? 'unset' : '4' }}
+              >
+                <MarkdownPreview source={tokenData?.description} />
+              </div>
+              {tokenData?.description &&
+                tokenData?.description.length > 300 && (
+                  <>
+                    {!showMore ? (
+                      <Text
+                        as="span"
+                        onClick={() => setShowMore(!showMore)}
+                        fontWeight="semibold"
+                      >
+                        See more
+                      </Text>
+                    ) : (
+                      <Text
+                        as="span"
+                        onClick={() => setShowMore(!showMore)}
+                        fontWeight="semibold"
+                      >
+                        See less
+                      </Text>
+                    )}
+                  </>
+                )}
             </>
           )}
           <div className={s.wrap_raw}>

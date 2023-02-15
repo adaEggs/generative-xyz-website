@@ -30,4 +30,28 @@
     padding: rem(15) rem(24);
     margin-left: rem(15);
   }
+
+  &_checkBox {
+    input {
+      width: 22px !important;
+      height: 22px !important;
+    }
+  }
+
+  &_btnIns {
+    font-weight: 500;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    letter-spacing: 0.01em;
+    color: #1c1c1c;
+    padding: rem(15) rem(24);
+    margin-left: rem(15);
+    background-color: transparent;
+
+    :hover {
+      opacity: 0.8;
+      background-color: white;
+      text-decoration: underline;
+    }
+  }
 }

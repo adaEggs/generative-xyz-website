@@ -75,7 +75,7 @@ const TokenID: React.FC = (): React.ReactElement => {
     return (
       <div className={s.info}>
         <Heading as="h4" fontWeight="medium">
-          Inscription {tokenData.index}
+          Inscription #{tokenData.index}
         </Heading>
         <Text size="14" color={'black-60'} className={s.info_labelPrice}>
           {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}

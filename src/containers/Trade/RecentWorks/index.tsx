@@ -62,7 +62,7 @@ export const RecentWorks = (): JSX.Element => {
   const goToInscriptionsPage = () => {
     router.push(ROUTE_PATH.INSCRIBE);
   };
-  const [isNFTBuy, setIsNFTBuy] = useState(true);
+  const [isNFTBuy, setIsNFTBuy] = useState(false);
   const handleChangeType = () => {
     setIsNFTBuy(!isNFTBuy);
   };
@@ -113,17 +113,11 @@ export const RecentWorks = (): JSX.Element => {
           <Checkbox
             checked={isNFTBuy}
             onClick={handleChangeType}
-            className={s.checkbox}
+            className={s.recentWorks_checkBox}
             id="isNFTBuy"
-            label="NFT buy"
-          />
-          <ButtonIcon
+            label="Buy Now"
             sizes="large"
-            className={s.recentWorks_btn}
-            onClick={goToInscriptionsPage}
-          >
-            Create an inscriptions
-          </ButtonIcon>
+          />
           <ButtonIcon
             sizes="large"
             className={s.recentWorks_btn}
@@ -131,10 +125,17 @@ export const RecentWorks = (): JSX.Element => {
           >
             List for sale
           </ButtonIcon>
+          <ButtonIcon
+            className={s.recentWorks_btnIns}
+            onClick={goToInscriptionsPage}
+            variants="ghost"
+          >
+            Create an inscription
+          </ButtonIcon>
         </Col>
       </Row>
       <Row className={s.recentWorks_projects}>
-        {isLoaded === false ? (
+        {!isLoaded ? (
           <ProjectListLoading numOfItems={12} />
         ) : (
           <>
