@@ -269,9 +269,9 @@ const MintEthModal: React.FC = () => {
                                     {formatEthPrice(
                                       projectData?.mintPriceEth || null
                                     )}{' '}
-                                    BTC Mint Price +{' '}
+                                    NFT PRICE +{' '}
                                     {formatEthPrice(projectData?.networkFeeEth)}{' '}
-                                    ETH BTC Network Fees)
+                                    Network Fees)
                                     <sup className={s.requiredTag}>*</sup>
                                   </label>
                                 ) : (
