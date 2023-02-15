@@ -158,7 +158,10 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               style={{ marginBottom: '20px' }}
             >
               <span title={`#${formatTokenId(tokenData?.tokenID || '')}`}>
-                #{formatTokenId(tokenData?.tokenID || '')}
+                #
+                {tokenData?.inscriptionIndex
+                  ? tokenData?.inscriptionIndex
+                  : formatTokenId(tokenData?.tokenID || '')}
               </span>
             </Heading>
 
