@@ -98,7 +98,7 @@ class APICaller {
         value: userLocation.organization,
       });
     } catch (err: unknown) {
-      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
       eventParams.push({
         key: 'error_get_api_ip',
         value: err,

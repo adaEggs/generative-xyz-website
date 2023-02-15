@@ -29,7 +29,7 @@ const sendAAPageView = ({ page, userId = 0, query = '' }: any): void => {
       query,
     });
   } catch (error: unknown) {
-    log(`AutonomousAnalytic sendPageView ${error}`, LogLevel.ERROR, LOG_PREFIX);
+    log(`AutonomousAnalytic sendPageView ${error}`, LogLevel.DEBUG, LOG_PREFIX);
   }
 };
 
@@ -66,7 +66,7 @@ const sendAAEvent = ({ eventName, data }: any): void => {
       userPseudoId,
     });
   } catch (error: unknown) {
-    log(`AutonomousAnalytic sendAAEvent ${error}`, LogLevel.ERROR, LOG_PREFIX);
+    log(`AutonomousAnalytic sendAAEvent ${error}`, LogLevel.DEBUG, LOG_PREFIX);
   }
 };
 
