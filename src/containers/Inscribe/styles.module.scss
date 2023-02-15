@@ -10,7 +10,7 @@
   .formLeft {
     width: rem(432px);
     min-height: rem(432px);
-    
+
     @include mobile {
       width: 100%;
       min-height: auto;
@@ -24,6 +24,7 @@
 
     .dropZoneContainer {
       height: 100%;
+
       label {
         display: flex;
         align-items: center;
@@ -35,7 +36,7 @@
   .formRight {
     width: calc(100% - 432px);
     padding-left: rem(48px);
-    
+
     @include mobile {
       width: 100%;
       padding-left: 0;
@@ -54,9 +55,9 @@
     padding: rem(48px);
     width: rem(1276px);
     max-width: 100%;
-    background: #ffffff;
-    box-shadow: 35px 15px 120px rgba(0, 0, 0, 0.15);
-    
+    background: #fff;
+    box-shadow: 35px 15px 120px rgb(0 0 0 / 15%);
+
     @include mobile {
       width: 100%;
     }
