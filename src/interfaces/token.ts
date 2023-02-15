@@ -23,6 +23,7 @@ export type Token = {
   ownerAddr: string;
   creator: User;
   tokenID: string;
+  inscriptionIndex: string;
   stats: {
     price: string;
   };
