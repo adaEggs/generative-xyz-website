@@ -174,7 +174,9 @@ export const getListingOrdinals = async (
 ): Promise<IListingordinals> => {
   try {
     const res = await fetch(
-      `${HOST_ORDINALS_EXPLORER}/api/inscriptions${from !== 0 ? `/${from}` : ''}`
+      `${HOST_ORDINALS_EXPLORER}/api/inscriptions${
+        from !== 0 ? `/${from}` : ''
+      }`
     );
     const dataRes = await res.json();
     const tasks = dataRes.inscriptions.map(async (inscriptionID: string) => {
