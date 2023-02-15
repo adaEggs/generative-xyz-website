@@ -17,7 +17,7 @@ interface IPros {
   className?: string;
 }
 
-export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
+export const ProjectCardOrd = ({ project, className }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
@@ -101,7 +101,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
         </div>
       </div>
       <Link
-        href={`${ROUTE_PATH.TRADE}/${project.inscriptionID}`}
+        href={`${ROUTE_PATH.TRADE}/inscription/${project.inscriptionID}`}
         className={s.mask}
       />
     </div>
