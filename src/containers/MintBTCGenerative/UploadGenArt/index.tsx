@@ -22,7 +22,6 @@ const LOG_PREFIX = 'UploadGenArt';
 
 const UploadGenArt: React.FC = (): ReactElement => {
   const router = useRouter();
-  // const [isProjectWork, setIsProjectWork] = useState(true);
   const {
     collectionType,
     setCollectionType,
@@ -34,10 +33,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
     imageCollectionFile,
     setImageCollectionFile,
   } = useContext(MintBTCGenerativeContext);
-
-  // const handleChangeIsProjectWork = (): void => {
-  //   setIsProjectWork(!isProjectWork);
-  // };
 
   const processGenerativeFile = async (file: File) => {
     try {
@@ -255,15 +250,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
             </div>
           </div>
           <div className={s.container}>
-            <div className={s.checkboxWrapper}>
-              {/* <Checkbox
-                checked={isProjectWork}
-                onClick={handleChangeIsProjectWork}
-                className={s.checkbox}
-                id="workProperly"
-                label="My NFT collection is ready to go!"
-              /> */}
-            </div>
+            <div className={s.checkboxWrapper}></div>
             <div className={s.actionWrapper}>
               <Button
                 disabled={!isValidImageCollection}

@@ -2,7 +2,7 @@ import s from './styles.module.scss';
 import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import _get from 'lodash/get';
@@ -18,10 +18,14 @@ import {
   uploadBTCProjectFiles,
 } from '@services/project';
 import { ICreateBTCProjectPayload } from '@interfaces/api/project';
-import { fileToBase64 } from '@utils/file';
+import { blobToBase64, fileToBase64 } from '@utils/file';
 import { validateBTCWalletAddress } from '@utils/validate';
 import { detectUsedLibs } from '@utils/sandbox';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { getMempoolFeeRate } from '@services/mempool';
+import { calculateNetworkFee } from '@utils/inscribe';
+import { InscribeMintFeeRate } from '@enums/inscribe';
+import { formatBTCPrice } from '@utils/format';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -46,9 +50,74 @@ const SetPrice = () => {
     filesSandbox,
   } = useContext(MintBTCGenerativeContext);
   const [isMinting, setIsMinting] = useState(false);
+  const [feeRate, setFeeRate] = useState<number>(-1);
+  const [networkFee, setNetworkFee] = useState(0);
   const numberOfFile = imageCollectionFile
     ? Object.keys(imageCollectionFile).length
     : 0;
+
+  const fetchNetworkFee = async (): Promise<number> => {
+    try {
+      const res = await getMempoolFeeRate();
+      setFeeRate(res.fastestFee);
+      return res.fastestFee;
+    } catch (err: unknown) {
+      log('fetchNetworkFee error', LogLevel.ERROR, LOG_PREFIX);
+      return -1;
+    }
+  };
+
+  const getEstimateNetworkFee = async (): Promise<void> => {
+    try {
+      let networkFeeRate = feeRate;
+      if (networkFeeRate < 0) {
+        networkFeeRate = await fetchNetworkFee();
+      }
+
+      if (networkFeeRate < 0) {
+        networkFeeRate = InscribeMintFeeRate.Fastest;
+      }
+
+      if (collectionType === CollectionType.GENERATIVE) {
+        if (!rawFile) {
+          setNetworkFee(0);
+          return;
+        }
+
+        const fileBase64 = await fileToBase64(rawFile);
+        const sats = calculateNetworkFee(
+          networkFeeRate,
+          fileBase64 as string,
+          0
+        );
+        setNetworkFee(sats);
+      }
+      if (collectionType === CollectionType.IMAGES) {
+        if (!imageCollectionFile) {
+          setNetworkFee(0);
+          return;
+        }
+        const [_, largestFile] = Object.entries(imageCollectionFile).reduce(
+          (prev, current) => {
+            const [_prevK, _prevV] = prev;
+            const [_currentK, _currentV] = current;
+
+            return _prevV.blob.size > _currentV.blob.size ? prev : current;
+          }
+        );
+
+        const fileBase64 = await blobToBase64(largestFile.blob);
+        const sats = calculateNetworkFee(
+          networkFeeRate,
+          fileBase64 as string,
+          0
+        );
+        setNetworkFee(sats);
+      }
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+    }
+  };
 
   const validateForm = (values: ISetPriceFormValue): Record<string, string> => {
     const errors: Record<string, string> = {};
@@ -222,6 +291,10 @@ const SetPrice = () => {
     }
   };
 
+  useEffect(() => {
+    getEstimateNetworkFee();
+  }, [rawFile, collectionType, imageCollectionFile]);
+
   return (
     <Formik
       key="setPriceForm"
@@ -331,6 +404,16 @@ const SetPrice = () => {
                 </div>
                 {errors.mintPrice && touched.mintPrice && (
                   <p className={s.error}>{errors.mintPrice}</p>
+                )}
+                {networkFee && (
+                  <Text
+                    as={'p'}
+                    size={'14'}
+                    color={'black-60'}
+                    className={s.inputDesc}
+                  >
+                    {`Estimate network fee ${formatBTCPrice(networkFee)} BTC`}
+                  </Text>
                 )}
               </div>
               <div className={s.formItem}>

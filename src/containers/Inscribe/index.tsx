@@ -199,7 +199,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                     {`${formatBTCPrice(
                                       calculateMintFee(
                                         InscribeMintFeeRate.Economy,
-                                        fileBase64
+                                        file?.size || 0
                                       )
                                     )} BTC`}
                                   </p>
@@ -222,7 +222,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                     {`${formatBTCPrice(
                                       calculateMintFee(
                                         InscribeMintFeeRate.Faster,
-                                        fileBase64
+                                        file?.size || 0
                                       )
                                     )} BTC`}
                                   </p>
@@ -247,7 +247,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                     {`${formatBTCPrice(
                                       calculateMintFee(
                                         InscribeMintFeeRate.Fastest,
-                                        fileBase64
+                                        file?.size || 0
                                       )
                                     )} BTC`}
                                   </p>
