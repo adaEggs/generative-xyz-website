@@ -11,16 +11,28 @@ import {
 } from '@contexts/generative-project-detail-context';
 import { Project } from '@interfaces/project';
 import cs from 'classnames';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
 import MintWalletModal from './MintWalletModal';
 import TokenTopFilter from './TokenTopFilter';
 import styles from './styles.module.scss';
+import { useRouter } from 'next/router';
+import { SATOSHIS_PAGE, SATOSHIS_PROJECT_ID } from '@constants/generative';
 
 const GenerativeProjectDetail: React.FC<{
   isWhitelist?: boolean;
   project?: Project;
 }> = ({ isWhitelist, project }): React.ReactElement => {
+  const router = useRouter();
+
+  const { projectID } = router.query;
+
+  useEffect(() => {
+    if (projectID === SATOSHIS_PROJECT_ID) {
+      router.push(SATOSHIS_PAGE);
+    }
+  }, [router.asPath]);
+
   const {
     projectData: projectInfo,
     listItems,
@@ -52,7 +64,7 @@ const GenerativeProjectDetail: React.FC<{
               setIsPopupPayment(true);
               setPaymentMethod(chain);
             }}
-            project={isWhitelist ? project : projectInfo}
+            project={project ? project : projectInfo}
             isWhitelist={isWhitelist}
           />
 

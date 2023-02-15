@@ -24,6 +24,7 @@ import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { formatBTCPrice } from '@utils/format';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
+import { WalletContext } from '@contexts/wallet-context';
 
 interface IFormValue {
   address: string;
@@ -36,14 +37,16 @@ const MintBTCGenerativeModal: React.FC = () => {
     GenerativeProjectDetailContext
   );
   const user = useAppSelector(getUserSelector);
+  const { connect } = useContext(WalletContext);
 
   const { setIsPopupPayment } = useContext(BitcoinProjectContext);
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>(null);
   const [_isMinting, setIsMinting] = useState(false);
-  const [step, setsTep] = useState<'info' | 'mint'>('info');
+  const [step, setsTep] = useState<'info' | 'mint' | null>(null);
   const [addressInput, setAddressInput] = useState<string>('');
+  const [_isConnecting, setIsConnecting] = useState<boolean>(false);
 
   const getBTCAddress = async (walletAddress: string): Promise<void> => {
     if (!projectData) return;
@@ -62,6 +65,17 @@ const MintBTCGenerativeModal: React.FC = () => {
       setReceiverAddress(null);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleConnectWallet = async (): Promise<void> => {
+    try {
+      setIsConnecting(true);
+      await connect();
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+    } finally {
+      setIsConnecting(false);
     }
   };
 
@@ -110,8 +124,17 @@ const MintBTCGenerativeModal: React.FC = () => {
   const priceMemo = useMemo(() => formatBTCPrice(Number(price)), [price]);
 
   useEffect(() => {
+    if (!user && receiverAddress) {
+      handleConnectWallet();
+    }
+  }, [receiverAddress, user, price]);
+
+  useEffect(() => {
     if (userBtcAddress) {
+      setsTep('mint');
       getBTCAddress(userBtcAddress);
+    } else {
+      setsTep('info');
     }
   }, [userBtcAddress]);
 
@@ -227,9 +250,25 @@ const MintBTCGenerativeModal: React.FC = () => {
                           {receiverAddress && price && !isLoading && (
                             <>
                               <div className={s.formItem}>
-                                <label className={s.label} htmlFor="price">
-                                  Price <sup className={s.requiredTag}>*</sup>
-                                </label>
+                                {projectData?.networkFee ? (
+                                  <label className={s.label} htmlFor="price">
+                                    Total Price (
+                                    {formatBTCPrice(
+                                      Number(projectData?.mintPrice)
+                                    )}{' '}
+                                    NFT PRICE +{' '}
+                                    {formatBTCPrice(
+                                      Number(projectData?.networkFee)
+                                    )}{' '}
+                                    Network Fees)
+                                    <sup className={s.requiredTag}>*</sup>
+                                  </label>
+                                ) : (
+                                  <label className={s.label} htmlFor="price">
+                                    Price <sup className={s.requiredTag}>*</sup>
+                                  </label>
+                                )}
+
                                 <div className={s.inputContainer}>
                                   <input
                                     disabled

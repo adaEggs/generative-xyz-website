@@ -76,7 +76,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
       setInscriptionInfo(null);
       const res = await generateReceiverAddress({
         walletAddress: address,
-        name: '',
+        fileName: file?.name || '',
         file: fileBase64,
         fee_rate: feeRate,
       });

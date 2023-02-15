@@ -45,7 +45,7 @@ const MintEthModal: React.FC = () => {
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>(null);
   const [_isMinting, setIsMinting] = useState(false);
-  const [step, setsTep] = useState<'info' | 'mint'>('info');
+  const [step, setsTep] = useState<'info' | 'mint' | null>(null);
   const [addressInput, setAddressInput] = useState<string>('');
   const [_isConnecting, setIsConnecting] = useState<boolean>(false);
 
@@ -145,7 +145,10 @@ const MintEthModal: React.FC = () => {
 
   useEffect(() => {
     if (userBtcAddress) {
+      setsTep('mint');
       getBTCAddress(userBtcAddress);
+    } else {
+      setsTep('info');
     }
   }, [userBtcAddress]);
 
@@ -260,9 +263,22 @@ const MintEthModal: React.FC = () => {
                           {receiverAddress && price && !isLoading && (
                             <>
                               <div className={s.formItem}>
-                                <label className={s.label} htmlFor="price">
-                                  Price <sup className={s.requiredTag}>*</sup>
-                                </label>
+                                {projectData?.networkFeeEth ? (
+                                  <label className={s.label} htmlFor="price">
+                                    Total Price (
+                                    {formatEthPrice(
+                                      projectData?.mintPriceEth || null
+                                    )}{' '}
+                                    NFT PRICE +{' '}
+                                    {formatEthPrice(projectData?.networkFeeEth)}{' '}
+                                    Network Fees)
+                                    <sup className={s.requiredTag}>*</sup>
+                                  </label>
+                                ) : (
+                                  <label className={s.label} htmlFor="price">
+                                    Price <sup className={s.requiredTag}>*</sup>
+                                  </label>
+                                )}
                                 <div className={s.inputContainer}>
                                   <input
                                     disabled

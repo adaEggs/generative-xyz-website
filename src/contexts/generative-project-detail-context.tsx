@@ -1,5 +1,9 @@
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
-import { SATOSHIS_FREE_MINT, SATOSHIS_PROJECT_ID } from '@constants/generative';
+import {
+  SATOSHIS_FREE_MINT,
+  SATOSHIS_PAGE,
+  SATOSHIS_PROJECT_ID,
+} from '@constants/generative';
 import { LogLevel } from '@enums/log-level';
 import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
@@ -63,6 +67,7 @@ export interface IGenerativeProjectDetailContext {
   hideMintBTCModal: () => void;
   isBitcoinProject: boolean;
   isWhitelistProject: boolean;
+  isSatoshisPage: boolean;
 }
 
 const initialValue: IGenerativeProjectDetailContext = {
@@ -127,6 +132,7 @@ const initialValue: IGenerativeProjectDetailContext = {
   },
   isBitcoinProject: false,
   isWhitelistProject: false,
+  isSatoshisPage: false,
 };
 
 export const GenerativeProjectDetailContext =
@@ -154,12 +160,17 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     to_price: '',
   });
   const router = useRouter();
-  const { projectID } = router.query as {
+
+  const { projectID } = router?.query as {
     projectID: string;
   };
 
   const isWhitelistProject = useMemo(() => {
     return router.pathname === SATOSHIS_FREE_MINT;
+  }, []);
+
+  const isSatoshisPage = useMemo(() => {
+    return router.pathname === SATOSHIS_PAGE;
   }, []);
 
   const handleFetchNextPage = () => {
@@ -177,11 +188,11 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   };
 
   const fetchProjectDetail = async (): Promise<void> => {
-    if (projectID) {
+    if (projectID || isSatoshisPage) {
       try {
         const data = await getProjectDetail({
           contractAddress: GENERATIVE_PROJECT_CONTRACT,
-          projectID,
+          projectID: isSatoshisPage ? SATOSHIS_PROJECT_ID : projectID,
         });
         dispatch(setProjectCurrent(data));
         setProjectData(data);
@@ -237,7 +248,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   };
 
   const fetchWhitelistProjectItems = async (): Promise<void> => {
-    if (isWhitelistProject) {
+    if (isWhitelistProject || isSatoshisPage) {
       try {
         if (page > 1) {
           setIsNextPageLoaded(false);
@@ -339,6 +350,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       hideMintBTCModal,
       isBitcoinProject,
       isWhitelistProject,
+      isSatoshisPage,
     };
   }, [
     projectData,
@@ -371,6 +383,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     hideMintBTCModal,
     isBitcoinProject,
     isWhitelistProject,
+    isSatoshisPage,
   ]);
 
   return (
