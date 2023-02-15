@@ -2,7 +2,7 @@ import Button from '@components/ButtonIcon';
 import Skeleton from '@components/Skeleton';
 import ClientOnly from '@components/Utils/ClientOnly';
 import { CDN_URL } from '@constants/config';
-import SandboxPreview from '@containers/Sandbox/SandboxPreview';
+import SandboxPreview from '@components/SandboxPreview';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
 import { PreviewDisplayMode } from '@enums/mint-generative';
 import { ISandboxRef } from '@interfaces/sandbox';
@@ -180,7 +180,7 @@ const ProjectPreview = () => {
                 {formValues.mintPrice && currentStep > 2 ? (
                   <span
                     className={s.mintPrice}
-                  >{`${formValues.mintPrice} ETH`}</span>
+                  >{`${formValues.mintPrice} BTC`}</span>
                 ) : (
                   <Skeleton width={100} height={30}></Skeleton>
                 )}

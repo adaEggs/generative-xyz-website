@@ -17,7 +17,6 @@ import {
   getProjectDetail,
   uploadBTCProjectFiles,
 } from '@services/project';
-import { v4 as uuidv4 } from 'uuid';
 import { ICreateBTCProjectPayload } from '@interfaces/api/project';
 import { fileToBase64 } from '@utils/file';
 import { validateBTCWalletAddress } from '@utils/validate';
@@ -27,9 +26,9 @@ import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 const LOG_PREFIX = 'SetPrice';
 
 type ISetPriceFormValue = {
-  maxSupply: number;
-  mintPrice: number;
-  royalty: number;
+  maxSupply: string | number;
+  mintPrice: string | number;
+  royalty: string | number;
   creatorWalletAddress: string;
 };
 
@@ -58,12 +57,16 @@ const SetPrice = () => {
     setFormValues({
       ...formValues,
       ...{
-        creatorWalletAddress: values.creatorWalletAddress ?? '',
-        maxSupply: values.maxSupply.toString() ? values.maxSupply : 0,
-        mintPrice: values.mintPrice.toString()
-          ? values.mintPrice.toString()
-          : '0',
-        royalty: values.royalty.toString() ? values.royalty : 10,
+        creatorWalletAddress: values.creatorWalletAddress || '',
+        maxSupply: values.maxSupply
+          ? parseInt(values.maxSupply.toString(), 10)
+          : undefined,
+        mintPrice: values.mintPrice
+          ? parseFloat(values.mintPrice.toString())
+          : undefined,
+        royalty: values.royalty
+          ? parseInt(values.royalty.toString(), 10)
+          : undefined,
       },
     });
 
@@ -75,24 +78,28 @@ const SetPrice = () => {
 
     if (!values.maxSupply.toString()) {
       errors.maxSupply = 'Number of editions is required.';
-    } else if (values.maxSupply <= 0) {
+    } else if (parseInt(values.maxSupply.toString(), 10) <= 0) {
       errors.maxSupply = 'Invalid number. Must be greater than 0.';
     } else if (
       collectionType === CollectionType.IMAGES &&
-      values.maxSupply > numberOfFile
+      parseInt(values.maxSupply.toString(), 10) > numberOfFile
     ) {
       errors.maxSupply = `Invalid number. Must be equal or less than ${numberOfFile}.`;
     }
 
     if (!values.mintPrice.toString()) {
       errors.mintPrice = 'Price is required.';
-    } else if (values.mintPrice < MIN_MINT_BTC_PROJECT_PRICE) {
+    } else if (
+      parseFloat(values.mintPrice.toString()) < MIN_MINT_BTC_PROJECT_PRICE
+    ) {
       errors.mintPrice = `Invalid number. Must be equal or greater than ${MIN_MINT_BTC_PROJECT_PRICE}.`;
     }
 
     if (!values.royalty.toString()) {
       errors.royalty = 'Royalty is required.';
-    } else if (values.royalty > 25) {
+    } else if (parseInt(values.royalty.toString(), 10) < 0) {
+      errors.royalty = 'Invalid number. Must be equal or greater than 0.';
+    } else if (parseInt(values.royalty.toString(), 10) > 25) {
       errors.royalty = 'Invalid number. Must be  less then 25.';
     }
 
@@ -166,7 +173,7 @@ const SetPrice = () => {
         scripts: [],
         styles: '',
         tokenDescription: tokenDescription ?? '',
-        royalty: royalty ? royalty * 100 : 1000,
+        royalty: royalty !== undefined ? royalty * 100 : 0,
         socialDiscord: socialDiscord ?? '',
         socialInstagram: socialInstagram ?? '',
         socialMedium: socialMedium ?? '',
@@ -183,11 +190,18 @@ const SetPrice = () => {
       };
 
       if (collectionType === CollectionType.IMAGES) {
-        const uploadRes = await uploadBTCProjectFiles({
-          file: rawFile,
-          projectName: name ?? uuidv4(),
-        });
-        payload.zipLink = uploadRes.url;
+        try {
+          const uploadRes = await uploadBTCProjectFiles({
+            file: rawFile,
+            projectName: payload.name,
+          });
+          payload.zipLink = uploadRes.url;
+        } catch (err: unknown) {
+          log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+          setShowErrorAlert({ open: true, message: 'Upload file error.' });
+          setIsMinting(false);
+          return;
+        }
       }
 
       if (collectionType === CollectionType.GENERATIVE) {
@@ -212,15 +226,14 @@ const SetPrice = () => {
     <Formik
       key="setPriceForm"
       initialValues={{
-        maxSupply: formValues.maxSupply ?? 0,
-        mintPrice: parseFloat(formValues.mintPrice ?? '0.01'),
-        royalty: formValues.royalty ?? 10,
+        maxSupply: formValues.maxSupply || '',
+        mintPrice: formValues.mintPrice || '',
+        royalty: formValues.royalty || '',
         creatorWalletAddress: formValues.creatorWalletAddress ?? '',
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
       validateOnChange
-      enableReinitialize
     >
       {({
         values,
@@ -236,15 +249,6 @@ const SetPrice = () => {
               <h3 className={s.descriptionTitle}>
                 How will your piece be sold
               </h3>
-              {/* <Text
-                size={'16'}
-                as={'p'}
-                fontWeight={'regular'}
-                className={s.description}
-              >
-                Name your price, the number of outputs and the royalties fee.
-                Remember, these numbers can be changed later after publishing.
-              </Text> */}
             </div>
             <div className={s.divider} />
             <div className={s.formWrapper}>

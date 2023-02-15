@@ -2,7 +2,7 @@ import Button from '@components/ButtonIcon';
 import Skeleton from '@components/Skeleton';
 import ClientOnly from '@components/Utils/ClientOnly';
 import { CDN_URL } from '@constants/config';
-import SandboxPreview from '@containers/Sandbox/SandboxPreview';
+import SandboxPreview from '@components/SandboxPreview';
 import { MintGenerativeContext } from '@contexts/mint-generative-context';
 import { PreviewDisplayMode } from '@enums/mint-generative';
 import { ISandboxRef } from '@interfaces/sandbox';

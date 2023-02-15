@@ -7,6 +7,7 @@ import {
   RawTokenAttributes,
   SandboxFiles,
 } from '@interfaces/sandbox';
+import { getUserSelector } from '@redux/user/selector';
 import { generateHash } from '@utils/generate-data';
 import { useRouter } from 'next/router';
 import React, {
@@ -20,6 +21,7 @@ import React, {
   useEffect,
   PropsWithChildren,
 } from 'react';
+import { useSelector } from 'react-redux';
 
 export type TMintBTCGenerativeContext = {
   currentStep: number;
@@ -105,6 +107,7 @@ export const MintBTCGenerativeContext =
 export const MintBTCGenerativeContextProvider = ({
   children,
 }: PropsWithChildren) => {
+  const user = useSelector(getUserSelector);
   const router = useRouter();
   const { stepParam } = router.query;
   const [filesSandbox, setFilesSandbox] = useState<SandboxFiles | null>(null);
@@ -116,7 +119,9 @@ export const MintBTCGenerativeContextProvider = ({
   const sandboxRef = useRef<ISandboxRef | null>(null);
   const [hash, setHash] = useState<string>(generateHash());
   const [formValues, setFormValues] = useState<Partial<IBTCFormValue>>({
-    mintPrice: MIN_MINT_BTC_PROJECT_PRICE.toString(),
+    mintPrice: MIN_MINT_BTC_PROJECT_PRICE,
+    creatorWalletAddress: user?.wallet_address_btc || '',
+    royalty: 10,
   });
   const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(
     null
