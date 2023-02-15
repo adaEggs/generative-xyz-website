@@ -48,6 +48,8 @@ export type Project = {
   whiteListEthContracts?: string[];
   isFullChain: boolean;
   isHidden: boolean;
+  networkFee?: string;
+  networkFeeEth?: string;
 };
 
 export type BTCProject = Project & {

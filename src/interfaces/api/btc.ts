@@ -5,7 +5,7 @@ export interface IGenerateReceiverAddressPayload {
 
 export interface IGenerateReceiverAddressResponse {
   address: string;
-  price: string;
+  Price: string;
 }
 
 export interface IMintGenerativePayload {
