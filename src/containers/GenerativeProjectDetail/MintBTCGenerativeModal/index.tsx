@@ -42,7 +42,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>(null);
   const [_isMinting, setIsMinting] = useState(false);
-  const [step, setsTep] = useState<'info' | 'mint'>('info');
+  const [step, setsTep] = useState<'info' | 'mint' | null>(null);
   const [addressInput, setAddressInput] = useState<string>('');
 
   const getBTCAddress = async (walletAddress: string): Promise<void> => {
@@ -111,7 +111,10 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   useEffect(() => {
     if (userBtcAddress) {
+      setsTep('mint');
       getBTCAddress(userBtcAddress);
+    } else {
+      setsTep('info');
     }
   }, [userBtcAddress]);
 

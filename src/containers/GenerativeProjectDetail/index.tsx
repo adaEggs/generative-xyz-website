@@ -52,7 +52,7 @@ const GenerativeProjectDetail: React.FC<{
               setIsPopupPayment(true);
               setPaymentMethod(chain);
             }}
-            project={isWhitelist ? project : projectInfo}
+            project={project ? project : projectInfo}
             isWhitelist={isWhitelist}
           />
 
