@@ -23,7 +23,7 @@ import { validateBTCWalletAddress } from '@utils/validate';
 import { detectUsedLibs } from '@utils/sandbox';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { getMempoolFeeRate } from '@services/mempool';
-import { calculateMintFee } from '@utils/inscribe';
+import { calculateNetworkFee } from '@utils/inscribe';
 import { InscribeMintFeeRate } from '@enums/inscribe';
 import { formatBTCPrice } from '@utils/format';
 
@@ -85,7 +85,11 @@ const SetPrice = () => {
         }
 
         const fileBase64 = await fileToBase64(rawFile);
-        const sats = calculateMintFee(networkFeeRate, fileBase64 as string, 0);
+        const sats = calculateNetworkFee(
+          networkFeeRate,
+          fileBase64 as string,
+          0
+        );
         setNetworkFee(sats);
       }
       if (collectionType === CollectionType.IMAGES) {
@@ -103,7 +107,11 @@ const SetPrice = () => {
         );
 
         const fileBase64 = await blobToBase64(largestFile.blob);
-        const sats = calculateMintFee(networkFeeRate, fileBase64 as string, 0);
+        const sats = calculateNetworkFee(
+          networkFeeRate,
+          fileBase64 as string,
+          0
+        );
         setNetworkFee(sats);
       }
     } catch (err: unknown) {
