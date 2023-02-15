@@ -33,4 +33,7 @@ export const MINT_TRANSFER_FEE = 16000;
 export const SANDBOX_BTC_FILE_SIZE_LIMIT = 400; // kb
 export const MIN_MINT_BTC_PROJECT_PRICE = 0.01;
 
+// Mempool
+export const MEMPOOL_API_URL = 'https://mempool.space/api/v1';
+
 /* eslint-enable @typescript-eslint/no-non-null-assertion */

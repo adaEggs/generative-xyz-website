@@ -3,7 +3,7 @@ import Skeleton from '@components/Skeleton';
 import Text from '@components/Text';
 import ClientOnly from '@components/Utils/ClientOnly';
 import { CDN_URL } from '@constants/config';
-import SandboxPreview from '@containers/Sandbox/SandboxPreview';
+import SandboxPreview from '@components/SandboxPreview';
 import { PreviewDisplayMode } from '@enums/mint-generative';
 import { ISandboxRef } from '@interfaces/sandbox';
 import { Token } from '@interfaces/token';
