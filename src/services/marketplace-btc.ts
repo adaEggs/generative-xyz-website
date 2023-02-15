@@ -174,9 +174,7 @@ export const getListingOrdinals = async (
 ): Promise<IListingordinals> => {
   try {
     const res = await fetch(
-      `${HOST_ORDINALS_EXPLORER}/api/inscriptions${
-        from !== 0 ? `/${from}` : ''
-      }`
+      `${HOST_ORDINALS_EXPLORER}/api/inscriptions${from !== 0 ? `/${from}` : ''}`
     );
     const dataRes = await res.json();
     const tasks = dataRes.inscriptions.map(async (inscriptionID: string) => {
@@ -197,6 +195,33 @@ export const getListingOrdinals = async (
     return {
       ...dataRes,
       data,
+    };
+  } catch (err: unknown) {
+    log('failed to get get fee', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get fee');
+  }
+};
+
+export const getDetailOrdinals = async (
+  inscriptionID: string
+): Promise<IGetMarketplaceBtcListItem> => {
+  try {
+    const res = await fetch(
+      `${HOST_ORDINALS_EXPLORER}/api/inscription/${inscriptionID}`
+    );
+    const dataRes = await res.json();
+    const data = await getOrdAddresByInscriptionID(inscriptionID);
+    return {
+      ...dataRes,
+      ...data,
+      inscriptionID: inscriptionID,
+      price: '',
+      name: data.ordinals_address || inscriptionID,
+      description: inscriptionID,
+      image: `${HOST_ORDINALS_EXPLORER}/content/${inscriptionID}`,
+      orderID: data.index,
+      buyable: false,
+      isCompleted: false,
     };
   } catch (err: unknown) {
     log('failed to get get fee', LogLevel.ERROR, LOG_PREFIX);

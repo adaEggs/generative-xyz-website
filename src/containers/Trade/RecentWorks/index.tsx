@@ -153,7 +153,7 @@ export const RecentWorks = (): JSX.Element => {
                 }
                 endMessage={<></>}
               >
-                <ProjectList listData={listData} />
+                <ProjectList isNFTBuy={isNFTBuy} listData={listData} />
               </InfiniteScroll>
             )}
             {!isNFTBuy && (
@@ -171,7 +171,7 @@ export const RecentWorks = (): JSX.Element => {
                 }
                 endMessage={<></>}
               >
-                <ProjectList listData={dataOrd} />
+                <ProjectList isNFTBuy={isNFTBuy} listData={dataOrd} />
               </InfiniteScroll>
             )}
           </>
