@@ -46,6 +46,7 @@
     margin: 0 auto;
     padding: rem(48px);
     width: rem(1276px);
+    max-width: 100%;
     background: #FFFFFF;
     box-shadow: 35px 15px 120px rgba(0, 0, 0, 0.15);
     @include mobile {
