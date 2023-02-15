@@ -113,16 +113,6 @@ const Inscribe: React.FC = (): React.ReactElement => {
       <div className={s.mintTool}>
         <div className={s.container}>
           <div className={s.wrapper}>
-            {/* <h1 className={s.title}>
-              The easiest way to create an ordinal inscription
-            </h1>
-            <h2 className={s.sub_title}>
-              • No full node needed. • No wallet needed. • And it’s free.
-            </h2>
-            <p className={s.upload_title}>What do you want to inscribe?</p>
-            <p className={s.upload_sub_title}>
-              Select an image. Upload a pdf. Inscribe anything.
-            </p> */}
             <div className={s.formWrapper}>
               <Formik
                 key="mintBTCGenerativeForm"
