@@ -36,4 +36,15 @@ export const MIN_MINT_BTC_PROJECT_PRICE = 0;
 // Mempool
 export const MEMPOOL_API_URL = 'https://mempool.space/api/v1';
 
+// AA tracking config
+export const AA_BASE_URL =
+  'https://autonomous-analytics-qffztaoryq-uc.a.run.app/api/v1';
+export const AA_CLIENT_TOKEN = process.env.NEXT_PUBLIC_AA_CLIENT_TOKEN!;
+export const AA_PLATFORM = 'web';
+
+// RAPI config
+export const RAPI_URL = 'https://telize-v1.p.rapidapi.com/geoip';
+export const RAPI_HOST = 'telize-v1.p.rapidapi.com';
+export const RAPID_CLIENT_TOKEN = process.env.NEXT_PUBLIC_RAPID_CLIENT_TOKEN!;
+
 /* eslint-enable @typescript-eslint/no-non-null-assertion */

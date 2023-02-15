@@ -8,6 +8,7 @@ import React, { PropsWithChildren, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
 import { User } from '@interfaces/user';
+import { LocalStorageKey } from '@enums/local-storage';
 
 const LOG_PREFIX = 'AuthWrapper';
 
@@ -30,6 +31,11 @@ const AuthWrapper: React.FC<PropsWithChildren> = ({
         const userRes = await getProfile();
         checkUserRedirect(userRes);
         dispatch(setUser(userRes));
+        localStorage.setItem(LocalStorageKey.USER_ID, userRes.id);
+        localStorage.setItem(
+          LocalStorageKey.USER_WALLET_ADDRESS,
+          userRes.walletAddress
+        );
       } catch (err: unknown) {
         log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
         clearAuthStorage();

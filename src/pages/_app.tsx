@@ -8,11 +8,13 @@ import {
 import { WalletProvider } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
 import store from '@redux';
+import { sendAAPageView } from '@services/aa-tracking';
 import '@styles/index.scss';
 import log from '@utils/logger';
 import { NextComponentType, NextPageContext } from 'next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import NextNprogress from 'nextjs-progressbar';
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
@@ -26,6 +28,7 @@ interface MyAppProps extends AppProps {
 }
 
 export default function App({ Component, pageProps }: MyAppProps) {
+  const router = useRouter();
   const { seoInfo = {} } = pageProps;
   const { title, description, image } = seoInfo;
 
@@ -45,6 +48,12 @@ export default function App({ Component, pageProps }: MyAppProps) {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
   }, []);
+
+  useEffect(() => {
+    if (router.isReady) {
+      sendAAPageView({ page: window.location.pathname });
+    }
+  }, [router.route]);
 
   return (
     <>
