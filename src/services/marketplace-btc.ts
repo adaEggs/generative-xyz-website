@@ -2,7 +2,10 @@ import { LogLevel } from '@enums/log-level';
 import { get, post } from '@services/http-client';
 import log from '@utils/logger';
 import querystring from 'query-string';
-import { getOrdAddresByInscriptionID, getOrdContentByInscriptionID } from '@utils/parseOrdHTML';
+import {
+  getOrdAddresByInscriptionID,
+  getOrdContentByInscriptionID,
+} from '@utils/parseOrdHTML';
 
 const LOG_PREFIX = 'MarketplaceBtcService';
 
