@@ -23,6 +23,13 @@ export const getTokenUri = async (
     const res = await get<IGetGenerativeTokenUriResponse>(
       `${API_TOKEN_URI_PATH}/${contractAddress}/${tokenID}`
     );
+    // TODO: SANG TEST
+    return {
+      ...res,
+      buyable: true,
+      orderID: '121212121',
+      priceBTC: '100000000',
+    };
     return res;
   } catch (err: unknown) {
     log('failed to get token uri', LogLevel.ERROR, LOG_PREFIX);

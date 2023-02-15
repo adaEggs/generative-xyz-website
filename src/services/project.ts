@@ -56,7 +56,16 @@ export const getProjectItems = async (
     const res = await get<IGetProjectTokensResponse>(
       `${API_PATH}/${params.contractAddress}/tokens${qs}`
     );
-    return res;
+    // TODO: SANG TEST
+    return {
+      ...res,
+      result: res.result.map(data => ({
+        ...data,
+        buyable: true,
+        orderID: '1234',
+        priceBTC: '10000000',
+      })),
+    };
   } catch (err: unknown) {
     log('failed to get project items', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get project items');
