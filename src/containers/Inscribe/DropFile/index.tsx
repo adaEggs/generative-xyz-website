@@ -26,9 +26,12 @@ const DropFile: React.FC<IProps> = ({
     onChange(file);
   };
 
-  const onSizeError = (): void => {
+  const onSizeError = (err: unknown): void => {
+    if (err === 'File size is too small') {
+      return setError(`File size error, minimum file size is 4Kb`);
+    }
     setError(
-      `File size error, maximum file size is ${MINT_TOOL_MAX_FILE_SIZE}MB`
+      `File size error, maximum file size is ${MINT_TOOL_MAX_FILE_SIZE}MB, minimum file size is 4Kb`
     );
   };
 
@@ -47,7 +50,7 @@ const DropFile: React.FC<IProps> = ({
         handleChange={onChangeFile}
         name={'fileUploader'}
         maxSize={MINT_TOOL_MAX_FILE_SIZE}
-        minSize={0}
+        minSize={0.004}
         onSizeError={onSizeError}
         onTypeError={onTypeError}
         fileOrFiles={fileOrFiles}
