@@ -256,11 +256,11 @@ const MintBTCGenerativeModal: React.FC = () => {
                                     {formatBTCPrice(
                                       Number(projectData?.mintPrice)
                                     )}{' '}
-                                    BTC Mint Price +{' '}
+                                    NFT PRICE +{' '}
                                     {formatBTCPrice(
                                       Number(projectData?.networkFee)
                                     )}{' '}
-                                    BTC Network Fees)
+                                    Network Fees)
                                     <sup className={s.requiredTag}>*</sup>
                                   </label>
                                 ) : (
