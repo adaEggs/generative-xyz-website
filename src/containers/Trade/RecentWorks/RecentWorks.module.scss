@@ -69,5 +69,8 @@
 .wrap_btn {
   @include mobile {
     padding-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
   }
 }
