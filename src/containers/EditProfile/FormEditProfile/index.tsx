@@ -9,15 +9,15 @@ import { WalletContext } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
 import { IUpdateProfilePayload } from '@interfaces/api/profile';
 import { useAppDispatch, useAppSelector } from '@redux';
+import { setUser } from '@redux/user/action';
 import { getUserSelector } from '@redux/user/selector';
 import { updateProfile } from '@services/profile';
-import { formatAddress, toBase64 } from '@utils/format';
+import { toBase64 } from '@utils/format';
 import log from '@utils/logger';
 import { Formik } from 'formik';
 import { useContext, useState } from 'react';
-import s from './styles.module.scss';
-import { setUser } from '@redux/user/action';
 import { toast } from 'react-hot-toast';
+import s from './styles.module.scss';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -197,9 +197,18 @@ const FormEditProfile = () => {
             <Heading as="h4" fontWeight="bold">
               Wallet
             </Heading>
+            <Text>Metamask wallet address:</Text>
             <Text style={{ marginBottom: '6px' }}>
-              Your wallet address {formatAddress(user?.walletAddress || '')}
+              {user?.walletAddress || ''}
             </Text>
+            {!!user?.wallet_address_btc && (
+              <>
+                <Text>BTC wallet address:</Text>
+                <Text style={{ marginBottom: '6px' }}>
+                  {user?.wallet_address_btc || ''}
+                </Text>
+              </>
+            )}
             {user?.walletAddress ? (
               <ButtonIcon onClick={() => walletCtx.disconnect()}>
                 Disconnect wallet
