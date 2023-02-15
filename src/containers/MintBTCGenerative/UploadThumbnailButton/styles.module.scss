@@ -6,7 +6,7 @@
   display: flex;
   gap: 6px !important;
   align-items: center;
-  padding: 11px 0 !important;
+  padding: 10px !important;
   background-color: $black-5;
   justify-content: center;
   width: 100%;
@@ -18,6 +18,9 @@
     letter-spacing: 0.01em;
     color: $primary-brand;
     font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 
     @include calcFontAuto(14px, 16px);
   }
