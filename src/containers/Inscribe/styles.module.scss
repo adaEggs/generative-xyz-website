@@ -2,9 +2,18 @@
   margin-top: rem(32px);
   display: flex;
   width: 100%;
+  @include mobile {
+    display: block;
+  }
+  
   .formLeft {
     width: rem(432px);
     min-height: rem(432px);
+    @include mobile {
+      width: 100%;
+      min-height: auto;
+      margin-bottom: rem(32);
+    }
     .formItem {
       height: 100%;
       margin-bottom: 0;
@@ -21,6 +30,10 @@
   .formRight {
     width: calc(100% - 432px);
     padding-left: rem(48px);
+    @include mobile {
+      width: 100%;
+      padding-left: 0;
+    }
   }
 }
 
@@ -35,11 +48,13 @@
     width: rem(1276px);
     background: #FFFFFF;
     box-shadow: 35px 15px 120px rgba(0, 0, 0, 0.15);
+    @include mobile {
+      width: 100%;
+    }
   }
 
   @include mobile {
-    padding-top: rem(24px);
-    padding-bottom: rem(24px);
+    padding: rem(24px);
   }
 
   .title {
