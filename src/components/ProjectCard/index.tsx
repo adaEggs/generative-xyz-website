@@ -12,7 +12,11 @@ import { ROUTE_PATH } from '@constants/route-path';
 import useWindowSize from '@hooks/useWindowSize';
 import { Project } from '@interfaces/project';
 import { User } from '@interfaces/user';
-import { formatAddress, formatBTCPrice } from '@utils/format';
+import {
+  formatAddress,
+  formatBTCPrice,
+  formatLongAddress,
+} from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
@@ -116,7 +120,8 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                     height={24}
                   />
                   <Text fontWeight="medium" color="black-60">
-                    {creatorMemo?.displayName || creatorMemo?.walletAddress}
+                    {creatorMemo?.displayName ||
+                      formatLongAddress(creatorMemo?.walletAddress)}
                   </Text>
                 </div>
               )}
