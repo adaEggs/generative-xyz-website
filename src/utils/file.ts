@@ -47,7 +47,7 @@ export const fileToBase64 = (
   });
 
 export const blobToBase64 = (
-  blob: File
+  blob: Blob
 ): Promise<string | ArrayBuffer | null> =>
   new Promise((resolve, reject) => {
     const reader = new FileReader();
