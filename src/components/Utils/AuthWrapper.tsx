@@ -18,7 +18,11 @@ const AuthWrapper: React.FC<PropsWithChildren> = ({
   const router = useRouter();
 
   const checkUserRedirect = (userRes: User | null) => {
-    if (router.pathname === ROUTE_PATH.PROFILE && !userRes) {
+    if (
+      (router.pathname === ROUTE_PATH.PROFILE ||
+        router.pathname.indexOf(ROUTE_PATH.GENERATIVE_EDIT) !== -1) &&
+      !userRes
+    ) {
       router.push(ROUTE_PATH.COLLECTIONS);
     }
   };
