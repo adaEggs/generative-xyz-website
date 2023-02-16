@@ -9,7 +9,6 @@ const API_PATH = '/categories';
 
 export const getCategoryList = async (): Promise<IGetCategoryListResponse> => {
   try {
-    // const qs = '?' + querystring.stringify(params);
     const res = await get<IGetCategoryListResponse>(`${API_PATH}`);
     return res;
   } catch (err: unknown) {
