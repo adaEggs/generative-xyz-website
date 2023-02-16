@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import Heading from '@components/Heading';
 import ProjectListLoading from '@components/ProjectListLoading';
@@ -21,21 +21,19 @@ import CategoryTab from '@components/CategoryTab';
 import cs from 'classnames';
 import { getCategoryList } from '@services/category';
 import { Category } from '@interfaces/category';
+import Select, { SingleValue } from 'react-select';
+import { SelectOption } from '@interfaces/select-input';
 
-// const SORT_OPTIONS: Array<{ value: string; label: string }> = [
-//   {
-//     value: '',
-//     label: 'All',
-//   },
-//   {
-//     value: 'progress',
-//     label: 'Minting in progress',
-//   },
-//   {
-//     value: 'fully',
-//     label: 'Fully minted',
-//   },
-// ];
+const SORT_OPTIONS: Array<{ value: string; label: string }> = [
+  {
+    value: 'priority-desc',
+    label: 'Default',
+  },
+  {
+    value: 'newest',
+    label: 'Latest',
+  },
+];
 
 const LOG_PREFIX = 'RecentWorks';
 
@@ -44,26 +42,27 @@ export const RecentWorks = (): JSX.Element => {
   const [isLoadedMore, setIsLoadMore] = useState<boolean>(false);
   const [projects, setProjects] = useState<IGetProjectListResponse>();
   const [listData, setListData] = useState<Project[]>([]);
-  const [sort, _] = useState<string | null>('');
+  const [sort, setSort] = useState<string | null>('');
   const [currentTotal, setCurrentTotal] = useState<number>(0);
   const router = useRouter();
   const [categoriesList, setCategoriesList] = useState<Category[]>();
-  // console.log('🚀 ~ RecentWorks ~ categoriesList', categoriesList);
+  const [filterCategory, setFilterCategory] = useState('');
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [page, setPage] = useState(0);
 
-  // const selectedOption = useMemo(() => {
-  //   return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
-  // }, [sort]);
+  const selectedOption = useMemo(() => {
+    return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
+  }, [sort]);
 
   const getProjectAll = useCallback(async () => {
     try {
-      let page = (projects && projects?.page) || 0;
-      page += 1;
-
       setIsLoadMore(false);
       const tmpProject = await getProjectList({
         contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
         limit: 12,
-        page,
+        page: page + 1,
+        category: filterCategory ? [filterCategory] : [''],
+        sort: sort || SORT_OPTIONS[0].value,
       });
 
       if (tmpProject) {
@@ -79,21 +78,24 @@ export const RecentWorks = (): JSX.Element => {
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
     }
-  }, [projects]);
+  }, [projects, page, filterCategory, sort]);
 
-  const onLoadMore = async () => {
-    switch (sort) {
-      default:
-        getProjectAll();
-        break;
-    }
+  const onLoadMore = () => {
+    setPage(page + 1);
+    // switch (sort) {
+    //   default:
+    //     getProjectAll();
+    //     break;
+    // }
   };
 
   const fetchAllCategory = async () => {
     try {
+      setCategoriesLoading(true);
       const { result } = await getCategoryList();
       if (result && result.length > 0) {
         setCategoriesList(result);
+        setCategoriesLoading(false);
       }
     } catch (err: unknown) {
       log('failed to fetch category list', LogLevel.ERROR, LOG_PREFIX);
@@ -120,12 +122,20 @@ export const RecentWorks = (): JSX.Element => {
   //   // setProjects(tmpProject.result);
   // };
 
+  const handleClickCategory = (categoryID: string) => {
+    setFilterCategory(categoryID);
+    setProjects(undefined);
+  };
+
   useAsyncEffect(async () => {
     // sortChange();
     setIsLoadMore(false);
     await getProjectAll();
-    await fetchAllCategory();
     setIsLoaded(true);
+  }, [filterCategory, sort, page]);
+
+  useEffect(() => {
+    fetchAllCategory();
   }, []);
 
   return (
@@ -139,23 +149,46 @@ export const RecentWorks = (): JSX.Element => {
           md={'auto'}
           xs={'12'}
         >
-          <CategoryTab type="3" text="All" />
+          <CategoryTab
+            type="3"
+            text="All"
+            onClick={() => handleClickCategory('')}
+            active={filterCategory === ''}
+            loading={categoriesLoading}
+          />
           {categoriesList &&
-            categoriesList?.length > 0 &&
-            categoriesList.map(category => (
+            categoriesList?.map(category => (
               <CategoryTab
                 type="3"
                 text={category.name}
                 key={`category-${category.id}`}
+                onClick={() => handleClickCategory(category.id)}
+                active={filterCategory === category.id}
+                loading={categoriesLoading}
               />
             ))}
-
-          <CategoryTab
-            type="3"
-            text="Very long category that I want to test it out"
-          />
         </Col>
-        <Col className={s.recentWorks_heading_col} md={'auto'} xs={'12'}>
+        <Col
+          className={cs(s.recentWorks_heading_col, s.sort_dropdown)}
+          md={'auto'}
+          xs={'12'}
+        >
+          <div className={s.dropDownWrapper}>
+            <Select
+              isSearchable={false}
+              isClearable={false}
+              defaultValue={selectedOption}
+              options={SORT_OPTIONS}
+              className={'select-input'}
+              classNamePrefix="select"
+              onChange={(op: SingleValue<SelectOption>) => {
+                if (op) {
+                  setSort(op.value);
+                  setProjects(undefined);
+                }
+              }}
+            />
+          </div>
           <ButtonIcon
             onClick={() => router.push(ROUTE_PATH.CREATE_BTC_PROJECT)}
             variants={'primary'}

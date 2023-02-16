@@ -33,9 +33,22 @@
     display: flex;
     align-items: center;
     gap: rem(10);
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 
-    @include w-min(768) {
-      order: -1;
+    @include w-max(768px) {
+      order: 1;
     }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .sort_dropdown {
+    display: flex;
+    align-items: center;
+    gap: rem(16px);
   }
 }
