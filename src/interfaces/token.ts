@@ -25,6 +25,7 @@ export type Token = {
   tokenID: string;
   inscriptionIndex: string;
   buyable: boolean;
+  isCompleted: boolean;
   priceBTC: string;
   orderID: string;
   stats: {

@@ -112,7 +112,7 @@ const FormEditProject = () => {
       description: values.description || project?.itemDesc || '',
       thumbnail: thumbnailUrl || project?.image || '',
       royalty: (Number(values.royalty) || project?.royalty || 0) * 100,
-      mintPrice: values.mintPrice || project?.mintPrice || '0',
+      mintPrice: (values.mintPrice || project?.mintPrice || 0).toString(),
       maxSupply: Number(values.maxSupply) || project?.maxSupply || 0,
       isHidden: Boolean(values.isHidden) || project?.isHidden || true,
     };
