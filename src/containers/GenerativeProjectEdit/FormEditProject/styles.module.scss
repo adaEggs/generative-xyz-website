@@ -252,14 +252,28 @@
 
 .uploadPreviewWrapper {
   background: #f8f8f8;
-  padding: rem(16px);
+  position: relative;
+
+  img {
+    height: rem(160px) !important;
+    object-fit: contain !important;
+    width: 100% !important;
+    position: relative !important;
+  }
+
+  &_upload {
+    label {
+      padding: rem(16px);
+      padding-bottom: rem(40px);
+    }
+  }
 
   &_thumb {
-    img {
-      height: rem(160px);
-      object-fit: contain;
-      width: 100%;
-    }
+    position: absolute;
+    bottom: rem(10px);
+    width: 100%;
+    z-index: 9;
+    pointer-events: none;
 
     p {
       margin-top: rem(16px);

@@ -44,7 +44,7 @@ const ThankModal = ({ showModal, onClose }: IProps): JSX.Element => {
                 <>
                   <h3 className={s.modalTitle}>Thank you for being patient.</h3>
                   <div className={s.info_guild}>
-                    It might take ~an hour to completely inscribe your
+                    It might take a couple of hours to completely inscribe your
                     inscription.
                   </div>
                   <div className={s.ctas}>
