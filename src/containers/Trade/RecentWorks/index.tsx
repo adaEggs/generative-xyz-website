@@ -1,27 +1,26 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import Heading from '@components/Heading';
+import ListForSaleModal from '@containers/Trade/ListForSaleModal';
 import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { ProjectList } from '@containers/Trade/ProjectLists';
-import ListForSaleModal from '@containers/Trade/ListForSaleModal';
 
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import s from './RecentWorks.module.scss';
+import ButtonIcon from '@components/ButtonIcon';
+import { Loading } from '@components/Loading';
+import { ROUTE_PATH } from '@constants/route-path';
 import {
   getListingOrdinals,
   getMarketplaceBtcList,
   IGetMarketplaceBtcListItem,
 } from '@services/marketplace-btc';
-import { Loading } from '@components/Loading';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import debounce from 'lodash/debounce';
 import uniqBy from 'lodash/uniqBy';
-import ButtonIcon from '@components/ButtonIcon';
 import { useRouter } from 'next/router';
-import { ROUTE_PATH } from '@constants/route-path';
-import Checkbox from '@components/Checkbox';
 import { Tab, Tabs } from 'react-bootstrap';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import s from './RecentWorks.module.scss';
 
 const LIMIT = 20;
 
@@ -63,10 +62,10 @@ export const RecentWorks = (): JSX.Element => {
   const goToInscriptionsPage = () => {
     router.push(ROUTE_PATH.INSCRIBE);
   };
-  const [isNFTBuy, setIsNFTBuy] = useState(false);
-  const handleChangeType = () => {
-    setIsNFTBuy(!isNFTBuy);
-  };
+  // const [isNFTBuy, setIsNFTBuy] = useState(false);
+  // const handleChangeType = () => {
+  //   setIsNFTBuy(!isNFTBuy);
+  // };
   const [dataOrd, setdataOrd] = useState<IGetMarketplaceBtcListItem[]>([]);
   const [fromOrd, setFromOrd] = useState(0);
   const fetchDataOrdinals = async () => {
