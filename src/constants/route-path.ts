@@ -21,7 +21,7 @@ export const ROUTE_PATH = {
   INCENTIVIZED_TESTNET: isProduction()
     ? 'https://testnet.generative.xyz/incentivized-testnet'
     : '/incentivized-testnet',
-  TRADE: '/bazaar',
+  TRADE: '/inscriptions',
   REFERRAL: '/referral',
   NOT_FOUND: '/404',
   INSCRIBE: '/inscribe',

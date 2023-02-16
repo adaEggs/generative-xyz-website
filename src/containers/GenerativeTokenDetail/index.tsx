@@ -15,7 +15,12 @@ import {
 import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress, formatLongAddress, formatTokenId } from '@utils/format';
+import {
+  formatAddress,
+  formatBTCPrice,
+  formatLongAddress,
+  formatTokenId,
+} from '@utils/format';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
@@ -31,6 +36,7 @@ import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
+import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -56,6 +62,8 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const mintedDate = dayjs(tokenData?.mintedTime).format('MMM DD, YYYY');
   const [isBuying, setIsBuying] = useState(false);
   const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const toggleModal = () => setShowModal(show => !show);
 
   const tokenInfos = [
     {
@@ -134,6 +142,29 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     setIsBuying(false);
   };
 
+  const refreshPage = () => {
+    window.location.reload();
+  };
+
+  const renderBuyBTCView = () => {
+    if (!tokenData || !tokenData?.buyable) return null;
+    return (
+      <div className={s.buy_btc}>
+        <div>
+          <Text size="12" fontWeight="medium" color="black-40">
+            Price
+          </Text>
+          <Heading as="h6" fontWeight="medium">
+            {formatBTCPrice(tokenData.priceBTC)} BTC
+          </Heading>
+        </div>
+        <ButtonIcon className={s.buy_btc_button} onClick={toggleModal}>
+          Buy now
+        </ButtonIcon>
+      </div>
+    );
+  };
+
   useEffect(() => {
     const exists = tokenDescription.includes('Interaction');
     if (exists) {
@@ -198,7 +229,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 Explorer
               </Link>
             )} */}
-
+            {renderBuyBTCView()}
             {mobileScreen && <ThumbnailPreview data={tokenData} previewToken />}
             {!isBitcoinProject && (
               <>
@@ -348,7 +379,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           </>
         ) : (
           // <></>
-          <div style={{ height: '20px' }}></div>
+          <div style={{ height: '20px' }} />
         )}
       </Container>
 
@@ -360,6 +391,16 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           <TransferTokenModal />
           <SwapTokenModal />
         </>
+      )}
+      {!!tokenData?.buyable && (
+        <ModalBuyItemViaBTC
+          showModal={showModal}
+          onClose={toggleModal}
+          onSuccess={refreshPage}
+          inscriptionID={tokenData.tokenID}
+          price={tokenData.priceBTC}
+          orderID={tokenData.orderID}
+        />
       )}
     </>
   );

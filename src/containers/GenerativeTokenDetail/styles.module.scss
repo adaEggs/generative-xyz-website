@@ -114,6 +114,21 @@
   }
 }
 
+.buy_btc {
+  p {
+    text-transform: uppercase;
+    color: $black-60;
+  }
+
+  &_button {
+    margin-top: rem(12px);
+    margin-bottom: rem(12px);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+}
+
 .CTA_btn {
   display: flex;
   align-items: center;

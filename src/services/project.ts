@@ -18,6 +18,7 @@ import {
 import { get, post, postFile, put } from '@services/http-client';
 import log from '@utils/logger';
 import querystring from 'query-string';
+import { orderBy } from 'lodash';
 import { Project } from '@interfaces/project';
 
 const LOG_PREFIX = 'ProjectService';
@@ -58,7 +59,10 @@ export const getProjectItems = async (
     const res = await get<IGetProjectTokensResponse>(
       `${API_PATH}/${params.contractAddress}/tokens${qs}`
     );
-    return res;
+    return {
+      ...res,
+      result: orderBy(res.result, ['buyable'], 'desc'),
+    };
   } catch (err: unknown) {
     log('failed to get project items', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get project items');

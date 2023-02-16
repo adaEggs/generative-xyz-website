@@ -16,7 +16,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import NextNprogress from 'nextjs-progressbar';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Provider } from 'react-redux';
 
 interface MyAppProps extends AppProps {
@@ -31,8 +31,7 @@ export default function App({ Component, pageProps }: MyAppProps) {
   const router = useRouter();
   const { seoInfo = {} } = pageProps;
   const { title, description, image } = seoInfo;
-
-  // const Layout = Component.Layout || React.Fragment;
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -50,10 +49,11 @@ export default function App({ Component, pageProps }: MyAppProps) {
   }, []);
 
   useEffect(() => {
-    if (router.isReady) {
+    if (router.isReady && !isFirstRender.current) {
       sendAAPageView({ page: window.location.pathname });
     }
-  }, [router.route]);
+    isFirstRender.current = false;
+  }, [router.asPath]);
 
   return (
     <>

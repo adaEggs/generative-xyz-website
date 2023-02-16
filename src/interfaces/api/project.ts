@@ -45,6 +45,8 @@ export type ICreateProjectMetadataResponse = IGetProjectDetailResponse;
 
 export interface IGetProjectListParams extends IPagingParams {
   contractAddress: string;
+  category?: string[];
+  sort?: string;
 }
 
 export interface IGetProjectListResponse extends IPagingResponse {

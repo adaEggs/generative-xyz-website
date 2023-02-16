@@ -31,7 +31,7 @@ module.exports = removeImports(
           headers: [
             {
               key: 'Content-Security-Policy',
-              value: `frame-ancestors 'self' https://ordinals.com https://ordinals-explorer.generative.xyz; frame-src 'self' https://ordinals.com https://ordinals-explorer.generative.xyz;`,
+              value: `frame-ancestors 'self' https://ordinals.com https://ordinals-explorer-v5-dev.generative.xyz; frame-src 'self' https://ordinals.com https://ordinals-explorer-v5-dev.generative.xyz;`,
             },
             ...baseSecurityHeaders,
           ],
@@ -104,7 +104,12 @@ module.exports = removeImports(
           destination: '/create/upload-project',
           permanent: true,
         },
-      ]
+        {
+          source: '/generative/1000002',
+          destination: '/satoshis',
+          permanent: true,
+        },
+      ];
     },
   })
 );

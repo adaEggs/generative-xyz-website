@@ -47,7 +47,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
   }, [formValues.thirdPartyScripts]);
 
   useAsyncEffect(async () => {
-    const { result } = await getCategoryList({ page: 1, limit: 100 });
+    const { result } = await getCategoryList();
     const options = result.map(item => ({
       value: item.id,
       label: item.name,

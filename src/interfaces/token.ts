@@ -24,6 +24,9 @@ export type Token = {
   creator: User;
   tokenID: string;
   inscriptionIndex: string;
+  buyable: boolean;
+  priceBTC: string;
+  orderID: string;
   stats: {
     price: string;
   };

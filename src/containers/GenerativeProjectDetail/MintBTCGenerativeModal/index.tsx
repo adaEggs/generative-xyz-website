@@ -25,6 +25,8 @@ import { formatBTCPrice } from '@utils/format';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { WalletContext } from '@contexts/wallet-context';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 
 interface IFormValue {
   address: string;
@@ -59,6 +61,19 @@ const MintBTCGenerativeModal: React.FC = () => {
         projectID: projectData.tokenID,
       });
 
+      sendAAEvent({
+        eventName: BTC_PROJECT.MINT_NFT,
+        data: {
+          projectId: projectData.id,
+          projectName: projectData.name,
+          projectThumbnail: projectData.image,
+          mintPrice: formatBTCPrice(Number(projectData?.mintPrice)),
+          mintType: 'BTC',
+          networkFee: formatBTCPrice(Number(projectData?.networkFee)),
+          masterAddress: address,
+          totalPrice: formatBTCPrice(Number(price)),
+        },
+      });
       setReceiverAddress(address);
       setPrice(price || projectData?.mintPrice);
     } catch (err: unknown) {
