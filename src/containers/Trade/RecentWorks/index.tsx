@@ -21,6 +21,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
 import Checkbox from '@components/Checkbox';
+import { Tab, Tabs } from 'react-bootstrap';
 
 const LIMIT = 20;
 
@@ -114,14 +115,6 @@ export const RecentWorks = (): JSX.Element => {
           style={{ display: 'flex', margin: 0 }}
           className={s.wrap_btn}
         >
-          <Checkbox
-            checked={isNFTBuy}
-            onClick={handleChangeType}
-            className={s.recentWorks_checkBox}
-            id="isNFTBuy"
-            label="Buy Now"
-            sizes="large"
-          />
           <ButtonIcon
             sizes="large"
             className={s.recentWorks_btn}
@@ -140,48 +133,58 @@ export const RecentWorks = (): JSX.Element => {
         </Col>
       </Row>
       <Row className={s.recentWorks_projects}>
-        {!isLoaded ? (
-          <ProjectListLoading numOfItems={12} />
-        ) : (
-          <>
-            {isNFTBuy && (
-              <InfiniteScroll
-                dataLength={listData.length}
-                next={debounceFetchData}
-                className={s.recentWorks_projects_list}
-                hasMore={true}
-                loader={
-                  isLoading ? (
-                    <div className={s.recentWorks_projects_loader}>
-                      <Loading isLoaded={isLoading} />
-                    </div>
-                  ) : null
-                }
-                endMessage={<></>}
-              >
-                <ProjectList isNFTBuy={isNFTBuy} listData={listData} />
-              </InfiniteScroll>
-            )}
-            {!isNFTBuy && (
-              <InfiniteScroll
-                dataLength={dataOrd.length}
-                next={debounceFetchDataOrdinals}
-                className={s.recentWorks_projects_list}
-                hasMore={true}
-                loader={
-                  isLoading ? (
-                    <div className={s.recentWorks_projects_loader}>
-                      <Loading isLoaded={isLoading} />
-                    </div>
-                  ) : null
-                }
-                endMessage={<></>}
-              >
-                <ProjectList isNFTBuy={isNFTBuy} listData={dataOrd} />
-              </InfiniteScroll>
-            )}
-          </>
-        )}
+        <Col xs={'12'}>
+          <Tabs className={s.tabs} defaultActiveKey="buyNow">
+            <Tab tabClassName={s.tab} eventKey="buyNow" title={`Buy Now`}>
+              {!isLoaded ? (
+                <ProjectListLoading numOfItems={12} />
+              ) : (
+                <InfiniteScroll
+                  dataLength={listData.length}
+                  next={debounceFetchData}
+                  className={s.recentWorks_projects_list}
+                  hasMore={true}
+                  loader={
+                    isLoading ? (
+                      <div className={s.recentWorks_projects_loader}>
+                        <Loading isLoaded={isLoading} />
+                      </div>
+                    ) : null
+                  }
+                  endMessage={<></>}
+                >
+                  <ProjectList isNFTBuy={true} listData={listData} />
+                </InfiniteScroll>
+              )}
+            </Tab>
+            <Tab
+              tabClassName={s.tab}
+              eventKey="everything"
+              title={`Everything`}
+            >
+              {!isLoaded ? (
+                <ProjectListLoading numOfItems={12} />
+              ) : (
+                <InfiniteScroll
+                  dataLength={dataOrd.length}
+                  next={debounceFetchDataOrdinals}
+                  className={s.recentWorks_projects_list}
+                  hasMore={true}
+                  loader={
+                    isLoading ? (
+                      <div className={s.recentWorks_projects_loader}>
+                        <Loading isLoaded={isLoading} />
+                      </div>
+                    ) : null
+                  }
+                  endMessage={<></>}
+                >
+                  <ProjectList isNFTBuy={false} listData={dataOrd} />
+                </InfiniteScroll>
+              )}
+            </Tab>
+          </Tabs>
+        </Col>
       </Row>
       <ListForSaleModal
         showModal={showModal}
