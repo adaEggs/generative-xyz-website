@@ -48,7 +48,7 @@
   }
 
   &_thumb {
-    // margin-bottom: rem(16px);
+    margin-bottom: rem(16px);
     position: relative;
     padding-bottom: 100%;
     border-radius: 2px;
@@ -68,7 +68,6 @@
   }
 
   &_info {
-    display: none;
     &.desktop {
       .projectCard_info_title {
         display: flex;
