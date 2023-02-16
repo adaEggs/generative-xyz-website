@@ -17,6 +17,10 @@ import { LogLevel } from '@enums/log-level';
 import { ROUTE_PATH } from '@constants/route-path';
 import ButtonIcon from '@components/ButtonIcon';
 import { useRouter } from 'next/router';
+import CategoryTab from '@components/CategoryTab';
+import cs from 'classnames';
+import { getCategoryList } from '@services/category';
+import { Category } from '@interfaces/category';
 
 // const SORT_OPTIONS: Array<{ value: string; label: string }> = [
 //   {
@@ -43,6 +47,8 @@ export const RecentWorks = (): JSX.Element => {
   const [sort, _] = useState<string | null>('');
   const [currentTotal, setCurrentTotal] = useState<number>(0);
   const router = useRouter();
+  const [categoriesList, setCategoriesList] = useState<Category[]>();
+  // console.log('🚀 ~ RecentWorks ~ categoriesList', categoriesList);
 
   // const selectedOption = useMemo(() => {
   //   return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
@@ -83,6 +89,18 @@ export const RecentWorks = (): JSX.Element => {
     }
   };
 
+  const fetchAllCategory = async () => {
+    try {
+      const { result } = await getCategoryList();
+      if (result && result.length > 0) {
+        setCategoriesList(result);
+      }
+    } catch (err: unknown) {
+      log('failed to fetch category list', LogLevel.ERROR, LOG_PREFIX);
+      throw Error();
+    }
+  };
+
   // const sortChange = async (): Promise<void> => {
   //   switch (sort) {
   //     case 'progress':
@@ -106,19 +124,36 @@ export const RecentWorks = (): JSX.Element => {
     // sortChange();
     setIsLoadMore(false);
     await getProjectAll();
+    await fetchAllCategory();
     setIsLoaded(true);
   }, []);
 
   return (
     <div className={s.recentWorks}>
-      <Row
-        className={s.recentWorks_heading}
-        style={{ justifyContent: 'space-between', alignItems: 'center' }}
-      >
-        <Col className={s.recentWorks_heading_col} md={'auto'} xs={'12'}>
-          <Heading as="h4" fontWeight="medium">
-            Generative art on Bitcoin. Be the first to collect.
-          </Heading>
+      <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
+        NFTs on Bitcoin. Be the first to collect.
+      </Heading>
+      <Row className={s.recentWorks_heading}>
+        <Col
+          className={cs(s.recentWorks_heading_col, s.category_list)}
+          md={'auto'}
+          xs={'12'}
+        >
+          <CategoryTab type="3" text="All" />
+          {categoriesList &&
+            categoriesList?.length > 0 &&
+            categoriesList.map(category => (
+              <CategoryTab
+                type="3"
+                text={category.name}
+                key={`category-${category.id}`}
+              />
+            ))}
+
+          <CategoryTab
+            type="3"
+            text="Very long category that I want to test it out"
+          />
         </Col>
         <Col className={s.recentWorks_heading_col} md={'auto'} xs={'12'}>
           <ButtonIcon
