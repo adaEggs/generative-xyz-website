@@ -1,7 +1,7 @@
 import FileType from 'file-type/browser';
 import {
   HTML_EXTENSION,
-  IMAGE_FILE_EXT,
+  SUPPORTED_FILE_EXT,
   JS_EXTENSION,
   NAIVE_MIMES,
   ZIP_MIMES,
@@ -173,7 +173,7 @@ export const detectUsedLibs = async (
   return detectedLibs;
 };
 
-export const processImageCollectionZipFile = async (
+export const processCollectionZipFile = async (
   file: File
 ): Promise<ImageCollectionFiles> => {
   const fileType = await FileType.fromBlob(file);
@@ -197,7 +197,7 @@ export const processImageCollectionZipFile = async (
 
     // Check file extension
     const fileExt = getFileExtensionByFileName(fileName);
-    if (!fileExt || !IMAGE_FILE_EXT.includes(fileExt.toLowerCase())) {
+    if (!fileExt || !SUPPORTED_FILE_EXT.includes(fileExt.toLowerCase())) {
       error = ImageFileError.INVALID_EXTENSION;
     }
 

@@ -8,7 +8,7 @@ import { LogLevel } from '@enums/log-level';
 const LOG_PREFIX = 'AAInstance';
 
 const AutonomousAnalytic = new ApiCaller({
-  debugMode: true,
+  debugMode: false,
 });
 
 const sendAAPageView = ({

@@ -15,9 +15,14 @@ import BigNumber from 'bignumber.js';
 interface IPros {
   project: IGetMarketplaceBtcListItem;
   className?: string;
+  index?: number;
 }
 
-export const ProjectCardOrd = ({ project, className }: IPros): JSX.Element => {
+export const ProjectCardOrd = ({
+  project,
+  className,
+  index = 0,
+}: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
@@ -37,7 +42,10 @@ export const ProjectCardOrd = ({ project, className }: IPros): JSX.Element => {
   return (
     <div className={`${s.projectCard} ${className}`}>
       <div className={s.projectCard_inner}>
-        <div className={`${s.projectCard_thumb}`}>
+        <div
+          className={`${s.projectCard_thumb}`}
+          style={{ paddingBottom: index % 2 === 0 ? '120%' : '100%' }}
+        >
           {thumb !== LOGO_MARKETPLACE_URL ? (
             <iframe
               sandbox="allow-scripts"

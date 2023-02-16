@@ -12,5 +12,5 @@ export enum PreviewDisplayMode {
 
 export enum CollectionType {
   GENERATIVE = 'GENERATIVE',
-  IMAGES = 'IMAGES',
+  COLLECTION = 'COLLECTION',
 }
