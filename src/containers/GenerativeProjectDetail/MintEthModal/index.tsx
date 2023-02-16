@@ -263,9 +263,22 @@ const MintEthModal: React.FC = () => {
                           {receiverAddress && price && !isLoading && (
                             <>
                               <div className={s.formItem}>
-                                <label className={s.label} htmlFor="price">
-                                  Price <sup className={s.requiredTag}>*</sup>
-                                </label>
+                                {projectData?.networkFeeEth ? (
+                                  <label className={s.label} htmlFor="price">
+                                    Total Price (
+                                    {formatEthPrice(
+                                      projectData?.mintPriceEth || null
+                                    )}{' '}
+                                    NFT PRICE +{' '}
+                                    {formatEthPrice(projectData?.networkFeeEth)}{' '}
+                                    Network Fees)
+                                    <sup className={s.requiredTag}>*</sup>
+                                  </label>
+                                ) : (
+                                  <label className={s.label} htmlFor="price">
+                                    Price <sup className={s.requiredTag}>*</sup>
+                                  </label>
+                                )}
                                 <div className={s.inputContainer}>
                                   <input
                                     disabled

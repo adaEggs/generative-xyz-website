@@ -1,4 +1,5 @@
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { SATOSHIS_PAGE, SATOSHIS_PROJECT_ID } from '@constants/generative';
 import { SEO_TITLE } from '@constants/seo-default-info';
 import GenerativeProjectDetailWrapper from '@containers/GenerativeProjectDetail';
 import MarketplaceLayout from '@layouts/Marketplace';
@@ -18,6 +19,11 @@ export default GenerativeProjectDetailPage;
 export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { query } = context;
   const { projectID } = query as { projectID: string };
+
+  if (projectID && projectID === SATOSHIS_PROJECT_ID) {
+    location.assign(SATOSHIS_PAGE);
+  }
+
   const res = await getProjectDetail({
     contractAddress: GENERATIVE_PROJECT_CONTRACT,
     projectID,

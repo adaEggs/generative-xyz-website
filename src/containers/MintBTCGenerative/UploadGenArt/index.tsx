@@ -278,7 +278,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
             Upload file
           </Heading>
           <div className={s.collectionTypeWrapper}>
-            <div className={s.guideWrapper}>
+            {/* <div className={s.guideWrapper}>
               <p>
                 New artist?&nbsp;
                 <a
@@ -289,7 +289,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
                   Start here.
                 </a>
               </p>
-            </div>
+            </div> */}
             <p className={s.collectionTypeLabel}>Choose collection type:</p>
             <div className={s.choiceList}>
               <div
@@ -312,6 +312,18 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 Image collection
                 <span className={s.checkmark}></span>
               </div>
+            </div>
+            <div className={s.guideWrapper}>
+              <p>
+                New artist?&nbsp;
+                <a
+                  href={SOCIALS.docsForArtist}
+                  target={'_blank'}
+                  rel="noreferrer"
+                >
+                  Start here.
+                </a>
+              </p>
             </div>
           </div>
           <div className={s.dropZoneWrapper}>
