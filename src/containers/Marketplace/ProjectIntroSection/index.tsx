@@ -315,7 +315,7 @@ const ProjectIntroSection = ({
                   Mint Price
                 </Text>
                 <Heading as="h6" fontWeight="medium">
-                  {priceMemo} BTC
+                  {Number(project?.mintPrice) ? `${priceMemo} BTC` : 'Free'}
                 </Heading>
               </div>
             )}
@@ -396,9 +396,13 @@ const ProjectIntroSection = ({
                         {isMinting && 'Minting...'}
                         {!isMinting && (
                           <>
-                            <span>{`Mint `}</span>
+                            <span>{`Mint`}</span>
                             <span>
-                              <span>{priceMemo}</span>
+                              {Number(project?.mintPrice) ? (
+                                <span>{priceMemo}</span>
+                              ) : (
+                                'with'
+                              )}
                               {` BTC`}
                             </span>
                           </>
@@ -440,9 +444,13 @@ const ProjectIntroSection = ({
                         {isMinting && 'Minting...'}
                         {!isMinting && (
                           <>
-                            <span>{`Mint `}</span>
+                            <span>{`Mint`}</span>
                             <span>
-                              <span>{priceEthMemo}</span>
+                              {Number(project?.mintPriceEth) ? (
+                                <span>{priceEthMemo}</span>
+                              ) : (
+                                'with'
+                              )}
                               {` ETH`}
                             </span>
                           </>

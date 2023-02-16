@@ -23,6 +23,7 @@ import { getCategoryList } from '@services/category';
 import { Category } from '@interfaces/category';
 import Select, { SingleValue } from 'react-select';
 import { SelectOption } from '@interfaces/select-input';
+import { isProduction } from '@utils/common';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -149,46 +150,52 @@ export const RecentWorks = (): JSX.Element => {
           md={'auto'}
           xs={'12'}
         >
-          <CategoryTab
-            type="3"
-            text="All"
-            onClick={() => handleClickCategory('')}
-            active={filterCategory === ''}
-            loading={categoriesLoading}
-          />
-          {categoriesList &&
-            categoriesList?.map(category => (
+          {!isProduction() && (
+            <>
               <CategoryTab
                 type="3"
-                text={category.name}
-                key={`category-${category.id}`}
-                onClick={() => handleClickCategory(category.id)}
-                active={filterCategory === category.id}
+                text="All"
+                onClick={() => handleClickCategory('')}
+                active={filterCategory === ''}
                 loading={categoriesLoading}
               />
-            ))}
+              {categoriesList &&
+                categoriesList?.map(category => (
+                  <CategoryTab
+                    type="3"
+                    text={category.name}
+                    key={`category-${category.id}`}
+                    onClick={() => handleClickCategory(category.id)}
+                    active={filterCategory === category.id}
+                    loading={categoriesLoading}
+                  />
+                ))}
+            </>
+          )}
         </Col>
         <Col
           className={cs(s.recentWorks_heading_col, s.sort_dropdown)}
           md={'auto'}
           xs={'12'}
         >
-          <div className={s.dropDownWrapper}>
-            <Select
-              isSearchable={false}
-              isClearable={false}
-              defaultValue={selectedOption}
-              options={SORT_OPTIONS}
-              className={'select-input'}
-              classNamePrefix="select"
-              onChange={(op: SingleValue<SelectOption>) => {
-                if (op) {
-                  setSort(op.value);
-                  setProjects(undefined);
-                }
-              }}
-            />
-          </div>
+          {!isProduction() && (
+            <div className={s.dropDownWrapper}>
+              <Select
+                isSearchable={false}
+                isClearable={false}
+                defaultValue={selectedOption}
+                options={SORT_OPTIONS}
+                className={'select-input'}
+                classNamePrefix="select"
+                onChange={(op: SingleValue<SelectOption>) => {
+                  if (op) {
+                    setSort(op.value);
+                    setProjects(undefined);
+                  }
+                }}
+              />
+            </div>
+          )}
           <ButtonIcon
             onClick={() => router.push(ROUTE_PATH.CREATE_BTC_PROJECT)}
             variants={'primary'}

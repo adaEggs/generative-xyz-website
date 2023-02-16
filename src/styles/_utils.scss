@@ -277,6 +277,7 @@
 
 .row {
   // --bs-gutter-y: #{rem(24px)};
+  row-gap: rem(24);
 
   @include mobile {
     --bs-gutter-x: #{rem(10px)};
