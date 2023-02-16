@@ -21,6 +21,7 @@ import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
 import { ROUTE_PATH } from '@constants/route-path';
+import { getOrdinalImgURL } from '@utils/inscribe';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
@@ -31,7 +32,6 @@ const TokenID: React.FC = (): React.ReactElement => {
   const [tokenData, setTokenData] = React.useState<
     IGetMarketplaceBtcNFTDetail | undefined
   >(undefined);
-
   const [showMore, setShowMore] = useState(false);
   const { mobileScreen } = useWindowSize();
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -42,11 +42,6 @@ const TokenID: React.FC = (): React.ReactElement => {
         <Loading isLoaded={!!tokenData} className={s.loading_project} />
       </div>
     );
-  };
-
-  const getImgURL = () => {
-    if (!tokenData?.inscriptionID) return '';
-    return `https://ordinals-explorer-v5-dev.generative.xyz/preview/${tokenData?.inscriptionID}`;
   };
 
   const renderRow = (label: string, value?: string | number) => {
@@ -73,6 +68,7 @@ const TokenID: React.FC = (): React.ReactElement => {
     if (!tokenData) {
       return renderLoading();
     }
+
     return (
       <div className={s.info}>
         <Heading as="h4" fontWeight="medium">
@@ -95,7 +91,10 @@ const TokenID: React.FC = (): React.ReactElement => {
           {formatBTCPrice(new BigNumber(tokenData?.price || 0).toNumber())} BTC
         </Text>
         {mobileScreen && tokenData?.name && (
-          <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
+          <TokenIDImage
+            image={getOrdinalImgURL(tokenData.inscriptionID)}
+            name={tokenData?.name || ''}
+          />
         )}
         {!tokenData.buyable && !tokenData.isCompleted && (
           <Text size={'14'} className={s.info_statusIns}>

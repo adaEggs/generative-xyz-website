@@ -16,6 +16,7 @@ import { Container, Tab, Tabs } from 'react-bootstrap';
 import MintWalletModal from './MintWalletModal';
 import TokenTopFilter from './TokenTopFilter';
 import styles from './styles.module.scss';
+import { PaymentMethod } from '@enums/mint-generative';
 
 const GenerativeProjectDetail: React.FC<{
   isWhitelist?: boolean;
@@ -57,7 +58,7 @@ const GenerativeProjectDetail: React.FC<{
       <section>
         <Container>
           <ProjectIntroSection
-            openMintBTCModal={(chain: 'BTC' | 'ETH') => {
+            openMintBTCModal={(chain: PaymentMethod) => {
               setPaymentStep('mint');
               setIsPopupPayment(true);
               setPaymentMethod(chain);
@@ -105,13 +106,13 @@ const GenerativeProjectDetail: React.FC<{
       </section>
       {isPopupPayment && (
         <>
-          {paymentStep === 'mint' && paymentMethod === 'BTC' && (
+          {paymentStep === 'mint' && paymentMethod === PaymentMethod.BTC && (
             <MintBTCGenerativeModal />
           )}
-          {paymentStep === 'mint' && paymentMethod === 'ETH' && (
+          {paymentStep === 'mint' && paymentMethod === PaymentMethod.ETH && (
             <MintETHModal />
           )}
-          {paymentStep === 'mint' && paymentMethod === 'WALLET' && (
+          {paymentStep === 'mint' && paymentMethod === PaymentMethod.WALLET && (
             <MintWalletModal />
           )}
         </>

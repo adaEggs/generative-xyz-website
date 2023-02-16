@@ -49,6 +49,8 @@ import { useSelector } from 'react-redux';
 import Web3 from 'web3';
 import useAsyncEffect from 'use-async-effect';
 import { checkIsBitcoinProject } from '@utils/generative';
+import { getProjectDetail } from '@services/project';
+import { Project } from '@interfaces/project';
 
 const LOG_PREFIX = 'GenerativeTokenDetailContext';
 
@@ -97,6 +99,7 @@ export interface IGenerativeTokenDetailContext {
   handleWithdrawToken: (_amount: string) => Promise<void>;
   wethBalance: number | null;
   isBitcoinProject: boolean;
+  projectData: Project | null;
 }
 
 const initialValue: IGenerativeTokenDetailContext = {
@@ -176,6 +179,7 @@ const initialValue: IGenerativeTokenDetailContext = {
   handleWithdrawToken: _ => new Promise(r => r()),
   wethBalance: null,
   isBitcoinProject: false,
+  projectData: null,
 };
 
 export const GenerativeTokenDetailContext =
@@ -204,6 +208,8 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
   const [wethBalance, setWETHBalance] = useState<number | null>(null);
+  const [projectData, setProjectData] = useState<Project | null>(null);
+
   const user = useSelector(getUserSelector);
   const { call: listToken } = useContractOperation(
     ListingToSaleTokenOperation,
@@ -262,7 +268,8 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     false
   );
   const router = useRouter();
-  const { tokenID } = router.query as {
+  const { projectID, tokenID } = router.query as {
+    projectID: string;
     tokenID: string;
   };
 
@@ -682,6 +689,20 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
+  const fetchProjectDetail = async (): Promise<void> => {
+    if (projectID) {
+      try {
+        const data = await getProjectDetail({
+          contractAddress: GENERATIVE_PROJECT_CONTRACT,
+          projectID: projectID,
+        });
+        setProjectData(data);
+      } catch (_: unknown) {
+        log('failed to fetch project detail data', LogLevel.ERROR, LOG_PREFIX);
+      }
+    }
+  };
+
   const isTokenOwner = useMemo(() => {
     if (!user?.walletAddress || !tokenData?.ownerAddr) return false;
     return user.walletAddress === tokenData?.ownerAddr;
@@ -708,6 +729,10 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     fetchMarketplaceStats();
     fetchTokenActivities();
   }, [tokenData]);
+
+  useEffect(() => {
+    fetchProjectDetail();
+  }, [projectID]);
 
   useAsyncEffect(async () => {
     if (!showSwapTokenModal) {
@@ -768,6 +793,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
       handleWithdrawToken,
       wethBalance,
       isBitcoinProject,
+      projectData,
     };
   }, [
     tokenData,
@@ -813,6 +839,7 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     handleWithdrawToken,
     wethBalance,
     isBitcoinProject,
+    projectData,
   ]);
 
   return (

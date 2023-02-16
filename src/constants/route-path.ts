@@ -1,13 +1,16 @@
 import { isProduction, isStaging } from '@utils/common';
 
 export const ROUTE_PATH = {
-  HOME: isStaging() ? 'https://generative.xyz' : '/',
+  HOME: isProduction()
+    ? 'https://generative.xyz'
+    : 'https://devnet.generative.xyz',
   COLLECTIONS: '/collections',
   CREATE_PROJECT: isProduction()
     ? 'https://testnet.generative.xyz/mint-generative/upload-project'
     : '/mint-generative/upload-project',
   BENEFIT: isProduction() ? 'https://testnet.generative.xyz/create' : '/create',
   GENERATIVE: '/generative',
+  GENERATIVE_EDIT: '/generative/edit',
   PROFILE: '/profile',
   EDIT_PROFILE: `/profile/edit`,
   SANDBOX: '/sandbox',
@@ -20,7 +23,7 @@ export const ROUTE_PATH = {
   INCENTIVIZED_TESTNET: isProduction()
     ? 'https://testnet.generative.xyz/incentivized-testnet'
     : '/incentivized-testnet',
-  TRADE: '/inscriptions',
+  TRADE: '/marketplace',
   REFERRAL: '/referral',
   NOT_FOUND: '/404',
   INSCRIBE: '/inscribe',

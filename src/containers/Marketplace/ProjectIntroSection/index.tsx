@@ -50,12 +50,14 @@ import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
+import { PaymentMethod } from '@enums/mint-generative';
+import { IC_EDIT_PROFILE } from '@constants/icons';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
 type Props = {
   project?: Project | null;
-  openMintBTCModal: (s: 'BTC' | 'ETH') => void;
+  openMintBTCModal: (s: PaymentMethod) => void;
   isWhitelist?: boolean;
 };
 
@@ -196,7 +198,7 @@ const ProjectIntroSection = ({
   // pay with wallet project btc
 
   const payWithWallet = () => {
-    setPaymentMethod('WALLET');
+    setPaymentMethod(PaymentMethod.WALLET);
     setIsPopupPayment(true);
     setPaymentStep('mint');
   };
@@ -232,6 +234,10 @@ const ProjectIntroSection = ({
     return project?.royalty > 0;
   }, [project]);
 
+  const isCreated = useMemo((): boolean => {
+    return project?.creatorAddr === user?.walletAddress;
+  }, [user, project]);
+
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -255,9 +261,33 @@ const ProjectIntroSection = ({
         {/*  />*/}
         {/*)}*/}
 
-        <Heading as="h4" fontWeight="medium">
-          {project?.name}
-        </Heading>
+        <div className={`${s.projectHeader} ${isCreated ? s.hasEdit : ''}`}>
+          <Heading
+            className={s.projectHeader_title}
+            as="h4"
+            fontWeight="medium"
+          >
+            {project?.name}
+          </Heading>
+          {isCreated && (
+            <div className={s.projectHeader_btn}>
+              <ButtonIcon
+                sizes="medium"
+                variants={'ghost'}
+                startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}
+                onClick={() =>
+                  router.push(
+                    `${ROUTE_PATH.GENERATIVE_EDIT}/${project?.tokenID}`
+                  )
+                }
+              >
+                <Text fontWeight="medium" as="span">
+                  Edit
+                </Text>
+              </ButtonIcon>
+            </div>
+          )}
+        </div>
         <div className={s.creator}>
           <div className={s.creator_info}>
             <Avatar
@@ -389,7 +419,7 @@ const ProjectIntroSection = ({
                       sizes="large"
                       className={s.mint_btn}
                       onClick={() => {
-                        openMintBTCModal('BTC');
+                        openMintBTCModal && openMintBTCModal(PaymentMethod.BTC);
                       }}
                     >
                       <Text as="span" size="14" fontWeight="medium">
@@ -437,7 +467,7 @@ const ProjectIntroSection = ({
                       variants="outline"
                       className={`${s.mint_btn} ${s.mint_btn__eth}`}
                       onClick={() => {
-                        openMintBTCModal('ETH');
+                        openMintBTCModal && openMintBTCModal(PaymentMethod.ETH);
                       }}
                     >
                       <Text as="span" size="14" fontWeight="medium">

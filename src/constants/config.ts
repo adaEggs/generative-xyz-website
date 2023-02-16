@@ -47,4 +47,8 @@ export const RAPI_URL = 'https://telize-v1.p.rapidapi.com/geoip';
 export const RAPI_HOST = 'telize-v1.p.rapidapi.com';
 export const RAPID_CLIENT_TOKEN = process.env.NEXT_PUBLIC_RAPID_CLIENT_TOKEN!;
 
+// Ordinals
+export const HOST_ORDINALS_EXPLORER =
+  'https://ordinals-explorer-v5-dev.generative.xyz';
+
 /* eslint-enable @typescript-eslint/no-non-null-assertion */

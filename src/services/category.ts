@@ -9,7 +9,9 @@ const API_PATH = '/categories';
 
 export const getCategoryList = async (): Promise<IGetCategoryListResponse> => {
   try {
-    const res = await get<IGetCategoryListResponse>(`${API_PATH}`);
+    const res = await get<IGetCategoryListResponse>(
+      `${API_PATH}?sort=priority-desc`
+    );
     return res;
   } catch (err: unknown) {
     log('failed to get category list', LogLevel.ERROR, LOG_PREFIX);

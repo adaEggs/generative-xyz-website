@@ -141,9 +141,11 @@ export const RecentWorks = (): JSX.Element => {
 
   return (
     <div className={s.recentWorks}>
-      <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
-        NFTs on Bitcoin. Be the first to collect.
-      </Heading>
+      {!isProduction() && (
+        <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
+          NFTs on Bitcoin. Be the first to collect.
+        </Heading>
+      )}
       <Row className={s.recentWorks_heading}>
         <Col
           className={cs(s.recentWorks_heading_col, s.category_list)}
@@ -171,6 +173,16 @@ export const RecentWorks = (): JSX.Element => {
                   />
                 ))}
             </>
+          )}
+          {isProduction() && (
+            <Heading
+              as="h4"
+              fontWeight="medium"
+              className={s.recentWorks_title}
+              style={{ marginBottom: '0px' }}
+            >
+              NFTs on Bitcoin. Be the first to collect.
+            </Heading>
           )}
         </Col>
         <Col
