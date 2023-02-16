@@ -50,12 +50,13 @@ import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
+import { PaymentMethod } from '@enums/mint-generative';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
 type Props = {
   project?: Project | null;
-  openMintBTCModal: (s: 'BTC' | 'ETH') => void;
+  openMintBTCModal: (s: PaymentMethod) => void;
   isWhitelist?: boolean;
 };
 
@@ -196,7 +197,7 @@ const ProjectIntroSection = ({
   // pay with wallet project btc
 
   const payWithWallet = () => {
-    setPaymentMethod('WALLET');
+    setPaymentMethod(PaymentMethod.WALLET);
     setIsPopupPayment(true);
     setPaymentStep('mint');
   };
@@ -389,7 +390,7 @@ const ProjectIntroSection = ({
                       sizes="large"
                       className={s.mint_btn}
                       onClick={() => {
-                        openMintBTCModal('BTC');
+                        openMintBTCModal(PaymentMethod.BTC);
                       }}
                     >
                       <Text as="span" size="14" fontWeight="medium">
@@ -437,7 +438,7 @@ const ProjectIntroSection = ({
                       variants="outline"
                       className={`${s.mint_btn} ${s.mint_btn__eth}`}
                       onClick={() => {
-                        openMintBTCModal('ETH');
+                        openMintBTCModal(PaymentMethod.ETH);
                       }}
                     >
                       <Text as="span" size="14" fontWeight="medium">
