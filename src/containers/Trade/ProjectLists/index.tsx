@@ -16,7 +16,14 @@ export const ProjectList = ({
     <>
       {listData && listData?.length > 0 ? (
         <ResponsiveMasonry
-          columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3, 1240: 4 }}
+          columnsCountBreakPoints={{
+            350: 1,
+            750: 2,
+            900: 3,
+            1240: 4,
+            2500: 5,
+            3000: 6,
+          }}
         >
           <Masonry gutter="24px">
             {listData?.map((project, index) =>
