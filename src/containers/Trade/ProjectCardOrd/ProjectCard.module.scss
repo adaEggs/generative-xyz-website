@@ -6,10 +6,10 @@
   position: relative;
 
   &_inner {
-    padding: rem(16px);
+    // padding: rem(16px);
+    // border: 1px solid rgb(0 0 0 / 20%);
+    // border-radius: 2px;
     background: #fff;
-    border: 1px solid rgb(0 0 0 / 20%);
-    border-radius: 2px;
     min-height: 100%;
     transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
     position: relative;
@@ -48,7 +48,7 @@
   }
 
   &_thumb {
-    margin-bottom: rem(16px);
+    // margin-bottom: rem(16px);
     position: relative;
     padding-bottom: 100%;
     border-radius: 2px;
@@ -68,6 +68,7 @@
   }
 
   &_info {
+    display: none;
     &.desktop {
       .projectCard_info_title {
         display: flex;
