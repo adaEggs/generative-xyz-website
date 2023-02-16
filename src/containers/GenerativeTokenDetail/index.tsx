@@ -66,7 +66,16 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const [isBuying, setIsBuying] = useState(false);
   const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const toggleModal = () => setShowModal(show => !show);
+  const isBTCListable =
+    (tokenData?.buyable || (!tokenData?.buyable && !tokenData?.isCompleted)) &&
+    !!tokenData?.priceBTC;
+  const isBTCDisable =
+    !tokenData?.buyable && !tokenData?.isCompleted && !!tokenData?.priceBTC;
+
+  const toggleModal = () => {
+    if (isBTCDisable) return;
+    setShowModal(show => !show);
+  };
 
   const tokenInfos = [
     {
@@ -149,7 +158,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   };
 
   const renderBuyBTCView = () => {
-    if (!tokenData || !tokenData?.buyable) return null;
+    if (!tokenData || !isBTCListable) return null;
     return (
       <div className={s.buy_btc}>
         <div>
@@ -160,8 +169,12 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             </Text>
           </Heading>
         </div>
-        <ButtonIcon className={s.buy_btc_button} onClick={toggleModal}>
-          Buy now
+        <ButtonIcon
+          disabled={isBTCDisable}
+          className={s.buy_btc_button}
+          onClick={toggleModal}
+        >
+          {isBTCDisable ? 'The inscription is being purchased' : 'Buy now'}
         </ButtonIcon>
       </div>
     );
