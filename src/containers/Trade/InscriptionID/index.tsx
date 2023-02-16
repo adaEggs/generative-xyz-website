@@ -5,7 +5,6 @@ import { Loading } from '@components/Loading';
 import Heading from '@components/Heading';
 import Text from '@components/Text';
 import { Container } from 'react-bootstrap';
-// import ButtonIcon from '@components/ButtonIcon';
 import MarkdownPreview from '@components/MarkdownPreview';
 import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import useWindowSize from '@hooks/useWindowSize';
@@ -20,7 +19,7 @@ import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
-// import { ROUTE_PATH } from '@constants/route-path';
+import { getOrdinalImgURL } from '@utils/inscribe';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -41,11 +40,6 @@ const InscriptionID: React.FC = (): React.ReactElement => {
         <Loading isLoaded={!!tokenData} className={s.loading_project} />
       </div>
     );
-  };
-
-  const getImgURL = () => {
-    if (!tokenData?.inscriptionID) return '';
-    return `https://ordinals-explorer-v5-dev.generative.xyz/preview/${tokenData?.inscriptionID}`;
   };
 
   const renderRow = (label: string, value?: string | number) => {
@@ -105,7 +99,10 @@ const InscriptionID: React.FC = (): React.ReactElement => {
         )}
 
         {mobileScreen && tokenData?.name && (
-          <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
+          <TokenIDImage
+            image={getOrdinalImgURL(tokenData.inscriptionID)}
+            name={tokenData?.name || ''}
+          />
         )}
         {/* {!tokenData?.buyable && !tokenData?.isCompleted && (
           <Text size={'14'} className={s.info_statusIns}>
@@ -215,7 +212,10 @@ const InscriptionID: React.FC = (): React.ReactElement => {
       <div />
       {/*{!mobileScreen && <TokenIDImage image={''} name="" />}*/}
       {!mobileScreen && (
-        <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
+        <TokenIDImage
+          image={getOrdinalImgURL(tokenData?.inscriptionID || '')}
+          name={tokenData?.name || ''}
+        />
       )}
       {!!tokenData?.inscriptionID && !!tokenData?.price && (
         <BuyTokenModal

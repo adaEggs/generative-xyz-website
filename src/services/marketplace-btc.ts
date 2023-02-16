@@ -6,6 +6,7 @@ import {
   getOrdAddresByInscriptionID,
   getOrdContentByInscriptionID,
 } from '@utils/parseOrdHTML';
+import { HOST_ORDINALS_EXPLORER } from '@constants/config';
 
 const LOG_PREFIX = 'MarketplaceBtcService';
 
@@ -173,7 +174,6 @@ export interface IListingordinals {
   data: IGetMarketplaceBtcListItem[];
 }
 
-const HOST_ORDINALS_EXPLORER = 'https://ordinals-explorer-dev.generative.xyz';
 export const getListingOrdinals = async (
   from: string | number = 0
 ): Promise<IListingordinals> => {
@@ -231,7 +231,7 @@ export const getDetailOrdinals = async (
       isCompleted: false,
     };
   } catch (err: unknown) {
-    log('failed to get get fee', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get fee');
+    log('failed to get ordinal detail', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get ordinal detail');
   }
 };
