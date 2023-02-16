@@ -1,6 +1,6 @@
 .recentWorks {
   &_projects {
-    margin-top: rem(50px);
+    margin-top: rem(30px);
     position: relative;
 
     @include mobile {
@@ -9,6 +9,7 @@
 
     &_list {
       overflow: unset !important;
+      margin-top: rem(50px);
     }
 
     &_loader {
@@ -51,5 +52,32 @@
     display: flex;
     justify-content: space-between;
     width: 100%;
+  }
+}
+
+.tabs {
+  border-bottom: 1px solid $black-20;
+  margin-bottom: rem(32px);
+  display: flex;
+  gap: rem(48px);
+}
+
+.tab {
+  font-weight: 700;
+  line-height: (28 / 18);
+
+  @include calcFontAuto(16px, 18px);
+
+  border: none !important;
+  letter-spacing: -0.01em;
+  color: $black-40;
+  padding: 10px 0 !important;
+
+  &:hover {
+    color: $black-100;
+  }
+
+  &:global(.active) {
+    border-bottom: 2px solid $black-100 !important;
   }
 }
