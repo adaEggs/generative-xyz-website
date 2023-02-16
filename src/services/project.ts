@@ -11,13 +11,15 @@ import {
   IGetProjectListParams,
   IGetProjectListResponse,
   IGetProjectTokensResponse,
+  IUpdateProjectPayload,
   IUploadBTCProjectFilePayload,
   IUploadBTCProjectFileResponse,
 } from '@interfaces/api/project';
-import { get, post, postFile } from '@services/http-client';
+import { get, post, postFile, put } from '@services/http-client';
 import log from '@utils/logger';
 import querystring from 'query-string';
 import { orderBy } from 'lodash';
+import { Project } from '@interfaces/project';
 
 const LOG_PREFIX = 'ProjectService';
 
@@ -135,5 +137,22 @@ export const uploadBTCProjectFiles = async (
   } catch (err: unknown) {
     log('failed to upload btc project file', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to upload btc project file');
+  }
+};
+
+export const updateProject = async (
+  contractAddress: string,
+  projectId: string,
+  payload: IUpdateProjectPayload
+): Promise<Project> => {
+  try {
+    const res = await put<IUpdateProjectPayload, Project>(
+      `${API_PATH}/${contractAddress}/tokens/${projectId}`,
+      payload
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to create btc project', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to create btc project');
   }
 };

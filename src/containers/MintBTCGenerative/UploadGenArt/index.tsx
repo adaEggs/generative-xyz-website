@@ -4,6 +4,7 @@ import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { SOCIALS } from '@constants/common';
 import { CDN_URL, SANDBOX_BTC_FILE_SIZE_LIMIT } from '@constants/config';
+import { SUPPORTED_FILE_EXT } from '@constants/file';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
 import { LogLevel } from '@enums/log-level';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
@@ -177,7 +178,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
       case ImageFileError.TOO_LARGE:
         return `File size error, maximum file size is ${SANDBOX_BTC_FILE_SIZE_LIMIT}kb.`;
       case ImageFileError.INVALID_EXTENSION:
-        return 'Invalid file format. Supported file extensions are JPG, JPEG, PNG, GIF.';
+        return `Invalid file format. Supported file extensions are ${SUPPORTED_FILE_EXT.join(
+          ', '
+        )}.`;
       default:
         return '';
     }
