@@ -2,6 +2,7 @@ import { LogLevel } from '@enums/log-level';
 import { get, post } from '@services/http-client';
 import log from '@utils/logger';
 import querystring from 'query-string';
+import { HOST_ORDINALS_EXPLORER } from '@constants/config';
 import { IMAGE_TYPE } from '@components/NFTDisplayBox/constant';
 
 const LOG_PREFIX = 'MarketplaceBtcService';
@@ -154,8 +155,6 @@ export interface IListingordinals {
   next: number;
   data: IGetMarketplaceBtcListItem[];
 }
-const HOST_ORDINALS_EXPLORER =
-  'https://ordinals-explorer-v5-dev.generative.xyz';
 
 export const getListingOrdinals = async (
   from: string | number = 0
@@ -210,7 +209,7 @@ export const getInscriptionDetail = async (
       contentLength: randomStr,
     };
   } catch (err: unknown) {
-    log('failed to get get fee', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get fee');
+    log('failed to get ordinal detail', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get ordinal detail');
   }
 };

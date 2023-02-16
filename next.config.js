@@ -103,6 +103,21 @@ module.exports = removeImports(
           source: '/create',
           destination: '/create/upload-project',
           permanent: true,
+        },
+        {
+          source: '/marketplace',
+          destination: '/inscriptions',
+          permanent: true,
+        },
+        {
+          source: '/marketplace/:tokenID',
+          destination: '/inscriptions/:tokenID',
+          permanent: true,
+        },
+        {
+          source: '/marketplace/inscription/:tokenID',
+          destination: '/inscriptions/inscription/:tokenID',
+          permanent: true,
         }
       ];
     },
