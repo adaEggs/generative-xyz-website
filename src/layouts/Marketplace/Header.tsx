@@ -241,23 +241,23 @@ const Header: React.FC<IProp> = ({
                       {MENU_HEADER[2].name}
                     </Link>
                   </li>
-                  {/*<li*/}
-                  {/*  className={cs(*/}
-                  {/*    activePath === MENU_HEADER[4].activePath && styles.active*/}
-                  {/*  )}*/}
-                  {/*  key={`header-${MENU_HEADER[4].id}`}*/}
-                  {/*>*/}
-                  {/*  <Link*/}
-                  {/*    className={*/}
-                  {/*      MENU_HEADER[4].activePath === 'inscribe'*/}
-                  {/*        ? styles.inscribe*/}
-                  {/*        : ''*/}
-                  {/*    }*/}
-                  {/*    href={getUrlWithQueryParams(MENU_HEADER[4].route)}*/}
-                  {/*  >*/}
-                  {/*    {MENU_HEADER[4].name}*/}
-                  {/*  </Link>*/}
-                  {/*</li>*/}
+                  <li
+                    className={cs(
+                      activePath === MENU_HEADER[4].activePath && styles.active
+                    )}
+                    key={`header-${MENU_HEADER[4].id}`}
+                  >
+                    <Link
+                      className={
+                        MENU_HEADER[4].activePath === 'inscribe'
+                          ? styles.inscribe
+                          : ''
+                      }
+                      href={getUrlWithQueryParams(MENU_HEADER[4].route)}
+                    >
+                      {MENU_HEADER[4].name}
+                    </Link>
+                  </li>
                 </ul>
 
                 <div className={styles.header_right}>

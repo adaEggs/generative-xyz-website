@@ -5,13 +5,13 @@ import { Loading } from '@components/Loading';
 import Heading from '@components/Heading';
 import Text from '@components/Text';
 import { Container } from 'react-bootstrap';
-import ButtonIcon from '@components/ButtonIcon';
+// import ButtonIcon from '@components/ButtonIcon';
 import MarkdownPreview from '@components/MarkdownPreview';
 import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import useWindowSize from '@hooks/useWindowSize';
 import {
-  getMarketplaceBtcNFTDetail,
-  IGetMarketplaceBtcNFTDetail,
+  getDetailOrdinals,
+  IGetMarketplaceBtcListItem,
 } from '@services/marketplace-btc';
 import BigNumber from 'bignumber.js';
 import BuyTokenModal from '@containers/Trade/BuyTokenModal';
@@ -20,15 +20,15 @@ import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
-import { ROUTE_PATH } from '@constants/route-path';
+// import { ROUTE_PATH } from '@constants/route-path';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
-const TokenID: React.FC = (): React.ReactElement => {
+const InscriptionID: React.FC = (): React.ReactElement => {
   const router = useRouter();
   const { tokenID } = router.query;
   const [tokenData, setTokenData] = React.useState<
-    IGetMarketplaceBtcNFTDetail | undefined
+    IGetMarketplaceBtcListItem | undefined
   >(undefined);
 
   const [showMore, setShowMore] = useState(false);
@@ -75,92 +75,108 @@ const TokenID: React.FC = (): React.ReactElement => {
     return (
       <div className={s.info}>
         <Heading as="h4" fontWeight="medium">
-          Inscription #{tokenData.index}
+          Inscription #{tokenData?.index}
         </Heading>
-        <Text size="14" color={'black-60'} className={s.info_labelPrice}>
-          {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}
-        </Text>
-        <Text
-          size={'20'}
-          className={
-            tokenData?.isCompleted
-              ? s.info_amountPriceSuccess
-              : s.info_amountPrice
-          }
-          style={{
-            marginBottom: tokenData.buyable ? 32 : 0,
-          }}
-        >
-          {formatBTCPrice(new BigNumber(tokenData?.price || 0).toNumber())} BTC
-        </Text>
+        {tokenData.buyable && (
+          <>
+            {' '}
+            <Text size="14" color={'black-60'} className={s.info_labelPrice}>
+              {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}
+            </Text>
+            {(tokenData?.price || 0) > 0 && (
+              <Text
+                size={'20'}
+                className={
+                  tokenData?.isCompleted
+                    ? s.info_amountPriceSuccess
+                    : s.info_amountPrice
+                }
+                style={{
+                  marginBottom: tokenData?.buyable ? 32 : 0,
+                }}
+              >
+                {formatBTCPrice(
+                  new BigNumber(tokenData?.price || 0).toNumber()
+                )}{' '}
+                BTC
+              </Text>
+            )}
+          </>
+        )}
+
         {mobileScreen && tokenData?.name && (
           <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
         )}
-        {!tokenData.buyable && !tokenData.isCompleted && (
+        {/* {!tokenData?.buyable && !tokenData?.isCompleted && (
           <Text size={'14'} className={s.info_statusIns}>
             The inscription is being purchased. ETA is in ~30 minutes.
           </Text>
         )}
-        {tokenData.isCompleted && (
+        {tokenData?.isCompleted && (
           <Text size={'14'} className={s.info_statusComplete}>
             This inscription is not available for buying now.
           </Text>
-        )}
-        <ButtonIcon
+        )} */}
+        {/* <ButtonIcon
           sizes="large"
           className={s.info_buyBtn}
           onClick={() => {
             // return setShowModal(true);
-            if (tokenData.buyable) return setShowModal(true);
+            if (tokenData?.buyable) return setShowModal(true);
             router.push(ROUTE_PATH.TRADE);
           }}
         >
           <Text as="span" size="14" fontWeight="medium">
-            {tokenData.buyable ? 'Buy Now' : 'Buy others'}
+            {tokenData?.buyable ? 'Buy Now' : 'Buy others'}
           </Text>
-        </ButtonIcon>
+        </ButtonIcon> */}
         <div className={s.info_project_desc}>
-          <Text
-            size="14"
-            color="black-40"
-            fontWeight="medium"
-            className="text-uppercase"
-          >
-            description
-          </Text>
-          <div
-            className={s.token_description}
-            style={{ WebkitLineClamp: showMore ? 'unset' : '4' }}
-          >
-            <MarkdownPreview source={tokenData.description} />
-          </div>
-          {tokenData.description && tokenData.description.length > 300 && (
+          {tokenData.buyable && (
             <>
-              {!showMore ? (
-                <Text
-                  as="span"
-                  onClick={() => setShowMore(!showMore)}
-                  fontWeight="semibold"
-                >
-                  See more
-                </Text>
-              ) : (
-                <Text
-                  as="span"
-                  onClick={() => setShowMore(!showMore)}
-                  fontWeight="semibold"
-                >
-                  See less
-                </Text>
-              )}
+              <Text
+                size="14"
+                color="black-40"
+                fontWeight="medium"
+                className="text-uppercase"
+              >
+                description
+              </Text>
+              <div
+                className={s.token_description}
+                style={{ WebkitLineClamp: showMore ? 'unset' : '4' }}
+              >
+                <MarkdownPreview source={tokenData?.description} />
+              </div>
+              {tokenData?.description &&
+                tokenData?.description.length > 300 && (
+                  <>
+                    {!showMore ? (
+                      <Text
+                        as="span"
+                        onClick={() => setShowMore(!showMore)}
+                        fontWeight="semibold"
+                      >
+                        See more
+                      </Text>
+                    ) : (
+                      <Text
+                        as="span"
+                        onClick={() => setShowMore(!showMore)}
+                        fontWeight="semibold"
+                      >
+                        See less
+                      </Text>
+                    )}
+                  </>
+                )}
             </>
           )}
           <div className={s.wrap_raw}>
             {renderRow(
               'ID',
-              tokenData.inscriptionID.length > 10
-                ? ellipsisCenter({ str: tokenData.inscriptionID })
-                : tokenData.inscriptionID
+              tokenData?.inscriptionID.length > 10
+                ? ellipsisCenter({ str: tokenData?.inscriptionID })
+                : tokenData?.inscriptionID
             )}
           </div>
           {/*<Text size="14" color="black-40" className={s.owner}>*/}
@@ -174,7 +190,7 @@ const TokenID: React.FC = (): React.ReactElement => {
   const fetchData = async (): Promise<void> => {
     if (!tokenID || typeof tokenID !== 'string') return;
     try {
-      const tokenData = await getMarketplaceBtcNFTDetail(tokenID);
+      const tokenData = await getDetailOrdinals(tokenID);
       if (tokenData) {
         setTokenData(tokenData);
       }
@@ -205,13 +221,13 @@ const TokenID: React.FC = (): React.ReactElement => {
         <BuyTokenModal
           showModal={showModal}
           onClose={() => setShowModal(false)}
-          inscriptionID={tokenData.inscriptionID || ''}
+          inscriptionID={tokenData?.inscriptionID || ''}
           price={new BigNumber(tokenData?.price || 0).toNumber()}
-          orderID={tokenData.orderID}
+          orderID={tokenData?.orderID}
         />
       )}
     </Container>
   );
 };
 
-export default TokenID;
+export default InscriptionID;
