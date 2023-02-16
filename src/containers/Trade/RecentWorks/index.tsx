@@ -123,19 +123,19 @@ export const RecentWorks = (): JSX.Element => {
             sizes="large"
           />
           <ButtonIcon
-            className={s.recentWorks_btnIns}
-            onClick={goToInscriptionsPage}
             sizes="large"
-          >
-            Create an inscription
-          </ButtonIcon>
-          <ButtonIcon
-            sizes="large"
-            variants="ghost"
             className={s.recentWorks_btn}
             onClick={() => setShowModal(true)}
           >
             List for sale
+          </ButtonIcon>
+          <ButtonIcon
+            className={s.recentWorks_btnIns}
+            onClick={goToInscriptionsPage}
+            sizes="large"
+            variants="outline"
+          >
+            Inscribe for free
           </ButtonIcon>
         </Col>
       </Row>
