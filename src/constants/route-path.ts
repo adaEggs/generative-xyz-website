@@ -1,7 +1,9 @@
 import { isProduction, isStaging } from '@utils/common';
 
 export const ROUTE_PATH = {
-  HOME: isStaging() ? 'https://generative.xyz' : '/',
+  HOME: isProduction()
+    ? 'https://generative.xyz'
+    : 'https://devnet.generative.xyz',
   COLLECTIONS: '/collections',
   CREATE_PROJECT: isProduction()
     ? 'https://testnet.generative.xyz/mint-generative/upload-project'
