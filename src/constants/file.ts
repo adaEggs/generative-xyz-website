@@ -15,4 +15,13 @@ export const JS_EXTENSION = 'js';
 export const HTML_EXTENSION = 'html';
 export const CSS_EXTENSION = 'css';
 
-export const IMAGE_FILE_EXT = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+export const SUPPORTED_FILE_EXT = [
+  'jpg',
+  'jpeg',
+  'png',
+  'gif',
+  'svg',
+  'webp',
+  'glb',
+  'apng',
+];

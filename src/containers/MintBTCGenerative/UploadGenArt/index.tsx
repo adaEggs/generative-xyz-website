@@ -9,7 +9,7 @@ import { LogLevel } from '@enums/log-level';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { ImageFileError, SandboxFileError } from '@enums/sandbox';
 import log from '@utils/logger';
-import { processHTMLFile, processImageCollectionZipFile } from '@utils/sandbox';
+import { processHTMLFile, processCollectionZipFile } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
 import cs from 'classnames';
 import Image from 'next/image';
@@ -51,9 +51,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
     }
   };
 
-  const processImageFiles = async (file: File) => {
+  const processCollectionFile = async (file: File) => {
     try {
-      const imageFiles = await processImageCollectionZipFile(file);
+      const imageFiles = await processCollectionZipFile(file);
       setImageCollectionFile(imageFiles);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -62,11 +62,13 @@ const UploadGenArt: React.FC = (): ReactElement => {
 
   const handleProccessFile = (): void => {
     if (!rawFile) return;
+
     if (collectionType === CollectionType.GENERATIVE) {
       processGenerativeFile(rawFile);
     }
-    if (collectionType == CollectionType.IMAGES) {
-      processImageFiles(rawFile);
+
+    if (collectionType == CollectionType.COLLECTION) {
+      processCollectionFile(rawFile);
     }
   };
 
@@ -303,13 +305,13 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 <span className={s.checkmark}></span>
               </div>
               <div
-                onClick={() => setCollectionType(CollectionType.IMAGES)}
+                onClick={() => setCollectionType(CollectionType.COLLECTION)}
                 className={cs(s.choiceItem, {
                   [`${s.choiceItem__active}`]:
-                    collectionType === CollectionType.IMAGES,
+                    collectionType === CollectionType.COLLECTION,
                 })}
               >
-                Image collection
+                File collection
                 <span className={s.checkmark}></span>
               </div>
             </div>
@@ -364,7 +366,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
         <>
           {collectionType === CollectionType.GENERATIVE &&
             renderUploadGenerativeSuccess()}
-          {collectionType === CollectionType.IMAGES &&
+          {collectionType === CollectionType.COLLECTION &&
             renderUploadImageCollectionSuccess()}
         </>
       )}

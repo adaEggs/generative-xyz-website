@@ -97,7 +97,7 @@ const SetPrice = () => {
         );
         setNetworkFee(sats);
       }
-      if (collectionType === CollectionType.IMAGES) {
+      if (collectionType === CollectionType.COLLECTION) {
         if (!imageCollectionFile) {
           setNetworkFee(0);
           return;
@@ -155,7 +155,7 @@ const SetPrice = () => {
     } else if (parseInt(values.maxSupply.toString(), 10) <= 0) {
       errors.maxSupply = 'Invalid number. Must be greater than 0.';
     } else if (
-      collectionType === CollectionType.IMAGES &&
+      collectionType === CollectionType.COLLECTION &&
       parseInt(values.maxSupply.toString(), 10) > numberOfFile
     ) {
       errors.maxSupply = `Invalid number. Must be equal or less than ${numberOfFile}.`;
@@ -263,7 +263,7 @@ const SetPrice = () => {
         isFullChain: true,
       };
 
-      if (collectionType === CollectionType.IMAGES) {
+      if (collectionType === CollectionType.COLLECTION) {
         try {
           const uploadRes = await uploadBTCProjectFiles({
             file: rawFile,
