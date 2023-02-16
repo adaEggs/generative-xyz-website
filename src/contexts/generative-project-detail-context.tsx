@@ -26,7 +26,8 @@ import { useDispatch } from 'react-redux';
 
 const LOG_PREFIX = 'GenerativeProjectDetailContext';
 
-const FETCH_NUM = 20;
+// const FETCH_NUM = 20;
+const FETCH_NUM = 2000; // TODO: HOT FIX LIMIT
 
 export interface IGenerativeProjectDetailContext {
   projectData: Project | null;
