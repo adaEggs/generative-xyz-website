@@ -1,5 +1,6 @@
 import { isBrowser } from '@utils/common';
 import Web3 from 'web3';
+import BigNumber from 'bignumber.js';
 
 export const utf8ToBase64 = (str: string): string => {
   if (!isBrowser()) {
@@ -119,9 +120,10 @@ export const formatCurrency = (value: number): string => {
 
 export const tokenID = (tokenName: string) => tokenName.split('#')[1];
 
-export const formatBTCPrice = (price: number): string => {
+export const formatBTCPrice = (price: number | string): string => {
   if (!price) return '--';
-  return ceilPrecised(price / 1e8).toString();
+  const priceNumb = new BigNumber(price).dividedBy(1e8).toNumber();
+  return ceilPrecised(priceNumb).toString();
 };
 
 export const formatEthPrice = (price: string | null): string => {

@@ -12,14 +12,17 @@ import { User } from '@interfaces/user';
 import { convertToETH } from '@utils/currency';
 import {
   formatAddress,
+  formatBTCPrice,
   formatTokenId,
   getProjectIdFromTokenId,
 } from '@utils/format';
 import cs from 'classnames';
-import { useContext, useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 
 import s from './styles.module.scss';
+import ButtonIcon from '@components/ButtonIcon';
+import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
 
 const CollectionItem = ({
   data,
@@ -35,6 +38,7 @@ const CollectionItem = ({
   const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
   const { isBitcoinProject } = useContext(GenerativeProjectDetailContext);
+  const [showModal, setShowModal] = useState<boolean>(false);
 
   const [thumb, setThumb] = useState<string>(data.image);
 
@@ -42,16 +46,53 @@ const CollectionItem = ({
     setThumb(LOGO_MARKETPLACE_URL);
   };
 
-  // const clickDetail = () => {
-  //   // if (isBitcoinProject) return;
-  //   router.push(
-  //     `${ROUTE_PATH.GENERATIVE}/${
-  //       isBitcoinProject
-  //         ? data.project.tokenID
-  //         : getProjectIdFromTokenId(parseInt(tokenID))
-  //     }/${tokenID}`
-  //   );
-  // };
+  const toggleModal = () => {
+    setShowModal(show => !show);
+  };
+
+  const renderButton = () => {
+    if (data?.buyable)
+      return (
+        <ul className={s.ordinalsLinks}>
+          <ButtonIcon
+            sizes={'large'}
+            className={s.buy_now}
+            onClick={toggleModal}
+          >
+            <Text as="span" fontWeight="medium">
+              Buy now
+            </Text>
+          </ButtonIcon>
+        </ul>
+      );
+    if (isBitcoinProject) {
+      return (
+        <ul className={s.ordinalsLinks}>
+          <li>
+            <a
+              className={s.inscription}
+              target="_blank"
+              href={`https://ordinals.com/inscription/${tokenID}`}
+              rel="noreferrer"
+            >
+              Inscription
+            </a>
+          </li>
+          <li>
+            <a
+              className={s.content}
+              target="_blank"
+              href={`https://ordinals.com/content/${tokenID}`}
+              rel="noreferrer"
+            >
+              Content
+            </a>
+          </li>
+        </ul>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className={`${s.collectionCard} ${className}`}>
@@ -106,7 +147,9 @@ const CollectionItem = ({
                   </span>
                 </Text>
                 <Text size="14" fontWeight="bold">
-                  {data.stats?.price
+                  {data.buyable && data.priceBTC
+                    ? formatBTCPrice(data.priceBTC)
+                    : data.stats?.price
                     ? `${convertToETH(data.stats?.price)}`
                     : ''}
                 </Text>
@@ -148,6 +191,14 @@ const CollectionItem = ({
                         : formatTokenId(tokenID)}
                     </span>
                   </Heading>
+                  {!!data.priceBTC && data.buyable && (
+                    <Stack
+                      direction="horizontal"
+                      className={s.collectionCard_info_listing}
+                    >
+                      <b>{formatBTCPrice(data.priceBTC)} BTC</b>
+                    </Stack>
+                  )}
                   {!!data.stats?.price && (
                     <Stack
                       direction="horizontal"
@@ -161,31 +212,17 @@ const CollectionItem = ({
             </div>
           )}
         </Link>
-        {isBitcoinProject && (
-          <ul className={s.ordinalsLinks}>
-            <li>
-              <a
-                className={s.inscription}
-                target="_blank"
-                href={`https://ordinals.com/inscription/${tokenID}`}
-                rel="noreferrer"
-              >
-                Inscription
-              </a>
-            </li>
-            <li>
-              <a
-                className={s.content}
-                target="_blank"
-                href={`https://ordinals.com/content/${tokenID}`}
-                rel="noreferrer"
-              >
-                Content
-              </a>
-            </li>
-          </ul>
-        )}
+        {renderButton()}
       </div>
+      {data.buyable && (
+        <ModalBuyItemViaBTC
+          showModal={showModal}
+          orderID={data.orderID}
+          inscriptionID={data.tokenID}
+          price={data.priceBTC}
+          onClose={toggleModal}
+        />
+      )}
     </div>
   );
 };
