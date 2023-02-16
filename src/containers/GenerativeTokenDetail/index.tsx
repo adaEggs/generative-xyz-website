@@ -37,6 +37,9 @@ import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
 import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
+import Avatar from '@components/Avatar';
+import { CDN_URL } from '@constants/config';
+import SvgInset from '@components/SvgInset';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -45,7 +48,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
 
   const {
     tokenData,
-    // tokenID,
+    projectData,
     openListingModal,
     openMakeOfferModal,
     openTransferTokenModal,
@@ -101,11 +104,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     if (
       tokenData?.attributes &&
       tokenData.attributes?.length > 0 &&
-      tokenData?.project?.traitStat &&
-      tokenData?.project?.traitStat?.length > 0
+      projectData?.traitStat &&
+      projectData?.traitStat?.length > 0
     ) {
       return tokenData.attributes.map(attr => {
-        const foundTrait = tokenData?.project?.traitStat.find(
+        const foundTrait = projectData?.traitStat.find(
           trait => trait.traitName === attr.trait_type
         );
 
@@ -125,8 +128,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     return null;
   };
 
-  const tokenDescription =
-    tokenData?.description || tokenData?.project?.desc || '';
+  const tokenDescription = projectData?.desc || '';
 
   const handleLinkProfile = (walletAddress?: string) => {
     if (user?.walletAddress === walletAddress) {
@@ -151,11 +153,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     return (
       <div className={s.buy_btc}>
         <div>
-          <Text size="12" fontWeight="medium" color="black-40">
-            Price
-          </Text>
-          <Heading as="h6" fontWeight="medium">
-            {formatBTCPrice(tokenData.priceBTC)} BTC
+          <Heading as="h4" fontWeight="medium">
+            {formatBTCPrice(tokenData.priceBTC)}{' '}
+            <Text as="span" size="18">
+              BTC
+            </Text>
           </Heading>
         </div>
         <ButtonIcon className={s.buy_btc_button} onClick={toggleModal}>
@@ -173,8 +175,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       setHasProjectInteraction(false);
     }
   }, [tokenDescription]);
-
-  // const checkLines = tokenDescription.split(/\r\n|\r|\n/).length;
 
   return (
     <>
@@ -201,11 +201,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 href={`${ROUTE_PATH.GENERATIVE}/${projectID}`}
                 className={s.projectName}
               >
-                {tokenData?.project.name}
+                {projectData?.name}
               </Link>
             </Heading>
 
-            <Text
+            {/* <Text
               size={'18'}
               color={'black-60'}
               style={{ marginBottom: '16px' }}
@@ -219,7 +219,48 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     tokenData?.project?.creatorProfile?.walletAddress || ''
                   )}
               </div>
-            </Text>
+            </Text> */}
+            <div className={s.creator}>
+              <div className={s.creator_info}>
+                <Avatar
+                  imgSrcs={projectData?.creatorProfile?.avatar || ''}
+                  width={24}
+                  height={24}
+                />
+                <Text size={'18'} color={'black-60'}>
+                  {projectData?.creatorProfile?.displayName ||
+                    formatAddress(
+                      projectData?.creatorProfile?.walletAddress || ''
+                    )}
+                </Text>
+              </div>
+              {projectData?.creatorProfile?.profileSocial?.twitter && (
+                <div className={s.creator_social}>
+                  <span className={s.creator_divider}></span>
+                  <div className={s.creator_social_item}>
+                    <SvgInset
+                      className={s.creator_social_twitter}
+                      size={16}
+                      svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                    />
+                    <Text size={'18'} color="black-60">
+                      <Link
+                        href={
+                          projectData?.creatorProfile?.profileSocial?.twitter ||
+                          ''
+                        }
+                        target="_blank"
+                      >
+                        @
+                        {projectData?.creatorProfile?.profileSocial?.twitter
+                          .split('/')
+                          .pop()}
+                      </Link>
+                    </Text>
+                  </div>
+                </div>
+              )}
+            </div>
             {/* {isBitcoinProject && (
               <Link
                 target="_blank"
@@ -250,7 +291,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                       Royalty
                     </Text>
                     <Heading as="h6" fontWeight="medium">
-                      {(tokenData?.project?.royalty || 0) / 100}%
+                      {(projectData?.royalty || 0) / 100}%
                     </Heading>
                   </div>
                 </div>
@@ -306,19 +347,10 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
 
             <div className={s.accordions}>
               <div className={s.accordions_item}>
-                {/* <Text
-                  size="14"
-                  color="black-40"
-                  fontWeight="medium"
-                  className="text-uppercase"
-                >
-                  description
-                </Text>
-                <SeeMore>{tokenDescription || ''}</SeeMore> */}
                 <ProjectDescription
                   desc={tokenDescription || ''}
                   hasInteraction={hasProjectInteraction}
-                  profileBio={tokenData?.project?.creatorProfile?.bio || ''}
+                  profileBio={projectData?.creatorProfile?.bio || ''}
                 />
               </div>
 
@@ -373,9 +405,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
         {!isBitcoinProject ? (
           <>
             <TokenActivities></TokenActivities>
-            <MoreItemsSection
-              genNFTAddr={tokenData?.project.genNFTAddr || ''}
-            />
+            <MoreItemsSection genNFTAddr={projectData?.genNFTAddr || ''} />
           </>
         ) : (
           // <></>
