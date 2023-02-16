@@ -20,14 +20,6 @@
   }
 
   &_btn {
-    font-weight: 500;
-    font-size: rem(16px);
-    line-height: rem(26px);
-    letter-spacing: 0.01em;
-    color: #fff;
-    background-color: #1c1c1c;
-    border-color: #1c1c1c;
-    padding: rem(15) rem(24);
     margin-left: rem(15);
 
     @include mobile {
@@ -44,24 +36,11 @@
   }
 
   &_btnIns {
-    font-weight: 500;
-    font-size: rem(16px);
-    line-height: rem(26px);
-    letter-spacing: 0.01em;
-    color: #1c1c1c;
-    padding: rem(15) rem(24);
     margin-left: rem(15);
-    background-color: transparent;
 
     @include mobile {
       margin-left: 8px;
       padding: 8px !important;
-    }
-
-    :hover {
-      opacity: 0.8;
-      background-color: white;
-      text-decoration: underline;
     }
   }
 }
