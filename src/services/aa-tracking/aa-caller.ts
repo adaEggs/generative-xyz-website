@@ -47,10 +47,19 @@ class APICaller {
     if (userId === null) {
       userId = '0';
     }
-    eventData.user_id = userId;
+
+    const userDisplayName = localStorage.getItem(
+      LocalStorageKey.USER_DISPLAYNAME
+    );
     eventParams.push({
-      key: 'user_id',
-      value: userId,
+      key: 'user_name',
+      value: userDisplayName,
+    });
+
+    const userAvatar = localStorage.getItem(LocalStorageKey.USER_AVATAR);
+    eventParams.push({
+      key: 'user_avatar',
+      value: userAvatar,
     });
 
     let userPseudoId = localStorage.getItem(LocalStorageKey.USER_PSEUDO_ID);
@@ -105,7 +114,10 @@ class APICaller {
       });
     }
 
-    eventPayload.data = eventData;
+    eventPayload.data = {
+      ...eventData,
+      eventParams,
+    };
 
     if (this.debugMode) {
       log(JSON.stringify(eventPayload), LogLevel.DEBUG, LOG_PREFIX);

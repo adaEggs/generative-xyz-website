@@ -45,7 +45,7 @@ const TokenID: React.FC = (): React.ReactElement => {
 
   const getImgURL = () => {
     if (!tokenData?.inscriptionID) return '';
-    return `https://ordinals-explorer.generative.xyz/preview/${tokenData?.inscriptionID}`;
+    return `https://ordinals-explorer-v5-dev.generative.xyz/preview/${tokenData?.inscriptionID}`;
   };
 
   const renderRow = (label: string, value?: string | number) => {
@@ -58,7 +58,7 @@ const TokenID: React.FC = (): React.ReactElement => {
         <a
           color={'text-black-80'}
           className={s.row_right}
-          href={`https://ordinals-explorer.generative.xyz/inscription/${tokenData?.inscriptionID}`}
+          href={`https://ordinals-explorer-v5-dev.generative.xyz/inscription/${tokenData?.inscriptionID}`}
           target="_blank"
           rel="noreferrer"
         >

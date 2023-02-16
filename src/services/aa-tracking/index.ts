@@ -11,8 +11,15 @@ const AutonomousAnalytic = new ApiCaller({
   debugMode: true,
 });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const sendAAPageView = ({ page, userId = 0, query = '' }: any): void => {
+const sendAAPageView = ({
+  page,
+  userId = '0',
+  query = '',
+}: {
+  page: string;
+  userId?: string;
+  query?: string;
+}): void => {
   try {
     let userPseudoId = localStorage.getItem(LocalStorageKey.USER_PSEUDO_ID);
     if (_isEmpty(userPseudoId)) {
@@ -33,8 +40,14 @@ const sendAAPageView = ({ page, userId = 0, query = '' }: any): void => {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const sendAAEvent = ({ eventName, data }: any): void => {
+const sendAAEvent = ({
+  eventName,
+  data,
+}: {
+  eventName: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
+}): void => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const eventParams: any = [];
