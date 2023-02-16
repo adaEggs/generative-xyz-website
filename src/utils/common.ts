@@ -18,7 +18,7 @@ export const getScrollTop = () => {
 };
 
 export const isPhoneScreen = (): boolean => {
-  if (typeof window === 'undefined') {
+  if (!isBrowser()) {
     return false;
   }
 
@@ -27,7 +27,7 @@ export const isPhoneScreen = (): boolean => {
 };
 
 export const isTabletScreen = (): boolean => {
-  if (typeof window === 'undefined') {
+  if (!isBrowser()) {
     return false;
   }
   const width = window.innerWidth || document.body.clientWidth;
@@ -35,7 +35,7 @@ export const isTabletScreen = (): boolean => {
 };
 
 export const isTabletOrPhone = (): boolean => {
-  if (typeof window === 'undefined') {
+  if (!isBrowser()) {
     return false;
   }
 

@@ -104,7 +104,12 @@ module.exports = removeImports(
           destination: '/create/upload-project',
           permanent: true,
         },
-      ]
+        {
+          source: '/generative/1000002',
+          destination: '/satoshis',
+          permanent: true,
+        },
+      ];
     },
   })
 );

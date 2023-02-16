@@ -36,16 +36,19 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
 };
 
 const getHeader = (configHeader?: HeadersInit): HeadersInit => {
-  const defaultHeader = configHeader ?? {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const defaultHeader: any = configHeader ?? {};
   const headers: Record<string, string> = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
     ...Object(defaultHeader),
   };
 
-  const accessToken = getAccessToken();
-  if (accessToken) {
-    headers['Authorization'] = `Bearer ${accessToken}`;
+  if (defaultHeader && !defaultHeader['Authorization']) {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+    }
   }
 
   return headers;

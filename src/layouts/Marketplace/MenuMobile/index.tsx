@@ -99,21 +99,21 @@ const MenuMobile = React.forwardRef(
                 {MENU_HEADER[2].name}
               </Link>
             </li>
-            <li
-              className={cs(
-                activePath === MENU_HEADER[4].activePath && s.active
-              )}
-              key={`header-${MENU_HEADER[4].id}`}
-            >
-              <Link
-                className={
-                  MENU_HEADER[4].activePath === 'inscribe' ? s.inscribe : ''
-                }
-                href={getUrlWithQueryParams(MENU_HEADER[4].route)}
-              >
-                {MENU_HEADER[4].name}
-              </Link>
-            </li>
+            {/*<li*/}
+            {/*  className={cs(*/}
+            {/*    activePath === MENU_HEADER[4].activePath && s.active*/}
+            {/*  )}*/}
+            {/*  key={`header-${MENU_HEADER[4].id}`}*/}
+            {/*>*/}
+            {/*  <Link*/}
+            {/*    className={*/}
+            {/*      MENU_HEADER[4].activePath === 'inscribe' ? s.inscribe : ''*/}
+            {/*    }*/}
+            {/*    href={getUrlWithQueryParams(MENU_HEADER[4].route)}*/}
+            {/*  >*/}
+            {/*    {MENU_HEADER[4].name}*/}
+            {/*  </Link>*/}
+            {/*</li>*/}
             {!isProduction() && (
               <li
                 className={cs(
