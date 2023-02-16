@@ -8,6 +8,7 @@ export const ROUTE_PATH = {
     : '/mint-generative/upload-project',
   BENEFIT: isProduction() ? 'https://testnet.generative.xyz/create' : '/create',
   GENERATIVE: '/generative',
+  GENERATIVE_EDIT: '/generative/edit',
   PROFILE: '/profile',
   EDIT_PROFILE: `/profile/edit`,
   SANDBOX: '/sandbox',

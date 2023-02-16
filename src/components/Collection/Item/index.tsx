@@ -1,4 +1,3 @@
-import { CreatorInfo } from '@components/CreatorInfo';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
 import Text from '@components/Text';
@@ -8,7 +7,6 @@ import { GenerativeProjectDetailContext } from '@contexts/generative-project-det
 import { ProfileContext } from '@contexts/profile-context';
 import useWindowSize from '@hooks/useWindowSize';
 import { Token } from '@interfaces/token';
-import { User } from '@interfaces/user';
 import { convertToETH } from '@utils/currency';
 import {
   formatAddress,
@@ -17,12 +15,12 @@ import {
   getProjectIdFromTokenId,
 } from '@utils/format';
 import cs from 'classnames';
-import React, { useContext, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 
-import s from './styles.module.scss';
 import ButtonIcon from '@components/ButtonIcon';
 import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
+import s from './styles.module.scss';
 
 const CollectionItem = ({
   data,
@@ -65,32 +63,32 @@ const CollectionItem = ({
           </ButtonIcon>
         </ul>
       );
-    if (isBitcoinProject) {
-      return (
-        <ul className={s.ordinalsLinks}>
-          <li>
-            <a
-              className={s.inscription}
-              target="_blank"
-              href={`https://ordinals.com/inscription/${tokenID}`}
-              rel="noreferrer"
-            >
-              Inscription
-            </a>
-          </li>
-          <li>
-            <a
-              className={s.content}
-              target="_blank"
-              href={`https://ordinals.com/content/${tokenID}`}
-              rel="noreferrer"
-            >
-              Content
-            </a>
-          </li>
-        </ul>
-      );
-    }
+    // if (isBitcoinProject) {
+    //   return (
+    //     <ul className={s.ordinalsLinks}>
+    //       <li>
+    //         <a
+    //           className={s.inscription}
+    //           target="_blank"
+    //           href={`https://ordinals.com/inscription/${tokenID}`}
+    //           rel="noreferrer"
+    //         >
+    //           Inscription
+    //         </a>
+    //       </li>
+    //       <li>
+    //         <a
+    //           className={s.content}
+    //           target="_blank"
+    //           href={`https://ordinals.com/content/${tokenID}`}
+    //           rel="noreferrer"
+    //         >
+    //           Content
+    //         </a>
+    //       </li>
+    //     </ul>
+    //   );
+    // }
     return null;
   };
 
@@ -157,13 +155,13 @@ const CollectionItem = ({
             </div>
           ) : (
             <div className={cs(s.collectionCard_info, s.desktop)}>
-              {data.owner ? (
+              {/* {data.owner ? (
                 <CreatorInfo creator={data.owner as User} />
               ) : (
                 <CreatorInfo
                   creator={{ walletAddress: data.ownerAddr } as User}
                 />
-              )}
+              )} */}
               <div className={s.collectionCard_info_title}>
                 <Stack
                   className={s.collectionCard_info_stack}
@@ -196,7 +194,9 @@ const CollectionItem = ({
                       direction="horizontal"
                       className={s.collectionCard_info_listing}
                     >
-                      <b>{formatBTCPrice(data.priceBTC)} BTC</b>
+                      <Heading as={'h4'}>
+                        {formatBTCPrice(data.priceBTC)} BTC
+                      </Heading>
                     </Stack>
                   )}
                   {!!data.stats?.price && (

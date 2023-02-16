@@ -49,7 +49,7 @@ const CollectionList = ({
             ))}
           </div>
         )}
-        {listData?.length === 0 && (
+        {isLoaded && listData && listData?.length === 0 && (
           <Empty projectInfo={projectInfo} className={s.list_empty} />
         )}
       </div>
