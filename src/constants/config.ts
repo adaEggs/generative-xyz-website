@@ -49,6 +49,6 @@ export const RAPID_CLIENT_TOKEN = process.env.NEXT_PUBLIC_RAPID_CLIENT_TOKEN!;
 
 // Ordinals
 export const HOST_ORDINALS_EXPLORER =
-  'https://ordinals-explorer-dev.generative.xyz';
+  'https://ordinals-explorer-v5-dev.generative.xyz';
 
 /* eslint-enable @typescript-eslint/no-non-null-assertion */
