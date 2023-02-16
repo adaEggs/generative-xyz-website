@@ -50,6 +50,13 @@ const FormEditProject = () => {
     return newFile || null;
   }, [newFile]);
 
+  const thumbnailReview = useMemo((): string | null => {
+    if (newFile) {
+      return URL.createObjectURL(newFile);
+    }
+    return null;
+  }, [newFile]);
+
   const validateForm = (
     values: IUpdateProjectFormValue
   ): Record<string, string> => {
@@ -133,9 +140,9 @@ const FormEditProject = () => {
       initialValues={{
         name: project?.name || '',
         description: project?.itemDesc || '',
-        thumbnail: project?.image || '',
+        thumbnail: thumbnailReview || project?.image || '',
         royalty: (project?.royalty || 0) / 100,
-        mintPrice: project?.mintPrice || '0',
+        mintPrice: formatBTCPrice(project?.mintPrice || '0'),
         maxSupply: project?.maxSupply || 0,
         isHidden: project?.isHidden || true,
       }}
@@ -198,20 +205,18 @@ const FormEditProject = () => {
                 </div>
                 <div className={s.uploadPreviewWrapper}>
                   <ImagePreviewInput
+                    className={s.uploadPreviewWrapper_upload}
                     file={values.thumbnail}
                     onFileChange={setNewFile}
-                    previewHtml={
-                      <div className={s.uploadPreviewWrapper_thumb}>
-                        <img src={values.thumbnail} alt="thumbnail" />
-                        <p>
-                          <span>
-                            Select thumbnail{' '}
-                            <sup className={s.requiredTag}>*</sup>
-                          </span>
-                        </p>
-                      </div>
-                    }
+                    previewHtml={<img src={values.thumbnail} alt="thumbnail" />}
                   />
+                  <div className={s.uploadPreviewWrapper_thumb}>
+                    <p>
+                      <span>
+                        Select thumbnail <sup className={s.requiredTag}>*</sup>
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </div>
               {nftMinted === 0 && (
@@ -247,8 +252,10 @@ const FormEditProject = () => {
                           id="mintPrice"
                           type="number"
                           name="mintPrice"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
                           className={s.input}
-                          value={formatBTCPrice(Number(values.mintPrice))}
+                          value={values.mintPrice}
                           placeholder="Provide a number"
                         />
                         <div className={s.inputPostfix}>BTC</div>
