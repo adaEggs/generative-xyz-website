@@ -343,7 +343,7 @@ const SetPrice = () => {
             <div className={s.formWrapper}>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="creatorWalletAddress">
-                  Creator BTC wallet address{' '}
+                  BTC wallet to receive payment{' '}
                   <sup className={s.requiredTag}>*</sup>
                 </label>
                 <div className={s.inputContainer}>
@@ -362,14 +362,14 @@ const SetPrice = () => {
                   touched.creatorWalletAddress && (
                     <p className={s.error}>{errors.creatorWalletAddress}</p>
                   )}
-                <Text
+                {/* <Text
                   as={'p'}
                   size={'14'}
                   color={'black-60'}
                   className={s.inputDesc}
                 >
                   Set up your BTC wallet address
-                </Text>
+                </Text> */}
               </div>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="maxSupply">
