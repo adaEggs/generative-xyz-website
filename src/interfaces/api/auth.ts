@@ -10,6 +10,8 @@ export interface IVerifyNonceMessagePayload {
   address: string;
   signature: string;
   addressBtc: string;
+  message: string;
+  pubkey: string;
 }
 
 export interface IVerifyNonceMessageResponse {

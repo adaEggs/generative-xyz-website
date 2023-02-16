@@ -143,7 +143,11 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
         address: walletAddress,
       });
 
-      const { address: ordAddress, signature } = await generateBitcoinOrdKey({
+      const {
+        address: ordAddress,
+        signature_1,
+        pubkey,
+      } = await generateBitcoinOrdKey({
         address: walletAddress,
         message: nonceMessage,
       });
@@ -152,9 +156,11 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
         throw Error(WalletError.FAILED_LINK_WALLET);
       }
       const { accessToken, refreshToken } = await verifyNonceMessage({
-        signature,
+        signature: signature_1,
+        message: nonceMessage,
         address: walletAddress,
         addressBtc: ordAddress,
+        pubkey,
       });
 
       setAccessToken(accessToken, refreshToken);

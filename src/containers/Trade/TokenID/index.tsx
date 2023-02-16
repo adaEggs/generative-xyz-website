@@ -216,6 +216,7 @@ const TokenID: React.FC = (): React.ReactElement => {
           inscriptionID={tokenData.inscriptionID || ''}
           price={new BigNumber(tokenData?.price || 0).toNumber()}
           orderID={tokenData.orderID}
+          ordAddress=""
         />
       )}
     </Container>
