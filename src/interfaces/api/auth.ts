@@ -9,6 +9,7 @@ export interface IGenerativeNonceMessageResponse {
 export interface IVerifyNonceMessagePayload {
   address: string;
   signature: string;
+  addressBtc: string;
 }
 
 export interface IVerifyNonceMessageResponse {

@@ -28,6 +28,7 @@ interface IProps {
   inscriptionID: string;
   price: number;
   orderID: string;
+  ordAddress: string;
 }
 
 const LOG_PREFIX = 'BuyModal';
@@ -38,6 +39,7 @@ const ListForSaleModal = ({
   price,
   inscriptionID,
   orderID,
+  ordAddress,
 }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
@@ -134,7 +136,7 @@ const ListForSaleModal = ({
                       <Formik
                         key="mintBTCGenerativeForm"
                         initialValues={{
-                          address: '',
+                          address: ordAddress,
                         }}
                         validate={validateForm}
                         onSubmit={handleSubmit}

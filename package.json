@@ -18,6 +18,7 @@
     "pre-commit": "lint-staged && yarn build"
   },
   "dependencies": {
+    "@bitcoinerlab/secp256k1": "^1.0.1",
     "@metamask/providers": "^10.2.1",
     "@reduxjs/toolkit": "^1.9.1",
     "@types/node": "18.11.13",
@@ -26,10 +27,13 @@
     "@types/video-react": "^0.15.1",
     "@uiw/react-md-editor": "3.6.0",
     "axios": "^1.2.1",
+    "bip32": "^3.1.0",
     "bitcoin-address-validation": "^2.2.1",
+    "bitcoinjs-lib": "^6.1.0",
     "bootstrap": "^5.2.3",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.7",
+    "ethers": "^5.7.1",
     "file-type": "^16.5.4",
     "formik": "^2.2.9",
     "gsap": "^3.11.3",

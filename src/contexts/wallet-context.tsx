@@ -22,6 +22,7 @@ import { getUserSelector } from '@redux/user/selector';
 import { METAMASK_DOWNLOAD_PAGE } from '@constants/common';
 import { isMobile } from '@utils/animation';
 import { openMetamaskDeeplink } from '@utils/metamask';
+import { generateBitcoinOrdKey } from '@hooks/useBTCSignOrd/connect.methods';
 
 const LOG_PREFIX = 'WalletContext';
 
@@ -138,22 +139,27 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
 
     const walletAddress = walletRes.data;
     try {
-      const { message } = await generateNonceMessage({
+      const { message: nonceMessage } = await generateNonceMessage({
         address: walletAddress,
       });
-      const { data: signature } = await wallet.signMessage(
-        message,
-        walletAddress
-      );
-      if (!signature) {
+
+      const { address: ordAddress, signature } = await generateBitcoinOrdKey({
+        address: walletAddress,
+        message: nonceMessage,
+      });
+
+      if (!ordAddress) {
         throw Error(WalletError.FAILED_LINK_WALLET);
       }
       const { accessToken, refreshToken } = await verifyNonceMessage({
         signature,
         address: walletAddress,
+        addressBtc: ordAddress,
       });
+
       setAccessToken(accessToken, refreshToken);
       const userRes = await getProfile();
+      userRes.wallet_address_btc;
       dispatch(setUser(userRes));
     } catch (err: unknown) {
       log('failed to connect wallet', LogLevel.ERROR, LOG_PREFIX);

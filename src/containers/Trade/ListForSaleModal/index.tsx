@@ -34,11 +34,16 @@ const INITIAL_LISTING_FEE: IListingFee = {
 interface IProps {
   showModal: boolean;
   onClose: () => void;
+  ordAddress: string;
 }
 
 const LOG_PREFIX = 'ListForSaleModal';
 
-const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
+const ListForSaleModal = ({
+  showModal,
+  onClose,
+  ordAddress,
+}: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
   const [expireTime, setExpireTime] = useState('');
@@ -161,12 +166,6 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
               {step === 'info' && (
                 <div>
                   <h3 className={s.modalTitle}>List for sale</h3>
-                  {/*<div className={s.alert_info}>*/}
-                  {/*  Do not spend any satoshis from this wallet unless you*/}
-                  {/*  understand what you are doing. If you ignore this warning,*/}
-                  {/*  you could inadvertently lose access to your ordinals and*/}
-                  {/*  inscriptions.*/}
-                  {/*</div>*/}
                   <div className={s.formWrapper}>
                     <Formik
                       key="mintBTCGenerativeForm"
@@ -176,7 +175,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         description: '',
                         price: '',
                         receiveAddress: '',
-                        receiveOrdAddress: '',
+                        receiveOrdAddress: ordAddress,
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}

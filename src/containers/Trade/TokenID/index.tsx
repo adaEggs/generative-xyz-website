@@ -21,6 +21,7 @@ import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
 import { ROUTE_PATH } from '@constants/route-path';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -34,6 +35,7 @@ const TokenID: React.FC = (): React.ReactElement => {
   const [showMore, setShowMore] = useState(false);
   const { mobileScreen } = useWindowSize();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
 
   const renderLoading = () => {
     return (
@@ -111,7 +113,13 @@ const TokenID: React.FC = (): React.ReactElement => {
           className={s.info_buyBtn}
           onClick={() => {
             // return setShowModal(true);
-            if (tokenData.buyable) return setShowModal(true);
+            if (tokenData.buyable) {
+              return onButtonClick({
+                cbSigned: () => {
+                  setShowModal(true);
+                },
+              });
+            }
             router.push(ROUTE_PATH.TRADE);
           }}
         >
@@ -201,13 +209,14 @@ const TokenID: React.FC = (): React.ReactElement => {
       {!mobileScreen && (
         <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
       )}
-      {!!tokenData?.inscriptionID && !!tokenData?.price && (
+      {!!tokenData?.inscriptionID && !!tokenData?.price && ordAddress && (
         <BuyTokenModal
           showModal={showModal}
           onClose={() => setShowModal(false)}
           inscriptionID={tokenData.inscriptionID || ''}
           price={new BigNumber(tokenData?.price || 0).toNumber()}
           orderID={tokenData.orderID}
+          ordAddress={ordAddress}
         />
       )}
     </Container>
