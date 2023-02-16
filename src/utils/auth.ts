@@ -1,4 +1,5 @@
 import { LocalStorageKey } from '@enums/local-storage';
+import { User } from '@interfaces/user';
 import { isBrowser } from '@utils/common';
 
 export const getAccessToken = (): string | null => {
@@ -22,5 +23,17 @@ export const setAccessToken = (
   if (isBrowser()) {
     localStorage.setItem(LocalStorageKey.ACCESS_TOKEN, accessToken);
     localStorage.setItem(LocalStorageKey.REFRESH_TOKEN, refreshToken);
+  }
+};
+
+export const setUserInfo = (user: User) => {
+  if (isBrowser()) {
+    localStorage.setItem(LocalStorageKey.USER_ID, user.id);
+    localStorage.setItem(
+      LocalStorageKey.USER_WALLET_ADDRESS,
+      user.walletAddress
+    );
+    localStorage.setItem(LocalStorageKey.USER_AVATAR, user.avatar);
+    localStorage.setItem(LocalStorageKey.USER_DISPLAYNAME, user.displayName);
   }
 };
