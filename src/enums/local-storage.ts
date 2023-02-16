@@ -4,6 +4,8 @@ export enum LocalStorageKey {
   AA_SESSION_ID = 'aaSessionID',
   AA_LAST_ACTIVE = 'aaSessionLastActive',
   USER_ID = 'userId',
+  USER_DISPLAYNAME = 'userDisplayName',
+  USER_AVATAR = 'userAvatar',
   USER_PSEUDO_ID = 'userPseudoId',
   USER_WALLET_ADDRESS = 'userWalletAddress',
   USER_LOCATION = 'userLocation',

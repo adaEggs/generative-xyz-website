@@ -5,12 +5,11 @@ import { Loading } from '@components/Loading';
 import Heading from '@components/Heading';
 import Text from '@components/Text';
 import { Container } from 'react-bootstrap';
-// import ButtonIcon from '@components/ButtonIcon';
 import MarkdownPreview from '@components/MarkdownPreview';
 import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import useWindowSize from '@hooks/useWindowSize';
 import {
-  getDetailOrdinals,
+  getInscriptionDetail,
   IGetMarketplaceBtcListItem,
 } from '@services/marketplace-btc';
 import BigNumber from 'bignumber.js';
@@ -19,8 +18,7 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
-// import { ROUTE_PATH } from '@constants/route-path';
+import NFTDisplayBox from '@components/NFTDisplayBox';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -43,11 +41,6 @@ const InscriptionID: React.FC = (): React.ReactElement => {
     );
   };
 
-  const getImgURL = () => {
-    if (!tokenData?.inscriptionID) return '';
-    return `https://ordinals-explorer.generative.xyz/preview/${tokenData?.inscriptionID}`;
-  };
-
   const renderRow = (label: string, value?: string | number) => {
     if (!value) return null;
     return (
@@ -58,7 +51,7 @@ const InscriptionID: React.FC = (): React.ReactElement => {
         <a
           color={'text-black-80'}
           className={s.row_right}
-          href={`https://ordinals-explorer.generative.xyz/inscription/${tokenData?.inscriptionID}`}
+          href={`https://ordinals-explorer-v5-dev.generative.xyz/inscription/${tokenData?.inscriptionID}`}
           target="_blank"
           rel="noreferrer"
         >
@@ -75,7 +68,7 @@ const InscriptionID: React.FC = (): React.ReactElement => {
     return (
       <div className={s.info}>
         <Heading as="h4" fontWeight="medium">
-          Inscription #{tokenData?.index}
+          Inscription #{tokenData?.inscriptionNumber}
         </Heading>
         {tokenData.buyable && (
           <>
@@ -104,32 +97,16 @@ const InscriptionID: React.FC = (): React.ReactElement => {
           </>
         )}
 
-        {mobileScreen && tokenData?.name && (
-          <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
+        {mobileScreen && (
+          <NFTDisplayBox
+            inscriptionID={tokenData?.inscriptionID}
+            type={tokenData?.contentType}
+            autoPlay={true}
+            controls={true}
+            loop={true}
+            variants="full"
+          />
         )}
-        {/* {!tokenData?.buyable && !tokenData?.isCompleted && (
-          <Text size={'14'} className={s.info_statusIns}>
-            The inscription is being purchased. ETA is in ~30 minutes.
-          </Text>
-        )}
-        {tokenData?.isCompleted && (
-          <Text size={'14'} className={s.info_statusComplete}>
-            This inscription is not available for buying now.
-          </Text>
-        )} */}
-        {/* <ButtonIcon
-          sizes="large"
-          className={s.info_buyBtn}
-          onClick={() => {
-            // return setShowModal(true);
-            if (tokenData?.buyable) return setShowModal(true);
-            router.push(ROUTE_PATH.TRADE);
-          }}
-        >
-          <Text as="span" size="14" fontWeight="medium">
-            {tokenData?.buyable ? 'Buy Now' : 'Buy others'}
-          </Text>
-        </ButtonIcon> */}
         <div className={s.info_project_desc}>
           {tokenData.buyable && (
             <>
@@ -190,7 +167,7 @@ const InscriptionID: React.FC = (): React.ReactElement => {
   const fetchData = async (): Promise<void> => {
     if (!tokenID || typeof tokenID !== 'string') return;
     try {
-      const tokenData = await getDetailOrdinals(tokenID);
+      const tokenData = await getInscriptionDetail(tokenID);
       if (tokenData) {
         setTokenData(tokenData);
       }
@@ -213,9 +190,15 @@ const InscriptionID: React.FC = (): React.ReactElement => {
     <Container className={s.wrapper}>
       {renderLeftContent()}
       <div />
-      {/*{!mobileScreen && <TokenIDImage image={''} name="" />}*/}
       {!mobileScreen && (
-        <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
+        <NFTDisplayBox
+          inscriptionID={tokenData?.inscriptionID}
+          type={tokenData?.contentType}
+          autoPlay={true}
+          controls={true}
+          loop={true}
+          variants="full"
+        />
       )}
       {!!tokenData?.inscriptionID && !!tokenData?.price && (
         <BuyTokenModal
@@ -224,6 +207,7 @@ const InscriptionID: React.FC = (): React.ReactElement => {
           inscriptionID={tokenData?.inscriptionID || ''}
           price={new BigNumber(tokenData?.price || 0).toNumber()}
           orderID={tokenData?.orderID}
+          ordAddress=""
         />
       )}
     </Container>

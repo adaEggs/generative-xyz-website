@@ -21,7 +21,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const { projectID } = query as { projectID: string };
 
   if (projectID && projectID === SATOSHIS_PROJECT_ID) {
-    location.assign(SATOSHIS_PAGE);
+    return {
+      redirect: {
+        permanent: false,
+        destination: SATOSHIS_PAGE,
+      },
+    };
   }
 
   const res = await getProjectDetail({

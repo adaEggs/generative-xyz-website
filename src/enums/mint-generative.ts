@@ -12,5 +12,11 @@ export enum PreviewDisplayMode {
 
 export enum CollectionType {
   GENERATIVE = 'GENERATIVE',
-  IMAGES = 'IMAGES',
+  COLLECTION = 'COLLECTION',
+}
+
+export enum PaymentMethod {
+  ETH = 'ETH',
+  BTC = 'BTC',
+  WALLET = 'WALLET',
 }

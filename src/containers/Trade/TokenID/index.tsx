@@ -21,7 +21,8 @@ import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
 import { ROUTE_PATH } from '@constants/route-path';
-import useBTCSignOrd from '@hooks/useBTCSignOrd';
+import { getOrdinalImgURL } from '@utils/inscribe';
+import NFTDisplayBox from '@components/NFTDisplayBox';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -31,11 +32,9 @@ const TokenID: React.FC = (): React.ReactElement => {
   const [tokenData, setTokenData] = React.useState<
     IGetMarketplaceBtcNFTDetail | undefined
   >(undefined);
-
   const [showMore, setShowMore] = useState(false);
   const { mobileScreen } = useWindowSize();
   const [showModal, setShowModal] = useState<boolean>(false);
-  const { ordAddress, onButtonClick } = useBTCSignOrd();
 
   const renderLoading = () => {
     return (
@@ -43,11 +42,6 @@ const TokenID: React.FC = (): React.ReactElement => {
         <Loading isLoaded={!!tokenData} className={s.loading_project} />
       </div>
     );
-  };
-
-  const getImgURL = () => {
-    if (!tokenData?.inscriptionID) return '';
-    return `https://ordinals-explorer.generative.xyz/preview/${tokenData?.inscriptionID}`;
   };
 
   const renderRow = (label: string, value?: string | number) => {
@@ -60,7 +54,7 @@ const TokenID: React.FC = (): React.ReactElement => {
         <a
           color={'text-black-80'}
           className={s.row_right}
-          href={`https://ordinals-explorer.generative.xyz/inscription/${tokenData?.inscriptionID}`}
+          href={`https://ordinals-explorer-v5-dev.generative.xyz/inscription/${tokenData?.inscriptionID}`}
           target="_blank"
           rel="noreferrer"
         >
@@ -74,10 +68,11 @@ const TokenID: React.FC = (): React.ReactElement => {
     if (!tokenData) {
       return renderLoading();
     }
+
     return (
       <div className={s.info}>
         <Heading as="h4" fontWeight="medium">
-          Inscription #{tokenData.index}
+          Inscription #{tokenData.inscriptionNumber}
         </Heading>
         <Text size="14" color={'black-60'} className={s.info_labelPrice}>
           {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}
@@ -96,7 +91,10 @@ const TokenID: React.FC = (): React.ReactElement => {
           {formatBTCPrice(new BigNumber(tokenData?.price || 0).toNumber())} BTC
         </Text>
         {mobileScreen && tokenData?.name && (
-          <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
+          <TokenIDImage
+            image={getOrdinalImgURL(tokenData.inscriptionID)}
+            name={tokenData?.name || ''}
+          />
         )}
         {!tokenData.buyable && !tokenData.isCompleted && (
           <Text size={'14'} className={s.info_statusIns}>
@@ -113,13 +111,7 @@ const TokenID: React.FC = (): React.ReactElement => {
           className={s.info_buyBtn}
           onClick={() => {
             // return setShowModal(true);
-            if (tokenData.buyable) {
-              return onButtonClick({
-                cbSigned: () => {
-                  setShowModal(true);
-                },
-              });
-            }
+            if (tokenData.buyable) return setShowModal(true);
             router.push(ROUTE_PATH.TRADE);
           }}
         >
@@ -207,16 +199,23 @@ const TokenID: React.FC = (): React.ReactElement => {
       <div />
       {/*{!mobileScreen && <TokenIDImage image={''} name="" />}*/}
       {!mobileScreen && (
-        <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
+        <div style={{ position: 'relative' }}>
+          <NFTDisplayBox
+            inscriptionID={tokenData?.inscriptionID}
+            type={tokenData?.contentType}
+            autoPlay={true}
+            loop={true}
+            controls={false}
+          />
+        </div>
       )}
-      {!!tokenData?.inscriptionID && !!tokenData?.price && ordAddress && (
+      {!!tokenData?.inscriptionID && !!tokenData?.price && (
         <BuyTokenModal
           showModal={showModal}
           onClose={() => setShowModal(false)}
           inscriptionID={tokenData.inscriptionID || ''}
           price={new BigNumber(tokenData?.price || 0).toNumber()}
           orderID={tokenData.orderID}
-          ordAddress={ordAddress}
         />
       )}
     </Container>

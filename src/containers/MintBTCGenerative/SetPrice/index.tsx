@@ -26,6 +26,10 @@ import { getMempoolFeeRate } from '@services/mempool';
 import { calculateNetworkFee } from '@utils/inscribe';
 import { InscribeMintFeeRate } from '@enums/inscribe';
 import { formatBTCPrice } from '@utils/format';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -37,6 +41,7 @@ type ISetPriceFormValue = {
 };
 
 const SetPrice = () => {
+  const user = useSelector(getUserSelector);
   const router = useRouter();
   const {
     formValues,
@@ -92,7 +97,7 @@ const SetPrice = () => {
         );
         setNetworkFee(sats);
       }
-      if (collectionType === CollectionType.IMAGES) {
+      if (collectionType === CollectionType.COLLECTION) {
         if (!imageCollectionFile) {
           setNetworkFee(0);
           return;
@@ -150,7 +155,7 @@ const SetPrice = () => {
     } else if (parseInt(values.maxSupply.toString(), 10) <= 0) {
       errors.maxSupply = 'Invalid number. Must be greater than 0.';
     } else if (
-      collectionType === CollectionType.IMAGES &&
+      collectionType === CollectionType.COLLECTION &&
       parseInt(values.maxSupply.toString(), 10) > numberOfFile
     ) {
       errors.maxSupply = `Invalid number. Must be equal or less than ${numberOfFile}.`;
@@ -258,7 +263,7 @@ const SetPrice = () => {
         isFullChain: true,
       };
 
-      if (collectionType === CollectionType.IMAGES) {
+      if (collectionType === CollectionType.COLLECTION) {
         try {
           const uploadRes = await uploadBTCProjectFiles({
             file: rawFile,
@@ -283,6 +288,17 @@ const SetPrice = () => {
       }
 
       const projectRes = await createBTCProject(payload);
+
+      // Send tracking
+      sendAAEvent({
+        eventName: BTC_PROJECT.LAUNCH_NEW_PROJECT,
+        data: {
+          ...projectRes,
+          artistName: user?.displayName ?? '',
+        },
+      });
+
+      // Polling to get project status
       intervalGetProjectStatus(projectRes.tokenID);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);

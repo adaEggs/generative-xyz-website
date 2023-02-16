@@ -123,14 +123,14 @@ export const tokenID = (tokenName: string) => tokenName.split('#')[1];
 export const formatBTCPrice = (price: number | string): string => {
   if (!price) return '--';
   const priceNumb = new BigNumber(price).dividedBy(1e8).toNumber();
-  return ceilPrecised(priceNumb).toString();
+  return ceilPrecised(priceNumb).toString().replace(',', '.');
 };
 
 export const formatEthPrice = (price: string | null): string => {
   if (!price) return '--';
-  return ceilPrecised(
-    parseFloat(Web3.utils.fromWei(price, 'ether'))
-  ).toString();
+  return ceilPrecised(parseFloat(Web3.utils.fromWei(price, 'ether')))
+    .toString()
+    .replace(',', '.');
 };
 
 export const ceilPrecised = (number: number, precision = 6) => {

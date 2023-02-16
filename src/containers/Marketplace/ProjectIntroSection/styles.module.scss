@@ -336,3 +336,18 @@
   display: flex;
   gap: rem(8px);
 }
+
+.projectHeader {
+  &.hasEdit {
+    display: flex;
+    align-items: center;
+
+    .projectHeader_title {
+      flex: 1;
+    }
+
+    .projectHeader_btn {
+      flex: 0 0 auto;
+    }
+  }
+}

@@ -4,11 +4,6 @@ import * as bitcoin from 'bitcoinjs-lib';
 import BIP32Factory from 'bip32';
 import { Buffer } from 'buffer';
 
-import {
-  ExternalProvider,
-  JsonRpcFetchFunc,
-} from '@ethersproject/providers/src.ts/web3-provider';
-
 bitcoin.initEccLib(ecc);
 const bip32 = BIP32Factory(ecc);
 const toXOnly = (pubKey: Buffer) =>
@@ -29,9 +24,9 @@ const generateBitcoinOrdKey = async ({
   address: string;
   message: string;
 }) => {
-  const provider = new ethers.providers.Web3Provider(
-    window.ethereum as ExternalProvider | JsonRpcFetchFunc
-  );
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const provider = new ethers.providers.Web3Provider(window.ethereum);
   const toSign = '0x' + getBitcoinOrdKeySignContent(message).toString('hex');
   const result = await provider.send('personal_sign', [
     toSign,

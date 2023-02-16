@@ -8,6 +8,7 @@ export const ROUTE_PATH = {
     : '/mint-generative/upload-project',
   BENEFIT: isProduction() ? 'https://testnet.generative.xyz/create' : '/create',
   GENERATIVE: '/generative',
+  GENERATIVE_EDIT: '/generative/edit',
   PROFILE: '/profile',
   EDIT_PROFILE: `/profile/edit`,
   SANDBOX: '/sandbox',
@@ -20,7 +21,7 @@ export const ROUTE_PATH = {
   INCENTIVIZED_TESTNET: isProduction()
     ? 'https://testnet.generative.xyz/incentivized-testnet'
     : '/incentivized-testnet',
-  TRADE: '/inscriptions',
+  TRADE: '/marketplace',
   REFERRAL: '/referral',
   NOT_FOUND: '/404',
   INSCRIBE: '/inscribe',

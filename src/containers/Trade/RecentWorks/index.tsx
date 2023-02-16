@@ -21,7 +21,6 @@ import ButtonIcon from '@components/ButtonIcon';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
 import Checkbox from '@components/Checkbox';
-import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const LIMIT = 20;
 
@@ -31,15 +30,6 @@ export const RecentWorks = (): JSX.Element => {
 
   const [listData, setListData] = useState<IGetMarketplaceBtcListItem[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const { ordAddress, onButtonClick } = useBTCSignOrd();
-
-  const onShowList = () => {
-    return onButtonClick({
-      cbSigned: () => {
-        setShowModal(true);
-      },
-    });
-  };
 
   const fetchData = async () => {
     if (isLoading) return;
@@ -94,7 +84,6 @@ export const RecentWorks = (): JSX.Element => {
       setIsLoading(false);
     }
   };
-
   const debounceFetchDataOrdinals = debounce(fetchDataOrdinals, 300);
 
   useEffect(() => {
@@ -104,20 +93,20 @@ export const RecentWorks = (): JSX.Element => {
 
   return (
     <div className={s.recentWorks}>
-      <Row style={{ justifyContent: 'center' }}>
+      {/* <Row style={{ justifyContent: 'center' }}>
         <Col xs={'auto'}>
           <Heading as="h4" fontWeight="semibold">
             Bitcoin NFTs. Browse. Curate. Purchase
           </Heading>
         </Col>
-      </Row>
-      <Row style={{ justifyContent: 'space-between', marginTop: '20px' }}>
+      </Row> */}
+      <Row style={{ justifyContent: 'space-between' }}>
         <Col
           xs={'auto'}
           style={{ display: 'flex', alignItems: 'center', margin: 0 }}
         >
-          <Heading as="h5" fontWeight="semibold">
-            Explore Ordinal Inscriptions
+          <Heading as="h4" fontWeight="semibold">
+            Explore Bitcoin NFTs
           </Heading>
         </Col>
         <Col
@@ -134,19 +123,19 @@ export const RecentWorks = (): JSX.Element => {
             sizes="large"
           />
           <ButtonIcon
+            sizes="large"
+            className={s.recentWorks_btn}
+            onClick={() => setShowModal(true)}
+          >
+            List for sale
+          </ButtonIcon>
+          <ButtonIcon
             className={s.recentWorks_btnIns}
             onClick={goToInscriptionsPage}
             sizes="large"
+            variants="outline"
           >
-            Create an inscription
-          </ButtonIcon>
-          <ButtonIcon
-            sizes="large"
-            variants="ghost"
-            className={s.recentWorks_btn}
-            onClick={onShowList}
-          >
-            List for sale
+            Inscribe for free
           </ButtonIcon>
         </Col>
       </Row>
@@ -194,13 +183,11 @@ export const RecentWorks = (): JSX.Element => {
           </>
         )}
       </Row>
-      {!!ordAddress && showModal && (
-        <ListForSaleModal
-          showModal={showModal}
-          onClose={() => setShowModal(false)}
-          ordAddress={ordAddress}
-        />
-      )}
+      <ListForSaleModal
+        showModal={showModal}
+        onClose={() => setShowModal(false)}
+        ordAddress=""
+      />
     </div>
   );
 };
