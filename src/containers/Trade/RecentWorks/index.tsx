@@ -93,20 +93,20 @@ export const RecentWorks = (): JSX.Element => {
 
   return (
     <div className={s.recentWorks}>
-      <Row style={{ justifyContent: 'center' }}>
+      {/* <Row style={{ justifyContent: 'center' }}>
         <Col xs={'auto'}>
           <Heading as="h4" fontWeight="semibold">
             Bitcoin NFTs. Browse. Curate. Purchase
           </Heading>
         </Col>
-      </Row>
+      </Row> */}
       <Row style={{ justifyContent: 'space-between', marginTop: '20px' }}>
         <Col
           xs={'auto'}
           style={{ display: 'flex', alignItems: 'center', margin: 0 }}
         >
           <Heading as="h5" fontWeight="semibold">
-            Explore Ordinal Inscriptions
+            Explore Bitcoin NFTs
           </Heading>
         </Col>
         <Col

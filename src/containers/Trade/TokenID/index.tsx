@@ -22,6 +22,7 @@ import { ErrorMessage } from '@enums/error-message';
 import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
 import { ROUTE_PATH } from '@constants/route-path';
 import { getOrdinalImgURL } from '@utils/inscribe';
+import NFTDisplayBox from '@components/NFTDisplayBox';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -71,7 +72,7 @@ const TokenID: React.FC = (): React.ReactElement => {
     return (
       <div className={s.info}>
         <Heading as="h4" fontWeight="medium">
-          Inscription #{tokenData.index}
+          Inscription #{tokenData.inscriptionNumber}
         </Heading>
         <Text size="14" color={'black-60'} className={s.info_labelPrice}>
           {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}
@@ -198,10 +199,15 @@ const TokenID: React.FC = (): React.ReactElement => {
       <div />
       {/*{!mobileScreen && <TokenIDImage image={''} name="" />}*/}
       {!mobileScreen && (
-        <TokenIDImage
-          image={getOrdinalImgURL(tokenData?.inscriptionID || '')}
-          name={tokenData?.name || ''}
-        />
+        <div style={{ position: 'relative' }}>
+          <NFTDisplayBox
+            inscriptionID={tokenData?.inscriptionID}
+            type={tokenData?.contentType}
+            autoPlay={true}
+            loop={true}
+            controls={false}
+          />
+        </div>
       )}
       {!!tokenData?.inscriptionID && !!tokenData?.price && (
         <BuyTokenModal
