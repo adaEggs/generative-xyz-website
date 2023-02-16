@@ -43,6 +43,7 @@ type TText = {
   };
   onClick?: () => void;
   htmlFor?: string;
+  title?: string;
 };
 
 interface IProRefDom {
@@ -65,6 +66,7 @@ const Text = ({
   className,
   animOption = undefined,
   onClick,
+  title,
   ...props
 }: PropsWithChildren<TText>) => {
   const Text = as;
@@ -264,6 +266,7 @@ const Text = ({
       )}
       style={{ ...style }}
       onClick={onClick}
+      title={title}
     >
       {children}
     </Text>

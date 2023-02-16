@@ -155,7 +155,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             Price
           </Text>
           <Heading as="h6" fontWeight="medium">
-            Ξ {formatBTCPrice(tokenData.priceBTC)} BTC
+            {formatBTCPrice(tokenData.priceBTC)} BTC
           </Heading>
         </div>
         <ButtonIcon className={s.buy_btc_button} onClick={toggleModal}>
