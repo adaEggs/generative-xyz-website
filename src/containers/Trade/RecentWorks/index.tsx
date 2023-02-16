@@ -21,6 +21,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
 import Checkbox from '@components/Checkbox';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const LIMIT = 20;
 
@@ -30,6 +31,15 @@ export const RecentWorks = (): JSX.Element => {
 
   const [listData, setListData] = useState<IGetMarketplaceBtcListItem[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
+
+  const onShowList = () => {
+    return onButtonClick({
+      cbSigned: () => {
+        setShowModal(true);
+      },
+    });
+  };
 
   const fetchData = async () => {
     if (isLoading) return;
@@ -125,7 +135,7 @@ export const RecentWorks = (): JSX.Element => {
           <ButtonIcon
             sizes="large"
             className={s.recentWorks_btn}
-            onClick={() => setShowModal(true)}
+            onClick={onShowList}
           >
             List for sale
           </ButtonIcon>
@@ -183,11 +193,13 @@ export const RecentWorks = (): JSX.Element => {
           </>
         )}
       </Row>
-      <ListForSaleModal
-        showModal={showModal}
-        onClose={() => setShowModal(false)}
-        ordAddress=""
-      />
+      {showModal && !!ordAddress && (
+        <ListForSaleModal
+          showModal={showModal}
+          onClose={() => setShowModal(false)}
+          ordAddress={ordAddress}
+        />
+      )}
     </div>
   );
 };

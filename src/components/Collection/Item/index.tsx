@@ -21,6 +21,7 @@ import { Stack } from 'react-bootstrap';
 import ButtonIcon from '@components/ButtonIcon';
 import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
 import s from './styles.module.scss';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const CollectionItem = ({
   data,
@@ -37,6 +38,8 @@ const CollectionItem = ({
   const { mobileScreen } = useWindowSize();
   const { isBitcoinProject } = useContext(GenerativeProjectDetailContext);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
+
   const isBTCListable =
     (data.buyable || (!data.buyable && !data.isCompleted)) && !!data.priceBTC;
   const isBTCDisable = !data.buyable && !data.isCompleted && !!data.priceBTC;
@@ -49,7 +52,11 @@ const CollectionItem = ({
 
   const toggleModal = () => {
     if (isBTCDisable) return;
-    setShowModal(show => !show);
+    return onButtonClick({
+      cbSigned: () => {
+        setShowModal(show => !show);
+      },
+    });
   };
 
   const renderButton = () => {
@@ -190,13 +197,14 @@ const CollectionItem = ({
         </Link>
         {renderButton()}
       </div>
-      {data.buyable && (
+      {data.buyable && !!ordAddress && (
         <ModalBuyItemViaBTC
           showModal={showModal}
           orderID={data.orderID}
           inscriptionID={data.tokenID}
           price={data.priceBTC}
           onClose={toggleModal}
+          ordAddress={ordAddress}
         />
       )}
     </div>

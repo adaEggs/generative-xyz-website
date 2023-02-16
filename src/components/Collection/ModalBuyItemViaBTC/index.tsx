@@ -27,6 +27,7 @@ interface IProps {
   inscriptionID: string;
   price: number | string;
   orderID: string;
+  ordAddress: string;
 }
 
 const LOG_PREFIX = 'BuyModal';
@@ -38,6 +39,7 @@ const ModalBuyItemViaBTC = ({
   inscriptionID,
   orderID,
   onSuccess,
+  ordAddress,
 }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
@@ -133,7 +135,7 @@ const ModalBuyItemViaBTC = ({
                       <Formik
                         key="mintBTCGenerativeForm"
                         initialValues={{
-                          address: '',
+                          address: ordAddress,
                         }}
                         validate={validateForm}
                         onSubmit={handleSubmit}

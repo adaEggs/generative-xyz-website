@@ -13,7 +13,6 @@ import {
   IGetMarketplaceBtcListItem,
 } from '@services/marketplace-btc';
 import BigNumber from 'bignumber.js';
-import BuyTokenModal from '@containers/Trade/BuyTokenModal';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
@@ -31,7 +30,6 @@ const InscriptionID: React.FC = (): React.ReactElement => {
 
   const [showMore, setShowMore] = useState(false);
   const { mobileScreen } = useWindowSize();
-  const [showModal, setShowModal] = useState<boolean>(false);
 
   const renderLoading = () => {
     return (
@@ -198,16 +196,6 @@ const InscriptionID: React.FC = (): React.ReactElement => {
           controls={true}
           loop={true}
           variants="full"
-        />
-      )}
-      {!!tokenData?.inscriptionID && !!tokenData?.price && (
-        <BuyTokenModal
-          showModal={showModal}
-          onClose={() => setShowModal(false)}
-          inscriptionID={tokenData?.inscriptionID || ''}
-          price={new BigNumber(tokenData?.price || 0).toNumber()}
-          orderID={tokenData?.orderID}
-          ordAddress=""
         />
       )}
     </Container>
