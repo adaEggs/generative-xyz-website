@@ -26,6 +26,8 @@ import { generateETHReceiverAddress } from '@services/eth';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { WalletContext } from '@contexts/wallet-context';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 
 interface IFormValue {
   address: string;
@@ -40,7 +42,9 @@ const MintEthModal: React.FC = () => {
   );
 
   const { connect, transfer } = useContext(WalletContext);
-  const { setIsPopupPayment } = useContext(BitcoinProjectContext);
+  const { setIsPopupPayment, paymentMethod } = useContext(
+    BitcoinProjectContext
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>(null);
@@ -83,6 +87,20 @@ const MintEthModal: React.FC = () => {
       const { address, price: price } = await generateETHReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
+      });
+
+      sendAAEvent({
+        eventName: BTC_PROJECT.MINT_NFT,
+        data: {
+          projectId: projectData.id,
+          projectName: projectData.name,
+          projectThumbnail: projectData.image,
+          mintPrice: formatEthPrice(projectData?.mintPrice),
+          mintType: paymentMethod,
+          networkFee: formatEthPrice(projectData?.networkFee || null),
+          masterAddress: address,
+          totalPrice: formatEthPrice(price),
+        },
       });
 
       setReceiverAddress(address);

@@ -29,7 +29,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   return {
     props: {
       seoInfo: {
-        title: `${SEO_TITLE} | ${tokenName} `,
+        title: `${SEO_TITLE} | ${tokenName}`,
         description: res.description,
         image: res.thumbnail || SEO_IMAGE,
       },

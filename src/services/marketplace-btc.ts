@@ -62,6 +62,7 @@ export interface IPostMarketplaceBtcListNFTResponse {
   receiveAddress: string;
   timeoutAt: string;
 }
+
 export const postMarketplaceBtcListNFT = async (
   dataFrom: IPostMarketplaceBtcListNFTParams
 ): Promise<IPostMarketplaceBtcListNFTResponse> => {
@@ -171,6 +172,7 @@ export interface IListingordinals {
   next: number;
   data: IGetMarketplaceBtcListItem[];
 }
+
 const HOST_ORDINALS_EXPLORER = 'https://ordinals-explorer-dev.generative.xyz';
 export const getListingOrdinals = async (
   from: string | number = 0

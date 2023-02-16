@@ -4,6 +4,7 @@ import { CDN_URL } from '@constants/config';
 import s from './styles.module.scss';
 import React, { useContext } from 'react';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import { PaymentMethod } from '@enums/mint-generative';
 
 const SelectPaymentModel: React.FC = () => {
   const { paymentMethod, setPaymentMethod, setIsPopupPayment, setPaymentStep } =
@@ -34,9 +35,11 @@ const SelectPaymentModel: React.FC = () => {
                 <ul className={s.modalBody_payments_list}>
                   <li>
                     <Button
-                      onClick={() => setPaymentMethod('BTC')}
+                      onClick={() => setPaymentMethod(PaymentMethod.BTC)}
                       className={`${s.payments_item} ${
-                        paymentMethod === 'BTC' ? s.payments_item__active : ''
+                        paymentMethod === PaymentMethod.BTC
+                          ? s.payments_item__active
+                          : ''
                       }`}
                     >
                       <span>
@@ -50,9 +53,11 @@ const SelectPaymentModel: React.FC = () => {
                   </li>
                   <li>
                     <Button
-                      onClick={() => setPaymentMethod('ETH')}
+                      onClick={() => setPaymentMethod(PaymentMethod.ETH)}
                       className={`${s.payments_item} ${
-                        paymentMethod === 'ETH' ? s.payments_item__active : ''
+                        paymentMethod === PaymentMethod.ETH
+                          ? s.payments_item__active
+                          : ''
                       }`}
                     >
                       <span>
