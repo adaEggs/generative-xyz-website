@@ -1,0 +1,13 @@
+@import "src/styles/_themes/mixins";
+
+.wrapper {
+  color: $black-100;
+  padding-top: rem(32px);
+
+  @include min-tablet {
+    display: grid;
+    grid-template-columns: rem(520px) 1px 1fr;
+    padding-top: rem(40px);
+    margin-bottom: rem(40px);
+  }
+}
