@@ -21,3 +21,8 @@ export const calculateNetworkFee = (
   const fileSizeByte = new Blob([fileBase64]).size;
   return (feeRate * fileSizeByte) / 4 + transferFee;
 };
+
+export const getOrdinalImgURL = (inscriptionID: string) => {
+  if (!inscriptionID) return '';
+  return `https://ordinals-explorer-v5-dev.generative.xyz/preview/${inscriptionID}`;
+};

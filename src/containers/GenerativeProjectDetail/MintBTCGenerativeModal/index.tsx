@@ -41,7 +41,9 @@ const MintBTCGenerativeModal: React.FC = () => {
   const user = useAppSelector(getUserSelector);
   const { connect } = useContext(WalletContext);
 
-  const { setIsPopupPayment } = useContext(BitcoinProjectContext);
+  const { setIsPopupPayment, paymentMethod } = useContext(
+    BitcoinProjectContext
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>(null);
@@ -68,12 +70,13 @@ const MintBTCGenerativeModal: React.FC = () => {
           projectName: projectData.name,
           projectThumbnail: projectData.image,
           mintPrice: formatBTCPrice(Number(projectData?.mintPrice)),
-          mintType: 'BTC',
+          mintType: paymentMethod,
           networkFee: formatBTCPrice(Number(projectData?.networkFee)),
           masterAddress: address,
           totalPrice: formatBTCPrice(Number(price)),
         },
       });
+
       setReceiverAddress(address);
       setPrice(price || projectData?.mintPrice);
     } catch (err: unknown) {

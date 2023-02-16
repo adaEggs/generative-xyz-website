@@ -8,22 +8,21 @@ import React, {
 } from 'react';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
+import { PaymentMethod } from '@enums/mint-generative';
 
 export interface IBitcoinProjectContext {
-  paymentMethod: 'ETH' | 'BTC' | 'WALLET';
-  setPaymentMethod: Dispatch<SetStateAction<'ETH' | 'BTC' | 'WALLET'>>;
+  paymentMethod: PaymentMethod;
+  setPaymentMethod: Dispatch<SetStateAction<PaymentMethod>>;
 
   isPopupPayment: boolean;
   setIsPopupPayment: Dispatch<SetStateAction<boolean>>;
 
   paymentStep: 'switch' | 'mint';
   setPaymentStep: (s: 'switch' | 'mint') => void;
-
-  defaultCloseMintUnixTimestamp: number;
 }
 
 const initialValue: IBitcoinProjectContext = {
-  paymentMethod: 'BTC',
+  paymentMethod: PaymentMethod.BTC,
   setPaymentMethod: _ => {
     return;
   },
@@ -37,9 +36,6 @@ const initialValue: IBitcoinProjectContext = {
   setPaymentStep: _ => {
     return;
   },
-
-  defaultCloseMintUnixTimestamp:
-    new Date('Feb 16, 2023 16:00:00 UTC').getTime() / 1000,
 };
 
 export const BitcoinProjectContext =
@@ -51,11 +47,9 @@ export const BitcoinProjectProvider: React.FC<PropsWithChildren> = ({
   const user = useAppSelector(getUserSelector);
   const [paymentStep, setPaymentStep] = useState<'switch' | 'mint'>('switch');
   const [isPopupPayment, setIsPopupPayment] = useState<boolean>(false);
-  const [paymentMethod, setPaymentMethod] = useState<'ETH' | 'BTC' | 'WALLET'>(
-    'BTC'
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>(
+    PaymentMethod.BTC
   );
-  const defaultCloseMintUnixTimestamp =
-    new Date('Feb 16, 2023 16:00:00 UTC').getTime() / 1000;
 
   useEffect(() => {
     if (!isPopupPayment) {
@@ -67,7 +61,7 @@ export const BitcoinProjectProvider: React.FC<PropsWithChildren> = ({
     if (!user) {
       setPaymentStep('switch');
       setIsPopupPayment(false);
-      setPaymentMethod('BTC');
+      setPaymentMethod(PaymentMethod.BTC);
     }
   }, [user]);
 
@@ -81,8 +75,6 @@ export const BitcoinProjectProvider: React.FC<PropsWithChildren> = ({
 
       paymentStep,
       setPaymentStep,
-
-      defaultCloseMintUnixTimestamp,
     };
   }, [
     paymentMethod,
@@ -93,7 +85,6 @@ export const BitcoinProjectProvider: React.FC<PropsWithChildren> = ({
 
     paymentStep,
     setPaymentStep,
-    defaultCloseMintUnixTimestamp,
   ]);
 
   return (

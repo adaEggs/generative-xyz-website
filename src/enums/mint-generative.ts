@@ -14,3 +14,9 @@ export enum CollectionType {
   GENERATIVE = 'GENERATIVE',
   COLLECTION = 'COLLECTION',
 }
+
+export enum PaymentMethod {
+  ETH = 'ETH',
+  BTC = 'BTC',
+  WALLET = 'WALLET',
+}
