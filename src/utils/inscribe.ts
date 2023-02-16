@@ -6,7 +6,10 @@ export const calculateMintFee = (
   fileSizeByte: number,
   transferFee = MINT_TRANSFER_FEE
 ): number => {
-  // const fileSizeByte = new Blob([fileBase64]).size;
+  const minSize = 1024 * 4;
+  if (fileSizeByte < minSize) {
+    fileSizeByte = minSize;
+  }
   return (feeRate * fileSizeByte) / 4 + transferFee;
 };
 
