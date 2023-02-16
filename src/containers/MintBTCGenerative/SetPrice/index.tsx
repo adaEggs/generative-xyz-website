@@ -26,6 +26,10 @@ import { getMempoolFeeRate } from '@services/mempool';
 import { calculateNetworkFee } from '@utils/inscribe';
 import { InscribeMintFeeRate } from '@enums/inscribe';
 import { formatBTCPrice } from '@utils/format';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -37,6 +41,7 @@ type ISetPriceFormValue = {
 };
 
 const SetPrice = () => {
+  const user = useSelector(getUserSelector);
   const router = useRouter();
   const {
     formValues,
@@ -283,6 +288,17 @@ const SetPrice = () => {
       }
 
       const projectRes = await createBTCProject(payload);
+
+      // Send tracking
+      sendAAEvent({
+        eventName: BTC_PROJECT.LAUNCH_NEW_PROJECT,
+        data: {
+          ...projectRes,
+          artistName: user?.displayName ?? '',
+        },
+      });
+
+      // Polling to get project status
       intervalGetProjectStatus(projectRes.tokenID);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);

@@ -221,6 +221,19 @@
     }
   }
 
+  .buy_now {
+    background: $primary-brand;
+    color: $white;
+    width: 100%;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+
+    &:hover {
+      color: $white;
+    }
+  }
+
   .content {
     color: $primary-brand;
 

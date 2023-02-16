@@ -23,9 +23,9 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-3',
-    name: 'Bazaar',
+    name: 'Inscriptions',
     route: ROUTE_PATH.TRADE,
-    activePath: 'bazaar',
+    activePath: 'inscriptions',
   },
   {
     id: 'menu-5',
