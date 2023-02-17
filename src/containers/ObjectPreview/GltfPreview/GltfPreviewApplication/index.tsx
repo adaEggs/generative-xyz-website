@@ -1,8 +1,15 @@
+import * as THREE from 'three';
 import Base from './Base';
 import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 
 class GltfPreviewApplication extends Base {
   onChainModel?: GLTF;
+
+  getModelDimension(model: THREE.Object3D) {
+    const box3 = new THREE.Box3().setFromObject(model);
+    const size = new THREE.Vector3();
+    return box3.getSize(size);
+  }
 
   async loadMainModel(_url: string) {
     // load main model
@@ -34,6 +41,15 @@ class GltfPreviewApplication extends Base {
         mesh.receiveShadow = true;
       }
     });
+
+    try {
+      const size = this.getModelDimension(this.onChainModel.scene);
+      if (size.y > 10) {
+        this.camera.rotation.x = 0.35 + (size.y - 20) / 100;
+      }
+    } catch (e) {
+      //
+    }
   }
 
   async loadHouseSetup() {
