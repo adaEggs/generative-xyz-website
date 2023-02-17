@@ -100,4 +100,4 @@ export interface IUploadBTCProjectFileResponse {
 export type IUpdateProjectPayload = Pick<
   ICreateBTCProjectPayload,
   'name' | 'description' | 'thumbnail' | 'royalty' | 'mintPrice' | 'maxSupply'
-> & { isHidden: boolean };
+> & { isHidden: boolean; categories: string[] };

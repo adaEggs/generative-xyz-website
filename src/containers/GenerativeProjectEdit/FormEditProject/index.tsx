@@ -15,6 +15,10 @@ import s from './styles.module.scss';
 import { formatBTCPrice } from '@utils/format';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { uploadFile } from '@services/file';
+import { SelectOption } from '@interfaces/select-input';
+import useAsyncEffect from 'use-async-effect';
+import { getCategoryList } from '@services/category';
+import Select, { MultiValue } from 'react-select';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -26,6 +30,7 @@ type IUpdateProjectFormValue = {
   mintPrice: string;
   maxSupply: number;
   isHidden: boolean;
+  categories: Array<SelectOption>;
 };
 
 const FormEditProject = () => {
@@ -33,6 +38,9 @@ const FormEditProject = () => {
     GenerativeProjectDetailContext
   );
   const [newFile, setNewFile] = useState<File | null>();
+  const [categoryOptions, setCategoryOptions] = useState<Array<SelectOption>>(
+    []
+  );
 
   const nftMinted = useMemo((): number => {
     return project?.mintingInfo?.index || 0;
@@ -107,6 +115,13 @@ const FormEditProject = () => {
       thumbnailUrl = uploadRes.url;
     }
 
+    const isHidden = !values.isHidden;
+    const categories: string[] = [];
+
+    for (let i = 0; i < values.categories.length; i++) {
+      values.categories[i] && categories.push(values.categories[i].value);
+    }
+
     const payload: IUpdateProjectPayload = {
       name: values.name || project?.name || '',
       description: values.description || project?.itemDesc || '',
@@ -114,7 +129,8 @@ const FormEditProject = () => {
       royalty: (Number(values.royalty) || project?.royalty || 0) * 100,
       mintPrice: (values.mintPrice || project?.mintPrice || 0).toString(),
       maxSupply: Number(values.maxSupply) || project?.maxSupply || 0,
-      isHidden: Boolean(values.isHidden) || project?.isHidden || true,
+      isHidden: isHidden || project?.isHidden || false,
+      categories: categories || project?.categories || [],
     };
 
     const res = await updateProject(
@@ -134,6 +150,24 @@ const FormEditProject = () => {
     }
   };
 
+  const valuesCategories = useMemo((): Array<SelectOption> => {
+    if (!project?.categories) return [];
+    const categories: Array<SelectOption> = project?.categories.map(cat => {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return categoryOptions.find(op => cat === op.value)!;
+    });
+    return categories;
+  }, [categoryOptions, project]);
+
+  useAsyncEffect(async () => {
+    const { result } = await getCategoryList();
+    const options = result.map(item => ({
+      value: item.id,
+      label: item.name,
+    }));
+    setCategoryOptions(options);
+  }, []);
+
   return (
     <Formik
       key="listingForm"
@@ -144,7 +178,8 @@ const FormEditProject = () => {
         royalty: (project?.royalty || 0) / 100,
         mintPrice: formatBTCPrice(project?.mintPrice || '0'),
         maxSupply: project?.maxSupply || 0,
-        isHidden: project?.isHidden || true,
+        isHidden: !(project?.isHidden || false),
+        categories: valuesCategories,
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -159,12 +194,30 @@ const FormEditProject = () => {
         values,
         touched,
         errors,
+        setFieldValue,
       }) => (
         <form onSubmit={handleSubmit} className={s.projectEdit}>
           <div className={s.projectEdit_form}>
             <div className={s.projectEdit_form_wrapper}>
               <div className={s.projectDetail}>
                 <div className={s.formWrapper}>
+                  <div className={s.formItem}>
+                    <label className={s.label_checkbox} htmlFor="isHidden">
+                      <span>
+                        <input
+                          id="isHidden"
+                          type="checkbox"
+                          name="isHidden"
+                          checked={values.isHidden}
+                          className={s.input}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value="yes"
+                        />
+                      </span>
+                      <span>Enabled</span>
+                    </label>
+                  </div>
                   <div className={s.formItem}>
                     <label className={s.label} htmlFor="name">
                       Name of collection <sup className={s.requiredTag}>*</sup>
@@ -183,6 +236,26 @@ const FormEditProject = () => {
                       <p className={s.error}>{errors.name}</p>
                     )}
                   </div>
+
+                  <div className={s.formItem}>
+                    <label className={s.label} htmlFor="categories">
+                      Categories
+                    </label>
+                    <Select
+                      id="categories"
+                      isMulti
+                      name="categories"
+                      options={categoryOptions}
+                      className={s.selectInput}
+                      classNamePrefix="select"
+                      onChange={(ops: MultiValue<SelectOption>) => {
+                        setFieldValue('categories', ops);
+                      }}
+                      onBlur={handleBlur}
+                      placeholder="Select categories"
+                    />
+                  </div>
+
                   <div className={s.formItem}>
                     <label className={s.label} htmlFor="tokenDescription">
                       Description of your collection{' '}
