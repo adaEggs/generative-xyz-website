@@ -152,9 +152,7 @@ const FormEditProject = () => {
 
   const valuesCategories = useCallback(
     (inputVal: Array<SelectOption> | null): Array<SelectOption> => {
-      if (!project?.categories) return [];
-
-      const mixDataInput: string[] = inputVal ? [] : project?.categories;
+      const mixDataInput: string[] = inputVal ? [] : project?.categories || [];
       if (inputVal !== null) {
         for (let i = 0; i < inputVal.slice(0, 3)?.length; i++) {
           inputVal[i] && mixDataInput.push(inputVal[i].value);
