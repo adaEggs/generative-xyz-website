@@ -3,7 +3,7 @@
 .wrapper {
   color: $black-100;
   padding-top: rem(32px);
-  margin-bottom: rem(30px);
+  padding-bottom: rem(30px);
 
   @include mobile {
     display: flex;
@@ -18,7 +18,7 @@
     display: grid;
     grid-template-columns: rem(520px) 1fr;
     padding-top: rem(40px);
-    margin-bottom: rem(40px);
+    padding-bottom: rem(120px);
   }
 
   &_image {

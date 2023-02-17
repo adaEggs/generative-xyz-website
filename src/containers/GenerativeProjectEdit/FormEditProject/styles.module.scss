@@ -297,3 +297,9 @@
     }
   }
 }
+
+.label_checkbox {
+  display: flex;
+  justify-content: flex-start;
+  gap: rem(5px);
+}

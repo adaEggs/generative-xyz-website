@@ -1,6 +1,6 @@
 import React from 'react';
 import cs from 'classnames';
-import { IMAGE_TYPE } from '@components/NFTDisplayBox/constant';
+import { IMAGE_TYPE, WHITE_LIST } from '@components/NFTDisplayBox/constant';
 import s from './styles.module.scss';
 import { convertIpfsToHttp } from '@utils/image';
 
@@ -8,7 +8,7 @@ import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import Skeleton from '@components/Skeleton';
 
 const EXPLORER = 'https://ordinals-explorer-v5-dev.generative.xyz';
-
+// CDN_URL;
 type ContentVariantsType = 'full' | 'absolute';
 
 interface IProps {
@@ -106,6 +106,20 @@ const NFTDisplayBox = ({
     );
   };
 
+  const renderWhiteListImage = (link: string) => {
+    return (
+      <img
+        className={contentClass}
+        src={link}
+        alt={inscriptionID}
+        loading="lazy"
+        onError={onError}
+        onLoad={onLoaded}
+        style={{ objectFit: 'contain' }}
+      />
+    );
+  };
+
   const renderEmpty = () => (
     <img
       src={convertIpfsToHttp(LOGO_MARKETPLACE_URL)}
@@ -127,6 +141,13 @@ const NFTDisplayBox = ({
   }
 
   const renderContent = () => {
+    const whiteList = WHITE_LIST.find(
+      ({ id }) => !!id && id.toLowerCase() === inscriptionID.toLowerCase()
+    );
+    if (whiteList) {
+      return renderWhiteListImage(whiteList.link);
+    }
+
     switch (type) {
       case 'audio/mpeg':
       case 'audio/wav':
