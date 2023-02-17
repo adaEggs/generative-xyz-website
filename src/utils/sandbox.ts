@@ -1,7 +1,6 @@
 import FileType from 'file-type/browser';
 import {
   HTML_EXTENSION,
-  SUPPORTED_FILE_EXT,
   JS_EXTENSION,
   NAIVE_MIMES,
   ZIP_MIMES,
@@ -12,7 +11,11 @@ import {
   SandboxFileContent,
   SandboxFiles,
 } from '@interfaces/sandbox';
-import { getFileExtensionByFileName, unzipFile } from '@utils/file';
+import {
+  getFileExtensionByFileName,
+  getSupportedFileExtList,
+  unzipFile,
+} from '@utils/file';
 import {
   SNIPPET_CONTRACT_HTML,
   SNIPPET_RANDOM_HTML,
@@ -197,7 +200,10 @@ export const processCollectionZipFile = async (
 
     // Check file extension
     const fileExt = getFileExtensionByFileName(fileName);
-    if (!fileExt || !SUPPORTED_FILE_EXT.includes(fileExt.toLowerCase())) {
+    if (
+      !fileExt ||
+      !getSupportedFileExtList().includes(fileExt.toLowerCase())
+    ) {
       error = ImageFileError.INVALID_EXTENSION;
     }
 

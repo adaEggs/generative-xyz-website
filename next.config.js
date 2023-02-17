@@ -103,7 +103,7 @@ module.exports = removeImports(
           source: '/create',
           destination: '/create/upload-project',
           permanent: true,
-        }
+        },
       ];
     },
     rewrites: async () => [

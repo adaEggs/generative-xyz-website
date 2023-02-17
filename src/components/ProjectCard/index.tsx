@@ -131,14 +131,12 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                       total={project.maxSupply || project.limit}
                     /> */}
                     <div className={s.progress_minted}>
-                      <Heading as="h6" fontWeight="bold">
+                      <Text fontWeight="bold">
                         {project.mintingInfo.index +
                           project.mintingInfo.indexReserve}
                         /{project.maxSupply || project.limit}
-                      </Heading>
-                      <Heading as="h6" color="black-60">
-                        minted
-                      </Heading>
+                      </Text>
+                      <Text color="black-60">Minted</Text>
                     </div>
                   </div>
                   {isLimitMinted ? (
@@ -148,21 +146,15 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                         <Stack direction="horizontal" gap={2}>
                           {Number(project.mintPrice) ? (
                             <>
-                              <Heading as="h6" fontWeight="bold">
+                              <Text fontWeight="bold">
                                 {formatBTCPrice(Number(project.mintPrice))}
-                              </Heading>
-                              <Heading as="h6" color="black-60">
-                                BTC
-                              </Heading>
+                              </Text>
+                              <Text color="black-60">BTC</Text>
                             </>
                           ) : (
-                            <Heading as="h6" fontWeight="bold">
-                              Free
-                            </Heading>
+                            <Text fontWeight="bold">Free</Text>
                           )}
-                          <Heading as="h6" color="black-60">
-                            mint
-                          </Heading>
+                          <Text color="black-60">Mint</Text>
                         </Stack>
                       </div>
                     </>

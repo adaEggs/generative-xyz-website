@@ -4,11 +4,11 @@ import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { SOCIALS } from '@constants/common';
 import { CDN_URL, SANDBOX_BTC_FILE_SIZE_LIMIT } from '@constants/config';
-import { SUPPORTED_FILE_EXT } from '@constants/file';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
 import { LogLevel } from '@enums/log-level';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { ImageFileError, SandboxFileError } from '@enums/sandbox';
+import { getSupportedFileExtList } from '@utils/file';
 import { postReferralCode } from '@services/referrals';
 import log from '@utils/logger';
 import { getReferral } from '@utils/referral';
@@ -180,7 +180,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
       case ImageFileError.TOO_LARGE:
         return `File size error, maximum file size is ${SANDBOX_BTC_FILE_SIZE_LIMIT}kb.`;
       case ImageFileError.INVALID_EXTENSION:
-        return `Invalid file format. Supported file extensions are ${SUPPORTED_FILE_EXT.join(
+        return `Invalid file format. Supported file extensions are ${getSupportedFileExtList().join(
           ', '
         )}.`;
       default:
@@ -285,18 +285,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
             Upload file
           </Heading>
           <div className={s.collectionTypeWrapper}>
-            {/* <div className={s.guideWrapper}>
-              <p>
-                New artist?&nbsp;
-                <a
-                  href={SOCIALS.docsForArtist}
-                  target={'_blank'}
-                  rel="noreferrer"
-                >
-                  Start here.
-                </a>
-              </p>
-            </div> */}
             <p className={s.collectionTypeLabel}>Choose collection type:</p>
             <div className={s.choiceList}>
               <div

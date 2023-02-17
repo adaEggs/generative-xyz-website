@@ -366,12 +366,13 @@ const Header: React.FC<IProp> = ({
           </Container>
         </div>
         {isDrops && (
-          <div className={styles.topDiscord}>
-            Want to launch your art on Bitcoin?
-            <a href={SOCIALS.discord} target="_blank" rel="noreferrer">
-              {' Join our Discord for direct support.'}
-            </a>
-          </div>
+          <></>
+          // <div className={styles.topDiscord}>
+          //   Want to launch your art on Bitcoin?
+          //   <a href={SOCIALS.discord} target="_blank" rel="noreferrer">
+          //     {' Join our Discord for direct support.'}
+          //   </a>
+          // </div>
         )}
       </header>
       {isFaucet && !isProduction() && (

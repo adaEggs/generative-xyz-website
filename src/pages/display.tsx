@@ -3,6 +3,7 @@ import { NextPage } from 'next';
 import DisplayTemplate from '@containers/Display';
 import MarketplaceLayout from '@layouts/Marketplace';
 import { NavigationProvider } from '@contexts/navigation-context';
+import { CDN_URL } from '@constants/config';
 
 const DisplayPage: NextPage = () => {
   return (
@@ -22,7 +23,7 @@ export async function getServerSideProps() {
       seoInfo: {
         title: 'Generative',
         description: 'Bring your generative art to life',
-        image: null,
+        image: `${CDN_URL}/images/display.jpg`,
       },
     },
   };

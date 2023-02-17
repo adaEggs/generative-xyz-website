@@ -154,31 +154,31 @@ const FormEditProfile = () => {
                     className={s.input_website}
                     useFormik
                   ></Input>
-                  <Input
+                  {/* <Input
                     name={'instagram'}
                     label={'instagram'}
                     placeholder="Instagram"
                     className={s.input_website}
                     useFormik
-                  ></Input>
-                  <Input
+                  ></Input> */}
+                  {/* <Input
                     name={'discord'}
                     label={'discord'}
                     placeholder="Discord"
                     className={s.input_website}
                     useFormik
-                  ></Input>
-                  <Input
+                  ></Input> */}
+                  {/* <Input
                     name={'etherScan'}
                     label={'etherScan'}
                     placeholder="Etherscan"
                     className={s.input_website}
                     useFormik
-                  ></Input>
+                  ></Input> */}
                   <Input
                     name={'twitter'}
                     label={'twitter'}
-                    placeholder="Twitter"
+                    placeholder="https://twitter.com/..."
                     className={s.input_website}
                     useFormik
                   ></Input>

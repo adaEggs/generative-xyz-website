@@ -289,7 +289,10 @@ const ProjectIntroSection = ({
           )}
         </div>
         <div className={s.creator}>
-          <div className={s.creator_info}>
+          <Link
+            href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddress}`}
+            className={s.creator_info}
+          >
             <Avatar
               imgSrcs={project?.creatorProfile?.avatar || ''}
               width={24}
@@ -299,7 +302,7 @@ const ProjectIntroSection = ({
               {project?.creatorProfile?.displayName ||
                 formatAddress(project?.creatorProfile?.walletAddress || '')}
             </Text>
-          </div>
+          </Link>
           {project?.creatorProfile?.profileSocial?.twitter && (
             <div className={s.creator_social}>
               <span className={s.creator_divider}></span>

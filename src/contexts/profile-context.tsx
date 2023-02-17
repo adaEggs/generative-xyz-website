@@ -96,7 +96,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     string | undefined
   >();
   const { walletAddress } = router.query as { walletAddress: string };
-  const [currentUser, setCurrentUser] = useState<User | null>(user);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const { call: cancelOffer } = useContractOperation(
     CancelTokenOfferOperation,
@@ -253,7 +253,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         if (getUser && getUser.id) {
           setCurrentUser(getUser);
         } else {
-          router.push(ROUTE_PATH.COLLECTIONS);
+          router.push(ROUTE_PATH.DROPS);
         }
       }
     } catch (ex) {
@@ -311,12 +311,13 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   }, [walletAddress, router, user]);
 
   useAsyncEffect(async () => {
-    if (!router.isReady) return;
+    if (!router.isReady || !currentUser) return;
+
     await handleFetchTokens();
     await handleFetchMakeOffers();
     await handleFetchProjects();
     await handleFetchListingTokens();
-  }, [currentUser, user]);
+  }, [currentUser]);
 
   useEffect(() => {
     handleFetchMakeOffers();
