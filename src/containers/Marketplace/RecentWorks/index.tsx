@@ -135,16 +135,7 @@ export const RecentWorks = (): JSX.Element => {
     setProjects(undefined);
   };
 
-  // useAsyncEffect(async () => {
-  //   // sortChange();
-  //   setIsLoadMore(false);
-  //   await getProjectAll();
-  //   setIsLoaded(true);
-  // }, [page]);
-
   useAsyncEffect(async () => {
-    // sortChange();
-    // setPage(0);
     setIsLoadMore(false);
     setIsLoaded(false);
     await getProjectAll({ page: 0 });
