@@ -242,7 +242,6 @@ const Header: React.FC<IProp> = ({
                     </Link>
                   </li>
 
-
                   <li
                     className={cs(
                       activePath === MENU_HEADER[5].activePath && styles.active

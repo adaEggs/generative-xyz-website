@@ -5,10 +5,7 @@ import ListForSaleModal from '@containers/Trade/ListForSaleModal';
 import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { ProjectList } from '@containers/Trade/ProjectLists';
 import { Loading } from '@components/Loading';
-import {
-  getMarketplaceBtcList,
-  IGetMarketplaceBtcListItem,
-} from '@services/marketplace-btc';
+import { getMarketplaceBtcList } from '@services/marketplace-btc';
 import debounce from 'lodash/debounce';
 import uniqBy from 'lodash/uniqBy';
 import Col from 'react-bootstrap/Col';
@@ -17,6 +14,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import s from './RecentWorks.module.scss';
 import ButtonIcon from '@components/ButtonIcon';
 import { Container } from 'react-bootstrap';
+import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
 
 const LIMIT = 20;
 
