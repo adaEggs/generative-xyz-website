@@ -9,7 +9,9 @@ import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context'
 import { LogLevel } from '@enums/log-level';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { ImageFileError, SandboxFileError } from '@enums/sandbox';
+import { postReferralCode } from '@services/referrals';
 import log from '@utils/logger';
+import { getReferral } from '@utils/referral';
 import { processHTMLFile, processCollectionZipFile } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
 import cs from 'classnames';
@@ -360,6 +362,16 @@ const UploadGenArt: React.FC = (): ReactElement => {
   useEffect(() => {
     handleProccessFile();
   }, [rawFile]);
+
+  const postRefCode = async () => {
+    const refCode = getReferral();
+    if (refCode) {
+      await postReferralCode(refCode);
+    }
+  };
+  useEffect(() => {
+    postRefCode();
+  }, []);
 
   return (
     <section className={s.uploadGenArt}>
