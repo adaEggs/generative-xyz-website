@@ -7,11 +7,10 @@ export interface IGenerativeNonceMessageResponse {
 }
 
 export interface IVerifyNonceMessagePayload {
-  address: string;
   signature: string;
+  messagePrefix: string;
   addressBtc: string;
-  message: string;
-  pubkey: string;
+  addressBtcTaproot: string;
 }
 
 export interface IVerifyNonceMessageResponse {

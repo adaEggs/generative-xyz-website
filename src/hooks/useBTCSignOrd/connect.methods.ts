@@ -4,17 +4,21 @@ import * as bitcoin from 'bitcoinjs-lib';
 import BIP32Factory from 'bip32';
 import { Buffer } from 'buffer';
 import bitcoinMessage from 'bitcoinjs-message';
-import { randomBytes } from 'crypto';
+import ECPairFactory from 'ecpair';
 
 bitcoin.initEccLib(ecc);
 const bip32 = BIP32Factory(ecc);
+const ECPair = ECPairFactory(ecc);
+
 const toXOnly = (pubKey: Buffer) =>
   pubKey.length === 32 ? pubKey : pubKey.slice(1, 33);
+
 const defaultPath = "m/86'/0'/0'/0/0";
+const defaultPathSegwit = "m/84'/0'/0'/0/0";
 
 // sign message with first sign transaction
-const MESSAGE_0 =
-  'Sign this message to generate your Bitcoin Taproot key. This key will be used for your generative.xyz transactions.\\n\\nNOTE: make sure you trust this application';
+const MESSAGE_TAP_R0OT =
+  'Sign this message to generate your Bitcoin Taproot key. This key will be used for your generative.xyz transactions.';
 
 const getBitcoinOrdKeySignContent = (message: string): Buffer => {
   return Buffer.from(message);
@@ -22,53 +26,80 @@ const getBitcoinOrdKeySignContent = (message: string): Buffer => {
 
 const generateBitcoinOrdKey = async ({
   address,
-  message: message_1, // sign message with second sign transaction
+  message: messageSegwit, // sign message with second sign transaction
 }: {
   address: string;
   message: string;
 }) => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const toSign = '0x' + getBitcoinOrdKeySignContent(MESSAGE_0).toString('hex');
-  const signature_0 = await provider.send('personal_sign', [
+  const provider = new ethers.providers.Web3Provider(
+    window.ethereum as ethers.providers.ExternalProvider
+  );
+  const toSign =
+    '0x' + getBitcoinOrdKeySignContent(MESSAGE_TAP_R0OT).toString('hex');
+  const signature = await provider.send('personal_sign', [
     toSign,
     address.toString(),
   ]);
 
   const private_key = ethers.utils.arrayify(
-    ethers.utils.keccak256(ethers.utils.arrayify(signature_0))
+    ethers.utils.keccak256(ethers.utils.arrayify(signature))
   );
 
   const root = bip32.fromSeed(Buffer.from(private_key));
 
-  const child0 = root.derivePath(defaultPath);
-  const { address: sendAddress } = bitcoin.payments.p2tr({
-    internalPubkey: toXOnly(child0.publicKey),
+  // Taproot
+  const childTaproot = root.derivePath(defaultPath);
+  const { address: sendAddressTaproot } = bitcoin.payments.p2tr({
+    internalPubkey: toXOnly(childTaproot.publicKey),
   });
+  const privateKeyTaproot = childTaproot.privateKey;
 
-  const pubkey = child0.publicKey.toString('base64');
-  const privateKey = child0.privateKey;
+  // Segwit
+  const childSegwit = root.derivePath(defaultPathSegwit);
+  const privateKeySegwit = childSegwit.privateKey;
+  const keyPair = ECPair.fromPrivateKey(privateKeySegwit as Buffer);
 
-  let signature_1 = '';
-  if (privateKey) {
-    signature_1 = bitcoinMessage
-      .sign(message_1, privateKey, true, {
-        extraEntropy: randomBytes(32),
-      })
-      .toString('base64');
-  }
+  const signatureSegwit = bitcoinMessage.sign(
+    messageSegwit,
+    privateKeySegwit as Buffer,
+    keyPair.compressed,
+    { segwitType: 'p2wpkh' }
+  );
+  const { address: sendAddressSegwit, network: networkSegwit } =
+    bitcoin.payments.p2wpkh({
+      pubkey: keyPair.publicKey,
+    });
+  const messagePrefix = networkSegwit?.messagePrefix;
+
+  // console.log('sendAddressSegwit: ', sendAddressSegwit);
+  // console.log('messagePrefix: ', messagePrefix);
+  //
+  // console.log(
+  //   'verify?',
+  //   bitcoinMessage.verify(
+  //     messageSegwit,
+  //     sendAddressSegwit as string,
+  //     signatureSegwit,
+  //     messagePrefix,
+  //     true
+  //   )
+  // );
 
   return {
-    privateKey: child0.privateKey,
-    address: sendAddress,
+    taproot: {
+      privateKey: privateKeyTaproot,
+      sendAddress: sendAddressTaproot,
+      signature,
+      message: MESSAGE_TAP_R0OT,
+    },
 
-    pubkey,
-    message_0: MESSAGE_0,
-    message_1,
-
-    signature_0,
-    signature_1,
+    segwit: {
+      privateKey: privateKeySegwit,
+      sendAddress: sendAddressSegwit,
+      signature: signatureSegwit,
+      message: messageSegwit,
+      messagePrefix,
+    },
   };
 };
 

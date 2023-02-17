@@ -143,24 +143,27 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
         address: walletAddress,
       });
 
-      const {
-        address: ordAddress,
-        signature_1,
-        pubkey,
-      } = await generateBitcoinOrdKey({
+      const { segwit, taproot } = await generateBitcoinOrdKey({
         address: walletAddress,
         message: nonceMessage,
       });
 
-      if (!ordAddress) {
+      if (
+        !taproot.sendAddress ||
+        !segwit.sendAddress ||
+        !segwit.signature ||
+        !segwit.messagePrefix
+      ) {
         throw Error(WalletError.FAILED_LINK_WALLET);
       }
+
       const { accessToken, refreshToken } = await verifyNonceMessage({
-        signature: signature_1,
-        message: nonceMessage,
-        address: walletAddress,
-        addressBtc: ordAddress,
-        pubkey,
+        signature: segwit.signature.toString('base64'),
+
+        messagePrefix: segwit.messagePrefix,
+        addressBtc: segwit.sendAddress,
+
+        addressBtcTaproot: taproot.sendAddress,
       });
 
       setAccessToken(accessToken, refreshToken);
