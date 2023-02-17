@@ -12,6 +12,10 @@
 
     &__hide {
       visibility: hidden;
+
+      @include mobile {
+        display: none;
+      }
     }
   }
 
