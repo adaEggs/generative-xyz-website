@@ -6,7 +6,6 @@ import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { ProjectList } from '@containers/Trade/ProjectLists';
 import { Loading } from '@components/Loading';
 import {
-  
   getMarketplaceBtcList,
   IGetMarketplaceBtcListItem,
 } from '@services/marketplace-btc';
@@ -16,6 +15,8 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import s from './RecentWorks.module.scss';
+import ButtonIcon from '@components/ButtonIcon';
+import { Container } from 'react-bootstrap';
 
 const LIMIT = 20;
 
@@ -59,40 +60,45 @@ export const RecentWorks = (): JSX.Element => {
 
   return (
     <div className={s.recentWorks}>
-      <Row style={{ justifyContent: 'space-between' }}>
-        <Col
-          xs={'12'}
-          style={{ display: 'flex', alignItems: 'center', margin: 0 }}
+      <div className={s.banner}>
+        <Heading as="h4" fontWeight="semibold" color="white">
+          The easiest way to buy and sell Bitcoin NFTs
+        </Heading>
+        <ButtonIcon
+          sizes="large"
+          variants="secondary"
+          className={s.banner_btn}
+          onClick={() => setShowModal(true)}
         >
-          <Heading as="h4" fontWeight="semibold">
-            Explore Bitcoin NFTs
-          </Heading>
-        </Col>
-      </Row>
-      <Row className={s.recentWorks_projects}>
-        <Col xs={'12'}>
-          {!isLoaded ? (
-            <ProjectListLoading numOfItems={12} />
-          ) : (
-            <InfiniteScroll
-              dataLength={listData.length}
-              next={debounceFetchData}
-              className={s.recentWorks_projects_list}
-              hasMore={true}
-              loader={
-                isLoading ? (
-                  <div className={s.recentWorks_projects_loader}>
-                    <Loading isLoaded={isLoading} />
-                  </div>
-                ) : null
-              }
-              endMessage={<></>}
-            >
-              <ProjectList isNFTBuy={true} listData={listData} />
-            </InfiniteScroll>
-          )}
-        </Col>
-      </Row>
+          List for sale
+        </ButtonIcon>
+      </div>
+      <Container>
+        <Row className={s.recentWorks_projects}>
+          <Col xs={'12'}>
+            {!isLoaded ? (
+              <ProjectListLoading numOfItems={12} />
+            ) : (
+              <InfiniteScroll
+                dataLength={listData.length}
+                next={debounceFetchData}
+                className={s.recentWorks_projects_list}
+                hasMore={true}
+                loader={
+                  isLoading ? (
+                    <div className={s.recentWorks_projects_loader}>
+                      <Loading isLoaded={isLoading} />
+                    </div>
+                  ) : null
+                }
+                endMessage={<></>}
+              >
+                <ProjectList isNFTBuy={true} listData={listData} />
+              </InfiniteScroll>
+            )}
+          </Col>
+        </Row>
+      </Container>
       <ListForSaleModal
         showModal={showModal}
         onClose={() => setShowModal(false)}

@@ -7,7 +7,7 @@ import { LoadingProvider } from '@contexts/loading-context';
 
 const PageTrade = (): JSX.Element => {
   return (
-    <div className={s.trade}>
+    <div className={s.live}>
       <Container>
         <LiveWorks />
       </Container>

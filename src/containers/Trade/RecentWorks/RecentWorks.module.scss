@@ -44,6 +44,19 @@
       padding: 8px !important;
     }
   }
+
+  .banner {
+    background-color: black;
+    height: rem(252);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    &_btn {
+      margin-top: rem(24);
+    }
+  }
 }
 
 .wrap_btn {
