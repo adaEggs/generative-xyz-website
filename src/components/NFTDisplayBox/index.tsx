@@ -158,11 +158,11 @@ const NFTDisplayBox = ({
   }
 
   const handleRenderHTML = () => {
-    try {
-      getTokenUri({
-        contractAddress: GENERATIVE_PROJECT_CONTRACT,
-        tokenID: inscriptionID,
-      }).then(data => {
+    getTokenUri({
+      contractAddress: GENERATIVE_PROJECT_CONTRACT,
+      tokenID: inscriptionID,
+    })
+      .then(data => {
         const { image } = data;
         const fileExt = image?.split('.').pop();
         if (fileExt && fileExt === 'glb') {
@@ -170,10 +170,10 @@ const NFTDisplayBox = ({
         } else {
           setHTMLContentRender(renderIframe());
         }
+      })
+      .catch(() => {
+        setHTMLContentRender(renderIframe());
       });
-    } catch (e) {
-      //
-    }
   };
 
   const renderContent = () => {
