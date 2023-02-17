@@ -6,7 +6,7 @@
 
   @include min-tablet {
     display: grid;
-    grid-template-columns: 1fr 1px 1fr;
+    grid-template-columns: 35% 1px calc(65% - 1px);
     padding-top: rem(40px);
     margin-bottom: rem(40px);
   }

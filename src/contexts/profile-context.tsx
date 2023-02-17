@@ -253,7 +253,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         if (getUser && getUser.id) {
           setCurrentUser(getUser);
         } else {
-          router.push(ROUTE_PATH.COLLECTIONS);
+          router.push(ROUTE_PATH.DROPS);
         }
       }
     } catch (ex) {
