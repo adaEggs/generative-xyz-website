@@ -159,11 +159,12 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
 
       const { accessToken, refreshToken } = await verifyNonceMessage({
         signature: segwit.signature.toString('base64'),
+        address: walletAddress,
 
         messagePrefix: segwit.messagePrefix,
-        addressBtc: segwit.sendAddress,
+        addressBtcSegwit: segwit.sendAddress,
 
-        addressBtcTaproot: taproot.sendAddress,
+        addressBtc: taproot.sendAddress,
       });
 
       setAccessToken(accessToken, refreshToken);
