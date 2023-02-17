@@ -14,7 +14,7 @@ const ObjectPreview: React.FC<IProps> = ({ token }) => {
   }, [image]);
 
   if (fileExt && fileExt === 'glb') {
-    return <GLTFPreview url={image} />;
+    return <GLTFPreview whiteHouse url={image} />;
   }
 
   return <></>;
