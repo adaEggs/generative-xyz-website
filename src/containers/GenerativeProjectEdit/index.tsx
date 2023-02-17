@@ -35,6 +35,8 @@ const GenerativeProjectEdit = (): JSX.Element => {
     );
   };
 
+  if (!user || !projectData) return <></>;
+
   return (
     <Container>
       <div className={s.wrapper}>
