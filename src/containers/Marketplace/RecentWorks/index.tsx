@@ -1,34 +1,37 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import ButtonIcon from '@components/ButtonIcon';
+import CategoryTab from '@components/CategoryTab';
 import Heading from '@components/Heading';
 import ProjectListLoading from '@components/ProjectListLoading';
 import { ProjectList } from '@components/ProjectLists';
 import { TriggerLoad } from '@components/TriggerLoader';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { ROUTE_PATH } from '@constants/route-path';
+import { LogLevel } from '@enums/log-level';
 import { IGetProjectListResponse } from '@interfaces/api/project';
+import { Category } from '@interfaces/category';
 import { Project } from '@interfaces/project';
+import { SelectOption } from '@interfaces/select-input';
+import { getCategoryList } from '@services/category';
 import { getProjectList } from '@services/project';
+import log from '@utils/logger';
+import cs from 'classnames';
+import { useRouter } from 'next/router';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Select, { SingleValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
-import { ROUTE_PATH } from '@constants/route-path';
-import ButtonIcon from '@components/ButtonIcon';
-import { useRouter } from 'next/router';
-import CategoryTab from '@components/CategoryTab';
-import cs from 'classnames';
-import { getCategoryList } from '@services/category';
-import { Category } from '@interfaces/category';
-import Select, { SingleValue } from 'react-select';
-import { SelectOption } from '@interfaces/select-input';
-import { isProduction } from '@utils/common';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
     value: 'priority-desc',
     label: 'Default',
+  },
+  {
+    value: 'trending-score',
+    label: 'Trending',
   },
   {
     value: 'newest',
@@ -140,7 +143,7 @@ export const RecentWorks = (): JSX.Element => {
     setIsLoaded(false);
     await getProjectAll({ page: 0 });
     setIsLoaded(true);
-  }, [filterCategory]);
+  }, [filterCategory, sort]);
 
   useEffect(() => {
     fetchAllCategory();
@@ -181,24 +184,24 @@ export const RecentWorks = (): JSX.Element => {
           md={'auto'}
           xs={'12'}
         >
-          {!isProduction() && (
-            <div className={s.dropDownWrapper}>
-              <Select
-                isSearchable={false}
-                isClearable={false}
-                defaultValue={selectedOption}
-                options={SORT_OPTIONS}
-                className={'select-input'}
-                classNamePrefix="select"
-                onChange={(op: SingleValue<SelectOption>) => {
-                  if (op) {
-                    setSort(op.value);
-                    setProjects(undefined);
-                  }
-                }}
-              />
-            </div>
-          )}
+          {/* {!isProduction() && ( */}
+          <div className={s.dropDownWrapper}>
+            <Select
+              isSearchable={false}
+              isClearable={false}
+              defaultValue={selectedOption}
+              options={SORT_OPTIONS}
+              className={'select-input'}
+              classNamePrefix="select"
+              onChange={(op: SingleValue<SelectOption>) => {
+                if (op) {
+                  setSort(op.value);
+                  setProjects(undefined);
+                }
+              }}
+            />
+          </div>
+          {/* )} */}
           <ButtonIcon
             onClick={() => router.push(ROUTE_PATH.CREATE_BTC_PROJECT)}
             variants={'primary'}
