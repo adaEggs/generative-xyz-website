@@ -70,21 +70,21 @@ const generateBitcoinOrdKey = async ({
       pubkey: keyPair.publicKey,
     });
   const messagePrefix = networkSegwit?.messagePrefix;
-
-  // console.log('sendAddressSegwit: ', sendAddressSegwit);
-  // console.log('messagePrefix: ', messagePrefix);
-  //
-  // console.log(
-  //   'verify?',
-  //   bitcoinMessage.verify(
+  // console.log('signer: ', {
+  //   messageSegwit,
+  //   sendAddressSegwit,
+  //   messagePrefix,
+  //   signatureSegwit,
+  //   signatureSegwitBase64: signatureSegwit.toString('base64'),
+  //   hash: bitcoinMessage.magicHash(sendAddressSegwit as string, messagePrefix),
+  //   verify: bitcoinMessage.verify(
   //     messageSegwit,
   //     sendAddressSegwit as string,
   //     signatureSegwit,
   //     messagePrefix,
   //     true
-  //   )
-  // );
-
+  //   ),
+  // });
   return {
     taproot: {
       privateKey: privateKeyTaproot,
