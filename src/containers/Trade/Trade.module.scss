@@ -1,13 +1,11 @@
 .trade {
   overflow: hidden;
   padding: {
-
     bottom: rem(60px);
   }
 
   @include mobile {
     padding: {
-      top: rem(40px);
       bottom: rem(64px);
     }
   }
