@@ -1,5 +1,4 @@
 import { RecentWorks } from '@containers/Marketplace/RecentWorks';
-import { Container } from 'react-bootstrap';
 
 import s from './Marketplace.module.scss';
 
@@ -26,9 +25,7 @@ const Marketplace = () => {
   return (
     <>
       <div className={s.marketplaceContainer_recentWorks}>
-        <Container>
-          <RecentWorks />
-        </Container>
+        <RecentWorks />
       </div>
     </>
   );
