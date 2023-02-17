@@ -12,6 +12,15 @@
     }
   }
 
+  &_banner {
+    padding: rem(64px) rem(60);
+    text-align: center;
+    // background:
+    //   url("https://cdn.generative.xyz/images/collection-banner.png")
+    //   no-repeat center;
+    // background-size: cover;
+  }
+
   &_heading {
     justify-content: space-between;
     align-items: center;
@@ -35,10 +44,6 @@
     overflow-x: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
-
-    @include w-max(768px) {
-      order: 1;
-    }
 
     &::-webkit-scrollbar {
       display: none;

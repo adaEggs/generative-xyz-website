@@ -23,6 +23,7 @@ import Row from 'react-bootstrap/Row';
 import Select, { SingleValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
+import { Container } from 'react-bootstrap';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -151,81 +152,85 @@ export const RecentWorks = (): JSX.Element => {
 
   return (
     <div className={s.recentWorks}>
-      <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
-        NFTs on Bitcoin. Be the first to collect.
-      </Heading>
-      <Row className={s.recentWorks_heading}>
-        <Col
-          className={cs(s.recentWorks_heading_col, s.category_list)}
-          md={'auto'}
-          xs={'12'}
+      <div className={s.recentWorks_banner}>
+        <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
+          Be the first artists to release art on Bitcoin
+        </Heading>
+        <ButtonIcon
+          onClick={() => router.push(ROUTE_PATH.CREATE_BTC_PROJECT)}
+          variants={'primary'}
+          sizes={'medium'}
         >
-          <CategoryTab
-            type="3"
-            text="All"
-            onClick={() => handleClickCategory('')}
-            active={filterCategory === ''}
-            loading={categoriesLoading}
-          />
-          {categoriesList &&
-            categoriesList?.map(category => (
-              <CategoryTab
-                type="3"
-                text={category.name}
-                key={`category-${category.id}`}
-                onClick={() => handleClickCategory(category.id)}
-                active={filterCategory === category.id}
-                loading={categoriesLoading}
-              />
-            ))}
-        </Col>
-        <Col
-          className={cs(s.recentWorks_heading_col, s.sort_dropdown)}
-          md={'auto'}
-          xs={'12'}
-        >
-          {/* {!isProduction() && ( */}
-          <div className={s.dropDownWrapper}>
-            <Select
-              isSearchable={false}
-              isClearable={false}
-              defaultValue={selectedOption}
-              options={SORT_OPTIONS}
-              className={'select-input'}
-              classNamePrefix="select"
-              onChange={(op: SingleValue<SelectOption>) => {
-                if (op) {
-                  setSort(op.value);
-                  setProjects(undefined);
-                }
-              }}
-            />
-          </div>
-          {/* )} */}
-          <ButtonIcon
-            onClick={() => router.push(ROUTE_PATH.CREATE_BTC_PROJECT)}
-            variants={'primary'}
-            sizes={'medium'}
+          Get started free
+        </ButtonIcon>
+      </div>
+      <Container>
+        <Row className={s.recentWorks_heading}>
+          <Col
+            className={cs(s.recentWorks_heading_col, s.category_list)}
+            md={'auto'}
+            xs={'12'}
           >
-            Launch your art
-          </ButtonIcon>
-        </Col>
-      </Row>
-      <Row className={s.recentWorks_projects}>
-        {/* <Loading isLoaded={isLoaded} /> */}
-        {!isLoaded && <ProjectListLoading numOfItems={12} />}
-        {isLoaded && (
-          <div className={s.recentWorks_projects_list}>
-            <ProjectList listData={listData} />
-            <TriggerLoad
-              len={listData.length || 0}
-              total={currentTotal || 0}
-              isLoaded={isLoadedMore}
-              onEnter={onLoadMore}
+            <CategoryTab
+              type="3"
+              text="All"
+              onClick={() => handleClickCategory('')}
+              active={filterCategory === ''}
+              loading={categoriesLoading}
             />
-          </div>
-        )}
-      </Row>
+            {categoriesList &&
+              categoriesList?.map(category => (
+                <CategoryTab
+                  type="3"
+                  text={category.name}
+                  key={`category-${category.id}`}
+                  onClick={() => handleClickCategory(category.id)}
+                  active={filterCategory === category.id}
+                  loading={categoriesLoading}
+                />
+              ))}
+          </Col>
+          <Col
+            className={cs(s.recentWorks_heading_col, s.sort_dropdown)}
+            md={'auto'}
+            xs={'12'}
+          >
+            {/* {!isProduction() && ( */}
+            <div className={s.dropDownWrapper}>
+              <Select
+                isSearchable={false}
+                isClearable={false}
+                defaultValue={selectedOption}
+                options={SORT_OPTIONS}
+                className={'select-input'}
+                classNamePrefix="select"
+                onChange={(op: SingleValue<SelectOption>) => {
+                  if (op) {
+                    setSort(op.value);
+                    setProjects(undefined);
+                  }
+                }}
+              />
+            </div>
+            {/* )} */}
+          </Col>
+        </Row>
+        <Row className={s.recentWorks_projects}>
+          {/* <Loading isLoaded={isLoaded} /> */}
+          {!isLoaded && <ProjectListLoading numOfItems={12} />}
+          {isLoaded && (
+            <div className={s.recentWorks_projects_list}>
+              <ProjectList listData={listData} />
+              <TriggerLoad
+                len={listData.length || 0}
+                total={currentTotal || 0}
+                isLoaded={isLoadedMore}
+                onEnter={onLoadMore}
+              />
+            </div>
+          )}
+        </Row>
+      </Container>
     </div>
   );
 };
