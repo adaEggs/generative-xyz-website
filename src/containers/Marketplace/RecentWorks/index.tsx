@@ -26,16 +26,16 @@ import s from './RecentWorks.module.scss';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
-    value: 'priority-desc',
-    label: 'Default',
-  },
-  {
     value: 'trending-score',
     label: 'Trending',
   },
   {
     value: 'newest',
     label: 'Latest',
+  },
+  {
+    value: 'oldest',
+    label: 'Oldest',
   },
 ];
 
