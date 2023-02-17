@@ -1,11 +1,6 @@
 .recentWorks {
   &_projects {
-    margin-top: rem(30px);
     position: relative;
-
-    @include mobile {
-      margin-top: rem(24px);
-    }
 
     &_list {
       overflow: unset !important;
@@ -16,7 +11,7 @@
       position: relative;
       height: 80px;
       width: 100%;
-      margin-top: rem(20px);
+      margin-top: rem(50px);
     }
   }
 
@@ -59,6 +54,11 @@
 
     &_btn {
       margin-top: rem(24);
+    }
+
+    @include mobile {
+      padding: rem(20);
+      text-align: center;
     }
   }
 }
