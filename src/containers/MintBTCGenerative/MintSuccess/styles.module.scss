@@ -1,10 +1,10 @@
 .mintSuccess {
-  padding-top: 28px;
+  padding-top: rem(28px);
 
   .title {
     font-weight: 600;
-    font-size: 48px;
-    line-height: 58px;
+    font-size: rem(48px);
+    line-height: rem(58px);
     color: $black-100;
     margin-bottom: rem(24);
 
