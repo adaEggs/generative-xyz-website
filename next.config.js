@@ -106,5 +106,11 @@ module.exports = removeImports(
         }
       ];
     },
+    rewrites: async () => [
+      {
+        source: "/sandbox/:path*",
+        destination: "/sandbox/preview.html",
+      },
+    ],
   })
 );

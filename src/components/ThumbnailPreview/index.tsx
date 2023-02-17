@@ -86,8 +86,6 @@ const ThumbnailPreview = (props: Props) => {
 
   const openPreview = useMemo(() => !!previewSrc, [previewSrc]);
 
-  // const showOnlyImage = isBitcoinProject && router.query.tokenID;
-
   useEffect(() => {
     if (animationUrl) {
       setDisplayMode(PreviewDisplayMode.ANIMATION);

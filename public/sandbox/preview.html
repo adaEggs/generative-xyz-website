@@ -3,7 +3,15 @@
 
 <body>
   <script>
-    const ID = new URLSearchParams(window.location.search).get('id')
+    let ID = new URLSearchParams(window.location.search).get('id')
+    if (!ID) {
+      const pathnames = window.location.href.split('/');
+      const index = pathnames.length - 2;
+      const newID = pathnames[index];
+      if (newID) {
+        ID = newID;
+      }
+    }
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
