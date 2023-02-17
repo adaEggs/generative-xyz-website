@@ -12,7 +12,7 @@ const ModelViewer = dynamic(() => import('@components/ModelViewer'), {
 const GLTFPreviewPage: NextPage = () => {
   const {
     isReady,
-    query: { url, defaultUrl, viewOnly },
+    query: { url, defaultUrl, viewOnly, whiteHouse },
   } = useRouter();
 
   const modelUrl = useMemo(() => {
@@ -43,7 +43,10 @@ const GLTFPreviewPage: NextPage = () => {
 
     return (
       <ClientOnly>
-        <GLTFPreview url={modelUrl as string} />
+        <GLTFPreview
+          whiteHouse={whiteHouse === 'true'}
+          url={modelUrl as string}
+        />
       </ClientOnly>
     );
   }
