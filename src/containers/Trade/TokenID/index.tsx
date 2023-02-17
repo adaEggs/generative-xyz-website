@@ -9,10 +9,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import MarkdownPreview from '@components/MarkdownPreview';
 import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import useWindowSize from '@hooks/useWindowSize';
-import {
-  getMarketplaceBtcNFTDetail,
-  IGetMarketplaceBtcNFTDetail,
-} from '@services/marketplace-btc';
+import { getMarketplaceBtcNFTDetail } from '@services/marketplace-btc';
 import BigNumber from 'bignumber.js';
 import BuyTokenModal from '@containers/Trade/BuyTokenModal';
 import log from '@utils/logger';
@@ -23,6 +20,7 @@ import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
 import { ROUTE_PATH } from '@constants/route-path';
 import { getOrdinalImgURL } from '@utils/inscribe';
 import NFTDisplayBox from '@components/NFTDisplayBox';
+import { IGetMarketplaceBtcNFTDetail } from '@interfaces/api/marketplace-btc';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 

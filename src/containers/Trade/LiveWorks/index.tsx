@@ -8,10 +8,7 @@ import { ProjectList } from '@containers/Trade/ProjectLists';
 import ButtonIcon from '@components/ButtonIcon';
 import { Loading } from '@components/Loading';
 import { ROUTE_PATH } from '@constants/route-path';
-import {
-  getListingOrdinals,
-  IGetMarketplaceBtcListItem,
-} from '@services/marketplace-btc';
+import { getListingOrdinals } from '@services/marketplace-btc';
 import debounce from 'lodash/debounce';
 import uniqBy from 'lodash/uniqBy';
 import { useRouter } from 'next/router';
@@ -19,6 +16,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import s from './LiveWorks.module.scss';
+import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
 
 export const LiveWorks = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);

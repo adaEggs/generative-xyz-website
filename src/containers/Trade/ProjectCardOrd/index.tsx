@@ -6,10 +6,10 @@ import { ROUTE_PATH } from '@constants/route-path';
 import cs from 'classnames';
 import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
-import { IGetMarketplaceBtcListItem } from '@services/marketplace-btc';
 import React from 'react';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 import { formatBTCPrice } from '@utils/format';
+import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
 
 interface IPros {
   project: IGetMarketplaceBtcListItem;
@@ -43,7 +43,7 @@ export const ProjectCardOrd = ({
                 <Text size="14" fontWeight="semibold">
                   #{project.inscriptionNumber}
                 </Text>
-                {(project?.price || 0) > 0 && (
+                {(Number(project?.price) || 0) > 0 && (
                   <Text size="12" fontWeight="semibold">
                     {formatBTCPrice(project.price || 0)}&nbsp;BTC
                   </Text>
@@ -56,7 +56,7 @@ export const ProjectCardOrd = ({
                 <Heading as={'h4'}>
                   <span title={project.name}>#{project.inscriptionNumber}</span>
                 </Heading>
-                {(project?.price || 0) > 0 && (
+                {(Number(project?.price) || 0) > 0 && (
                   <Heading as={'h4'} className={s.projectCard_info_price}>
                     {formatBTCPrice(project.price || 0)}&nbsp;BTC
                   </Heading>
