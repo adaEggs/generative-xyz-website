@@ -59,12 +59,12 @@ export const RecentWorks = (): JSX.Element => {
   return (
     <div className={s.recentWorks}>
       <div className={s.banner}>
-        <Heading as="h4" fontWeight="semibold" color="white">
+        <Heading as="h4" fontWeight="semibold" color="black">
           The easiest way to buy and sell Bitcoin NFTs
         </Heading>
         <ButtonIcon
           sizes="large"
-          variants="secondary"
+          variants="primary"
           className={s.banner_btn}
           onClick={() => setShowModal(true)}
         >

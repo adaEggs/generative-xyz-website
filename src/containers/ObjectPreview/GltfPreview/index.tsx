@@ -5,16 +5,17 @@ import styles from './styles.module.scss';
 
 interface IProps {
   url: string;
+  whiteHouse?: boolean;
 }
 
-const GLTFPreview: React.FC<IProps> = ({ url }) => {
+const GLTFPreview: React.FC<IProps> = ({ url, whiteHouse = false }) => {
   const [id] = useState(v4());
   const [isLoading, setIsLoading] = useState(true);
   const gltfPreviewAppRef = useRef<GltfPreviewApplication>();
 
   useEffect(() => {
     if (!gltfPreviewAppRef.current) {
-      gltfPreviewAppRef.current = new GltfPreviewApplication(id);
+      gltfPreviewAppRef.current = new GltfPreviewApplication(id, whiteHouse);
     }
   }, [id]);
 
