@@ -14,7 +14,7 @@ const GLTFPreviewPage: NextPage = () => {
       return url;
     }
     if (defaultUrl === 'true') {
-      return '/models/Tesseract-Sweet-Candy.glb';
+      return '/models/default-sweet-candy.glb';
     }
   }, [url, defaultUrl]);
 
