@@ -1,14 +1,14 @@
 .generativeLogo {
-  width: rem(54px);
-  height: rem(54px);
+  width: rem(44px);
+  height: rem(44px);
   position: relative;
   z-index: 2;
 
   @include min-tablet {
-    width: rem(64px);
-    height: rem(64px);
-    max-width: 64px;
-    max-height: 64px;
+    width: rem(60px);
+    height: rem(60px);
+    max-width: 60px;
+    max-height: 60px;
   }
 }
 
