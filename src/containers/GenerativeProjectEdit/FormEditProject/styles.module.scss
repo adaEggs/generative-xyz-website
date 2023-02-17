@@ -303,3 +303,14 @@
   justify-content: flex-start;
   gap: rem(5px);
 }
+
+.actionWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: rem(32px);
+
+  .nextBtn {
+    width: 200px;
+    justify-content: center;
+  }
+}

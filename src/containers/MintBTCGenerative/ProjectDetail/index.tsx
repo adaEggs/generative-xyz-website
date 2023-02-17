@@ -155,6 +155,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                     options={categoryOptions}
                     className={s.selectInput}
                     classNamePrefix="select"
+                    isOptionDisabled={() => values.categories.length >= 3}
                     onChange={(ops: MultiValue<SelectOption>) => {
                       setFieldValue('categories', ops);
                     }}

@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import { IUpdateProjectPayload } from '@interfaces/api/project';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { updateProject } from '@services/project';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import ImagePreviewInput from '@components/ImagePreviewInput';
@@ -150,14 +150,24 @@ const FormEditProject = () => {
     }
   };
 
-  const valuesCategories = useMemo((): Array<SelectOption> => {
-    if (!project?.categories) return [];
-    const categories: Array<SelectOption> = project?.categories.map(cat => {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      return categoryOptions.find(op => cat === op.value)!;
-    });
-    return categories;
-  }, [categoryOptions, project]);
+  const valuesCategories = useCallback(
+    (inputVal: Array<SelectOption> | null): Array<SelectOption> => {
+      const mixDataInput: string[] = inputVal ? [] : project?.categories || [];
+      if (inputVal !== null) {
+        for (let i = 0; i < inputVal.slice(0, 3)?.length; i++) {
+          inputVal[i] && mixDataInput.push(inputVal[i].value);
+        }
+      }
+
+      const categories: Array<SelectOption> = mixDataInput.map(cat => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return categoryOptions.find(op => cat === op.value)!;
+      });
+
+      return categories;
+    },
+    [categoryOptions, project]
+  );
 
   useAsyncEffect(async () => {
     const { result } = await getCategoryList();
@@ -179,7 +189,7 @@ const FormEditProject = () => {
         mintPrice: formatBTCPrice(project?.mintPrice || '0'),
         maxSupply: project?.maxSupply || 0,
         isHidden: !(project?.isHidden || false),
-        categories: valuesCategories,
+        categories: valuesCategories(null),
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -251,7 +261,9 @@ const FormEditProject = () => {
                       onChange={(ops: MultiValue<SelectOption>) => {
                         setFieldValue('categories', ops);
                       }}
+                      isOptionDisabled={() => values.categories.length >= 3}
                       onBlur={handleBlur}
+                      value={valuesCategories(values.categories)}
                       placeholder="Select categories"
                     />
                   </div>
