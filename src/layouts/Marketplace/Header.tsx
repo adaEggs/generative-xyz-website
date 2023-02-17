@@ -241,6 +241,19 @@ const Header: React.FC<IProp> = ({
                       {MENU_HEADER[2].name}
                     </Link>
                   </li>
+
+
+                  <li
+                    className={cs(
+                      activePath === MENU_HEADER[5].activePath && styles.active
+                    )}
+                    key={`header-${MENU_HEADER[5].id}`}
+                  >
+                    <Link href={getUrlWithQueryParams(MENU_HEADER[5].route)}>
+                      {MENU_HEADER[5].name}
+                    </Link>
+                  </li>
+
                   {/*<li*/}
                   {/*  className={cs(*/}
                   {/*    activePath === MENU_HEADER[4].activePath && styles.active*/}
