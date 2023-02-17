@@ -1,7 +1,9 @@
 import { isProduction, isStaging } from '@utils/common';
 
 export const ROUTE_PATH = {
-  HOME: isStaging() ? 'https://generative.xyz' : '/',
+  HOME: isProduction()
+    ? 'https://generative.xyz'
+    : 'https://devnet.generative.xyz',
   COLLECTIONS: '/collections',
   CREATE_PROJECT: isProduction()
     ? 'https://testnet.generative.xyz/mint-generative/upload-project'
@@ -26,4 +28,11 @@ export const ROUTE_PATH = {
   NOT_FOUND: '/404',
   INSCRIBE: '/inscribe',
   CREATE_BTC_PROJECT: '/create',
+  GLTF_PREVIEW: '/gltf-preview',
+  OBJECT_PREVIEW: '/object-preview',
 };
+
+export const STANDALONE_PAGES = [
+  ROUTE_PATH.GLTF_PREVIEW,
+  ROUTE_PATH.OBJECT_PREVIEW,
+];

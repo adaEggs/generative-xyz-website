@@ -125,12 +125,12 @@ const ListForSaleModal = ({
               {(step === 'pasteAddress' || step === 'showAddress') && (
                 <>
                   <h3 className={s.modalTitle}>Buy inscription</h3>
-                  <div className={s.alert_info}>
-                    Do not spend any satoshis from this wallet unless you
-                    understand what you are doing. If you ignore this warning,
-                    you could inadvertently lose access to your ordinals and
-                    inscriptions.
-                  </div>
+                  {/*<div className={s.alert_info}>*/}
+                  {/*  Do not spend any satoshis from this wallet unless you*/}
+                  {/*  understand what you are doing. If you ignore this warning,*/}
+                  {/*  you could inadvertently lose access to your ordinals and*/}
+                  {/*  inscriptions.*/}
+                  {/*</div>*/}
                   <div className={s.formWrapper}>
                     <div className={s.formWrapper}>
                       <Formik
@@ -153,9 +153,15 @@ const ListForSaleModal = ({
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
                                 Enter the Ordinals-compatible BTC address to
-                                receive your buying inscription.
-                                <sup className={s.requiredTag}>*</sup>
-                                {/*<OverlayTrigger*/}
+                                receive your buying inscription. Don’t have one?{' '}
+                                <a
+                                  href="https://gist.github.com/windsok/5b53a1ced6ef3eddbde260337de28980"
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  Start here
+                                </a>
+                                .{/*<OverlayTrigger*/}
                                 {/*  placement="bottom"*/}
                                 {/*  delay={{ show: 250, hide: 400 }}*/}
                                 {/*  overlay={*/}

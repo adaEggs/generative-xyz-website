@@ -116,7 +116,7 @@ class APICaller {
 
     eventPayload.data = {
       ...eventData,
-      eventParams,
+      event_params: eventParams,
     };
 
     if (this.debugMode) {

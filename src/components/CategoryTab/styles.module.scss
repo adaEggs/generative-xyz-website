@@ -48,7 +48,7 @@
   &.default-3 {
     padding: rem(7) rem(14);
     border: 1px solid $black-10;
-    border-radius: rem(8);
+    // border-radius: rem(8);
     // transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
 
     &.active,
@@ -57,8 +57,4 @@
       background-color: $black-100;
     }
   }
-}
-
-.CategoryTab_sk {
-  border-radius: 8px;
 }

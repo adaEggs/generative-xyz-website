@@ -272,8 +272,8 @@ const ProjectIntroSection = ({
           {isCreated && (
             <div className={s.projectHeader_btn}>
               <ButtonIcon
-                sizes="medium"
-                variants={'ghost'}
+                sizes="xsmall"
+                variants={'outline'}
                 startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}
                 onClick={() =>
                   router.push(

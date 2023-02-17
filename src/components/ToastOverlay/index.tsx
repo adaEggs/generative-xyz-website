@@ -21,7 +21,7 @@ const ToastOverlay = () => {
             padding: '0',
             border: '1px solid #00AA6C',
             color: '#00AA6C',
-            background: 'rgba(186, 237, 189, 0.3)',
+            background: '#FFFFFF',
           },
           icon: (
             <Image
@@ -37,7 +37,7 @@ const ToastOverlay = () => {
           style: {
             border: '1px solid #FF4747',
             color: '#FF4747',
-            background: 'rgba(255, 71, 71, 0.06)',
+            background: '#FFFFFF',
             justifyContent: 'center',
           },
           icon: (
@@ -55,13 +55,12 @@ const ToastOverlay = () => {
           ),
         },
         style: {
-          padding: '6px 35px',
+          padding: '10px 32px',
           boxShadow: '8px 7px 24px rgba(0, 0, 0, 0.15)',
           borderRadius: '2px',
           minWidth: '500px',
           width: '100%',
           justifyContent: 'center',
-          backdropFilter: 'blur(10px)',
         },
       }}
     />

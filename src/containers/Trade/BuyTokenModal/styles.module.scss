@@ -99,6 +99,16 @@
     text-transform: uppercase;
   }
 
+  .subLabel {
+    font-weight: 500;
+    font-size: rem(12px);
+    line-height: rem(16px);
+    color: $black-40;
+    display: block;
+    margin-bottom: 6px;
+    margin-top: 4px;
+  }
+
   .inputContainer {
     position: relative;
 
