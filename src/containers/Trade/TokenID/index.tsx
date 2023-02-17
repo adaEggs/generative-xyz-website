@@ -16,9 +16,7 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
 import { ROUTE_PATH } from '@constants/route-path';
-import { getOrdinalImgURL } from '@utils/inscribe';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 import { IGetMarketplaceBtcNFTDetail } from '@interfaces/api/marketplace-btc';
 
@@ -88,12 +86,6 @@ const TokenID: React.FC = (): React.ReactElement => {
         >
           {formatBTCPrice(new BigNumber(tokenData?.price || 0).toNumber())} BTC
         </Text>
-        {mobileScreen && tokenData?.name && (
-          <TokenIDImage
-            image={getOrdinalImgURL(tokenData.inscriptionID)}
-            name={tokenData?.name || ''}
-          />
-        )}
         {!tokenData.buyable && !tokenData.isCompleted && (
           <Text size={'14'} className={s.info_statusIns}>
             The inscription is being purchased. ETA is in ~30 minutes.
@@ -117,6 +109,17 @@ const TokenID: React.FC = (): React.ReactElement => {
             {tokenData.buyable ? 'Buy Now' : 'Buy others'}
           </Text>
         </ButtonIcon>
+        {mobileScreen && (
+          <NFTDisplayBox
+            inscriptionID={tokenData.inscriptionID}
+            type={tokenData.contentType}
+            className={s.img_mobile}
+            controls={true}
+            autoPlay={true}
+            loop={true}
+            variants={'full'}
+          />
+        )}
         <div className={s.info_project_desc}>
           <Text
             size="14"
