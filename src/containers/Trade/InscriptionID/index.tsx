@@ -8,10 +8,7 @@ import { Container } from 'react-bootstrap';
 import MarkdownPreview from '@components/MarkdownPreview';
 import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import useWindowSize from '@hooks/useWindowSize';
-import {
-  getInscriptionDetail,
-  IGetMarketplaceBtcListItem,
-} from '@services/marketplace-btc';
+import { getInscriptionDetail } from '@services/marketplace-btc';
 import BigNumber from 'bignumber.js';
 import BuyTokenModal from '@containers/Trade/BuyTokenModal';
 import log from '@utils/logger';
@@ -19,6 +16,7 @@ import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import NFTDisplayBox from '@components/NFTDisplayBox';
+import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 

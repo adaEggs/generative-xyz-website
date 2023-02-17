@@ -13,8 +13,6 @@ import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import {
   getListingFee,
-  IListingFee,
-  IPostMarketplaceBtcListNFTParams,
   postMarketplaceBtcListNFT,
 } from '@services/marketplace-btc';
 import Text from '@components/Text';
@@ -23,6 +21,10 @@ import ButtonIcon from '@components/ButtonIcon';
 import { formatUnixDateTime } from '@utils/time';
 import { debounce } from 'lodash';
 import cs from 'classnames';
+import {
+  IListingFee,
+  IPostMarketplaceBtcListNFTParams,
+} from '@interfaces/api/marketplace-btc';
 
 // const FEE_CHARGE_PERCENT = 0.1;
 const MIN_PRICE = 0.005;

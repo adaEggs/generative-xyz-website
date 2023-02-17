@@ -11,7 +11,6 @@ import { ROUTE_PATH } from '@constants/route-path';
 import {
   getListingOrdinals,
   getMarketplaceBtcList,
-  IGetMarketplaceBtcListItem,
 } from '@services/marketplace-btc';
 import debounce from 'lodash/debounce';
 import uniqBy from 'lodash/uniqBy';
@@ -21,6 +20,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import s from './RecentWorks.module.scss';
+import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
 
 const LIMIT = 20;
 

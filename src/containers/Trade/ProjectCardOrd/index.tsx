@@ -6,10 +6,10 @@ import { ROUTE_PATH } from '@constants/route-path';
 import cs from 'classnames';
 import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
-import { IGetMarketplaceBtcListItem } from '@services/marketplace-btc';
 import React from 'react';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 import { formatBTCPrice } from '@utils/format';
+import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
 
 interface IPros {
   project: IGetMarketplaceBtcListItem;
