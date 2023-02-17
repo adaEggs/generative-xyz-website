@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import s from './styles.module.scss';
+import { ROUTE_PATH } from '@constants/route-path';
 
 type Props = {
   data: Token | null;
@@ -47,6 +48,10 @@ const ThumbnailPreview = (props: Props) => {
   const rawHtmlFile = base64ToUtf8(
     animationUrl.replace('data:text/html;base64,', '')
   );
+
+  const thumbnailExt = useMemo(() => {
+    return thumbnailPreviewUrl?.split('.').pop();
+  }, [thumbnailPreviewUrl]);
 
   const handleIframeLoaded = (): void => {
     if (sandboxRef.current) {
@@ -86,8 +91,6 @@ const ThumbnailPreview = (props: Props) => {
 
   const openPreview = useMemo(() => !!previewSrc, [previewSrc]);
 
-  // const showOnlyImage = isBitcoinProject && router.query.tokenID;
-
   useEffect(() => {
     if (animationUrl) {
       setDisplayMode(PreviewDisplayMode.ANIMATION);
@@ -102,6 +105,32 @@ const ThumbnailPreview = (props: Props) => {
       setIsVideo(checkMP4);
     }
   }, [data?.image]);
+
+  const renderThumbnailByExt = () => {
+    if (thumbnailPreviewUrl) {
+      if (thumbnailExt && thumbnailExt === 'glb' && data) {
+        return (
+          <ClientOnly>
+            <div className={s.objectPreview}>
+              <iframe
+                className={s.iframeContainer}
+                src={`${ROUTE_PATH.OBJECT_PREVIEW}/${data.tokenID}`}
+                style={{ overflow: 'hidden' }}
+              />
+            </div>
+          </ClientOnly>
+        );
+      }
+      return (
+        <Image
+          fill
+          src={convertIpfsToHttp(thumbnailPreviewUrl)}
+          alt="thumbnail"
+        ></Image>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className={s.ThumbnailPreview}>
@@ -131,11 +160,7 @@ const ThumbnailPreview = (props: Props) => {
                         <source src={thumbnailPreviewUrl} type="video/mp4" />
                       </video>
                     ) : (
-                      <Image
-                        fill
-                        src={convertIpfsToHttp(thumbnailPreviewUrl)}
-                        alt="thumbnail"
-                      ></Image>
+                      renderThumbnailByExt()
                     )}
                   </div>
                 )}
