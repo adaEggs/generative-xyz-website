@@ -17,7 +17,7 @@ export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: 'Generative | Collections',
+        title: 'Generative',
         description: 'Unique artwork at your fingertips to mint and buy',
         image: `${CDN_URL}/images/collection.jpg`,
       },
