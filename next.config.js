@@ -31,7 +31,7 @@ module.exports = removeImports(
           headers: [
             {
               key: 'Content-Security-Policy',
-              value: `frame-ancestors 'self' https://ordinals.com https://ordinals-explorer-v5-dev.generative.xyz; frame-src 'self' https://ordinals.com https://ordinals-explorer-v5-dev.generative.xyz;`,
+              value: `frame-ancestors 'self' https://ordinals.com https://ordinals-explorer-v5-dev.generative.xyz https://cdn.generative.xyz; frame-src 'self' https://ordinals.com https://ordinals-explorer-v5-dev.generative.xyz https://cdn.generative.xyz;`,
             },
             ...baseSecurityHeaders,
           ],
@@ -106,5 +106,11 @@ module.exports = removeImports(
         }
       ];
     },
+    rewrites: async () => [
+      {
+        source: "/sandbox/:path*",
+        destination: "/sandbox/preview.html",
+      },
+    ],
   })
 );

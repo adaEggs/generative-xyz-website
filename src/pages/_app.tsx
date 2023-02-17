@@ -1,5 +1,6 @@
 import ToastOverlay from '@components/ToastOverlay';
 import AuthWrapper from '@components/Utils/AuthWrapper';
+import { STANDALONE_PAGES } from '@constants/route-path';
 import {
   SEO_DESCRIPTION,
   SEO_IMAGE,
@@ -32,6 +33,7 @@ export default function App({ Component, pageProps }: MyAppProps) {
   const { seoInfo = {} } = pageProps;
   const { title, description, image } = seoInfo;
   const isFirstRender = useRef(true);
+  const { pathname } = useRouter();
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -54,6 +56,22 @@ export default function App({ Component, pageProps }: MyAppProps) {
     }
     isFirstRender.current = false;
   }, [router.asPath]);
+
+  const renderBody = () => {
+    if (STANDALONE_PAGES.includes(pathname)) {
+      return <Component {...pageProps} />;
+    }
+    return (
+      <Provider store={store}>
+        <WalletProvider>
+          <AuthWrapper>
+            <Component {...pageProps} />
+            <ToastOverlay />
+          </AuthWrapper>
+        </WalletProvider>
+      </Provider>
+    );
+  };
 
   return (
     <>
@@ -166,14 +184,7 @@ export default function App({ Component, pageProps }: MyAppProps) {
       </Head>
 
       <NextNprogress />
-      <Provider store={store}>
-        <WalletProvider>
-          <AuthWrapper>
-            <Component {...pageProps} />
-            <ToastOverlay />
-          </AuthWrapper>
-        </WalletProvider>
-      </Provider>
+      {renderBody()}
     </>
   );
 }

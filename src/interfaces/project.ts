@@ -51,6 +51,7 @@ export type Project = {
   networkFee?: string;
   networkFeeEth?: string;
   totalImages?: number;
+  categories?: string[];
 };
 
 export type BTCProject = Project & {

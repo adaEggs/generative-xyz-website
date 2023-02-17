@@ -98,14 +98,16 @@ const InscriptionID: React.FC = (): React.ReactElement => {
         )}
 
         {mobileScreen && (
-          <NFTDisplayBox
-            inscriptionID={tokenData?.inscriptionID}
-            type={tokenData?.contentType}
-            autoPlay={true}
-            controls={true}
-            loop={true}
-            variants="full"
-          />
+          <>
+            <NFTDisplayBox
+              inscriptionID={tokenData?.inscriptionID}
+              type={tokenData?.contentType}
+              autoPlay={true}
+              controls={true}
+              loop={true}
+              variants="absolute"
+            />
+          </>
         )}
         <div className={s.info_project_desc}>
           {tokenData.buyable && (

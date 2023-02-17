@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import {
   GenerativeProjectDetailContext,
   GenerativeProjectDetailProvider,
@@ -6,17 +6,36 @@ import {
 import FormEditProject from '@containers/GenerativeProjectEdit/FormEditProject';
 import s from './styles.module.scss';
 import { Container } from 'react-bootstrap';
+import Heading from '@components/Heading';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import { useRouter } from 'next/router';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const GenerativeProjectEdit = (): JSX.Element => {
+  const user = useAppSelector(getUserSelector);
+  const router = useRouter();
   const { projectData } = useContext(GenerativeProjectDetailContext);
+
+  useEffect(() => {
+    if (!user || !projectData) return;
+    if (user?.walletAddress !== projectData?.creatorAddr) {
+      router.push(ROUTE_PATH.COLLECTIONS);
+    }
+  }, [user, projectData]);
 
   const renderLeftContent = () => {
     return (
       <div className={s.info}>
+        <Heading as={'h3'} className={s.info_heading}>
+          Edit project: {projectData?.name}
+        </Heading>
         <FormEditProject />
       </div>
     );
   };
+
+  if (!user || !projectData) return <></>;
 
   return (
     <Container>
