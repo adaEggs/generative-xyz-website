@@ -3,10 +3,16 @@ import ClientOnly from '@components/Utils/ClientOnly';
 import GLTFPreview from '@containers/ObjectPreview/GltfPreview';
 import { useRouter } from 'next/router';
 import { useMemo } from 'react';
+import dynamic from 'next/dynamic';
+
+const ModelViewer = dynamic(() => import('@components/ModelViewer'), {
+  ssr: false,
+});
 
 const GLTFPreviewPage: NextPage = () => {
   const {
-    query: { url, defaultUrl },
+    isReady,
+    query: { url, defaultUrl, viewOnly },
   } = useRouter();
 
   const modelUrl = useMemo(() => {
@@ -14,15 +20,34 @@ const GLTFPreviewPage: NextPage = () => {
       return url;
     }
     if (defaultUrl === 'true') {
-      return '/models/Tesseract-Sweet-Candy.glb';
+      return '/models/default-sweet-candy.glb';
     }
   }, [url, defaultUrl]);
 
-  return (
-    <ClientOnly>
-      <GLTFPreview url={modelUrl as string} />
-    </ClientOnly>
-  );
+  if (isReady) {
+    if (viewOnly === 'true') {
+      return (
+        <ClientOnly>
+          <ModelViewer
+            style={{
+              width: '100vw',
+              height: '100vh',
+            }}
+            src={modelUrl as string}
+            shadow-intensity="1"
+            camera-controls
+          />
+        </ClientOnly>
+      );
+    }
+
+    return (
+      <ClientOnly>
+        <GLTFPreview url={modelUrl as string} />
+      </ClientOnly>
+    );
+  }
+  return <></>;
 };
 
 export default GLTFPreviewPage;

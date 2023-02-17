@@ -126,12 +126,7 @@ const ThumbnailPreview = (props: Props) => {
         );
       }
       // TODO: show animation for GLB project
-      if (
-        (process.env.NEXT_PUBLIC_APP_ENV === 'develop' &&
-          projectID === '1000111') ||
-        (process.env.NEXT_PUBLIC_APP_ENV === 'production' &&
-          projectID === '1000192')
-      ) {
+      if (projectID === process.env.NEXT_PUBLIC_GLB_COLLECTION_ID) {
         return (
           <ClientOnly>
             <div className={s.objectPreview}>
