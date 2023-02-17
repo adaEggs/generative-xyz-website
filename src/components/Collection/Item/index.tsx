@@ -21,7 +21,6 @@ import { Stack } from 'react-bootstrap';
 import ButtonIcon from '@components/ButtonIcon';
 import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
 import s from './styles.module.scss';
-import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 
 const CollectionItem = ({
   data,
@@ -36,9 +35,7 @@ const CollectionItem = ({
   );
   const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
-  const { isBitcoinProject, isWhitelistProject } = useContext(
-    GenerativeProjectDetailContext
-  );
+  const { isBitcoinProject } = useContext(GenerativeProjectDetailContext);
   const [showModal, setShowModal] = useState<boolean>(false);
   const isBTCListable =
     (data.buyable || (!data.buyable && !data.isCompleted)) && !!data.priceBTC;
@@ -101,20 +98,17 @@ const CollectionItem = ({
     );
   };
 
-  const tokenUrl = useMemo(() => {
-    if (isWhitelistProject)
-      return `${ROUTE_PATH.GENERATIVE}/${SATOSHIS_PROJECT_ID}/${tokenID}`;
-    return `${ROUTE_PATH.GENERATIVE}/${
-      isBitcoinProject
-        ? data.project.tokenID
-        : getProjectIdFromTokenId(parseInt(tokenID))
-    }/${tokenID}`;
-  }, [isWhitelistProject, tokenID, data.project.tokenID]);
-
   return (
     <div className={`${s.collectionCard} ${className}`}>
       <div className={s.collectionCard_inner_wrapper}>
-        <Link href={tokenUrl} className={s.collectionCard_inner}>
+        <Link
+          href={`${ROUTE_PATH.GENERATIVE}/${
+            isBitcoinProject
+              ? data.project.tokenID
+              : getProjectIdFromTokenId(parseInt(tokenID))
+          }/${tokenID}`}
+          className={s.collectionCard_inner}
+        >
           <div
             className={`${s.collectionCard_thumb} ${
               thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
