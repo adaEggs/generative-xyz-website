@@ -19,6 +19,7 @@ import { SelectOption } from '@interfaces/select-input';
 import useAsyncEffect from 'use-async-effect';
 import { getCategoryList } from '@services/category';
 import Select, { MultiValue } from 'react-select';
+import MarkdownEditor from '@components/MarkdownEditor';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -129,7 +130,7 @@ const FormEditProject = () => {
       royalty: (Number(values.royalty) || project?.royalty || 0) * 100,
       mintPrice: (values.mintPrice || project?.mintPrice || 0).toString(),
       maxSupply: Number(values.maxSupply) || project?.maxSupply || 0,
-      isHidden: isHidden || project?.isHidden || false,
+      isHidden: isHidden,
       categories: categories || project?.categories || [],
     };
 
@@ -269,20 +270,35 @@ const FormEditProject = () => {
                   </div>
 
                   <div className={s.formItem}>
-                    <label className={s.label} htmlFor="tokenDescription">
+                    <label className={s.label} htmlFor="description">
                       Description of your collection{' '}
                       <sup className={s.requiredTag}>*</sup>
                     </label>
-                    <textarea
+
+                    <MarkdownEditor
                       id="description"
-                      name="description"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      className={s.mdEditor}
                       value={values.description}
-                      className={s.input}
-                      rows={4}
-                      placeholder="Tell us more about the meaning and inspiration behind your art."
+                      onBlur={handleBlur}
+                      preview="edit"
+                      visiableDragbar={false}
+                      height={200}
+                      onValueChange={(val: string | undefined) => {
+                        if (typeof val !== undefined)
+                          setFieldValue('description', val);
+                      }}
                     />
+
+                    {/*<textarea*/}
+                    {/*  id="description"*/}
+                    {/*  name="description"*/}
+                    {/*  onChange={handleChange}*/}
+                    {/*  onBlur={handleBlur}*/}
+                    {/*  value={values.description}*/}
+                    {/*  className={s.input}*/}
+                    {/*  rows={4}*/}
+                    {/*  placeholder="Tell us more about the meaning and inspiration behind your art."*/}
+                    {/*/>*/}
                     {errors.description && touched.description && (
                       <p className={s.error}>{errors.description}</p>
                     )}
