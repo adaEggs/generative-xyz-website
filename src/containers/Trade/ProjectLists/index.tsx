@@ -46,7 +46,13 @@ export const ProjectList = ({
           </Masonry>
         </ResponsiveMasonry>
       ) : (
-        listData && <Empty content="Be the first to mint this collection" />
+        listData && (
+          <Empty
+            content={
+              isNFTBuy ? 'Be the first to mint this collection' : 'Abracadabra'
+            }
+          />
+        )
       )}
     </>
   );
