@@ -89,8 +89,8 @@ class Base {
     );
 
     this.camera.rotation.order = 'YXZ';
-    this.camera.rotation.x = 0.02;
-    this.camera.rotation.x = 0.35;
+    this.camera.rotation.y = 0.02;
+    this.camera.rotation.x = 0.5;
   }
 
   createRenderer() {
