@@ -5,6 +5,8 @@ import { SOCIALS } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { FacebookShareButton, TwitterShareButton } from 'react-share';
@@ -13,7 +15,7 @@ import s from './styles.module.scss';
 const MintSuccess = () => {
   const router = useRouter();
   const { mintedProjectID } = useContext(MintBTCGenerativeContext);
-
+  const user = useAppSelector(getUserSelector);
   const mintedProjectUrl = `/generative/${mintedProjectID}`;
 
   const handleGoToProjectDetailPage = (): void => {
@@ -33,7 +35,7 @@ const MintSuccess = () => {
       <div className={s.actionWrapper}>
         <div className={s.social_btns}>
           <TwitterShareButton
-            url={`${location.origin}${mintedProjectUrl}`}
+            url={`${location.origin}${mintedProjectUrl}?referral_code=${user?.id}`}
             className={s.shareBtn}
           >
             <Button
@@ -67,7 +69,7 @@ const MintSuccess = () => {
             </Button>
           </div>
           <FacebookShareButton
-            url={`${ROUTE_PATH.HOME}${mintedProjectUrl}`}
+            url={`${ROUTE_PATH.HOME}${mintedProjectUrl}?referral_code=${user?.id}`}
             className={s.shareBtn}
           >
             <Button
