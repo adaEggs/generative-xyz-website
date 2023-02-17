@@ -22,16 +22,6 @@ const GenerativeProjectDetail: React.FC<{
   isWhitelist?: boolean;
   project?: Project;
 }> = ({ isWhitelist, project }): React.ReactElement => {
-  // const router = useRouter();
-
-  // const { projectID } = router.query;
-
-  // useEffect(() => {
-  //   if (projectID === SATOSHIS_PROJECT_ID) {
-  //     router.push(SATOSHIS_PAGE);
-  //   }
-  // }, [router.asPath]);
-
   const {
     projectData: projectInfo,
     listItems,
