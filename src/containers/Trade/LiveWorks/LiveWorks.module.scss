@@ -44,23 +44,6 @@
       padding: 8px !important;
     }
   }
-
-  .banner {
-    background-color: black;
-    background-image: url('https://storage.googleapis.com/generative-static-prod/images/bg-marketplace-2.jpg');
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: contain;
-    height: rem(252);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
-    &_btn {
-      margin-top: rem(24);
-    }
-  }
 }
 
 .wrap_btn {

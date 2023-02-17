@@ -33,6 +33,12 @@ export const MENU_HEADER = [
     route: ROUTE_PATH.INSCRIBE,
     activePath: 'inscribe',
   },
+  {
+    id: 'menu-6',
+    name: 'Live',
+    route: ROUTE_PATH.LIVE,
+    activePath: 'live',
+  },
 ];
 
 export const RIGHT_MENU = [

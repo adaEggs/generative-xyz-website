@@ -17,11 +17,7 @@ interface IPros {
   index?: number;
 }
 
-export const ProjectCard = ({
-  project,
-  className,
-  index = 0,
-}: IPros): JSX.Element => {
+export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
 
   const convertBTCPrice = () => {
@@ -31,10 +27,7 @@ export const ProjectCard = ({
   return (
     <div className={`${s.projectCard} ${className}`}>
       <div className={s.projectCard_inner}>
-        <div
-          className={`${s.projectCard_thumb}`}
-          style={{ paddingBottom: index % 2 === 0 ? '120%' : '100%' }}
-        >
+        <div className={`${s.projectCard_thumb}`}>
           <NFTDisplayBox
             inscriptionID={project.inscriptionID}
             type={project.contentType}

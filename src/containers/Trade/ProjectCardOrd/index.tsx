@@ -70,7 +70,7 @@ export const ProjectCardOrd = ({
         </div>
       </div>
       <Link
-        href={`${ROUTE_PATH.TRADE}/inscription/${project.inscriptionID}`}
+        href={`${ROUTE_PATH.LIVE}/${project.inscriptionID}`}
         className={s.mask}
       />
     </div>
