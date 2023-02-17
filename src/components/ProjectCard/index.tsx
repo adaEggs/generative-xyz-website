@@ -20,6 +20,7 @@ import {
 import { checkIsBitcoinProject } from '@utils/generative';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
+import { Stack } from 'react-bootstrap';
 // import { CountDown } from '@components/CountDown';
 
 interface IPros {
@@ -112,6 +113,72 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
               {/*  />*/}
               {/*)}*/}
+              <div className={s.projectCard_info_title}>
+                <Heading as={'h5'} fontWeight="medium">
+                  <span title={project.name}>{project.name}</span>
+                </Heading>
+              </div>
+              {isBitcoinProject ? (
+                <div className={s.projectCard_info_price}>
+                  <div className={s.projectCard_info_price_bar}>
+                    {/* <ProgressBar
+                      size={'small'}
+                      isHideBar={true}
+                      current={
+                        project.mintingInfo.index +
+                        project.mintingInfo.indexReserve
+                      }
+                      total={project.maxSupply || project.limit}
+                    /> */}
+                    <div className={s.progress_minted}>
+                      <Heading as="h6" fontWeight="bold">
+                        {project.mintingInfo.index +
+                          project.mintingInfo.indexReserve}
+                        /{project.maxSupply || project.limit}
+                      </Heading>
+                      <Heading as="h6" color="black-60">
+                        minted
+                      </Heading>
+                    </div>
+                  </div>
+                  {isLimitMinted ? (
+                    <>
+                      <span className={s.dots}></span>
+                      <div className={s.projectCard_info_price_price}>
+                        <Stack direction="horizontal" gap={2}>
+                          {Number(project.mintPrice) ? (
+                            <>
+                              <Heading as="h6" fontWeight="bold">
+                                {formatBTCPrice(Number(project.mintPrice))}
+                              </Heading>
+                              <Heading as="h6" color="black-60">
+                                BTC
+                              </Heading>
+                            </>
+                          ) : (
+                            <Heading as="h6" fontWeight="bold">
+                              Free
+                            </Heading>
+                          )}
+                          <Heading as="h6" color="black-60">
+                            mint
+                          </Heading>
+                        </Stack>
+                      </div>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </div>
+              ) : (
+                <ProgressBar
+                  size={'small'}
+                  current={
+                    project.mintingInfo.index + project.mintingInfo.indexReserve
+                  }
+                  total={project.maxSupply || project.limit}
+                />
+              )}
               {creator && (
                 <div className={s.projectCard_creator}>
                   <Avatar
@@ -124,62 +191,6 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                       formatLongAddress(creatorMemo?.walletAddress)}
                   </Text>
                 </div>
-              )}
-              {/* {creator && <CreatorInfo creator={creatorMemo} />} */}
-
-              <div className={s.projectCard_info_title}>
-                <Heading as={'h5'} fontWeight="medium">
-                  <span title={project.name}>{project.name}</span>
-                </Heading>
-              </div>
-              {isBitcoinProject ? (
-                <div className={s.projectCard_info_price}>
-                  {isLimitMinted ? (
-                    <div className={s.projectCard_info_price_price}>
-                      <Text size="24" fontWeight="medium">
-                        {Number(project.mintPrice) ? (
-                          <>
-                            {formatBTCPrice(Number(project.mintPrice))}
-                            <Text as="span" fontWeight="medium">
-                              {' '}
-                              BTC
-                            </Text>
-                          </>
-                        ) : (
-                          'Free'
-                        )}
-                      </Text>
-                    </div>
-                  ) : (
-                    <div className={s.projectCard_info_price_price}>
-                      <Text size="24">
-                        <Text size="16" as="span" fontWeight="medium">
-                          Fully minted
-                        </Text>
-                      </Text>
-                    </div>
-                  )}
-
-                  <div className={s.projectCard_info_price_bar}>
-                    <ProgressBar
-                      size={'small'}
-                      isHideBar={true}
-                      current={
-                        project.mintingInfo.index +
-                        project.mintingInfo.indexReserve
-                      }
-                      total={project.maxSupply || project.limit}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <ProgressBar
-                  size={'small'}
-                  current={
-                    project.mintingInfo.index + project.mintingInfo.indexReserve
-                  }
-                  total={project.maxSupply || project.limit}
-                />
               )}
             </div>
           )}

@@ -91,6 +91,17 @@ const MenuMobile = React.forwardRef(
 
             <li
               className={cs(
+                activePath === MENU_HEADER[5].activePath && s.active
+              )}
+              key={`header-${MENU_HEADER[5].id}`}
+            >
+              <Link href={getUrlWithQueryParams(MENU_HEADER[5].route)}>
+                {MENU_HEADER[5].name}
+              </Link>
+            </li>
+
+            <li
+              className={cs(
                 activePath === MENU_HEADER[2].activePath && s.active
               )}
               key={`header-${MENU_HEADER[2].id}`}

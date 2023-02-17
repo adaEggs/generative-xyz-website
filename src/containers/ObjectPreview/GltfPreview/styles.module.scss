@@ -1,6 +1,6 @@
 .gltfPreview {
   margin: 0;
-  background: #fff;
+  background: rgb(0 0 0 / 20%);
   min-width: 100vw;
   min-height: 100vh;
   position: relative;
@@ -8,11 +8,13 @@
   canvas {
     width: 100%;
     height: 100%;
+    background: rgb(0 0 0 / 20%);
   }
 
   .viewer {
     width: 100%;
     height: 100%;
+    background: rgb(0 0 0 / 20%);
   }
 
   .loading {
@@ -25,5 +27,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    background: rgb(0 0 0 / 20%);
   }
 }

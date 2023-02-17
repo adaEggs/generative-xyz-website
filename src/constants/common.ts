@@ -18,7 +18,8 @@ export const SOCIALS = {
   discord: 'https://discord.com/invite/eUrvfKKTxP',
   twitter: 'https://twitter.com/generative_xyz',
   whitepaper: 'https://docs.generative.xyz/',
-  docsForArtist: 'https://docs.generative.xyz/how-to/launch-your-art',
+  docsForArtist:
+    'https://docs.generative.xyz/how-to/launch-your-art/start-a-new-project',
   bookATour:
     'https://calendly.com/generative_xyz/welcome_to_generative_showroom',
 };

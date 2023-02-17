@@ -17,6 +17,7 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import s from './styles.module.scss';
 import { ROUTE_PATH } from '@constants/route-path';
+import { useRouter } from 'next/router';
 
 type Props = {
   data: Token | null;
@@ -32,6 +33,9 @@ const ThumbnailPreview = (props: Props) => {
     previewToken = false,
     // isBitcoinProject,
   } = props;
+
+  const router = useRouter();
+  const { projectID } = router.query;
 
   const animationUrl = data?.animationUrl || data?.animation_url || '';
 
@@ -115,6 +119,20 @@ const ThumbnailPreview = (props: Props) => {
               <iframe
                 className={s.iframeContainer}
                 src={`${ROUTE_PATH.OBJECT_PREVIEW}/${data.tokenID}`}
+                style={{ overflow: 'hidden' }}
+              />
+            </div>
+          </ClientOnly>
+        );
+      }
+      // TODO: show animation for GLB project
+      if (projectID === process.env.NEXT_PUBLIC_GLB_COLLECTION_ID) {
+        return (
+          <ClientOnly>
+            <div className={s.objectPreview}>
+              <iframe
+                className={s.iframeContainer}
+                src={`${ROUTE_PATH.GLTF_PREVIEW}?defaultUrl=true`}
                 style={{ overflow: 'hidden' }}
               />
             </div>
