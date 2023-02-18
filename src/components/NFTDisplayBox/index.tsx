@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import cs from 'classnames';
 import { IMAGE_TYPE, WHITE_LIST } from '@components/NFTDisplayBox/constant';
 import s from './styles.module.scss';
@@ -7,8 +7,8 @@ import { convertIpfsToHttp } from '@utils/image';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import Skeleton from '@components/Skeleton';
 import { ROUTE_PATH } from '@constants/route-path';
-import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
-import { getTokenUri } from '@services/token-uri';
+// import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+// import { getTokenUri } from '@services/token-uri';
 
 const EXPLORER = 'https://ordinals-explorer-v5-dev.generative.xyz';
 // CDN_URL;
@@ -37,7 +37,7 @@ const NFTDisplayBox = ({
 }: IProps) => {
   const [isError, setIsError] = React.useState(false);
   const [isLoaded, serIsLoaded] = React.useState(false);
-  const [HTMLContentRender, setHTMLContentRender] = useState<JSX.Element>();
+  // const [HTMLContentRender, setHTMLContentRender] = useState<JSX.Element>();
 
   const onError = () => {
     setIsError(true);
@@ -157,24 +157,24 @@ const NFTDisplayBox = ({
     );
   }
 
-  const handleRenderHTML = () => {
-    // getTokenUri({
-    //   contractAddress: GENERATIVE_PROJECT_CONTRACT,
-    //   tokenID: inscriptionID,
-    // })
-    //   .then(data => {
-    //     const { image } = data;
-    //     const fileExt = image?.split('.').pop();
-    //     if (fileExt && fileExt === 'glb') {
-    //       setHTMLContentRender(renderGLBIframe());
-    //     } else {
-    //       setHTMLContentRender(renderIframe());
-    //     }
-    //   })
-    //   .catch(() => {
-    //     setHTMLContentRender(renderIframe());
-    //   });
-  };
+  // const handleRenderHTML = () => {
+  //   getTokenUri({
+  //     contractAddress: GENERATIVE_PROJECT_CONTRACT,
+  //     tokenID: inscriptionID,
+  //   })
+  //     .then(data => {
+  //       const { image } = data;
+  //       const fileExt = image?.split('.').pop();
+  //       if (fileExt && fileExt === 'glb') {
+  //         setHTMLContentRender(renderGLBIframe());
+  //       } else {
+  //         setHTMLContentRender(renderIframe());
+  //       }
+  //     })
+  //     .catch(() => {
+  //       setHTMLContentRender(renderIframe());
+  //     });
+  // };
 
   const renderContent = () => {
     const whiteList = WHITE_LIST.find(
@@ -220,7 +220,7 @@ const NFTDisplayBox = ({
   return (
     <div className={cs(s.wrapper, s[`${variants}`], className)}>
       {isError ? renderEmpty() : renderContent()}
-      {HTMLContentRender && HTMLContentRender}
+      {/* {HTMLContentRender && HTMLContentRender} */}
       {!isLoaded && renderLoading()}
     </div>
   );
