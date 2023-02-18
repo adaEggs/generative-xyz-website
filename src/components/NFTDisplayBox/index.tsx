@@ -158,22 +158,22 @@ const NFTDisplayBox = ({
   }
 
   const handleRenderHTML = () => {
-    getTokenUri({
-      contractAddress: GENERATIVE_PROJECT_CONTRACT,
-      tokenID: inscriptionID,
-    })
-      .then(data => {
-        const { image } = data;
-        const fileExt = image?.split('.').pop();
-        if (fileExt && fileExt === 'glb') {
-          setHTMLContentRender(renderGLBIframe());
-        } else {
-          setHTMLContentRender(renderIframe());
-        }
-      })
-      .catch(() => {
-        setHTMLContentRender(renderIframe());
-      });
+    // getTokenUri({
+    //   contractAddress: GENERATIVE_PROJECT_CONTRACT,
+    //   tokenID: inscriptionID,
+    // })
+    //   .then(data => {
+    //     const { image } = data;
+    //     const fileExt = image?.split('.').pop();
+    //     if (fileExt && fileExt === 'glb') {
+    //       setHTMLContentRender(renderGLBIframe());
+    //     } else {
+    //       setHTMLContentRender(renderIframe());
+    //     }
+    //   })
+    //   .catch(() => {
+    //     setHTMLContentRender(renderIframe());
+    //   });
   };
 
   const renderContent = () => {
@@ -206,10 +206,10 @@ const NFTDisplayBox = ({
       case 'audio/flac':
       case 'model/gltf-binary':
         return renderGLBIframe();
-      case 'model/stl':
-      case 'text/html;charset=utf-8':
-        handleRenderHTML();
-        return <></>;
+      // case 'model/stl':
+      // case 'text/html;charset=utf-8':
+      //   handleRenderHTML();
+      //   return <></>;
       case 'text/plain;charset=utf-8':
         return renderIframe();
       default:
