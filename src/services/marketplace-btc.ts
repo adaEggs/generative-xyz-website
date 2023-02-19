@@ -4,6 +4,8 @@ import log from '@utils/logger';
 import querystring from 'query-string';
 import { HOST_ORDINALS_EXPLORER } from '@constants/config';
 import {
+  IFilterInfo,
+  IGetFilterDataParams,
   IGetMarketplaceBtcListItem,
   IGetMarketplaceBtcListParams,
   IGetMarketplaceBtcNFTDetail,
@@ -146,5 +148,89 @@ export const getInscriptionDetail = async (
   } catch (err: unknown) {
     log('failed to get ordinal detail', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get ordinal detail');
+  }
+};
+
+export const getMarketplaceBtcFilterInfo = async (): Promise<IFilterInfo> => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const res = await get<any>(`${API_PATH}/filter-info`);
+    let data: IFilterInfo = {
+      collection: undefined,
+      inscriptionID: undefined,
+      price: undefined,
+    };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mapObject = (data: any, name: string) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const _items: any = Object.values(data);
+      return {
+        name,
+        data: _items,
+      };
+    };
+    const collection = res?.collection;
+    if (collection) {
+      data = {
+        ...data,
+        collection: mapObject(collection, 'Collection'),
+      };
+    }
+    const inscriptionID = res?.inscriptionID;
+    if (inscriptionID) {
+      data = {
+        ...data,
+        inscriptionID: mapObject(inscriptionID, 'Inscription ID'),
+      };
+    }
+    const price = res?.price;
+    if (price) {
+      data = {
+        ...data,
+        price: mapObject(price, 'Price'),
+      };
+    }
+    return data;
+  } catch (err: unknown) {
+    log('failed to get Marketplace Filter Info', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get Marketplace Filter Info');
+  }
+};
+
+export const getFilterData = async ({
+  collections,
+  prices,
+  inscriptionIDs,
+  keyword,
+}: IGetFilterDataParams): Promise<IGetMarketplaceBtcListItem[]> => {
+  try {
+    const _collections = collections.join(',');
+    const _prices = prices.join(',');
+    const _inscriptionIDs = inscriptionIDs.join(',');
+    const _keyword = keyword || '';
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const res = await get<any[]>(
+      `${API_PATH}/list?listPrices=${_prices}&listCollectionIDs=${_collections}&keyword=${_keyword}&listIDs=${_inscriptionIDs}`
+    );
+    let data: IGetMarketplaceBtcListItem[] = [];
+    if (res && res.length) {
+      data = res.map(item => ({
+        inscriptionID: item?.inscriptionID,
+        price: item.price,
+        name: item.name,
+        description: item.description,
+        image: '',
+        orderID: item.orderID,
+        buyable: item.buyable,
+        isCompleted: item.isCompleted,
+        inscriptionNumber: item.inscriptionNumber,
+        contentType: item.contentType,
+        contentLength: item.contentLength,
+      }));
+    }
+    return data;
+  } catch (err: unknown) {
+    log('failed to get Marketplace Filter Data', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get Marketplace Filter Info');
   }
 };

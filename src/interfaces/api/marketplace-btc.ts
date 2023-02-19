@@ -77,3 +77,39 @@ export interface IInscriptionDetailResp {
   inscription_id: string;
   number: number;
 }
+
+export interface IFilterInfoItem {
+  name: string;
+  count: number;
+  value: string;
+  from: number;
+  to: number;
+}
+
+export interface IFilterInfoDetail {
+  name: string;
+  data: IFilterInfoItem[];
+}
+
+export type FilterName = 'collection' | 'inscriptionID' | 'price';
+
+export enum FilterKey {
+  collection = 'collection',
+  inscriptionID = 'inscriptionID',
+  price = 'price',
+}
+
+export type FilterKeyType = FilterKey;
+
+export interface IFilterInfo {
+  [FilterKey.collection]: IFilterInfoDetail | undefined;
+  [FilterKey.inscriptionID]: IFilterInfoDetail | undefined;
+  [FilterKey.price]: IFilterInfoDetail | undefined;
+}
+
+export interface IGetFilterDataParams {
+  collections: string[];
+  inscriptionIDs: string[];
+  prices: string[];
+  keyword?: string;
+}

@@ -15,6 +15,8 @@ import s from './RecentWorks.module.scss';
 import ButtonIcon from '@components/ButtonIcon';
 import { Container } from 'react-bootstrap';
 import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
+import useWindowSize from '@hooks/useWindowSize';
+import Filter from '@containers/Marketplace/Filter';
 
 const LIMIT = 20;
 
@@ -24,6 +26,7 @@ export const RecentWorks = (): JSX.Element => {
 
   const [listData, setListData] = useState<IGetMarketplaceBtcListItem[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { mobileScreen } = useWindowSize();
 
   const fetchData = async () => {
     if (isLoading) return;
@@ -73,7 +76,15 @@ export const RecentWorks = (): JSX.Element => {
       </div>
       <Container>
         <Row className={s.recentWorks_projects}>
-          <Col xs={'12'}>
+          {!mobileScreen && (
+            <Col xs={'2'} className={s.recentWorks_projects_list}>
+              <Filter
+                setListData={setListData}
+                setLoadedListData={setIsLoaded}
+              />
+            </Col>
+          )}
+          <Col md={'10'} xs={'12'}>
             {!isLoaded ? (
               <ProjectListLoading numOfItems={12} />
             ) : (

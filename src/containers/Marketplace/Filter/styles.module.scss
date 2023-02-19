@@ -1,0 +1,90 @@
+.container {
+  overflow-y: scroll;
+  padding-right: rem(6px);
+  position: relative;
+  height: calc(88vh - 26rem);
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    position: absolute;
+    left: 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: rgb(0 0 0 / 10%);
+  }
+}
+
+.selector {
+  margin-top: rem(40px);
+
+  &_wrapBox {
+    margin-top: 16px;
+
+    &_checkBox {
+      margin-bottom: rem(16px);
+      align-items: center;
+      gap: 16px !important;
+
+      input {
+        width: 18px !important;
+        height: 18px !important;
+      }
+
+      label {
+        color: $black;
+        font-weight: 500;
+        font-size: rem(16px);
+        line-height: 160%;
+      }
+    }
+  }
+}
+
+.inputWrapper {
+  position: relative;
+  border: 2px solid $black-20;
+  flex: 1;
+
+  @include mobile {
+    order: 1;
+    display: flex;
+  }
+
+  .input {
+    padding: 11px 16px 11px 42px;
+    font-weight: 500;
+    line-height: (26/16);
+
+    @include calcFontAuto(14px, 16px);
+
+    width: 100%;
+
+    &::placeholder {
+      /* Chrome, Firefox, Opera, Safari 10.1+ */
+      color: $black-40;
+      font-weight: 500;
+      opacity: 1; /* Firefox */
+    }
+
+    &:input-placeholder {
+      /* Internet Explorer 10-11 */
+      color: $black-40;
+      font-weight: 500;
+    }
+
+    &::input-placeholder {
+      /* Microsoft Edge */
+      color: $black-40;
+      font-weight: 500;
+    }
+  }
+
+  .inputPrefixWrapper {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 16px;
+  }
+}
