@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import { Loading } from '@components/Loading';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
@@ -60,13 +60,13 @@ const ListForSaleModal = ({
 
     if (!values.receiveAddress) {
       errors.receiveAddress = 'Address is required.';
-    } else if (!validateBTCWalletAddress(values.receiveAddress)) {
+    } else if (!validateBTCAddressTaproot(values.receiveAddress)) {
       errors.receiveAddress = 'Invalid wallet address.';
     }
 
     if (!values.receiveOrdAddress) {
       errors.receiveOrdAddress = 'Address is required.';
-    } else if (!validateBTCWalletAddress(values.receiveOrdAddress)) {
+    } else if (!validateBTCAddressTaproot(values.receiveOrdAddress)) {
       errors.receiveOrdAddress = 'Invalid wallet address.';
     }
 

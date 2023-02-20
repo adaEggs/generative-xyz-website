@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import DropFile from './DropFile';
 import s from './styles.module.scss';
 import { Formik } from 'formik';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import { Loading } from '@components/Loading';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import Button from '@components/ButtonIcon';
@@ -58,7 +58,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
 
     if (!values.address) {
       errors.address = 'Wallet address is required.';
-    } else if (!validateBTCWalletAddress(values.address)) {
+    } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     }
 

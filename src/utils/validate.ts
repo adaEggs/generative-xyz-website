@@ -8,7 +8,7 @@ export const validateWalletAddress = (address: string): boolean => {
   return /^0x[a-fA-F0-9]{40}$/.test(address);
 };
 
-export const validateBTCWalletAddress = (_address: string): boolean => {
+export const validateBTCAddressTaproot = (_address: string): boolean => {
   const isBTCAddress = validate(_address);
   if (isBTCAddress) {
     const addressInfo = getAddressInfo(_address);
