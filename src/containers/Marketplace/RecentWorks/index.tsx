@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import ButtonIcon from '@components/ButtonIcon';
 import CategoryTab from '@components/CategoryTab';
@@ -18,12 +18,12 @@ import { getProjectList } from '@services/project';
 import log from '@utils/logger';
 import cs from 'classnames';
 import { useRouter } from 'next/router';
+import { Container } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Select, { SingleValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
-import { Container } from 'react-bootstrap';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -51,23 +51,25 @@ export const RecentWorks = (): JSX.Element => {
   const [currentTotal, setCurrentTotal] = useState<number>(0);
   const router = useRouter();
   const [categoriesList, setCategoriesList] = useState<Category[]>();
-  const [filterCategory, setFilterCategory] = useState('');
+  const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [pageNum, setPageNum] = useState(0);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   const selectedOption = useMemo(() => {
     return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
   }, [sort]);
 
   const getProjectAll = useCallback(
-    async ({ page }: { page: number }) => {
+    async ({ page, categoryID }: { page: number; categoryID: string }) => {
       try {
         setIsLoadMore(false);
+
         const tmpProject = await getProjectList({
           contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
           limit: 12,
           page: page + 1,
-          category: filterCategory ? [filterCategory] : [''],
+          category: categoryID ? [categoryID] : [''],
           sort: sort || SORT_OPTIONS[0].value,
         });
 
@@ -80,6 +82,8 @@ export const RecentWorks = (): JSX.Element => {
           setProjects(tmpProject);
           setListData(tmpProject?.result || []);
           setCurrentTotal(tmpProject.total || 0);
+
+          return tmpProject;
         }
       } catch (err: unknown) {
         log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -89,7 +93,7 @@ export const RecentWorks = (): JSX.Element => {
   );
 
   const onLoadMore = () => {
-    getProjectAll({ page: pageNum + 1 });
+    getProjectAll({ page: pageNum + 1, categoryID: filterCategory || '' });
     setPageNum(prev => prev + 1);
   };
 
@@ -100,6 +104,13 @@ export const RecentWorks = (): JSX.Element => {
       if (result && result.length > 0) {
         setCategoriesList(result);
         setCategoriesLoading(false);
+        const projectRes = await getProjectAll({
+          page: 0,
+          categoryID: result[0].id,
+        });
+        setActiveCategory(result[0].id);
+        if (projectRes && projectRes.result && projectRes.result.length > 0)
+          setIsLoaded(true);
       }
     } catch (err: unknown) {
       log('failed to fetch category list', LogLevel.ERROR, LOG_PREFIX);
@@ -109,23 +120,22 @@ export const RecentWorks = (): JSX.Element => {
 
   const handleClickCategory = (categoryID: string) => {
     setFilterCategory(categoryID);
+    setActiveCategory(categoryID);
     setProjects(undefined);
   };
 
   useAsyncEffect(async () => {
-    setIsLoadMore(false);
-    setIsLoaded(false);
-    await getProjectAll({ page: 0 });
-    setIsLoaded(true);
+    if (categoriesList && categoriesList.length > 0) {
+      setIsLoadMore(false);
+      setIsLoaded(false);
+      await getProjectAll({ page: 0, categoryID: filterCategory || '' });
+      setIsLoaded(true);
+    }
   }, [filterCategory, sort]);
 
-  useEffect(() => {
-    fetchAllCategory();
+  useAsyncEffect(async () => {
+    await fetchAllCategory();
   }, []);
-
-  useEffect(() => {
-    setFilterCategory(categoriesList?.[0].id || '');
-  }, [categoriesList]);
 
   return (
     <div className={s.recentWorks}>
@@ -155,7 +165,7 @@ export const RecentWorks = (): JSX.Element => {
                   text={category.name}
                   key={`category-${category.id}`}
                   onClick={() => handleClickCategory(category.id)}
-                  active={filterCategory === category.id}
+                  active={activeCategory === category.id}
                   loading={categoriesLoading}
                 />
               ))}
@@ -163,7 +173,7 @@ export const RecentWorks = (): JSX.Element => {
               type="3"
               text="All"
               onClick={() => handleClickCategory('')}
-              active={filterCategory === ''}
+              active={activeCategory === ''}
               loading={categoriesLoading}
             />
           </Col>
