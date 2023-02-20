@@ -3,9 +3,10 @@
   width: 100%;
   text-align: center;
   background-color: $primary-purple-50;
+  position: relative;
 
   .dropZone {
-    padding: 24px;
+    padding: rem(24px);
     width: 100%;
     height: 100%;
     text-align: center;
@@ -15,14 +16,14 @@
   .dropZoneThumbnail {
     display: inline-block;
     margin-bottom: 6px;
-    width: 100px;
-    height: 100px;
+    width: rem(100px);
+    height: rem(100px);
   }
 
   .dropZoneDescription {
     font-weight: 500;
-    font-size: 16px;
-    line-height: 26px;
+    font-size: rem(16px);
+    line-height: rem(26px);
     color: $black-40;
   }
 
@@ -36,5 +37,33 @@
 
   .errorText {
     color: $secondary-red;
+  }
+
+  .loadingWrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgb(255 255 255 / 20%);
+    backdrop-filter: blur(16px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: rem(16px);
+
+    .loadingIndicatorWrapper {
+      position: relative;
+      height: rem(56px);
+      width: rem(56px);
+    }
+
+    .loadingText {
+      font-weight: 500;
+      font-size: rem(16px);
+      line-height: rem(26px);
+      color: $black-40;
+    }
   }
 }
