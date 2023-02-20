@@ -77,7 +77,10 @@ const MintWalletModal: React.FC = () => {
     [projectData]
   );
 
-  const userBtcAddress = useMemo(() => user?.walletAddressBtc, [user]);
+  const userBtcAddress = useMemo(
+    () => user?.walletAddressBtcTaproot || '',
+    [user]
+  );
 
   const handleTransfer = async (
     toAddress: string,
