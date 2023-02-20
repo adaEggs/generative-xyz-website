@@ -31,3 +31,19 @@ export interface IMinifyFileResponse {
     }
   >;
 }
+
+export interface IInitiateMultipartUploadPayload {
+  fileName: string;
+}
+
+export interface IInitiateMultipartUploadResponse {
+  uploadId: string;
+}
+
+export interface ICompleteMultipartUploadPayload {
+  uploadId: string;
+}
+
+export interface ICompleteMultipartUploadResponse {
+  location: string;
+}

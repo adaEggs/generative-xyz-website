@@ -1,11 +1,24 @@
 import { LogLevel } from '@enums/log-level';
 import log from '@utils/logger';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 const LOG_PREFIX = 'useChunkedFileUploader';
 
+// Upload chunked file
+// 1 - Initiates a API multipart upload with a POST request.
+// 2 - This initial request generates an upload ID for use in subsequent PUT requests to upload the data in parts
+// 3 - and in the final POST request to complete the upload.
+
 const useChunkedFileUploader = () => {
-  const [uploadProgress, setUploadProgress] = useState(0);
+  const [currentChunkUploadProgress, setCurrentChunkUploadProgress] =
+    useState(1);
+  const [chunkCount, setChunkCount] = useState(0);
+  const [counter, setCounter] = useState(1);
+  const [error, setError] = useState<unknown | null>(null);
+
+  const uploadProgress = useMemo(() => {
+    return Math.round((counter / chunkCount) * 100);
+  }, [chunkCount, counter]);
 
   const uploadFile = async (
     file: File,
@@ -14,10 +27,12 @@ const useChunkedFileUploader = () => {
     onProgress: (progress: number) => any
   ) => {
     const totalChunks = Math.ceil(file.size / chunkSize);
+    setChunkCount(totalChunks);
     const uploadPromises = [];
     const maxRetries = 3;
 
     for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+      setCurrentChunkUploadProgress(1);
       const start = chunkIndex * chunkSize;
       const end = Math.min(start + chunkSize, file.size);
       const chunk = file.slice(start, end);
@@ -30,18 +45,20 @@ const useChunkedFileUploader = () => {
       while (retries <= maxRetries && !success) {
         try {
           const xhr = new XMLHttpRequest();
+          xhr.overrideMimeType('application/octet-stream');
           xhr.open('POST', '/upload', true);
 
           const promise = new Promise((resolve, reject) => {
             xhr.upload.onprogress = event => {
               const progress = (start + event.loaded) / file.size;
-              setUploadProgress(progress);
+              setCurrentChunkUploadProgress(progress);
               onProgress && onProgress(progress);
             };
 
             xhr.onload = () => {
               if (xhr.status === 200) {
                 resolve(xhr.response);
+                setCounter(prev => prev + 1);
               } else {
                 reject(xhr.statusText);
               }
@@ -74,13 +91,13 @@ const useChunkedFileUploader = () => {
 
     try {
       await Promise.all(uploadPromises);
-      setUploadProgress(1);
-    } catch (error) {
+    } catch (error: unknown) {
       log('Upload failed', LogLevel.ERROR, LOG_PREFIX);
+      setError(error);
     }
   };
 
-  return { uploadFile, uploadProgress };
+  return { uploadFile, currentChunkUploadProgress, uploadProgress, error };
 };
 
 export default useChunkedFileUploader;
