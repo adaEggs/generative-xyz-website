@@ -58,7 +58,7 @@ export const Artworks = (): JSX.Element => {
         title={`Turn static code into kinetic art`}
         className={s.artWork_info}
       >
-        {`Generative Display is a groundbreaking new frame that renders generative artworks and allows collectors to interact with their art. It accomplishes this by using powerful internal components and code to develop unique artworks in real time.`}
+        {`Grail is a groundbreaking new frame that renders generative artworks and allows collectors to interact with their art. It accomplishes this by using powerful internal components and code to develop unique artworks in real time.`}
       </SectionInfo>
       <div ref={comp} className={s.artWork_show}>
         <div className={s.artWork_show_inner}>

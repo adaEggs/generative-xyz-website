@@ -5,7 +5,6 @@
   z-index: 9;
   position: relative;
   background-color: $white;
-  border-bottom: 1px solid $black-10;
 
   &_row {
     min-height: rem(40px);
@@ -72,6 +71,10 @@
         stroke: $white;
       }
     }
+
+    .logo {
+      color: $white;
+    }
   }
 
   &_logo {
@@ -94,6 +97,7 @@
       text-decoration: none;
       font-weight: 500;
       letter-spacing: 0;
+      padding: rem(17px) 0;
     }
 
     .navBar {
@@ -116,6 +120,12 @@
           flex: 0 0 100%;
           width: 100%;
         }
+
+        &.active {
+          a {
+            font-weight: 700;
+          }
+        }
       }
 
       a {
@@ -124,6 +134,7 @@
         text-transform: uppercase;
         font-size: rem(16);
         position: relative;
+        cursor: pointer;
 
         @include mobile {
           text-align: center;
@@ -359,6 +370,7 @@
       .active {
         a {
           color: $black-100;
+          font-weight: bold;
         }
       }
 
@@ -427,4 +439,22 @@
   font-size: rem(12px);
   line-height: 100%;
   border-radius: 2px;
+}
+
+.yourVault {
+  position: relative;
+
+  :global(.dropdown) {
+    opacity: 0;
+    visibility: hidden;
+    text-transform: none !important;
+    transition: all 0.4s $easeOutCubic;
+  }
+
+  &:hover {
+    :global(.dropdown) {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
 }

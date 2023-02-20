@@ -7,8 +7,6 @@ import { AnimParallax } from '@animations/parallax';
 import { AnimFade } from '@animations/fade';
 import classNames from 'classnames';
 import { AnimHeading } from '@animations/heading';
-// import { useAppDispatch } from '@redux';
-// import { setIsScrolling } from '@redux/general/action';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { useRouter } from 'next/router';
@@ -18,20 +16,6 @@ import { EXTERNAL_LINK } from '@constants/external-link';
 
 export const SectionHero = (): JSX.Element => {
   const router = useRouter();
-  // const dispatch = useAppDispatch();
-  // const scrollTo = () => {
-  //   dispatch(setIsScrolling(true));
-  //   gsap.to(window, {
-  //     scrollTo: '#tech-spec',
-  //     duration: 0.6,
-  //     ease: 'power3.inOut',
-  //     onComplete: () => {
-  //       setTimeout(() => {
-  //         dispatch(setIsScrolling(false));
-  //       }, 1500);
-  //     },
-  //   });
-  // };
 
   const onClick = () => {
     router.push(ROUTE_PATH.ORDER_NOW);
@@ -67,10 +51,18 @@ export const SectionHero = (): JSX.Element => {
 
       <div className={`${s.Home_video_content} container`}>
         <AnimHeading
-          tag={'h1'}
-          className={`${s.Home_video_content_heading} heading heading__supper`}
+          tag={'h2'}
+          className={`${s.Home_video_content_heading} heading heading__large`}
         >
-          Bring your Generative Art to life.
+          Grail
+        </AnimHeading>
+
+        <AnimHeading
+          tag={'h3'}
+          screen={0.1}
+          className={`${s.Home_video_content_content} heading heading__medium`}
+        >
+          Bring your generative art to life.
         </AnimHeading>
 
         <ul className={`${s.Home_video_content_ctas} ul_reset`}>

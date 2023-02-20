@@ -5,7 +5,7 @@ export const HARDWARE_CONTENTS: IHardwareItem[] = [
   {
     subtitle: 'The Screen',
     title: 'Immersive 55-inch OLED',
-    desc: 'A big, beautiful window into new worlds, Generative Display draws you in from the moment you turn it on. Spectacularly detailed generative art springs to life.',
+    desc: 'A big, beautiful window into new worlds, Grail draws you in from the moment you turn it on. Spectacularly detailed generative art springs to life.',
     video:
       'https://cdn.autonomous.ai/static/upload/images/common/upload/20221228/Block_37c36c34606.mp4',
     poster: `${CDN_URL}/pages/home/videos/the-monitor-hardware-poster.jpeg`,

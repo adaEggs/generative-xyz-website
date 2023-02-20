@@ -1,46 +1,22 @@
 .recentWorks {
   &_title {
-    margin-bottom: rem(32px);
+    margin-top: rem(58px);
+    margin-bottom: rem(30px);
   }
 
   &_projects {
-    margin-top: rem(26px);
+    margin-top: rem(48px);
     position: relative;
 
     @include mobile {
-      margin-top: rem(24px);
-    }
-  }
-
-  &_banner {
-    padding: rem(64px) rem(60);
-    text-align: center;
-    // background:
-    //   url("https://cdn.generative.xyz/images/collection-banner.png")
-    //   no-repeat center;
-    // background-size: cover;
-  }
-
-  &_heading {
-    justify-content: space-between;
-    align-items: center;
-    row-gap: rem(20);
-
-    &_col {
-      margin-top: 0;
-
-      &:nth-child(1) {
-        @include mobile {
-          margin-bottom: rem(16px);
-        }
-      }
+      margin-top: rem(34px);
     }
   }
 
   .category_list {
     display: flex;
     align-items: center;
-    gap: rem(10);
+    gap: rem(24px);
     overflow-x: scroll;
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -51,8 +27,21 @@
   }
 
   .sort_dropdown {
-    display: flex;
-    align-items: center;
-    gap: rem(16px);
+    margin-left: auto;
+
+    :global(.select__control) {
+      min-width: auto;
+      border: none;
+    }
+
+    :global(.select__single-value) {
+      line-height: (30/20);
+
+      @include calcFontAuto(16px, 20px);
+    }
+
+    :global(.select__indicator) {
+      color: $primary-brand;
+    }
   }
 }
