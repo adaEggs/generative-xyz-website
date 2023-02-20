@@ -16,3 +16,7 @@ export const validateBTCAddressTaproot = (_address: string): boolean => {
   }
   return false;
 };
+
+export const validateBTCAddress = (_address: string): boolean => {
+  return validate(_address);
+};
