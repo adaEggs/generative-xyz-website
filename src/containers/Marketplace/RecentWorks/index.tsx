@@ -154,7 +154,10 @@ export const RecentWorks = (): JSX.Element => {
                   type="3"
                   text={category.name}
                   key={`category-${category.id}`}
-                  onClick={() => handleClickCategory(category.id)}
+                  onClick={() => {
+                    setPageNum(0);
+                    handleClickCategory(category.id);
+                  }}
                   active={filterCategory === category.id}
                   loading={categoriesLoading}
                 />
@@ -162,7 +165,10 @@ export const RecentWorks = (): JSX.Element => {
             <CategoryTab
               type="3"
               text="All"
-              onClick={() => handleClickCategory('')}
+              onClick={() => {
+                setPageNum(0);
+                handleClickCategory('');
+              }}
               active={filterCategory === ''}
               loading={categoriesLoading}
             />
