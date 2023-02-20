@@ -9,29 +9,20 @@ import {
   GenerativeProjectDetailContext,
   GenerativeProjectDetailProvider,
 } from '@contexts/generative-project-detail-context';
+import { PaymentMethod } from '@enums/mint-generative';
 import { Project } from '@interfaces/project';
 import cs from 'classnames';
 import React, { useContext } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
+
 import MintWalletModal from './MintWalletModal';
-import TokenTopFilter from './TokenTopFilter';
 import styles from './styles.module.scss';
-import { PaymentMethod } from '@enums/mint-generative';
+import TokenTopFilter from './TokenTopFilter';
 
 const GenerativeProjectDetail: React.FC<{
   isWhitelist?: boolean;
   project?: Project;
 }> = ({ isWhitelist, project }): React.ReactElement => {
-  // const router = useRouter();
-
-  // const { projectID } = router.query;
-
-  // useEffect(() => {
-  //   if (projectID === SATOSHIS_PROJECT_ID) {
-  //     router.push(SATOSHIS_PAGE);
-  //   }
-  // }, [router.asPath]);
-
   const {
     projectData: projectInfo,
     listItems,
