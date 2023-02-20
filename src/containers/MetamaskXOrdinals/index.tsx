@@ -42,11 +42,21 @@ const MetamaskXOrdinals = () => {
         {renderDescItem(() => (
           <Text className={s.text}>
             Works effortlessly with hardware wallets like{' '}
-            <a className={s.link} href="https://www.ledger.com/">
+            <a
+              className={s.link}
+              target="_blank"
+              href="https://www.ledger.com/"
+              rel="noreferrer"
+            >
               Ledger
             </a>{' '}
             and{' '}
-            <a className={s.link} href="https://trezor.io/">
+            <a
+              className={s.link}
+              target="_blank"
+              href="https://trezor.io/"
+              rel="noreferrer"
+            >
               Trezor
             </a>
             .
