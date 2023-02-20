@@ -85,9 +85,10 @@ const FormEditProject = () => {
       errors.maxSupply = 'Invalid number. Must be greater than 0.';
     } else if (
       projectFiles !== 0 &&
-      parseInt(values.maxSupply.toString(), 10) > projectFiles
+      parseInt(values.maxSupply.toString(), 10) > projectFiles &&
+      parseInt(values.maxSupply.toString(), 10) >= nftMinted
     ) {
-      errors.maxSupply = `Invalid number. Must be equal or less than ${projectFiles}.`;
+      errors.maxSupply = `Invalid number. Must be between ${nftMinted} and ${projectFiles}.`;
     }
 
     if (!values.mintPrice.toString()) {
@@ -124,14 +125,14 @@ const FormEditProject = () => {
     }
 
     const payload: IUpdateProjectPayload = {
-      name: values.name || project?.name || '',
-      description: values.description || project?.itemDesc || '',
-      thumbnail: thumbnailUrl || project?.image || '',
-      royalty: (Number(values.royalty) || project?.royalty || 0) * 100,
-      mintPrice: (values.mintPrice || project?.mintPrice || 0).toString(),
-      maxSupply: Number(values.maxSupply) || project?.maxSupply || 0,
+      name: values.name || '',
+      description: values.description || '',
+      thumbnail: thumbnailUrl || '',
+      royalty: (Number(values.royalty) || 0) * 100,
+      mintPrice: (values.mintPrice || 0).toString(),
+      maxSupply: Number(values.maxSupply) || 0,
       isHidden: isHidden,
-      categories: categories || project?.categories || [],
+      categories: categories || [],
     };
 
     const res = await updateProject(
@@ -323,29 +324,27 @@ const FormEditProject = () => {
 
               <div className={s.setPrice}>
                 <div className={s.formWrapper}>
-                  {nftMinted === 0 && (
-                    <div className={s.formItem}>
-                      <label className={s.label} htmlFor="maxSupply">
-                        Max supply <sup className={s.requiredTag}>*</sup>
-                      </label>
-                      <div className={s.inputContainer}>
-                        <input
-                          id="maxSupply"
-                          type="number"
-                          name="maxSupply"
-                          className={s.input}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.maxSupply}
-                          placeholder="Provide a number"
-                        />
-                        <div className={s.inputPostfix}>Items</div>
-                      </div>
-                      {errors.maxSupply && touched.maxSupply && (
-                        <p className={s.error}>{errors.maxSupply}</p>
-                      )}
+                  <div className={s.formItem}>
+                    <label className={s.label} htmlFor="maxSupply">
+                      Max supply <sup className={s.requiredTag}>*</sup>
+                    </label>
+                    <div className={s.inputContainer}>
+                      <input
+                        id="maxSupply"
+                        type="number"
+                        name="maxSupply"
+                        className={s.input}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.maxSupply}
+                        placeholder="Provide a number"
+                      />
+                      <div className={s.inputPostfix}>Items</div>
                     </div>
-                  )}
+                    {errors.maxSupply && touched.maxSupply && (
+                      <p className={s.error}>{errors.maxSupply}</p>
+                    )}
+                  </div>
                   <div className={s.formItem}>
                     <label className={s.label} htmlFor="mintPrice">
                       PRICE <sup className={s.requiredTag}>*</sup>
