@@ -90,7 +90,10 @@ export const RecentWorks = (): JSX.Element => {
   );
 
   const onLoadMore = () => {
-    getProjectAll({ page: pageNum + 1, categoryID: filterCategory || '' });
+    getProjectAll({
+      page: pageNum + 1,
+      categoryID: filterCategory || activeCategory || '',
+    });
     setPageNum(prev => prev + 1);
   };
 
