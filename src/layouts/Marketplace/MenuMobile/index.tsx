@@ -2,11 +2,10 @@ import ButtonIcon from '@components/ButtonIcon';
 import Link from '@components/Link';
 import SvgInset from '@components/SvgInset';
 import { SOCIALS } from '@constants/common';
-import { MENU_HEADER, RIGHT_MENU } from '@constants/header';
+import { MENU_HEADER } from '@constants/header';
 import { SOCIAL_ICONS } from '@constants/icons';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { isProduction } from '@utils/common';
 import cs from 'classnames';
 import _isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
@@ -69,34 +68,12 @@ const MenuMobile = React.forwardRef(
 
             <li
               className={cs(
-                activePath === MENU_HEADER[3].activePath && s.active
+                activePath === MENU_HEADER[1].activePath && s.active
               )}
-              key={`header-${MENU_HEADER[3].id}`}
+              key={`header-${MENU_HEADER[1].id}`}
             >
-              <Link href={getUrlWithQueryParams(MENU_HEADER[3].route)}>
-                {MENU_HEADER[3].name}
-              </Link>
-            </li>
-
-            {/*<li*/}
-            {/*  className={cs(*/}
-            {/*    activePath === MENU_HEADER[1].activePath && s.active*/}
-            {/*  )}*/}
-            {/*  key={`header-${MENU_HEADER[1].id}`}*/}
-            {/*>*/}
-            {/*  <Link href={getUrlWithQueryParams(MENU_HEADER[3].route)}>*/}
-            {/*    {MENU_HEADER[1].name}*/}
-            {/*  </Link>*/}
-            {/*</li>*/}
-
-            <li
-              className={cs(
-                activePath === MENU_HEADER[5].activePath && s.active
-              )}
-              key={`header-${MENU_HEADER[5].id}`}
-            >
-              <Link href={getUrlWithQueryParams(MENU_HEADER[5].route)}>
-                {MENU_HEADER[5].name}
+              <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>
+                {MENU_HEADER[1].name}
               </Link>
             </li>
 
@@ -110,48 +87,8 @@ const MenuMobile = React.forwardRef(
                 {MENU_HEADER[2].name}
               </Link>
             </li>
-            {/*<li*/}
-            {/*  className={cs(*/}
-            {/*    activePath === MENU_HEADER[4].activePath && s.active*/}
-            {/*  )}*/}
-            {/*  key={`header-${MENU_HEADER[4].id}`}*/}
-            {/*>*/}
-            {/*  <Link*/}
-            {/*    className={*/}
-            {/*      MENU_HEADER[4].activePath === 'inscribe' ? s.inscribe : ''*/}
-            {/*    }*/}
-            {/*    href={getUrlWithQueryParams(MENU_HEADER[4].route)}*/}
-            {/*  >*/}
-            {/*    {MENU_HEADER[4].name}*/}
-            {/*  </Link>*/}
-            {/*</li>*/}
-            {!isProduction() && (
-              <li
-                className={cs(
-                  activePath === RIGHT_MENU[2].activePath && s.active
-                )}
-                key={`header-${RIGHT_MENU[2].id}`}
-              >
-                <a
-                  href={getUrlWithQueryParams(RIGHT_MENU[2].route)}
-                  target={'_blank'}
-                  rel="noreferrer"
-                >
-                  {RIGHT_MENU[2].name}
-                </a>
-              </li>
-            )}
-
-            {!isProduction() && (
-              <li>
-                <a href={SOCIALS.whitepaper} target={'_blank'} rel="noreferrer">
-                  Whitepaper
-                </a>
-              </li>
-            )}
           </ul>
           <div className={`${s.menuMobile_bottom} ${user ? s.hasUser : ''}`}>
-            {/* {showWalletButton() && ( */}
             <div className={`${s.connectWallet}`}>
               {user ? (
                 <div className="position-relative">
@@ -171,7 +108,6 @@ const MenuMobile = React.forwardRef(
                 </div>
               )}
             </div>
-            {/* )} */}
 
             <ul className={s.menuMobile_bottom_socials}>
               <li>

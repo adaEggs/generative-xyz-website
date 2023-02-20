@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import s from './ProjectCard.module.scss';
-
-import Avatar from '@components/Avatar';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
 import ProgressBar from '@components/ProgressBar';
@@ -17,11 +15,8 @@ import {
   formatBTCPrice,
   formatLongAddress,
 } from '@utils/format';
-import { checkIsBitcoinProject } from '@utils/generative';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
-import { Stack } from 'react-bootstrap';
-// import { CountDown } from '@components/CountDown';
 
 interface IPros {
   project: Project;
@@ -36,11 +31,6 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
-
-  const isBitcoinProject = useMemo((): boolean => {
-    if (!project) return false;
-    return checkIsBitcoinProject(project.tokenID);
-  }, [project]);
 
   useEffect(() => {
     if (project.creatorProfile) {
@@ -80,12 +70,6 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
         <div className={s.projectCard_inner_info}>
           {mobileScreen ? (
             <div className={cs(s.projectCard_info, s.mobile)}>
-              {/*{isBitcoinProject && (*/}
-              {/*  <CountDown*/}
-              {/*    openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}*/}
-              {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
-              {/*  />*/}
-              {/*)}*/}
               {creator && (
                 <Text size="11" fontWeight="medium">
                   {creator.displayName || formatAddress(creator.walletAddress)}
@@ -107,83 +91,32 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             </div>
           ) : (
             <div className={cs(s.projectCard_info, s.desktop)}>
-              {/*{isBitcoinProject && (*/}
-              {/*  <CountDown*/}
-              {/*    openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}*/}
-              {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
-              {/*  />*/}
-              {/*)}*/}
-              <div className={s.projectCard_info_title}>
-                <Heading as={'h5'} fontWeight="medium">
-                  <span title={project.name}>{project.name}</span>
-                </Heading>
-              </div>
-              {isBitcoinProject ? (
-                <div className={s.projectCard_info_price}>
-                  <div className={s.projectCard_info_price_bar}>
-                    {/* <ProgressBar
-                      size={'small'}
-                      isHideBar={true}
-                      current={
-                        project.mintingInfo.index +
-                        project.mintingInfo.indexReserve
-                      }
-                      total={project.maxSupply || project.limit}
-                    /> */}
-                    <div className={s.progress_minted}>
-                      <Text fontWeight="bold">
-                        {project.mintingInfo.index +
-                          project.mintingInfo.indexReserve}
-                        /{project.maxSupply || project.limit}
-                      </Text>
-                      <Text color="black-60">Minted</Text>
-                    </div>
-                  </div>
-                  {isLimitMinted ? (
-                    <>
-                      <span className={s.dots}></span>
-                      <div className={s.projectCard_info_price_price}>
-                        <Stack direction="horizontal" gap={2}>
-                          {Number(project.mintPrice) ? (
-                            <>
-                              <Text fontWeight="bold">
-                                {formatBTCPrice(Number(project.mintPrice))}
-                              </Text>
-                              <Text color="black-60">BTC</Text>
-                            </>
-                          ) : (
-                            <Text fontWeight="bold">Free</Text>
-                          )}
-                          <Text color="black-60">Mint</Text>
-                        </Stack>
-                      </div>
-                    </>
-                  ) : (
-                    <></>
-                  )}
-                </div>
-              ) : (
-                <ProgressBar
-                  size={'small'}
-                  current={
-                    project.mintingInfo.index + project.mintingInfo.indexReserve
-                  }
-                  total={project.maxSupply || project.limit}
-                />
-              )}
               {creator && (
                 <div className={s.projectCard_creator}>
-                  <Avatar
-                    imgSrcs={creatorMemo?.avatar || ''}
-                    width={24}
-                    height={24}
-                  />
-                  <Text fontWeight="medium" color="black-60">
+                  <Text size={'20'} fontWeight="medium">
                     {creatorMemo?.displayName ||
                       formatLongAddress(creatorMemo?.walletAddress)}
                   </Text>
                 </div>
               )}
+              <div className={s.projectCard_info_title}>
+                <Heading as={'h6'} fontWeight="medium">
+                  <span title={project.name}>{project.name}</span>
+                </Heading>
+              </div>
+              <div className={s.projectCard_info_price}>
+                {isLimitMinted && (
+                  <>
+                    <div className={s.projectCard_info_price_price}>
+                      <Text size={'18'} fontWeight="medium" color="black-40">
+                        {Number(project.mintPrice)
+                          ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
+                          : 'Free'}
+                      </Text>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           )}
         </div>
