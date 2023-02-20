@@ -17,7 +17,7 @@ import { prettyPrintBytes } from '@utils/units';
 import cs from 'classnames';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { ReactElement, useContext, useEffect, useMemo } from 'react';
+import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
 import DropFile from '../DropFile';
 import s from './styles.module.scss';
 
@@ -36,6 +36,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
     imageCollectionFile,
     setImageCollectionFile,
   } = useContext(MintBTCGenerativeContext);
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
 
   const processGenerativeFile = async (file: File) => {
     try {
@@ -60,18 +61,23 @@ const UploadGenArt: React.FC = (): ReactElement => {
       setImageCollectionFile(imageFiles);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      const errorMessage =
+        'There is a problem with your file. Please check and try again.';
+      setShowErrorAlert({ open: true, message: errorMessage });
     }
   };
 
-  const handleProccessFile = (): void => {
+  const handleProccessFile = async (): Promise<void> => {
     if (!rawFile) return;
 
     if (collectionType === CollectionType.GENERATIVE) {
-      processGenerativeFile(rawFile);
+      await processGenerativeFile(rawFile);
     }
 
     if (collectionType == CollectionType.COLLECTION) {
-      processCollectionFile(rawFile);
+      setIsProcessingFile(true);
+      await processCollectionFile(rawFile);
+      setIsProcessingFile(false);
     }
   };
 
@@ -255,6 +261,12 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 Update zip file
               </Button>
             </div>
+            {!isValidImageCollection && (
+              <p className={s.errorMessage}>
+                There&apos;re problems with your file. Please check your file
+                list above.
+              </p>
+            )}
           </div>
           <div className={s.container}>
             <div className={s.checkboxWrapper}></div>
@@ -322,6 +334,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
             </div>
           </div>
           <div className={s.dropZoneWrapper}>
+            <div className={s.loadingOverlay}></div>
             <DropFile
               labelText={
                 collectionType === CollectionType.GENERATIVE
@@ -339,12 +352,13 @@ const UploadGenArt: React.FC = (): ReactElement => {
               }
               onChange={handleChangeFile}
               fileOrFiles={rawFile ? [rawFile] : null}
+              isProcessing={isProcessingFile}
             />
           </div>
         </div>
       </>
     ),
-    [rawFile, collectionType]
+    [rawFile, collectionType, isProcessingFile]
   );
 
   useEffect(() => {

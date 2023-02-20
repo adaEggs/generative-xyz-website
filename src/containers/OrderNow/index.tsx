@@ -58,7 +58,7 @@ export const OrderNowTemplate = (): JSX.Element => {
       <div className={s.orderNow}>
         <Container>
           <div className={s.orderNow_header}>
-            <Heading as={'h2'}>Shop Generative Displays</Heading>
+            <Heading as={'h2'}>Shop Grail</Heading>
             <Text as={'p'} fontWeight={'regular'} size={'16'}>
               Need shopping help?{' '}
               <a href={SOCIALS.discord} target="_blank" rel="noreferrer">

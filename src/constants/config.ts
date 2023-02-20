@@ -11,6 +11,7 @@ export const NETWORK_CHAIN_ID: number = parseInt(
 export const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL!;
 export const APP_TOKEN_SYMBOL = 'GEN';
 export const SERVICE_FEE = 2.5 / 100;
+export const CHUNK_SIZE = 50; // MB
 
 // Discount
 export const PRINTS_REQUIRED_TO_DISCOUNT = 5000;

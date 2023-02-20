@@ -138,7 +138,7 @@ export const RecentWorks = (): JSX.Element => {
     <div className={s.recentWorks}>
       <Container>
         <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
-          Be the first to collect art on Bitcoin
+          Be the first to collect art on Bitcoin.
         </Heading>
         <Row className={s.recentWorks_heading}>
           <Col

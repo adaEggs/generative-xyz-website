@@ -112,7 +112,7 @@ export const Prices = (): JSX.Element => {
                         s.highlight__name
                       )}
                     >
-                      {`Generative Display 43" 4K`}
+                      {`Grail 43" 4K`}
                     </div>
                     <div className={s.Home_specContent}>
                       Display Resolution: 4K (3840x2160 pixels)
@@ -148,7 +148,7 @@ export const Prices = (): JSX.Element => {
                         s.highlight__name
                       )}
                     >
-                      Generative Display SQ
+                      Grail SQ
                     </div>
                     <div className={s.Home_specContent}>
                       Display Resolution: 2K (2160x2160 pixels)
@@ -189,7 +189,7 @@ export const Prices = (): JSX.Element => {
                         s.highlight__name
                       )}
                     >
-                      {`Generative Display 55" OLED`}
+                      {`Grail 55" OLED`}
                     </div>
                     <div className={s.Home_specContent}>
                       Display Resolution: 4K (3840x2160 pixels)
@@ -293,25 +293,19 @@ export const Prices = (): JSX.Element => {
                   </td>
                   <td>
                     <span className={s.Home_specTitle}>In the box</span>
-                    <div className={s.Home_specContent}>
-                      Generative Display 43”
-                    </div>
+                    <div className={s.Home_specContent}>Grail 43”</div>
                     <div className={s.Home_specContent}>
                       16 ft cable - Adapted to USA, EU, UK sockets
                     </div>
                   </td>
                   <td>
-                    <div className={s.Home_specContent}>
-                      Generative Display 30”
-                    </div>
+                    <div className={s.Home_specContent}>Grail 30”</div>
                     <div className={s.Home_specContent}>
                       16 ft cable - Adapted to USA, EU, UK sockets
                     </div>
                   </td>
                   <td>
-                    <div className={s.Home_specContent}>
-                      Generative Display 55”
-                    </div>
+                    <div className={s.Home_specContent}>Grail 55”</div>
                     <div className={s.Home_specContent}>
                       16 ft cable - Adapted to USA, EU, UK sockets
                     </div>
