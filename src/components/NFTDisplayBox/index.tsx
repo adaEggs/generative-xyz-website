@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import cs from 'classnames';
 import { IMAGE_TYPE, WHITE_LIST } from '@components/NFTDisplayBox/constant';
 import s from './styles.module.scss';
@@ -7,8 +7,8 @@ import { convertIpfsToHttp } from '@utils/image';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import Skeleton from '@components/Skeleton';
 import { ROUTE_PATH } from '@constants/route-path';
-// import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
-// import { getTokenUri } from '@services/token-uri';
+import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { getTokenUri } from '@services/token-uri';
 
 const EXPLORER = 'https://ordinals-explorer-v5-dev.generative.xyz';
 // CDN_URL;
@@ -37,7 +37,7 @@ const NFTDisplayBox = ({
 }: IProps) => {
   const [isError, setIsError] = React.useState(false);
   const [isLoaded, serIsLoaded] = React.useState(false);
-  // const [HTMLContentRender, setHTMLContentRender] = useState<JSX.Element>();
+  const [HTMLContentRender, setHTMLContentRender] = useState<JSX.Element>();
 
   const onError = () => {
     setIsError(true);
@@ -149,6 +149,82 @@ const NFTDisplayBox = ({
     <Skeleton className={s.absolute} fill isLoaded={isLoaded} />
   );
 
+  const handleRenderHTML = () => {
+    if (inscriptionID) {
+      getTokenUri({
+        contractAddress: GENERATIVE_PROJECT_CONTRACT,
+        tokenID: inscriptionID,
+      })
+        .then(data => {
+          const { image } = data;
+          const fileExt = image?.split('.').pop();
+          if (fileExt && fileExt === 'glb') {
+            setHTMLContentRender(renderGLBIframe());
+          } else {
+            setHTMLContentRender(renderIframe());
+          }
+        })
+        .catch(() => {
+          setHTMLContentRender(renderIframe());
+        });
+    }
+  };
+
+  useEffect(() => {
+    if (isError) {
+      setHTMLContentRender(renderEmpty());
+    } else {
+      if (inscriptionID) {
+        const whiteList = WHITE_LIST.find(
+          ({ id }) => !!id && id.toLowerCase() === inscriptionID.toLowerCase()
+        );
+        if (whiteList) {
+          setHTMLContentRender(renderWhiteListImage(whiteList.link));
+        }
+
+        switch (type) {
+          case 'audio/mpeg':
+          case 'audio/wav':
+            setHTMLContentRender(renderAudio());
+            return;
+          case 'video/mp4':
+          case 'video/webm':
+            setHTMLContentRender(renderVideo());
+            return;
+          case 'image/apng':
+          case 'image/avif':
+          case 'image/gif':
+          case 'image/jpeg':
+          case 'image/png':
+          case 'image/svg+xml':
+          case 'image/webp':
+            setHTMLContentRender(renderImage());
+            return;
+          case 'application/json':
+          case 'application/pdf':
+          case 'application/pgp-signature':
+          case 'application/yaml':
+          case 'audio/flac':
+          case 'model/gltf-binary':
+            setHTMLContentRender(renderGLBIframe());
+            return;
+          case 'model/stl':
+          case 'text/html;charset=utf-8':
+            handleRenderHTML();
+            return;
+          case 'text/plain;charset=utf-8':
+            setHTMLContentRender(renderIframe());
+            return;
+          default:
+            setHTMLContentRender(renderIframe());
+            return;
+        }
+      } else {
+        setHTMLContentRender(<></>);
+      }
+    }
+  }, [inscriptionID, isError]);
+
   if (!inscriptionID || !type) {
     return (
       <div className={cs(s.wrapper, s[`${variants}`], className)}>
@@ -157,70 +233,9 @@ const NFTDisplayBox = ({
     );
   }
 
-  // const handleRenderHTML = () => {
-  //   getTokenUri({
-  //     contractAddress: GENERATIVE_PROJECT_CONTRACT,
-  //     tokenID: inscriptionID,
-  //   })
-  //     .then(data => {
-  //       const { image } = data;
-  //       const fileExt = image?.split('.').pop();
-  //       if (fileExt && fileExt === 'glb') {
-  //         setHTMLContentRender(renderGLBIframe());
-  //       } else {
-  //         setHTMLContentRender(renderIframe());
-  //       }
-  //     })
-  //     .catch(() => {
-  //       setHTMLContentRender(renderIframe());
-  //     });
-  // };
-
-  const renderContent = () => {
-    const whiteList = WHITE_LIST.find(
-      ({ id }) => !!id && id.toLowerCase() === inscriptionID.toLowerCase()
-    );
-    if (whiteList) {
-      return renderWhiteListImage(whiteList.link);
-    }
-
-    switch (type) {
-      case 'audio/mpeg':
-      case 'audio/wav':
-        return renderAudio();
-      case 'video/mp4':
-      case 'video/webm':
-        return renderVideo();
-      case 'image/apng':
-      case 'image/avif':
-      case 'image/gif':
-      case 'image/jpeg':
-      case 'image/png':
-      case 'image/svg+xml':
-      case 'image/webp':
-        return renderImage();
-      case 'application/json':
-      case 'application/pdf':
-      case 'application/pgp-signature':
-      case 'application/yaml':
-      case 'audio/flac':
-      case 'model/gltf-binary':
-        return renderGLBIframe();
-      // case 'model/stl':
-      // case 'text/html;charset=utf-8':
-      //   handleRenderHTML();
-      //   return <></>;
-      case 'text/plain;charset=utf-8':
-        return renderIframe();
-      default:
-        return renderIframe();
-    }
-  };
-
   return (
     <div className={cs(s.wrapper, s[`${variants}`], className)}>
-      {isError ? renderEmpty() : renderContent()}
-      {/* {HTMLContentRender && HTMLContentRender} */}
+      {HTMLContentRender && HTMLContentRender}
       {!isLoaded && renderLoading()}
     </div>
   );
