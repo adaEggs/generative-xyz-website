@@ -18,6 +18,8 @@ import { Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
+import { validateBTCWalletAddress } from '@utils/validate';
+import _isEmpty from 'lodash/isEmpty';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -41,6 +43,19 @@ const FormEditProfile = () => {
 
   const [newFile, setNewFile] = useState<File | null | undefined>();
 
+  const validateForm = (values: Record<string, string>) => {
+    const errors: Record<string, string> = {};
+
+    if (
+      !validateBTCWalletAddress(values.wallet_address_btc) &&
+      values.wallet_address_btc !== ''
+    ) {
+      errors.wallet_address_btc = 'Invalid wallet address.';
+    }
+
+    return errors;
+  };
+
   const handleSubmit = async (values: Record<string, string>) => {
     const payload: IUpdateProfilePayload = {
       avatar: newFile ? await toBase64(newFile) : '',
@@ -53,6 +68,7 @@ const FormEditProfile = () => {
         instagram: values.instagram || '',
         etherScan: values.etherScan || '',
       },
+      walletAddressBtc: values.wallet_address_btc || '',
     };
 
     const res = await updateProfile(payload);
@@ -80,13 +96,14 @@ const FormEditProfile = () => {
         discord: user?.profileSocial?.discord || '',
         etherScan: user?.profileSocial?.etherScan || '',
         twitter: user?.profileSocial?.twitter || '',
+        wallet_address_btc: user?.wallet_address_btc || '',
       }}
-      // validate={validateForm}
+      validate={validateForm}
       onSubmit={handleSubmit}
       validateOnChange
       enableReinitialize
     >
-      {({ handleSubmit, isSubmitting, dirty }) => (
+      {({ handleSubmit, isSubmitting, dirty, errors }) => (
         <form className={s.account}>
           <div className={s.account_avatar}>
             <ImagePreviewInput
@@ -122,6 +139,7 @@ const FormEditProfile = () => {
                   placeholder="Nickname"
                   className={s.input_nickname}
                   useFormik
+                  errors={errors}
                 ></Input>
                 <Text size="14" className="text-secondary-color">
                   Other users will see your nickname instead of your wallet
@@ -138,6 +156,17 @@ const FormEditProfile = () => {
                   useFormik
                 ></Input>
               </div>
+              <div className={s.input_item}>
+                <Input
+                  name={'wallet_address_btc'}
+                  label={'BTC Wallet Address'}
+                  placeholder="3FZb..."
+                  className={s.input_wallet}
+                  errors={errors}
+                  useFormik
+                ></Input>
+              </div>
+
               <div className={s.input_item}>
                 <Text
                   size="18"
@@ -185,7 +214,9 @@ const FormEditProfile = () => {
                   <ButtonIcon
                     onClick={() => handleSubmit()}
                     className={s.submit_btn}
-                    disabled={isSubmitting || (!dirty && !newFile)}
+                    disabled={
+                      isSubmitting || (!dirty && !newFile) || !_isEmpty(errors)
+                    }
                   >
                     Save changes
                   </ButtonIcon>

@@ -8,6 +8,7 @@ export interface IUpdateProfilePayload {
   bio?: string;
   displayName?: string;
   profileSocial?: ProjectSocial;
+  walletAddressBtc?: string;
 }
 export interface IUpdateProfileResponse {
   avatar: string;
@@ -17,4 +18,5 @@ export interface IUpdateProfileResponse {
   id: string;
   profileSocial: ProjectSocial;
   walletAddress: string;
+  walletAddressBtc: string;
 }

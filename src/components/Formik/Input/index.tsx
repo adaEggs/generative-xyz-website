@@ -65,7 +65,7 @@ const Input: React.FC<
           />
           {endIcon && <div className={cs(s.icon, s.rightIcon)}>{endIcon}</div>}
         </div>
-        {isError && <div className="text-error">{errors.label}</div>}
+        {errors && <div className="text-error">{errors[name]}</div>}
       </>
     );
   };
