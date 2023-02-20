@@ -53,7 +53,6 @@ export const RecentWorks = (): JSX.Element => {
   const [categoriesList, setCategoriesList] = useState<Category[]>();
   const [filterCategory, setFilterCategory] = useState('');
   const [categoriesLoading, setCategoriesLoading] = useState(true);
-  // const [pageN, setPage] = useState(0);
   const [pageNum, setPageNum] = useState(0);
 
   const selectedOption = useMemo(() => {
@@ -92,13 +91,6 @@ export const RecentWorks = (): JSX.Element => {
   const onLoadMore = () => {
     getProjectAll({ page: pageNum + 1 });
     setPageNum(prev => prev + 1);
-
-    // setPage(page + 1);
-    // switch (sort) {
-    //   default:
-    //     getProjectAll();
-    //     break;
-    // }
   };
 
   const fetchAllCategory = async () => {
@@ -115,25 +107,6 @@ export const RecentWorks = (): JSX.Element => {
     }
   };
 
-  // const sortChange = async (): Promise<void> => {
-  //   switch (sort) {
-  //     case 'progress':
-  //       setListData(projects.result);
-  //       break;
-  //     default:
-  //       getProjectAll();
-  //       break;
-  //   }
-  //
-  //   // const tmpProject = await getProjectList({
-  //   //   contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
-  //   //   limit: 100,
-  //   //   page: 1,
-  //   // });
-  //   // setIsLoaded(true);
-  //   // setProjects(tmpProject.result);
-  // };
-
   const handleClickCategory = (categoryID: string) => {
     setFilterCategory(categoryID);
     setProjects(undefined);
@@ -149,6 +122,10 @@ export const RecentWorks = (): JSX.Element => {
   useEffect(() => {
     fetchAllCategory();
   }, []);
+
+  useEffect(() => {
+    setFilterCategory(categoriesList?.[0].id || '');
+  }, [categoriesList]);
 
   return (
     <div className={s.recentWorks}>
@@ -171,13 +148,6 @@ export const RecentWorks = (): JSX.Element => {
             md={'auto'}
             xs={'12'}
           >
-            <CategoryTab
-              type="3"
-              text="All"
-              onClick={() => handleClickCategory('')}
-              active={filterCategory === ''}
-              loading={categoriesLoading}
-            />
             {categoriesList &&
               categoriesList?.map(category => (
                 <CategoryTab
@@ -189,6 +159,13 @@ export const RecentWorks = (): JSX.Element => {
                   loading={categoriesLoading}
                 />
               ))}
+            <CategoryTab
+              type="3"
+              text="All"
+              onClick={() => handleClickCategory('')}
+              active={filterCategory === ''}
+              loading={categoriesLoading}
+            />
           </Col>
           <Col
             className={cs(s.recentWorks_heading_col, s.sort_dropdown)}
