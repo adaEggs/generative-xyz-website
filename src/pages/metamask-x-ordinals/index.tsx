@@ -5,7 +5,9 @@ import { NextPage } from 'next';
 const MetamaskXOrdinalsPage: NextPage = () => {
   return (
     <MarketplaceLayout theme={'dark'} isHideFaucet={true}>
-      <MetamaskXOrdinals />
+      <div style={{ width: '100%', backgroundColor: '#1c1c1c' }}>
+        <MetamaskXOrdinals />
+      </div>
     </MarketplaceLayout>
   );
 };
