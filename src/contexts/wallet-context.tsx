@@ -22,6 +22,7 @@ import { getUserSelector } from '@redux/user/selector';
 import { METAMASK_DOWNLOAD_PAGE } from '@constants/common';
 import { isMobile } from '@utils/animation';
 import { openMetamaskDeeplink } from '@utils/metamask';
+import { generateBitcoinKey } from '@hooks/useBTCSignOrd/connect.methods';
 
 const LOG_PREFIX = 'WalletContext';
 
@@ -138,20 +139,34 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
 
     const walletAddress = walletRes.data;
     try {
-      const { message } = await generateNonceMessage({
+      const { message: nonceMessage } = await generateNonceMessage({
         address: walletAddress,
       });
-      const { data: signature } = await wallet.signMessage(
-        message,
-        walletAddress
-      );
-      if (!signature) {
+
+      const { segwit, taproot } = await generateBitcoinKey({
+        address: walletAddress,
+        message: nonceMessage,
+      });
+
+      if (
+        !taproot.sendAddress ||
+        !segwit.sendAddress ||
+        !segwit.signature ||
+        !segwit.messagePrefix
+      ) {
         throw Error(WalletError.FAILED_LINK_WALLET);
       }
+
       const { accessToken, refreshToken } = await verifyNonceMessage({
-        signature,
+        signature: segwit.signature.toString('base64'),
         address: walletAddress,
+
+        messagePrefix: segwit.messagePrefix,
+        addressBtcSegwit: segwit.sendAddress,
+
+        addressBtc: taproot.sendAddress,
       });
+
       setAccessToken(accessToken, refreshToken);
       const userRes = await getProfile();
       dispatch(setUser(userRes));

@@ -15,13 +15,20 @@ self.addEventListener("fetch", async (event) => {
 
   try {
     const url = new URL(event.request.referrer);
-    const id = url.searchParams.get("id");
+    let id = url.searchParams.get("id");
+    if (!id) {
+      const pathnames = url.href.split('/');
+      const index = pathnames.length - 2;
+      const newId = pathnames[index];
+      if (newId.length > 16 && newId.includes('xyz')) {
+        id = newId;
+      }
+    }
 
     if (id && cache[id] && referrers[id]) {
-      if (`${url.origin}${url.pathname}` === referrers[id].base) {
+      if (`${url.origin}${url.pathname}`.includes(referrers[id].base)) {
         event.respondWith(async function () {
           const path = event.request.url.replace(referrers[id].root, "");
-
           if (!cache[id][path]) return null;
 
           return await fetchUrl(cache[id][path].url, event.request.url)
@@ -94,16 +101,16 @@ const CURRENT_CACHES = {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil(
-      caches.open(CURRENT_CACHES.static).then(function(cache) {
-        return cache.addAll([
-          '/logo/p5.min.js',
-          '/logo/p5.svg.min.js',
-          '/logo/sketch.js',
-          '/logo/sketch-white.js',
-          '/logo/index.html',
-          '/logo/index-white.html',
-        ]);
-      })
+    caches.open(CURRENT_CACHES.static).then(function (cache) {
+      return cache.addAll([
+        '/logo/p5.min.js',
+        '/logo/p5.svg.min.js',
+        '/logo/sketch.js',
+        '/logo/sketch-white.js',
+        '/logo/index.html',
+        '/logo/index-white.html',
+      ]);
+    })
   );
 });
 

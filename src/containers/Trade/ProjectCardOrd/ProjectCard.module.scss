@@ -7,9 +7,9 @@
 
   &_inner {
     padding: rem(16px);
-    background: #fff;
     border: 1px solid rgb(0 0 0 / 20%);
     border-radius: 2px;
+    background: #fff;
     min-height: 100%;
     transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
     position: relative;
@@ -58,7 +58,7 @@
     }
 
     img {
-      object-fit: contain;
+      object-fit: cover !important;
       width: 100%;
       height: 100%;
       position: absolute;

@@ -4,6 +4,10 @@
     align-items: center;
     justify-content: center;
     gap: rem(35px);
+
+    @include mobile {
+      gap: rem(12px);
+    }
   }
 
   .stepIndexWrapper {
@@ -15,6 +19,12 @@
     border: 2px solid $black-10;
     border-radius: rem(40px);
     margin-bottom: rem(14px);
+
+    @include mobile {
+      width: rem(40px);
+      height: rem(30px);
+      border: 1px solid $black-10;
+    }
   }
 
   .stepActiveDot {
@@ -29,6 +39,14 @@
     display: flex;
     gap: 8px;
     align-items: center;
+
+    .stepTitle {
+      text-align: center;
+    }
+
+    @include mobile {
+      gap: 0;
+    }
   }
 
   .stepItem {
@@ -48,6 +66,10 @@
 
       .stepActiveDot {
         display: inline-block;
+
+        @include mobile {
+          display: none;
+        }
       }
 
       .stepTitle {

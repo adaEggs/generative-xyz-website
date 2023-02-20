@@ -1,26 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import Heading from '@components/Heading';
+import ListForSaleModal from '@containers/Trade/ListForSaleModal';
 import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { ProjectList } from '@containers/Trade/ProjectLists';
-import ListForSaleModal from '@containers/Trade/ListForSaleModal';
-
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import s from './RecentWorks.module.scss';
-import {
-  getListingOrdinals,
-  getMarketplaceBtcList,
-  IGetMarketplaceBtcListItem,
-} from '@services/marketplace-btc';
 import { Loading } from '@components/Loading';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { getMarketplaceBtcList } from '@services/marketplace-btc';
 import debounce from 'lodash/debounce';
 import uniqBy from 'lodash/uniqBy';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import s from './RecentWorks.module.scss';
 import ButtonIcon from '@components/ButtonIcon';
-import { useRouter } from 'next/router';
-import { ROUTE_PATH } from '@constants/route-path';
-import Checkbox from '@components/Checkbox';
+import { Container } from 'react-bootstrap';
+import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const LIMIT = 20;
 
@@ -30,6 +25,14 @@ export const RecentWorks = (): JSX.Element => {
 
   const [listData, setListData] = useState<IGetMarketplaceBtcListItem[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
+
+  const onShowModal = () => {
+    onButtonClick({
+      cbSigned: () => setShowModal(true),
+    }).then();
+  };
 
   const fetchData = async () => {
     if (isLoading) return;
@@ -58,93 +61,31 @@ export const RecentWorks = (): JSX.Element => {
 
   const debounceFetchData = debounce(fetchData, 300);
 
-  const router = useRouter();
-  const goToInscriptionsPage = () => {
-    router.push(ROUTE_PATH.INSCRIBE);
-  };
-  const [isNFTBuy, setIsNFTBuy] = useState(false);
-  const handleChangeType = () => {
-    setIsNFTBuy(!isNFTBuy);
-  };
-  const [dataOrd, setdataOrd] = useState<IGetMarketplaceBtcListItem[]>([]);
-  const [fromOrd, setFromOrd] = useState(0);
-  const fetchDataOrdinals = async () => {
-    try {
-      const res = await getListingOrdinals(fromOrd);
-      setFromOrd(res.prev);
-      const newList = uniqBy(
-        [...dataOrd, ...res.data],
-        item => item.inscriptionID
-      );
-
-      setdataOrd(newList || []);
-    } catch (error) {
-      // handle fetch data error here
-    } finally {
-      setIsLoading(false);
-    }
-  };
-  const debounceFetchDataOrdinals = debounce(fetchDataOrdinals, 300);
-
   useEffect(() => {
     debounceFetchData();
-    debounceFetchDataOrdinals();
   }, []);
 
   return (
     <div className={s.recentWorks}>
-      <Row style={{ justifyContent: 'center' }}>
-        <Col xs={'auto'}>
-          <Heading as="h4" fontWeight="semibold">
-            Bitcoin NFTs. Browse. Curate. Purchase
-          </Heading>
-        </Col>
-      </Row>
-      <Row style={{ justifyContent: 'space-between', marginTop: '20px' }}>
-        <Col
-          xs={'auto'}
-          style={{ display: 'flex', alignItems: 'center', margin: 0 }}
+      <div className={s.banner}>
+        <Heading as="h4" fontWeight="semibold" color="black">
+          The easiest way to buy and sell Bitcoin NFTs
+        </Heading>
+        <ButtonIcon
+          sizes="large"
+          variants="primary"
+          className={s.banner_btn}
+          onClick={onShowModal}
         >
-          <Heading as="h5" fontWeight="semibold">
-            Explore Ordinal Inscriptions
-          </Heading>
-        </Col>
-        <Col
-          xs={'auto'}
-          style={{ display: 'flex', margin: 0 }}
-          className={s.wrap_btn}
-        >
-          <Checkbox
-            checked={isNFTBuy}
-            onClick={handleChangeType}
-            className={s.recentWorks_checkBox}
-            id="isNFTBuy"
-            label="Buy Now"
-            sizes="large"
-          />
-          <ButtonIcon
-            className={s.recentWorks_btnIns}
-            onClick={goToInscriptionsPage}
-            sizes="large"
-          >
-            Create an inscription
-          </ButtonIcon>
-          <ButtonIcon
-            sizes="large"
-            variants="ghost"
-            className={s.recentWorks_btn}
-            onClick={() => setShowModal(true)}
-          >
-            List for sale
-          </ButtonIcon>
-        </Col>
-      </Row>
-      <Row className={s.recentWorks_projects}>
-        {!isLoaded ? (
-          <ProjectListLoading numOfItems={12} />
-        ) : (
-          <>
-            {isNFTBuy && (
+          List for sale
+        </ButtonIcon>
+      </div>
+      <Container>
+        <Row className={s.recentWorks_projects}>
+          <Col xs={'12'}>
+            {!isLoaded ? (
+              <ProjectListLoading numOfItems={12} />
+            ) : (
               <InfiniteScroll
                 dataLength={listData.length}
                 next={debounceFetchData}
@@ -159,34 +100,19 @@ export const RecentWorks = (): JSX.Element => {
                 }
                 endMessage={<></>}
               >
-                <ProjectList isNFTBuy={isNFTBuy} listData={listData} />
+                <ProjectList isNFTBuy={true} listData={listData} />
               </InfiniteScroll>
             )}
-            {!isNFTBuy && (
-              <InfiniteScroll
-                dataLength={dataOrd.length}
-                next={debounceFetchDataOrdinals}
-                className={s.recentWorks_projects_list}
-                hasMore={true}
-                loader={
-                  isLoading ? (
-                    <div className={s.recentWorks_projects_loader}>
-                      <Loading isLoaded={isLoading} />
-                    </div>
-                  ) : null
-                }
-                endMessage={<></>}
-              >
-                <ProjectList isNFTBuy={isNFTBuy} listData={dataOrd} />
-              </InfiniteScroll>
-            )}
-          </>
-        )}
-      </Row>
-      <ListForSaleModal
-        showModal={showModal}
-        onClose={() => setShowModal(false)}
-      />
+          </Col>
+        </Row>
+      </Container>
+      {!!ordAddress && showModal && (
+        <ListForSaleModal
+          showModal={showModal}
+          onClose={() => setShowModal(false)}
+          ordAddress={ordAddress}
+        />
+      )}
     </div>
   );
 };

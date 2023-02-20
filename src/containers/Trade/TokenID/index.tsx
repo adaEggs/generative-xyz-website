@@ -9,18 +9,17 @@ import ButtonIcon from '@components/ButtonIcon';
 import MarkdownPreview from '@components/MarkdownPreview';
 import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import useWindowSize from '@hooks/useWindowSize';
-import {
-  getMarketplaceBtcNFTDetail,
-  IGetMarketplaceBtcNFTDetail,
-} from '@services/marketplace-btc';
+import { getMarketplaceBtcNFTDetail } from '@services/marketplace-btc';
 import BigNumber from 'bignumber.js';
 import BuyTokenModal from '@containers/Trade/BuyTokenModal';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
 import { ROUTE_PATH } from '@constants/route-path';
+import NFTDisplayBox from '@components/NFTDisplayBox';
+import { IGetMarketplaceBtcNFTDetail } from '@interfaces/api/marketplace-btc';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -30,10 +29,16 @@ const TokenID: React.FC = (): React.ReactElement => {
   const [tokenData, setTokenData] = React.useState<
     IGetMarketplaceBtcNFTDetail | undefined
   >(undefined);
-
   const [showMore, setShowMore] = useState(false);
   const { mobileScreen } = useWindowSize();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
+
+  const onShowModal = () => {
+    onButtonClick({
+      cbSigned: () => setShowModal(true),
+    }).then();
+  };
 
   const renderLoading = () => {
     return (
@@ -41,11 +46,6 @@ const TokenID: React.FC = (): React.ReactElement => {
         <Loading isLoaded={!!tokenData} className={s.loading_project} />
       </div>
     );
-  };
-
-  const getImgURL = () => {
-    if (!tokenData?.inscriptionID) return '';
-    return `https://ordinals-explorer.generative.xyz/preview/${tokenData?.inscriptionID}`;
   };
 
   const renderRow = (label: string, value?: string | number) => {
@@ -58,7 +58,7 @@ const TokenID: React.FC = (): React.ReactElement => {
         <a
           color={'text-black-80'}
           className={s.row_right}
-          href={`https://ordinals-explorer.generative.xyz/inscription/${tokenData?.inscriptionID}`}
+          href={`https://ordinals-explorer-v5-dev.generative.xyz/inscription/${tokenData?.inscriptionID}`}
           target="_blank"
           rel="noreferrer"
         >
@@ -72,10 +72,11 @@ const TokenID: React.FC = (): React.ReactElement => {
     if (!tokenData) {
       return renderLoading();
     }
+
     return (
       <div className={s.info}>
         <Heading as="h4" fontWeight="medium">
-          Inscription #{tokenData.index}
+          Inscription #{tokenData.inscriptionNumber}
         </Heading>
         <Text size="14" color={'black-60'} className={s.info_labelPrice}>
           {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}
@@ -93,9 +94,6 @@ const TokenID: React.FC = (): React.ReactElement => {
         >
           {formatBTCPrice(new BigNumber(tokenData?.price || 0).toNumber())} BTC
         </Text>
-        {mobileScreen && tokenData?.name && (
-          <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
-        )}
         {!tokenData.buyable && !tokenData.isCompleted && (
           <Text size={'14'} className={s.info_statusIns}>
             The inscription is being purchased. ETA is in ~30 minutes.
@@ -111,7 +109,7 @@ const TokenID: React.FC = (): React.ReactElement => {
           className={s.info_buyBtn}
           onClick={() => {
             // return setShowModal(true);
-            if (tokenData.buyable) return setShowModal(true);
+            if (tokenData.buyable) return onShowModal();
             router.push(ROUTE_PATH.TRADE);
           }}
         >
@@ -119,6 +117,17 @@ const TokenID: React.FC = (): React.ReactElement => {
             {tokenData.buyable ? 'Buy Now' : 'Buy others'}
           </Text>
         </ButtonIcon>
+        {mobileScreen && (
+          <NFTDisplayBox
+            inscriptionID={tokenData.inscriptionID}
+            type={tokenData.contentType}
+            className={s.img_mobile}
+            controls={true}
+            autoPlay={true}
+            loop={true}
+            variants={'full'}
+          />
+        )}
         <div className={s.info_project_desc}>
           <Text
             size="14"
@@ -199,17 +208,29 @@ const TokenID: React.FC = (): React.ReactElement => {
       <div />
       {/*{!mobileScreen && <TokenIDImage image={''} name="" />}*/}
       {!mobileScreen && (
-        <TokenIDImage image={getImgURL()} name={tokenData?.name || ''} />
+        <div style={{ position: 'relative' }}>
+          <NFTDisplayBox
+            inscriptionID={tokenData?.inscriptionID}
+            type={tokenData?.contentType}
+            autoPlay={true}
+            loop={true}
+            controls={false}
+          />
+        </div>
       )}
-      {!!tokenData?.inscriptionID && !!tokenData?.price && (
-        <BuyTokenModal
-          showModal={showModal}
-          onClose={() => setShowModal(false)}
-          inscriptionID={tokenData.inscriptionID || ''}
-          price={new BigNumber(tokenData?.price || 0).toNumber()}
-          orderID={tokenData.orderID}
-        />
-      )}
+      {!!tokenData?.inscriptionID &&
+        !!tokenData?.price &&
+        !!ordAddress &&
+        showModal && (
+          <BuyTokenModal
+            showModal={showModal}
+            onClose={() => setShowModal(false)}
+            inscriptionID={tokenData.inscriptionID || ''}
+            price={new BigNumber(tokenData?.price || 0).toNumber()}
+            orderID={tokenData.orderID}
+            ordAddress={ordAddress}
+          />
+        )}
     </Container>
   );
 };

@@ -2,7 +2,8 @@ import React from 'react';
 import { Empty } from '@components/Collection/Empty';
 import { ProjectCard } from '../ProjectCard';
 import { ProjectCardOrd } from '../ProjectCardOrd';
-import { IGetMarketplaceBtcListItem } from '@services/marketplace-btc';
+import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
+import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
 
 export const ProjectList = ({
   listData,
@@ -14,25 +15,44 @@ export const ProjectList = ({
   return (
     <>
       {listData && listData?.length > 0 ? (
-        <div className="row">
-          {listData?.map(project =>
-            isNFTBuy ? (
-              <ProjectCard
-                className={'col-wide-2_5 col-xl-2 col-lg-5 col-6'}
-                key={`project-item-${project.inscriptionID}`}
-                project={project}
-              />
-            ) : (
-              <ProjectCardOrd
-                className={'col-wide-2_5 col-xl-2 col-lg-5 col-6'}
-                key={`project-item-${project.inscriptionID}`}
-                project={project}
-              />
-            )
-          )}
-        </div>
+        <ResponsiveMasonry
+          columnsCountBreakPoints={{
+            350: 1,
+            750: 2,
+            900: 3,
+            1240: 4,
+            2500: 5,
+            3000: 6,
+          }}
+        >
+          <Masonry gutter="24px">
+            {listData?.map((project, index) =>
+              isNFTBuy ? (
+                <ProjectCard
+                  className={'col-12'}
+                  key={`project-item-${project.inscriptionID}`}
+                  project={project}
+                  index={index}
+                />
+              ) : (
+                <ProjectCardOrd
+                  className={'col-12'}
+                  key={`project-item-${project.inscriptionID}`}
+                  project={project}
+                  index={index}
+                />
+              )
+            )}
+          </Masonry>
+        </ResponsiveMasonry>
       ) : (
-        listData && <Empty content="Be the first to mint this collection" />
+        listData && (
+          <Empty
+            content={
+              isNFTBuy ? 'Be the first to mint this collection' : 'Abracadabra'
+            }
+          />
+        )
       )}
     </>
   );

@@ -1,5 +1,6 @@
 import ToastOverlay from '@components/ToastOverlay';
 import AuthWrapper from '@components/Utils/AuthWrapper';
+import { STANDALONE_PAGES } from '@constants/route-path';
 import {
   SEO_DESCRIPTION,
   SEO_IMAGE,
@@ -11,12 +12,13 @@ import store from '@redux';
 import { sendAAPageView } from '@services/aa-tracking';
 import '@styles/index.scss';
 import log from '@utils/logger';
+import { getReferralCodeURLParameter, setReferral } from '@utils/referral';
 import { NextComponentType, NextPageContext } from 'next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import NextNprogress from 'nextjs-progressbar';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Provider } from 'react-redux';
 
 interface MyAppProps extends AppProps {
@@ -31,8 +33,8 @@ export default function App({ Component, pageProps }: MyAppProps) {
   const router = useRouter();
   const { seoInfo = {} } = pageProps;
   const { title, description, image } = seoInfo;
-
-  // const Layout = Component.Layout || React.Fragment;
+  const isFirstRender = useRef(true);
+  const { pathname } = useRouter();
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -50,10 +52,34 @@ export default function App({ Component, pageProps }: MyAppProps) {
   }, []);
 
   useEffect(() => {
-    if (router.isReady) {
+    if (router.isReady && !isFirstRender.current) {
       sendAAPageView({ page: window.location.pathname });
     }
-  }, [router.route]);
+    isFirstRender.current = false;
+  }, [router.asPath]);
+
+  useEffect(() => {
+    const refCode = getReferralCodeURLParameter();
+    if (refCode) {
+      setReferral(refCode);
+    }
+  }, []);
+
+  const renderBody = () => {
+    if (STANDALONE_PAGES.includes(pathname)) {
+      return <Component {...pageProps} />;
+    }
+    return (
+      <Provider store={store}>
+        <WalletProvider>
+          <AuthWrapper>
+            <Component {...pageProps} />
+            <ToastOverlay />
+          </AuthWrapper>
+        </WalletProvider>
+      </Provider>
+    );
+  };
 
   return (
     <>
@@ -166,14 +192,7 @@ export default function App({ Component, pageProps }: MyAppProps) {
       </Head>
 
       <NextNprogress />
-      <Provider store={store}>
-        <WalletProvider>
-          <AuthWrapper>
-            <Component {...pageProps} />
-            <ToastOverlay />
-          </AuthWrapper>
-        </WalletProvider>
-      </Provider>
+      {renderBody()}
     </>
   );
 }

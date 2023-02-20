@@ -1,16 +1,22 @@
 import s from './styles.module.scss';
 import { Formik } from 'formik';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Button from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { useRouter } from 'next/router';
 import UploadThumbnailButton from '../UploadThumbnailButton';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
+import useAsyncEffect from 'use-async-effect';
+import { SelectOption } from '@interfaces/select-input';
+import { getCategoryList } from '@services/category';
+import Select, { MultiValue } from 'react-select';
+import MarkdownEditor from '@components/MarkdownEditor';
 
 type IProductDetailFormValue = {
   name: string;
   description: string;
+  categories: Array<SelectOption>;
 };
 
 const ProjectDetail: React.FC = (): React.ReactElement => {
@@ -22,6 +28,9 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
     setShowErrorAlert,
     currentStep,
   } = useContext(MintBTCGenerativeContext);
+  const [categoryOptions, setCategoryOptions] = useState<Array<SelectOption>>(
+    []
+  );
 
   const validateForm = (
     _formValues: IProductDetailFormValue
@@ -30,6 +39,9 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
     setFormValues({
       ...formValues,
       ..._formValues,
+      categories: _formValues.categories
+        ? _formValues.categories.map(cat => cat.value)
+        : [],
     });
 
     const errors: Record<string, string> = {};
@@ -56,12 +68,27 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
     router.push('/create/set-price', undefined, { shallow: true });
   };
 
+  useAsyncEffect(async () => {
+    const { result } = await getCategoryList();
+    const options = result.map(item => ({
+      value: item.id,
+      label: item.name,
+    }));
+    setCategoryOptions(options);
+  }, []);
+
   return (
     <Formik
       key="projectDetailForm"
       initialValues={{
         name: formValues.name ?? '',
         description: formValues.description ?? '',
+        categories: formValues.categories
+          ? formValues.categories.map(cat => {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              return categoryOptions.find(op => cat === op.value)!;
+            })
+          : [],
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -73,6 +100,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
         errors,
         touched,
         handleChange,
+        setFieldValue,
         handleBlur,
         handleSubmit,
       }) => (
@@ -103,19 +131,51 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                     Description of your collection&nbsp;
                     <sup className={s.requiredTag}>*</sup>
                   </label>
-                  <textarea
+                  {/*<textarea*/}
+                  {/*  id="description"*/}
+                  {/*  name="description"*/}
+                  {/*  onChange={handleChange}*/}
+                  {/*  onBlur={handleBlur}*/}
+                  {/*  value={values.description}*/}
+                  {/*  className={s.input}*/}
+                  {/*  rows={4}*/}
+                  {/*  placeholder="Tell us more about the meaning and inspiration behind your art."*/}
+                  {/*/>*/}
+                  <MarkdownEditor
                     id="description"
-                    name="description"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
+                    className={s.mdEditor}
                     value={values.description}
-                    className={s.input}
-                    rows={4}
-                    placeholder="Tell us more about the meaning and inspiration behind your art."
+                    onBlur={handleBlur}
+                    preview="edit"
+                    visiableDragbar={false}
+                    height={200}
+                    onValueChange={(val: string | undefined) => {
+                      if (typeof val !== undefined)
+                        setFieldValue('description', val);
+                    }}
                   />
                   {errors.description && touched.description && (
                     <p className={s.error}>{errors.description}</p>
                   )}
+                </div>
+                <div className={s.formItem}>
+                  <label className={s.label} htmlFor="categories">
+                    Categories
+                  </label>
+                  <Select
+                    id="categories"
+                    isMulti
+                    name="categories"
+                    options={categoryOptions}
+                    className={s.selectInput}
+                    classNamePrefix="select"
+                    isOptionDisabled={() => values.categories.length >= 3}
+                    onChange={(ops: MultiValue<SelectOption>) => {
+                      setFieldValue('categories', ops);
+                    }}
+                    onBlur={handleBlur}
+                    placeholder="Select categories"
+                  />
                 </div>
               </div>
               <div className={s.uploadPreviewWrapper}>

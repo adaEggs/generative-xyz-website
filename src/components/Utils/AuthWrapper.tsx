@@ -2,13 +2,12 @@ import { LogLevel } from '@enums/log-level';
 import { useAppDispatch } from '@redux';
 import { resetUser, setUser } from '@redux/user/action';
 import { getProfile } from '@services/profile';
-import { clearAuthStorage, getAccessToken } from '@utils/auth';
+import { clearAuthStorage, getAccessToken, setUserInfo } from '@utils/auth';
 import log from '@utils/logger';
 import React, { PropsWithChildren, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
 import { User } from '@interfaces/user';
-import { LocalStorageKey } from '@enums/local-storage';
 
 const LOG_PREFIX = 'AuthWrapper';
 
@@ -19,8 +18,12 @@ const AuthWrapper: React.FC<PropsWithChildren> = ({
   const router = useRouter();
 
   const checkUserRedirect = (userRes: User | null) => {
-    if (router.pathname === ROUTE_PATH.PROFILE && !userRes) {
-      router.push(ROUTE_PATH.COLLECTIONS);
+    if (
+      (router.pathname === ROUTE_PATH.PROFILE ||
+        router.pathname.indexOf(ROUTE_PATH.GENERATIVE_EDIT) !== -1) &&
+      !userRes
+    ) {
+      router.push(ROUTE_PATH.DROPS);
     }
   };
 
@@ -30,12 +33,8 @@ const AuthWrapper: React.FC<PropsWithChildren> = ({
       try {
         const userRes = await getProfile();
         checkUserRedirect(userRes);
+        setUserInfo(userRes);
         dispatch(setUser(userRes));
-        localStorage.setItem(LocalStorageKey.USER_ID, userRes.id);
-        localStorage.setItem(
-          LocalStorageKey.USER_WALLET_ADDRESS,
-          userRes.walletAddress
-        );
       } catch (err: unknown) {
         log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
         clearAuthStorage();

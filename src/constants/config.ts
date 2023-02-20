@@ -11,6 +11,7 @@ export const NETWORK_CHAIN_ID: number = parseInt(
 export const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL!;
 export const APP_TOKEN_SYMBOL = 'GEN';
 export const SERVICE_FEE = 2.5 / 100;
+export const CHUNK_SIZE = 50; // MB
 
 // Discount
 export const PRINTS_REQUIRED_TO_DISCOUNT = 5000;
@@ -46,5 +47,9 @@ export const AA_PLATFORM = 'web';
 export const RAPI_URL = 'https://telize-v1.p.rapidapi.com/geoip';
 export const RAPI_HOST = 'telize-v1.p.rapidapi.com';
 export const RAPID_CLIENT_TOKEN = process.env.NEXT_PUBLIC_RAPID_CLIENT_TOKEN!;
+
+// Ordinals
+export const HOST_ORDINALS_EXPLORER =
+  'https://ordinals-explorer-v5-dev.generative.xyz';
 
 /* eslint-enable @typescript-eslint/no-non-null-assertion */

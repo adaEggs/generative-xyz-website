@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import { Loading } from '@components/Loading';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
@@ -27,6 +27,7 @@ interface IProps {
   inscriptionID: string;
   price: number | string;
   orderID: string;
+  ordAddress: string;
 }
 
 const LOG_PREFIX = 'BuyModal';
@@ -38,6 +39,7 @@ const ModalBuyItemViaBTC = ({
   inscriptionID,
   orderID,
   onSuccess,
+  ordAddress,
 }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
@@ -53,7 +55,7 @@ const ModalBuyItemViaBTC = ({
 
     if (!values.address) {
       errors.address = 'Address is required.';
-    } else if (!validateBTCWalletAddress(values.address)) {
+    } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     }
     return errors;
@@ -122,18 +124,18 @@ const ModalBuyItemViaBTC = ({
               {(step === 'pasteAddress' || step === 'showAddress') && (
                 <>
                   <h3 className={s.modalTitle}>Buy inscription</h3>
-                  <div className={s.alert_info}>
-                    Do not spend any satoshis from this wallet unless you
-                    understand what you are doing. If you ignore this warning,
-                    you could inadvertently lose access to your ordinals and
-                    inscriptions.
-                  </div>
+                  {/*<div className={s.alert_info}>*/}
+                  {/*  Do not spend any satoshis from this wallet unless you*/}
+                  {/*  understand what you are doing. If you ignore this warning,*/}
+                  {/*  you could inadvertently lose access to your ordinals and*/}
+                  {/*  inscriptions.*/}
+                  {/*</div>*/}
                   <div className={s.formWrapper}>
                     <div className={s.formWrapper}>
                       <Formik
                         key="mintBTCGenerativeForm"
                         initialValues={{
-                          address: '',
+                          address: ordAddress,
                         }}
                         validate={validateForm}
                         onSubmit={handleSubmit}
@@ -150,8 +152,15 @@ const ModalBuyItemViaBTC = ({
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
                                 Enter the Ordinals-compatible BTC address to
-                                receive your buying inscription.
-                                <sup className={s.requiredTag}>*</sup>
+                                receive your buying inscription. Don’t have one?{' '}
+                                <a
+                                  href="https://gist.github.com/windsok/5b53a1ced6ef3eddbde260337de28980"
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  Start here
+                                </a>
+                                .
                               </label>
                               <div className={s.inputContainer}>
                                 <input

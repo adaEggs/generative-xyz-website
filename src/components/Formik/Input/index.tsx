@@ -2,7 +2,7 @@
 import cs from 'classnames';
 import { Field } from 'formik';
 import { ReactNode } from 'react';
-
+import _isEmpty from 'lodash/isEmpty';
 import s from './styles.module.scss';
 
 interface IInputProps {
@@ -47,7 +47,7 @@ const Input: React.FC<
     inputClassName,
     ...rest
   } = props;
-  const isError = errors?.label;
+  const isError = errors && errors[name] && !_isEmpty(errors[name]);
 
   const InputComponent = as;
 
@@ -65,7 +65,7 @@ const Input: React.FC<
           />
           {endIcon && <div className={cs(s.icon, s.rightIcon)}>{endIcon}</div>}
         </div>
-        {isError && <div className="text-error">{errors.label}</div>}
+        {errors && <div className="text-error">{errors[name]}</div>}
       </>
     );
   };

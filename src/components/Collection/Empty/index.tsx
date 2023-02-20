@@ -115,7 +115,7 @@ export const Empty = ({
     <div className={cs(s.empty, 'empty', className)}>
       <div className={cs(s.empty_inner, mintedOut && s.minted_out)}>
         <div className={s.empty_thumb}>
-          <img src={`${CDN_URL}/icons/ic-empty.svg`} alt="empty.svg" />
+          <img src={`${CDN_URL}/images/wiz-gif.gif`} alt="wiz-gif.svg" />
         </div>
         <div className={s.empty_desc}>
           {mintedOut ? (

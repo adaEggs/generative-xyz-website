@@ -6,15 +6,13 @@ import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import { Loading } from '@components/Loading';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import {
   getListingFee,
-  IListingFee,
-  IPostMarketplaceBtcListNFTParams,
   postMarketplaceBtcListNFT,
 } from '@services/marketplace-btc';
 import Text from '@components/Text';
@@ -23,6 +21,10 @@ import ButtonIcon from '@components/ButtonIcon';
 import { formatUnixDateTime } from '@utils/time';
 import { debounce } from 'lodash';
 import cs from 'classnames';
+import {
+  IListingFee,
+  IPostMarketplaceBtcListNFTParams,
+} from '@interfaces/api/marketplace-btc';
 
 // const FEE_CHARGE_PERCENT = 0.1;
 const MIN_PRICE = 0.005;
@@ -34,11 +36,16 @@ const INITIAL_LISTING_FEE: IListingFee = {
 interface IProps {
   showModal: boolean;
   onClose: () => void;
+  ordAddress: string;
 }
 
 const LOG_PREFIX = 'ListForSaleModal';
 
-const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
+const ListForSaleModal = ({
+  showModal,
+  onClose,
+  ordAddress,
+}: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
   const [expireTime, setExpireTime] = useState('');
@@ -53,13 +60,13 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
 
     if (!values.receiveAddress) {
       errors.receiveAddress = 'Address is required.';
-    } else if (!validateBTCWalletAddress(values.receiveAddress)) {
+    } else if (!validateBTCAddressTaproot(values.receiveAddress)) {
       errors.receiveAddress = 'Invalid wallet address.';
     }
 
     if (!values.receiveOrdAddress) {
       errors.receiveOrdAddress = 'Address is required.';
-    } else if (!validateBTCWalletAddress(values.receiveOrdAddress)) {
+    } else if (!validateBTCAddressTaproot(values.receiveOrdAddress)) {
       errors.receiveOrdAddress = 'Invalid wallet address.';
     }
 
@@ -161,12 +168,6 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
               {step === 'info' && (
                 <div>
                   <h3 className={s.modalTitle}>List for sale</h3>
-                  {/*<div className={s.alert_info}>*/}
-                  {/*  Do not spend any satoshis from this wallet unless you*/}
-                  {/*  understand what you are doing. If you ignore this warning,*/}
-                  {/*  you could inadvertently lose access to your ordinals and*/}
-                  {/*  inscriptions.*/}
-                  {/*</div>*/}
                   <div className={s.formWrapper}>
                     <Formik
                       key="mintBTCGenerativeForm"
@@ -176,7 +177,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         description: '',
                         price: '',
                         receiveAddress: '',
-                        receiveOrdAddress: '',
+                        receiveOrdAddress: ordAddress,
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}

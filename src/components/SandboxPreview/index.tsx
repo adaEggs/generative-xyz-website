@@ -9,12 +9,8 @@ import React, {
 import useAsyncEffect from 'use-async-effect';
 import { ISandboxRef, SandboxFiles } from '@interfaces/sandbox';
 import { SandboxSWEventType } from '@enums/service-worker';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
 import { generateID } from '@utils/generate-data';
 import cs from 'classnames';
-
-const LOG_PREFIX = 'SandboxPreview';
 
 interface IProps {
   sandboxFiles: SandboxFiles | null;
@@ -28,7 +24,7 @@ interface IProps {
 const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
   (props: IProps, ref: ForwardedRef<ISandboxRef>) => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
-    const workerReg = useRef<ServiceWorkerRegistration | null>(null);
+    const workerReg = useRef<ServiceWorker | null>(null);
     const {
       sandboxFiles,
       rawHtml,
@@ -38,8 +34,7 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
       className,
     } = props;
     const [id, setId] = useState<string>('0');
-    const [workerIns, setWorkerIns] =
-      useState<ServiceWorkerRegistration | null>(null);
+    const [workerIns, setWorkerIns] = useState<ServiceWorker | null>(null);
 
     const reloadIframe = () => {
       if (iframeRef.current) {
@@ -59,17 +54,13 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
 
     useEffect(() => {
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker
-          .register('/sw.js', {
-            scope: '/',
-          })
-          .then(reg => {
-            workerReg.current = reg;
-            setWorkerIns(reg);
-          })
-          .catch((err: Error) => {
-            log(err, LogLevel.ERROR, LOG_PREFIX);
-          });
+        navigator.serviceWorker.ready.then(function (registration) {
+          if (registration.active) {
+            const serviceWorker = registration.active;
+            workerReg.current = serviceWorker;
+            setWorkerIns(serviceWorker);
+          }
+        });
       }
     }, []);
 
@@ -77,13 +68,13 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
       if (sandboxFiles && workerReg.current) {
         const worker = workerReg.current;
 
-        if (!worker.active) {
+        if (!worker || worker.state !== 'activated') {
           return;
         }
 
         const id = generateID(6);
 
-        worker.active.postMessage({
+        worker.postMessage({
           type: SandboxSWEventType.REGISTER_REFERRER,
           data: {
             id: id,
@@ -94,7 +85,7 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
           },
         });
 
-        worker.active.postMessage({
+        worker.postMessage({
           type: SandboxSWEventType.REGISTER_URLS,
           data: {
             id,
@@ -110,13 +101,13 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
       if (rawHtml && workerReg.current) {
         const worker = workerReg.current;
 
-        if (!worker.active) {
+        if (!worker || worker.state !== 'activated') {
           return;
         }
 
-        const id = generateID(6);
+        const id = generateID(16);
 
-        worker.active.postMessage({
+        worker.postMessage({
           type: SandboxSWEventType.REGISTER_REFERRER,
           data: {
             id: id,
@@ -127,7 +118,7 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
           },
         });
 
-        worker.active.postMessage({
+        worker.postMessage({
           type: SandboxSWEventType.REGISTER_HTML,
           data: {
             id: id,
@@ -141,7 +132,11 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
 
     useEffect(() => {
       if (iframeRef.current && id !== '0' && showIframe === true) {
-        const previewUrl = `${location.origin}/sandbox/preview.html?id=${id}&seed=${hash}`;
+        let previewUrl = `${location.origin}/sandbox/preview.html?id=${id}&seed=${hash}`;
+        const isOrdinals = hash && hash.includes('i0');
+        if (isOrdinals) {
+          previewUrl = `${location.origin}/sandbox/preview.html/${id}/${hash}`;
+        }
         iframeRef.current.src = previewUrl;
       }
     }, [id, hash, showIframe]);

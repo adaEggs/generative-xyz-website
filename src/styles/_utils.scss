@@ -106,12 +106,6 @@
   background-color: #a5a5a5;
 }
 
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-}
-
 .items-center {
   align-items: center;
 }
@@ -276,7 +270,8 @@
 }
 
 .row {
-  --bs-gutter-y: #{rem(24px)};
+  // --bs-gutter-y: #{rem(24px)};
+  row-gap: rem(56);
 
   @include mobile {
     --bs-gutter-x: #{rem(10px)};

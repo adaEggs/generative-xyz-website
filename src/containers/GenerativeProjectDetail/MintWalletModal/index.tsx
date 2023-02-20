@@ -15,7 +15,7 @@ import { mintBTCGenerative } from '@services/btc';
 import { generateETHReceiverAddressWithWhitelist } from '@services/eth';
 import { formatEthPrice } from '@utils/format';
 import log from '@utils/logger';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import { Formik } from 'formik';
 import _debounce from 'lodash/debounce';
 import React, {
@@ -77,7 +77,10 @@ const MintWalletModal: React.FC = () => {
     [projectData]
   );
 
-  const userBtcAddress = useMemo(() => user?.wallet_address_btc, [user]);
+  const userBtcAddress = useMemo(
+    () => user?.walletAddressBtcTaproot || '',
+    [user]
+  );
 
   const handleTransfer = async (
     toAddress: string,
@@ -95,7 +98,7 @@ const MintWalletModal: React.FC = () => {
 
     if (!values.address) {
       errors.address = 'Wallet address is required.';
-    } else if (!validateBTCWalletAddress(values.address)) {
+    } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
       if (addressInput !== values.address) {

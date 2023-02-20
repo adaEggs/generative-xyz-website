@@ -15,7 +15,7 @@ import QRCodeGenerator from '@components/QRCodeGenerator';
 import { mintBTCGenerative } from '@services/btc';
 import { Loading } from '@components/Loading';
 import _debounce from 'lodash/debounce';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
@@ -26,6 +26,9 @@ import { generateETHReceiverAddress } from '@services/eth';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { WalletContext } from '@contexts/wallet-context';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
+import _throttle from 'lodash/throttle';
 
 interface IFormValue {
   address: string;
@@ -40,7 +43,9 @@ const MintEthModal: React.FC = () => {
   );
 
   const { connect, transfer } = useContext(WalletContext);
-  const { setIsPopupPayment } = useContext(BitcoinProjectContext);
+  const { setIsPopupPayment, paymentMethod } = useContext(
+    BitcoinProjectContext
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>(null);
@@ -49,7 +54,10 @@ const MintEthModal: React.FC = () => {
   const [addressInput, setAddressInput] = useState<string>('');
   const [_isConnecting, setIsConnecting] = useState<boolean>(false);
 
-  const userBtcAddress = useMemo(() => user?.wallet_address_btc, [user]);
+  const userBtcAddress = useMemo(
+    () => user?.walletAddressBtcTaproot || '',
+    [user]
+  );
 
   const handleConnectWallet = async (): Promise<void> => {
     try {
@@ -62,16 +70,16 @@ const MintEthModal: React.FC = () => {
     }
   };
 
-  const handleTransfer = async (
-    toAddress: string,
-    val: string
-  ): Promise<void> => {
-    try {
-      await transfer(toAddress, val);
-    } catch (err: unknown) {
-      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-    }
-  };
+  const handleTransfer = React.useCallback(
+    _throttle(async (toAddress: string, val: string): Promise<void> => {
+      try {
+        await transfer(toAddress, val);
+      } catch (err: unknown) {
+        log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+      }
+    }, 400),
+    []
+  );
 
   const getBTCAddress = async (walletAddress: string): Promise<void> => {
     if (!projectData) return;
@@ -83,6 +91,20 @@ const MintEthModal: React.FC = () => {
       const { address, price: price } = await generateETHReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
+      });
+
+      sendAAEvent({
+        eventName: BTC_PROJECT.MINT_NFT,
+        data: {
+          projectId: projectData.id,
+          projectName: projectData.name,
+          projectThumbnail: projectData.image,
+          mintPrice: formatEthPrice(projectData?.mintPrice),
+          mintType: paymentMethod,
+          networkFee: formatEthPrice(projectData?.networkFee || null),
+          masterAddress: address,
+          totalPrice: formatEthPrice(price),
+        },
       });
 
       setReceiverAddress(address);
@@ -104,7 +126,7 @@ const MintEthModal: React.FC = () => {
 
     if (!values.address) {
       errors.address = 'Wallet address is required.';
-    } else if (!validateBTCWalletAddress(values.address)) {
+    } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
       if (addressInput !== values.address) {

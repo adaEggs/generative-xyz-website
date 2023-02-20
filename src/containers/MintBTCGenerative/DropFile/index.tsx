@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { prettyPrintBytes } from '@utils/units';
 import { SANDBOX_BTC_FILE_SIZE_LIMIT, CDN_URL } from '@constants/config';
 import SvgInset from '@components/SvgInset';
+import { Loading } from '@components/Loading';
 
 export interface IProps {
   className: string;
@@ -13,6 +14,7 @@ export interface IProps {
   labelText: string;
   maxSize: number;
   onChange: (files: File | null) => void;
+  isProcessing: boolean;
 }
 
 const DropFile: React.FC<IProps> = ({
@@ -22,6 +24,7 @@ const DropFile: React.FC<IProps> = ({
   labelText,
   maxSize,
   onChange,
+  isProcessing,
 }: IProps) => {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -75,6 +78,14 @@ const DropFile: React.FC<IProps> = ({
           )}
           {error && (
             <p className={cs(s.dropZoneDescription, s.errorText)}>{error}</p>
+          )}
+          {isProcessing && (
+            <div className={s.loadingWrapper}>
+              <div className={s.loadingIndicatorWrapper}>
+                <Loading className={s.loadingIndicator} isLoaded={false} />
+              </div>
+              <p className={s.loadingText}>Unzipping file...</p>
+            </div>
           )}
         </div>
       </FileUploader>

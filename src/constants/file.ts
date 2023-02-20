@@ -1,3 +1,5 @@
+import { MediaType } from '@enums/file';
+
 export const ZIP_MIMES = [
   'application/zip',
   'application/x-zip-compressed',
@@ -15,4 +17,54 @@ export const JS_EXTENSION = 'js';
 export const HTML_EXTENSION = 'html';
 export const CSS_EXTENSION = 'css';
 
-export const IMAGE_FILE_EXT = ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+export const SUPPORTED_FILE_EXT: Array<{ mediaType: MediaType; ext: string }> =
+  [
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'jpg',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'jpeg',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'png',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'gif',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'svg',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'webp',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'apng',
+    },
+    {
+      mediaType: MediaType.MODEL_3D,
+      ext: 'glb',
+    },
+    {
+      mediaType: MediaType.VIDEO,
+      ext: 'mp4',
+    },
+    // {
+    //   mediaType: MediaType.VIDEO,
+    //   ext: 'mov'
+    // },
+    // {
+    //   mediaType: MediaType.VIDEO,
+    //   ext: 'webm'
+    // },
+    // {
+    //   mediaType: MediaType.VIDEO,
+    //   ext: 'avi'
+    // },
+  ];

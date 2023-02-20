@@ -1,11 +1,48 @@
 .mintSuccess {
-  padding-top: 28px;
+  padding-top: rem(28px);
 
   .title {
     font-weight: 600;
-    font-size: 48px;
-    line-height: 58px;
+    font-size: rem(48px);
+    line-height: rem(58px);
     color: $black-100;
-    margin-bottom: 48px;
+    margin-bottom: rem(24);
+
+    & + h5 {
+      margin-bottom: rem(24);
+    }
+  }
+
+  .actionWrapper {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: rem(24);
+
+    > button {
+      width: fit-content;
+    }
+
+    .social_btns {
+      display: flex;
+      gap: rem(10);
+    }
+
+    .shareBtn > button {
+      color: $white;
+      border-color: transparent;
+    }
+
+    .discord_btn {
+      background-color: #5865f2;
+    }
+
+    .twitter_btn {
+      background-color: #3cf;
+    }
+
+    .facebook_btn {
+      background-color: #4267b2;
+    }
   }
 }

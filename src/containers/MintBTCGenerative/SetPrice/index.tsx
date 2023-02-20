@@ -19,13 +19,17 @@ import {
 } from '@services/project';
 import { ICreateBTCProjectPayload } from '@interfaces/api/project';
 import { blobToBase64, fileToBase64 } from '@utils/file';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import { detectUsedLibs } from '@utils/sandbox';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { getMempoolFeeRate } from '@services/mempool';
 import { calculateNetworkFee } from '@utils/inscribe';
 import { InscribeMintFeeRate } from '@enums/inscribe';
 import { formatBTCPrice } from '@utils/format';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -37,6 +41,7 @@ type ISetPriceFormValue = {
 };
 
 const SetPrice = () => {
+  const user = useSelector(getUserSelector);
   const router = useRouter();
   const {
     formValues,
@@ -92,7 +97,7 @@ const SetPrice = () => {
         );
         setNetworkFee(sats);
       }
-      if (collectionType === CollectionType.IMAGES) {
+      if (collectionType === CollectionType.COLLECTION) {
         if (!imageCollectionFile) {
           setNetworkFee(0);
           return;
@@ -141,7 +146,7 @@ const SetPrice = () => {
 
     if (!values.creatorWalletAddress.toString()) {
       errors.creatorWalletAddress = 'Creator wallet address is required.';
-    } else if (!validateBTCWalletAddress(values.creatorWalletAddress)) {
+    } else if (!validateBTCAddressTaproot(values.creatorWalletAddress)) {
       errors.creatorWalletAddress = 'Invalid BTC wallet address.';
     }
 
@@ -150,7 +155,7 @@ const SetPrice = () => {
     } else if (parseInt(values.maxSupply.toString(), 10) <= 0) {
       errors.maxSupply = 'Invalid number. Must be greater than 0.';
     } else if (
-      collectionType === CollectionType.IMAGES &&
+      collectionType === CollectionType.COLLECTION &&
       parseInt(values.maxSupply.toString(), 10) > numberOfFile
     ) {
       errors.maxSupply = `Invalid number. Must be equal or less than ${numberOfFile}.`;
@@ -258,7 +263,7 @@ const SetPrice = () => {
         isFullChain: true,
       };
 
-      if (collectionType === CollectionType.IMAGES) {
+      if (collectionType === CollectionType.COLLECTION) {
         try {
           const uploadRes = await uploadBTCProjectFiles({
             file: rawFile,
@@ -283,6 +288,17 @@ const SetPrice = () => {
       }
 
       const projectRes = await createBTCProject(payload);
+
+      // Send tracking
+      sendAAEvent({
+        eventName: BTC_PROJECT.LAUNCH_NEW_PROJECT,
+        data: {
+          ...projectRes,
+          artistName: user?.displayName ?? '',
+        },
+      });
+
+      // Polling to get project status
       intervalGetProjectStatus(projectRes.tokenID);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -327,7 +343,7 @@ const SetPrice = () => {
             <div className={s.formWrapper}>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="creatorWalletAddress">
-                  Creator BTC wallet address{' '}
+                  BTC wallet to receive payment{' '}
                   <sup className={s.requiredTag}>*</sup>
                 </label>
                 <div className={s.inputContainer}>
@@ -346,14 +362,14 @@ const SetPrice = () => {
                   touched.creatorWalletAddress && (
                     <p className={s.error}>{errors.creatorWalletAddress}</p>
                   )}
-                <Text
+                {/* <Text
                   as={'p'}
                   size={'14'}
                   color={'black-60'}
                   className={s.inputDesc}
                 >
                   Set up your BTC wallet address
-                </Text>
+                </Text> */}
               </div>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="maxSupply">

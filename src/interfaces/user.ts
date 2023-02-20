@@ -9,5 +9,6 @@ export type User = {
   createdAt: string;
   profileSocial?: ProjectSocial;
   bgCover?: string;
-  wallet_address_btc?: string;
+  walletAddressBtc?: string;
+  walletAddressBtcTaproot?: string;
 };

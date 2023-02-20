@@ -6,7 +6,7 @@
 
   @include min-tablet {
     display: grid;
-    grid-template-columns: rem(520px) 1px 1fr;
+    grid-template-columns: 35% 1px calc(65% - 1px);
     padding-top: rem(40px);
     margin-bottom: rem(40px);
   }
@@ -42,6 +42,10 @@
 
   :global(.label_text) {
     margin-bottom: rem(12px);
+  }
+
+  .progressBar {
+    max-width: rem(320px);
   }
 }
 
@@ -335,4 +339,21 @@
 .shares {
   display: flex;
   gap: rem(8px);
+}
+
+.projectHeader {
+  &.hasEdit {
+    display: flex;
+
+    .projectHeader_title {
+      flex: 0 0 auto;
+      margin-right: rem(30px);
+      max-width: calc(100% - #{rem(120px)});
+    }
+
+    .projectHeader_btn {
+      flex: 0 0 auto;
+      margin-top: rem(5px);
+    }
+  }
 }

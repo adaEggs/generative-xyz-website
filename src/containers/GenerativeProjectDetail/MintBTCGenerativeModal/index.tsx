@@ -15,7 +15,7 @@ import QRCodeGenerator from '@components/QRCodeGenerator';
 import { generateBTCReceiverAddress, mintBTCGenerative } from '@services/btc';
 import { Loading } from '@components/Loading';
 import _debounce from 'lodash/debounce';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
@@ -25,6 +25,8 @@ import { formatBTCPrice } from '@utils/format';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { WalletContext } from '@contexts/wallet-context';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 
 interface IFormValue {
   address: string;
@@ -39,7 +41,9 @@ const MintBTCGenerativeModal: React.FC = () => {
   const user = useAppSelector(getUserSelector);
   const { connect } = useContext(WalletContext);
 
-  const { setIsPopupPayment } = useContext(BitcoinProjectContext);
+  const { setIsPopupPayment, paymentMethod } = useContext(
+    BitcoinProjectContext
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>(null);
@@ -57,6 +61,20 @@ const MintBTCGenerativeModal: React.FC = () => {
       const { address, Price: price } = await generateBTCReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
+      });
+
+      sendAAEvent({
+        eventName: BTC_PROJECT.MINT_NFT,
+        data: {
+          projectId: projectData.id,
+          projectName: projectData.name,
+          projectThumbnail: projectData.image,
+          mintPrice: formatBTCPrice(Number(projectData?.mintPrice)),
+          mintType: paymentMethod,
+          networkFee: formatBTCPrice(Number(projectData?.networkFee)),
+          masterAddress: address,
+          totalPrice: formatBTCPrice(Number(price)),
+        },
       });
 
       setReceiverAddress(address);
@@ -89,7 +107,7 @@ const MintBTCGenerativeModal: React.FC = () => {
 
     if (!values.address) {
       errors.address = 'Wallet address is required.';
-    } else if (!validateBTCWalletAddress(values.address)) {
+    } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
       if (addressInput !== values.address) {
@@ -119,7 +137,10 @@ const MintBTCGenerativeModal: React.FC = () => {
     }
   };
 
-  const userBtcAddress = useMemo(() => user?.wallet_address_btc, [user]);
+  const userBtcAddress = useMemo(
+    () => user?.walletAddressBtcTaproot || '',
+    [user]
+  );
 
   const priceMemo = useMemo(() => formatBTCPrice(Number(price)), [price]);
 
@@ -234,7 +255,6 @@ const MintBTCGenerativeModal: React.FC = () => {
                                 onBlur={handleBlur}
                                 value={values.address}
                                 className={s.input}
-                                disabled={!!userBtcAddress}
                                 placeholder="Paste your BTC Ordinal wallet address here"
                               />
                             </div>

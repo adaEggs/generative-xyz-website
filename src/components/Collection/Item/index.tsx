@@ -1,4 +1,3 @@
-import { CreatorInfo } from '@components/CreatorInfo';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
 import Text from '@components/Text';
@@ -8,7 +7,6 @@ import { GenerativeProjectDetailContext } from '@contexts/generative-project-det
 import { ProfileContext } from '@contexts/profile-context';
 import useWindowSize from '@hooks/useWindowSize';
 import { Token } from '@interfaces/token';
-import { User } from '@interfaces/user';
 import { convertToETH } from '@utils/currency';
 import {
   formatAddress,
@@ -17,12 +15,14 @@ import {
   getProjectIdFromTokenId,
 } from '@utils/format';
 import cs from 'classnames';
-import React, { useContext, useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 
-import s from './styles.module.scss';
 import ButtonIcon from '@components/ButtonIcon';
 import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
+import s from './styles.module.scss';
+import { SATOSHIS_PROJECT_ID } from '@constants/generative';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const CollectionItem = ({
   data,
@@ -37,8 +37,15 @@ const CollectionItem = ({
   );
   const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
-  const { isBitcoinProject } = useContext(GenerativeProjectDetailContext);
+  const { isBitcoinProject, isWhitelistProject } = useContext(
+    GenerativeProjectDetailContext
+  );
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
+
+  const isBTCListable =
+    (data.buyable || (!data.buyable && !data.isCompleted)) && !!data.priceBTC;
+  const isBTCDisable = !data.buyable && !data.isCompleted && !!data.priceBTC;
 
   const [thumb, setThumb] = useState<string>(data.image);
 
@@ -47,11 +54,16 @@ const CollectionItem = ({
   };
 
   const toggleModal = () => {
-    setShowModal(show => !show);
+    if (isBTCDisable) return;
+    onButtonClick({
+      cbSigned: () => {
+        setShowModal(show => !show);
+      },
+    }).then();
   };
 
   const renderButton = () => {
-    if (data?.buyable)
+    if (isBTCListable)
       return (
         <ul className={s.ordinalsLinks}>
           <ButtonIcon
@@ -60,51 +72,56 @@ const CollectionItem = ({
             onClick={toggleModal}
           >
             <Text as="span" fontWeight="medium">
-              Buy now
+              {isBTCDisable ? 'The inscription is being purchased' : 'Buy now'}
             </Text>
           </ButtonIcon>
         </ul>
       );
-    if (isBitcoinProject) {
-      return (
-        <ul className={s.ordinalsLinks}>
-          <li>
-            <a
-              className={s.inscription}
-              target="_blank"
-              href={`https://ordinals.com/inscription/${tokenID}`}
-              rel="noreferrer"
-            >
-              Inscription
-            </a>
-          </li>
-          <li>
-            <a
-              className={s.content}
-              target="_blank"
-              href={`https://ordinals.com/content/${tokenID}`}
-              rel="noreferrer"
-            >
-              Content
-            </a>
-          </li>
-        </ul>
-      );
-    }
     return null;
   };
+
+  const renderPrice = () => {
+    let text = '';
+    let suffix = '';
+    if (isBTCListable) {
+      text = formatBTCPrice(data.priceBTC);
+      suffix = ' BTC';
+    } else if (data.stats?.price) {
+      text = convertToETH(data.stats?.price);
+      suffix = ' ETH';
+    }
+    if (!text) return null;
+    if (mobileScreen) {
+      return (
+        <Text size="14" fontWeight="bold">
+          {text}
+        </Text>
+      );
+    }
+    return (
+      <Stack direction="horizontal" className={s.collectionCard_info_listing}>
+        <Heading as={'h4'}>
+          {text}
+          {suffix}
+        </Heading>
+      </Stack>
+    );
+  };
+
+  const tokenUrl = useMemo(() => {
+    if (isWhitelistProject)
+      return `${ROUTE_PATH.GENERATIVE}/${SATOSHIS_PROJECT_ID}/${tokenID}`;
+    return `${ROUTE_PATH.GENERATIVE}/${
+      isBitcoinProject
+        ? data.project.tokenID
+        : getProjectIdFromTokenId(parseInt(tokenID))
+    }/${tokenID}`;
+  }, [isWhitelistProject, tokenID, data.project.tokenID]);
 
   return (
     <div className={`${s.collectionCard} ${className}`}>
       <div className={s.collectionCard_inner_wrapper}>
-        <Link
-          href={`${ROUTE_PATH.GENERATIVE}/${
-            isBitcoinProject
-              ? data.project.tokenID
-              : getProjectIdFromTokenId(parseInt(tokenID))
-          }/${tokenID}`}
-          className={s.collectionCard_inner}
-        >
+        <Link href={tokenUrl} className={s.collectionCard_inner}>
           <div
             className={`${s.collectionCard_thumb} ${
               thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
@@ -146,24 +163,11 @@ const CollectionItem = ({
                       : formatTokenId(tokenID)}
                   </span>
                 </Text>
-                <Text size="14" fontWeight="bold">
-                  {data.buyable && data.priceBTC
-                    ? formatBTCPrice(data.priceBTC)
-                    : data.stats?.price
-                    ? `${convertToETH(data.stats?.price)}`
-                    : ''}
-                </Text>
+                {renderPrice()}
               </div>
             </div>
           ) : (
             <div className={cs(s.collectionCard_info, s.desktop)}>
-              {data.owner ? (
-                <CreatorInfo creator={data.owner as User} />
-              ) : (
-                <CreatorInfo
-                  creator={{ walletAddress: data.ownerAddr } as User}
-                />
-              )}
               <div className={s.collectionCard_info_title}>
                 <Stack
                   className={s.collectionCard_info_stack}
@@ -191,22 +195,7 @@ const CollectionItem = ({
                         : formatTokenId(tokenID)}
                     </span>
                   </Heading>
-                  {!!data.priceBTC && data.buyable && (
-                    <Stack
-                      direction="horizontal"
-                      className={s.collectionCard_info_listing}
-                    >
-                      <b>{formatBTCPrice(data.priceBTC)} BTC</b>
-                    </Stack>
-                  )}
-                  {!!data.stats?.price && (
-                    <Stack
-                      direction="horizontal"
-                      className={s.collectionCard_info_listing}
-                    >
-                      <b>{convertToETH(data.stats?.price)}</b>
-                    </Stack>
-                  )}
+                  {renderPrice()}
                 </Stack>
               </div>
             </div>
@@ -214,13 +203,14 @@ const CollectionItem = ({
         </Link>
         {renderButton()}
       </div>
-      {data.buyable && (
+      {data.buyable && !!ordAddress && showModal && (
         <ModalBuyItemViaBTC
           showModal={showModal}
           orderID={data.orderID}
           inscriptionID={data.tokenID}
           price={data.priceBTC}
           onClose={toggleModal}
+          ordAddress={ordAddress}
         />
       )}
     </div>

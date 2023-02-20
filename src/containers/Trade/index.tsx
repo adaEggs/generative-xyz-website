@@ -1,16 +1,13 @@
 import React from 'react';
 import s from './Trade.module.scss';
 import { RecentWorks } from './RecentWorks';
-import { Container } from 'react-bootstrap';
 
 import { LoadingProvider } from '@contexts/loading-context';
 
 const PageTrade = (): JSX.Element => {
   return (
     <div className={s.trade}>
-      <Container>
-        <RecentWorks />
-      </Container>
+      <RecentWorks />
     </div>
   );
 };

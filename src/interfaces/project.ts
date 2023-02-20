@@ -50,6 +50,8 @@ export type Project = {
   isHidden: boolean;
   networkFee?: string;
   networkFeeEth?: string;
+  totalImages?: number;
+  categories?: string[];
 };
 
 export type BTCProject = Project & {

@@ -1,4 +1,5 @@
+import { CDN_URL } from './config';
+
 export const SEO_TITLE = 'Generative';
 export const SEO_DESCRIPTION = 'Breathe life into your generative art';
-export const SEO_IMAGE =
-  'https://cdn.generative.xyz/pages/home/screen-shot.jpeg';
+export const SEO_IMAGE = `${CDN_URL}/images/display.jpg`;

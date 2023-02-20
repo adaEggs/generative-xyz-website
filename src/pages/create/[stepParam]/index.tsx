@@ -20,7 +20,7 @@ export async function getServerSideProps() {
         title: 'Generative | Upload Project',
         description:
           'Launch your NFT collection on Bitcon where it’ll last forever.',
-        image: `${CDN_URL}/images/upload.jpg`,
+        image: `${CDN_URL}/images/upload-project.jpg`,
       },
     },
   };

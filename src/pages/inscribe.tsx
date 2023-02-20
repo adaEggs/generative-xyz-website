@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import MarketplaceLayout from '@layouts/Marketplace';
 import Inscribe from '@containers/Inscribe';
+import { CDN_URL } from '@constants/config';
 
 const MintToolPage: NextPage = () => {
   return (
@@ -17,8 +18,8 @@ export async function getServerSideProps() {
     props: {
       seoInfo: {
         title: 'Generative | Inscribe',
-        description: 'Bring your generative art to life',
-        image: null,
+        description: 'Inscribe NFTs on Bitcoin. For free.',
+        image: `${CDN_URL}/images/marketplace.jpg`,
       },
     },
   };

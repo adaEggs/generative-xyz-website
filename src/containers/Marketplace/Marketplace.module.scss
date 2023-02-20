@@ -4,13 +4,11 @@
   &_recentWorks {
     overflow: hidden;
     padding: {
-      top: rem(62px);
       bottom: rem(60px);
     }
 
     @include mobile {
       padding: {
-        top: rem(40px);
         bottom: rem(64px);
       }
     }

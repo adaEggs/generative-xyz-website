@@ -1,7 +1,8 @@
 import FileType from 'file-type/browser';
-import { NAIVE_MIMES } from '@constants/file';
+import { NAIVE_MIMES, SUPPORTED_FILE_EXT } from '@constants/file';
 import { unzip } from 'unzipit';
 import { MASOX_SYSTEM_PREFIX } from '@constants/sandbox';
+import { MediaType } from '@enums/file';
 
 export function getNaiveMimeType(filename: string): string | false {
   const ext = filename.split('.').pop();
@@ -13,7 +14,17 @@ export async function unzipFile(file: File): Promise<Record<string, Blob>> {
 
   const blobs: Record<string, Blob> = {};
   for (const name in entries) {
-    if (name.includes(MASOX_SYSTEM_PREFIX)) {
+    // Ignore system files
+    if (
+      MASOX_SYSTEM_PREFIX.some((systemFileName: string) =>
+        name.includes(systemFileName)
+      )
+    ) {
+      continue;
+    }
+
+    // Ignore directories
+    if (entries[name].isDirectory) {
       continue;
     }
 
@@ -55,3 +66,15 @@ export const blobToBase64 = (
     reader.onload = () => resolve(reader.result);
     reader.onerror = error => reject(error);
   });
+
+export const getSupportedFileExtList = (): Array<string> => {
+  return SUPPORTED_FILE_EXT.map(item => item.ext);
+};
+
+export const getMediaTypeFromFileExt = (ext: string): MediaType | null => {
+  const supportedFile = SUPPORTED_FILE_EXT.find(item => item.ext === ext);
+  if (supportedFile) {
+    return supportedFile.mediaType;
+  }
+  return null;
+};

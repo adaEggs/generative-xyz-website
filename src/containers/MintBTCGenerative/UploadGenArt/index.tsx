@@ -8,13 +8,16 @@ import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context'
 import { LogLevel } from '@enums/log-level';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { ImageFileError, SandboxFileError } from '@enums/sandbox';
+import { getSupportedFileExtList } from '@utils/file';
+import { postReferralCode } from '@services/referrals';
 import log from '@utils/logger';
-import { processHTMLFile, processImageCollectionZipFile } from '@utils/sandbox';
+import { getReferral } from '@utils/referral';
+import { processHTMLFile, processCollectionZipFile } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
 import cs from 'classnames';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { ReactElement, useContext, useEffect, useMemo } from 'react';
+import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
 import DropFile from '../DropFile';
 import s from './styles.module.scss';
 
@@ -33,6 +36,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
     imageCollectionFile,
     setImageCollectionFile,
   } = useContext(MintBTCGenerativeContext);
+  const [isProcessingFile, setIsProcessingFile] = useState(false);
 
   const processGenerativeFile = async (file: File) => {
     try {
@@ -51,22 +55,29 @@ const UploadGenArt: React.FC = (): ReactElement => {
     }
   };
 
-  const processImageFiles = async (file: File) => {
+  const processCollectionFile = async (file: File) => {
     try {
-      const imageFiles = await processImageCollectionZipFile(file);
+      const imageFiles = await processCollectionZipFile(file);
       setImageCollectionFile(imageFiles);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      const errorMessage =
+        'There is a problem with your file. Please check and try again.';
+      setShowErrorAlert({ open: true, message: errorMessage });
     }
   };
 
-  const handleProccessFile = (): void => {
+  const handleProccessFile = async (): Promise<void> => {
     if (!rawFile) return;
+
     if (collectionType === CollectionType.GENERATIVE) {
-      processGenerativeFile(rawFile);
+      await processGenerativeFile(rawFile);
     }
-    if (collectionType == CollectionType.IMAGES) {
-      processImageFiles(rawFile);
+
+    if (collectionType == CollectionType.COLLECTION) {
+      setIsProcessingFile(true);
+      await processCollectionFile(rawFile);
+      setIsProcessingFile(false);
     }
   };
 
@@ -175,7 +186,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
       case ImageFileError.TOO_LARGE:
         return `File size error, maximum file size is ${SANDBOX_BTC_FILE_SIZE_LIMIT}kb.`;
       case ImageFileError.INVALID_EXTENSION:
-        return 'Invalid file format. Supported file extensions are JPG, JPEG, PNG, GIF.';
+        return `Invalid file format. Supported file extensions are ${getSupportedFileExtList().join(
+          ', '
+        )}.`;
       default:
         return '';
     }
@@ -248,6 +261,12 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 Update zip file
               </Button>
             </div>
+            {!isValidImageCollection && (
+              <p className={s.errorMessage}>
+                There&apos;re problems with your file. Please check your file
+                list above.
+              </p>
+            )}
           </div>
           <div className={s.container}>
             <div className={s.checkboxWrapper}></div>
@@ -278,18 +297,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
             Upload file
           </Heading>
           <div className={s.collectionTypeWrapper}>
-            {/* <div className={s.guideWrapper}>
-              <p>
-                New artist?&nbsp;
-                <a
-                  href={SOCIALS.docsForArtist}
-                  target={'_blank'}
-                  rel="noreferrer"
-                >
-                  Start here.
-                </a>
-              </p>
-            </div> */}
             <p className={s.collectionTypeLabel}>Choose collection type:</p>
             <div className={s.choiceList}>
               <div
@@ -303,13 +310,13 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 <span className={s.checkmark}></span>
               </div>
               <div
-                onClick={() => setCollectionType(CollectionType.IMAGES)}
+                onClick={() => setCollectionType(CollectionType.COLLECTION)}
                 className={cs(s.choiceItem, {
                   [`${s.choiceItem__active}`]:
-                    collectionType === CollectionType.IMAGES,
+                    collectionType === CollectionType.COLLECTION,
                 })}
               >
-                Image collection
+                File collection
                 <span className={s.checkmark}></span>
               </div>
             </div>
@@ -327,6 +334,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
             </div>
           </div>
           <div className={s.dropZoneWrapper}>
+            <div className={s.loadingOverlay}></div>
             <DropFile
               labelText={
                 collectionType === CollectionType.GENERATIVE
@@ -344,17 +352,28 @@ const UploadGenArt: React.FC = (): ReactElement => {
               }
               onChange={handleChangeFile}
               fileOrFiles={rawFile ? [rawFile] : null}
+              isProcessing={isProcessingFile}
             />
           </div>
         </div>
       </>
     ),
-    [rawFile, collectionType]
+    [rawFile, collectionType, isProcessingFile]
   );
 
   useEffect(() => {
     handleProccessFile();
   }, [rawFile]);
+
+  const postRefCode = async () => {
+    const refCode = getReferral();
+    if (refCode) {
+      await postReferralCode(refCode);
+    }
+  };
+  useEffect(() => {
+    postRefCode();
+  }, []);
 
   return (
     <section className={s.uploadGenArt}>
@@ -364,7 +383,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
         <>
           {collectionType === CollectionType.GENERATIVE &&
             renderUploadGenerativeSuccess()}
-          {collectionType === CollectionType.IMAGES &&
+          {collectionType === CollectionType.COLLECTION &&
             renderUploadImageCollectionSuccess()}
         </>
       )}
