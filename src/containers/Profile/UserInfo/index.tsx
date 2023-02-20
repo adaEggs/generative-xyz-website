@@ -1,4 +1,5 @@
 import ButtonIcon from '@components/ButtonIcon';
+import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
@@ -9,6 +10,7 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { ellipsisCenter } from '@utils/format';
 import cn from 'classnames';
+import copy from 'copy-to-clipboard';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -51,6 +53,12 @@ export const UserInfo = (): JSX.Element => {
               </div>
               {
                 <Row className={s.userInfo_content_wrapper}>
+                  <p className={s.userInfo_conent_displayName}>
+                    {currentUser?.displayName && (
+                      <Heading>{currentUser?.displayName}</Heading>
+                    )}
+                  </p>
+
                   <div className={s.userInfo_content_address}>
                     <div className={s.userInfo_content_btcWallet}>
                       <Text
@@ -72,6 +80,14 @@ export const UserInfo = (): JSX.Element => {
                           limit: 10,
                         })}
                       </Text>
+                      <SvgInset
+                        onClick={() =>
+                          copy(currentUser?.walletAddressBtcTaproot || '')
+                        }
+                        className={s.iconCopy}
+                        size={20}
+                        svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                      />
                     </div>
                     <div className={s.userInfo_content_evmWallet}>
                       <Text
@@ -93,6 +109,12 @@ export const UserInfo = (): JSX.Element => {
                           limit: 10,
                         })}
                       </Text>
+                      <SvgInset
+                        onClick={() => copy(currentUser?.walletAddress || '')}
+                        className={s.iconCopy}
+                        size={20}
+                        svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                      />
                     </div>
                   </div>
                   {currentUser?.id === user?.id && (

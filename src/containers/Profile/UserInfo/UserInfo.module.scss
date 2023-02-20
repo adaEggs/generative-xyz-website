@@ -29,8 +29,14 @@
       padding-top: rem(32px);
     }
 
+    &_displayName {
+      margin-top: rem(0);
+      margin-bottom: rem(0);
+    }
+
     &_address {
       width: fit-content;
+      margin-top: rem(0);
     }
 
     &_avatar {
@@ -51,8 +57,22 @@
       }
     }
 
+    &_btcWallet {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
     &_evmWallet {
       padding-top: rem(12px);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .iconCopy {
+      cursor: pointer;
+      margin-left: 8px;
     }
 
     &_display {
