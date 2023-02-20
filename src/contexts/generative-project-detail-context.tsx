@@ -1,9 +1,6 @@
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
-import {
-  SATOSHIS_FREE_MINT,
-  SATOSHIS_PAGE,
-  SATOSHIS_PROJECT_ID,
-} from '@constants/generative';
+import { SATOSHIS_PROJECT_ID } from '@constants/generative';
+import { ROUTE_PATH } from '@constants/route-path';
 import { LogLevel } from '@enums/log-level';
 import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
@@ -167,11 +164,11 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   };
 
   const isWhitelistProject = useMemo(() => {
-    return router.pathname === SATOSHIS_FREE_MINT;
+    return router.pathname === ROUTE_PATH.SATOSHIS_FREE_MINT;
   }, []);
 
   const isSatoshisPage = useMemo(() => {
-    return router.pathname === SATOSHIS_PAGE;
+    return router.pathname === ROUTE_PATH.SATOSHIS_PAGE;
   }, []);
 
   const handleFetchNextPage = () => {

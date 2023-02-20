@@ -9,20 +9,16 @@ import ButtonIcon from '@components/ButtonIcon';
 import MarkdownPreview from '@components/MarkdownPreview';
 import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import useWindowSize from '@hooks/useWindowSize';
-import {
-  getMarketplaceBtcNFTDetail,
-  IGetMarketplaceBtcNFTDetail,
-} from '@services/marketplace-btc';
+import { getMarketplaceBtcNFTDetail } from '@services/marketplace-btc';
 import BigNumber from 'bignumber.js';
 import BuyTokenModal from '@containers/Trade/BuyTokenModal';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-import TokenIDImage from '@containers/Trade/TokenID/TokenID.image';
 import { ROUTE_PATH } from '@constants/route-path';
-import { getOrdinalImgURL } from '@utils/inscribe';
 import NFTDisplayBox from '@components/NFTDisplayBox';
+import { IGetMarketplaceBtcNFTDetail } from '@interfaces/api/marketplace-btc';
 import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
@@ -38,12 +34,10 @@ const TokenID: React.FC = (): React.ReactElement => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const { ordAddress, onButtonClick } = useBTCSignOrd();
 
-  const toggleModal = () => {
-    return onButtonClick({
-      cbSigned: () => {
-        setShowModal(true);
-      },
-    });
+  const onShowModal = () => {
+    onButtonClick({
+      cbSigned: () => setShowModal(true),
+    }).then();
   };
 
   const renderLoading = () => {
@@ -100,12 +94,6 @@ const TokenID: React.FC = (): React.ReactElement => {
         >
           {formatBTCPrice(new BigNumber(tokenData?.price || 0).toNumber())} BTC
         </Text>
-        {mobileScreen && tokenData?.name && (
-          <TokenIDImage
-            image={getOrdinalImgURL(tokenData.inscriptionID)}
-            name={tokenData?.name || ''}
-          />
-        )}
         {!tokenData.buyable && !tokenData.isCompleted && (
           <Text size={'14'} className={s.info_statusIns}>
             The inscription is being purchased. ETA is in ~30 minutes.
@@ -121,7 +109,7 @@ const TokenID: React.FC = (): React.ReactElement => {
           className={s.info_buyBtn}
           onClick={() => {
             // return setShowModal(true);
-            if (tokenData.buyable) return toggleModal();
+            if (tokenData.buyable) return onShowModal();
             router.push(ROUTE_PATH.TRADE);
           }}
         >
@@ -129,6 +117,17 @@ const TokenID: React.FC = (): React.ReactElement => {
             {tokenData.buyable ? 'Buy Now' : 'Buy others'}
           </Text>
         </ButtonIcon>
+        {mobileScreen && (
+          <NFTDisplayBox
+            inscriptionID={tokenData.inscriptionID}
+            type={tokenData.contentType}
+            className={s.img_mobile}
+            controls={true}
+            autoPlay={true}
+            loop={true}
+            variants={'full'}
+          />
+        )}
         <div className={s.info_project_desc}>
           <Text
             size="14"
@@ -219,16 +218,19 @@ const TokenID: React.FC = (): React.ReactElement => {
           />
         </div>
       )}
-      {showModal && !!tokenData && !!ordAddress && (
-        <BuyTokenModal
-          showModal={showModal}
-          onClose={() => setShowModal(false)}
-          inscriptionID={tokenData.inscriptionID || ''}
-          price={new BigNumber(tokenData?.price || 0).toNumber()}
-          orderID={tokenData.orderID}
-          ordAddress={ordAddress}
-        />
-      )}
+      {!!tokenData?.inscriptionID &&
+        !!tokenData?.price &&
+        !!ordAddress &&
+        showModal && (
+          <BuyTokenModal
+            showModal={showModal}
+            onClose={() => setShowModal(false)}
+            inscriptionID={tokenData.inscriptionID || ''}
+            price={new BigNumber(tokenData?.price || 0).toNumber()}
+            orderID={tokenData.orderID}
+            ordAddress={ordAddress}
+          />
+        )}
     </Container>
   );
 };

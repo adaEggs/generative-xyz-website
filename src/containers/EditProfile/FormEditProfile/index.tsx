@@ -18,6 +18,8 @@ import { Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
+import { validateBTCWalletAddress } from '@utils/validate';
+import _isEmpty from 'lodash/isEmpty';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -41,6 +43,29 @@ const FormEditProfile = () => {
 
   const [newFile, setNewFile] = useState<File | null | undefined>();
 
+  const validateForm = (values: Record<string, string>) => {
+    const errors: Record<string, string> = {};
+    const twitterRegex = /^https?:\/\/twitter\.com\/[A-Za-z0-9_]{1,15}\/?$/;
+    const httpsRegex = /^https:\/\//;
+
+    if (values.twitter !== '' && !twitterRegex.test(values.twitter)) {
+      errors.twitter = 'Invalid twitter link.';
+    }
+
+    if (
+      !validateBTCWalletAddress(values.walletAddressBtc) &&
+      values.walletAddressBtc !== ''
+    ) {
+      errors.walletAddressBtc = 'Invalid wallet address.';
+    }
+
+    if (!httpsRegex.test(values.website) && values.website !== '') {
+      errors.website = 'Invalid website link.';
+    }
+
+    return errors;
+  };
+
   const handleSubmit = async (values: Record<string, string>) => {
     const payload: IUpdateProfilePayload = {
       avatar: newFile ? await toBase64(newFile) : '',
@@ -53,6 +78,7 @@ const FormEditProfile = () => {
         instagram: values.instagram || '',
         etherScan: values.etherScan || '',
       },
+      walletAddressBtc: values.walletAddressBtc || '',
     };
 
     const res = await updateProfile(payload);
@@ -80,13 +106,14 @@ const FormEditProfile = () => {
         discord: user?.profileSocial?.discord || '',
         etherScan: user?.profileSocial?.etherScan || '',
         twitter: user?.profileSocial?.twitter || '',
+        walletAddressBtc: user?.walletAddressBtc || '',
       }}
-      // validate={validateForm}
+      validate={validateForm}
       onSubmit={handleSubmit}
       validateOnChange
       enableReinitialize
     >
-      {({ handleSubmit, isSubmitting, dirty }) => (
+      {({ handleSubmit, isSubmitting, dirty, errors }) => (
         <form className={s.account}>
           <div className={s.account_avatar}>
             <ImagePreviewInput
@@ -122,6 +149,7 @@ const FormEditProfile = () => {
                   placeholder="Nickname"
                   className={s.input_nickname}
                   useFormik
+                  errors={{ nickname: errors.nickname || '' }}
                 ></Input>
                 <Text size="14" className="text-secondary-color">
                   Other users will see your nickname instead of your wallet
@@ -135,9 +163,23 @@ const FormEditProfile = () => {
                   label={'bio'}
                   className={s.input_bio}
                   as="textarea"
+                  errors={{ bio: errors.bio || '' }}
                   useFormik
                 ></Input>
               </div>
+              <div className={s.input_item}>
+                <Input
+                  name={'walletAddressBtc'}
+                  label={'BTC Wallet Address'}
+                  placeholder="3FZb..."
+                  className={s.input_wallet}
+                  errors={{
+                    walletAddressBtc: errors.walletAddressBtc || '',
+                  }}
+                  useFormik
+                ></Input>
+              </div>
+
               <div className={s.input_item}>
                 <Text
                   size="18"
@@ -153,39 +195,43 @@ const FormEditProfile = () => {
                     placeholder="https://"
                     className={s.input_website}
                     useFormik
+                    errors={{ website: errors.website || '' }}
                   ></Input>
-                  <Input
+                  {/* <Input
                     name={'instagram'}
                     label={'instagram'}
                     placeholder="Instagram"
                     className={s.input_website}
                     useFormik
-                  ></Input>
-                  <Input
+                  ></Input> */}
+                  {/* <Input
                     name={'discord'}
                     label={'discord'}
                     placeholder="Discord"
                     className={s.input_website}
                     useFormik
-                  ></Input>
-                  <Input
+                  ></Input> */}
+                  {/* <Input
                     name={'etherScan'}
                     label={'etherScan'}
                     placeholder="Etherscan"
                     className={s.input_website}
                     useFormik
-                  ></Input>
+                  ></Input> */}
                   <Input
                     name={'twitter'}
                     label={'twitter'}
-                    placeholder="Twitter"
+                    placeholder="https://twitter.com/..."
                     className={s.input_website}
+                    errors={{ twitter: errors.twitter || '' }}
                     useFormik
                   ></Input>
                   <ButtonIcon
                     onClick={() => handleSubmit()}
                     className={s.submit_btn}
-                    disabled={isSubmitting || (!dirty && !newFile)}
+                    disabled={
+                      isSubmitting || (!dirty && !newFile) || !_isEmpty(errors)
+                    }
                   >
                     Save changes
                   </ButtonIcon>
@@ -201,11 +247,11 @@ const FormEditProfile = () => {
             <Text style={{ marginBottom: '6px' }}>
               {user?.walletAddress || ''}
             </Text>
-            {!!user?.wallet_address_btc && (
+            {!!user?.walletAddressBtc && (
               <>
                 <Text>BTC wallet address:</Text>
                 <Text style={{ marginBottom: '6px' }}>
-                  {user?.wallet_address_btc || ''}
+                  {user?.walletAddressBtc || ''}
                 </Text>
               </>
             )}

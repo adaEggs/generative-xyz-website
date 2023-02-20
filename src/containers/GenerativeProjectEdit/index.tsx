@@ -20,7 +20,7 @@ const GenerativeProjectEdit = (): JSX.Element => {
   useEffect(() => {
     if (!user || !projectData) return;
     if (user?.walletAddress !== projectData?.creatorAddr) {
-      router.push(ROUTE_PATH.COLLECTIONS);
+      router.push(ROUTE_PATH.DROPS);
     }
   }, [user, projectData]);
 

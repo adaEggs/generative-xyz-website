@@ -11,6 +11,7 @@ import useAsyncEffect from 'use-async-effect';
 import { SelectOption } from '@interfaces/select-input';
 import { getCategoryList } from '@services/category';
 import Select, { MultiValue } from 'react-select';
+import MarkdownEditor from '@components/MarkdownEditor';
 
 type IProductDetailFormValue = {
   name: string;
@@ -130,15 +131,28 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                     Description of your collection&nbsp;
                     <sup className={s.requiredTag}>*</sup>
                   </label>
-                  <textarea
+                  {/*<textarea*/}
+                  {/*  id="description"*/}
+                  {/*  name="description"*/}
+                  {/*  onChange={handleChange}*/}
+                  {/*  onBlur={handleBlur}*/}
+                  {/*  value={values.description}*/}
+                  {/*  className={s.input}*/}
+                  {/*  rows={4}*/}
+                  {/*  placeholder="Tell us more about the meaning and inspiration behind your art."*/}
+                  {/*/>*/}
+                  <MarkdownEditor
                     id="description"
-                    name="description"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
+                    className={s.mdEditor}
                     value={values.description}
-                    className={s.input}
-                    rows={4}
-                    placeholder="Tell us more about the meaning and inspiration behind your art."
+                    onBlur={handleBlur}
+                    preview="edit"
+                    visiableDragbar={false}
+                    height={200}
+                    onValueChange={(val: string | undefined) => {
+                      if (typeof val !== undefined)
+                        setFieldValue('description', val);
+                    }}
                   />
                   {errors.description && touched.description && (
                     <p className={s.error}>{errors.description}</p>

@@ -1,10 +1,8 @@
 import { isProduction, isStaging } from '@utils/common';
 
 export const ROUTE_PATH = {
-  HOME: isProduction()
-    ? 'https://generative.xyz'
-    : 'https://devnet.generative.xyz',
-  COLLECTIONS: '/collections',
+  HOME: isProduction() ? 'https://generative.xyz' : '/',
+  DROPS: '/art-on-bitcoin',
   CREATE_PROJECT: isProduction()
     ? 'https://testnet.generative.xyz/mint-generative/upload-project'
     : '/mint-generative/upload-project',
@@ -24,12 +22,15 @@ export const ROUTE_PATH = {
     ? 'https://testnet.generative.xyz/incentivized-testnet'
     : '/incentivized-testnet',
   TRADE: '/marketplace',
+  LIVE: '/live',
   REFERRAL: '/referral',
   NOT_FOUND: '/404',
   INSCRIBE: '/inscribe',
   CREATE_BTC_PROJECT: '/create',
   GLTF_PREVIEW: '/gltf-preview',
   OBJECT_PREVIEW: '/object-preview',
+  SATOSHIS_FREE_MINT: '/satoshis/free',
+  SATOSHIS_PAGE: '/satoshis',
 };
 
 export const STANDALONE_PAGES = [

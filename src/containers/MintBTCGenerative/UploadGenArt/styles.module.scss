@@ -11,6 +11,10 @@
     box-shadow: 35px 15px 120px rgb(0 0 0 / 15%);
     border-radius: 2px;
     margin-bottom: 42px;
+
+    @include mobile {
+      padding: rem(12px) rem(24px) rem(24);
+    }
   }
 
   .uploadSuccessWrapper {
@@ -210,6 +214,13 @@
       align-items: center;
       justify-content: center;
       margin-bottom: rem(16px);
+
+      @include mobile {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: rem(8px);
+      }
     }
 
     .choiceItem {

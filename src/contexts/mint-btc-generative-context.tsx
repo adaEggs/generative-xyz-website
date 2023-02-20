@@ -120,7 +120,7 @@ export const MintBTCGenerativeContextProvider = ({
   const [hash, setHash] = useState<string>(generateHash());
   const [formValues, setFormValues] = useState<Partial<IBTCFormValue>>({
     mintPrice: MIN_MINT_BTC_PROJECT_PRICE,
-    creatorWalletAddress: user?.wallet_address_btc || '',
+    creatorWalletAddress: user?.walletAddressBtc || '',
     royalty: 10,
   });
   const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(

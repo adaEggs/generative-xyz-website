@@ -1,14 +1,9 @@
-// import { generateBitcoinOrdKey } from './connect.methods';
 import React, { useContext, useState } from 'react';
 import { WalletContext } from '@contexts/wallet-context';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-// import {
-//   getBTCOrdAddress,
-//   setBTCOrdAddress,
-// } from '@hooks/useBTCSignOrd/storage';
 
 interface IBTCSignOrgProps {
   onButtonClick: ({ cbSigned }: IBtnProps) => Promise<void>;
@@ -25,22 +20,6 @@ const useBTCSignOrd = (): IBTCSignOrgProps => {
 
   const [processing, setProcessing] = useState<boolean>(false);
   const [ordAddress, setOrdAddress] = useState<string>('');
-
-  // const handleSign = async (_address: string) => {
-  //   const connectedAddress = _address ? _address : user && user.walletAddress;
-  //   if (!connectedAddress) return;
-  //   const { privateKey, address: _ordAddress } = await generateBitcoinOrdKey({
-  //     address: connectedAddress,
-  //     message: '122222',
-  //   });
-  //
-  //   if (_ordAddress) setOrdAddress(_ordAddress);
-  //
-  //   return {
-  //     privateKey,
-  //     address: _ordAddress,
-  //   };
-  // };
 
   const onButtonClick = async ({ cbSigned }: IBtnProps) => {
     if (processing) return;
@@ -85,8 +64,8 @@ const useBTCSignOrd = (): IBTCSignOrgProps => {
   };
 
   React.useEffect(() => {
-    if (!user || !user.wallet_address_btc) return setOrdAddress('');
-    setOrdAddress(user.wallet_address_btc);
+    if (!user || !user.walletAddressBtc) return setOrdAddress('');
+    setOrdAddress(user.walletAddressBtc);
   }, [user]);
 
   return {

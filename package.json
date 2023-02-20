@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "@bitcoinerlab/secp256k1": "^1.0.1",
+    "@google/model-viewer": "^3.0.1",
     "@metamask/providers": "^10.2.1",
     "@reduxjs/toolkit": "^1.9.1",
     "@types/node": "18.11.13",

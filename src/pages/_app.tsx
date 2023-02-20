@@ -12,6 +12,7 @@ import store from '@redux';
 import { sendAAPageView } from '@services/aa-tracking';
 import '@styles/index.scss';
 import log from '@utils/logger';
+import { getReferralCodeURLParameter, setReferral } from '@utils/referral';
 import { NextComponentType, NextPageContext } from 'next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -56,6 +57,13 @@ export default function App({ Component, pageProps }: MyAppProps) {
     }
     isFirstRender.current = false;
   }, [router.asPath]);
+
+  useEffect(() => {
+    const refCode = getReferralCodeURLParameter();
+    if (refCode) {
+      setReferral(refCode);
+    }
+  }, []);
 
   const renderBody = () => {
     if (STANDALONE_PAGES.includes(pathname)) {

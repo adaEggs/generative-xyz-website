@@ -1,11 +1,6 @@
 .recentWorks {
   &_projects {
-    margin-top: rem(30px);
     position: relative;
-
-    @include mobile {
-      margin-top: rem(24px);
-    }
 
     &_list {
       overflow: unset !important;
@@ -16,7 +11,7 @@
       position: relative;
       height: 80px;
       width: 100%;
-      margin-top: rem(20px);
+      margin-top: rem(50px);
     }
   }
 
@@ -42,6 +37,28 @@
     @include mobile {
       margin-left: 8px;
       padding: 8px !important;
+    }
+  }
+
+  .banner {
+    //background-image: url("https://storage.googleapis.com/generative-static-prod/images/bg-marketplace-2.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    height: rem(252);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: transparent;
+
+    &_btn {
+      margin-top: rem(24);
+    }
+
+    @include mobile {
+      padding: rem(20);
+      text-align: center;
     }
   }
 }

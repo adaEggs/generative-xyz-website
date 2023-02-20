@@ -2,8 +2,8 @@ import React from 'react';
 import { Empty } from '@components/Collection/Empty';
 import { ProjectCard } from '../ProjectCard';
 import { ProjectCardOrd } from '../ProjectCardOrd';
-import { IGetMarketplaceBtcListItem } from '@services/marketplace-btc';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
+import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
 
 export const ProjectList = ({
   listData,
@@ -46,7 +46,13 @@ export const ProjectList = ({
           </Masonry>
         </ResponsiveMasonry>
       ) : (
-        listData && <Empty content="Be the first to mint this collection" />
+        listData && (
+          <Empty
+            content={
+              isNFTBuy ? 'Be the first to mint this collection' : 'Abracadabra'
+            }
+          />
+        )
       )}
     </>
   );

@@ -1,14 +1,10 @@
-import AvatarInfo from '@components/AvatarInfo';
-import ButtonIcon from '@components/ButtonIcon';
 import Link from '@components/Link';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
-import { SOCIALS } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
-import useOnClickOutside from '@hooks/useOnClickOutSide';
 import s from '@layouts/Default/HeaderFixed/Header.module.scss';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
@@ -23,11 +19,10 @@ import { getFaucetLink, isTestnet } from '@utils/chain';
 import QuickBuy from '@layouts/Marketplace/QuickBuy';
 import querystring from 'query-string';
 import _isEmpty from 'lodash/isEmpty';
-import { MENU_HEADER, RIGHT_MENU } from '@constants/header';
+import { MENU_HEADER } from '@constants/header';
 import MenuMobile from '@layouts/Marketplace/MenuMobile';
 import { gsap } from 'gsap';
 import { isProduction } from '@utils/common';
-import GenerativeLogo from '@components/GenerativeLogo';
 
 const LOG_PREFIX = 'MarketplaceHeader';
 
@@ -42,16 +37,13 @@ const Header: React.FC<IProp> = ({
   theme = 'light',
   isShowFaucet = false,
   isDisplay = false,
-  isDrops = false,
 }): React.ReactElement => {
   const { connect, disconnect, walletBalance } = useContext(WalletContext);
   const user = useAppSelector(getUserSelector);
   const router = useRouter();
   const { query } = router;
   const activePath = router.asPath.split('/')[1];
-  const [openProfile, setOpenProfile] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const [isFaucet, _] = useState<boolean>(isShowFaucet);
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const refMenu = useRef<HTMLDivElement | null>(null);
@@ -142,23 +134,13 @@ const Header: React.FC<IProp> = ({
     );
   };
 
-  useOnClickOutside(dropdownRef, () => setOpenProfile(false));
-
   const refHeader = useRef<HTMLDivElement>(null);
-
   const clickToFaucet = (): void => {
     const faucet = getFaucetLink();
     if (faucet) {
       window.open(faucet, '_blank');
     }
   };
-
-  // const showWalletButton = (): boolean => {
-  //   if (!isProduction()) return true;
-  //   if (router.pathname === ROUTE_PATH.ORDER_NOW) {
-  //     return true;
-  //   } else return false;
-  // };
 
   useEffect(() => {
     if (refMenu.current) {
@@ -192,150 +174,49 @@ const Header: React.FC<IProp> = ({
                   className={styles.logo}
                   href={getUrlWithQueryParams(ROUTE_PATH.HOME)}
                 >
-                  <GenerativeLogo theme={theme} />
+                  <Text size="24" fontWeight={'semibold'}>
+                    Generative
+                  </Text>
                 </Link>
 
-                <ul
-                  className={`${styles.navBar} ${styles.navBar_center} ${styles[theme]}`}
-                >
-                  <li
-                    className={cs(
-                      activePath === MENU_HEADER[0].activePath && styles.active
-                    )}
-                    key={`header-${MENU_HEADER[0].id}`}
-                  >
-                    <Link href={getUrlWithQueryParams(MENU_HEADER[0].route)}>
-                      {MENU_HEADER[0].name}
-                    </Link>
-                  </li>
-
-                  <li
-                    className={cs(
-                      activePath === MENU_HEADER[3].activePath && styles.active
-                    )}
-                    key={`header-${MENU_HEADER[3].id}`}
-                  >
-                    <Link href={getUrlWithQueryParams(MENU_HEADER[3].route)}>
-                      {MENU_HEADER[3].name}
-                    </Link>
-                  </li>
-
-                  {/*<li*/}
-                  {/*  className={cs(*/}
-                  {/*    activePath === MENU_HEADER[1].activePath && styles.active*/}
-                  {/*  )}*/}
-                  {/*  key={`header-${MENU_HEADER[1].id}`}*/}
-                  {/*>*/}
-                  {/*  <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>*/}
-                  {/*    {MENU_HEADER[1].name}*/}
-                  {/*  </Link>*/}
-                  {/*</li>*/}
-
-                  <li
-                    className={cs(
-                      activePath === MENU_HEADER[2].activePath && styles.active
-                    )}
-                    key={`header-${MENU_HEADER[2].id}`}
-                  >
-                    <Link href={getUrlWithQueryParams(MENU_HEADER[2].route)}>
-                      {MENU_HEADER[2].name}
-                    </Link>
-                  </li>
-                  {/*<li*/}
-                  {/*  className={cs(*/}
-                  {/*    activePath === MENU_HEADER[4].activePath && styles.active*/}
-                  {/*  )}*/}
-                  {/*  key={`header-${MENU_HEADER[4].id}`}*/}
-                  {/*>*/}
-                  {/*  <Link*/}
-                  {/*    className={*/}
-                  {/*      MENU_HEADER[4].activePath === 'inscribe'*/}
-                  {/*        ? styles.inscribe*/}
-                  {/*        : ''*/}
-                  {/*    }*/}
-                  {/*    href={getUrlWithQueryParams(MENU_HEADER[4].route)}*/}
-                  {/*  >*/}
-                  {/*    {MENU_HEADER[4].name}*/}
-                  {/*  </Link>*/}
-                  {/*</li>*/}
-                </ul>
-
                 <div className={styles.header_right}>
-                  <ul
-                    className={`${styles.navBar} ${styles.header_right_links} ${styles[theme]}`}
-                  >
-                    {!isProduction() && (
-                      <li
-                        className={cs(
-                          activePath === RIGHT_MENU[2].activePath &&
-                            styles.active
-                        )}
-                        key={`header-${RIGHT_MENU[2].id}`}
-                      >
-                        <Link href={getUrlWithQueryParams(RIGHT_MENU[2].route)}>
-                          {RIGHT_MENU[2].name}
-                        </Link>
-                      </li>
-                    )}
-                    {!isProduction() && (
-                      <li>
-                        <a
-                          href={SOCIALS.whitepaper}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Whitepaper
-                        </a>
-                      </li>
-                    )}
-                    {/* {!isProduction() && (
-                      <li>
-                        <Link href={ROUTE_PATH.ORDER_NOW} rel="noreferrer">
-                          Earn 5%
-                        </Link>
-                      </li>
-                    )} */}
-                    <li>
-                      <Link
-                        href={SOCIALS.discord}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        <SvgInset
-                          svgUrl={`${CDN_URL}/icons/ic-discord-20x20.svg`}
-                          className={styles.discord_icon}
-                        />
+                  <ul className={`${styles.navBar} ${styles[theme]}`}>
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[0].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[0].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[0].route)}>
+                        {MENU_HEADER[0].name}
+                      </Link>
+                    </li>
+
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[1].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[1].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>
+                        {MENU_HEADER[1].name}
+                      </Link>
+                    </li>
+
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[2].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[2].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[2].route)}>
+                        {MENU_HEADER[2].name}
                       </Link>
                     </li>
                   </ul>
-                  {/* {showWalletButton() && ( */}
-                  <>
-                    {user ? (
-                      <div className="position-relative" ref={dropdownRef}>
-                        <AvatarInfo
-                          imgSrc={user.avatar}
-                          width={48}
-                          height={48}
-                          leftContent={renderProfileHeader()}
-                          onClick={() => setOpenProfile(!openProfile)}
-                          wrapperStyle={{ cursor: 'pointer' }}
-                        />
-                        {openProfile && <ProfileDropdown />}
-                      </div>
-                    ) : (
-                      <div className={'d-xl-block d-none'}>
-                        <ButtonIcon
-                          disabled={isConnecting}
-                          sizes="small"
-                          variants={theme === 'dark' ? 'secondary' : 'primary'}
-                          onClick={handleConnectWallet}
-                        >
-                          {isConnecting ? 'Connecting...' : 'Connect wallet'}
-                        </ButtonIcon>
-                      </div>
-                    )}
-                  </>
-                  {/* )} */}
 
                   <button
                     className={`${styles.btnMenuMobile} ${
@@ -353,14 +234,6 @@ const Header: React.FC<IProp> = ({
             </div>
           </Container>
         </div>
-        {isDrops && (
-          <div className={styles.topDiscord}>
-            Want to launch your art on Bitcoin?
-            <a href={SOCIALS.discord} target="_blank" rel="noreferrer">
-              {' Join our Discord for direct support.'}
-            </a>
-          </div>
-        )}
       </header>
       {isFaucet && !isProduction() && (
         <div className={styles.testNet}>

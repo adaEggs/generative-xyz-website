@@ -3,29 +3,24 @@ import { get, post } from '@services/http-client';
 import log from '@utils/logger';
 import querystring from 'query-string';
 import { HOST_ORDINALS_EXPLORER } from '@constants/config';
-import { IMAGE_TYPE } from '@components/NFTDisplayBox/constant';
+import {
+  IGetMarketplaceBtcListItem,
+  IGetMarketplaceBtcListParams,
+  IGetMarketplaceBtcNFTDetail,
+  IInscriptionDetailResp,
+  IListingFee,
+  IListingFeePayload,
+  IListingordinals,
+  IPostMarketplaceBtcListNFTParams,
+  IPostMarketplaceBtcListNFTResponse,
+  ISubmitBTCAddressPayload,
+  ISubmitBTCAddressResponse,
+} from '@interfaces/api/marketplace-btc';
 
 const LOG_PREFIX = 'MarketplaceBtcService';
 
 const API_PATH = '/marketplace-btc';
-export interface IGetMarketplaceBtcListParams {
-  limit: number;
-  offset: number;
-  'buyable-only': boolean;
-}
-export interface IGetMarketplaceBtcListItem {
-  inscriptionID: string;
-  price: string;
-  name: string;
-  description: string;
-  image: string;
-  orderID: string;
-  buyable: boolean;
-  isCompleted: boolean;
-  inscriptionNumber: string;
-  contentType: IMAGE_TYPE;
-  contentLength: string;
-}
+
 export const getMarketplaceBtcList = async (
   params: IGetMarketplaceBtcListParams
 ): Promise<IGetMarketplaceBtcListItem[]> => {
@@ -37,19 +32,6 @@ export const getMarketplaceBtcList = async (
     throw Error('Failed to get Marketplace Btc List');
   }
 };
-
-export interface IPostMarketplaceBtcListNFTParams {
-  receiveAddress: string;
-  receiveOrdAddress: string;
-  inscriptionID: string;
-  name: string;
-  description: string;
-  price: string;
-}
-export interface IPostMarketplaceBtcListNFTResponse {
-  receiveAddress: string;
-  timeoutAt: string;
-}
 
 export const postMarketplaceBtcListNFT = async (
   dataFrom: IPostMarketplaceBtcListNFTParams
@@ -66,19 +48,6 @@ export const postMarketplaceBtcListNFT = async (
   }
 };
 
-export interface IGetMarketplaceBtcNFTDetail {
-  inscriptionID: string;
-  price: string;
-  name: string;
-  description: string;
-  orderID: string;
-  buyable: boolean;
-  isCompleted: boolean;
-  inscriptionNumber: string;
-  contentType: IMAGE_TYPE;
-  contentLength: string;
-}
-
 export const getMarketplaceBtcNFTDetail = async (
   inscriptionID: string
 ): Promise<IGetMarketplaceBtcNFTDetail> => {
@@ -91,17 +60,6 @@ export const getMarketplaceBtcNFTDetail = async (
     throw Error('Failed to get MarketplaceBtc NFT Detail');
   }
 };
-
-export interface ISubmitBTCAddressResponse {
-  receiveAddress: string;
-  timeoutAt: string;
-}
-
-export interface ISubmitBTCAddressPayload {
-  walletAddress: string;
-  inscriptionID: string;
-  orderID: string;
-}
 
 export const submitAddressBuyBTC = async (
   payload: ISubmitBTCAddressPayload
@@ -122,15 +80,6 @@ export const submitAddressBuyBTC = async (
   }
 };
 
-export interface IListingFeePayload {
-  inscriptionID: string;
-}
-
-export interface IListingFee {
-  serviceFee: number;
-  royaltyFee: number;
-}
-
 export const getListingFee = async (
   payload: IListingFeePayload
 ): Promise<IListingFee> => {
@@ -149,22 +98,14 @@ export const getListingFee = async (
   }
 };
 
-export interface IListingordinals {
-  inscriptions: string[];
-  prev: number;
-  next: number;
-  data: IGetMarketplaceBtcListItem[];
-}
-
 export const getListingOrdinals = async (
   from: string | number = 0
 ): Promise<IListingordinals> => {
   try {
-    const res = await fetch(
-      `${HOST_ORDINALS_EXPLORER}/api/inscriptions${
-        from !== 0 ? `/${from}` : ''
-      }`
-    );
+    const url = `${HOST_ORDINALS_EXPLORER}/api/inscriptions${
+      from !== 0 ? `/${from}` : ''
+    }`;
+    const res = await fetch(url);
     const dataRes = await res.json();
     const tasks = dataRes.inscriptions.map(async (inscriptionID: string) => {
       return getInscriptionDetail(inscriptionID);
@@ -179,12 +120,6 @@ export const getListingOrdinals = async (
     throw Error('Failed to get fee');
   }
 };
-
-interface IInscriptionDetailResp {
-  content_type: IMAGE_TYPE;
-  inscription_id: string;
-  number: number;
-}
 
 export const getInscriptionDetail = async (
   inscriptionID: string

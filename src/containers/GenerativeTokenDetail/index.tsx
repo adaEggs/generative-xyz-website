@@ -440,7 +440,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           <SwapTokenModal />
         </>
       )}
-      {!!tokenData?.buyable && !!ordAddress && (
+      {!!tokenData?.buyable && !!ordAddress && showModal && (
         <ModalBuyItemViaBTC
           showModal={showModal}
           onClose={toggleModal}
