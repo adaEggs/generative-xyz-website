@@ -39,6 +39,12 @@ export const MENU_HEADER = [
     route: ROUTE_PATH.LIVE,
     activePath: 'live',
   },
+  {
+    id: 'menu-7',
+    name: 'Metamask x Ordinals',
+    route: ROUTE_PATH.METAMASK_X_ORDINALS,
+    activePath: '/metamask-x-ordinals',
+  },
 ];
 
 export const RIGHT_MENU = [

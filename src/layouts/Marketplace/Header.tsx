@@ -57,7 +57,11 @@ const Header: React.FC<IProp> = ({
     {
       id: 'disconect-wallet',
       name: 'Disconnect wallet',
-      onClick: () => disconnect(),
+      onClick: () => {
+        disconnect().then(() => {
+          router.replace(ROUTE_PATH.HOME);
+        });
+      },
     },
     {
       id: 'faucet',
@@ -226,15 +230,37 @@ const Header: React.FC<IProp> = ({
                       </Link>
                     </li>
 
-                    <li
-                      className={cs(activePath === 'profile' && styles.active)}
-                      key={`header-profile`}
-                    >
-                      <a className={styles.yourVault} onClick={handleYourVault}>
-                        YOUR VAULT
-                        {user && ProfileDropdown()}
-                      </a>
-                    </li>
+                    {!!user && (
+                      <li
+                        className={cs(
+                          activePath === 'profile' && styles.active
+                        )}
+                        key={`header-profile`}
+                      >
+                        <a
+                          className={styles.yourVault}
+                          onClick={handleYourVault}
+                        >
+                          YOUR VAULT
+                          {user && ProfileDropdown()}
+                        </a>
+                      </li>
+                    )}
+                    {!user && (
+                      <li
+                        className={cs(
+                          activePath === MENU_HEADER[6].activePath &&
+                            styles.active
+                        )}
+                        key={`header-${MENU_HEADER[6].id}`}
+                      >
+                        <Link
+                          href={getUrlWithQueryParams(MENU_HEADER[6].route)}
+                        >
+                          {MENU_HEADER[6].name}
+                        </Link>
+                      </li>
+                    )}
                   </ul>
 
                   <button

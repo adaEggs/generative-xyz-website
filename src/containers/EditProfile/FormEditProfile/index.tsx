@@ -20,11 +20,14 @@ import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
 import { validateBTCAddress } from '@utils/validate';
 import _isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const LOG_PREFIX = 'FormEditProfile';
 
 const FormEditProfile = () => {
   const user = useAppSelector(getUserSelector);
+  const route = useRouter();
   const dispatch = useAppDispatch();
   const walletCtx = useContext(WalletContext);
 
@@ -266,7 +269,10 @@ const FormEditProfile = () => {
             {user?.walletAddress ? (
               <ButtonIcon
                 className={s.walletBtn}
-                onClick={() => walletCtx.disconnect()}
+                onClick={() => {
+                  walletCtx.disconnect();
+                  route.replace(ROUTE_PATH.METAMASK_X_ORDINALS);
+                }}
               >
                 Disconnect wallet
               </ButtonIcon>
