@@ -88,7 +88,9 @@ const FormEditProject = () => {
       parseInt(values.maxSupply.toString(), 10) > projectFiles &&
       parseInt(values.maxSupply.toString(), 10) >= nftMinted
     ) {
-      errors.maxSupply = `Invalid number. Must be between ${nftMinted} and ${projectFiles}.`;
+      errors.maxSupply = `Invalid number. Must be between ${
+        nftMinted || 1
+      } and ${projectFiles}.`;
     }
 
     if (!values.mintPrice.toString()) {
