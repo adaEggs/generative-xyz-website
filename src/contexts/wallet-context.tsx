@@ -169,7 +169,6 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
 
       setAccessToken(accessToken, refreshToken);
       const userRes = await getProfile();
-      userRes.wallet_address_btc;
       dispatch(setUser(userRes));
     } catch (err: unknown) {
       log('failed to connect wallet', LogLevel.ERROR, LOG_PREFIX);
