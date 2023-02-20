@@ -1,5 +1,9 @@
 import { LogLevel } from '@enums/log-level';
 import {
+  ICompleteMultipartUploadPayload,
+  ICompleteMultipartUploadResponse,
+  IInitiateMultipartUploadPayload,
+  IInitiateMultipartUploadResponse,
   IMinifyFilePayload,
   IMinifyFileResponse,
   IUploadFilePayload,
@@ -39,5 +43,35 @@ export const minifyFile = async (
   } catch (err: unknown) {
     log('failed to minify file', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to minify file');
+  }
+};
+
+export const initiateMultipartUpload = async (
+  payload: IInitiateMultipartUploadPayload
+): Promise<IInitiateMultipartUploadResponse> => {
+  try {
+    const res = await post<
+      IInitiateMultipartUploadPayload,
+      IInitiateMultipartUploadResponse
+    >(`${API_PATH}/minify`, payload);
+    return res;
+  } catch (err: unknown) {
+    log('failed to initiate multipart upload file', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to initiate multipart upload file');
+  }
+};
+
+export const completeMultipartUpload = async (
+  payload: ICompleteMultipartUploadPayload
+): Promise<ICompleteMultipartUploadResponse> => {
+  try {
+    const res = await post<
+      ICompleteMultipartUploadPayload,
+      ICompleteMultipartUploadResponse
+    >(`${API_PATH}/minify`, payload);
+    return res;
+  } catch (err: unknown) {
+    log('failed to complete multipart upload file', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to complete multipart upload file');
   }
 };
