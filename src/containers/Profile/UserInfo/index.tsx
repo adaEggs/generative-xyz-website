@@ -50,46 +50,84 @@ export const UserInfo = (): JSX.Element => {
                   height={100}
                 />
               </div>
-              <div className={s.userInfo_content_wallet}>
-                <Text size={'18'} color={'black-06'} fontWeight={'semibold'}>
-                  {currentUser?.walletAddress}
-                </Text>
-              </div>
-              <div className={s.userInfo_content_display}>
-                <div className={s.userName}>
-                  <Heading as={'h4'} fontWeight={'semibold'}>
-                    {currentUser?.displayName ||
-                      formatAddress(currentUser?.walletAddress || '')}
-                  </Heading>
-                </div>
-                {currentUser?.id === user?.id && (
-                  <>
-                    <div className={s.editProfile}>
-                      <ButtonIcon
-                        sizes="large"
-                        variants={'ghost'}
-                        startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}
-                        onClick={() => router.push(ROUTE_PATH.EDIT_PROFILE)}
-                      >
-                        <Text fontWeight="medium" as="span">
-                          Edit profile
-                        </Text>
-                      </ButtonIcon>
+              {
+                <>
+                  <div className={s.userInfo_content_btcWallet}>
+                    <Text
+                      size={'18'}
+                      color={'black-06'}
+                      fontWeight={'semibold'}
+                    >
+                      <span style={{ color: 'orange', fontSize: 22 }}>₿</span>{' '}
+                      {currentUser?.walletAddressBtcTaproot}
+                    </Text>
+                  </div>
+                  <div className={s.userInfo_content_display}>
+                    <div className={s.userName}>
+                      <Heading as={'h4'} fontWeight={'semibold'}>
+                        {!!currentUser?.walletAddressBtcTaproot &&
+                          formatAddress(
+                            currentUser?.walletAddressBtcTaproot || ''
+                          )}
+                      </Heading>
                     </div>
-                    {/* <div className={s.offerSetting}>
-                      <ButtonIcon
-                        sizes="large"
-                        variants={'ghost'}
-                        startIcon={<SvgInset svgUrl={IC_OFFER_SETTING} />}
-                      >
-                        <Text fontWeight="medium" as="span">
-                          Offer setting
-                        </Text>
-                      </ButtonIcon>
-                    </div> */}
-                  </>
-                )}
-              </div>
+                    {currentUser?.id === user?.id && (
+                      <>
+                        <div className={s.editProfile}>
+                          <ButtonIcon
+                            sizes="large"
+                            variants={'ghost'}
+                            startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}
+                            onClick={() => router.push(ROUTE_PATH.EDIT_PROFILE)}
+                          >
+                            <Text fontWeight="medium" as="span">
+                              Edit profile
+                            </Text>
+                          </ButtonIcon>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </>
+              }
+              {
+                <>
+                  <div className={s.userInfo_content_evmWallet}>
+                    <Text
+                      size={'18'}
+                      color={'black-06'}
+                      fontWeight={'semibold'}
+                    >
+                      <span style={{ color: '#9AA9DD', fontSize: 22 }}>Ξ</span>{' '}
+                      {currentUser?.walletAddress}
+                    </Text>
+                  </div>
+                  <div className={s.userInfo_content_display}>
+                    <div className={s.userName}>
+                      <Heading as={'h4'} fontWeight={'semibold'}>
+                        {currentUser?.displayName ||
+                          formatAddress(currentUser?.walletAddress || '')}
+                      </Heading>
+                    </div>
+                    {/*{currentUser?.id === user?.id && (*/}
+                    {/*  <>*/}
+                    {/*    <div className={s.editProfile}>*/}
+                    {/*      <ButtonIcon*/}
+                    {/*        sizes="large"*/}
+                    {/*        variants={'ghost'}*/}
+                    {/*        startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}*/}
+                    {/*        onClick={() => router.push(ROUTE_PATH.EDIT_PROFILE)}*/}
+                    {/*      >*/}
+                    {/*        <Text fontWeight="medium" as="span">*/}
+                    {/*          Edit profile*/}
+                    {/*        </Text>*/}
+                    {/*      </ButtonIcon>*/}
+                    {/*    </div>*/}
+                    {/*  </>*/}
+                    {/*)}*/}
+                  </div>
+                </>
+              }
             </div>
           </Col>
           <Col xs={4}>

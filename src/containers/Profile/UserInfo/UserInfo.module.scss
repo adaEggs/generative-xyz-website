@@ -38,9 +38,13 @@
       }
     }
 
-    &_wallet {
+    &_btcWallet {
       margin-top: rem(50px);
       padding-top: rem(32px);
+    }
+
+    &_evmWallet {
+      padding-top: rem(24px);
     }
 
     &_display {
