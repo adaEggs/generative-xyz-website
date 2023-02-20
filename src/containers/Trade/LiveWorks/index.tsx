@@ -17,12 +17,21 @@ import Row from 'react-bootstrap/Row';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import s from './LiveWorks.module.scss';
 import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 export const LiveWorks = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
+
+  const onShowModal = () => {
+    onButtonClick({
+      cbSigned: () => setShowModal(true),
+    }).then();
+  };
 
   const router = useRouter();
   const goToInscriptionsPage = () => {
@@ -72,7 +81,7 @@ export const LiveWorks = (): JSX.Element => {
           <ButtonIcon
             sizes="large"
             className={s.recentWorks_btn}
-            onClick={() => setShowModal(true)}
+            onClick={onShowModal}
           >
             List for sale
           </ButtonIcon>
@@ -110,10 +119,13 @@ export const LiveWorks = (): JSX.Element => {
           )}
         </Col>
       </Row>
-      <ListForSaleModal
-        showModal={showModal}
-        onClose={() => setShowModal(false)}
-      />
+      {!!ordAddress && showModal && (
+        <ListForSaleModal
+          showModal={showModal}
+          onClose={() => setShowModal(false)}
+          ordAddress={ordAddress}
+        />
+      )}
     </div>
   );
 };

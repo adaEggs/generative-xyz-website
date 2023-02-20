@@ -22,6 +22,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
 import s from './styles.module.scss';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const CollectionItem = ({
   data,
@@ -40,6 +41,8 @@ const CollectionItem = ({
     GenerativeProjectDetailContext
   );
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
+
   const isBTCListable =
     (data.buyable || (!data.buyable && !data.isCompleted)) && !!data.priceBTC;
   const isBTCDisable = !data.buyable && !data.isCompleted && !!data.priceBTC;
@@ -52,7 +55,11 @@ const CollectionItem = ({
 
   const toggleModal = () => {
     if (isBTCDisable) return;
-    setShowModal(show => !show);
+    onButtonClick({
+      cbSigned: () => {
+        setShowModal(show => !show);
+      },
+    }).then();
   };
 
   const renderButton = () => {
@@ -196,13 +203,14 @@ const CollectionItem = ({
         </Link>
         {renderButton()}
       </div>
-      {data.buyable && (
+      {data.buyable && !!ordAddress && showModal && (
         <ModalBuyItemViaBTC
           showModal={showModal}
           orderID={data.orderID}
           inscriptionID={data.tokenID}
           price={data.priceBTC}
           onClose={toggleModal}
+          ordAddress={ordAddress}
         />
       )}
     </div>

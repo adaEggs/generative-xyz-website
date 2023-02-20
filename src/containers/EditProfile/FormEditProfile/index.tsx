@@ -18,7 +18,7 @@ import { Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddress } from '@utils/validate';
 import _isEmpty from 'lodash/isEmpty';
 
 const LOG_PREFIX = 'FormEditProfile';
@@ -53,7 +53,7 @@ const FormEditProfile = () => {
     }
 
     if (
-      !validateBTCWalletAddress(values.walletAddressBtc) &&
+      !validateBTCAddress(values.walletAddressBtc) &&
       values.walletAddressBtc !== ''
     ) {
       errors.walletAddressBtc = 'Invalid wallet address.';
@@ -252,6 +252,14 @@ const FormEditProfile = () => {
                 <Text>BTC wallet address:</Text>
                 <Text style={{ marginBottom: '6px' }}>
                   {user?.walletAddressBtc || ''}
+                </Text>
+              </>
+            )}
+            {!!user?.walletAddressBtcTaproot && (
+              <>
+                <Text>BTC wallet address taproot:</Text>
+                <Text style={{ marginBottom: '6px' }}>
+                  {user?.walletAddressBtcTaproot || ''}
                 </Text>
               </>
             )}
