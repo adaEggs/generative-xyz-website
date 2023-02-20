@@ -3,8 +3,21 @@ import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
 import { Col, Row } from 'react-bootstrap';
 import s from './MetamaskXOrdinals.module.scss';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
+import { useRouter } from 'next/router';
 
 const MetamaskXOrdinals = () => {
+  const { ordAddress: _, onButtonClick } = useBTCSignOrd();
+  const router = useRouter();
+
+  const onConnect = () => {
+    onButtonClick({
+      cbSigned: () => {
+        router.replace('/profile');
+      },
+    });
+  };
+
   const renderDescItem = (child: () => React.ReactElement) => {
     return (
       <div className={s.descItem}>
@@ -29,8 +42,14 @@ const MetamaskXOrdinals = () => {
         {renderDescItem(() => (
           <Text className={s.text}>
             Works effortlessly with hardware wallets like{' '}
-            <span className={s.link}>Ledger</span> and{' '}
-            <span className={s.link}>Trezor</span>.
+            <a className={s.link} href="https://www.ledger.com/">
+              Ledger
+            </a>{' '}
+            and{' '}
+            <a className={s.link} href="https://trezor.io/">
+              Trezor
+            </a>
+            .
           </Text>
         ))}
         {renderDescItem(() => (
@@ -43,7 +62,7 @@ const MetamaskXOrdinals = () => {
             MetaMask is trusted by over 30 million users worldwide.
           </Text>
         ))}
-        <div className={s.buttonContainer}>
+        <div className={s.buttonContainer} onClick={onConnect}>
           <div className={s.createButton}>
             <Text className={s.createText}>CREATE YOUR VAULT</Text>
           </div>
