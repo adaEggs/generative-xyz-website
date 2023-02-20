@@ -10,4 +10,5 @@ export enum LocalStorageKey {
   USER_WALLET_ADDRESS = 'userWalletAddress',
   USER_LOCATION = 'userLocation',
   SESSION_FIRST_PAGE_VIEW = 'sessionFirstPageView',
+  CATEGORY_ID = 'categoryId',
 }
