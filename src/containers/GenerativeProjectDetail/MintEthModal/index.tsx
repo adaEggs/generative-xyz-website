@@ -53,7 +53,7 @@ const MintEthModal: React.FC = () => {
   const [addressInput, setAddressInput] = useState<string>('');
   const [_isConnecting, setIsConnecting] = useState<boolean>(false);
 
-  const userBtcAddress = useMemo(() => user?.wallet_address_btc, [user]);
+  const userBtcAddress = useMemo(() => user?.walletAddressBtc, [user]);
 
   const handleConnectWallet = async (): Promise<void> => {
     try {

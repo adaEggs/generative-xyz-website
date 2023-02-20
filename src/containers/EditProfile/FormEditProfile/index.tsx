@@ -45,12 +45,22 @@ const FormEditProfile = () => {
 
   const validateForm = (values: Record<string, string>) => {
     const errors: Record<string, string> = {};
+    const twitterRegex = /^https?:\/\/twitter\.com\/[A-Za-z0-9_]{1,15}\/?$/;
+    const httpsRegex = /^https:\/\//;
+
+    if (values.twitter !== '' && !twitterRegex.test(values.twitter)) {
+      errors.twitter = 'Invalid twitter link.';
+    }
 
     if (
-      !validateBTCWalletAddress(values.wallet_address_btc) &&
-      values.wallet_address_btc !== ''
+      !validateBTCWalletAddress(values.walletAddressBtc) &&
+      values.walletAddressBtc !== ''
     ) {
-      errors.wallet_address_btc = 'Invalid wallet address.';
+      errors.walletAddressBtc = 'Invalid wallet address.';
+    }
+
+    if (!httpsRegex.test(values.website) && values.website !== '') {
+      errors.website = 'Invalid website link.';
     }
 
     return errors;
@@ -68,7 +78,7 @@ const FormEditProfile = () => {
         instagram: values.instagram || '',
         etherScan: values.etherScan || '',
       },
-      walletAddressBtc: values.wallet_address_btc || '',
+      walletAddressBtc: values.walletAddressBtc || '',
     };
 
     const res = await updateProfile(payload);
@@ -96,7 +106,7 @@ const FormEditProfile = () => {
         discord: user?.profileSocial?.discord || '',
         etherScan: user?.profileSocial?.etherScan || '',
         twitter: user?.profileSocial?.twitter || '',
-        wallet_address_btc: user?.wallet_address_btc || '',
+        walletAddressBtc: user?.walletAddressBtc || '',
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -139,7 +149,7 @@ const FormEditProfile = () => {
                   placeholder="Nickname"
                   className={s.input_nickname}
                   useFormik
-                  errors={errors}
+                  errors={{ nickname: errors.nickname || '' }}
                 ></Input>
                 <Text size="14" className="text-secondary-color">
                   Other users will see your nickname instead of your wallet
@@ -153,16 +163,19 @@ const FormEditProfile = () => {
                   label={'bio'}
                   className={s.input_bio}
                   as="textarea"
+                  errors={{ bio: errors.bio || '' }}
                   useFormik
                 ></Input>
               </div>
               <div className={s.input_item}>
                 <Input
-                  name={'wallet_address_btc'}
+                  name={'walletAddressBtc'}
                   label={'BTC Wallet Address'}
                   placeholder="3FZb..."
                   className={s.input_wallet}
-                  errors={errors}
+                  errors={{
+                    walletAddressBtc: errors.walletAddressBtc || '',
+                  }}
                   useFormik
                 ></Input>
               </div>
@@ -182,6 +195,7 @@ const FormEditProfile = () => {
                     placeholder="https://"
                     className={s.input_website}
                     useFormik
+                    errors={{ website: errors.website || '' }}
                   ></Input>
                   {/* <Input
                     name={'instagram'}
@@ -209,6 +223,7 @@ const FormEditProfile = () => {
                     label={'twitter'}
                     placeholder="https://twitter.com/..."
                     className={s.input_website}
+                    errors={{ twitter: errors.twitter || '' }}
                     useFormik
                   ></Input>
                   <ButtonIcon
@@ -232,11 +247,11 @@ const FormEditProfile = () => {
             <Text style={{ marginBottom: '6px' }}>
               {user?.walletAddress || ''}
             </Text>
-            {!!user?.wallet_address_btc && (
+            {!!user?.walletAddressBtc && (
               <>
                 <Text>BTC wallet address:</Text>
                 <Text style={{ marginBottom: '6px' }}>
-                  {user?.wallet_address_btc || ''}
+                  {user?.walletAddressBtc || ''}
                 </Text>
               </>
             )}
