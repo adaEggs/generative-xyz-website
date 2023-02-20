@@ -3,7 +3,6 @@ import ecc from '@bitcoinerlab/secp256k1';
 import * as bitcoin from 'bitcoinjs-lib';
 import BIP32Factory from 'bip32';
 import { Buffer } from 'buffer';
-// import bitcoinMessage from 'bitcoinjs-message';
 import * as Segwit from 'segwit';
 
 bitcoin.initEccLib(ecc);
