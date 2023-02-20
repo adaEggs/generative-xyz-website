@@ -1,5 +1,4 @@
 import ButtonIcon from '@components/ButtonIcon';
-import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
@@ -8,7 +7,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress } from '@utils/format';
+import { ellipsisCenter } from '@utils/format';
 import cn from 'classnames';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -51,82 +50,66 @@ export const UserInfo = (): JSX.Element => {
                 />
               </div>
               {
-                <>
-                  <div className={s.userInfo_content_btcWallet}>
-                    <Text
-                      size={'18'}
-                      color={'black-06'}
-                      fontWeight={'semibold'}
-                    >
-                      <span style={{ color: 'orange', fontSize: 22 }}>₿</span>{' '}
-                      {currentUser?.walletAddressBtcTaproot}
-                    </Text>
-                  </div>
-                  <div className={s.userInfo_content_display}>
-                    <div className={s.userName}>
-                      <Heading as={'h4'} fontWeight={'semibold'}>
-                        {!!currentUser?.walletAddressBtcTaproot &&
-                          formatAddress(
-                            currentUser?.walletAddressBtcTaproot || ''
-                          )}
-                      </Heading>
+                <Row className={s.userInfo_content_wrapper}>
+                  <div className={s.userInfo_content_address}>
+                    <div className={s.userInfo_content_btcWallet}>
+                      <Text
+                        size={'18'}
+                        color={'black-06'}
+                        fontWeight={'semibold'}
+                      >
+                        <span
+                          style={{
+                            color: 'orange',
+                            fontSize: 24,
+                            marginRight: 8,
+                          }}
+                        >
+                          ₿
+                        </span>{' '}
+                        {ellipsisCenter({
+                          str: currentUser?.walletAddressBtcTaproot || '',
+                          limit: 10,
+                        })}
+                      </Text>
                     </div>
-                    {currentUser?.id === user?.id && (
-                      <>
-                        <div className={s.editProfile}>
-                          <ButtonIcon
-                            sizes="large"
-                            variants={'ghost'}
-                            startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}
-                            onClick={() => router.push(ROUTE_PATH.EDIT_PROFILE)}
-                          >
-                            <Text fontWeight="medium" as="span">
-                              Edit profile
-                            </Text>
-                          </ButtonIcon>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </>
-              }
-              {
-                <>
-                  <div className={s.userInfo_content_evmWallet}>
-                    <Text
-                      size={'18'}
-                      color={'black-06'}
-                      fontWeight={'semibold'}
-                    >
-                      <span style={{ color: '#9AA9DD', fontSize: 22 }}>Ξ</span>{' '}
-                      {currentUser?.walletAddress}
-                    </Text>
-                  </div>
-                  <div className={s.userInfo_content_display}>
-                    <div className={s.userName}>
-                      <Heading as={'h4'} fontWeight={'semibold'}>
-                        {currentUser?.displayName ||
-                          formatAddress(currentUser?.walletAddress || '')}
-                      </Heading>
+                    <div className={s.userInfo_content_evmWallet}>
+                      <Text
+                        size={'18'}
+                        color={'black-06'}
+                        fontWeight={'semibold'}
+                      >
+                        <span
+                          style={{
+                            color: '#9AA9DD',
+                            fontSize: 24,
+                            marginRight: 8,
+                          }}
+                        >
+                          Ξ
+                        </span>{' '}
+                        {ellipsisCenter({
+                          str: currentUser?.walletAddress || '',
+                          limit: 10,
+                        })}
+                      </Text>
                     </div>
-                    {/*{currentUser?.id === user?.id && (*/}
-                    {/*  <>*/}
-                    {/*    <div className={s.editProfile}>*/}
-                    {/*      <ButtonIcon*/}
-                    {/*        sizes="large"*/}
-                    {/*        variants={'ghost'}*/}
-                    {/*        startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}*/}
-                    {/*        onClick={() => router.push(ROUTE_PATH.EDIT_PROFILE)}*/}
-                    {/*      >*/}
-                    {/*        <Text fontWeight="medium" as="span">*/}
-                    {/*          Edit profile*/}
-                    {/*        </Text>*/}
-                    {/*      </ButtonIcon>*/}
-                    {/*    </div>*/}
-                    {/*  </>*/}
-                    {/*)}*/}
                   </div>
-                </>
+                  {currentUser?.id === user?.id && (
+                    <div className={s.editProfile}>
+                      <ButtonIcon
+                        sizes="large"
+                        variants={'ghost'}
+                        startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}
+                        onClick={() => router.push(ROUTE_PATH.EDIT_PROFILE)}
+                      >
+                        <Text fontWeight="medium" as="span">
+                          Edit profile
+                        </Text>
+                      </ButtonIcon>
+                    </div>
+                  )}
+                </Row>
               }
             </div>
           </Col>

@@ -20,6 +20,19 @@
   &_content {
     position: relative;
 
+    &_wrapper {
+      width: fit-content;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-top: rem(82px);
+      padding-top: rem(32px);
+    }
+
+    &_address {
+      width: fit-content;
+    }
+
     &_avatar {
       position: absolute;
       bottom: 100%;
@@ -38,13 +51,8 @@
       }
     }
 
-    &_btcWallet {
-      margin-top: rem(50px);
-      padding-top: rem(32px);
-    }
-
     &_evmWallet {
-      padding-top: rem(24px);
+      padding-top: rem(12px);
     }
 
     &_display {
@@ -90,4 +98,9 @@
       }
     }
   }
+}
+
+.editProfile {
+  width: fit-content;
+  margin-left: rem(18px);
 }
