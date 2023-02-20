@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import s from './UserInfo.module.scss';
+import { toast } from 'react-hot-toast';
 
 export const UserInfo = (): JSX.Element => {
   const user = useAppSelector(getUserSelector);
@@ -81,9 +82,11 @@ export const UserInfo = (): JSX.Element => {
                         })}
                       </Text>
                       <SvgInset
-                        onClick={() =>
-                          copy(currentUser?.walletAddressBtcTaproot || '')
-                        }
+                        onClick={() => {
+                          copy(currentUser?.walletAddressBtcTaproot || '');
+                          toast.remove();
+                          toast.success('Copied');
+                        }}
                         className={s.iconCopy}
                         size={20}
                         svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
@@ -110,7 +113,11 @@ export const UserInfo = (): JSX.Element => {
                         })}
                       </Text>
                       <SvgInset
-                        onClick={() => copy(currentUser?.walletAddress || '')}
+                        onClick={() => {
+                          copy(currentUser?.walletAddress || '');
+                          toast.remove();
+                          toast.success('Copied');
+                        }}
                         className={s.iconCopy}
                         size={20}
                         svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
