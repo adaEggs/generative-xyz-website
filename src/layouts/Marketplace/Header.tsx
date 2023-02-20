@@ -235,6 +235,18 @@ const Header: React.FC<IProp> = ({
                         {user && ProfileDropdown()}
                       </a>
                     </li>
+
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[6].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[6].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[6].route)}>
+                        {MENU_HEADER[6].name}
+                      </Link>
+                    </li>
                   </ul>
 
                   <button
