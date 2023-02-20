@@ -18,13 +18,16 @@ import { Formik } from 'formik';
 import { useContext, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddress } from '@utils/validate';
 import _isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const LOG_PREFIX = 'FormEditProfile';
 
 const FormEditProfile = () => {
   const user = useAppSelector(getUserSelector);
+  const route = useRouter();
   const dispatch = useAppDispatch();
   const walletCtx = useContext(WalletContext);
 
@@ -53,7 +56,7 @@ const FormEditProfile = () => {
     }
 
     if (
-      !validateBTCWalletAddress(values.walletAddressBtc) &&
+      !validateBTCAddress(values.walletAddressBtc) &&
       values.walletAddressBtc !== ''
     ) {
       errors.walletAddressBtc = 'Invalid wallet address.';
@@ -255,10 +258,21 @@ const FormEditProfile = () => {
                 </Text>
               </>
             )}
+            {!!user?.walletAddressBtcTaproot && (
+              <>
+                <Text>BTC wallet taproot wallet address:</Text>
+                <Text style={{ marginBottom: '6px' }}>
+                  {user?.walletAddressBtcTaproot || ''}
+                </Text>
+              </>
+            )}
             {user?.walletAddress ? (
               <ButtonIcon
                 className={s.walletBtn}
-                onClick={() => walletCtx.disconnect()}
+                onClick={() => {
+                  walletCtx.disconnect();
+                  route.replace(ROUTE_PATH.METAMASK_X_ORDINALS);
+                }}
               >
                 Disconnect wallet
               </ButtonIcon>

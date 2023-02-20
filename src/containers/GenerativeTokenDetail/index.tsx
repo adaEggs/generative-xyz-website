@@ -40,12 +40,13 @@ import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
 import Avatar from '@components/Avatar';
 import { CDN_URL } from '@constants/config';
 import SvgInset from '@components/SvgInset';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
   const { projectID } = router.query;
   const { mobileScreen } = useWindowSize();
-
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
   const {
     tokenData,
     projectData,
@@ -74,7 +75,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
 
   const toggleModal = () => {
     if (isBTCDisable) return;
-    setShowModal(show => !show);
+    return onButtonClick({
+      cbSigned: () => {
+        setShowModal(show => !show);
+      },
+    });
   };
 
   const tokenInfos = [
@@ -435,7 +440,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           <SwapTokenModal />
         </>
       )}
-      {!!tokenData?.buyable && (
+      {!!tokenData?.buyable && !!ordAddress && showModal && (
         <ModalBuyItemViaBTC
           showModal={showModal}
           onClose={toggleModal}
@@ -443,6 +448,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           inscriptionID={tokenData.tokenID}
           price={tokenData.priceBTC}
           orderID={tokenData.orderID}
+          ordAddress={ordAddress}
         />
       )}
     </>

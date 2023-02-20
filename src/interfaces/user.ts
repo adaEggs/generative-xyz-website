@@ -10,4 +10,5 @@ export type User = {
   profileSocial?: ProjectSocial;
   bgCover?: string;
   walletAddressBtc?: string;
+  walletAddressBtcTaproot?: string;
 };
