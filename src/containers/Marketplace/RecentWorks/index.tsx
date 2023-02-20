@@ -139,7 +139,10 @@ export const RecentWorks = (): JSX.Element => {
     if (categoriesList && categoriesList.length > 0) {
       setIsLoadMore(false);
       setIsLoaded(false);
-      await getProjectAll({ page: 0, categoryID: filterCategory || '' });
+      await getProjectAll({
+        page: 0,
+        categoryID: filterCategory ? filterCategory : categoriesList[0].id,
+      });
       setIsLoaded(true);
     }
   }, [filterCategory, sort]);
