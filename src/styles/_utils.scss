@@ -296,3 +296,9 @@
     text-decoration: underline !important;
   }
 }
+
+.hover-purple-c {
+  &:hover {
+    color: $secondary-purple-c !important;
+  }
+}

@@ -552,7 +552,7 @@ const ProjectIntroSection = ({
                   <Link
                     href={EXTERNAL_LINK.DELEGATE_CASH}
                     target="_blank"
-                    className="hover-underline"
+                    className="hover-underline text-purple-c hover-purple-c"
                   >
                     delegate.cash
                   </Link>{' '}
