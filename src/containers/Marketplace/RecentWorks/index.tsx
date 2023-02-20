@@ -21,6 +21,7 @@ import Row from 'react-bootstrap/Row';
 import Select, { SingleValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
+import { LocalStorageKey } from '@enums/local-storage';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -46,7 +47,6 @@ export const RecentWorks = (): JSX.Element => {
   const [listData, setListData] = useState<Project[]>([]);
   const [sort, setSort] = useState<string | null>('');
   const [currentTotal, setCurrentTotal] = useState<number>(0);
-  // const router = useRouter();
   const [categoriesList, setCategoriesList] = useState<Category[]>();
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
@@ -90,7 +90,10 @@ export const RecentWorks = (): JSX.Element => {
   );
 
   const onLoadMore = () => {
-    getProjectAll({ page: pageNum + 1, categoryID: filterCategory || '' });
+    getProjectAll({
+      page: pageNum + 1,
+      categoryID: filterCategory || activeCategory || '',
+    });
     setPageNum(prev => prev + 1);
   };
 
@@ -98,14 +101,24 @@ export const RecentWorks = (): JSX.Element => {
     try {
       setCategoriesLoading(true);
       const { result } = await getCategoryList();
+      const historyCategoryID = sessionStorage.getItem(
+        LocalStorageKey.CATEGORY_ID
+      );
       if (result && result.length > 0) {
         setCategoriesList(result);
         setCategoriesLoading(false);
         const projectRes = await getProjectAll({
           page: 0,
-          categoryID: result[0].id,
+          categoryID:
+            historyCategoryID || historyCategoryID?.length === 0
+              ? historyCategoryID
+              : result[0].id,
         });
-        setActiveCategory(result[0].id);
+        setActiveCategory(
+          historyCategoryID || historyCategoryID?.length === 0
+            ? historyCategoryID
+            : result[0].id
+        );
         if (projectRes && projectRes.result && projectRes.result.length > 0)
           setIsLoaded(true);
       }
@@ -118,6 +131,7 @@ export const RecentWorks = (): JSX.Element => {
   const handleClickCategory = (categoryID: string) => {
     setFilterCategory(categoryID);
     setActiveCategory(categoryID);
+    sessionStorage.setItem(LocalStorageKey.CATEGORY_ID, categoryID);
     setProjects(undefined);
   };
 
@@ -138,7 +152,7 @@ export const RecentWorks = (): JSX.Element => {
     <div className={s.recentWorks}>
       <Container>
         <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
-          Be the first to collect art on Bitcoin
+          Be the first to collect art on Bitcoin.
         </Heading>
         <Row className={s.recentWorks_heading}>
           <Col

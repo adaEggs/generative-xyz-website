@@ -107,7 +107,6 @@ const FormEditProfile = () => {
         etherScan: user?.profileSocial?.etherScan || '',
         twitter: user?.profileSocial?.twitter || '',
         walletAddressBtc: user?.walletAddressBtc || '',
-        walletAddressBtcTaproot: user?.walletAddressBtcTaproot || '',
       }}
       validate={validateForm}
       onSubmit={handleSubmit}

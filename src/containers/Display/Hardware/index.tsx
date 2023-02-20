@@ -86,9 +86,8 @@ export const HardWare = (): JSX.Element => {
         subTitle={'Hardware configuration'}
         title={'External beauty. Cutting-edge within.'}
       >
-        Say hello to a frame that’s extreme in every way. Generative Display is
-        designed for collectors who need the ultimate live rendering
-        performance.
+        Say hello to a frame that’s extreme in every way. Grail is designed for
+        collectors who need the ultimate live rendering performance.
       </SectionInfo>
       <div className={s.hardWare_wrap}>
         <MaskerStart className={s.hardWare_content}>

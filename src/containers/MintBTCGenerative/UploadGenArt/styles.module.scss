@@ -282,4 +282,12 @@
     margin-bottom: rem(24px);
     text-align: left;
   }
+
+  .errorMessage {
+    font-weight: 500;
+    font-size: rem(14px);
+    line-height: rem(24px);
+    color: $secondary-red;
+    margin-top: rem(8px);
+  }
 }

@@ -17,9 +17,9 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-4',
-    name: 'Display',
+    name: 'Grail',
     route: ROUTE_PATH.DISPLAY,
-    activePath: 'display',
+    activePath: 'grail',
   },
   {
     id: 'menu-3',

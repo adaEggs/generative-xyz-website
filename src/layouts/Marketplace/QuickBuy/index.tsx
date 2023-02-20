@@ -64,7 +64,7 @@ const QuickBuy = (): React.ReactElement => {
               fontWeight="medium"
               className={`${s.quickBuy_heading}`}
             >
-              Generative Display
+              Grail
             </Text>
           </div>
           <div className={s.quickBuy_right}>

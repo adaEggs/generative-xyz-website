@@ -36,6 +36,20 @@
         z-index: 2;
         color: #fff;
         display: block;
+        margin-bottom: 0;
+      }
+
+      &_content {
+        color: rgb(255 255 255 / 80%);
+        margin-bottom: rem(40px);
+
+        @include tablet {
+          font-size: rem(32px);
+        }
+
+        @include mobile {
+          font-size: rem(24px);
+        }
       }
 
       &_ctas {

@@ -12,4 +12,5 @@ export enum LocalStorageKey {
   SESSION_FIRST_PAGE_VIEW = 'sessionFirstPageView',
   FLAG_SIGN = 'flagSign',
   ORD_ADDRESS = 'ordAddress',
+  CATEGORY_ID = 'categoryId',
 }

@@ -108,7 +108,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 {isLimitMinted && (
                   <>
                     <div className={s.projectCard_info_price_price}>
-                      <Text size={'18'} fontWeight="medium" color="black-40">
+                      <Text size={'16'} fontWeight="medium" color="black-40">
                         {Number(project.mintPrice)
                           ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
                           : 'Free'}

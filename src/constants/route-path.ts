@@ -12,7 +12,7 @@ export const ROUTE_PATH = {
   PROFILE: '/profile',
   EDIT_PROFILE: `/profile/edit`,
   SANDBOX: '/sandbox',
-  DISPLAY: isStaging() ? 'https://generative.xyz' : '/display',
+  DISPLAY: '/grail',
   ORDER_NOW: isStaging() ? 'https://generative.xyz/order-now' : '/order-now',
   LEADERBOARDS: isProduction()
     ? 'https://testnet.generative.xyz/leaderboards'
