@@ -28,6 +28,7 @@ import { getUserSelector } from '@redux/user/selector';
 import { WalletContext } from '@contexts/wallet-context';
 import { sendAAEvent } from '@services/aa-tracking';
 import { BTC_PROJECT } from '@constants/tracking-event-name';
+import _throttle from 'lodash/throttle';
 
 interface IFormValue {
   address: string;
@@ -53,7 +54,10 @@ const MintEthModal: React.FC = () => {
   const [addressInput, setAddressInput] = useState<string>('');
   const [_isConnecting, setIsConnecting] = useState<boolean>(false);
 
-  const userBtcAddress = useMemo(() => user?.walletAddressBtc, [user]);
+  const userBtcAddress = useMemo(
+    () => user?.walletAddressBtcTaproot || '',
+    [user]
+  );
 
   const handleConnectWallet = async (): Promise<void> => {
     try {
@@ -66,16 +70,16 @@ const MintEthModal: React.FC = () => {
     }
   };
 
-  const handleTransfer = async (
-    toAddress: string,
-    val: string
-  ): Promise<void> => {
-    try {
-      await transfer(toAddress, val);
-    } catch (err: unknown) {
-      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-    }
-  };
+  const handleTransfer = React.useCallback(
+    _throttle(async (toAddress: string, val: string): Promise<void> => {
+      try {
+        await transfer(toAddress, val);
+      } catch (err: unknown) {
+        log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+      }
+    }, 400),
+    []
+  );
 
   const getBTCAddress = async (walletAddress: string): Promise<void> => {
     if (!projectData) return;

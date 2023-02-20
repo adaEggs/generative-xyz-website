@@ -137,7 +137,10 @@ const MintBTCGenerativeModal: React.FC = () => {
     }
   };
 
-  const userBtcAddress = useMemo(() => user?.walletAddressBtc, [user]);
+  const userBtcAddress = useMemo(
+    () => user?.walletAddressBtcTaproot || '',
+    [user]
+  );
 
   const priceMemo = useMemo(() => formatBTCPrice(Number(price)), [price]);
 

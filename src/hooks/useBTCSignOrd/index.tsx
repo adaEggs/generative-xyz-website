@@ -26,36 +26,13 @@ const useBTCSignOrd = (): IBTCSignOrgProps => {
     try {
       setProcessing(true);
       // check connect wallet
-      if (!user || !user.walletAddress) {
+      if (!user || !user.walletAddressBtcTaproot) {
         await walletCtx.connect();
       }
 
       if (cbSigned && typeof cbSigned === 'function') {
         cbSigned();
       }
-
-      // const _address = user && user.walletAddress;
-      // if (_address) {
-      //   // check storage account before
-      //   let ordAddress = getBTCOrdAddress(_address);
-      //   // call sign method if taprootAddress empty
-      //   if (!ordAddress) {
-      //     const data = await handleSign(_address);
-      //     if (data && data.address) {
-      //       const ordAddress = data.address;
-      //       setBTCOrdAddress(_address, ordAddress);
-      //     }
-      //   }
-      //   ordAddress = getBTCOrdAddress(_address);
-      //   if (!ordAddress) {
-      //     return toast.error('Ordinals address is empty.');
-      //   } else {
-      //     setOrdAddress(ordAddress);
-      //   }
-      //   if (cbSigned && typeof cbSigned === 'function') {
-      //     cbSigned();
-      //   }
-      // }
     } catch (e) {
       toast.error(ErrorMessage.DEFAULT);
     } finally {
@@ -64,8 +41,8 @@ const useBTCSignOrd = (): IBTCSignOrgProps => {
   };
 
   React.useEffect(() => {
-    if (!user || !user.walletAddressBtc) return setOrdAddress('');
-    setOrdAddress(user.walletAddressBtc);
+    if (!user || !user.walletAddressBtcTaproot) return setOrdAddress('');
+    setOrdAddress(user.walletAddressBtcTaproot);
   }, [user]);
 
   return {

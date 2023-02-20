@@ -21,7 +21,7 @@ const getBitcoinOrdKeySignContent = (message: string): Buffer => {
   return Buffer.from(message);
 };
 
-const generateBitcoinOrdKey = async ({
+const generateBitcoinKey = async ({
   address,
   message: messageSegwit, // sign message with second sign transaction
 }: {
@@ -74,4 +74,4 @@ const generateBitcoinOrdKey = async ({
   };
 };
 
-export { generateBitcoinOrdKey, getBitcoinOrdKeySignContent };
+export { generateBitcoinKey, getBitcoinOrdKeySignContent };

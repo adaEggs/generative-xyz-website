@@ -17,6 +17,7 @@ import MintWalletModal from './MintWalletModal';
 import TokenTopFilter from './TokenTopFilter';
 import styles from './styles.module.scss';
 import { PaymentMethod } from '@enums/mint-generative';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const GenerativeProjectDetail: React.FC<{
   isWhitelist?: boolean;
@@ -53,15 +54,20 @@ const GenerativeProjectDetail: React.FC<{
     setPaymentStep,
   } = useContext(BitcoinProjectContext);
 
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
   return (
     <>
       <section>
         <Container>
           <ProjectIntroSection
             openMintBTCModal={(chain: PaymentMethod) => {
-              setPaymentStep('mint');
-              setIsPopupPayment(true);
-              setPaymentMethod(chain);
+              onButtonClick({
+                cbSigned: () => {
+                  setPaymentStep('mint');
+                  setIsPopupPayment(true);
+                  setPaymentMethod(chain);
+                },
+              }).then();
             }}
             project={project ? project : projectInfo}
             isWhitelist={isWhitelist}
@@ -104,7 +110,7 @@ const GenerativeProjectDetail: React.FC<{
           </ClientOnly>
         </Container>
       </section>
-      {isPopupPayment && (
+      {isPopupPayment && !!ordAddress && (
         <>
           {paymentStep === 'mint' && paymentMethod === PaymentMethod.BTC && (
             <MintBTCGenerativeModal />

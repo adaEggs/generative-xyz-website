@@ -22,7 +22,7 @@ import { getUserSelector } from '@redux/user/selector';
 import { METAMASK_DOWNLOAD_PAGE } from '@constants/common';
 import { isMobile } from '@utils/animation';
 import { openMetamaskDeeplink } from '@utils/metamask';
-import { generateBitcoinOrdKey } from '@hooks/useBTCSignOrd/connect.methods';
+import { generateBitcoinKey } from '@hooks/useBTCSignOrd/connect.methods';
 
 const LOG_PREFIX = 'WalletContext';
 
@@ -143,7 +143,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
         address: walletAddress,
       });
 
-      const { segwit, taproot } = await generateBitcoinOrdKey({
+      const { segwit, taproot } = await generateBitcoinKey({
         address: walletAddress,
         message: nonceMessage,
       });
