@@ -137,7 +137,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     }
   };
 
-  const userBtcAddress = useMemo(() => user?.wallet_address_btc, [user]);
+  const userBtcAddress = useMemo(() => user?.walletAddressBtc, [user]);
 
   const priceMemo = useMemo(() => formatBTCPrice(Number(price)), [price]);
 
@@ -252,7 +252,6 @@ const MintBTCGenerativeModal: React.FC = () => {
                                 onBlur={handleBlur}
                                 value={values.address}
                                 className={s.input}
-                                disabled={!!userBtcAddress}
                                 placeholder="Paste your BTC Ordinal wallet address here"
                               />
                             </div>
