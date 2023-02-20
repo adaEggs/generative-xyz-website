@@ -57,7 +57,11 @@ const Header: React.FC<IProp> = ({
     {
       id: 'disconect-wallet',
       name: 'Disconnect wallet',
-      onClick: () => disconnect(),
+      onClick: () => {
+        disconnect().then(() => {
+          router.replace(ROUTE_PATH.HOME);
+        });
+      },
     },
     {
       id: 'faucet',
