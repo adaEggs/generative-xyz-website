@@ -42,7 +42,7 @@ const Header: React.FC<IProp> = ({
   const user = useAppSelector(getUserSelector);
   const router = useRouter();
   const { query } = router;
-  const activePath = router.asPath.split('/')[1];
+  const activePath = router.pathname.split('/')[1];
   const [isConnecting, setIsConnecting] = useState(false);
   const [isFaucet, _] = useState<boolean>(isShowFaucet);
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
@@ -82,6 +82,7 @@ const Header: React.FC<IProp> = ({
     try {
       setIsConnecting(true);
       await connect();
+      router.push(ROUTE_PATH.PROFILE);
     } catch (err: unknown) {
       log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
     } finally {
@@ -156,6 +157,14 @@ const Header: React.FC<IProp> = ({
     }
   }, [isOpenMenu]);
 
+  const handleYourVault = () => {
+    if (user) {
+      router.push(ROUTE_PATH.PROFILE);
+    } else {
+      handleConnectWallet();
+    }
+  };
+
   return (
     <>
       <header
@@ -183,8 +192,8 @@ const Header: React.FC<IProp> = ({
                   <ul className={`${styles.navBar} ${styles[theme]}`}>
                     <li
                       className={cs(
-                        activePath === MENU_HEADER[0].activePath &&
-                          styles.active
+                        activePath === MENU_HEADER[0].activePath ||
+                          (activePath === '' && styles.active)
                       )}
                       key={`header-${MENU_HEADER[0].id}`}
                     >
@@ -215,6 +224,16 @@ const Header: React.FC<IProp> = ({
                       <Link href={getUrlWithQueryParams(MENU_HEADER[2].route)}>
                         {MENU_HEADER[2].name}
                       </Link>
+                    </li>
+
+                    <li
+                      className={cs(activePath === 'profile' && styles.active)}
+                      key={`header-profile`}
+                    >
+                      <a className={styles.yourVault} onClick={handleYourVault}>
+                        YOUR VAULT
+                        {user && ProfileDropdown()}
+                      </a>
                     </li>
                   </ul>
 

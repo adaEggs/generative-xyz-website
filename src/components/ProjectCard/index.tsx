@@ -100,7 +100,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 </div>
               )}
               <div className={s.projectCard_info_title}>
-                <Heading as={'h6'} fontWeight="medium">
+                <Heading as={'h6'} fontWeight="medium" color="black-40">
                   <span title={project.name}>{project.name}</span>
                 </Heading>
               </div>
@@ -108,7 +108,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 {isLimitMinted && (
                   <>
                     <div className={s.projectCard_info_price_price}>
-                      <Text size={'18'} fontWeight="medium" color="black-40">
+                      <Text size={'16'} fontWeight="medium" color="black-40">
                         {Number(project.mintPrice)
                           ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
                           : 'Free'}

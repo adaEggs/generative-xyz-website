@@ -9,8 +9,8 @@ export const Benchmark = (): JSX.Element => {
         <div className="col-xxxl-6 col-xl-7 offset-xxxl-3 offset-xl-2 col-md-10 offset-md-1 col-12">
           <h3 className={`heading heading__medium`}>Benchmark</h3>
           <p className={`desc__medium`}>
-            Generative Display has set a rising standard in showcasing living
-            art — with numbers that speak for themselves.
+            Grail has set a rising standard in showcasing living art — with
+            numbers that speak for themselves.
           </p>
         </div>
       </div>
@@ -24,7 +24,7 @@ export const Benchmark = (): JSX.Element => {
             }
             color={'dep-yellow'}
             artCreatorName={`Leo Villareal`}
-            target1={{ title: 'Generative Display', value: 59 }}
+            target1={{ title: 'Grail', value: 59 }}
             target2={{ title: 'Macbook Pro 16 2019', value: 14 }}
           />
 
@@ -34,7 +34,7 @@ export const Benchmark = (): JSX.Element => {
             title={'The Field #0'}
             artLink={`https://generator.artblocks.io/0x99a9b7c1116f9ceeb1652de04d5969cce509b069/399000000`}
             artCreatorName={`Beervangeer`}
-            target1={{ title: 'Generative Display', value: 58.5 }}
+            target1={{ title: 'Grail', value: 58.5 }}
             target2={{ title: 'Macbook Pro 16 2019', value: 6 }}
           />
 
@@ -46,7 +46,7 @@ export const Benchmark = (): JSX.Element => {
             }
             color={'dep-blue'}
             artCreatorName={`ge1doot`}
-            target1={{ title: 'Generative Display', value: 58.4 }}
+            target1={{ title: 'Grail', value: 58.4 }}
             target2={{ title: 'Macbook Pro 16 2019', value: 29 }}
           />
         </div>

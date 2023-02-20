@@ -94,7 +94,7 @@ export const Loading = (): JSX.Element => {
     <div ref={refLoading} className={s.loading}>
       <div className={s.loading_inner}>
         <Image width={64} height={64} src={LOGO_GENERATIVE} alt={'logo-url'} />
-        <h5 className={s.loading_text}>The Benchmark for Generative Art</h5>
+        <h5 className={s.loading_text}>The Benchmark for Grail</h5>
         <span ref={refPersent}>0%</span>
       </div>
     </div>

@@ -120,6 +120,12 @@
           flex: 0 0 100%;
           width: 100%;
         }
+
+        &.active {
+          a {
+            font-weight: 700;
+          }
+        }
       }
 
       a {
@@ -128,6 +134,7 @@
         text-transform: uppercase;
         font-size: rem(16);
         position: relative;
+        cursor: pointer;
 
         @include mobile {
           text-align: center;
@@ -363,6 +370,7 @@
       .active {
         a {
           color: $black-100;
+          font-weight: bold;
         }
       }
 
@@ -431,4 +439,22 @@
   font-size: rem(12px);
   line-height: 100%;
   border-radius: 2px;
+}
+
+.yourVault {
+  position: relative;
+
+  :global(.dropdown) {
+    opacity: 0;
+    visibility: hidden;
+    text-transform: none !important;
+    transition: all 0.4s $easeOutCubic;
+  }
+
+  &:hover {
+    :global(.dropdown) {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
 }

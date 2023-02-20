@@ -14,7 +14,17 @@ export async function unzipFile(file: File): Promise<Record<string, Blob>> {
 
   const blobs: Record<string, Blob> = {};
   for (const name in entries) {
-    if (name.includes(MASOX_SYSTEM_PREFIX)) {
+    // Ignore system files
+    if (
+      MASOX_SYSTEM_PREFIX.some((systemFileName: string) =>
+        name.includes(systemFileName)
+      )
+    ) {
+      continue;
+    }
+
+    // Ignore directories
+    if (entries[name].isDirectory) {
       continue;
     }
 

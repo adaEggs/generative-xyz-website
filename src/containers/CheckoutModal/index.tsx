@@ -239,7 +239,7 @@ const CheckoutModal: React.FC = (): JSX.Element => {
               </Text>
             </div>
           )}
-          <div className={s.CheckoutModal_title}>Buy Generative Display</div>
+          <div className={s.CheckoutModal_title}>Buy Grail</div>
           <div className={s.CheckoutModal_optionsContainer}>
             <div key={cart?.id} className={s.CheckoutModal_optionItem}>
               <img src={cart?.image} alt="" />
