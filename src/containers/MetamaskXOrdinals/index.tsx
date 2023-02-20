@@ -10,7 +10,7 @@ const MetamaskXOrdinals = () => {
       <div className={s.descItem}>
         <SvgInset
           size={20}
-          svgUrl={`${CDN_URL}/icons/ic-badge-gold.svg`}
+          svgUrl={`${CDN_URL}/icons/check-circle.svg`}
           className={s.icon}
         />
         {child()}
@@ -47,18 +47,21 @@ const MetamaskXOrdinals = () => {
           <div className={s.createButton}>
             <Text className={s.createText}>CREATE YOUR VAULT</Text>
           </div>
-          <div className={s.learnMoreButton}>
+          {/* <div className={s.learnMoreButton}>
             <Text className={s.learnMoreText}>Learn more</Text>
             <SvgInset
               size={20}
-              svgUrl={`${CDN_URL}/icons/ic-badge-gold.svg`}
+              svgUrl={`${CDN_URL}/icons/arrow-right.svg`}
               className={s.learnMoreIcon}
             />
-          </div>
+          </div> */}
         </div>
       </Col>
       <Col md={'12'} xl={'7'}>
-        <img alt="banner" src={`${CDN_URL}/pages/home/create-poster.png`} />
+        <img
+          alt="banner"
+          src={`${CDN_URL}/images/metamaskordinals_banner.png`}
+        />
       </Col>
     </Row>
   );

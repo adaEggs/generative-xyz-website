@@ -77,3 +77,9 @@ export interface IInscriptionDetailResp {
   inscription_id: string;
   number: number;
 }
+
+export interface ICollectedNFTResp {
+  inscriptions: {
+    [key: string]: string;
+  };
+}

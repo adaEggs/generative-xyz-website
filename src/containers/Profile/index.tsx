@@ -8,6 +8,7 @@ import { Container, Tab, Tabs } from 'react-bootstrap';
 import s from './Profile.module.scss';
 import { Loading } from '@components/Loading';
 import { CreatedTab } from '@containers/Profile/Created';
+import { Collected } from './Collected';
 // import { ListingTab } from '@containers/Profile/Listing';
 // import TableActivities from '@containers/Profile/Activity';
 
@@ -35,6 +36,14 @@ const Profile: React.FC = (): React.ReactElement => {
                 title={`Created (${profileProjects?.total || 0})`}
               >
                 <CreatedTab />
+              </Tab>
+
+              <Tab
+                tabClassName={s.tab}
+                eventKey="collectedTab"
+                title={`Collected`}
+              >
+                <Collected />
               </Tab>
 
               {/*<Tab tabClassName={s.tab} eventKey="offerTab" title={`Offer`}>*/}

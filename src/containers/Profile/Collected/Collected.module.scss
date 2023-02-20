@@ -1,0 +1,84 @@
+.recentWorks {
+  &_projects {
+    margin-top: rem(80px);
+    position: relative;
+    margin-bottom: rem(80px);
+
+    @include mobile {
+      margin-top: rem(24px);
+    }
+
+    &_list {
+      overflow: unset !important;
+      margin-top: rem(50px);
+    }
+
+    &_loader {
+      position: relative;
+      height: 80px;
+      width: 100%;
+      margin-top: rem(20px);
+    }
+  }
+
+  &_btn {
+    margin-left: rem(15);
+
+    @include mobile {
+      margin-left: rem(0);
+      padding: 8px !important;
+    }
+  }
+
+  &_checkBox {
+    input {
+      width: 22px !important;
+      height: 22px !important;
+    }
+  }
+
+  &_btnIns {
+    margin-left: rem(15);
+
+    @include mobile {
+      margin-left: 8px;
+      padding: 8px !important;
+    }
+  }
+}
+
+.wrap_btn {
+  @include mobile {
+    padding-top: 16px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
+.tabs {
+  border-bottom: 1px solid $black-20;
+  margin-bottom: rem(32px);
+  display: flex;
+  gap: rem(48px);
+}
+
+.tab {
+  font-weight: 700;
+  line-height: (28 / 18);
+
+  @include calcFontAuto(16px, 18px);
+
+  border: none !important;
+  letter-spacing: -0.01em;
+  color: $black-40;
+  padding: 10px 0 !important;
+
+  &:hover {
+    color: $black-100;
+  }
+
+  &:global(.active) {
+    border-bottom: 2px solid $black-100 !important;
+  }
+}
