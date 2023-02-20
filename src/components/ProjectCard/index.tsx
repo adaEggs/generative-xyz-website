@@ -100,7 +100,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 </div>
               )}
               <div className={s.projectCard_info_title}>
-                <Heading as={'h6'} fontWeight="medium" color="black-40">
+                <Heading as={'h6'} fontWeight="medium">
                   <span title={project.name}>{project.name}</span>
                 </Heading>
               </div>
