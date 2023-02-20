@@ -3,18 +3,16 @@ import ecc from '@bitcoinerlab/secp256k1';
 import * as bitcoin from 'bitcoinjs-lib';
 import BIP32Factory from 'bip32';
 import { Buffer } from 'buffer';
-import bitcoinMessage from 'bitcoinjs-message';
-import ECPairFactory from 'ecpair';
+// import bitcoinMessage from 'bitcoinjs-message';
+import * as Segwit from 'segwit';
 
 bitcoin.initEccLib(ecc);
 const bip32 = BIP32Factory(ecc);
-const ECPair = ECPairFactory(ecc);
 
 const toXOnly = (pubKey: Buffer) =>
   pubKey.length === 32 ? pubKey : pubKey.slice(1, 33);
 
 const defaultPath = "m/86'/0'/0'/0/0";
-const defaultPathSegwit = "m/84'/0'/0'/0/0";
 
 // sign message with first sign transaction
 const MESSAGE_TAP_R0OT =
@@ -55,36 +53,10 @@ const generateBitcoinOrdKey = async ({
   const privateKeyTaproot = childTaproot.privateKey;
 
   // Segwit
-  const childSegwit = root.derivePath(defaultPathSegwit);
-  const privateKeySegwit = childSegwit.privateKey;
-  const keyPair = ECPair.fromPrivateKey(privateKeySegwit as Buffer);
-
-  const signatureSegwit = bitcoinMessage.sign(
-    messageSegwit,
-    privateKeySegwit as Buffer,
-    keyPair.compressed,
-    { segwitType: 'p2wpkh' }
-  );
-  const { address: sendAddressSegwit, network: networkSegwit } =
-    bitcoin.payments.p2wpkh({
-      pubkey: keyPair.publicKey,
-    });
-  const messagePrefix = networkSegwit?.messagePrefix;
-  // console.log('signer: ', {
-  //   messageSegwit,
-  //   sendAddressSegwit,
-  //   messagePrefix,
-  //   signatureSegwit,
-  //   signatureSegwitBase64: signatureSegwit.toString('base64'),
-  //   hash: bitcoinMessage.magicHash(sendAddressSegwit as string, messagePrefix),
-  //   verify: bitcoinMessage.verify(
-  //     messageSegwit,
-  //     sendAddressSegwit as string,
-  //     signatureSegwit,
-  //     messagePrefix,
-  //     true
-  //   ),
-  // });
+  const signSegwit = await Segwit.signBitcoinSegwitKey({
+    signMessage: messageSegwit,
+    root,
+  });
   return {
     taproot: {
       privateKey: privateKeyTaproot,
@@ -94,11 +66,11 @@ const generateBitcoinOrdKey = async ({
     },
 
     segwit: {
-      privateKey: privateKeySegwit,
-      sendAddress: sendAddressSegwit,
-      signature: signatureSegwit,
+      privateKey: signSegwit.privateKey,
+      sendAddress: signSegwit.address,
+      signature: signSegwit.signature,
       message: messageSegwit,
-      messagePrefix,
+      messagePrefix: signSegwit.signMessagePrefix,
     },
   };
 };
