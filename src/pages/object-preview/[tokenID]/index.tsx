@@ -1,5 +1,6 @@
 import ClientOnly from '@components/Utils/ClientOnly';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { ROUTE_PATH } from '@constants/route-path';
 import { SEO_IMAGE, SEO_TITLE } from '@constants/seo-default-info';
 import ObjectPreview from '@containers/ObjectPreview';
 import { Token } from '@interfaces/token';
@@ -47,7 +48,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   } catch (e) {
     return {
       redirect: {
-        destination: '/',
+        destination: ROUTE_PATH.NOT_FOUND,
         permanent: false,
       },
     };

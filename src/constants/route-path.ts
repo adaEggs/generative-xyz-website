@@ -31,6 +31,8 @@ export const ROUTE_PATH = {
   CREATE_BTC_PROJECT: '/create',
   GLTF_PREVIEW: '/gltf-preview',
   OBJECT_PREVIEW: '/object-preview',
+  SATOSHIS_FREE_MINT: '/satoshis/free',
+  SATOSHIS_PAGE: '/satoshis',
 };
 
 export const STANDALONE_PAGES = [
