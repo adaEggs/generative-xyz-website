@@ -320,9 +320,10 @@ const FormEditProject = () => {
                   </div>
                 </div>
               </div>
-              {nftMinted === 0 && (
-                <div className={s.setPrice}>
-                  <div className={s.formWrapper}>
+
+              <div className={s.setPrice}>
+                <div className={s.formWrapper}>
+                  {nftMinted === 0 && (
                     <div className={s.formItem}>
                       <label className={s.label} htmlFor="maxSupply">
                         Max supply <sup className={s.requiredTag}>*</sup>
@@ -344,48 +345,48 @@ const FormEditProject = () => {
                         <p className={s.error}>{errors.maxSupply}</p>
                       )}
                     </div>
-                    <div className={s.formItem}>
-                      <label className={s.label} htmlFor="mintPrice">
-                        PRICE <sup className={s.requiredTag}>*</sup>
-                      </label>
-                      <div className={s.inputContainer}>
-                        <input
-                          id="mintPrice"
-                          type="number"
-                          name="mintPrice"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={s.input}
-                          value={values.mintPrice}
-                          placeholder="Provide a number"
-                        />
-                        <div className={s.inputPostfix}>BTC</div>
-                      </div>
-                    </div>
-                    <div className={s.formItem}>
-                      <label className={s.label} htmlFor="royalty">
-                        Royalties <sup className={s.requiredTag}>*</sup>
-                      </label>
-                      <div className={s.inputContainer}>
-                        <input
-                          id="royalty"
-                          type="number"
-                          name="royalty"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          className={s.input}
-                          value={values.royalty}
-                          placeholder="Provide a number"
-                        />
-                        <div className={s.inputPostfix}>%</div>
-                      </div>
-                      {errors.royalty && touched.royalty && (
-                        <p className={s.error}>{errors.royalty}</p>
-                      )}
+                  )}
+                  <div className={s.formItem}>
+                    <label className={s.label} htmlFor="mintPrice">
+                      PRICE <sup className={s.requiredTag}>*</sup>
+                    </label>
+                    <div className={s.inputContainer}>
+                      <input
+                        id="mintPrice"
+                        type="number"
+                        name="mintPrice"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={s.input}
+                        value={values.mintPrice}
+                        placeholder="Provide a number"
+                      />
+                      <div className={s.inputPostfix}>BTC</div>
                     </div>
                   </div>
+                  <div className={s.formItem}>
+                    <label className={s.label} htmlFor="royalty">
+                      Royalties <sup className={s.requiredTag}>*</sup>
+                    </label>
+                    <div className={s.inputContainer}>
+                      <input
+                        id="royalty"
+                        type="number"
+                        name="royalty"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        className={s.input}
+                        value={values.royalty}
+                        placeholder="Provide a number"
+                      />
+                      <div className={s.inputPostfix}>%</div>
+                    </div>
+                    {errors.royalty && touched.royalty && (
+                      <p className={s.error}>{errors.royalty}</p>
+                    )}
+                  </div>
                 </div>
-              )}
+              </div>
 
               <div className={s.container}>
                 <div className={s.actionWrapper}>
