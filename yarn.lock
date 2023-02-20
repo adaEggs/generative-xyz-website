@@ -7363,9 +7363,9 @@ secp256k1@^4.0.1:
     node-addon-api "^2.0.0"
     node-gyp-build "^4.2.0"
 
-"segwit@https://github.com/matterhorn063/segwit#0.0.3":
+"segwit@https://github.com/matterhorn063/segwit#0.0.7":
   version "0.1.0"
-  resolved "https://github.com/matterhorn063/segwit#121daa95d654e68221e22663fcc5f8a5b50f260d"
+  resolved "https://github.com/matterhorn063/segwit#5ff68d0572207716e6241d9dbb21ad6519edaeaf"
   dependencies:
     "@types/node" "^18.13.0"
     bip32 "^3.1.0"
