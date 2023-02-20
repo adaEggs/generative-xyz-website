@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import ButtonIcon from '@components/ButtonIcon';
 import CategoryTab from '@components/CategoryTab';
 import Heading from '@components/Heading';
 import ProjectListLoading from '@components/ProjectListLoading';
 import { ProjectList } from '@components/ProjectLists';
 import { TriggerLoad } from '@components/TriggerLoader';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
-import { ROUTE_PATH } from '@constants/route-path';
 import { LogLevel } from '@enums/log-level';
 import { IGetProjectListResponse } from '@interfaces/api/project';
 import { Category } from '@interfaces/category';
@@ -17,7 +15,6 @@ import { getCategoryList } from '@services/category';
 import { getProjectList } from '@services/project';
 import log from '@utils/logger';
 import cs from 'classnames';
-import { useRouter } from 'next/router';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Select, { SingleValue } from 'react-select';
@@ -49,7 +46,7 @@ export const RecentWorks = (): JSX.Element => {
   const [listData, setListData] = useState<Project[]>([]);
   const [sort, setSort] = useState<string | null>('');
   const [currentTotal, setCurrentTotal] = useState<number>(0);
-  const router = useRouter();
+  // const router = useRouter();
   const [categoriesList, setCategoriesList] = useState<Category[]>();
   const [filterCategory, setFilterCategory] = useState('');
   const [categoriesLoading, setCategoriesLoading] = useState(true);
@@ -129,19 +126,10 @@ export const RecentWorks = (): JSX.Element => {
 
   return (
     <div className={s.recentWorks}>
-      <div className={s.recentWorks_banner}>
-        <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
-          Be the first artists to release art on Bitcoin
-        </Heading>
-        <ButtonIcon
-          onClick={() => router.push(ROUTE_PATH.CREATE_BTC_PROJECT)}
-          variants={'primary'}
-          sizes={'medium'}
-        >
-          Get started free
-        </ButtonIcon>
-      </div>
       <Container>
+        <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
+          Be the first to collect art on Bitcoin
+        </Heading>
         <Row className={s.recentWorks_heading}>
           <Col
             className={cs(s.recentWorks_heading_col, s.category_list)}
@@ -154,7 +142,10 @@ export const RecentWorks = (): JSX.Element => {
                   type="3"
                   text={category.name}
                   key={`category-${category.id}`}
-                  onClick={() => handleClickCategory(category.id)}
+                  onClick={() => {
+                    setPageNum(0);
+                    handleClickCategory(category.id);
+                  }}
                   active={filterCategory === category.id}
                   loading={categoriesLoading}
                 />
@@ -162,7 +153,10 @@ export const RecentWorks = (): JSX.Element => {
             <CategoryTab
               type="3"
               text="All"
-              onClick={() => handleClickCategory('')}
+              onClick={() => {
+                setPageNum(0);
+                handleClickCategory('');
+              }}
               active={filterCategory === ''}
               loading={categoriesLoading}
             />

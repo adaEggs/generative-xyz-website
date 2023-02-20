@@ -42,7 +42,7 @@ const CategoryTab = (props: Props) => {
       )}
       onClick={onClick}
     >
-      <Text fontWeight="medium" title={text}>
+      <Text size={'20'} fontWeight="medium" title={text}>
         {text}
       </Text>
     </div>
