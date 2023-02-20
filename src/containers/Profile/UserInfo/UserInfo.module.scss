@@ -20,6 +20,25 @@
   &_content {
     position: relative;
 
+    &_wrapper {
+      width: fit-content;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-top: rem(82px);
+      padding-top: rem(32px);
+    }
+
+    &_displayName {
+      margin-top: rem(0);
+      margin-bottom: rem(0);
+    }
+
+    &_address {
+      width: fit-content;
+      margin-top: rem(0);
+    }
+
     &_avatar {
       position: absolute;
       bottom: 100%;
@@ -39,12 +58,25 @@
     }
 
     &_btcWallet {
-      margin-top: rem(50px);
-      padding-top: rem(32px);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
     }
 
     &_evmWallet {
-      padding-top: rem(24px);
+      padding-top: rem(12px);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .iconCopy {
+      cursor: pointer;
+      margin-left: 8px;
+
+      :hover {
+        opacity: 0.9;
+      }
     }
 
     &_display {
@@ -90,4 +122,9 @@
       }
     }
   }
+}
+
+.editProfile {
+  width: fit-content;
+  margin-left: rem(18px);
 }

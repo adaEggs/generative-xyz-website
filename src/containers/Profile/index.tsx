@@ -21,23 +21,7 @@ const Profile: React.FC = (): React.ReactElement => {
       <Container>
         <ClientOnly>
           <div className={s.wrapTabs}>
-            <Tabs className={s.tabs} defaultActiveKey="createdTab">
-              {/*<Tab*/}
-              {/*  tabClassName={s.tab}*/}
-              {/*  eventKey="ownedTab"*/}
-              {/*  title={`Owned (${profileTokens?.total || 0})`}*/}
-              {/*>*/}
-              {/*  <OwnedTab />*/}
-              {/*</Tab>*/}
-
-              <Tab
-                tabClassName={s.tab}
-                eventKey="createdTab"
-                title={`Created (${profileProjects?.total || 0})`}
-              >
-                <CreatedTab />
-              </Tab>
-
+            <Tabs className={s.tabs} defaultActiveKey="collectedTab">
               <Tab
                 tabClassName={s.tab}
                 eventKey="collectedTab"
@@ -46,16 +30,13 @@ const Profile: React.FC = (): React.ReactElement => {
                 <Collected />
               </Tab>
 
-              {/*<Tab tabClassName={s.tab} eventKey="offerTab" title={`Offer`}>*/}
-              {/*  <OfferTab />*/}
-              {/*</Tab>*/}
-              {/*<Tab*/}
-              {/*  tabClassName={s.tab}*/}
-              {/*  eventKey="listingTab"*/}
-              {/*  title={`Listing (${profileListing?.total || 0})`}*/}
-              {/*>*/}
-              {/*  <ListingTab />*/}
-              {/*</Tab>*/}
+              <Tab
+                tabClassName={s.tab}
+                eventKey="createdTab"
+                title={`Created (${profileProjects?.total || 0})`}
+              >
+                <CreatedTab />
+              </Tab>
             </Tabs>
           </div>
         </ClientOnly>

@@ -17,7 +17,7 @@ export const ProjectList = ({ listData }: { listData?: Project[] }) => {
           ))}
         </div>
       ) : (
-        listData && <Empty />
+        listData && <Empty content="Abracadabra" />
       )}
     </>
   );
