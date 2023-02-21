@@ -38,7 +38,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
   const [isMinting, setIsMinting] = useState(false);
   const [fileError, setFileError] = useState<string | null>(null);
   const [feeRate, setFeeRate] = useState<InscribeMintFeeRate>(
-    InscribeMintFeeRate.Fastest
+    InscribeMintFeeRate.FASTEST
   );
 
   const handleChangeFile = (file: File | null): void => {
@@ -182,23 +182,23 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                 <div
                                   onClick={() => {
                                     handleChangeFee(
-                                      InscribeMintFeeRate.Economy
+                                      InscribeMintFeeRate.ECONOMY
                                     );
                                     setTimeout(handleSubmit, 0);
                                   }}
                                   className={cs(s.mintFeeItem, {
                                     [`${s.mintFeeItem__active}`]:
-                                      feeRate === InscribeMintFeeRate.Economy,
+                                      feeRate === InscribeMintFeeRate.ECONOMY,
                                   })}
                                 >
                                   <p className={s.feeTitle}>Economy</p>
                                   <p
                                     className={s.feeDetail}
-                                  >{`${InscribeMintFeeRate.Economy} sats/vByte`}</p>
+                                  >{`${InscribeMintFeeRate.ECONOMY} sats/vByte`}</p>
                                   <p className={s.feeTotal}>
                                     {`${formatBTCPrice(
                                       calculateMintFee(
-                                        InscribeMintFeeRate.Economy,
+                                        InscribeMintFeeRate.ECONOMY,
                                         file?.size || 0
                                       )
                                     )} BTC`}
@@ -206,22 +206,22 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                 </div>
                                 <div
                                   onClick={() => {
-                                    handleChangeFee(InscribeMintFeeRate.Faster);
+                                    handleChangeFee(InscribeMintFeeRate.FASTER);
                                     setTimeout(handleSubmit, 0);
                                   }}
                                   className={cs(s.mintFeeItem, {
                                     [`${s.mintFeeItem__active}`]:
-                                      feeRate === InscribeMintFeeRate.Faster,
+                                      feeRate === InscribeMintFeeRate.FASTER,
                                   })}
                                 >
                                   <p className={s.feeTitle}>Faster</p>
                                   <p
                                     className={s.feeDetail}
-                                  >{`${InscribeMintFeeRate.Faster} sats/vByte`}</p>
+                                  >{`${InscribeMintFeeRate.FASTER} sats/vByte`}</p>
                                   <p className={s.feeTotal}>
                                     {`${formatBTCPrice(
                                       calculateMintFee(
-                                        InscribeMintFeeRate.Faster,
+                                        InscribeMintFeeRate.FASTER,
                                         file?.size || 0
                                       )
                                     )} BTC`}
@@ -230,23 +230,23 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                 <div
                                   onClick={() => {
                                     handleChangeFee(
-                                      InscribeMintFeeRate.Fastest
+                                      InscribeMintFeeRate.FASTEST
                                     );
                                     setTimeout(handleSubmit, 0);
                                   }}
                                   className={cs(s.mintFeeItem, {
                                     [`${s.mintFeeItem__active}`]:
-                                      feeRate === InscribeMintFeeRate.Fastest,
+                                      feeRate === InscribeMintFeeRate.FASTEST,
                                   })}
                                 >
                                   <p className={s.feeTitle}>Fastest</p>
                                   <p
                                     className={s.feeDetail}
-                                  >{`${InscribeMintFeeRate.Fastest} sats/vByte`}</p>
+                                  >{`${InscribeMintFeeRate.FASTEST} sats/vByte`}</p>
                                   <p className={s.feeTotal}>
                                     {`${formatBTCPrice(
                                       calculateMintFee(
-                                        InscribeMintFeeRate.Fastest,
+                                        InscribeMintFeeRate.FASTEST,
                                         file?.size || 0
                                       )
                                     )} BTC`}

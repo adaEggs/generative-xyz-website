@@ -1,33 +1,40 @@
+import s from './styles.module.scss';
+import {
+  CDN_URL,
+  CHUNK_SIZE,
+  MIN_MINT_BTC_PROJECT_PRICE,
+} from '@constants/config';
+import { Formik } from 'formik';
+import { useRouter } from 'next/router';
+import { useContext, useEffect, useRef, useState } from 'react';
+import log from '@utils/logger';
+import { LogLevel } from '@enums/log-level';
+import _get from 'lodash/get';
+import Text from '@components/Text';
 import ButtonIcon from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
-import Text from '@components/Text';
-import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { BTC_PROJECT } from '@constants/tracking-event-name';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
-import { InscribeMintFeeRate } from '@enums/inscribe';
-import { LogLevel } from '@enums/log-level';
+import {
+  completeMultipartUpload,
+  initiateMultipartUpload,
+  uploadFile,
+} from '@services/file';
 import { CollectionType } from '@enums/mint-generative';
+import { createBTCProject, getProjectDetail } from '@services/project';
 import { ICreateBTCProjectPayload } from '@interfaces/api/project';
+import { blobToBase64, fileToBase64 } from '@utils/file';
+import { detectUsedLibs } from '@utils/sandbox';
+import { getMempoolFeeRate } from '@services/mempool';
+import { calculateNetworkFee } from '@utils/inscribe';
 import { getUserSelector } from '@redux/user/selector';
 import { sendAAEvent } from '@services/aa-tracking';
-import { uploadFile } from '@services/file';
-import { getMempoolFeeRate } from '@services/mempool';
-import {
-  createBTCProject,
-  getProjectDetail,
-  uploadBTCProjectFiles,
-} from '@services/project';
-import { blobToBase64, fileToBase64 } from '@utils/file';
 import { formatBTCPrice } from '@utils/format';
-import { calculateNetworkFee } from '@utils/inscribe';
-import log from '@utils/logger';
-import { detectUsedLibs } from '@utils/sandbox';
-import { Formik } from 'formik';
-import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import s from './styles.module.scss';
+import useChunkedFileUploader from '@hooks/useChunkedFileUploader';
+import ProgressBar from '@components/ProgressBar';
+import { InscribeMintFeeRate } from '@enums/inscribe';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -35,7 +42,6 @@ type ISetPriceFormValue = {
   maxSupply: string | number;
   mintPrice: string | number;
   royalty: string | number;
-  // creatorWalletAddress: string;
 };
 
 const SetPrice = () => {
@@ -58,6 +64,9 @@ const SetPrice = () => {
   const numberOfFile = imageCollectionFile
     ? Object.keys(imageCollectionFile).length
     : 0;
+  const { uploadFile: uploadChunkFile, uploadProgress } =
+    useChunkedFileUploader();
+  const intervalID = useRef<NodeJS.Timer | null>(null);
 
   const fetchNetworkFee = async (): Promise<number> => {
     try {
@@ -78,7 +87,7 @@ const SetPrice = () => {
       }
 
       if (networkFeeRate < 0) {
-        networkFeeRate = InscribeMintFeeRate.Fastest;
+        networkFeeRate = InscribeMintFeeRate.FASTEST;
       }
 
       if (collectionType === CollectionType.GENERATIVE) {
@@ -95,6 +104,7 @@ const SetPrice = () => {
         );
         setNetworkFee(sats);
       }
+
       if (collectionType === CollectionType.COLLECTION) {
         if (!imageCollectionFile) {
           setNetworkFee(0);
@@ -129,7 +139,6 @@ const SetPrice = () => {
     setFormValues({
       ...formValues,
       ...{
-        // creatorWalletAddress: values.creatorWalletAddress || '',
         maxSupply: values.maxSupply
           ? parseInt(values.maxSupply.toString(), 10)
           : undefined,
@@ -141,12 +150,6 @@ const SetPrice = () => {
           : undefined,
       },
     });
-
-    // if (!values.creatorWalletAddress.toString()) {
-    //   errors.creatorWalletAddress = 'Creator wallet address is required.';
-    // } else if (!validateBTCAddress(values.creatorWalletAddress)) {
-    //   errors.creatorWalletAddress = 'Invalid BTC wallet address.';
-    // }
 
     if (!values.maxSupply.toString()) {
       errors.maxSupply = 'Number of editions is required.';
@@ -179,7 +182,7 @@ const SetPrice = () => {
   };
 
   const intervalGetProjectStatus = (projectID: string): void => {
-    const intervalID = setInterval(async () => {
+    intervalID.current = setInterval(async () => {
       try {
         const projectRes = await getProjectDetail({
           contractAddress: GENERATIVE_PROJECT_CONTRACT,
@@ -188,7 +191,8 @@ const SetPrice = () => {
         if (projectRes && !projectRes.isHidden && projectRes.status) {
           setMintedProjectID(projectRes.tokenID);
           setIsMinting(false);
-          clearInterval(intervalID);
+          intervalID.current && clearInterval(intervalID.current);
+          intervalID.current = null;
           router.push('/create/mint-success', undefined, {
             shallow: true,
           });
@@ -209,7 +213,6 @@ const SetPrice = () => {
       setIsMinting(true);
 
       const {
-        // creatorWalletAddress,
         description,
         license,
         maxSupply,
@@ -234,7 +237,6 @@ const SetPrice = () => {
       }
 
       const payload: ICreateBTCProjectPayload = {
-        // creatorAddrrBTC: creatorWalletAddress ?? '',
         maxSupply: maxSupply ?? 0,
         limitSupply: 0,
         mintPrice: mintPrice?.toString() ? mintPrice.toString() : '0',
@@ -263,11 +265,17 @@ const SetPrice = () => {
 
       if (collectionType === CollectionType.COLLECTION) {
         try {
-          const uploadRes = await uploadBTCProjectFiles({
-            file: rawFile,
-            projectName: payload.name,
+          const initUploadRes = await initiateMultipartUpload({
+            fileName: rawFile.name,
+            group: payload.name.toLowerCase().replaceAll(' ', '_'),
           });
-          payload.zipLink = uploadRes.url;
+
+          await uploadChunkFile(initUploadRes.uploadId, rawFile, CHUNK_SIZE);
+
+          const completeUploadRes = await completeMultipartUpload({
+            uploadId: initUploadRes.uploadId,
+          });
+          payload.zipLink = completeUploadRes.fileUrl;
         } catch (err: unknown) {
           log(err as Error, LogLevel.ERROR, LOG_PREFIX);
           setShowErrorAlert({ open: true, message: 'Upload file error.' });
@@ -309,6 +317,12 @@ const SetPrice = () => {
     getEstimateNetworkFee();
   }, [rawFile, collectionType, imageCollectionFile]);
 
+  useEffect(() => {
+    return () => {
+      intervalID.current && clearInterval(intervalID.current);
+    };
+  }, []);
+
   return (
     <Formik
       key="setPriceForm"
@@ -339,28 +353,6 @@ const SetPrice = () => {
             </div>
             <div className={s.divider} />
             <div className={s.formWrapper}>
-              {/* <div className={s.formItem}>
-                <label className={s.label} htmlFor="creatorWalletAddress">
-                  BTC wallet to receive payment{' '}
-                  <sup className={s.requiredTag}>*</sup>
-                </label>
-                <div className={s.inputContainer}>
-                  <input
-                    id="creatorWalletAddress"
-                    type="text"
-                    name="creatorWalletAddress"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.creatorWalletAddress}
-                    className={s.input}
-                    placeholder="Provide your BTC wallet address"
-                  />
-                </div>
-                {errors.creatorWalletAddress &&
-                  touched.creatorWalletAddress && (
-                    <p className={s.error}>{errors.creatorWalletAddress}</p>
-                  )}
-              </div> */}
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="maxSupply">
                   Number of outputs <sup className={s.requiredTag}>*</sup>
@@ -393,7 +385,7 @@ const SetPrice = () => {
               </div>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="mintPrice">
-                  PRICE <sup className={s.requiredTag}>*</sup>
+                  Price <sup className={s.requiredTag}>*</sup>
                 </label>
                 <div className={s.inputContainer}>
                   <input
@@ -442,33 +434,38 @@ const SetPrice = () => {
                 {errors.royalty && touched.royalty && (
                   <p className={s.error}>{errors.royalty}</p>
                 )}
-                {/* <Text
-                  as={'p'}
-                  size={'14'}
-                  color={'black-60'}
-                  className={s.inputDesc}
-                >
-                  The payment artists receive every time a secondary sale of
-                  their artworks occurs. This number ranges from 0% to 25%.
-                </Text> */}
               </div>
             </div>
-          </div>
-          <div className={s.container}>
-            <div className={s.actionWrapper}>
-              <ButtonIcon
-                disabled={isMinting}
-                type="submit"
-                className={s.nextBtn}
-                sizes="medium"
-                endIcon={
-                  <SvgInset
-                    svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
-                  />
-                }
-              >
-                {isMinting ? 'Creating...' : 'Publish collection'}
-              </ButtonIcon>
+            <div className={s.container}>
+              {isMinting && (
+                <div className={s.loadingContainer}>
+                  <p className={s.progressText}>
+                    Uploading -{' '}
+                    <b>{`${
+                      uploadProgress === 100 ? 'Done' : `${uploadProgress}%`
+                    }`}</b>
+                  </p>
+                  <ProgressBar
+                    height={6}
+                    percent={uploadProgress}
+                  ></ProgressBar>
+                </div>
+              )}
+              <div className={s.actionWrapper}>
+                <ButtonIcon
+                  disabled={isMinting}
+                  type="submit"
+                  className={s.nextBtn}
+                  sizes="medium"
+                  endIcon={
+                    <SvgInset
+                      svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+                    />
+                  }
+                >
+                  {isMinting ? 'Creating...' : 'Publish collection'}
+                </ButtonIcon>
+              </div>
             </div>
           </div>
         </form>
