@@ -37,7 +37,7 @@
     &_inner {
       padding-bottom: 100%;
       position: relative;
-      width: 100%;
+      min-height: 100%;
 
       &_sk {
         height: 100%;
@@ -46,8 +46,8 @@
     }
 
     &_box {
-      width: rem(300px);
-      height: rem(300px);
+      width: 100%;
+      height: 100%;
 
       &_content {
         position: absolute;

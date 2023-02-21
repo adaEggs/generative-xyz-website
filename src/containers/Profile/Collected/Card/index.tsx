@@ -58,15 +58,13 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
           </div>
         ) : (
           <div className={`${s.projectCard_thumb}`}>
-            <div className={s.projectCard_thumb_box}>
-              <div className={s.projectCard_thumb_box_content}>
-                <NFTDisplayBox
-                  inscriptionID={project.inscriptionID}
-                  type={project.contentType}
-                  variants="absolute"
-                  className={s.projectCard_thumb_box_img}
-                />
-              </div>
+            <div className={s.projectCard_thumb_inner}>
+              <NFTDisplayBox
+                inscriptionID={project.inscriptionID}
+                type={project.contentType}
+                variants="absolute"
+                // className={s.projectCard_thumb_box_img}
+              />
             </div>
             {project.status !== CollectedNFTStatus.Success && (
               <div className={s.projectCard_thumb_backdrop} />
