@@ -61,37 +61,39 @@ export const UserInfo = (): JSX.Element => {
                   </Heading>
 
                   <div className={s.userInfo_content_address}>
-                    <div className={s.userInfo_content_btcWallet}>
-                      <Text
-                        size={'18'}
-                        color={'black-06'}
-                        fontWeight={'semibold'}
-                      >
-                        <span
-                          style={{
-                            color: 'orange',
-                            fontSize: 24,
-                            marginRight: 8,
-                          }}
+                    {currentUser?.walletAddressBtcTaproot && (
+                      <div className={s.userInfo_content_btcWallet}>
+                        <Text
+                          size={'18'}
+                          color={'black-06'}
+                          fontWeight={'semibold'}
                         >
-                          ₿
-                        </span>{' '}
-                        {ellipsisCenter({
-                          str: currentUser?.walletAddressBtcTaproot || '',
-                          limit: 10,
-                        })}
-                      </Text>
-                      <SvgInset
-                        onClick={() => {
-                          copy(currentUser?.walletAddressBtcTaproot || '');
-                          toast.remove();
-                          toast.success('Copied');
-                        }}
-                        className={s.iconCopy}
-                        size={20}
-                        svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-                      />
-                    </div>
+                          <span
+                            style={{
+                              color: 'orange',
+                              fontSize: 24,
+                              marginRight: 8,
+                            }}
+                          >
+                            ₿
+                          </span>{' '}
+                          {ellipsisCenter({
+                            str: currentUser?.walletAddressBtcTaproot || '',
+                            limit: 10,
+                          })}
+                        </Text>
+                        <SvgInset
+                          onClick={() => {
+                            copy(currentUser?.walletAddressBtcTaproot || '');
+                            toast.remove();
+                            toast.success('Copied');
+                          }}
+                          className={s.iconCopy}
+                          size={20}
+                          svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                        />
+                      </div>
+                    )}
                     <div className={s.userInfo_content_evmWallet}>
                       <Text
                         size={'18'}

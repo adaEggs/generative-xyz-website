@@ -20,7 +20,7 @@ export const CollectedList = ({
             900: 3,
             1240: 4,
             2500: 5,
-            3000: 6,
+            3000: 5,
           }}
         >
           <Masonry gutter="24px">

@@ -1,14 +1,15 @@
+import { Loading } from '@components/Loading';
 import ClientOnly from '@components/Utils/ClientOnly';
+import { CreatedTab } from '@containers/Profile/Created';
 // import { OfferTab } from '@containers/Profile/Offer';
 // import { OwnedTab } from '@containers/Profile/OwnedTab';
 import { UserInfo } from '@containers/Profile/UserInfo';
 import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
+import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
-import s from './Profile.module.scss';
-import { Loading } from '@components/Loading';
-import { CreatedTab } from '@containers/Profile/Created';
 import { Collected } from './Collected';
+import s from './Profile.module.scss';
 // import { ListingTab } from '@containers/Profile/Listing';
 // import TableActivities from '@containers/Profile/Activity';
 
@@ -16,20 +17,28 @@ const Profile: React.FC = (): React.ReactElement => {
   const { isLoaded, profileProjects, collectedNFTs } =
     useContext(ProfileContext);
 
+  const router = useRouter();
+  const { walletAddress } = router.query as { walletAddress: string };
+
   return (
     <div className={s.profile}>
       <UserInfo />
       <Container>
         <ClientOnly>
           <div className={s.wrapTabs}>
-            <Tabs className={s.tabs} defaultActiveKey="collectedTab">
-              <Tab
-                tabClassName={s.tab}
-                eventKey="collectedTab"
-                title={`Collected (${collectedNFTs.length})`}
-              >
-                <Collected />
-              </Tab>
+            <Tabs
+              className={s.tabs}
+              defaultActiveKey={!walletAddress ? 'collectedTab' : 'createdTab'}
+            >
+              {!walletAddress && (
+                <Tab
+                  tabClassName={s.tab}
+                  eventKey="collectedTab"
+                  title={`Collected (${collectedNFTs.length})`}
+                >
+                  <Collected />
+                </Tab>
+              )}
 
               <Tab
                 tabClassName={s.tab}
