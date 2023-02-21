@@ -29,7 +29,6 @@ const ArtistsPage = () => {
   const loadArtist = useCallback(async () => {
     setIsLoading(false);
     const tmp = await getArtists({ limit, page });
-
     const merArr = [...(artists || []), ...tmp.result];
     setPage(page + 1);
     setArtists(merArr);
@@ -103,7 +102,7 @@ const ArtistsPage = () => {
         )}
 
         <TriggerLoad
-          len={page * limit}
+          len={(page - 1) * limit}
           total={total}
           isLoaded={isLoading}
           onEnter={loadArtist}
