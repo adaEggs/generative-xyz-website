@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import s from './ProjectCard.module.scss';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
-import ProgressBar from '@components/ProgressBar';
+import MintingProgressBar from '@components/MintingProgressBar';
 import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
@@ -81,7 +81,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 </Text>
               </div>
 
-              <ProgressBar
+              <MintingProgressBar
                 size={'small'}
                 current={
                   project.mintingInfo.index + project.mintingInfo.indexReserve

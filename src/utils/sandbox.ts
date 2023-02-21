@@ -193,6 +193,7 @@ export const processCollectionZipFile = async (
   }
 
   const record: ImageCollectionFiles = {};
+  const fileExtList = new Set();
 
   for (const fileName in files) {
     const file = files[fileName];
@@ -200,6 +201,12 @@ export const processCollectionZipFile = async (
 
     // Check file extension
     const fileExt = getFileExtensionByFileName(fileName);
+
+    fileExtList.add(fileExt);
+    if (fileExtList.size > 1) {
+      throw Error(ImageFileError.TOO_MANY_EXT);
+    }
+
     if (
       !fileExt ||
       !getSupportedFileExtList().includes(fileExt.toLowerCase())

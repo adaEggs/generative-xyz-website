@@ -53,7 +53,10 @@ export const initiateMultipartUpload = async (
     const res = await post<
       IInitiateMultipartUploadPayload,
       IInitiateMultipartUploadResponse
-    >(`${API_PATH}/minify`, payload);
+    >(`${API_PATH}/multipart`, {
+      group: 'generative-project-upload',
+      ...payload,
+    });
     return res;
   } catch (err: unknown) {
     log('failed to initiate multipart upload file', LogLevel.ERROR, LOG_PREFIX);
@@ -65,10 +68,11 @@ export const completeMultipartUpload = async (
   payload: ICompleteMultipartUploadPayload
 ): Promise<ICompleteMultipartUploadResponse> => {
   try {
-    const res = await post<
-      ICompleteMultipartUploadPayload,
-      ICompleteMultipartUploadResponse
-    >(`${API_PATH}/minify`, payload);
+    const { uploadId } = payload;
+    const res = await post<unknown, ICompleteMultipartUploadResponse>(
+      `${API_PATH}/multipart/${uploadId}`,
+      {}
+    );
     return res;
   } catch (err: unknown) {
     log('failed to complete multipart upload file', LogLevel.ERROR, LOG_PREFIX);
