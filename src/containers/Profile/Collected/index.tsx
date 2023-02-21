@@ -24,7 +24,7 @@ export const Collected = (): JSX.Element => {
   const fetchDataOrdinals = async () => {
     try {
       const res = await Promise.all([
-        ...(await getMintingCollectedNFTs()),
+        ...(await getMintingCollectedNFTs(currentBtcAddressRef.current)),
         ...(await getCollectedNFTs(currentBtcAddressRef.current)),
       ]);
       setCollectedNFTs(res || []);

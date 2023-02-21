@@ -3,9 +3,9 @@ import { LogLevel } from '@enums/log-level';
 import {
   CollectedNFTStatus,
   ICollectedNFTItem,
+  IGetArtistsResponse,
   IGetCollectedNFTsResp,
   IGetMintingCollectedNFTResp,
-  IGetArtistsResponse,
   IGetProfileResponse,
   IInscriptionResp,
   IUpdateProfilePayload,
@@ -163,7 +163,8 @@ export const getCollectedNFTDetail = async (
       isCompleted: false,
       image: '',
       contentLength: randomStr,
-      status: CollectedNFTStatus.success,
+      status: CollectedNFTStatus.Success,
+      statusText: 'Success',
     };
   } catch (err: unknown) {
     log('failed to get inscription detail', LogLevel.ERROR, LOG_PREFIX);
@@ -171,12 +172,12 @@ export const getCollectedNFTDetail = async (
   }
 };
 
-export const getMintingCollectedNFTs = async (): Promise<
-  ICollectedNFTItem[]
-> => {
+export const getMintingCollectedNFTs = async (
+  btcAddress: string
+): Promise<ICollectedNFTItem[]> => {
   try {
     const res = await get<Array<IGetMintingCollectedNFTResp>>(
-      '/wallet/mint-status'
+      `/wallet/mint-status?address=${btcAddress}`
     );
     let tasks: ICollectedNFTItem[] = [];
     if (res && res.length > 0) {
@@ -190,7 +191,8 @@ export const getMintingCollectedNFTs = async (): Promise<
           orderID: randomStr,
           isCompleted: false,
           contentLength: randomStr,
-          status: CollectedNFTStatus.minting,
+          status: CollectedNFTStatus.Minting,
+          statusText: item.status,
         };
       });
     }

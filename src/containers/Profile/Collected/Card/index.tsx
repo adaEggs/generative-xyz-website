@@ -1,4 +1,3 @@
-import Heading from '@components/Heading';
 import Link from '@components/Link';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 import Text from '@components/Text';
@@ -27,12 +26,17 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   };
 
   const linkPath =
-    project.status === CollectedNFTStatus.minting
-      ? `${ROUTE_PATH.GENERATIVE}/${project.projectID}`
-      : `${ROUTE_PATH.TRADE}/${project.inscriptionID}`;
+    project.status === CollectedNFTStatus.Success
+      ? `${ROUTE_PATH.TRADE}/${project.inscriptionID}`
+      : `${ROUTE_PATH.GENERATIVE}/${project.projectID}`;
+
+  const projectName =
+    project.status === CollectedNFTStatus.Success
+      ? `#${project.inscriptionNumber}`
+      : project.projectName || '';
 
   return (
-    <div className={`${s.projectCard} ${className}`}>
+    <Link href={linkPath} className={`${s.projectCard} ${className}`}>
       <div className={s.projectCard_inner}>
         {project.image ? (
           <div
@@ -48,50 +52,74 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                 loading={'lazy'}
               />
             </div>
+            {project.status !== CollectedNFTStatus.Success && (
+              <div className={s.projectCard_thumb_backdrop} />
+            )}
           </div>
         ) : (
           <div className={`${s.projectCard_thumb}`}>
-            <NFTDisplayBox
-              inscriptionID={project.inscriptionID}
-              type={project.contentType}
-              variants="absolute"
-            />
+            <div className={s.projectCard_thumb_box}>
+              <div className={s.projectCard_thumb_box_content}>
+                <NFTDisplayBox
+                  inscriptionID={project.inscriptionID}
+                  type={project.contentType}
+                  variants="absolute"
+                  className={s.projectCard_thumb_box_img}
+                />
+              </div>
+            </div>
+            {project.status !== CollectedNFTStatus.Success && (
+              <div className={s.projectCard_thumb_backdrop} />
+            )}
           </div>
         )}
         <div className={s.projectCard_inner_info}>
           {mobileScreen ? (
             <div className={cs(s.projectCard_info, s.mobile)}>
-              <div className={s.projectCard_info_title}>
-                <Text size="14" fontWeight="semibold">
-                  {project.status === CollectedNFTStatus.success
-                    ? `#${project.inscriptionNumber}`
-                    : project.projectName || ''}
+              {project.status !== CollectedNFTStatus.Success && (
+                <div className={s.projectCard_creator}>
+                  <Text
+                    className={s.projectCard_creator_status}
+                    size={'16'}
+                    fontWeight="medium"
+                    color="black-40"
+                  >
+                    {`${project.statusText}...`}
+                  </Text>
+                </div>
+              )}
+              {projectName && (
+                <Text size="11" fontWeight="medium">
+                  {projectName}
                 </Text>
-              </div>
+              )}
             </div>
           ) : (
             <div className={cs(s.projectCard_info, s.desktop)}>
-              <div className={s.projectCard_info_title}>
-                <Heading as={'h4'}>
-                  <span title={project.name}>
-                    {project.status === CollectedNFTStatus.success
-                      ? `#${project.inscriptionNumber}`
-                      : project.projectName || ''}
-                  </span>
-                </Heading>
-              </div>
+              {project.status !== CollectedNFTStatus.Success && (
+                <div className={s.projectCard_creator}>
+                  <Text
+                    className={s.projectCard_creator_status}
+                    size={'16'}
+                    fontWeight="medium"
+                    color="black-40"
+                  >
+                    {`${project.statusText}...`}
+                  </Text>
+                </div>
+              )}
+              {projectName && (
+                <div className={s.projectCard_creator}>
+                  <Text size={'20'} fontWeight="medium">
+                    {projectName}
+                  </Text>
+                </div>
+              )}
             </div>
           )}
         </div>
-        {project.status === CollectedNFTStatus.minting && (
-          <div className={s.projectCard_info_title}>
-            <Text size={'16'} fontWeight="medium" color="black-40">
-              Minting
-            </Text>
-          </div>
-        )}
       </div>
-      <Link href={linkPath} className={s.mask} />
-    </div>
+      <div className={s.mask} />
+    </Link>
   );
 };

@@ -30,8 +30,8 @@ export interface IGetArtistsResponse extends IPagingResponse {
 // Collected tab
 
 export enum CollectedNFTStatus {
-  minting,
-  success,
+  Minting = 'minting',
+  Success = 'success',
 }
 export interface ICollectedNFTItem {
   inscriptionID?: string;
@@ -45,6 +45,7 @@ export interface ICollectedNFTItem {
   contentType?: IMAGE_TYPE;
   contentLength?: string;
   status: CollectedNFTStatus;
+  statusText: string;
 }
 
 export interface IGetMintingCollectedNFTResp {
