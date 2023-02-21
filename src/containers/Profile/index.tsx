@@ -13,7 +13,8 @@ import { Collected } from './Collected';
 // import TableActivities from '@containers/Profile/Activity';
 
 const Profile: React.FC = (): React.ReactElement => {
-  const { isLoaded, profileProjects } = useContext(ProfileContext);
+  const { isLoaded, profileProjects, collectedNFTs } =
+    useContext(ProfileContext);
 
   return (
     <div className={s.profile}>
@@ -25,7 +26,7 @@ const Profile: React.FC = (): React.ReactElement => {
               <Tab
                 tabClassName={s.tab}
                 eventKey="collectedTab"
-                title={`Collected`}
+                title={`Collected (${collectedNFTs.length})`}
               >
                 <Collected />
               </Tab>

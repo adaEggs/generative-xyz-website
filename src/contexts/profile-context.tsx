@@ -4,11 +4,14 @@ import React, {
   useMemo,
   useState,
   useEffect,
+  useRef,
 } from 'react';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { useAppSelector } from '@redux';
 import {
+  getCollectedNFTs,
+  getMintingCollectedNFTs,
   getProfileByWallet,
   getProfileProjectsByWallet,
   getProfileTokens,
@@ -35,6 +38,9 @@ import { ErrorMessage } from '@enums/error-message';
 import useContractOperation from '@hooks/useContractOperation';
 import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
 import AcceptTokenOffer from '@services/contract-operations/generative-marketplace/accept-token-offer';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
+import { debounce, isEmpty } from 'lodash';
+import { ICollectedNFTItem } from '@interfaces/api/profile';
 
 const LOG_PREFIX = 'ProfileContext';
 
@@ -45,6 +51,7 @@ export interface IProfileContext {
   profileProjects?: IGetProjectItemsResponse;
   profileMakeOffer?: ITokenOfferListResponse;
   profileListing?: IListingTokensResponse;
+  collectedNFTs: ICollectedNFTItem[];
 
   isLoaded: boolean;
 
@@ -52,6 +59,8 @@ export interface IProfileContext {
   isLoadedProfileProjects: boolean;
   isLoadedProfileMakeOffer: boolean;
   isLoadedProfileListing: boolean;
+  isLoadedProfileCollected: boolean;
+  isLoadingProfileCollected: boolean;
 
   handleFetchTokens: () => void;
   handleFetchProjects: () => void;
@@ -59,6 +68,7 @@ export interface IProfileContext {
   handleFetchListingTokens: () => void;
   handleCancelOffer: (offer: TokenOffer) => void;
   handleAcceptOfferReceived: (offer: TokenOffer) => void;
+  debounceFetchDataCollectedNFTs: () => void;
 
   isOfferReceived: boolean;
   setIsOfferReceived: React.Dispatch<React.SetStateAction<boolean>>;
@@ -71,12 +81,17 @@ const initialValue: IProfileContext = {
   isLoadedProfileProjects: false,
   isLoadedProfileMakeOffer: false,
   isLoadedProfileListing: false,
+  isLoadedProfileCollected: false,
+  isLoadingProfileCollected: false,
+  collectedNFTs: [],
+
   handleFetchTokens: () => new Promise<void>(r => r()),
   handleFetchProjects: () => new Promise<void>(r => r()),
   handleFetchMakeOffers: () => new Promise<void>(r => r()),
   handleFetchListingTokens: () => new Promise<void>(r => r()),
   handleCancelOffer: () => new Promise<void>(r => r()),
   handleAcceptOfferReceived: () => new Promise<void>(r => r()),
+  debounceFetchDataCollectedNFTs: () => new Promise<void>(r => r()),
 
   isOfferReceived: false,
   setIsOfferReceived: _ => {
@@ -323,6 +338,40 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     handleFetchMakeOffers();
   }, [isOfferReceived]);
 
+  // Collected
+  const [isLoadedProfileCollected, setIsLoadedProfileCollected] =
+    useState<boolean>(false);
+  const [isLoadingProfileCollected, setIsLoadingProfileCollected] =
+    useState<boolean>(false);
+
+  const { ordAddress } = useBTCSignOrd();
+
+  const [collectedNFTs, setCollectedNFTs] = useState<ICollectedNFTItem[]>([]);
+  const currentBtcAddressRef = useRef(ordAddress);
+
+  const fetchDataCollectedNFTs = async () => {
+    try {
+      const res = await Promise.all([
+        ...(await getMintingCollectedNFTs(currentBtcAddressRef.current)),
+        ...(await getCollectedNFTs(currentBtcAddressRef.current)),
+      ]);
+      setCollectedNFTs(res || []);
+    } catch (error) {
+      // handle fetch data error here
+    } finally {
+      setIsLoadingProfileCollected(false);
+      setIsLoadedProfileCollected(true);
+    }
+  };
+  const debounceFetchDataCollectedNFTs = debounce(fetchDataCollectedNFTs, 300);
+
+  useEffect(() => {
+    if (!isEmpty(ordAddress) && currentBtcAddressRef.current !== ordAddress) {
+      currentBtcAddressRef.current = ordAddress;
+      debounceFetchDataCollectedNFTs();
+    }
+  }, [ordAddress]);
+
   const contextValues = useMemo((): IProfileContext => {
     return {
       currentUser,
@@ -331,6 +380,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       profileProjects,
       profileMakeOffer,
       profileListing,
+      collectedNFTs,
 
       isLoaded,
       isLoadedProfileTokens,
@@ -338,6 +388,8 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       isLoadedProfileMakeOffer,
       isLoadedProfileListing,
       isOfferReceived,
+      isLoadedProfileCollected,
+      isLoadingProfileCollected,
 
       handleFetchTokens,
       handleFetchProjects,
@@ -346,6 +398,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       handleCancelOffer,
       setIsOfferReceived,
       handleAcceptOfferReceived,
+      debounceFetchDataCollectedNFTs,
     };
   }, [
     currentUser,
