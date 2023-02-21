@@ -355,6 +355,11 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    gap: rem(24);
+
+    @include mobile {
+      gap: 0;
+    }
 
     &_links {
       margin-right: rem(26px);

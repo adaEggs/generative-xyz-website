@@ -269,4 +269,19 @@
       opacity: 0.2;
     }
   }
+
+  &.blue {
+    color: $white;
+    background-color: $blue-100;
+    font-size: rem(16px);
+    line-height: 140%;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:disabled {
+      opacity: 0.2;
+    }
+  }
 }

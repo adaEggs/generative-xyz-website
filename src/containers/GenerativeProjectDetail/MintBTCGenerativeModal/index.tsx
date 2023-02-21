@@ -13,6 +13,7 @@ import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import { generateBTCReceiverAddress, mintBTCGenerative } from '@services/btc';
+// import { generateMintReceiverAddress } from '@services/mint';
 import { Loading } from '@components/Loading';
 import _debounce from 'lodash/debounce';
 import { validateBTCAddressTaproot } from '@utils/validate';
@@ -58,6 +59,11 @@ const MintBTCGenerativeModal: React.FC = () => {
     try {
       setIsLoading(true);
       setReceiverAddress(null);
+      // const { address, price } = await generateMintReceiverAddress({
+      //   walletAddress,
+      //   projectID: projectData.tokenID,
+      //   payType: 'btc',
+      // });
       const { address, Price: price } = await generateBTCReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,

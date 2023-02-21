@@ -37,10 +37,10 @@ const MetamaskXOrdinals = () => {
     <Container>
       <Row className={s.metamaskContainer}>
         <Col md={'12'} xl={'5'} className={s.leftContainer}>
-          <Text className={s.title}>Metamask x Ordinals</Text>
+          <p className={s.title}>Generative Wallet</p>
           <Text className={s.subTitle}>
-            Keep your Ordinal inscriptions secure with MetaMask, the most
-            trusted and easy-to-use crypto wallet.
+            Built on top of Metamask, the most trusted crypto wallet, Generative
+            Wallet lets you securely keep your Ordinal Inscription.
           </Text>
           {renderDescItem(() => (
             <Text className={s.text}>
@@ -75,11 +75,12 @@ const MetamaskXOrdinals = () => {
               MetaMask is trusted by over 30 million users worldwide.
             </Text>
           ))}
-          <ButtonIcon
-            variants="secondary"
-            className={s.buttonContainer}
-            onClick={onConnect}
-          >
+          <ButtonIcon variants="blue" className={s.login} onClick={onConnect}>
+            <img
+              src={`${CDN_URL}/icons/ic-metamask.png`}
+              className={s.icMetamask}
+              alt="ic-metamask"
+            />
             Login via MetaMask
           </ButtonIcon>
         </Col>
