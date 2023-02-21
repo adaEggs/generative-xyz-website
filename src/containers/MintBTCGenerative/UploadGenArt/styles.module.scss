@@ -131,15 +131,6 @@
     }
   }
 
-  .stepFooterWrapper {
-    position: fixed;
-    bottom: 0;
-    z-index: 1;
-    width: 100vw;
-    left: 0;
-    right: 0;
-  }
-
   .stepFooter {
     padding: 28px 0;
     background-color: $white-100;
@@ -253,7 +244,7 @@
         border-radius: 2px;
 
         &::after {
-          content: '';
+          content: "";
           position: absolute;
           display: none;
         }

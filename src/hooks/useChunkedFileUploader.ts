@@ -18,9 +18,6 @@ const useChunkedFileUploader = () => {
   const [counter, setCounter] = useState(0);
   const [error, setError] = useState<unknown | null>(null);
 
-  console.log('____counter', counter)
-  console.log('____chunkCount', chunkCount)
-
   const uploadProgress = useMemo(() => {
     if (!chunkCount) return 0;
     if (counter > chunkCount) {
@@ -58,7 +55,11 @@ const useChunkedFileUploader = () => {
           const partNumber = chunkIndex + 1;
           const xhr = new XMLHttpRequest();
           xhr.overrideMimeType('application/octet-stream');
-          xhr.open('PUT', `${API_PATH}/${uploadId}?partNumber=${partNumber}`, true);
+          xhr.open(
+            'PUT',
+            `${API_PATH}/${uploadId}?partNumber=${partNumber}`,
+            true
+          );
 
           const promise = new Promise((resolve, reject) => {
             xhr.upload.onprogress = event => {

@@ -5,13 +5,15 @@ interface IProps {
   data: Token | null;
 }
 
-const CollectionPreview: React.FC<IProps> = (props: IProps): React.ReactElement => {
+const CollectionPreview: React.FC<IProps> = (
+  props: IProps
+): React.ReactElement => {
   const { data } = props;
   const thumbnailPreviewUrl = data?.image;
 
   const renderPreviewByExt = useMemo(() => {
-    return <></>;
-  }, [])
+    return <>{thumbnailPreviewUrl}</>;
+  }, []);
 
   return renderPreviewByExt;
 };

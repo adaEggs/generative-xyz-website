@@ -1,68 +1,25 @@
-import { useMemo } from 'react';
-
-import Heading from '@components/Heading';
-import Skeleton from '@components/Skeleton';
-import Text from '@components/Text';
-import cs from 'classnames';
+import React from 'react';
 import s from './styles.module.scss';
 
-type TProgressBar = {
-  current?: number;
-  total?: number;
-  size?: 'regular' | 'small';
-  className?: string;
-  isHideBar?: boolean;
-};
+interface IProps {
+  percent: number;
+  height?: number;
+}
 
-const ProgressBar = ({
-  current,
-  total,
-  size = 'regular',
-  className,
-  isHideBar = false,
-}: TProgressBar) => {
-  const calcMintProgress = useMemo(() => {
-    if (!current || !total) return 0;
-    return (current / total) * 100;
-  }, [total, current]);
+const ProgressBar: React.FC<IProps> = (props: IProps): React.ReactElement => {
+  const { percent, height = 4 } = props;
 
   return (
-    <div className={cs(s.wrapper, className)}>
-      <div className={s.stats}>
-        {size === 'regular' && (
-          <>
-            <Heading as="h6" fontWeight="medium">
-              {total ? (
-                `${current}/${total}`
-              ) : (
-                <Skeleton width={60} height={34} />
-              )}
-              <Text color="black-60" as="span">
-                {' '}
-                minted
-              </Text>
-            </Heading>
-          </>
-        )}
-        {size === 'small' && (
-          <Text size="18" fontWeight="medium">
-            {`${current}/${total}`}
-            <Text size="16" fontWeight="regular" as="span" color="black-60">
-              &nbsp;minted
-            </Text>
-          </Text>
-        )}
+    <div className={s.progressBar}>
+      <div className={s.totalBar}>
+        <div
+          className={s.activeBar}
+          style={{
+            width: `${percent}%`,
+            height: `${height}px`,
+          }}
+        ></div>
       </div>
-      {!isHideBar && (
-        <div className={s.progressWrapper}>
-          <div
-            className={s.progressBar}
-            style={{
-              width: `${calcMintProgress}%`,
-            }}
-          ></div>
-        </div>
-      )}
     </div>
   );
 };

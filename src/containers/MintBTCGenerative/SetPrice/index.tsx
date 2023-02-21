@@ -1,5 +1,9 @@
 import s from './styles.module.scss';
-import { CDN_URL, CHUNK_SIZE, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
+import {
+  CDN_URL,
+  CHUNK_SIZE,
+  MIN_MINT_BTC_PROJECT_PRICE,
+} from '@constants/config';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
@@ -10,15 +14,16 @@ import Text from '@components/Text';
 import ButtonIcon from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
-import { completeMultipartUpload, initiateMultipartUpload, uploadFile } from '@services/file';
-import { CollectionType } from '@enums/mint-generative';
 import {
-  createBTCProject,
-  getProjectDetail,
-} from '@services/project';
+  completeMultipartUpload,
+  initiateMultipartUpload,
+  uploadFile,
+} from '@services/file';
+import { CollectionType } from '@enums/mint-generative';
+import { createBTCProject, getProjectDetail } from '@services/project';
 import { ICreateBTCProjectPayload } from '@interfaces/api/project';
 import { blobToBase64, fileToBase64 } from '@utils/file';
-import { validateBTCAddressTaproot } from '@utils/validate';
+// import { validateBTCAddressTaproot } from '@utils/validate';
 import { detectUsedLibs } from '@utils/sandbox';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { getMempoolFeeRate } from '@services/mempool';
@@ -30,6 +35,7 @@ import { BTC_PROJECT } from '@constants/tracking-event-name';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import useChunkedFileUploader from '@hooks/useChunkedFileUploader';
+import ProgressBar from '@components/ProgressBar';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -60,9 +66,8 @@ const SetPrice = () => {
   const numberOfFile = imageCollectionFile
     ? Object.keys(imageCollectionFile).length
     : 0;
-  const { uploadFile: uploadChunkFile, uploadProgress, currentChunkUploadProgress } = useChunkedFileUploader();
-  console.log('____________uploadProgress', uploadProgress);
-  console.log('____________currentChunkUploadProgress', currentChunkUploadProgress);
+  const { uploadFile: uploadChunkFile, uploadProgress } =
+    useChunkedFileUploader();
 
   const fetchNetworkFee = async (): Promise<number> => {
     try {
@@ -234,7 +239,7 @@ const SetPrice = () => {
       let thumbnailUrl = '';
       if (thumbnailFile) {
         const uploadRes = await uploadFile({ file: thumbnailFile });
-        thumbnailUrl = uploadRes.url
+        thumbnailUrl = uploadRes.url;
       }
 
       const payload: ICreateBTCProjectPayload = {
@@ -269,19 +274,14 @@ const SetPrice = () => {
         try {
           const initUploadRes = await initiateMultipartUpload({
             fileName: rawFile.name,
-          })
-          console.log('__________initRes', initUploadRes);
+            group: payload.name.toLowerCase().replaceAll(' ', '_'),
+          });
 
-          await uploadChunkFile(
-            initUploadRes.uploadId,
-            rawFile,
-            CHUNK_SIZE,
-          )
+          await uploadChunkFile(initUploadRes.uploadId, rawFile, CHUNK_SIZE);
 
           const completeUploadRes = await completeMultipartUpload({
             uploadId: initUploadRes.uploadId,
-          })
-          console.log('__________initRes', completeUploadRes);
+          });
           payload.zipLink = completeUploadRes.fileUrl;
         } catch (err: unknown) {
           log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -375,14 +375,6 @@ const SetPrice = () => {
                   touched.creatorWalletAddress && (
                     <p className={s.error}>{errors.creatorWalletAddress}</p>
                   )}
-                {/* <Text
-                  as={'p'}
-                  size={'14'}
-                  color={'black-60'}
-                  className={s.inputDesc}
-                >
-                  Set up your BTC wallet address
-                </Text> */}
               </div>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="maxSupply">
@@ -416,7 +408,7 @@ const SetPrice = () => {
               </div>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="mintPrice">
-                  PRICE <sup className={s.requiredTag}>*</sup>
+                  Price <sup className={s.requiredTag}>*</sup>
                 </label>
                 <div className={s.inputContainer}>
                   <input
@@ -467,22 +459,36 @@ const SetPrice = () => {
                 )}
               </div>
             </div>
-          </div>
-          <div className={s.container}>
-            <div className={s.actionWrapper}>
-              <ButtonIcon
-                disabled={isMinting}
-                type="submit"
-                className={s.nextBtn}
-                sizes="medium"
-                endIcon={
-                  <SvgInset
-                    svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
-                  />
-                }
-              >
-                {isMinting ? 'Creating...' : 'Publish collection'}
-              </ButtonIcon>
+            <div className={s.container}>
+              {isMinting && (
+                <div className={s.loadingContainer}>
+                  <p className={s.progressText}>
+                    Uploading -{' '}
+                    <b>{`${
+                      uploadProgress === 100 ? 'Done' : `${uploadProgress}%`
+                    }`}</b>
+                  </p>
+                  <ProgressBar
+                    height={6}
+                    percent={uploadProgress}
+                  ></ProgressBar>
+                </div>
+              )}
+              <div className={s.actionWrapper}>
+                <ButtonIcon
+                  disabled={isMinting}
+                  type="submit"
+                  className={s.nextBtn}
+                  sizes="medium"
+                  endIcon={
+                    <SvgInset
+                      svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+                    />
+                  }
+                >
+                  {isMinting ? 'Creating...' : 'Publish collection'}
+                </ButtonIcon>
+              </div>
             </div>
           </div>
         </form>
