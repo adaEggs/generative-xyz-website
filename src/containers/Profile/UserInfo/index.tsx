@@ -54,11 +54,11 @@ export const UserInfo = (): JSX.Element => {
               </div>
               {
                 <Row className={s.userInfo_content_wrapper}>
-                  <p className={s.userInfo_conent_displayName}>
+                  <Heading className={s.userInfo_conent_displayName}>
                     {currentUser?.displayName && (
-                      <Heading>{currentUser?.displayName}</Heading>
+                      <>{currentUser?.displayName}</>
                     )}
-                  </p>
+                  </Heading>
 
                   <div className={s.userInfo_content_address}>
                     <div className={s.userInfo_content_btcWallet}>

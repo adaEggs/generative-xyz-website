@@ -5,23 +5,23 @@ import Heading from '@components/Heading';
 import ImagePreviewInput from '@components/ImagePreviewInput';
 import Skeleton from '@components/Skeleton';
 import Text from '@components/Text';
+import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
 import { IUpdateProfilePayload } from '@interfaces/api/profile';
 import { useAppDispatch, useAppSelector } from '@redux';
 import { setUser } from '@redux/user/action';
 import { getUserSelector } from '@redux/user/selector';
+import { uploadFile } from '@services/file';
 import { updateProfile } from '@services/profile';
-import { toBase64 } from '@utils/format';
 import log from '@utils/logger';
+import { validateBTCAddress } from '@utils/validate';
 import { Formik } from 'formik';
+import _isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
-import { validateBTCAddress } from '@utils/validate';
-import _isEmpty from 'lodash/isEmpty';
-import { useRouter } from 'next/router';
-import { ROUTE_PATH } from '@constants/route-path';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -38,11 +38,6 @@ const FormEditProfile = () => {
       log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
     }
   };
-
-  const text = user?.avatar.replace('data:image/png;base64,', '') ?? '';
-  const file = URL.createObjectURL(new Blob([text], { type: 'image/png' }));
-
-  const [avatar] = useState(file);
 
   const [newFile, setNewFile] = useState<File | null | undefined>();
 
@@ -70,8 +65,15 @@ const FormEditProfile = () => {
   };
 
   const handleSubmit = async (values: Record<string, string>) => {
+    let avatarUrl = '';
+
+    if (newFile) {
+      const uploadRes = await uploadFile({ file: newFile });
+      avatarUrl = uploadRes.url;
+    }
+
     const payload: IUpdateProfilePayload = {
-      avatar: newFile ? await toBase64(newFile) : '',
+      avatar: avatarUrl || '',
       bio: values.bio || '',
       displayName: values.nickname,
       profileSocial: {
@@ -103,7 +105,7 @@ const FormEditProfile = () => {
       initialValues={{
         nickname: user?.displayName || '',
         bio: user?.bio || '',
-        avatar: avatar || '',
+        avatar: user?.avatar || '',
         website: user?.profileSocial?.web || '',
         instagram: user?.profileSocial?.instagram || '',
         discord: user?.profileSocial?.discord || '',
@@ -116,11 +118,11 @@ const FormEditProfile = () => {
       validateOnChange
       enableReinitialize
     >
-      {({ handleSubmit, isSubmitting, dirty, errors }) => (
+      {({ handleSubmit, isSubmitting, dirty, errors, values }) => (
         <form className={s.account}>
           <div className={s.account_avatar}>
             <ImagePreviewInput
-              file={avatar}
+              file={values.avatar}
               onFileChange={setNewFile}
               previewHtml={
                 user?.avatar ? (

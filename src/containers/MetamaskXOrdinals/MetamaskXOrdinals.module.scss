@@ -57,29 +57,6 @@
       flex-direction: row;
       align-items: center;
 
-      :hover {
-        transform: translateY(-1px);
-        transition: all 200ms ease-in;
-      }
-
-      .createButton {
-        padding: 15px 24px;
-        border-radius: 2px;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        background: $white-100;
-        cursor: pointer;
-
-        .createText {
-          font-weight: 500;
-          font-size: rem(16px);
-          line-height: rem(26px);
-          color: $primary-brand;
-        }
-      }
-
       .learnMoreButton {
         margin-left: rem(40px);
         display: flex;
