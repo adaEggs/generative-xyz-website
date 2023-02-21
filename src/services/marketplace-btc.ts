@@ -127,10 +127,10 @@ export const getCollectedNFTs = async (
 ): Promise<IGetMarketplaceBtcListItem[]> => {
   try {
     const res = await get<ICollectedNFTResp>(
-      `wallet/wallet-info?address=${btcAddress}`
+      `/wallet/wallet-info?address=${btcAddress}`
     );
 
-    const dataRes = await Object.values(res.inscriptions || {});
+    const dataRes = Object.values(res.inscriptions || {});
 
     const tasks = dataRes.map(async (inscriptionID: string) => {
       return getInscriptionDetail(inscriptionID);

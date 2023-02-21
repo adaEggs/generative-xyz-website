@@ -4,8 +4,9 @@ import { ProjectList } from '@containers/Trade/ProjectLists';
 import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
 import { getCollectedNFTs } from '@services/marketplace-btc';
+import { isEmpty } from 'lodash';
 import debounce from 'lodash/debounce';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -18,24 +19,27 @@ export const Collected = (): JSX.Element => {
   const { ordAddress } = useBTCSignOrd();
 
   const [dataOrd, setdataOrd] = useState<IGetMarketplaceBtcListItem[]>([]);
+  const currentBtcAddressRef = useRef(ordAddress);
 
   const fetchDataOrdinals = async () => {
     try {
-      setIsLoaded(true);
-      const res = await getCollectedNFTs(ordAddress);
-
+      const res = await getCollectedNFTs(currentBtcAddressRef.current);
       setdataOrd(res || []);
     } catch (error) {
       // handle fetch data error here
     } finally {
       setIsLoading(false);
+      setIsLoaded(true);
     }
   };
   const debounceFetchDataOrdinals = debounce(fetchDataOrdinals, 300);
 
   useEffect(() => {
-    debounceFetchDataOrdinals();
-  }, []);
+    if (!isEmpty(ordAddress) && currentBtcAddressRef.current !== ordAddress) {
+      currentBtcAddressRef.current = ordAddress;
+      debounceFetchDataOrdinals();
+    }
+  }, [ordAddress]);
 
   return (
     <div className={s.recentWorks}>
