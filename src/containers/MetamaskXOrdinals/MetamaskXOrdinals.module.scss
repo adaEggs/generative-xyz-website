@@ -51,11 +51,24 @@
       }
     }
 
+    .login {
+      margin-top: rem(64px);
+      text-transform: uppercase;
+      padding: 16px 24px;
+    }
+
+    .icMetamask {
+      width: 26px;
+      height: 26px;
+    }
+
     .buttonContainer {
       margin-top: rem(64px);
       display: flex;
       flex-direction: row;
       align-items: center;
+      text-transform: uppercase;
+      padding: 16px 24px;
 
       .learnMoreButton {
         margin-left: rem(40px);
