@@ -48,9 +48,7 @@ export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
         </div>
         <div className={s.artistCard_info}>
           <Text size="20" fontWeight="medium" color="white">
-            {profile.displayName ||
-              'Pantheon' ||
-              formatAddress(profile.walletAddress)}
+            {profile.displayName || formatAddress(profile.walletAddress)}
           </Text>
           <Text
             className={s.artistCard_info_arts}
