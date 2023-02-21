@@ -402,7 +402,7 @@ const ProjectIntroSection = ({
                 </Text>
               </ButtonIcon>
             )}
-            {isBitcoinProject && isAvailable && project?.btcFloorPrice && (
+            {isBitcoinProject && isAvailable && !!project?.btcFloorPrice && (
               <>
                 <ButtonIcon
                   sizes="large"
