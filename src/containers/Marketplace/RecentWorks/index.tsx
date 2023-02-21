@@ -204,6 +204,7 @@ export const RecentWorks = (): JSX.Element => {
                 classNamePrefix="select"
                 onChange={(op: SingleValue<SelectOption>) => {
                   if (op) {
+                    setPageNum(0);
                     setSort(op.value);
                     setProjects(undefined);
                   }
