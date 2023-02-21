@@ -15,7 +15,6 @@ import {
   IPostMarketplaceBtcListNFTResponse,
   ISubmitBTCAddressPayload,
   ISubmitBTCAddressResponse,
-  ICollectedNFTResp,
 } from '@interfaces/api/marketplace-btc';
 
 const LOG_PREFIX = 'MarketplaceBtcService';
@@ -119,27 +118,6 @@ export const getListingOrdinals = async (
   } catch (err: unknown) {
     log('failed to get get fee', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get fee');
-  }
-};
-
-export const getCollectedNFTs = async (
-  btcAddress: string
-): Promise<IGetMarketplaceBtcListItem[]> => {
-  try {
-    const res = await get<ICollectedNFTResp>(
-      `/wallet/wallet-info?address=${btcAddress}`
-    );
-
-    const dataRes = Object.values(res.inscriptions || {});
-
-    const tasks = dataRes.map(async (inscriptionID: string) => {
-      return getInscriptionDetail(inscriptionID);
-    });
-    const data = await Promise.all(tasks);
-    return data;
-  } catch (err: unknown) {
-    log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get collected NFTs');
   }
 };
 
