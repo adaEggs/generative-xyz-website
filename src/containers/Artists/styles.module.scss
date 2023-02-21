@@ -1,0 +1,39 @@
+.artistPage {
+  min-height: 100vh;
+  padding-top: rem(90px);
+  padding-bottom: rem(80px);
+
+  .leftContainer {
+    strong {
+      font-weight: 600;
+      color: $white;
+    }
+  }
+
+  &_row {
+    justify-content: space-between;
+
+    button {
+      svg path {
+        stroke: $primary-brand;
+      }
+    }
+
+    &_link {
+      margin-top: rem(24px);
+
+      a {
+        text-decoration: none;
+        color: #4185ec;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.artistList {
+  margin-top: rem(64px);
+}

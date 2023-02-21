@@ -11,3 +11,5 @@ export const MathMap = (
 export const MathLerp = (a: number, b: number, n: number): number => {
   return parseFloat(((1 - n) * a + n * b).toFixed(3));
 };
+
+export const delay = (ms: number) => new Promise(res => setTimeout(res, ms));

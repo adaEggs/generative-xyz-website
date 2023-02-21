@@ -4,7 +4,7 @@ import Heading from '@components/Heading';
 import Link from '@components/Link';
 import LinkShare from '@components/LinkShare';
 import { Loading } from '@components/Loading';
-import ProgressBar from '@components/ProgressBar';
+import MintingProgressBar from '@components/MintingProgressBar';
 import ProjectDescription from '@components/ProjectDescription';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
@@ -12,7 +12,6 @@ import ThumbnailPreview from '@components/ThumbnailPreview';
 import TwitterShare from '@components/TwitterShare';
 import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
-// import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
@@ -21,8 +20,6 @@ import useWindowSize from '@hooks/useWindowSize';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
 import { Token } from '@interfaces/token';
-// import { useAppSelector } from '@redux';
-// import { getUserSelector } from '@redux/user/selector';
 import { EXTERNAL_LINK } from '@constants/external-link';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { Project } from '@interfaces/project';
@@ -52,6 +49,8 @@ import { TransactionReceipt } from 'web3-eth';
 import s from './styles.module.scss';
 import { PaymentMethod } from '@enums/mint-generative';
 import { IC_EDIT_PROFILE } from '@constants/icons';
+import { SocialVerify } from '@components/SocialVerify';
+import { SOCIALS } from '@constants/common';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -180,7 +179,6 @@ const ProjectIntroSection = ({
     }
   };
 
-  // const isProjectDetailPage = !!router.query.projectID;
   const priceMemo = useMemo(
     () => formatBTCPrice(Number(project?.mintPrice)),
     [project?.mintPrice]
@@ -238,6 +236,10 @@ const ProjectIntroSection = ({
     return project?.creatorAddr === user?.walletAddress;
   }, [user, project]);
 
+  const isTwVerified = useMemo(() => {
+    return project?.creatorProfile?.profileSocial?.twitterVerified || false;
+  }, [project?.creatorProfile?.profileSocial]);
+
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -251,16 +253,6 @@ const ProjectIntroSection = ({
 
     return (
       <div className={s.info}>
-        {/* {isBitcoinProject && ( */}
-        {/*  <CountDown*/}
-        {/*    prefix={'Drop ends in'}*/}
-        {/*    isDetail={true}*/}
-        {/*    setIsAvailable={setIsAvailable}*/}
-        {/*    openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}*/}
-        {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
-        {/*  />*/}
-        {/*)}*/}
-
         <div className={`${s.projectHeader} ${isCreated ? s.hasEdit : ''}`}>
           <Heading
             className={s.projectHeader_title}
@@ -306,23 +298,36 @@ const ProjectIntroSection = ({
           {project?.creatorProfile?.profileSocial?.twitter && (
             <div className={s.creator_social}>
               <span className={s.creator_divider}></span>
-              <div className={s.creator_social_item}>
-                <SvgInset
-                  className={s.creator_social_twitter}
-                  size={16}
-                  svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
-                />
-                <Text size={'18'} color="black-60">
-                  <Link
-                    href={project?.creatorProfile?.profileSocial?.twitter || ''}
-                    target="_blank"
-                  >
-                    @
-                    {project?.creatorProfile?.profileSocial?.twitter
-                      .split('/')
-                      .pop()}
-                  </Link>
-                </Text>
+              <div
+                className={`${s.creator_social_item} ${
+                  isTwVerified ? s.isVerified : ''
+                }`}
+              >
+                <div className={s.creator_social_item_inner}>
+                  <SvgInset
+                    className={`${s.creator_social_twitter}`}
+                    size={20}
+                    svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                  />
+                  <Text size={'18'} color="black-60">
+                    <Link
+                      href={
+                        project?.creatorProfile?.profileSocial?.twitter || ''
+                      }
+                      target="_blank"
+                    >
+                      @
+                      {project?.creatorProfile?.profileSocial?.twitter
+                        .split('/')
+                        .pop()}
+                    </Link>
+                  </Text>
+                </div>
+                {!isTwVerified && (
+                  <>
+                    <SocialVerify social="Twitter" link={SOCIALS.twitter} />
+                  </>
+                )}
               </div>
             </div>
           )}
@@ -334,7 +339,7 @@ const ProjectIntroSection = ({
         )}
 
         {project?.mintingInfo.index !== project?.maxSupply && (
-          <ProgressBar
+          <MintingProgressBar
             current={project?.mintingInfo?.index}
             total={project?.maxSupply || project?.limit}
             className={s.progressBar}
@@ -364,13 +369,6 @@ const ProjectIntroSection = ({
             )}
           </div>
         )}
-        {/* {isBitcoinProject && (
-          <>
-            <span className={s.priceBtc}>
-              {priceMemo} <small>BTC</small>
-            </span>
-          </>
-        )} */}
 
         {!isWhitelist && project?.status && (
           <div className={s.CTA}>
@@ -492,21 +490,6 @@ const ProjectIntroSection = ({
                     </ButtonIcon>
                   </OverlayTrigger>
                 </li>
-
-                {/* {!!project?.whiteListEthContracts && (
-                    <li>
-                      <ButtonIcon
-                        sizes="large"
-                        variants={'filter'}
-                        className={`${s.mint_btn} ${s.mint_btn__wallet}`}
-                        onClick={onHandlePaymentWithWallet}
-                      >
-                        <Text as="span" size="14" fontWeight="medium">
-                          {isConnecting ? 'Connecting...' : 'Wallet'}
-                        </Text>
-                      </ButtonIcon>
-                    </li>
-                  )} */}
               </ul>
             )}
           </div>
@@ -634,12 +617,6 @@ const ProjectIntroSection = ({
             <Text size="14" color="black-40">
               Fully on-chain: {isFullonChain ? 'Yes' : 'No'}
             </Text>
-            {/* <Text size="14" color="black-40" className={s.project_owner}>
-                Collected by:{' '}
-                {project?.stats?.uniqueOwnerCount === 1
-                  ? `${project?.stats?.uniqueOwnerCount} owner`
-                  : `${project?.stats?.uniqueOwnerCount}+ owners`}
-                </Text> */}
           </>
         </div>
         {!isBitcoinProject && (

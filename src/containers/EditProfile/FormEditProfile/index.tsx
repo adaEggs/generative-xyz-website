@@ -3,7 +3,6 @@ import ButtonIcon from '@components/ButtonIcon';
 import Input from '@components/Formik/Input';
 import Heading from '@components/Heading';
 import ImagePreviewInput from '@components/ImagePreviewInput';
-import Skeleton from '@components/Skeleton';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
@@ -124,13 +123,7 @@ const FormEditProfile = () => {
             <ImagePreviewInput
               file={values.avatar}
               onFileChange={setNewFile}
-              previewHtml={
-                user?.avatar ? (
-                  <Avatar imgSrcs={user?.avatar || ''} fill />
-                ) : (
-                  <Skeleton fill></Skeleton>
-                )
-              }
+              previewHtml={<Avatar imgSrcs={user?.avatar || ''} fill />}
             />
             {user?.avatar && (
               <ButtonIcon
