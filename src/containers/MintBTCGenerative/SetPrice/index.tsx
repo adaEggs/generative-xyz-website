@@ -19,7 +19,7 @@ import {
 } from '@services/project';
 import { ICreateBTCProjectPayload } from '@interfaces/api/project';
 import { blobToBase64, fileToBase64 } from '@utils/file';
-import { validateBTCAddressTaproot } from '@utils/validate';
+// import { validateBTCAddressTaproot } from '@utils/validate';
 import { detectUsedLibs } from '@utils/sandbox';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { getMempoolFeeRate } from '@services/mempool';
@@ -37,7 +37,7 @@ type ISetPriceFormValue = {
   maxSupply: string | number;
   mintPrice: string | number;
   royalty: string | number;
-  creatorWalletAddress: string;
+  // creatorWalletAddress: string;
 };
 
 const SetPrice = () => {
@@ -131,7 +131,7 @@ const SetPrice = () => {
     setFormValues({
       ...formValues,
       ...{
-        creatorWalletAddress: values.creatorWalletAddress || '',
+        // creatorWalletAddress: values.creatorWalletAddress || '',
         maxSupply: values.maxSupply
           ? parseInt(values.maxSupply.toString(), 10)
           : undefined,
@@ -144,11 +144,11 @@ const SetPrice = () => {
       },
     });
 
-    if (!values.creatorWalletAddress.toString()) {
-      errors.creatorWalletAddress = 'Creator wallet address is required.';
-    } else if (!validateBTCAddressTaproot(values.creatorWalletAddress)) {
-      errors.creatorWalletAddress = 'Invalid BTC wallet address.';
-    }
+    // if (!values.creatorWalletAddress.toString()) {
+    //   errors.creatorWalletAddress = 'Creator wallet address is required.';
+    // } else if (!validateBTCAddressTaproot(values.creatorWalletAddress)) {
+    //   errors.creatorWalletAddress = 'Invalid BTC wallet address.';
+    // }
 
     if (!values.maxSupply.toString()) {
       errors.maxSupply = 'Number of editions is required.';
@@ -211,7 +211,7 @@ const SetPrice = () => {
       setIsMinting(true);
 
       const {
-        creatorWalletAddress,
+        // creatorWalletAddress,
         description,
         license,
         maxSupply,
@@ -236,7 +236,7 @@ const SetPrice = () => {
       }
 
       const payload: ICreateBTCProjectPayload = {
-        creatorAddrrBTC: creatorWalletAddress ?? '',
+        // creatorAddrrBTC: creatorWalletAddress ?? '',
         maxSupply: maxSupply ?? 0,
         limitSupply: 0,
         mintPrice: mintPrice?.toString() ? mintPrice.toString() : '0',
@@ -318,7 +318,7 @@ const SetPrice = () => {
         maxSupply: formValues.maxSupply || '',
         mintPrice: formValues.mintPrice || '',
         royalty: formValues.royalty || '',
-        creatorWalletAddress: formValues.creatorWalletAddress ?? '',
+        // creatorWalletAddress: formValues.creatorWalletAddress ?? '',
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -341,7 +341,7 @@ const SetPrice = () => {
             </div>
             <div className={s.divider} />
             <div className={s.formWrapper}>
-              <div className={s.formItem}>
+              {/* <div className={s.formItem}>
                 <label className={s.label} htmlFor="creatorWalletAddress">
                   BTC wallet to receive payment{' '}
                   <sup className={s.requiredTag}>*</sup>
@@ -362,15 +362,7 @@ const SetPrice = () => {
                   touched.creatorWalletAddress && (
                     <p className={s.error}>{errors.creatorWalletAddress}</p>
                   )}
-                {/* <Text
-                  as={'p'}
-                  size={'14'}
-                  color={'black-60'}
-                  className={s.inputDesc}
-                >
-                  Set up your BTC wallet address
-                </Text> */}
-              </div>
+              </div> */}
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="maxSupply">
                   Number of outputs <sup className={s.requiredTag}>*</sup>
