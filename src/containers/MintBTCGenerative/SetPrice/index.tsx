@@ -407,7 +407,7 @@ const SetPrice = () => {
                 {errors.mintPrice && touched.mintPrice && (
                   <p className={s.error}>{errors.mintPrice}</p>
                 )}
-                {networkFee && (
+                {networkFee > 0 && (
                   <Text
                     as={'p'}
                     size={'14'}

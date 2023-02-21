@@ -12,7 +12,7 @@ import { formatAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import { useRouter } from 'next/router';
-import React, { useContext, useRef, useState, useEffect } from 'react';
+import React, { useContext, useRef, useState, useEffect, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 import styles from './Header.module.scss';
 import { getFaucetLink, isTestnet } from '@utils/chain';
@@ -23,6 +23,7 @@ import { MENU_HEADER } from '@constants/header';
 import MenuMobile from '@layouts/Marketplace/MenuMobile';
 import { gsap } from 'gsap';
 import { isProduction } from '@utils/common';
+import SearchCollection from './SearchCollection';
 
 const LOG_PREFIX = 'MarketplaceHeader';
 
@@ -47,6 +48,11 @@ const Header: React.FC<IProp> = ({
   const [isFaucet, _] = useState<boolean>(isShowFaucet);
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const refMenu = useRef<HTMLDivElement | null>(null);
+
+  const isGrailPage = useMemo(
+    () => router.pathname === ROUTE_PATH.DISPLAY,
+    [router.pathname]
+  );
 
   const PROFILE_MENU = [
     {
@@ -191,8 +197,9 @@ const Header: React.FC<IProp> = ({
                     Generative
                   </Text>
                 </Link>
-
                 <div className={styles.header_right}>
+                  {!isGrailPage && <SearchCollection />}
+
                   <ul className={`${styles.navBar} ${styles[theme]}`}>
                     <li
                       className={cs(
