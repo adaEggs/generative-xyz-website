@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Text from '@components/Text';
 import { formatAddress } from '@utils/format';
 import { useMemo } from 'react';
+import { CDN_URL } from '@constants/config';
 
 interface IPros {
   profile: User;
@@ -34,7 +35,11 @@ export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
         <div className={`${s.artistCard_thumb}`}>
           <div className={s.artistCard_thumb_inner}>
             <Image
-              src={profile.avatar}
+              src={
+                profile.avatar
+                  ? profile.avatar
+                  : `${CDN_URL}/images/default-avatar.jpeg`
+              }
               alt={'avatar'}
               width={'432'}
               height={'432'}
