@@ -1,7 +1,13 @@
+import { HOST_ORDINALS_EXPLORER } from '@constants/config';
 import { LogLevel } from '@enums/log-level';
 import {
+  CollectedNFTStatus,
+  ICollectedNFTItem,
   IGetArtistsResponse,
+  IGetCollectedNFTsResp,
+  IGetMintingCollectedNFTResp,
   IGetProfileResponse,
+  IInscriptionResp,
   IUpdateProfilePayload,
   IUpdateProfileResponse,
 } from '@interfaces/api/profile';
@@ -115,5 +121,84 @@ export const getArtists = async ({
   } catch (err: unknown) {
     log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get profile');
+  }
+};
+
+// Collected tab
+
+export const getCollectedNFTs = async (
+  btcAddress: string
+): Promise<ICollectedNFTItem[]> => {
+  try {
+    const res = await get<IGetCollectedNFTsResp>(
+      `/wallet/wallet-info?address=${btcAddress}`
+    );
+    const dataRes = Object.values(res.inscriptions || {});
+    const tasks = dataRes.map(async (inscriptionID: string) => {
+      return getCollectedNFTDetail(inscriptionID);
+    });
+    const data = await Promise.all(tasks);
+    return data;
+  } catch (err: unknown) {
+    log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get collected NFTs');
+  }
+};
+
+export const getCollectedNFTDetail = async (
+  inscriptionID: string
+): Promise<ICollectedNFTItem> => {
+  try {
+    const res = await fetch(
+      `${HOST_ORDINALS_EXPLORER}/api/inscription/${inscriptionID}`
+    );
+    const dataRes: IInscriptionResp = await res.json();
+    const randomStr = Date.now().toString();
+    return {
+      inscriptionID,
+      inscriptionNumber: `${dataRes.number}`,
+      contentType: dataRes.content_type,
+      name: randomStr,
+      orderID: randomStr,
+      isCompleted: false,
+      image: '',
+      contentLength: randomStr,
+      status: CollectedNFTStatus.Success,
+      statusText: 'Success',
+    };
+  } catch (err: unknown) {
+    log('failed to get inscription detail', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get inscription detail');
+  }
+};
+
+export const getMintingCollectedNFTs = async (
+  btcAddress: string
+): Promise<ICollectedNFTItem[]> => {
+  try {
+    const res = await get<Array<IGetMintingCollectedNFTResp>>(
+      `/wallet/mint-status?address=${btcAddress}`
+    );
+    let tasks: ICollectedNFTItem[] = [];
+    if (res && res.length > 0) {
+      tasks = res.map((item: IGetMintingCollectedNFTResp) => {
+        const randomStr = Date.now().toString();
+        return {
+          image: item.fileURI || item.projectImage,
+          name: '',
+          projectName: item.projectName,
+          projectID: item.projectID,
+          orderID: randomStr,
+          isCompleted: false,
+          contentLength: randomStr,
+          status: CollectedNFTStatus.Minting,
+          statusText: item.status,
+        };
+      });
+    }
+    return tasks;
+  } catch (err: unknown) {
+    log('failed to get minting collected NFTs', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get collected NFTs');
   }
 };
