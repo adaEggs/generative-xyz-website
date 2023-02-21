@@ -146,7 +146,7 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
         {showIframe && (
           <iframe
             ref={iframeRef}
-            sandbox="allow-scripts allow-same-origin"
+            sandbox="allow-scripts allow-pointer-lock allow-same-origin"
             className={s.iframeContainer}
             onLoad={onLoaded}
             style={{ overflow: 'hidden' }}

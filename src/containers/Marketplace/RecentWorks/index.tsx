@@ -62,11 +62,18 @@ export const RecentWorks = (): JSX.Element => {
       try {
         setIsLoadMore(false);
 
+        const _categoryID = () => {
+          if (categoryID === 'All') {
+            return '';
+          }
+          return categoryID;
+        };
+
         const tmpProject = await getProjectList({
           contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
           limit: 12,
           page: page + 1,
-          category: categoryID ? [categoryID] : [''],
+          category: categoryID ? [_categoryID()] : [''],
           sort: sort || SORT_OPTIONS[0].value,
         });
 
@@ -182,9 +189,9 @@ export const RecentWorks = (): JSX.Element => {
               text="All"
               onClick={() => {
                 setPageNum(0);
-                handleClickCategory('');
+                handleClickCategory('All');
               }}
-              active={activeCategory === ''}
+              active={activeCategory === 'All'}
               loading={categoriesLoading}
             />
           </Col>

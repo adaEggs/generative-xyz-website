@@ -19,7 +19,7 @@ import {
 } from '@services/project';
 import { ICreateBTCProjectPayload } from '@interfaces/api/project';
 import { blobToBase64, fileToBase64 } from '@utils/file';
-import { validateBTCAddressTaproot } from '@utils/validate';
+import { validateBTCAddress } from '@utils/validate';
 import { detectUsedLibs } from '@utils/sandbox';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { getMempoolFeeRate } from '@services/mempool';
@@ -146,7 +146,7 @@ const SetPrice = () => {
 
     if (!values.creatorWalletAddress.toString()) {
       errors.creatorWalletAddress = 'Creator wallet address is required.';
-    } else if (!validateBTCAddressTaproot(values.creatorWalletAddress)) {
+    } else if (!validateBTCAddress(values.creatorWalletAddress)) {
       errors.creatorWalletAddress = 'Invalid BTC wallet address.';
     }
 

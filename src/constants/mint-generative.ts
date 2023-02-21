@@ -30,7 +30,7 @@ export const THIRD_PARTY_SCRIPTS = [
     label: 'threejs@r124',
     value: 'threejs@r124',
     script:
-      '<script sandbox="allow-scripts" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>',
+      '<script sandbox="allow-scripts allow-pointer-lock" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r124/three.min.js"></script>',
   },
   {
     label: 'tonejs@14.8.49',
