@@ -1,35 +1,33 @@
-import s from './styles.module.scss';
-import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
-import { Formik } from 'formik';
-import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
-import _get from 'lodash/get';
-import Text from '@components/Text';
 import ButtonIcon from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
+import Text from '@components/Text';
+import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
+import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
-import { uploadFile } from '@services/file';
+import { InscribeMintFeeRate } from '@enums/inscribe';
+import { LogLevel } from '@enums/log-level';
 import { CollectionType } from '@enums/mint-generative';
+import { ICreateBTCProjectPayload } from '@interfaces/api/project';
+import { getUserSelector } from '@redux/user/selector';
+import { sendAAEvent } from '@services/aa-tracking';
+import { uploadFile } from '@services/file';
+import { getMempoolFeeRate } from '@services/mempool';
 import {
   createBTCProject,
   getProjectDetail,
   uploadBTCProjectFiles,
 } from '@services/project';
-import { ICreateBTCProjectPayload } from '@interfaces/api/project';
 import { blobToBase64, fileToBase64 } from '@utils/file';
-import { validateBTCAddressTaproot } from '@utils/validate';
-import { detectUsedLibs } from '@utils/sandbox';
-import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
-import { getMempoolFeeRate } from '@services/mempool';
-import { calculateNetworkFee } from '@utils/inscribe';
-import { InscribeMintFeeRate } from '@enums/inscribe';
 import { formatBTCPrice } from '@utils/format';
-import { sendAAEvent } from '@services/aa-tracking';
-import { BTC_PROJECT } from '@constants/tracking-event-name';
+import { calculateNetworkFee } from '@utils/inscribe';
+import log from '@utils/logger';
+import { detectUsedLibs } from '@utils/sandbox';
+import { Formik } from 'formik';
+import { useRouter } from 'next/router';
+import { useContext, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getUserSelector } from '@redux/user/selector';
+import s from './styles.module.scss';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -37,7 +35,7 @@ type ISetPriceFormValue = {
   maxSupply: string | number;
   mintPrice: string | number;
   royalty: string | number;
-  creatorWalletAddress: string;
+  // creatorWalletAddress: string;
 };
 
 const SetPrice = () => {
@@ -131,7 +129,7 @@ const SetPrice = () => {
     setFormValues({
       ...formValues,
       ...{
-        creatorWalletAddress: values.creatorWalletAddress || '',
+        // creatorWalletAddress: values.creatorWalletAddress || '',
         maxSupply: values.maxSupply
           ? parseInt(values.maxSupply.toString(), 10)
           : undefined,
@@ -144,11 +142,11 @@ const SetPrice = () => {
       },
     });
 
-    if (!values.creatorWalletAddress.toString()) {
-      errors.creatorWalletAddress = 'Creator wallet address is required.';
-    } else if (!validateBTCAddressTaproot(values.creatorWalletAddress)) {
-      errors.creatorWalletAddress = 'Invalid BTC wallet address.';
-    }
+    // if (!values.creatorWalletAddress.toString()) {
+    //   errors.creatorWalletAddress = 'Creator wallet address is required.';
+    // } else if (!validateBTCAddress(values.creatorWalletAddress)) {
+    //   errors.creatorWalletAddress = 'Invalid BTC wallet address.';
+    // }
 
     if (!values.maxSupply.toString()) {
       errors.maxSupply = 'Number of editions is required.';
@@ -211,7 +209,7 @@ const SetPrice = () => {
       setIsMinting(true);
 
       const {
-        creatorWalletAddress,
+        // creatorWalletAddress,
         description,
         license,
         maxSupply,
@@ -236,7 +234,7 @@ const SetPrice = () => {
       }
 
       const payload: ICreateBTCProjectPayload = {
-        creatorAddrrBTC: creatorWalletAddress ?? '',
+        // creatorAddrrBTC: creatorWalletAddress ?? '',
         maxSupply: maxSupply ?? 0,
         limitSupply: 0,
         mintPrice: mintPrice?.toString() ? mintPrice.toString() : '0',
@@ -318,7 +316,7 @@ const SetPrice = () => {
         maxSupply: formValues.maxSupply || '',
         mintPrice: formValues.mintPrice || '',
         royalty: formValues.royalty || '',
-        creatorWalletAddress: formValues.creatorWalletAddress ?? '',
+        // creatorWalletAddress: formValues.creatorWalletAddress ?? '',
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -341,7 +339,7 @@ const SetPrice = () => {
             </div>
             <div className={s.divider} />
             <div className={s.formWrapper}>
-              <div className={s.formItem}>
+              {/* <div className={s.formItem}>
                 <label className={s.label} htmlFor="creatorWalletAddress">
                   BTC wallet to receive payment{' '}
                   <sup className={s.requiredTag}>*</sup>
@@ -362,15 +360,7 @@ const SetPrice = () => {
                   touched.creatorWalletAddress && (
                     <p className={s.error}>{errors.creatorWalletAddress}</p>
                   )}
-                {/* <Text
-                  as={'p'}
-                  size={'14'}
-                  color={'black-60'}
-                  className={s.inputDesc}
-                >
-                  Set up your BTC wallet address
-                </Text> */}
-              </div>
+              </div> */}
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="maxSupply">
                   Number of outputs <sup className={s.requiredTag}>*</sup>

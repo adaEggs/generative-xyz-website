@@ -5,6 +5,7 @@ import {
   ICollectedNFTItem,
   IGetCollectedNFTsResp,
   IGetMintingCollectedNFTResp,
+  IGetArtistsResponse,
   IGetProfileResponse,
   IInscriptionResp,
   IUpdateProfilePayload,
@@ -103,6 +104,23 @@ export const updateProfile = async (
   } catch (err: unknown) {
     log('failed to update profile', LogLevel.ERROR, LOG_PREFIX);
     throw Error();
+  }
+};
+
+export const getArtists = async ({
+  limit = 10,
+  page = 1,
+}: {
+  limit?: number;
+  page?: number;
+}): Promise<IGetArtistsResponse> => {
+  try {
+    return await get<IGetArtistsResponse>(
+      `/user/artist?page=${page}&limit=${limit}`
+    );
+  } catch (err: unknown) {
+    log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get profile');
   }
 };
 
