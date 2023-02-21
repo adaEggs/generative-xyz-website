@@ -61,7 +61,7 @@ export const UserInfo = (): JSX.Element => {
                   </Heading>
 
                   <div className={s.userInfo_content_address}>
-                    {!currentUser?.walletAddressBtcTaproot && (
+                    {currentUser?.walletAddressBtcTaproot && (
                       <div className={s.userInfo_content_btcWallet}>
                         <Text
                           size={'18'}
