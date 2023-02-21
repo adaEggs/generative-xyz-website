@@ -1,5 +1,4 @@
 import Heading from '@components/Heading';
-import Link from '@components/Link';
 import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
@@ -15,7 +14,7 @@ import {
   getProjectIdFromTokenId,
 } from '@utils/format';
 import cs from 'classnames';
-import { useContext, useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 
 import ButtonIcon from '@components/ButtonIcon';
@@ -23,6 +22,7 @@ import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
 import s from './styles.module.scss';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import useBTCSignOrd from '@hooks/useBTCSignOrd';
+import { useRouter } from 'next/router';
 
 const CollectionItem = ({
   data,
@@ -35,6 +35,7 @@ const CollectionItem = ({
     () => data.name.split('#')[1] || data.name,
     [data.name]
   );
+  const route = useRouter();
   const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
   const { isBitcoinProject, isWhitelistProject } = useContext(
@@ -53,8 +54,13 @@ const CollectionItem = ({
     setThumb(LOGO_MARKETPLACE_URL);
   };
 
-  const toggleModal = () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const toggleModal = (event?: any) => {
+    if (event && event.stopPropagation) {
+      event.stopPropagation();
+    }
     if (isBTCDisable) return;
+
     onButtonClick({
       cbSigned: () => {
         setShowModal(show => !show);
@@ -65,17 +71,19 @@ const CollectionItem = ({
   const renderButton = () => {
     if (isBTCListable)
       return (
-        <ul className={s.ordinalsLinks}>
-          <ButtonIcon
-            sizes={'large'}
-            className={s.buy_now}
-            onClick={toggleModal}
-          >
-            <Text as="span" fontWeight="medium">
-              {isBTCDisable ? 'The inscription is being purchased' : 'Buy now'}
-            </Text>
-          </ButtonIcon>
-        </ul>
+        <ButtonIcon
+          sizes={'small'}
+          className={s.buy_now}
+          onClick={toggleModal}
+          type="button"
+          name="button-buy"
+        >
+          <Text as="span" fontWeight="medium">
+            {isBTCDisable
+              ? 'The inscription is being purchased'
+              : `Buy now • ${formatBTCPrice(data.priceBTC)} BTC`}
+          </Text>
+        </ButtonIcon>
       );
     return null;
   };
@@ -121,7 +129,19 @@ const CollectionItem = ({
   return (
     <div className={`${s.collectionCard} ${className}`}>
       <div className={s.collectionCard_inner_wrapper}>
-        <Link href={tokenUrl} className={s.collectionCard_inner}>
+        <div
+          className={s.collectionCard_inner}
+          onClick={e => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            if (e.target.name === 'button-buy') {
+              e.preventDefault();
+              e.stopPropagation();
+            } else {
+              route.push(tokenUrl);
+            }
+          }}
+        >
           <div
             className={`${s.collectionCard_thumb} ${
               thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
@@ -195,13 +215,12 @@ const CollectionItem = ({
                         : formatTokenId(tokenID)}
                     </span>
                   </Heading>
-                  {renderPrice()}
+                  {isBTCListable ? renderButton() : renderPrice()}
                 </Stack>
               </div>
             </div>
           )}
-        </Link>
-        {renderButton()}
+        </div>
       </div>
       {data.buyable && !!ordAddress && showModal && (
         <ModalBuyItemViaBTC

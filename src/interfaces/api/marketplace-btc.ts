@@ -78,8 +78,10 @@ export interface IInscriptionDetailResp {
   number: number;
 }
 
-export interface ICollectedNFTResp {
-  inscriptions: {
-    [key: string]: string;
-  };
+export interface ICollectionFloorPricePayload {
+  projectID: string;
+}
+
+export interface ICollectionFloorPriceResp {
+  floor_price: number;
 }

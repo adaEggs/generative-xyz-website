@@ -1,4 +1,3 @@
-import ButtonIcon from '@components/ButtonIcon';
 import Link from '@components/Link';
 import SvgInset from '@components/SvgInset';
 import { SOCIALS } from '@constants/common';
@@ -23,13 +22,7 @@ interface IProp {
 
 const MenuMobile = React.forwardRef(
   (
-    {
-      theme,
-      isConnecting,
-      handleConnectWallet,
-      renderProfileHeader,
-      ProfileDropdown,
-    }: IProp,
+    { theme, renderProfileHeader, ProfileDropdown }: IProp,
     ref: ForwardedRef<HTMLDivElement>
   ) => {
     const router = useRouter();
@@ -87,16 +80,28 @@ const MenuMobile = React.forwardRef(
                 {MENU_HEADER[2].name}
               </Link>
             </li>
+            {!user && (
+              <li
+                className={cs(
+                  activePath === MENU_HEADER[6].activePath && s.active
+                )}
+                key={`header-${MENU_HEADER[6].id}`}
+              >
+                <Link href={getUrlWithQueryParams(MENU_HEADER[6].route)}>
+                  {MENU_HEADER[6].name}
+                </Link>
+              </li>
+            )}
           </ul>
           <div className={`${s.menuMobile_bottom} ${user ? s.hasUser : ''}`}>
             <div className={`${s.connectWallet}`}>
-              {user ? (
+              {user && (
                 <div className="position-relative">
                   {renderProfileHeader()}
                   {ProfileDropdown()}
                 </div>
-              ) : (
-                <div className={s.menuMobile_bottom_cta}>
+              )}
+              {/* <div className={s.menuMobile_bottom_cta}>
                   <ButtonIcon
                     disabled={isConnecting}
                     sizes="medium"
@@ -105,8 +110,7 @@ const MenuMobile = React.forwardRef(
                   >
                     {isConnecting ? 'Connecting...' : 'Connect wallet'}
                   </ButtonIcon>
-                </div>
-              )}
+                </div> */}
             </div>
 
             <ul className={s.menuMobile_bottom_socials}>

@@ -116,6 +116,19 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                     </div>
                   </>
                 )}
+                {project.btcFloorPrice && (
+                  <>
+                    <div className={s.projectCard_info_price_price}>
+                      <Text size={'16'} fontWeight="medium" color="black-40">
+                        {Number(project.mintPrice)
+                          ? `${formatBTCPrice(
+                              Number(project.btcFloorPrice)
+                            )} BTC`
+                          : ''}
+                      </Text>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           )}

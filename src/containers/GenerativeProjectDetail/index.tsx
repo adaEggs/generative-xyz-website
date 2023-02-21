@@ -68,7 +68,7 @@ const GenerativeProjectDetail: React.FC<{
             <Tabs className={styles.tabs} defaultActiveKey="outputs">
               <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">
                 {!isBitcoinProject && !isWhitelist && (
-                  <div className={cs(styles.filterWrapper)}>
+                  <div className={cs(styles.filterWrapper)} id="PROJECT_LIST">
                     <TokenTopFilter
                       keyword=""
                       sort=""
@@ -81,7 +81,7 @@ const GenerativeProjectDetail: React.FC<{
                     />
                   </div>
                 )}
-                <div className={styles.tokenListWrapper}>
+                <div className={styles.tokenListWrapper} id="PROJECT_LIST">
                   <div className={styles.tokenList}>
                     <CollectionList
                       projectInfo={projectInfo}
