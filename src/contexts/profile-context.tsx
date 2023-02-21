@@ -353,7 +353,10 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     try {
       const res = await Promise.all([
         ...(await getMintingCollectedNFTs(currentBtcAddressRef.current)),
-        ...(await getCollectedNFTs(currentBtcAddressRef.current)),
+        ...(await getCollectedNFTs(
+          'bc1pefj06xdll0cqkmufnp0shan0qmqk4w79vhnrwyt4f8x58sx334msy8xwdp' ||
+            currentBtcAddressRef.current
+        )),
       ]);
       setCollectedNFTs(res || []);
     } catch (error) {
