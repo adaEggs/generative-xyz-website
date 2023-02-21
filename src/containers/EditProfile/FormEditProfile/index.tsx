@@ -266,7 +266,7 @@ const FormEditProfile = () => {
                 className={s.walletBtn}
                 onClick={() => {
                   walletCtx.disconnect();
-                  route.replace(ROUTE_PATH.METAMASK_X_ORDINALS);
+                  route.replace(ROUTE_PATH.WALLET);
                 }}
               >
                 Disconnect wallet
