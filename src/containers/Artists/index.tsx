@@ -2,7 +2,7 @@ import Text from '@components/Text';
 import { Col, Row } from 'react-bootstrap';
 import s from './styles.module.scss';
 import { Container } from 'react-bootstrap';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useContext, useState } from 'react';
 import { getArtists } from '@services/profile';
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
@@ -17,10 +17,20 @@ import { TriggerLoad } from '@components/TriggerLoader';
 import { SOCIALS } from '@constants/common';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
+import { getUserSelector } from '@redux/user/selector';
+import { useAppSelector } from '@redux';
+import log from '@utils/logger';
+import { LogLevel } from '@enums/log-level';
+import { WalletContext } from '@contexts/wallet-context';
+
+const LOG_PREFIX = 'ArtistsPage';
 
 const ArtistsPage = () => {
-  const limit = 5;
+  const limit = 12;
   const router = useRouter();
+  const { connect } = useContext(WalletContext);
+  const user = useAppSelector(getUserSelector);
+  const [isConnecting, setIsConnecting] = useState(false);
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
   const [artists, setArtists] = useState<User[]>();
@@ -40,30 +50,53 @@ const ArtistsPage = () => {
     loadArtist();
   }, []);
 
+  const handleConnectWallet = async (): Promise<void> => {
+    try {
+      setIsConnecting(true);
+      await connect();
+      router.push(ROUTE_PATH.CREATE_BTC_PROJECT);
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const onClickToUpload = useCallback(async () => {
+    if (user) {
+      router.push(ROUTE_PATH.CREATE_BTC_PROJECT);
+    } else {
+      handleConnectWallet();
+    }
+  }, [user]);
+
   return (
     <div className={s.artistPage}>
       <Container>
         <Row className={s.artistPage_row}>
           <Col md={'12'} xl={'7'} className={s.leftContainer}>
-            <Heading as={'h2'} fontWeight={'semibold'} color={'black-40-solid'}>
+            <Heading as={'h4'} fontWeight={'semibold'} color={'black-40-solid'}>
               <strong>Be the first.</strong> Join the over 200 artists who are
               putting their own unique creations on the world’s most trusted
-              blockchain: Bitcoin. Decentralized, immutable—an entirely new
-              frontier.
+              blockchain: Bitcoin. Fully on-chain, decentralized, and immutable
+              — an entirely new frontier.
             </Heading>
           </Col>
-          <Col md={'12'} xl={'2'}>
+          <Col md={'12'} xl={'2'} className={s.rightAction}>
             <ButtonIcon
               sizes={'medium'}
               variants={'secondary'}
-              onClick={() => router.push(ROUTE_PATH.CREATE_BTC_PROJECT)}
+              disabled={isConnecting}
+              onClick={onClickToUpload}
               endIcon={
-                <SvgInset
-                  svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
-                />
+                !isConnecting && (
+                  <SvgInset
+                    svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+                  />
+                )
               }
             >
-              REALEASE YOUR ART
+              {isConnecting ? 'Connecting...' : 'Launch your art'}
             </ButtonIcon>
             <Text
               as={'p'}
