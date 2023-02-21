@@ -8,19 +8,13 @@ interface IProps {
 }
 
 const ImagePreview: React.FC<IProps> = (props: IProps): React.ReactElement => {
-  const {
-    url,
-  } = props;
+  const { url } = props;
 
   return (
     <div className={s.imagePreview}>
-      <Image
-        fill
-        src={convertIpfsToHttp(url)}
-        alt="thumbnail"
-      />
+      <Image fill src={convertIpfsToHttp(url)} alt="thumbnail" />
     </div>
-  )
-}
+  );
+};
 
 export default ImagePreview;

@@ -6,7 +6,7 @@ import {
 } from '@constants/config';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import _get from 'lodash/get';
@@ -25,7 +25,6 @@ import { CollectionType } from '@enums/mint-generative';
 import { createBTCProject, getProjectDetail } from '@services/project';
 import { ICreateBTCProjectPayload } from '@interfaces/api/project';
 import { blobToBase64, fileToBase64 } from '@utils/file';
-// import { validateBTCAddressTaproot } from '@utils/validate';
 import { detectUsedLibs } from '@utils/sandbox';
 import { getMempoolFeeRate } from '@services/mempool';
 import { calculateNetworkFee } from '@utils/inscribe';
@@ -43,7 +42,6 @@ type ISetPriceFormValue = {
   maxSupply: string | number;
   mintPrice: string | number;
   royalty: string | number;
-  // creatorWalletAddress: string;
 };
 
 const SetPrice = () => {
@@ -68,6 +66,7 @@ const SetPrice = () => {
     : 0;
   const { uploadFile: uploadChunkFile, uploadProgress } =
     useChunkedFileUploader();
+  const intervalID = useRef<NodeJS.Timer | null>(null);
 
   const fetchNetworkFee = async (): Promise<number> => {
     try {
@@ -140,7 +139,6 @@ const SetPrice = () => {
     setFormValues({
       ...formValues,
       ...{
-        // creatorWalletAddress: values.creatorWalletAddress || '',
         maxSupply: values.maxSupply
           ? parseInt(values.maxSupply.toString(), 10)
           : undefined,
@@ -152,12 +150,6 @@ const SetPrice = () => {
           : undefined,
       },
     });
-
-    // if (!values.creatorWalletAddress.toString()) {
-    //   errors.creatorWalletAddress = 'Creator wallet address is required.';
-    // } else if (!validateBTCAddress(values.creatorWalletAddress)) {
-    //   errors.creatorWalletAddress = 'Invalid BTC wallet address.';
-    // }
 
     if (!values.maxSupply.toString()) {
       errors.maxSupply = 'Number of editions is required.';
@@ -190,7 +182,7 @@ const SetPrice = () => {
   };
 
   const intervalGetProjectStatus = (projectID: string): void => {
-    const intervalID = setInterval(async () => {
+    intervalID.current = setInterval(async () => {
       try {
         const projectRes = await getProjectDetail({
           contractAddress: GENERATIVE_PROJECT_CONTRACT,
@@ -199,7 +191,8 @@ const SetPrice = () => {
         if (projectRes && !projectRes.isHidden && projectRes.status) {
           setMintedProjectID(projectRes.tokenID);
           setIsMinting(false);
-          clearInterval(intervalID);
+          intervalID.current && clearInterval(intervalID.current);
+          intervalID.current = null;
           router.push('/create/mint-success', undefined, {
             shallow: true,
           });
@@ -220,7 +213,6 @@ const SetPrice = () => {
       setIsMinting(true);
 
       const {
-        // creatorWalletAddress,
         description,
         license,
         maxSupply,
@@ -245,7 +237,6 @@ const SetPrice = () => {
       }
 
       const payload: ICreateBTCProjectPayload = {
-        // creatorAddrrBTC: creatorWalletAddress ?? '',
         maxSupply: maxSupply ?? 0,
         limitSupply: 0,
         mintPrice: mintPrice?.toString() ? mintPrice.toString() : '0',
@@ -325,6 +316,12 @@ const SetPrice = () => {
   useEffect(() => {
     getEstimateNetworkFee();
   }, [rawFile, collectionType, imageCollectionFile]);
+
+  useEffect(() => {
+    return () => {
+      intervalID.current && clearInterval(intervalID.current);
+    };
+  }, []);
 
   return (
     <Formik

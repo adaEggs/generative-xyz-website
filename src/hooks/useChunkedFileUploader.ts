@@ -12,8 +12,6 @@ const API_PATH = `${API_BASE_URL}/files/multipart`;
 // 3 - and in the final POST request to complete the upload.
 
 const useChunkedFileUploader = () => {
-  const [currentChunkUploadProgress, setCurrentChunkUploadProgress] =
-    useState(1);
   const [chunkCount, setChunkCount] = useState(0);
   const [counter, setCounter] = useState(0);
   const [error, setError] = useState<unknown | null>(null);
@@ -29,9 +27,7 @@ const useChunkedFileUploader = () => {
   const uploadFile = async (
     uploadId: string,
     file: File,
-    chunkSize: number,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onProgress?: (progress: number) => any
+    chunkSize: number
   ) => {
     const totalChunks = Math.ceil(file.size / chunkSize);
     setChunkCount(totalChunks);
@@ -40,7 +36,6 @@ const useChunkedFileUploader = () => {
     const maxRetries = 3;
 
     for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
-      setCurrentChunkUploadProgress(1);
       const start = chunkIndex * chunkSize;
       const end = Math.min(start + chunkSize, file.size);
       const chunk = file.slice(start, end);
@@ -62,12 +57,6 @@ const useChunkedFileUploader = () => {
           );
 
           const promise = new Promise((resolve, reject) => {
-            xhr.upload.onprogress = event => {
-              const progress = (start + event.loaded) / file.size;
-              setCurrentChunkUploadProgress(progress);
-              onProgress && onProgress(progress);
-            };
-
             xhr.onload = () => {
               if (xhr.status === 200) {
                 resolve(xhr.response);
@@ -108,11 +97,10 @@ const useChunkedFileUploader = () => {
       log('Upload failed', LogLevel.ERROR, LOG_PREFIX);
       setError(error);
       setCounter(0);
-      setCurrentChunkUploadProgress(0);
     }
   };
 
-  return { uploadFile, currentChunkUploadProgress, uploadProgress, error };
+  return { uploadFile, uploadProgress, error };
 };
 
 export default useChunkedFileUploader;

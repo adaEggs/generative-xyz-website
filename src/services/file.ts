@@ -55,7 +55,7 @@ export const initiateMultipartUpload = async (
       IInitiateMultipartUploadResponse
     >(`${API_PATH}/multipart`, {
       group: 'generative-project-upload',
-      ...payload
+      ...payload,
     });
     return res;
   } catch (err: unknown) {
@@ -69,10 +69,10 @@ export const completeMultipartUpload = async (
 ): Promise<ICompleteMultipartUploadResponse> => {
   try {
     const { uploadId } = payload;
-    const res = await post<
-      unknown,
-      ICompleteMultipartUploadResponse
-    >(`${API_PATH}/multipart/${uploadId}`, {});
+    const res = await post<unknown, ICompleteMultipartUploadResponse>(
+      `${API_PATH}/multipart/${uploadId}`,
+      {}
+    );
     return res;
   } catch (err: unknown) {
     log('failed to complete multipart upload file', LogLevel.ERROR, LOG_PREFIX);

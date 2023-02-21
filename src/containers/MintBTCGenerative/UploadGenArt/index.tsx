@@ -61,8 +61,12 @@ const UploadGenArt: React.FC = (): ReactElement => {
       setImageCollectionFile(imageFiles);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
-      const errorMessage =
-        'There is a problem with your file. Please check and try again.';
+      let errorMessage =
+        'There is a problem with your file. Please check and try again. ';
+      if ((err as Error).message === ImageFileError.TOO_MANY_EXT) {
+        errorMessage +=
+          'Your file contain many different file extensions. Please note that one zip file can only include one file extension.';
+      }
       setShowErrorAlert({ open: true, message: errorMessage });
     }
   };
@@ -353,9 +357,14 @@ const UploadGenArt: React.FC = (): ReactElement => {
               fileOrFiles={rawFile ? [rawFile] : null}
               isProcessing={isProcessingFile}
             />
-            <p className={s.supportedFileText}>Supported file extensions are <b>{`${getSupportedFileExtList().join(
-              ', '
-            )}.`}</b></p>
+            <p className={s.supportedFileText}>
+              Supported file extensions are{' '}
+              {`${getSupportedFileExtList().join(', ')}. `}
+              <b>
+                Please note that one zip file can only include one file
+                extension.
+              </b>
+            </p>
           </div>
         </div>
       </>
