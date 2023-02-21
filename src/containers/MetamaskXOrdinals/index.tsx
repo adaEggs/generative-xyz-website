@@ -6,6 +6,7 @@ import s from './MetamaskXOrdinals.module.scss';
 import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import { useRouter } from 'next/router';
 import { Container } from 'react-bootstrap';
+import ButtonIcon from '@components/ButtonIcon';
 
 const MetamaskXOrdinals = () => {
   const { ordAddress: _, onButtonClick } = useBTCSignOrd();
@@ -38,8 +39,8 @@ const MetamaskXOrdinals = () => {
         <Col md={'12'} xl={'5'} className={s.leftContainer}>
           <Text className={s.title}>Metamask x Ordinals</Text>
           <Text className={s.subTitle}>
-            Keep your Ordinal inscriptions secure with the most trusted and
-            easy-to-use crypto wallet.
+            Keep your Ordinal inscriptions secure with MetaMask, the most
+            trusted and easy-to-use crypto wallet.
           </Text>
           {renderDescItem(() => (
             <Text className={s.text}>
@@ -74,11 +75,13 @@ const MetamaskXOrdinals = () => {
               MetaMask is trusted by over 30 million users worldwide.
             </Text>
           ))}
-          <div className={s.buttonContainer} onClick={onConnect}>
-            <div className={s.createButton}>
-              <Text className={s.createText}>CREATE YOUR VAULT</Text>
-            </div>
-          </div>
+          <ButtonIcon
+            variants="secondary"
+            className={s.buttonContainer}
+            onClick={onConnect}
+          >
+            Login via MetaMask
+          </ButtonIcon>
         </Col>
         <Col
           md={'12'}

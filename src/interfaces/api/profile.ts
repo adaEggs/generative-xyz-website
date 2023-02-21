@@ -1,5 +1,6 @@
 import { ProjectSocial } from '@interfaces/project';
 import { User } from '@interfaces/user';
+import { IPagingResponse } from '@interfaces/api/paging';
 
 export type IGetProfileResponse = User;
 
@@ -19,4 +20,8 @@ export interface IUpdateProfileResponse {
   profileSocial: ProjectSocial;
   walletAddress: string;
   walletAddressBtc: string;
+}
+
+export interface IGetArtistsResponse extends IPagingResponse {
+  result: Array<User>;
 }
