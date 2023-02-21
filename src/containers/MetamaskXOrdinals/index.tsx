@@ -37,7 +37,7 @@ const MetamaskXOrdinals = () => {
     <Container>
       <Row className={s.metamaskContainer}>
         <Col md={'12'} xl={'5'} className={s.leftContainer}>
-          <Text className={s.title}>Generative Wallet</Text>
+          <p className={s.title}>Generative Wallet</p>
           <Text className={s.subTitle}>
             Built on top of Metamask, the most trusted crypto wallet, Generative
             Wallet lets you securely keep your Ordinal Inscription.
