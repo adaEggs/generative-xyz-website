@@ -145,32 +145,3 @@
     display: none !important;
   }
 }
-
-.stepFooterWrapper {
-  position: fixed;
-  bottom: 0;
-  z-index: 1;
-  width: 100vw;
-  left: 0;
-  right: 0;
-
-  .stepFooter {
-    padding: 28px 0;
-    background-color: $white-100;
-    border-top: 1px solid $black-10;
-  }
-
-  .container {
-    max-width: 1016px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-
-  .nextBtn {
-    width: 48px;
-    height: 48px;
-    justify-content: center;
-  }
-}

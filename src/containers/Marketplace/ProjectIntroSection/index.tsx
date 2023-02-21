@@ -4,7 +4,7 @@ import Heading from '@components/Heading';
 import Link from '@components/Link';
 import LinkShare from '@components/LinkShare';
 import { Loading } from '@components/Loading';
-import ProgressBar from '@components/ProgressBar';
+import MintingProgressBar from '@components/MintingProgressBar';
 import ProjectDescription from '@components/ProjectDescription';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
@@ -339,7 +339,7 @@ const ProjectIntroSection = ({
         )}
 
         {project?.mintingInfo.index !== project?.maxSupply && (
-          <ProgressBar
+          <MintingProgressBar
             current={project?.mintingInfo?.index}
             total={project?.maxSupply || project?.limit}
             className={s.progressBar}

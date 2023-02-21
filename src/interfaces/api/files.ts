@@ -34,6 +34,7 @@ export interface IMinifyFileResponse {
 
 export interface IInitiateMultipartUploadPayload {
   fileName: string;
+  group?: string;
 }
 
 export interface IInitiateMultipartUploadResponse {
@@ -45,5 +46,5 @@ export interface ICompleteMultipartUploadPayload {
 }
 
 export interface ICompleteMultipartUploadResponse {
-  location: string;
+  fileUrl: string;
 }

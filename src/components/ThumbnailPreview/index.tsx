@@ -2,7 +2,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import Skeleton from '@components/Skeleton';
 import Text from '@components/Text';
 import ClientOnly from '@components/Utils/ClientOnly';
-import { CDN_URL } from '@constants/config';
+import { CDN_URL, GLB_COLLECTION_ID } from '@constants/config';
 import SandboxPreview from '@components/SandboxPreview';
 import { PreviewDisplayMode } from '@enums/mint-generative';
 import { ISandboxRef } from '@interfaces/sandbox';
@@ -14,7 +14,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-
 import s from './styles.module.scss';
 import { ROUTE_PATH } from '@constants/route-path';
 import { useRouter } from 'next/router';
@@ -33,22 +32,16 @@ const ThumbnailPreview = (props: Props) => {
     previewToken = false,
     // isBitcoinProject,
   } = props;
-
   const router = useRouter();
   const { projectID } = router.query;
-
   const animationUrl = data?.animationUrl || data?.animation_url || '';
-
   const thumbnailPreviewUrl = data?.image;
-
   const sandboxRef = useRef<ISandboxRef>(null);
   const playBtnRef = useRef<HTMLButtonElement>(null);
   const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>();
   const [hash, setHash] = useState<string>(generateHash());
   const [isVideo, setIsVideo] = useState(false);
-
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
-
   const rawHtmlFile = base64ToUtf8(
     animationUrl.replace('data:text/html;base64,', '')
   );
@@ -126,7 +119,7 @@ const ThumbnailPreview = (props: Props) => {
         );
       }
       // TODO: show animation for GLB project
-      if (projectID === process.env.NEXT_PUBLIC_GLB_COLLECTION_ID) {
+      if (projectID === GLB_COLLECTION_ID) {
         return (
           <ClientOnly>
             <div className={s.objectPreview}>
