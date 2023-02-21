@@ -30,7 +30,7 @@ import { getMempoolFeeRate } from '@services/mempool';
 import { calculateNetworkFee } from '@utils/inscribe';
 import { getUserSelector } from '@redux/user/selector';
 import { sendAAEvent } from '@services/aa-tracking';
-import { formatBTCPrice } from '@utils/format';
+import { formatBTCPrice, formatEthPrice } from '@utils/format';
 import { useSelector } from 'react-redux';
 import useChunkedFileUploader from '@hooks/useChunkedFileUploader';
 import ProgressBar from '@components/ProgressBar';
@@ -300,6 +300,10 @@ const SetPrice = () => {
         eventName: BTC_PROJECT.LAUNCH_NEW_PROJECT,
         data: {
           ...projectRes,
+          mintPrice: formatBTCPrice(projectRes.mintPrice),
+          mintPriceEth: formatEthPrice(projectRes.mintPriceEth),
+          networkFee: formatBTCPrice(projectRes.networkFee ?? ''),
+          networkFeeEth: formatBTCPrice(projectRes.networkFeeEth ?? ''),
           artistName: user?.displayName ?? '',
         },
       });
