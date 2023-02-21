@@ -100,17 +100,17 @@ export const updateProfile = async (
   }
 };
 
-export const getProfiles = async ({
-  limit = 10,
-  page = 1,
-}: {
-  limit?: number;
-  page?: number;
-}): Promise<IGetProfileResponse> => {
-  try {
-    return await get<IGetProfileResponse>(`${API_PATH}`);
-  } catch (err: unknown) {
-    log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get profile');
-  }
-};
+// export const getProfiles = async ({
+//   _limit = 10,
+//   _page = 1,
+// }: {
+//   limit?: number;
+//   page?: number;
+// }): Promise<IGetProfileResponse> => {
+//   try {
+//     return await get<IGetProfileResponse>(`${API_PATH}`);
+//   } catch (err: unknown) {
+//     log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
+//     throw Error('Failed to get profile');
+//   }
+// };
