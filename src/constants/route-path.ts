@@ -31,7 +31,8 @@ export const ROUTE_PATH = {
   OBJECT_PREVIEW: '/object-preview',
   SATOSHIS_FREE_MINT: '/satoshis/free',
   SATOSHIS_PAGE: '/satoshis',
-  METAMASK_X_ORDINALS: '/metamask-x-ordinals',
+  WALLET: '/wallet',
+  ARTISTS: '/artists',
 };
 
 export const STANDALONE_PAGES = [

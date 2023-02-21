@@ -11,24 +11,25 @@ import React, {
 } from 'react';
 import { Formik } from 'formik';
 import s from './styles.module.scss';
-import QRCodeGenerator from '@components/QRCodeGenerator';
 import { mintBTCGenerative } from '@services/btc';
 import { Loading } from '@components/Loading';
 import _debounce from 'lodash/debounce';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
-import { toast } from 'react-hot-toast';
+import { LoaderIcon, toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { formatEthPrice } from '@utils/format';
-import { generateETHReceiverAddress } from '@services/eth';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { WalletContext } from '@contexts/wallet-context';
 import { sendAAEvent } from '@services/aa-tracking';
 import { BTC_PROJECT } from '@constants/tracking-event-name';
 import _throttle from 'lodash/throttle';
+// import { generateMintReceiverAddress } from '@services/mint';
+import ButtonIcon from '@components/ButtonIcon';
+import { generateETHReceiverAddress } from '@services/eth';
 
 interface IFormValue {
   address: string;
@@ -46,6 +47,7 @@ const MintEthModal: React.FC = () => {
   const { setIsPopupPayment, paymentMethod } = useContext(
     BitcoinProjectContext
   );
+  const [isSending, setIsSending] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [price, setPrice] = useState<string | null>(null);
@@ -72,10 +74,13 @@ const MintEthModal: React.FC = () => {
 
   const handleTransfer = React.useCallback(
     _throttle(async (toAddress: string, val: string): Promise<void> => {
+      setIsSending(true);
       try {
         await transfer(toAddress, val);
       } catch (err: unknown) {
         log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+      } finally {
+        setIsSending(false);
       }
     }, 400),
     []
@@ -87,7 +92,11 @@ const MintEthModal: React.FC = () => {
     try {
       setIsLoading(true);
       setReceiverAddress(null);
-
+      // const { address, price } = await generateMintReceiverAddress({
+      //   walletAddress,
+      //   projectID: projectData.tokenID,
+      //   payType: 'eth',
+      // });
       const { address, price: price } = await generateETHReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
@@ -155,13 +164,11 @@ const MintEthModal: React.FC = () => {
       setIsMinting(false);
     }
   };
-  const priceMemo = useMemo(() => formatEthPrice(price), [price]);
+  // const priceMemo = useMemo(() => formatEthPrice(price), [price]);
 
   useEffect(() => {
     if (!user && receiverAddress) {
       handleConnectWallet();
-    } else if (user && receiverAddress && price) {
-      handleTransfer(receiverAddress, formatEthPrice(price));
     }
   }, [receiverAddress, user, price]);
 
@@ -279,55 +286,72 @@ const MintEthModal: React.FC = () => {
                           </div>
                           {isLoading && (
                             <div className={s.loadingWrapper}>
-                              <Loading isLoaded={false}></Loading>
+                              <Loading isLoaded={false} />
                             </div>
                           )}
-                          {receiverAddress && price && !isLoading && (
-                            <>
-                              <div className={s.formItem}>
-                                {projectData?.networkFeeEth ? (
-                                  <label className={s.label} htmlFor="price">
-                                    Total Price (
-                                    {formatEthPrice(
-                                      projectData?.mintPriceEth || null
-                                    )}{' '}
-                                    NFT PRICE +{' '}
-                                    {formatEthPrice(projectData?.networkFeeEth)}{' '}
-                                    Network Fees)
-                                    <sup className={s.requiredTag}>*</sup>
-                                  </label>
-                                ) : (
-                                  <label className={s.label} htmlFor="price">
-                                    Price <sup className={s.requiredTag}>*</sup>
-                                  </label>
-                                )}
-                                <div className={s.inputContainer}>
-                                  <input
-                                    disabled
-                                    id="price"
-                                    type="number"
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    value={priceMemo}
-                                    className={s.input}
-                                  />
-                                  <div className={s.inputPostfix}>ETH</div>
-                                </div>
-                              </div>
-                              <div className={s.qrCodeWrapper}>
-                                <p className={s.qrTitle}>
-                                  Send ETH to this deposit address
-                                </p>
-                                <QRCodeGenerator
-                                  className={s.qrCodeGenerator}
-                                  size={128}
-                                  value={receiverAddress}
-                                />
-                                <p className={s.btcAddress}>
-                                  {receiverAddress}
-                                </p>
-                              </div>
-                            </>
+                          {/*{receiverAddress && price && !isLoading && (*/}
+                          {/*  <>*/}
+                          {/*    <div className={s.formItem}>*/}
+                          {/*      {projectData?.networkFeeEth ? (*/}
+                          {/*        <label className={s.label} htmlFor="price">*/}
+                          {/*          Total Price (*/}
+                          {/*          {formatEthPrice(*/}
+                          {/*            projectData?.mintPriceEth || null*/}
+                          {/*          )}{' '}*/}
+                          {/*          NFT PRICE +{' '}*/}
+                          {/*          {formatEthPrice(projectData?.networkFeeEth)}{' '}*/}
+                          {/*          Network Fees)*/}
+                          {/*          <sup className={s.requiredTag}>*</sup>*/}
+                          {/*        </label>*/}
+                          {/*      ) : (*/}
+                          {/*        <label className={s.label} htmlFor="price">*/}
+                          {/*          Price <sup className={s.requiredTag}>*</sup>*/}
+                          {/*        </label>*/}
+                          {/*      )}*/}
+                          {/*      <div className={s.inputContainer}>*/}
+                          {/*        <input*/}
+                          {/*          disabled*/}
+                          {/*          id="price"*/}
+                          {/*          type="number"*/}
+                          {/*          onChange={handleChange}*/}
+                          {/*          onBlur={handleBlur}*/}
+                          {/*          value={priceMemo}*/}
+                          {/*          className={s.input}*/}
+                          {/*        />*/}
+                          {/*        <div className={s.inputPostfix}>ETH</div>*/}
+                          {/*      </div>*/}
+                          {/*    </div>*/}
+                          {/*    <div className={s.qrCodeWrapper}>*/}
+                          {/*      <p className={s.qrTitle}>*/}
+                          {/*        Send ETH to this deposit address*/}
+                          {/*      </p>*/}
+                          {/*      <QRCodeGenerator*/}
+                          {/*        className={s.qrCodeGenerator}*/}
+                          {/*        size={128}*/}
+                          {/*        value={receiverAddress}*/}
+                          {/*      />*/}
+                          {/*      <p className={s.btcAddress}>*/}
+                          {/*        {receiverAddress}*/}
+                          {/*      </p>*/}
+                          {/*    </div>*/}
+                          {/*  </>*/}
+                          {/*)}*/}
+                          {!!receiverAddress && !!price && !isLoading && (
+                            <ButtonIcon
+                              sizes="large"
+                              type="button"
+                              className={s.submitBtn}
+                              startIcon={isSending ? <LoaderIcon /> : null}
+                              onClick={() => {
+                                if (!receiverAddress || isSending) return;
+                                handleTransfer(
+                                  receiverAddress,
+                                  formatEthPrice(price)
+                                );
+                              }}
+                            >
+                              Transfer now
+                            </ButtonIcon>
                           )}
                         </form>
                       )}

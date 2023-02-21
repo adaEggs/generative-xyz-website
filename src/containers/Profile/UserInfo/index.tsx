@@ -10,6 +10,7 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { ellipsisCenter } from '@utils/format';
 import copy from 'copy-to-clipboard';
+import cn from 'classnames';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';

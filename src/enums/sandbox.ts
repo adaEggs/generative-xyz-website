@@ -12,4 +12,5 @@ export enum SandboxFileError {
 export enum ImageFileError {
   TOO_LARGE = 'TOO_LARGE',
   INVALID_EXTENSION = 'INVALID_EXTENSION',
+  TOO_MANY_EXT = 'TOO_MANY_EXT',
 }

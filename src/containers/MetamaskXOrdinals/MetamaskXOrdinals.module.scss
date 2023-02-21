@@ -5,17 +5,11 @@
   padding-bottom: rem(100px);
   min-height: 100vh;
 
-  @include mobile {
-    padding-left: rem(20px);
-    padding-right: rem(20px);
-    padding-bottom: rem(40px);
-  }
-
   .leftContainer {
     .title {
       font-weight: 500;
       font-size: rem(24px);
-      line-height: rem(34px);
+      line-height: 140%;
       color: $secondary-purple-b;
       margin-bottom: rem(24px);
     }
@@ -24,8 +18,13 @@
       font-weight: 600;
       font-size: rem(48px);
       color: $white-100;
-      line-height: rem(58px);
+      line-height: 140%;
       margin-bottom: rem(24px);
+
+      @include mobile {
+        font-size: rem(28px);
+        text-align: center;
+      }
     }
 
     .descItem {
@@ -42,8 +41,12 @@
       .text {
         font-weight: 400;
         font-size: rem(20px);
-        line-height: rem(30px);
+        line-height: 140%;
         color: #b6b6b6;
+
+        @include mobile {
+          font-size: rem(16px);
+        }
       }
 
       .link {
@@ -51,11 +54,32 @@
       }
     }
 
+    .login {
+      margin-top: rem(64px);
+      text-transform: uppercase;
+      padding: 16px 24px;
+
+      @include mobile {
+        margin-top: rem(32px);
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    .icMetamask {
+      width: 26px;
+      height: 26px;
+    }
+
     .buttonContainer {
       margin-top: rem(64px);
       display: flex;
       flex-direction: row;
       align-items: center;
+      text-transform: uppercase;
+      padding: 16px 24px;
 
       .learnMoreButton {
         margin-left: rem(40px);

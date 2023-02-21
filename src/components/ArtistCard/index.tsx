@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Text from '@components/Text';
 import { formatAddress } from '@utils/format';
 import { useMemo } from 'react';
+import { CDN_URL } from '@constants/config';
 
 interface IPros {
   profile: User;
@@ -13,15 +14,17 @@ interface IPros {
 }
 
 export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
-  // console.log('___profile', profile);
-
   const arts = useMemo((): string => {
     let artNames = '';
-    profile?.projects?.forEach(project => {
-      artNames += `${project.name}, `;
+    profile?.projects?.forEach((project, key) => {
+      if (profile.projects?.length && key < profile.projects?.length - 1) {
+        artNames += `${project.name}, `;
+      } else {
+        artNames += `${project.name}`;
+      }
     });
 
-    return artNames;
+    return artNames.trim();
   }, [profile]);
   return (
     <Link
@@ -32,23 +35,31 @@ export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
         <div className={`${s.artistCard_thumb}`}>
           <div className={s.artistCard_thumb_inner}>
             <Image
-              src={profile.avatar}
+              src={
+                profile.avatar
+                  ? profile.avatar
+                  : `${CDN_URL}/images/default-avatar.jpeg`
+              }
               alt={'avatar'}
               width={'432'}
               height={'432'}
             />
           </div>
         </div>
-        <div className={s.artistCard_inner_info}>
-          <Text size="11" fontWeight="medium">
-            {profile.displayName || formatAddress(profile.walletAddress)}
+        <div className={s.artistCard_info}>
+          <Text size="20" fontWeight="medium" color="white">
+            {profile.displayName ||
+              'Pantheon' ||
+              formatAddress(profile.walletAddress)}
           </Text>
-
-          <div className={s.projectCard_info_title}>
-            <Text size="14" fontWeight="semibold">
-              {arts}
-            </Text>
-          </div>
+          <Text
+            className={s.artistCard_info_arts}
+            size="20"
+            fontWeight="medium"
+            color="black-40-solid"
+          >
+            {arts}
+          </Text>
         </div>
       </div>
     </Link>

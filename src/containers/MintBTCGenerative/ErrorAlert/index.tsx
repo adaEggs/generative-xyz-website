@@ -14,7 +14,7 @@ const ErrorAlert: React.FC = (): React.ReactElement => {
     if (showErrorAlert) {
       timeOutId = setTimeout(() => {
         setShowErrorAlert({ open: false, message: null });
-      }, 5000);
+      }, 10000);
     }
     return () => {
       timeOutId && clearTimeout(timeOutId);

@@ -2,30 +2,18 @@
   text-decoration: none;
 
   &_inner {
-    background: #fff;
     min-height: 100%;
-    transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
-    border: 1px solid transparent;
+    transition: background-color 0.4s $easeOutCubic;
+    background: $primary-brand;
 
     &:hover {
-      box-shadow: 0 2px 10px rgb(0 0 0 / 15%);
-      border-color: rgba(#1c1c1c, 0.3);
+      background: #333;
     }
   }
 
   &_thumb {
     position: relative;
     width: 100%;
-    background: #f7f9fb;
-    padding: rem(32px);
-
-    @include min-pc-superWide {
-      padding: 32px;
-    }
-
-    @include mobile {
-      padding: rem(8px);
-    }
 
     &_inner {
       padding-bottom: 100%;
@@ -35,16 +23,6 @@
       &_sk {
         height: 100%;
         position: absolute;
-      }
-    }
-
-    &.isDefault {
-      img {
-        width: rem(200px);
-        height: rem(200px);
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
       }
     }
 
@@ -64,65 +42,23 @@
   }
 
   &_info {
-    padding: {
-      top: rem(24px);
-      left: rem(16px);
-      right: rem(16px);
-      bottom: rem(16px);
-    };
+    padding: rem(24px) rem(16px);
 
     @include mobile {
-      top: rem(12px);
-      left: rem(6px);
-      right: rem(6px);
-      bottom: rem(6px);
+      padding: rem(12px) rem(8px);
     }
 
-    &.desktop {
-      .ArtistCard_info_title {
-        display: block;
-        margin-bottom: rem(12px);
-        font-style: italic;
-
-        span {
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          display: block;
-          overflow: hidden;
-        }
-      }
-
-      :global(.useInfo) {
-        margin-bottom: rem(10px);
-      }
-    }
-
-    &.mobile {
-      padding-left: rem(10px);
-      padding-right: rem(10px);
-      padding-bottom: rem(12px);
-      padding-top: rem(16px);
-
-      .ArtistCard_progress {
-        margin-top: rem(5);
-      }
+    &_arts {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-style: italic;
     }
   }
 
   &:hover {
     cursor: pointer;
-  }
-
-  &_creator {
-    display: flex;
-    align-items: center;
-    gap: rem(6);
-  }
-
-  &_avatar {
-    width: rem(34);
-    height: rem(34);
-    border-radius: 50%;
-    overflow: hidden;
   }
 }

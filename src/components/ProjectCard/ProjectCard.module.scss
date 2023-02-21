@@ -75,10 +75,7 @@
     };
 
     @include mobile {
-      top: rem(12px);
-      left: rem(6px);
-      right: rem(6px);
-      bottom: rem(6px);
+      padding: rem(12px) rem(8px);
     }
 
     &.desktop {
