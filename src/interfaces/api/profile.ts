@@ -52,6 +52,7 @@ export interface IGetMintingCollectedNFTResp {
   status: string;
   projectName: string;
   projectID: string;
+  projectImage: string;
   fileURI: string;
 }
 

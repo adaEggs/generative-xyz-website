@@ -184,7 +184,7 @@ export const getMintingCollectedNFTs = async (
       tasks = res.map((item: IGetMintingCollectedNFTResp) => {
         const randomStr = Date.now().toString();
         return {
-          image: item.fileURI,
+          image: item.fileURI || item.projectImage,
           name: '',
           projectName: item.projectName,
           projectID: item.projectID,
