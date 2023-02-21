@@ -53,6 +53,7 @@ export type Project = {
   networkFeeEth?: string;
   totalImages?: number;
   categories?: string[];
+  btcFloorPrice: number; // satoshi number
 };
 
 export type BTCProject = Project & {

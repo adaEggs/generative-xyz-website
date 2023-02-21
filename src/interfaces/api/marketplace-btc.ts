@@ -77,3 +77,11 @@ export interface IInscriptionDetailResp {
   inscription_id: string;
   number: number;
 }
+
+export interface ICollectionFloorPricePayload {
+  projectID: string;
+}
+
+export interface ICollectionFloorPriceResp {
+  floor_price: number;
+}

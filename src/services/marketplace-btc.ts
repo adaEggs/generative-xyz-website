@@ -15,6 +15,8 @@ import {
   IPostMarketplaceBtcListNFTResponse,
   ISubmitBTCAddressPayload,
   ISubmitBTCAddressResponse,
+  ICollectionFloorPricePayload,
+  ICollectionFloorPriceResp,
 } from '@interfaces/api/marketplace-btc';
 
 const LOG_PREFIX = 'MarketplaceBtcService';
@@ -146,5 +148,18 @@ export const getInscriptionDetail = async (
   } catch (err: unknown) {
     log('failed to get ordinal detail', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get ordinal detail');
+  }
+};
+
+export const getCollectionFloorPrice = async (
+  params: ICollectionFloorPricePayload
+): Promise<ICollectionFloorPriceResp> => {
+  try {
+    return get<ICollectionFloorPriceResp>(
+      `${API_PATH}/collection-stats?project_id=${params.projectID}`
+    );
+  } catch (err: unknown) {
+    log('failed to get floor price collection', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get floor price collection');
   }
 };

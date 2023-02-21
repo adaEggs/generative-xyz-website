@@ -357,6 +357,16 @@ const ProjectIntroSection = ({
                 </Heading>
               </div>
             )}
+            {!!project?.btcFloorPrice && (
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  Floor Price
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {Number(project?.btcFloorPrice) ? `${priceMemo} BTC` : 'Free'}
+                </Heading>
+              </div>
+            )}
             {isRoyalty && (
               <div className={s.stats_item}>
                 <Text size="12" fontWeight="medium">
@@ -392,7 +402,28 @@ const ProjectIntroSection = ({
                 </Text>
               </ButtonIcon>
             )}
-
+            {isBitcoinProject && isAvailable && project?.btcFloorPrice && (
+              <>
+                <ButtonIcon
+                  sizes="large"
+                  className={`${s.mint_btn}`}
+                  onClick={() => {
+                    const element = document.getElementById('PROJECT_LIST');
+                    if (!element) return;
+                    element.scrollIntoView({
+                      behavior: 'smooth',
+                    });
+                  }}
+                >
+                  <Text as="span" size="14" fontWeight="medium">
+                    <>
+                      <span>{`Buy now • `}</span>
+                      <span>{formatBTCPrice(project.btcFloorPrice)} BTC</span>
+                    </>
+                  </Text>
+                </ButtonIcon>
+              </>
+            )}
             {isBitcoinProject && isAvailable && isLimitMinted && (
               <ul>
                 <li>
