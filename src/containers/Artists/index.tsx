@@ -15,9 +15,12 @@ import { ArtistCard } from '@components/ArtistCard';
 import ArtistCardSkeleton from '@components/ArtistCard/skeleton';
 import { TriggerLoad } from '@components/TriggerLoader';
 import { SOCIALS } from '@constants/common';
+import { useRouter } from 'next/router';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const ArtistsPage = () => {
   const limit = 5;
+  const router = useRouter();
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
   const [artists, setArtists] = useState<User[]>();
@@ -26,7 +29,6 @@ const ArtistsPage = () => {
   const loadArtist = useCallback(async () => {
     setIsLoading(false);
     const tmp = await getArtists({ limit, page });
-
     const merArr = [...(artists || []), ...tmp.result];
     setPage(page + 1);
     setArtists(merArr);
@@ -54,6 +56,7 @@ const ArtistsPage = () => {
             <ButtonIcon
               sizes={'medium'}
               variants={'secondary'}
+              onClick={() => router.push(ROUTE_PATH.CREATE_BTC_PROJECT)}
               endIcon={
                 <SvgInset
                   svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
@@ -99,7 +102,7 @@ const ArtistsPage = () => {
         )}
 
         <TriggerLoad
-          len={page * limit}
+          len={(page - 1) * limit}
           total={total}
           isLoaded={isLoading}
           onEnter={loadArtist}
