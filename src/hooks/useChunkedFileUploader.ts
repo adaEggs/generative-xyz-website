@@ -1,8 +1,10 @@
+import { API_BASE_URL } from '@constants/config';
 import { LogLevel } from '@enums/log-level';
 import log from '@utils/logger';
 import { useMemo, useState } from 'react';
 
 const LOG_PREFIX = 'useChunkedFileUploader';
+const API_PATH = `${API_BASE_URL}/files/multipart`;
 
 // Upload chunked file
 // 1 - Initiates a API multipart upload with a POST request.
@@ -13,21 +15,30 @@ const useChunkedFileUploader = () => {
   const [currentChunkUploadProgress, setCurrentChunkUploadProgress] =
     useState(1);
   const [chunkCount, setChunkCount] = useState(0);
-  const [counter, setCounter] = useState(1);
+  const [counter, setCounter] = useState(0);
   const [error, setError] = useState<unknown | null>(null);
 
+  console.log('____counter', counter)
+  console.log('____chunkCount', chunkCount)
+
   const uploadProgress = useMemo(() => {
+    if (!chunkCount) return 0;
+    if (counter > chunkCount) {
+      return 100;
+    }
     return Math.round((counter / chunkCount) * 100);
   }, [chunkCount, counter]);
 
   const uploadFile = async (
+    uploadId: string,
     file: File,
     chunkSize: number,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onProgress: (progress: number) => any
+    onProgress?: (progress: number) => any
   ) => {
     const totalChunks = Math.ceil(file.size / chunkSize);
     setChunkCount(totalChunks);
+    setCounter(0);
     const uploadPromises = [];
     const maxRetries = 3;
 
@@ -44,9 +55,10 @@ const useChunkedFileUploader = () => {
 
       while (retries <= maxRetries && !success) {
         try {
+          const partNumber = chunkIndex + 1;
           const xhr = new XMLHttpRequest();
           xhr.overrideMimeType('application/octet-stream');
-          xhr.open('POST', '/upload', true);
+          xhr.open('PUT', `${API_PATH}/${uploadId}?partNumber=${partNumber}`, true);
 
           const promise = new Promise((resolve, reject) => {
             xhr.upload.onprogress = event => {
@@ -94,6 +106,8 @@ const useChunkedFileUploader = () => {
     } catch (error: unknown) {
       log('Upload failed', LogLevel.ERROR, LOG_PREFIX);
       setError(error);
+      setCounter(0);
+      setCurrentChunkUploadProgress(0);
     }
   };
 

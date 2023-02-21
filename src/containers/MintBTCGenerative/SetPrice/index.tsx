@@ -1,5 +1,5 @@
 import s from './styles.module.scss';
-import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
+import { CDN_URL, CHUNK_SIZE, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
@@ -10,12 +10,11 @@ import Text from '@components/Text';
 import ButtonIcon from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
-import { uploadFile } from '@services/file';
+import { completeMultipartUpload, initiateMultipartUpload, uploadFile } from '@services/file';
 import { CollectionType } from '@enums/mint-generative';
 import {
   createBTCProject,
   getProjectDetail,
-  uploadBTCProjectFiles,
 } from '@services/project';
 import { ICreateBTCProjectPayload } from '@interfaces/api/project';
 import { blobToBase64, fileToBase64 } from '@utils/file';
@@ -30,6 +29,7 @@ import { sendAAEvent } from '@services/aa-tracking';
 import { BTC_PROJECT } from '@constants/tracking-event-name';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
+import useChunkedFileUploader from '@hooks/useChunkedFileUploader';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -60,6 +60,9 @@ const SetPrice = () => {
   const numberOfFile = imageCollectionFile
     ? Object.keys(imageCollectionFile).length
     : 0;
+  const { uploadFile: uploadChunkFile, uploadProgress, currentChunkUploadProgress } = useChunkedFileUploader();
+  console.log('____________uploadProgress', uploadProgress);
+  console.log('____________currentChunkUploadProgress', currentChunkUploadProgress);
 
   const fetchNetworkFee = async (): Promise<number> => {
     try {
@@ -80,7 +83,7 @@ const SetPrice = () => {
       }
 
       if (networkFeeRate < 0) {
-        networkFeeRate = InscribeMintFeeRate.Fastest;
+        networkFeeRate = InscribeMintFeeRate.FASTEST;
       }
 
       if (collectionType === CollectionType.GENERATIVE) {
@@ -97,6 +100,7 @@ const SetPrice = () => {
         );
         setNetworkFee(sats);
       }
+
       if (collectionType === CollectionType.COLLECTION) {
         if (!imageCollectionFile) {
           setNetworkFee(0);
@@ -146,8 +150,6 @@ const SetPrice = () => {
 
     if (!values.creatorWalletAddress.toString()) {
       errors.creatorWalletAddress = 'Creator wallet address is required.';
-    } else if (!validateBTCAddressTaproot(values.creatorWalletAddress)) {
-      errors.creatorWalletAddress = 'Invalid BTC wallet address.';
     }
 
     if (!values.maxSupply.toString()) {
@@ -232,7 +234,7 @@ const SetPrice = () => {
       let thumbnailUrl = '';
       if (thumbnailFile) {
         const uploadRes = await uploadFile({ file: thumbnailFile });
-        thumbnailUrl = uploadRes.url;
+        thumbnailUrl = uploadRes.url
       }
 
       const payload: ICreateBTCProjectPayload = {
@@ -265,11 +267,22 @@ const SetPrice = () => {
 
       if (collectionType === CollectionType.COLLECTION) {
         try {
-          const uploadRes = await uploadBTCProjectFiles({
-            file: rawFile,
-            projectName: payload.name,
-          });
-          payload.zipLink = uploadRes.url;
+          const initUploadRes = await initiateMultipartUpload({
+            fileName: rawFile.name,
+          })
+          console.log('__________initRes', initUploadRes);
+
+          await uploadChunkFile(
+            initUploadRes.uploadId,
+            rawFile,
+            CHUNK_SIZE,
+          )
+
+          const completeUploadRes = await completeMultipartUpload({
+            uploadId: initUploadRes.uploadId,
+          })
+          console.log('__________initRes', completeUploadRes);
+          payload.zipLink = completeUploadRes.fileUrl;
         } catch (err: unknown) {
           log(err as Error, LogLevel.ERROR, LOG_PREFIX);
           setShowErrorAlert({ open: true, message: 'Upload file error.' });
@@ -452,15 +465,6 @@ const SetPrice = () => {
                 {errors.royalty && touched.royalty && (
                   <p className={s.error}>{errors.royalty}</p>
                 )}
-                {/* <Text
-                  as={'p'}
-                  size={'14'}
-                  color={'black-60'}
-                  className={s.inputDesc}
-                >
-                  The payment artists receive every time a secondary sale of
-                  their artworks occurs. This number ranges from 0% to 25%.
-                </Text> */}
               </div>
             </div>
           </div>

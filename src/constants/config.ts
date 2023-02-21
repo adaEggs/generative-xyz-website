@@ -11,7 +11,7 @@ export const NETWORK_CHAIN_ID: number = parseInt(
 export const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL!;
 export const APP_TOKEN_SYMBOL = 'GEN';
 export const SERVICE_FEE = 2.5 / 100;
-export const CHUNK_SIZE = 50; // MB
+export const CHUNK_SIZE = 10 * 1024 * 1024; // MB
 
 // Discount
 export const PRINTS_REQUIRED_TO_DISCOUNT = 5000;
@@ -51,5 +51,7 @@ export const RAPID_CLIENT_TOKEN = process.env.NEXT_PUBLIC_RAPID_CLIENT_TOKEN!;
 // Ordinals
 export const HOST_ORDINALS_EXPLORER =
   'https://ordinals-explorer-v5-dev.generative.xyz';
+
+export const GLB_COLLECTION_ID = process.env.NEXT_PUBLIC_GLB_COLLECTION_ID!;
 
 /* eslint-enable @typescript-eslint/no-non-null-assertion */

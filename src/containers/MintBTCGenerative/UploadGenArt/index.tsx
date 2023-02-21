@@ -334,7 +334,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
             </div>
           </div>
           <div className={s.dropZoneWrapper}>
-            <div className={s.loadingOverlay}></div>
             <DropFile
               labelText={
                 collectionType === CollectionType.GENERATIVE
@@ -354,6 +353,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
               fileOrFiles={rawFile ? [rawFile] : null}
               isProcessing={isProcessingFile}
             />
+            <p className={s.supportedFileText}>Supported file extensions are <b>{`${getSupportedFileExtList().join(
+              ', '
+            )}.`}</b></p>
           </div>
         </div>
       </>

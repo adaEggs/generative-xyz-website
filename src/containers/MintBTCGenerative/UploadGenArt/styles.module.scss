@@ -49,6 +49,7 @@
 
   .dropZoneContainer {
     cursor: pointer;
+    margin-bottom: rem(8px);
   }
 
   .disclaimerWrapper {
@@ -252,7 +253,7 @@
         border-radius: 2px;
 
         &::after {
-          content: "";
+          content: '';
           position: absolute;
           display: none;
         }
@@ -289,5 +290,13 @@
     line-height: rem(24px);
     color: $secondary-red;
     margin-top: rem(8px);
+  }
+
+  .supportedFileText {
+    font-weight: 400;
+    font-size: rem(14px);
+    line-height: rem(24px);
+    color: $black-100;
+    text-align: left;
   }
 }

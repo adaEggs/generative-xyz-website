@@ -1,11 +1,19 @@
-import React from 'react';
+import { Token } from '@interfaces/token';
+import React, { useMemo } from 'react';
 
 interface IProps {
-  thumbnailPreviewUrl: string;
+  data: Token | null;
 }
 
-const CollectionPreview: React.FC<IProps> = (): React.ReactElement => {
-  return <></>;
+const CollectionPreview: React.FC<IProps> = (props: IProps): React.ReactElement => {
+  const { data } = props;
+  const thumbnailPreviewUrl = data?.image;
+
+  const renderPreviewByExt = useMemo(() => {
+    return <></>;
+  }, [])
+
+  return renderPreviewByExt;
 };
 
 export default CollectionPreview;
