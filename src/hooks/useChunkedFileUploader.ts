@@ -94,9 +94,10 @@ const useChunkedFileUploader = () => {
     try {
       await Promise.all(uploadPromises);
     } catch (error: unknown) {
-      log('Upload failed', LogLevel.ERROR, LOG_PREFIX);
       setError(error);
       setCounter(0);
+      log('Upload chunk file error', LogLevel.ERROR, LOG_PREFIX);
+      throw Error('Upload chunk file error');
     }
   };
 
