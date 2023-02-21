@@ -1,11 +1,11 @@
 import { NextPage } from 'next';
 import MarketplaceLayout from '@layouts/Marketplace';
-import Page404 from '@containers/404';
+import PageDeep from '@containers/Deep';
 
 const ErrorPage: NextPage = () => {
   return (
     <MarketplaceLayout isHideFaucet={true}>
-      <Page404 />
+      <PageDeep />
     </MarketplaceLayout>
   );
 };
