@@ -15,9 +15,12 @@ import { ArtistCard } from '@components/ArtistCard';
 import ArtistCardSkeleton from '@components/ArtistCard/skeleton';
 import { TriggerLoad } from '@components/TriggerLoader';
 import { SOCIALS } from '@constants/common';
+import { useRouter } from 'next/router';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const ArtistsPage = () => {
   const limit = 5;
+  const router = useRouter();
   const [page, setPage] = useState<number>(1);
   const [total, setTotal] = useState<number>(0);
   const [artists, setArtists] = useState<User[]>();
@@ -54,6 +57,7 @@ const ArtistsPage = () => {
             <ButtonIcon
               sizes={'medium'}
               variants={'secondary'}
+              onClick={() => router.push(ROUTE_PATH.CREATE_BTC_PROJECT)}
               endIcon={
                 <SvgInset
                   svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
