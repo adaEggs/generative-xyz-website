@@ -26,7 +26,10 @@ const Profile: React.FC = (): React.ReactElement => {
       <Container>
         <ClientOnly>
           <div className={s.wrapTabs}>
-            <Tabs className={s.tabs} defaultActiveKey="collectedTab">
+            <Tabs
+              className={s.tabs}
+              defaultActiveKey={!walletAddress ? 'collectedTab' : 'createdTab'}
+            >
               {!walletAddress && (
                 <Tab
                   tabClassName={s.tab}
