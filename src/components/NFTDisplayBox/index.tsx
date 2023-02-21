@@ -241,4 +241,4 @@ const NFTDisplayBox = ({
   );
 };
 
-export default NFTDisplayBox;
+export default React.memo(NFTDisplayBox);
