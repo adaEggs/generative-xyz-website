@@ -11,9 +11,9 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-1',
-    name: 'Create',
-    route: ROUTE_PATH.CREATE_BTC_PROJECT,
-    activePath: 'create',
+    name: 'Artists',
+    route: ROUTE_PATH.ARTISTS,
+    activePath: 'artists',
   },
   {
     id: 'menu-4',

@@ -1,5 +1,5 @@
 export enum InscribeMintFeeRate {
-  Economy = 15,
-  Faster = 20,
-  Fastest = 25,
+  ECONOMY = 15,
+  FASTER = 20,
+  FASTEST = 25,
 }

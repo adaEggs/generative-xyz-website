@@ -32,6 +32,7 @@ export const ROUTE_PATH = {
   SATOSHIS_FREE_MINT: '/satoshis/free',
   SATOSHIS_PAGE: '/satoshis',
   METAMASK_X_ORDINALS: '/metamask-x-ordinals',
+  ARTISTS: '/artists',
 };
 
 export const STANDALONE_PAGES = [
