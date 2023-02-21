@@ -50,6 +50,7 @@ import s from './styles.module.scss';
 import { PaymentMethod } from '@enums/mint-generative';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 import { SocialVerify } from '@components/SocialVerify';
+import { SOCIALS } from '@constants/common';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -309,28 +310,22 @@ const ProjectIntroSection = ({
                     svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
                   />
                   <Text size={'18'} color="black-60">
-                    {isTwVerified ? (
-                      <Link
-                        href={
-                          project?.creatorProfile?.profileSocial?.twitter || ''
-                        }
-                        target="_blank"
-                      >
-                        @
-                        {project?.creatorProfile?.profileSocial?.twitter
-                          .split('/')
-                          .pop()}
-                      </Link>
-                    ) : (
-                      `@${project?.creatorProfile?.profileSocial?.twitter
+                    <Link
+                      href={
+                        project?.creatorProfile?.profileSocial?.twitter || ''
+                      }
+                      target="_blank"
+                    >
+                      @
+                      {project?.creatorProfile?.profileSocial?.twitter
                         .split('/')
-                        .pop()}`
-                    )}
+                        .pop()}
+                    </Link>
                   </Text>
                 </div>
                 {!isTwVerified && (
                   <>
-                    <SocialVerify social="Twitter" />
+                    <SocialVerify social="Twitter" link={SOCIALS.twitter} />
                   </>
                 )}
               </div>

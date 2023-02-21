@@ -13,15 +13,17 @@ interface IPros {
 }
 
 export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
-  // console.log('___profile', profile);
-
   const arts = useMemo((): string => {
     let artNames = '';
-    profile?.projects?.forEach(project => {
-      artNames += `${project.name}, `;
+    profile?.projects?.forEach((project, key) => {
+      if (profile.projects?.length && key < profile.projects?.length - 1) {
+        artNames += `${project.name}, `;
+      } else {
+        artNames += `${project.name}`;
+      }
     });
 
-    return artNames;
+    return artNames.trim();
   }, [profile]);
   return (
     <Link
@@ -39,16 +41,20 @@ export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
             />
           </div>
         </div>
-        <div className={s.artistCard_inner_info}>
-          <Text size="11" fontWeight="medium">
-            {profile.displayName || formatAddress(profile.walletAddress)}
+        <div className={s.artistCard_info}>
+          <Text size="20" fontWeight="medium" color="white">
+            {profile.displayName ||
+              'Pantheon' ||
+              formatAddress(profile.walletAddress)}
           </Text>
-
-          <div className={s.projectCard_info_title}>
-            <Text size="14" fontWeight="semibold">
-              {arts}
-            </Text>
-          </div>
+          <Text
+            className={s.artistCard_info_arts}
+            size="20"
+            fontWeight="medium"
+            color="black-40-solid"
+          >
+            {arts}
+          </Text>
         </div>
       </div>
     </Link>
