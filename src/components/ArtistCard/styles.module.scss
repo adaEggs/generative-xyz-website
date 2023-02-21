@@ -1,0 +1,63 @@
+.artistCard {
+  text-decoration: none;
+
+  &_inner {
+    min-height: 100%;
+    transition: background-color 0.4s $easeOutCubic;
+    background: $primary-brand;
+
+    &:hover {
+      background: #333;
+    }
+  }
+
+  &_thumb {
+    position: relative;
+    width: 100%;
+
+    &_inner {
+      padding-bottom: 100%;
+      position: relative;
+      width: 100%;
+
+      &_sk {
+        height: 100%;
+        position: absolute;
+      }
+    }
+
+    img {
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    :global(.label_text) {
+      position: absolute;
+      bottom: rem(16px);
+    }
+  }
+
+  &_info {
+    padding: rem(24px) rem(16px);
+
+    @include mobile {
+      padding: rem(12px) rem(8px);
+    }
+
+    &_arts {
+      display: block;
+      width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+}

@@ -47,6 +47,7 @@ export interface IGetProjectListParams extends IPagingParams {
   contractAddress: string;
   category?: string[];
   sort?: string;
+  name?: string;
 }
 
 export interface IGetProjectListResponse extends IPagingResponse {
