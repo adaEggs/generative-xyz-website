@@ -8,6 +8,7 @@ export type ProjectSocial = {
   medium?: string;
   etherScan?: string;
   instagram: string;
+  twitterVerified?: boolean;
 };
 
 export type Project = {

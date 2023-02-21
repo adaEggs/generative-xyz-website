@@ -11,4 +11,5 @@ export type User = {
   bgCover?: string;
   walletAddressBtc?: string;
   walletAddressBtcTaproot?: string;
+  projects?: { name: string; projectId: string }[];
 };
