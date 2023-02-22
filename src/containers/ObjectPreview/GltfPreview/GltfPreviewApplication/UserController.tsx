@@ -30,6 +30,8 @@ class UserController {
 
   container = new THREE.Group();
 
+  mousedown = false;
+
   constructor(_app: GltfPreviewApplication) {
     this.application = _app;
 
@@ -95,14 +97,17 @@ class UserController {
       }
     });
 
-    document.body.addEventListener('mousedown', () => {
-      document.body.requestPointerLock();
+    window.addEventListener('pointerdown', e => {
+      this.mousedown = true;
     });
 
-    document.body.addEventListener('mousemove', event => {
-      if (document.pointerLockElement === document.body) {
-        const { movementX, movementY } = event;
+    window.addEventListener('pointerup', e => {
+      this.mousedown = false;
+    });
 
+    window.addEventListener('pointermove', e => {
+      if (this.mousedown) {
+        const { movementX, movementY } = e;
         if (this.isFPS) {
           this.application.camera.rotation.y -= movementX / 500;
           this.application.camera.rotation.x -= movementY / 500;
@@ -124,10 +129,44 @@ class UserController {
               .clone()
               .add(new THREE.Vector3().setFromSpherical(offset))
           );
-          this.application.camera.lookAt(this.character.position);
+          this.application.camera.lookAt(this.cameraOrigin);
         }
       }
     });
+
+    // document.body.addEventListener('mousedown', () => {
+    //   document.body.requestPointerLock();
+    // });
+
+    // document.body.addEventListener('mousemove', event => {
+    //   if (document.pointerLockElement === document.body) {
+    //     const { movementX, movementY } = event;
+
+    //     if (this.isFPS) {
+    //       this.application.camera.rotation.y -= movementX / 500;
+    //       this.application.camera.rotation.x -= movementY / 500;
+    //       if (this.application.camera.rotation.x > 1) {
+    //         this.application.camera.rotation.x = 1;
+    //       }
+    //       if (this.application.camera.rotation.x < -1) {
+    //         this.application.camera.rotation.x = -1;
+    //       }
+    //     } else {
+    //       const offset = new THREE.Spherical().setFromVector3(
+    //         this.application.camera.position.clone().sub(this.cameraOrigin)
+    //       );
+    //       const phi = offset.phi - movementY * 0.02;
+    //       offset.theta -= movementX * 0.02;
+    //       offset.phi = Math.max(0.01, Math.min(0.35 * Math.PI, phi));
+    //       this.application.camera.position.copy(
+    //         this.cameraOrigin
+    //           .clone()
+    //           .add(new THREE.Vector3().setFromSpherical(offset))
+    //       );
+    //       this.application.camera.lookAt(this.character.position);
+    //     }
+    //   }
+    // });
   }
 
   playerCollisions() {
@@ -245,9 +284,9 @@ class UserController {
   update() {
     const deltaTime = this.application.clock.getDelta();
 
-    this.controls(deltaTime);
-    this.updatePlayer(deltaTime);
     if (this.isFPS) {
+      this.controls(deltaTime);
+      this.updatePlayer(deltaTime);
       this.updateCharacterPosition();
       this.teleportPlayerIfOob();
     }
