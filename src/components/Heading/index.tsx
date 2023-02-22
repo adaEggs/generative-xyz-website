@@ -30,6 +30,7 @@ type THeading = {
     offset: number;
     type: 'heading' | 'random' | 'paragraph';
   };
+  title?: string;
 };
 
 interface IProRefDom {

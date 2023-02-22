@@ -1,37 +1,40 @@
-.account_form_wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: rem(24px);
-}
-
 .account {
-  display: flex;
-  gap: rem(90px);
-  flex: 1;
-
-  @include max-tablet {
-    flex-direction: column;
-    gap: rem(40px);
-  }
-
   &_avatar {
+    margin-bottom: rem(24px);
     position: relative;
-    width: rem(300px);
-    height: rem(300px);
     border-radius: 50%;
-    aspect-ratio: 1 / 1;
     overflow: hidden;
+    width: rem(120px);
+    height: rem(120px);
 
-    .change_btn {
-      position: absolute;
-      bottom: rem(32px);
-      left: 50%;
-      transform: translateX(-50%);
-      border-radius: rem(100px);
+    &_el {
+      position: relative;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
     }
 
-    @include max-tablet {
-      align-self: center;
+    &_label {
+      position: absolute;
+      background: rgba($primary-brand, 0.6);
+      height: 100%;
+      width: 100%;
+      z-index: 2;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity 0.4s $easeOutCubic;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      pointer-events: none;
+    }
+
+    &:hover {
+      .account_avatar_label {
+        opacity: 1;
+      }
     }
   }
 
@@ -45,11 +48,22 @@
     @include min-tablet {
       max-width: rem(515px);
     }
+
+    &_actions {
+      display: flex;
+      gap: rem(10px);
+    }
   }
 
   &_wallet {
-    h4 {
-      margin-bottom: rem(26px);
+    &_action {
+      display: flex;
+      justify-content: flex-end;
+      gap: rem(24px);
+
+      .walletBtn {
+        margin-top: 0;
+      }
     }
   }
 }
@@ -68,10 +82,26 @@
   padding: rem(16);
 }
 
-.submit_btn {
-  width: fit-content;
+.submit_btn_lists {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .walletBtn {
   margin-top: rem(24px);
+}
+
+.walletValue {
+  background: #f8f8f8;
+  padding: 1.6rem 1.7rem;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.input_item {
+  margin-bottom: rem(16px);
+
+  input[type="readonly"] {
+    color: #a5a5a5;
+  }
 }

@@ -37,7 +37,17 @@ export const Collected = (): JSX.Element => {
               }
               endMessage={<></>}
             >
-              <CollectedList listData={collectedNFTs} />
+              <CollectedList
+                columnsCountBreakPoints={{
+                  350: 1,
+                  750: 2,
+                  900: 2,
+                  1240: 3,
+                  2500: 4,
+                  3000: 4,
+                }}
+                listData={collectedNFTs}
+              />
             </InfiniteScroll>
           )}
         </Col>
