@@ -102,3 +102,9 @@ export type IUpdateProjectPayload = Pick<
   ICreateBTCProjectPayload,
   'name' | 'description' | 'thumbnail' | 'royalty' | 'mintPrice' | 'maxSupply'
 > & { isHidden: boolean; categories: string[] };
+
+export interface IReportProjectPayload {
+  // projectID: string;
+  originalLink?: string;
+}
+export type IReportProjectResponse = Project;

@@ -51,6 +51,7 @@ import { PaymentMethod } from '@enums/mint-generative';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 import { SocialVerify } from '@components/SocialVerify';
 import { SOCIALS } from '@constants/common';
+import ReportModal from './ReportModal';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -77,6 +78,7 @@ const ProjectIntroSection = ({
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
   const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
     const exists = project?.desc.includes('Interaction');
@@ -657,16 +659,67 @@ const ProjectIntroSection = ({
         )}
         <ul className={s.shares}>
           <li>
-            <LinkShare
-              url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-            />
+            <OverlayTrigger
+              placement="bottom"
+              delay={{ show: 100, hide: 200 }}
+              overlay={
+                <Tooltip id="variation-tooltip">
+                  <Text size="14" fontWeight="semibold" color="primary-333">
+                    Copy link
+                  </Text>
+                </Tooltip>
+              }
+            >
+              <div>
+                <LinkShare
+                  url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                />
+              </div>
+            </OverlayTrigger>
           </li>
           <li>
-            <TwitterShare
-              url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-              title={''}
-              hashtags={[]}
-            />
+            <OverlayTrigger
+              placement="bottom"
+              delay={{ show: 100, hide: 200 }}
+              overlay={
+                <Tooltip id="variation-tooltip">
+                  <Text size="14" fontWeight="semibold" color="primary-333">
+                    Share on Twitter
+                  </Text>
+                </Tooltip>
+              }
+            >
+              <div>
+                <TwitterShare
+                  url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                  title={''}
+                  hashtags={[]}
+                />
+              </div>
+            </OverlayTrigger>
+          </li>
+          <li>
+            <OverlayTrigger
+              placement="bottom"
+              delay={{ show: 100, hide: 200 }}
+              overlay={
+                <Tooltip id="variation-tooltip">
+                  <Text size="14" fontWeight="semibold" color="primary-333">
+                    Report
+                  </Text>
+                </Tooltip>
+              }
+            >
+              <div
+                className={s.reportBtn}
+                onClick={() => setShowReportModal(true)}
+              >
+                <SvgInset
+                  size={16}
+                  svgUrl={`${CDN_URL}/icons/ic-more-vertical.svg`}
+                />
+              </div>
+            </OverlayTrigger>
           </li>
         </ul>
       </div>
@@ -709,6 +762,10 @@ const ProjectIntroSection = ({
           <ThumbnailPreview data={projectDetail as Token} allowVariantion />
         </div>
       )}
+      <ReportModal
+        isShow={showReportModal}
+        onHideModal={() => setShowReportModal(false)}
+      />
     </div>
   );
 };

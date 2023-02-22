@@ -370,3 +370,23 @@
     }
   }
 }
+
+.reportBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 2px;
+  border: 1px solid $black-20;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $black-100;
+
+    svg,
+    path {
+      fill: $white;
+    }
+  }
+}
