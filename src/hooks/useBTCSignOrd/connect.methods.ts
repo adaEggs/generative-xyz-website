@@ -14,10 +14,10 @@ const toXOnly = (pubKey: Buffer) =>
 const defaultPath = "m/86'/0'/0'/0/0";
 
 // sign message with first sign transaction
-const MESSAGE_TAP_R0OT =
+const TAPR0OT_MESSAGE =
   'Sign this message to generate your Bitcoin Taproot key. This key will be used for your generative.xyz transactions.';
 
-const getBitcoinOrdKeySignContent = (message: string): Buffer => {
+const getBitcoinKeySignContent = (message: string): Buffer => {
   return Buffer.from(message);
 };
 
@@ -32,7 +32,7 @@ const generateBitcoinKey = async ({
     window.ethereum as ethers.providers.ExternalProvider
   );
   const toSign =
-    '0x' + getBitcoinOrdKeySignContent(MESSAGE_TAP_R0OT).toString('hex');
+    '0x' + getBitcoinKeySignContent(TAPR0OT_MESSAGE).toString('hex');
   const signature = await provider.send('personal_sign', [
     toSign,
     address.toString(),
@@ -59,7 +59,7 @@ const generateBitcoinKey = async ({
     taproot: {
       sendAddress: sendAddressTaproot,
       signature,
-      message: MESSAGE_TAP_R0OT,
+      message: TAPR0OT_MESSAGE,
     },
 
     segwit: {
@@ -71,4 +71,4 @@ const generateBitcoinKey = async ({
   };
 };
 
-export { generateBitcoinKey, getBitcoinOrdKeySignContent };
+export { generateBitcoinKey, getBitcoinKeySignContent };
