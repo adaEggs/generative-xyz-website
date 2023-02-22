@@ -19,21 +19,7 @@
   }
 }
 
-.objectPreview {
-  width: 100%;
-  height: 100%;
-
-  .iframeContainer {
-    width: 100%;
-    height: 100%;
-
-    html {
-      overflow: hidden;
-    }
-  }
-}
-
-.thumbnail_iframe {
+.thumbnailIframe {
   height: 100%;
 
   @include min-tablet {
@@ -96,19 +82,5 @@
   @include mobile {
     bottom: rem(16px);
     right: rem(16px);
-  }
-}
-
-.thumbnail_image {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  > img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
   }
 }

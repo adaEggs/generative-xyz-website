@@ -2,53 +2,40 @@ import ButtonIcon from '@components/ButtonIcon';
 import Skeleton from '@components/Skeleton';
 import Text from '@components/Text';
 import ClientOnly from '@components/Utils/ClientOnly';
-import { CDN_URL, GLB_COLLECTION_ID } from '@constants/config';
+import { CDN_URL } from '@constants/config';
 import SandboxPreview from '@components/SandboxPreview';
 import { PreviewDisplayMode } from '@enums/mint-generative';
 import { ISandboxRef } from '@interfaces/sandbox';
 import { Token } from '@interfaces/token';
 import { base64ToUtf8 } from '@utils/format';
 import { generateHash } from '@utils/generate-data';
-import { convertIpfsToHttp } from '@utils/image';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Project } from '@interfaces/project';
+import PreviewController from './PreviewController';
 import s from './styles.module.scss';
-import { ROUTE_PATH } from '@constants/route-path';
-import { useRouter } from 'next/router';
 
 type Props = {
-  data: Token | null;
+  data: Token | Project | null;
   allowVariantion?: boolean;
   previewToken?: boolean;
   isBitcoinProject?: boolean;
 };
 
 const ThumbnailPreview = (props: Props) => {
-  const {
-    data,
-    allowVariantion = false,
-    previewToken = false,
-    // isBitcoinProject,
-  } = props;
-  const router = useRouter();
-  const { projectID } = router.query;
-  const animationUrl = data?.animationUrl || data?.animation_url || '';
-  const thumbnailPreviewUrl = data?.image;
+  const { data, allowVariantion = false, previewToken = false } = props;
+  const animationUrl =
+    (data as Token)?.animationUrl || (data as Token)?.animation_url || '';
   const sandboxRef = useRef<ISandboxRef>(null);
   const playBtnRef = useRef<HTMLButtonElement>(null);
   const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>();
   const [hash, setHash] = useState<string>(generateHash());
-  const [isVideo, setIsVideo] = useState(false);
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
   const rawHtmlFile = base64ToUtf8(
     animationUrl.replace('data:text/html;base64,', '')
   );
-
-  const thumbnailExt = useMemo(() => {
-    return thumbnailPreviewUrl?.split('.').pop();
-  }, [thumbnailPreviewUrl]);
 
   const handleIframeLoaded = (): void => {
     if (sandboxRef.current) {
@@ -96,53 +83,6 @@ const ThumbnailPreview = (props: Props) => {
     }
   }, [animationUrl]);
 
-  useEffect(() => {
-    if (data?.image) {
-      const checkMP4 = data?.image.split('.').pop() === 'mp4';
-      setIsVideo(checkMP4);
-    }
-  }, [data?.image]);
-
-  const renderThumbnailByExt = () => {
-    if (thumbnailPreviewUrl) {
-      if (thumbnailExt && thumbnailExt === 'glb' && data) {
-        return (
-          <ClientOnly>
-            <div className={s.objectPreview}>
-              <iframe
-                className={s.iframeContainer}
-                src={`${ROUTE_PATH.OBJECT_PREVIEW}/${data.tokenID}`}
-                style={{ overflow: 'hidden' }}
-              />
-            </div>
-          </ClientOnly>
-        );
-      }
-      // TODO: show animation for GLB project
-      if (projectID === GLB_COLLECTION_ID) {
-        return (
-          <ClientOnly>
-            <div className={s.objectPreview}>
-              <iframe
-                className={s.iframeContainer}
-                src={`${ROUTE_PATH.GLTF_PREVIEW}?defaultUrl=true`}
-                style={{ overflow: 'hidden' }}
-              />
-            </div>
-          </ClientOnly>
-        );
-      }
-      return (
-        <Image
-          fill
-          src={convertIpfsToHttp(thumbnailPreviewUrl)}
-          alt="thumbnail"
-        ></Image>
-      );
-    }
-    return null;
-  };
-
   return (
     <div className={s.ThumbnailPreview}>
       <div className={s.wrapper}>
@@ -159,22 +99,13 @@ const ThumbnailPreview = (props: Props) => {
                     hash={previewToken ? data.tokenID : hash}
                     sandboxFiles={null}
                     onLoaded={handleIframeLoaded}
-                    className={s.thumbnail_iframe}
+                    className={s.thumbnailIframe}
                   />
                 </ClientOnly>
               </div>
-              {displayMode === PreviewDisplayMode.THUMBNAIL &&
-                thumbnailPreviewUrl && (
-                  <div className={s.thumbnail_image}>
-                    {isVideo ? (
-                      <video autoPlay loop muted playsInline preload="auto">
-                        <source src={thumbnailPreviewUrl} type="video/mp4" />
-                      </video>
-                    ) : (
-                      renderThumbnailByExt()
-                    )}
-                  </div>
-                )}
+              {displayMode === PreviewDisplayMode.THUMBNAIL && (
+                <PreviewController data={data} />
+              )}
             </>
           )}
         </div>
@@ -193,7 +124,7 @@ const ThumbnailPreview = (props: Props) => {
                           fontWeight="semibold"
                           color="primary-333"
                         >
-                          variation
+                          Variation
                         </Text>
                       </Tooltip>
                     }
@@ -222,7 +153,7 @@ const ThumbnailPreview = (props: Props) => {
                   overlay={
                     <Tooltip id="play-tooltip">
                       <Text size="14" fontWeight="semibold" color="primary-333">
-                        play
+                        Play
                       </Text>
                     </Tooltip>
                   }
@@ -250,7 +181,7 @@ const ThumbnailPreview = (props: Props) => {
                   overlay={
                     <Tooltip id="pause-tooltip">
                       <Text size="14" fontWeight="semibold" color="primary-333">
-                        pause
+                        Pause
                       </Text>
                     </Tooltip>
                   }
@@ -277,7 +208,7 @@ const ThumbnailPreview = (props: Props) => {
                 overlay={
                   <Tooltip id="reload-tooltip">
                     <Text size="14" fontWeight="semibold" color="primary-333">
-                      reload
+                      Reload
                     </Text>
                   </Tooltip>
                 }
@@ -306,7 +237,7 @@ const ThumbnailPreview = (props: Props) => {
                     <Tooltip id="expand-tooltip">
                       {' '}
                       <Text size="14" fontWeight="semibold" color="primary-333">
-                        expand
+                        Expand
                       </Text>
                     </Tooltip>
                   }
