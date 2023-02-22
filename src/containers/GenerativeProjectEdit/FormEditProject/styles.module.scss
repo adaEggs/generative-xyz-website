@@ -306,11 +306,12 @@
 
 .actionWrapper {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   margin-top: rem(32px);
+  gap: rem(24px);
 
   .nextBtn {
-    width: 200px;
+    flex: 1;
     justify-content: center;
   }
 }

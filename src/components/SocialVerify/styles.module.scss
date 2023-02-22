@@ -9,6 +9,7 @@
   &:hover {
     .whiteList_content {
       opacity: 1;
+      visibility: visible;
     }
   }
 }
@@ -19,6 +20,8 @@
   transform: translateX(-50%);
   width: rem(220px);
   background: $white;
+  opacity: 0;
+  visibility: hidden;
 
   &_inner {
     position: relative;

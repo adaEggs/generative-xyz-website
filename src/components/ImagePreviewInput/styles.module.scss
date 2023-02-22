@@ -25,3 +25,13 @@
     object-fit: cover;
   }
 }
+
+.errorText {
+  color: $secondary-red;
+  font-style: normal;
+  line-height: (24/14);
+  letter-spacing: 0.01em;
+  position: absolute;
+
+  @include calcFontAuto(12px, 14px);
+}
