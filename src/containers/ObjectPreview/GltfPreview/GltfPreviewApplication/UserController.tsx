@@ -82,6 +82,13 @@ class UserController {
       if (event.code === 'KeyV') {
         // change to view
         this.isFPS = !this.isFPS;
+
+        if (!this.isFPS) {
+          this.cameraOrigin.copy(this.application.camera.position);
+          this.application.camera.getWorldDirection(this.tempCameraVector);
+          const cameraDirection = this.tempCameraVector.setY(0).normalize();
+          this.cameraOrigin.addScaledVector(cameraDirection, -5);
+        }
       }
     });
 
@@ -255,6 +262,8 @@ class UserController {
           this.application.camera.lookAt(
             this.container.position.clone().add(this.cameraOrigin)
           );
+
+          this.character.position.copy(this.cameraOrigin);
         }
       }
       if (this.keyStates['KeyS']) {
@@ -280,13 +289,13 @@ class UserController {
     }
   }
 
-  updateHiddenCamera() {
-    if (this.character) {
-      this.character.getWorldDirection(this.tempModelVector);
-      const playerDirection = this.tempModelVector.setY(0).normalize();
-      this.character.position.addScaledVector(playerDirection, -1.5);
-    }
-  }
+  // updateHiddenCamera() {
+  //   if (this.character) {
+  //     this.character.getWorldDirection(this.tempModelVector);
+  //     const playerDirection = this.tempModelVector.setY(0).normalize();
+  //     this.character.position.addScaledVector(playerDirection, -5);
+  //   }
+  // }
 
   update() {
     const deltaTime = this.application.clock.getDelta();
@@ -297,6 +306,7 @@ class UserController {
       this.teleportPlayerIfOob();
     } else {
       this.controls(deltaTime);
+      // console.log(this.application.camera.position, this.cameraOrigin);
     }
   }
 }
