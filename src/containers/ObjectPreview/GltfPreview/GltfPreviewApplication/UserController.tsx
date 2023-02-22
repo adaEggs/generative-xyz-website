@@ -46,11 +46,11 @@ class UserController {
     this.container.add(this.application.camera);
   }
 
-  updateCharacterPosition() {
-    if (this.character) {
-      this.character.position.copy(this.application.camera.position);
-    }
-  }
+  // updateCharacterPosition() {
+  //   if (this.character) {
+  //     this.character.position.copy(this.application.camera.position);
+  //   }
+  // }
   loaderCharacter() {
     setTimeout(async () => {
       if (!this.character) {
@@ -71,6 +71,8 @@ class UserController {
           }
         });
         this.character = object;
+
+        this.application.scene.add(this.character);
       }
     }, 1000);
   }
@@ -86,22 +88,34 @@ class UserController {
         // change to view
         this.isFPS = !this.isFPS;
 
+        // if (this.character) {
+        //   if (this.isFPS) {
+        //     this.application.scene.remove(this.character);
+        //   } else {
+        //     this.application.scene.add(this.character);
+        //     this.application.camera.lookAt(this.cameraOrigin);
+        //   }
+        // }
+
         if (this.character) {
           if (this.isFPS) {
-            this.application.scene.remove(this.character);
+            // this.application.scene.remove(this.character);
           } else {
-            this.application.scene.add(this.character);
-            this.application.camera.lookAt(this.cameraOrigin);
+            this.character.position.copy(this.application.camera.position);
+            this.character.getWorldDirection(this.tempModelVector);
+            const playerDirection = this.tempModelVector.setY(0).normalize();
+            this.character.position.addScaledVector(playerDirection, -1.5);
+            this.application.camera.lookAt(this.character.position);
           }
         }
       }
     });
 
-    window.addEventListener('pointerdown', e => {
+    window.addEventListener('pointerdown', () => {
       this.mousedown = true;
     });
 
-    window.addEventListener('pointerup', e => {
+    window.addEventListener('pointerup', () => {
       this.mousedown = false;
     });
 
@@ -119,17 +133,20 @@ class UserController {
           }
         } else {
           const offset = new THREE.Spherical().setFromVector3(
-            this.application.camera.position.clone().sub(this.cameraOrigin)
+            this.application.camera.position
+              .clone()
+              .sub(this.character.position)
           );
           const phi = offset.phi - movementY * 0.02;
           offset.theta -= movementX * 0.02;
           offset.phi = Math.max(0.01, Math.min(0.35 * Math.PI, phi));
           this.application.camera.position.copy(
-            this.cameraOrigin
+            this.character.position
               .clone()
               .add(new THREE.Vector3().setFromSpherical(offset))
           );
-          this.application.camera.lookAt(this.cameraOrigin);
+
+          this.application.camera.lookAt(this.character.position);
         }
       }
     });
@@ -257,6 +274,13 @@ class UserController {
         this.playerVelocity.add(
           this.getForwardVector().multiplyScalar(speedDelta)
         );
+
+        // if (!this.isFPS) {
+        //   this.character.getWorldDirection(this.tempModelVector);
+        //   const playerDirection = this.tempModelVector.setY(0).normalize();
+        //   this.character.position.addScaledVector(playerDirection, -0.05);
+        //   this.application.camera.lookAt(this.character.position);
+        // }
       }
       if (this.keyStates['KeyS']) {
         this.playerVelocity.add(
@@ -281,14 +305,25 @@ class UserController {
     }
   }
 
+  updateHiddenCamera() {
+    if (this.character) {
+      this.character.getWorldDirection(this.tempModelVector);
+      const playerDirection = this.tempModelVector.setY(0).normalize();
+      this.character.position.addScaledVector(playerDirection, -1.5);
+    }
+  }
+
   update() {
     const deltaTime = this.application.clock.getDelta();
 
+    this.controls(deltaTime);
+
     if (this.isFPS) {
-      this.controls(deltaTime);
       this.updatePlayer(deltaTime);
-      this.updateCharacterPosition();
+      // this.updateCharacterPosition();
       this.teleportPlayerIfOob();
+    } else {
+      // this.updateHiddenCamera();
     }
   }
 }
