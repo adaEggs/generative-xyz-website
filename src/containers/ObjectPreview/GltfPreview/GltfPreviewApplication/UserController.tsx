@@ -275,12 +275,37 @@ class UserController {
           this.getForwardVector().multiplyScalar(speedDelta)
         );
 
-        // if (!this.isFPS) {
-        //   this.character.getWorldDirection(this.tempModelVector);
-        //   const playerDirection = this.tempModelVector.setY(0).normalize();
-        //   this.character.position.addScaledVector(playerDirection, -0.05);
-        //   this.application.camera.lookAt(this.character.position);
-        // }
+        if (!this.isFPS) {
+          let damping = Math.exp(-4 * deltaTime) - 1;
+          if (!this.playerOnFloor) {
+            this.playerVelocity.y -= this.gravity * deltaTime;
+            // small air resistance
+            damping *= 0.1;
+          }
+          this.playerVelocity.addScaledVector(this.playerVelocity, damping);
+          const deltaPosition = this.playerVelocity
+            .clone()
+            .multiplyScalar(deltaTime);
+          this.application.colliders.playerCollider.translate(deltaPosition);
+          // this.playerCollisions();
+          this.application.camera.position.copy(
+            this.application.colliders.playerCollider.end
+          );
+          if (this.character) {
+            this.character.position.copy(this.application.camera.position);
+
+            this.character.getWorldDirection(this.tempModelVector);
+            const playerDirection = this.tempModelVector.setY(0).normalize();
+            this.character.position.addScaledVector(playerDirection, -1.5);
+
+            this.application.camera.lookAt(this.character.position);
+          }
+
+          // this.character.getWorldDirection(this.tempModelVector);
+          // const playerDirection = this.tempModelVector.setY(0).normalize();
+          // this.character.position.addScaledVector(playerDirection, -0.05);
+          // this.application.camera.lookAt(this.character.position);
+        }
       }
       if (this.keyStates['KeyS']) {
         this.playerVelocity.add(
