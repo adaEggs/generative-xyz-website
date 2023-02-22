@@ -88,7 +88,7 @@ class UserController {
           this.cameraOrigin.copy(this.application.camera.position);
           this.application.camera.getWorldDirection(this.tempCameraVector);
           const cameraDirection = this.tempCameraVector.setY(0).normalize();
-          this.cameraOrigin.addScaledVector(cameraDirection, -5);
+          this.cameraOrigin.addScaledVector(cameraDirection, -2);
           this.character.position.copy(this.cameraOrigin);
         }
       }
@@ -120,7 +120,7 @@ class UserController {
           );
           const phi = offset.phi - movementY * 0.02;
           offset.theta -= movementX * 0.02;
-          offset.phi = Math.max(0.01, Math.min(0.35 * Math.PI, phi));
+          offset.phi = Math.max(0.01, Math.min(1 * Math.PI, phi));
           this.application.camera.position.copy(
             this.cameraOrigin
               .clone()
