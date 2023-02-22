@@ -77,7 +77,8 @@
     &_link {
       cursor: pointer;
 
-      &:hover {
+      &:hover,
+      &:focus {
         background-color: $black-10;
       }
     }
