@@ -20,6 +20,7 @@ import { useRouter } from 'next/router';
 import NextNprogress from 'nextjs-progressbar';
 import React, { useEffect, useRef } from 'react';
 import { Provider } from 'react-redux';
+import DatadogService from '@services/datadog';
 
 interface MyAppProps extends AppProps {
   Component: {
@@ -63,6 +64,16 @@ export default function App({ Component, pageProps }: MyAppProps) {
     if (refCode) {
       setReferral(refCode);
     }
+  }, []);
+
+  useEffect(() => {
+    const ddInstance = DatadogService.getInstance();
+    ddInstance.init();
+    ddInstance.startRUMTracking();
+
+    return () => {
+      ddInstance.stopRUMTracking();
+    };
   }, []);
 
   const renderBody = () => {
