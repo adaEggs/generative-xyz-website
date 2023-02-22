@@ -45,10 +45,6 @@
       margin-bottom: rem(32px);
     }
 
-    @include min-tablet {
-      max-width: rem(515px);
-    }
-
     &_actions {
       display: flex;
       gap: rem(10px);
