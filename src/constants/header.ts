@@ -41,7 +41,7 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-7',
-    name: 'wallet',
+    name: 'Wallet',
     route: ROUTE_PATH.WALLET,
     activePath: '/wallet',
   },
