@@ -156,7 +156,7 @@ export const getCollectedNFTs = async (
     return [];
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get collected NFTs');
+    return [];
   }
 };
 
@@ -187,6 +187,6 @@ export const getMintingCollectedNFTs = async (
     return tasks;
   } catch (err: unknown) {
     log('failed to get minting collected NFTs', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get collected NFTs');
+    return [];
   }
 };
