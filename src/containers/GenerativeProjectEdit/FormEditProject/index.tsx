@@ -41,6 +41,7 @@ const FormEditProject = () => {
     GenerativeProjectDetailContext
   );
   const [newFile, setNewFile] = useState<File | null>();
+  const [uploadError, setUploadError] = useState<boolean>(false);
   const [categoryOptions, setCategoryOptions] = useState<Array<SelectOption>>(
     []
   );
@@ -120,7 +121,7 @@ const FormEditProject = () => {
     if (newThumbnail) {
       const uploadRes = await uploadFile({ file: newThumbnail });
       thumbnailUrl = uploadRes.url;
-    } else {
+    } else if (uploadError) {
       return;
     }
 
@@ -317,6 +318,7 @@ const FormEditProject = () => {
                     file={values.thumbnail}
                     onFileChange={setNewFile}
                     maxSizeKb={500}
+                    onError={setUploadError}
                     previewHtml={<img src={values.thumbnail} alt="thumbnail" />}
                   />
                   <div className={s.uploadPreviewWrapper_thumb}>
