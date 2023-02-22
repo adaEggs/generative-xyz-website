@@ -34,3 +34,11 @@ export function getRandomArbitrary(min: number, max: number) {
 export function getRandomSign() {
   return Math.round(Math.random()) * 2 - 1;
 }
+
+export function getDebugMode(): boolean {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('debug')) {
+    return params.get('debug') === 'true';
+  }
+  return false;
+}
