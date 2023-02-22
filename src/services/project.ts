@@ -106,7 +106,6 @@ export const getProjectList = async (
     const res = await get<IGetProjectListResponse>(`${API_PATH}${qs}`);
     const tasks = res.result.map(async project => {
       const { tokenID: projectID, maxSupply, mintingInfo } = project;
-
       if (
         !!projectID &&
         mintingInfo &&
