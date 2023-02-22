@@ -107,5 +107,4 @@ const ImagePreviewInput: React.FC<IProps> = ({
     </div>
   );
 };
-
 export default ImagePreviewInput;

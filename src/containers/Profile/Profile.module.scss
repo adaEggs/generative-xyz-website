@@ -38,14 +38,14 @@
 
 .tab {
   font-style: normal;
-  font-weight: 700;
-  line-height: (28/18);
+  font-weight: 500;
+  line-height: (30/20);
   padding-left: 0 !important;
   padding-right: 0 !important;
-  margin-right: rem(48px);
+  margin-right: rem(24px);
   position: relative;
 
-  @include calcFontAuto(16px, 18px);
+  @include calcFontAuto(18px, 20px);
 
   &::after {
     content: "";
@@ -60,6 +60,12 @@
 }
 
 .profile {
+  margin-top: rem(40px);
+
+  @include min-pc {
+    margin-top: rem(60px);
+  }
+
   :global(.empty) {
     padding-top: 0 !important;
     padding-bottom: 0 !important;

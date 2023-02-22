@@ -38,18 +38,17 @@ const generateBitcoinKey = async ({
     address.toString(),
   ]);
 
-  const private_key = ethers.utils.arrayify(
+  const seed = ethers.utils.arrayify(
     ethers.utils.keccak256(ethers.utils.arrayify(signature))
   );
 
-  const root = bip32.fromSeed(Buffer.from(private_key));
+  const root = bip32.fromSeed(Buffer.from(seed));
 
   // Taproot
-  const childTaproot = root.derivePath(defaultPath);
+  const taprootChild = root.derivePath(defaultPath);
   const { address: sendAddressTaproot } = bitcoin.payments.p2tr({
-    internalPubkey: toXOnly(childTaproot.publicKey),
+    internalPubkey: toXOnly(taprootChild.publicKey),
   });
-  const privateKeyTaproot = childTaproot.privateKey;
 
   // Segwit
   const signSegwit = await Segwit.signBitcoinSegwitKey({
@@ -58,18 +57,16 @@ const generateBitcoinKey = async ({
   });
   return {
     taproot: {
-      privateKey: privateKeyTaproot,
       sendAddress: sendAddressTaproot,
       signature,
       message: MESSAGE_TAP_R0OT,
     },
 
     segwit: {
-      privateKey: signSegwit.privateKey,
       sendAddress: signSegwit.address,
       signature: signSegwit.signature,
-      message: messageSegwit,
-      messagePrefix: signSegwit.signMessagePrefix,
+      message: signSegwit.message,
+      messagePrefix: signSegwit.messagePrefix,
     },
   };
 };

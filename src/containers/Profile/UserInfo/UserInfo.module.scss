@@ -1,32 +1,12 @@
 .userInfo {
-  margin-bottom: rem(60px);
-
-  @include min-tablet {
-    margin-bottom: rem(90px);
-  }
-
-  &_cover {
-    height: rem(240px);
-    background: $primary-brand;
-    overflow: hidden;
-
-    img {
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-    }
-  }
+  position: sticky;
+  top: rem(120px);
 
   &_content {
     position: relative;
 
     &_wrapper {
-      width: fit-content;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      margin-top: rem(82px);
-      padding-top: rem(32px);
+      margin-top: rem(24px);
     }
 
     &_displayName {
@@ -40,14 +20,12 @@
     }
 
     &_avatar {
-      position: absolute;
-      bottom: 100%;
       background: $white;
       border-radius: 50%;
       overflow: hidden;
       border: rem(6px) solid $white;
-      height: rem(200px);
-      width: rem(200px);
+      height: rem(160px);
+      width: rem(160px);
 
       img {
         object-fit: cover;
@@ -124,7 +102,57 @@
   }
 }
 
-.editProfile {
-  width: fit-content;
-  margin-left: rem(18px);
+.editProfile,
+.bio {
+  margin-top: rem(24px);
+}
+
+.bio {
+  max-width: rem(390px);
+}
+
+.userInfo_content_wrapper_info {
+  display: flex;
+  margin-bottom: rem(16px);
+
+  &_name {
+    max-width: rem(150px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.creator {
+  &_social {
+    display: flex;
+    gap: rem(20);
+    align-items: center;
+
+    &_item {
+      display: flex;
+      align-items: center;
+      gap: rem(6);
+
+      &_inner {
+        display: flex;
+        align-items: center;
+        gap: rem(6);
+      }
+
+      &:not(.isVerified) {
+        .creator_social_item_inner {
+          filter: grayscale(100%);
+          opacity: 0.5;
+        }
+      }
+    }
+
+    &_twitter {
+      svg,
+      path {
+        fill: #3cf;
+      }
+    }
+  }
 }

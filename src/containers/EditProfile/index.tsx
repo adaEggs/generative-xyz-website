@@ -1,47 +1,52 @@
-import Heading from '@components/Heading';
-import Text from '@components/Text';
-import { Container } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import FormEditProfile from './FormEditProfile';
 import s from './styles.module.scss';
-import ButtonIcon from '@components/ButtonIcon';
-import { useRouter } from 'next/router';
 import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
 import { Loading } from '@components/Loading';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
+import Heading from '@components/Heading';
+import Text from '@components/Text';
 
 const EditProfile = (): JSX.Element => {
-  const router = useRouter();
+  const [tab, setTab] = useState<string>('account');
   const { isLoaded } = useContext(ProfileContext);
 
   return (
-    <>
+    <div className={s.editProfile}>
       <Container>
-        <ButtonIcon
-          variants="ghost"
-          onClick={() => router.back()}
-          className={s.back_btn}
-        >
-          Back
-        </ButtonIcon>
-        <div className={s.wrapper}>
-          <div className={s.setting}>
-            <Heading as="h4" fontWeight="bold">
-              Setting
-            </Heading>
-            <Text size="18" fontWeight="bold">
-              Edit profile
-            </Text>
-          </div>
-          <div className="h-divider"></div>
-          <FormEditProfile />
-        </div>
+        <Row className={s.editProfile_row}>
+          <Col xl={4}>
+            <Heading as={'h4'}>Edit Profile</Heading>
+            <ul className={s.editProfile_tabs}>
+              <li
+                className={`${tab === 'account' ? s.isActive : ''}`}
+                onClick={() => setTab('account')}
+              >
+                <Text as={'span'} size={'20'}>
+                  Account Info
+                </Text>
+              </li>
+              <li
+                className={`${tab === 'wallet' ? s.isActive : ''}`}
+                onClick={() => setTab('wallet')}
+              >
+                <Text as={'span'} size={'20'}>
+                  Wallet
+                </Text>
+              </li>
+            </ul>
+            <div className={s.wrapper}>
+              <FormEditProfile tab={tab} />
+            </div>
+          </Col>
+        </Row>
       </Container>
       <Loading
         className={s.profile_loading}
         isLoaded={isLoaded}
         isPage={true}
       />
-    </>
+    </div>
   );
 };
 

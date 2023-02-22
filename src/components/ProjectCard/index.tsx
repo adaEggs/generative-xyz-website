@@ -47,6 +47,12 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     return project?.mintingInfo?.index < project?.maxSupply;
   }, [project]);
 
+  const minted = useMemo((): string => {
+    return `${project.mintingInfo.index + project.mintingInfo.indexReserve}/${
+      project.maxSupply || project.limit
+    } minted`;
+  }, [project]);
+
   return (
     <Link
       href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
@@ -108,10 +114,20 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 {isLimitMinted && (
                   <>
                     <div className={s.projectCard_info_price_price}>
-                      <Text size={'16'} fontWeight="medium" color="black-40">
-                        {Number(project.mintPrice)
-                          ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
-                          : 'Free'}
+                      <Text
+                        className={s.projectCard_info_price_price_wrap}
+                        size={'16'}
+                        fontWeight="medium"
+                        color="black-40-solid"
+                      >
+                        <span className={s.projectCard_info_price_price_el}>
+                          {Number(project.mintPrice)
+                            ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
+                            : 'Free'}
+                        </span>
+                        <span className={s.projectCard_info_price_price_minted}>
+                          {minted}
+                        </span>
                       </Text>
                     </div>
                   </>

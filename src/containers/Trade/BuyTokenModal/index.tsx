@@ -153,15 +153,16 @@ const ListForSaleModal = ({
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
                                 Enter the Ordinals-compatible BTC address to
-                                receive your buying inscription. Don’t have one?{' '}
-                                <a
-                                  href="https://gist.github.com/windsok/5b53a1ced6ef3eddbde260337de28980"
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  Start here
-                                </a>
-                                .{/*<OverlayTrigger*/}
+                                receive your buying inscription.
+                                {/*Don’t have one?{' '}*/}
+                                {/*<a*/}
+                                {/*  href="https://gist.github.com/windsok/5b53a1ced6ef3eddbde260337de28980"*/}
+                                {/*  target="_blank"*/}
+                                {/*  rel="noreferrer"*/}
+                                {/*>*/}
+                                {/*  Start here*/}
+                                {/*</a>*/}
+                                {/*<OverlayTrigger*/}
                                 {/*  placement="bottom"*/}
                                 {/*  delay={{ show: 250, hide: 400 }}*/}
                                 {/*  overlay={*/}

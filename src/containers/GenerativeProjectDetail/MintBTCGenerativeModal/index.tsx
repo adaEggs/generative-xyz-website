@@ -12,8 +12,8 @@ import React, {
 import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
-import { generateBTCReceiverAddress, mintBTCGenerative } from '@services/btc';
-// import { generateMintReceiverAddress } from '@services/mint';
+import { mintBTCGenerative } from '@services/btc';
+import { generateMintReceiverAddress } from '@services/mint';
 import { Loading } from '@components/Loading';
 import _debounce from 'lodash/debounce';
 import { validateBTCAddressTaproot } from '@utils/validate';
@@ -28,6 +28,9 @@ import { getUserSelector } from '@redux/user/selector';
 import { WalletContext } from '@contexts/wallet-context';
 import { sendAAEvent } from '@services/aa-tracking';
 import { BTC_PROJECT } from '@constants/tracking-event-name';
+import ButtonIcon from '@components/ButtonIcon';
+import { ROUTE_PATH } from '@constants/route-path';
+import { useRouter } from 'next/router';
 
 interface IFormValue {
   address: string;
@@ -36,6 +39,7 @@ interface IFormValue {
 const LOG_PREFIX = 'MintBTCGenerativeModal';
 
 const MintBTCGenerativeModal: React.FC = () => {
+  const router = useRouter();
   const { projectData, hideMintBTCModal } = useContext(
     GenerativeProjectDetailContext
   );
@@ -53,22 +57,25 @@ const MintBTCGenerativeModal: React.FC = () => {
   const [addressInput, setAddressInput] = useState<string>('');
   const [_isConnecting, setIsConnecting] = useState<boolean>(false);
 
-  const getBTCAddress = async (walletAddress: string): Promise<void> => {
+  const getBTCAddress = async (
+    walletAddress: string,
+    refundAddress: string
+  ): Promise<void> => {
     if (!projectData) return;
 
     try {
       setIsLoading(true);
       setReceiverAddress(null);
-      // const { address, price } = await generateMintReceiverAddress({
-      //   walletAddress,
-      //   projectID: projectData.tokenID,
-      //   payType: 'btc',
-      // });
-      const { address, Price: price } = await generateBTCReceiverAddress({
+      const { address, price } = await generateMintReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
+        payType: 'btc',
+        refundUserAddress: refundAddress,
       });
-
+      // const { address, Price: price } = await generateBTCReceiverAddress({
+      //   walletAddress,
+      //   projectID: projectData.tokenID,
+      // });
       sendAAEvent({
         eventName: BTC_PROJECT.MINT_NFT,
         data: {
@@ -104,7 +111,10 @@ const MintBTCGenerativeModal: React.FC = () => {
   };
 
   const debounceGetBTCAddress = useCallback(
-    _debounce(nextValue => getBTCAddress(nextValue), 1000),
+    _debounce(
+      (address, refundAddress) => getBTCAddress(address, refundAddress),
+      500
+    ),
     [projectData]
   );
 
@@ -118,7 +128,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     } else {
       if (addressInput !== values.address) {
         setAddressInput(values.address);
-        debounceGetBTCAddress(values.address);
+        debounceGetBTCAddress(values.address, values.address);
       }
     }
 
@@ -150,6 +160,11 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const priceMemo = useMemo(() => formatBTCPrice(Number(price)), [price]);
 
+  const _onClose = () => {
+    setIsPopupPayment(false);
+    setsTep('info');
+  };
+
   useEffect(() => {
     if (!user && receiverAddress) {
       handleConnectWallet();
@@ -159,7 +174,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   useEffect(() => {
     if (userBtcAddress) {
       setsTep('mint');
-      getBTCAddress(userBtcAddress);
+      debounceGetBTCAddress(userBtcAddress, userBtcAddress);
     } else {
       setsTep('info');
     }
@@ -176,10 +191,7 @@ const MintBTCGenerativeModal: React.FC = () => {
           <div className={s.modalContainer}>
             <div className={s.modalHeader}>
               <Button
-                onClick={() => {
-                  setIsPopupPayment(false);
-                  setsTep('info');
-                }}
+                onClick={_onClose}
                 className={s.closeBtn}
                 variants="ghost"
               >
@@ -223,12 +235,12 @@ const MintBTCGenerativeModal: React.FC = () => {
               ) : (
                 <>
                   <h3 className={s.modalTitle}>Mint NFT</h3>
-                  <div className={s.alert_info}>
-                    Do not spend any satoshis from this wallet unless you
-                    understand what you are doing. If you ignore this warning,
-                    you could inadvertently lose access to your ordinals and
-                    inscriptions.
-                  </div>
+                  {/*<div className={s.alert_info}>*/}
+                  {/*  Do not spend any satoshis from this wallet unless you*/}
+                  {/*  understand what you are doing. If you ignore this warning,*/}
+                  {/*  you could inadvertently lose access to your ordinals and*/}
+                  {/*  inscriptions.*/}
+                  {/*</div>*/}
                   <div className={s.formWrapper}>
                     <Formik
                       key="mintBTCGenerativeForm"
@@ -249,8 +261,9 @@ const MintBTCGenerativeModal: React.FC = () => {
                         <form onSubmit={handleSubmit}>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="address">
-                              Transfer NFT to{' '}
-                              <sup className={s.requiredTag}>*</sup>
+                              Enter the Ordinals-compatible BTC address to
+                              receive your minting inscription{' '}
+                              {/*<sup className={s.requiredTag}>*</sup>*/}
                             </label>
                             <div className={s.inputContainer}>
                               <input
@@ -270,7 +283,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                           </div>
                           {isLoading && (
                             <div className={s.loadingWrapper}>
-                              <Loading isLoaded={false}></Loading>
+                              <Loading isLoaded={false} />
                             </div>
                           )}
                           {receiverAddress && price && !isLoading && (
@@ -291,7 +304,8 @@ const MintBTCGenerativeModal: React.FC = () => {
                                   </label>
                                 ) : (
                                   <label className={s.label} htmlFor="price">
-                                    Price <sup className={s.requiredTag}>*</sup>
+                                    Price
+                                    {/*Price <sup className={s.requiredTag}>*</sup>*/}
                                   </label>
                                 )}
 
@@ -320,6 +334,31 @@ const MintBTCGenerativeModal: React.FC = () => {
                                 </p>
                               </div>
                             </>
+                          )}
+                          {!!receiverAddress && !isLoading && (
+                            <div className={s.row}>
+                              <ButtonIcon
+                                sizes="large"
+                                variants="filter"
+                                className={s.button}
+                                onClick={() => {
+                                  _onClose();
+                                  router.push(ROUTE_PATH.PROFILE);
+                                }}
+                              >
+                                Check order status
+                              </ButtonIcon>
+                              <ButtonIcon
+                                sizes="large"
+                                variants="primary"
+                                className={s.button}
+                                onClick={() => {
+                                  _onClose();
+                                }}
+                              >
+                                Continue collecting
+                              </ButtonIcon>
+                            </div>
                           )}
                         </form>
                       )}

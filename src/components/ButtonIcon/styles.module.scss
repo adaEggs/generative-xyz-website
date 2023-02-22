@@ -179,6 +179,22 @@
     }
   }
 
+  &.secondary-2 {
+    background-color: $black-5;
+    border: 2px solid $black-5;
+    color: $primary-brand;
+
+    &:hover {
+      background-color: $white-5;
+      border: 2px solid $white-5;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+  }
+
   &.secondary {
     background-color: $black-5;
     color: $black-100;
@@ -275,6 +291,10 @@
     background-color: $blue-100;
     font-size: rem(16px);
     line-height: 140%;
+
+    svg path {
+      stroke: white !important;
+    }
 
     &:hover {
       opacity: 0.8;
