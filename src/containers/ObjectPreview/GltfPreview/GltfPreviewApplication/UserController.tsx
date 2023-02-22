@@ -23,11 +23,6 @@ class UserController {
 
   playerOnFloor = false;
 
-  cameraOrigin = new THREE.Vector3();
-  xAxis = new THREE.Vector3(1, 0, 0);
-  tempCameraVector = new THREE.Vector3();
-  tempModelVector = new THREE.Vector3();
-
   container = new THREE.Group();
 
   mousedown = false;
@@ -87,11 +82,8 @@ class UserController {
           this.container.remove(this.character);
         } else {
           this.container.add(this.character);
-          this.cameraOrigin.copy(this.application.camera.position);
-          this.application.camera.getWorldDirection(this.tempCameraVector);
-          const cameraDirection = this.tempCameraVector.setY(0).normalize();
-          this.cameraOrigin.addScaledVector(cameraDirection, -2);
-          this.character.position.copy(this.cameraOrigin);
+          this.character.position.copy(this.application.camera.position);
+          this.character.position.addScaledVector(this.getForwardVector(), -2);
         }
       }
     });
@@ -118,18 +110,20 @@ class UserController {
           }
         } else {
           const offset = new THREE.Spherical().setFromVector3(
-            this.application.camera.position.clone().sub(this.cameraOrigin)
+            this.application.camera.position
+              .clone()
+              .sub(this.character.position)
           );
           const phi = offset.phi - movementY * 0.02;
           offset.theta -= movementX * 0.02;
           offset.phi = Math.max(0.01, Math.min(1 * Math.PI, phi));
           this.application.camera.position.copy(
-            this.cameraOrigin
+            this.character.position
               .clone()
               .add(new THREE.Vector3().setFromSpherical(offset))
           );
           this.application.camera.lookAt(
-            this.container.position.clone().add(this.cameraOrigin)
+            this.container.position.clone().add(this.character.position)
           );
         }
       }
@@ -226,15 +220,11 @@ class UserController {
             this.getForwardVector().multiplyScalar(speedDelta)
           );
         } else {
-          // Get the X-Z plane in which camera is looking to move the player
-          this.application.camera.getWorldDirection(this.tempCameraVector);
-          const cameraDirection = this.tempCameraVector.setY(0).normalize();
-
           this.container.position.add(
-            cameraDirection.multiplyScalar(speedDelta)
+            this.getForwardVector().multiplyScalar(speedDelta)
           );
           this.application.camera.lookAt(
-            this.container.position.clone().add(this.cameraOrigin)
+            this.container.position.clone().add(this.character.position)
           );
         }
       }
