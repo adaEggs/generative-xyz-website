@@ -255,7 +255,7 @@ const FormEditProfile = () => {
             )}
             {!!user?.walletAddressBtcTaproot && (
               <>
-                <Text>BTC wallet taproot wallet address:</Text>
+                <Text>Ordinals wallet address:</Text>
                 <Text style={{ marginBottom: '6px' }}>
                   {user?.walletAddressBtcTaproot || ''}
                 </Text>

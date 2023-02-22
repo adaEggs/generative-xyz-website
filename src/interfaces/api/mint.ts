@@ -4,6 +4,7 @@ export interface IGetMintReceiverAddressPayload {
   walletAddress: string;
   projectID: string;
   payType: IPaymentType;
+  refundUserAddress?: string;
 }
 
 export interface IGetMintReceiverAddressResp {
