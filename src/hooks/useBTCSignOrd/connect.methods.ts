@@ -65,8 +65,8 @@ const generateBitcoinKey = async ({
     segwit: {
       sendAddress: signSegwit.address,
       signature: signSegwit.signature,
-      message: messageSegwit,
-      messagePrefix: signSegwit.signMessagePrefix,
+      message: signSegwit.message,
+      messagePrefix: signSegwit.messagePrefix,
     },
   };
 };
