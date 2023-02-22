@@ -3,7 +3,7 @@ import cs from 'classnames';
 import { FileUploader } from 'react-drag-drop-files';
 import { useState } from 'react';
 import { prettyPrintBytes } from '@utils/units';
-import { SANDBOX_BTC_FILE_SIZE_LIMIT, CDN_URL } from '@constants/config';
+import { SANDBOX_BTC_IMAGE_SIZE_LIMIT, CDN_URL } from '@constants/config';
 import SvgInset from '@components/SvgInset';
 import { Loading } from '@components/Loading';
 
@@ -37,7 +37,7 @@ const DropFile: React.FC<IProps> = ({
 
   const onSizeError = (): void => {
     setError(
-      `File size error, maximum file size is ${SANDBOX_BTC_FILE_SIZE_LIMIT}kb.`
+      `File size error, maximum file size is ${SANDBOX_BTC_IMAGE_SIZE_LIMIT}kb.`
     );
   };
 

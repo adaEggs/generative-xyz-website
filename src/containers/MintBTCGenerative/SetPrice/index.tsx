@@ -157,6 +157,7 @@ const SetPrice = () => {
       errors.maxSupply = 'Invalid number. Must be greater than 0.';
     } else if (
       collectionType === CollectionType.COLLECTION &&
+      numberOfFile > 1 &&
       parseInt(values.maxSupply.toString(), 10) > numberOfFile
     ) {
       errors.maxSupply = `Invalid number. Must be equal or less than ${numberOfFile}.`;
