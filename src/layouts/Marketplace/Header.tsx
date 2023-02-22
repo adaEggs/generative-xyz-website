@@ -50,7 +50,9 @@ const Header: React.FC<IProp> = ({
   const refMenu = useRef<HTMLDivElement | null>(null);
 
   const isGrailPage = useMemo(
-    () => router.pathname === ROUTE_PATH.DISPLAY,
+    () =>
+      router.pathname === ROUTE_PATH.DISPLAY ||
+      router.pathname === ROUTE_PATH.ARTISTS,
     [router.pathname]
   );
 
