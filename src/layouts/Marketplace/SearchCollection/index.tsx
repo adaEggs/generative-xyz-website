@@ -1,3 +1,4 @@
+import Avatar from '@components/Avatar';
 import Link from '@components/Link';
 import { Loading } from '@components/Loading';
 import SvgInset from '@components/SvgInset';
@@ -8,56 +9,56 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { LogLevel } from '@enums/log-level';
 import useOnClickOutside from '@hooks/useOnClickOutSide';
 import { Project } from '@interfaces/project';
+import { User } from '@interfaces/user';
 import { getProjectList } from '@services/project';
+import { getUsers } from '@services/user';
+import { formatLongAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import { debounce } from 'lodash';
+import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { v4 } from 'uuid';
 import s from './styles.module.scss';
-import Select, { SingleValue } from 'react-select';
-import { SelectOption } from '@interfaces/select-input';
-import { getUsers } from '@services/user';
-import { User } from '@interfaces/user';
-import Avatar from '@components/Avatar';
 
 const LOG_PREFIX = 'SearchCollection';
 
-const SEARCH_OPTIONS = [
-  {
-    value: 'collections',
-    label: 'Collections',
-  },
-  {
-    value: 'members',
-    label: 'Members',
-  },
-];
-
 const SearchCollection = () => {
-  const [foundResults, setFoundResults] = useState<Project[] | User[]>();
+  const [foundCollections, setFoundCollections] = useState<Project[]>();
   const [searchText, setSearchText] = useState<string>('');
   const [showResult, setShowResult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [expandSearch, setExpandSearch] = useState(false);
-  const [searchOptions, setSearchOptions] = useState(SEARCH_OPTIONS[0].value);
+  // const [expandSearch, setExpandSearch] = useState(false);
+  const [foundUsers, setFoundUsers] = useState<User[]>();
 
   const inputSearchRef = useRef<HTMLInputElement>(null);
   const resultSearchRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const handleSearchCollections = async () => {
+  const handleSearch = async () => {
     try {
       setIsLoading(true);
-      const res = await getProjectList({
-        contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
-        limit: 20,
-        page: 1,
-        name: searchText,
-      });
-      if (res && res.result) {
-        setFoundResults(res.result);
+      const [projects, members] = await Promise.all([
+        getProjectList({
+          contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
+          limit: 5,
+          page: 1,
+          name: searchText,
+        }),
+        getUsers({
+          limit: 5,
+          page: 1,
+          search: searchText,
+        }),
+      ]);
+
+      if (projects && projects.result) {
+        setFoundCollections(projects.result);
       }
+      if (members && members.result) {
+        setFoundUsers(members.result);
+      }
+
       setIsLoading(false);
     } catch (err: unknown) {
       log('failed to fetch collections', LogLevel.ERROR, LOG_PREFIX);
@@ -65,67 +66,22 @@ const SearchCollection = () => {
     }
   };
 
-  const handleSearchMembers = async () => {
-    try {
-      setIsLoading(true);
-      const res = await getUsers({
-        limit: 20,
-        page: 1,
-        search: searchText,
-      });
-      if (res && res.result) {
-        setFoundResults(res.result);
-      }
-      setIsLoading(false);
-    } catch (err: unknown) {
-      log('failed to fetch collections', LogLevel.ERROR, LOG_PREFIX);
-      throw Error();
-    }
-  };
-
-  const handleCloseSearchResult = () => {
+  const handleCloseSearchResult = (): void => {
     setShowResult(false);
-    if (!searchText) {
-      setExpandSearch(false);
-    }
   };
-
-  useEffect(() => {
-    if (expandSearch) inputSearchRef.current?.focus();
-  }, [expandSearch]);
 
   useEffect(() => {
     if (searchText && searchText.length > 2) {
-      if (searchOptions === 'collections') handleSearchCollections();
-      if (searchOptions === 'members') handleSearchMembers();
+      handleSearch();
     }
     inputSearchRef.current?.focus();
-  }, [searchText, searchOptions]);
+  }, [searchText]);
 
   useOnClickOutside(resultSearchRef, () => handleCloseSearchResult());
-  useOnClickOutside(wrapperRef, () => {
-    if (!searchText) setExpandSearch(false);
-  });
 
   return (
     <div className={s.wrapper} ref={wrapperRef}>
-      <div className={cs(s.searchInput_wrapper, { [s.expand]: expandSearch })}>
-        <div className={s.searchInput_options}>
-          <div className={s.dropDownWrapper}>
-            <Select
-              isSearchable={false}
-              isClearable={false}
-              defaultValue={SEARCH_OPTIONS[0]}
-              options={SEARCH_OPTIONS}
-              className={cs(s.dropdownOptions)}
-              classNamePrefix="select"
-              onChange={(op: SingleValue<SelectOption>) => {
-                if (op) setSearchOptions(op?.value);
-              }}
-            />
-          </div>
-        </div>
-        <div className={s.h_divider}></div>
+      <div className={cs(s.searchInput_wrapper)}>
         <input
           className={s.input}
           placeholder="Collection, artist, address…"
@@ -140,10 +96,7 @@ const SearchCollection = () => {
           //   onBlur={handleCloseSearchResult}
           ref={inputSearchRef}
         ></input>
-        <div
-          className={s.searchIcon}
-          onClick={() => setExpandSearch(!expandSearch)}
-        >
+        <div className={s.searchIcon}>
           <SvgInset size={16} svgUrl={`${CDN_URL}/icons/ic-search-14x14.svg`} />
         </div>
       </div>
@@ -154,77 +107,65 @@ const SearchCollection = () => {
           </div>
         </div>
       )}
-      {!isLoading &&
-        showResult &&
-        searchText &&
-        searchText.length > 2 &&
-        foundResults && (
-          <div className={s.searchResult_wrapper} ref={resultSearchRef}>
-            {searchOptions === 'collections' && (
-              <SearchCollectionsResult list={foundResults as Project[]} />
-            )}
-            {searchOptions === 'members' && (
-              <SearchMembersResult list={foundResults as User[]} />
-            )}
-
-            {/* {foundResults.length === 0 ? (
-            <div className={s.searchResult_item}>No Collection Found</div>
-          ) : (
-            <>
-              {foundResults.map(collection => (
-                <SearchCollectionItem
-                  key={`collection-${v4()}`}
-                  projectName={collection.name}
-                  creatorName={collection.creatorProfile?.displayName}
-                  collectionId={collection.tokenID}
-                />
-              ))}
-            </>
-          )} */}
-          </div>
-        )}
+      {!isLoading && showResult && searchText && searchText.length > 2 && (
+        <div className={s.searchResult_wrapper} ref={resultSearchRef}>
+          {foundCollections && (
+            <SearchCollectionsResult list={foundCollections} />
+          )}
+          {foundUsers && <SearchMembersResult list={foundUsers} />}
+          {!foundCollections && !foundUsers && (
+            <div className={s.searchResult_item}>No Result Found</div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
 const SearchCollectionsResult = ({ list }: { list: Project[] }) => {
+  if (list.length === 0) return null;
+
   return (
     <>
-      {list.length === 0 ? (
-        <div className={s.searchResult_item}>No Collection Found</div>
-      ) : (
-        <>
-          {list.map(collection => (
-            <SearchCollectionItem
-              key={`collection-${v4()}`}
-              projectName={collection.name}
-              creatorName={collection.creatorProfile?.displayName}
-              collectionId={collection.tokenID}
-            />
-          ))}
-        </>
-      )}
+      <div className={s.list_heading}>
+        <Text size="12" fontWeight="medium" color="black-40">
+          COLLECTIONS
+        </Text>
+      </div>
+      {list.map(collection => (
+        <SearchCollectionItem
+          key={`collection-${v4()}`}
+          thumbnail={collection.image}
+          projectName={collection.name}
+          creatorName={
+            collection.creatorProfile?.displayName ||
+            formatLongAddress(collection.creatorProfile?.walletAddress)
+          }
+          collectionId={collection.tokenID}
+        />
+      ))}
     </>
   );
 };
 
 const SearchMembersResult = ({ list }: { list: User[] }) => {
+  if (list.length === 0) return null;
+
   return (
     <>
-      {list.length === 0 ? (
-        <div className={s.searchResult_item}>No Member Found</div>
-      ) : (
-        <>
-          {list.map(user => (
-            <SearchMemberItem
-              key={`member-${v4()}`}
-              memberName={user.displayName || user.walletAddress}
-              avatar={user.avatar}
-              memberId={user.walletAddress}
-            />
-          ))}
-        </>
-      )}
+      <div className={s.list_heading}>
+        <Text size="12" fontWeight="medium" color="black-40">
+          MEMBERS
+        </Text>
+      </div>
+      {list.map(user => (
+        <SearchMemberItem
+          key={`member-${v4()}`}
+          memberName={user.displayName || formatLongAddress(user.walletAddress)}
+          avatar={user.avatar}
+          memberId={user.walletAddress}
+        />
+      ))}
     </>
   );
 };
@@ -233,28 +174,36 @@ const SearchCollectionItem = ({
   projectName,
   creatorName,
   collectionId,
+  thumbnail = '',
 }: {
   projectName: string;
   creatorName?: string;
   collectionId?: string;
+  thumbnail?: string;
 }) => {
   return (
     <Link
       className={cs(s.searchResult_item, s.searchResult_item_link)}
       href={`${ROUTE_PATH.GENERATIVE}/${collectionId}`}
     >
-      <Text
-        as="span"
-        fontWeight="semibold"
-        className={s.searchResult_collectionName}
-      >
-        {projectName}
-      </Text>
-      {creatorName && (
-        <Text size="14" as="span" className={s.searchResult_creatorName}>
-          by {creatorName}
+      <div className={s.searchResult_collectionThumbnail}>
+        <Image src={thumbnail} alt={projectName} width={34} height={34} />
+      </div>
+      <div className={s.searchResult_collectionInfo}>
+        <Text as="span" className={s.searchResult_collectionName}>
+          {projectName}
         </Text>
-      )}
+        {creatorName && (
+          <Text
+            color="black-40"
+            size="12"
+            as="span"
+            className={s.searchResult_creatorName}
+          >
+            by {creatorName}
+          </Text>
+        )}
+      </div>
     </Link>
   );
 };
@@ -277,12 +226,8 @@ const SearchMemberItem = ({
       )}
       href={`${ROUTE_PATH.PROFILE}/${memberId}`}
     >
-      <Avatar imgSrcs={avatar || ''} width={20} height={20} />
-      <Text
-        as="span"
-        fontWeight="semibold"
-        className={s.searchResult_collectionName}
-      >
+      <Avatar imgSrcs={avatar || ''} width={34} height={34} />
+      <Text as="span" className={s.searchResult_collectionName}>
         {memberName}
       </Text>
     </Link>

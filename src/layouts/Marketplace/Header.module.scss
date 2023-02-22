@@ -356,10 +356,10 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    gap: rem(24);
+    gap: rem(48);
 
     @include mobile {
-      gap: 0;
+      gap: rem(12);
     }
 
     &_links {
