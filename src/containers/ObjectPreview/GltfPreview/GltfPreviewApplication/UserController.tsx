@@ -7,6 +7,7 @@ import {
   PLAYER_CAPSULE_RADIUS,
   GRAVITY,
   DEFAULT_CAMERA_ROTATION,
+  CHARACTER_Y_ROTATION,
 } from './constants';
 
 class UserController {
@@ -26,6 +27,10 @@ class UserController {
   container = new THREE.Group();
 
   mousedown = false;
+
+  xAxis = new THREE.Vector3(1, 0, 0);
+  tempCameraVector = new THREE.Vector3();
+  tempModelVector = new THREE.Vector3();
 
   constructor(_app: GltfPreviewApplication) {
     this.application = _app;
@@ -62,7 +67,7 @@ class UserController {
         });
         this.character = object;
 
-        this.character.rotateY(-1.5);
+        this.character.rotateY(CHARACTER_Y_ROTATION);
       }
     }, 1000);
   }
@@ -191,6 +196,11 @@ class UserController {
     }
   }
 
+  getCameraDirection() {
+    this.application.camera.getWorldDirection(this.tempCameraVector);
+    return this.tempCameraVector.setY(0).normalize();
+  }
+
   getForwardVector() {
     this.application.camera.getWorldDirection(this.playerDirection);
     this.playerDirection.y = 0;
@@ -220,6 +230,42 @@ class UserController {
             this.getForwardVector().multiplyScalar(speedDelta)
           );
         } else {
+          this.application.camera.getWorldDirection(this.tempCameraVector);
+          const cameraDirection = this.tempCameraVector.setY(0).normalize();
+
+          // Get the X-Z plane in which player is looking to compare with camera
+          this.character.getWorldDirection(this.tempModelVector);
+          const playerDirection = this.tempModelVector.setY(0).normalize();
+          cameraDirection.angleTo(this.xAxis) *
+            (cameraDirection.z > 0 ? 1 : -1);
+
+          // Get the angle to x-axis. z component is used to compare if the angle is clockwise or anticlockwise since angleTo returns a positive value
+          const cameraAngle =
+            cameraDirection.angleTo(this.xAxis) *
+            (cameraDirection.z > 0 ? 1 : -1);
+          const playerAngle =
+            playerDirection.angleTo(this.xAxis) *
+            (playerDirection.z > 0 ? 1 : -1);
+
+          // Get the angle to rotate the player to face the camera. Clockwise positive
+          const angleToRotate = playerAngle - cameraAngle;
+
+          // Get the shortest angle from clockwise angle to ensure the player always rotates the shortest angle
+          let sanitisedAngle = angleToRotate;
+          if (angleToRotate > Math.PI) {
+            sanitisedAngle = angleToRotate - 2 * Math.PI;
+          }
+          if (angleToRotate < -Math.PI) {
+            sanitisedAngle = angleToRotate + 2 * Math.PI;
+          }
+
+          // Rotate the model by a tiny value towards the camera direction
+          this.character.rotateY(
+            Math.max(
+              -0.05,
+              Math.min(sanitisedAngle + CHARACTER_Y_ROTATION, 0.05)
+            )
+          );
           this.container.position.add(
             this.getForwardVector().multiplyScalar(speedDelta)
           );
