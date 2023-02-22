@@ -1,9 +1,9 @@
-import { CDN_URL } from '@constants/config';
 import Image from 'next/image';
 import React, { memo } from 'react';
 import styles from './styles.module.scss';
 import { v4 } from 'uuid';
 import { convertIpfsToHttp } from '@utils/image';
+import { DEFAULT_USER_AVATAR } from '@constants/common';
 
 type Props = {
   imgSrcs: string | string[];
@@ -47,7 +47,7 @@ const Avatar = memo(
             <Image
               className={styles.ownerAvatar}
               alt="owner avatar"
-              src={`${CDN_URL}/images/default-avatar.jpeg`}
+              src={DEFAULT_USER_AVATAR}
               width={width}
               height={height}
             />

@@ -17,6 +17,7 @@ import s from './UserInfo.module.scss';
 import { toast } from 'react-hot-toast';
 import { SocialVerify } from '@components/SocialVerify';
 import { SOCIALS } from '@constants/common';
+import { DEFAULT_USER_AVATAR } from '@constants/common';
 
 export const UserInfo = (): JSX.Element => {
   const user = useAppSelector(getUserSelector);
@@ -32,11 +33,7 @@ export const UserInfo = (): JSX.Element => {
       <div className={s.userInfo_content}>
         <div className={s.userInfo_content_avatar}>
           <Image
-            src={
-              currentUser?.avatar
-                ? currentUser.avatar
-                : `${CDN_URL}/images/default-avatar.jpeg`
-            }
+            src={currentUser?.avatar ? currentUser.avatar : DEFAULT_USER_AVATAR}
             alt={currentUser?.displayName || ''}
             width={100}
             height={100}
@@ -170,63 +167,6 @@ export const UserInfo = (): JSX.Element => {
           </div>
         }
       </div>
-
-      {/*<Container>*/}
-      {/*  <Row>*/}
-      {/*    <Col md={8}>*/}
-      {/*      */}
-      {/*    </Col>*/}
-      {/*    <Col xs={4}>*/}
-      {/*      <div className={s.userInfo_socials}>*/}
-      {/*        <ul className={s.userInfo_socials_list}>*/}
-      {/*          {currentUser?.profileSocial?.web && (*/}
-      {/*            <li className={s.userInfo_socials_item}>*/}
-      {/*              <Link*/}
-      {/*                target={'_blank'}*/}
-      {/*                href={currentUser.profileSocial.web || '#'}*/}
-      {/*              >*/}
-      {/*                <SvgInset svgUrl={SOCIAL_ICONS.web} />*/}
-      {/*              </Link>*/}
-      {/*            </li>*/}
-      {/*          )}*/}
-
-      {/*          {currentUser?.profileSocial?.etherScan && (*/}
-      {/*            <li className={s.userInfo_socials_item}>*/}
-      {/*              <Link*/}
-      {/*                target={'_blank'}*/}
-      {/*                href={currentUser.profileSocial.etherScan || '#'}*/}
-      {/*              >*/}
-      {/*                <SvgInset svgUrl={SOCIAL_ICONS.etherScan} />*/}
-      {/*              </Link>*/}
-      {/*            </li>*/}
-      {/*          )}*/}
-
-      {/*          {currentUser?.profileSocial?.discord && (*/}
-      {/*            <li className={s.userInfo_socials_item}>*/}
-      {/*              <Link*/}
-      {/*                target={'_blank'}*/}
-      {/*                href={currentUser.profileSocial.discord}*/}
-      {/*              >*/}
-      {/*                <SvgInset svgUrl={SOCIAL_ICONS.discrod} />*/}
-      {/*              </Link>*/}
-      {/*            </li>*/}
-      {/*          )}*/}
-
-      {/*          {currentUser?.profileSocial?.twitter && (*/}
-      {/*            <li className={s.userInfo_socials_item}>*/}
-      {/*              <Link*/}
-      {/*                target={'_blank'}*/}
-      {/*                href={currentUser.profileSocial.twitter}*/}
-      {/*              >*/}
-      {/*                <SvgInset svgUrl={SOCIAL_ICONS.twitter} />*/}
-      {/*              </Link>*/}
-      {/*            </li>*/}
-      {/*          )}*/}
-      {/*        </ul>*/}
-      {/*      </div>*/}
-      {/*    </Col>*/}
-      {/*  </Row>*/}
-      {/*</Container>*/}
     </div>
   );
 };

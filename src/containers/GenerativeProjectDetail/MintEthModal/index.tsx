@@ -27,9 +27,8 @@ import { WalletContext } from '@contexts/wallet-context';
 import { sendAAEvent } from '@services/aa-tracking';
 import { BTC_PROJECT } from '@constants/tracking-event-name';
 import _throttle from 'lodash/throttle';
-// import { generateMintReceiverAddress } from '@services/mint';
 import ButtonIcon from '@components/ButtonIcon';
-import { generateETHReceiverAddress } from '@services/eth';
+import { generateMintReceiverAddress } from '@services/mint';
 
 interface IFormValue {
   address: string;
@@ -42,7 +41,6 @@ const MintEthModal: React.FC = () => {
   const { projectData, hideMintBTCModal } = useContext(
     GenerativeProjectDetailContext
   );
-
   const { connect, transfer } = useContext(WalletContext);
   const { setIsPopupPayment, paymentMethod } = useContext(
     BitcoinProjectContext
@@ -56,8 +54,11 @@ const MintEthModal: React.FC = () => {
   const [addressInput, setAddressInput] = useState<string>('');
   const [_isConnecting, setIsConnecting] = useState<boolean>(false);
 
-  const userBtcAddress = useMemo(
-    () => user?.walletAddressBtcTaproot || '',
+  const userAddress = useMemo(
+    () => ({
+      taproot: user?.walletAddressBtcTaproot || '',
+      evm: user?.walletAddress || '',
+    }),
     [user]
   );
 
@@ -86,20 +87,20 @@ const MintEthModal: React.FC = () => {
     []
   );
 
-  const getBTCAddress = async (walletAddress: string): Promise<void> => {
+  const getBTCAddress = async (
+    walletAddress: string,
+    refundAddress: string // web3
+  ): Promise<void> => {
     if (!projectData) return;
 
     try {
       setIsLoading(true);
       setReceiverAddress(null);
-      // const { address, price } = await generateMintReceiverAddress({
-      //   walletAddress,
-      //   projectID: projectData.tokenID,
-      //   payType: 'eth',
-      // });
-      const { address, price: price } = await generateETHReceiverAddress({
+      const { address, price } = await generateMintReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
+        payType: 'eth',
+        refundUserAddress: refundAddress,
       });
 
       sendAAEvent({
@@ -126,7 +127,10 @@ const MintEthModal: React.FC = () => {
   };
 
   const debounceGetBTCAddress = useCallback(
-    _debounce(nextValue => getBTCAddress(nextValue), 1000),
+    _debounce(
+      (ordAddress, refundAddress) => getBTCAddress(ordAddress, refundAddress),
+      1000
+    ),
     [projectData]
   );
 
@@ -140,7 +144,7 @@ const MintEthModal: React.FC = () => {
     } else {
       if (addressInput !== values.address) {
         setAddressInput(values.address);
-        debounceGetBTCAddress(values.address);
+        debounceGetBTCAddress(values.address, userAddress.evm);
       }
     }
 
@@ -173,13 +177,13 @@ const MintEthModal: React.FC = () => {
   }, [receiverAddress, user, price]);
 
   useEffect(() => {
-    if (userBtcAddress) {
+    if (userAddress && userAddress.evm && userAddress.taproot) {
       setsTep('mint');
-      getBTCAddress(userBtcAddress);
+      getBTCAddress(userAddress.taproot, userAddress.evm);
     } else {
       setsTep('info');
     }
-  }, [userBtcAddress]);
+  }, [userAddress]);
 
   if (!projectData) {
     return <></>;
@@ -239,17 +243,17 @@ const MintEthModal: React.FC = () => {
               ) : (
                 <>
                   <h3 className={s.modalTitle}>Mint NFT</h3>
-                  <div className={s.alert_info}>
-                    Do not spend any satoshis from this wallet unless you
-                    understand what you are doing. If you ignore this warning,
-                    you could inadvertently lose access to your ordinals and
-                    inscriptions.
-                  </div>
+                  {/*<div className={s.alert_info}>*/}
+                  {/*  Do not spend any satoshis from this wallet unless you*/}
+                  {/*  understand what you are doing. If you ignore this warning,*/}
+                  {/*  you could inadvertently lose access to your ordinals and*/}
+                  {/*  inscriptions.*/}
+                  {/*</div>*/}
                   <div className={s.formWrapper}>
                     <Formik
                       key="mintBTCGenerativeForm"
                       initialValues={{
-                        address: userBtcAddress || '',
+                        address: userAddress.taproot || '',
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}

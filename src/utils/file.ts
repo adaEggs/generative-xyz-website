@@ -72,7 +72,9 @@ export const getSupportedFileExtList = (): Array<string> => {
 };
 
 export const getMediaTypeFromFileExt = (ext: string): MediaType | null => {
-  const supportedFile = SUPPORTED_FILE_EXT.find(item => item.ext === ext);
+  const supportedFile = SUPPORTED_FILE_EXT.find(
+    item => item.ext.toLowerCase() === ext.toLowerCase()
+  );
   if (supportedFile) {
     return supportedFile.mediaType;
   }

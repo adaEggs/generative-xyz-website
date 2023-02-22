@@ -3,7 +3,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
-const removeImports = require('next-remove-imports')();
+const withRemoveImports = require('next-remove-imports')();
 
 const path = require('path');
 
@@ -19,7 +19,7 @@ const baseSecurityHeaders = [
 ];
 
 /** @type {import('next').NextConfig} */
-module.exports = removeImports(
+module.exports = withRemoveImports(
   withBundleAnalyzer({
     reactStrictMode: true,
     swcMinify: true,

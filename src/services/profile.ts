@@ -2,7 +2,6 @@ import { LogLevel } from '@enums/log-level';
 import {
   CollectedNFTStatus,
   ICollectedNFTItem,
-  IGetArtistsResponse,
   IGetCollectedNFTInsciption,
   IGetCollectedNFTsResp,
   IGetMintingCollectedNFTResp,
@@ -106,23 +105,6 @@ export const updateProfile = async (
   }
 };
 
-export const getArtists = async ({
-  limit = 10,
-  page = 1,
-}: {
-  limit?: number;
-  page?: number;
-}): Promise<IGetArtistsResponse> => {
-  try {
-    return await get<IGetArtistsResponse>(
-      `/user/artist?page=${page}&limit=${limit}`
-    );
-  } catch (err: unknown) {
-    log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get profile');
-  }
-};
-
 // Collected tab
 
 export const getCollectedNFTs = async (
@@ -156,7 +138,7 @@ export const getCollectedNFTs = async (
     return [];
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get collected NFTs');
+    return [];
   }
 };
 
@@ -187,6 +169,6 @@ export const getMintingCollectedNFTs = async (
     return tasks;
   } catch (err: unknown) {
     log('failed to get minting collected NFTs', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get collected NFTs');
+    return [];
   }
 };

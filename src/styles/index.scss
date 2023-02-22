@@ -59,8 +59,7 @@ main {
   @include calcFontAuto(14px, 16px);
 }
 
-input,
-textarea {
+input {
   outline: 0;
   overflow: hidden;
   text-overflow: ellipsis;

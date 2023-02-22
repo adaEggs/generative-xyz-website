@@ -1,5 +1,4 @@
 .wrapper {
-  min-width: rem(300);
   position: relative;
 
   @include mobile {
@@ -15,12 +14,33 @@
   border-radius: 2px;
   justify-content: flex-end;
 
+  @include mobile {
+    padding: rem(8);
+  }
+
   &.expand {
     border-color: $black-40;
 
     .input {
-      width: 100%;
+      width: rem(200);
       transition: width 0.75s cubic-bezier(0, 0.795, 0, 1);
+
+      @include mobile {
+        width: rem(100);
+      }
+    }
+
+    .dropdownOptions {
+      width: rem(120);
+      overflow: visible;
+
+      @include mobile {
+        width: rem(100);
+      }
+    }
+
+    .h_divider {
+      display: block;
     }
   }
 
@@ -41,6 +61,76 @@
 
     &:hover {
       opacity: 1;
+    }
+  }
+
+  .dropdownOptions {
+    width: 0;
+    overflow: hidden;
+
+    :global(.select__control) {
+      border: none;
+      width: rem(120);
+      min-height: unset;
+      box-shadow: none;
+      cursor: pointer;
+
+      @include mobile {
+        width: rem(100);
+        font-size: rem(14);
+      }
+    }
+
+    :global(.select__indicator-separator) {
+      display: none;
+    }
+
+    :global(.select__menu) {
+      border-radius: 2px;
+      margin-top: rem(20);
+      width: rem(150);
+      transform: translateX(-11px);
+      box-shadow: $shadow;
+      border: 1px solid $black-10;
+
+      @include mobile {
+        width: rem(120);
+      }
+    }
+
+    :global(.select__menu-list) {
+      padding: 0;
+      border-radius: 2px;
+    }
+
+    :global(.select__option):hover {
+      background-color: $black-10;
+      cursor: pointer;
+    }
+
+    :global(.select__dropdown-indicator) {
+      padding: 0;
+    }
+
+    :global(.select__value-container) {
+      padding: 0;
+    }
+
+    :global(.select__option--is-selected) {
+      background-color: #fff;
+      color: $black-100;
+    }
+  }
+
+  .h_divider {
+    width: 1px;
+    height: rem(20);
+    background-color: $black-40;
+    margin: 0 rem(12);
+    display: none;
+
+    @include mobile {
+      margin: 0 rem(8);
     }
   }
 }
@@ -85,6 +175,11 @@
 
     &_loading {
       padding: rem(60);
+    }
+
+    &_member {
+      flex-direction: row;
+      gap: rem(8);
     }
   }
 
