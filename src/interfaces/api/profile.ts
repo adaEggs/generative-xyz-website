@@ -51,10 +51,18 @@ export interface IGetMintingCollectedNFTResp {
   fileURI: string;
 }
 
+export interface IGetCollectedNFTInsciption {
+  inscription_id: string;
+  offset: number;
+  number: number;
+  content_type: string;
+  project_id: string;
+  project_name: string;
+  thumbnail: string;
+}
+
 export interface IGetCollectedNFTsResp {
-  inscriptions: {
-    [key: string]: string;
-  };
+  inscriptions: Array<IGetCollectedNFTInsciption>;
 }
 
 export interface IInscriptionResp {

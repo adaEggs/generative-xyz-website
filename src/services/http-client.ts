@@ -161,3 +161,20 @@ export const del = async <R>(
   const response = await fetch(requestUrl, requestOptions);
   return handleResponse(response);
 };
+
+export const deleteMethod = async <R>(
+  url: string,
+  config?: RequestConfig
+): Promise<R> => {
+  const requestOptions: RequestInit = getRequestOptions(
+    HttpMethod.DELETE,
+    config
+  );
+  const requestUrl = getRequestEndpoint(
+    url,
+    !!config?.externalResource,
+    config?.baseUrl
+  );
+  const response = await fetch(requestUrl, requestOptions);
+  return handleResponse(response);
+};
