@@ -29,7 +29,7 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     project.status === CollectedNFTStatus.Success
       ? project.projectID
         ? `${ROUTE_PATH.GENERATIVE}/${project.projectID}/${project.inscriptionID}`
-        : `${ROUTE_PATH.TRADE}/${project.inscriptionID}`
+        : `${ROUTE_PATH.LIVE}/${project.inscriptionID}`
       : `${ROUTE_PATH.GENERATIVE}/${project.projectID}`;
 
   const projectName =
