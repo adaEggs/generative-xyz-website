@@ -8,6 +8,7 @@ import {
   GRAVITY,
   DEFAULT_CAMERA_ROTATION,
   CHARACTER_Y_ROTATION,
+  CHARACTER_SCALE,
 } from './constants';
 
 class UserController {
@@ -88,7 +89,10 @@ class UserController {
         } else {
           this.container.add(this.character);
           this.character.position.copy(this.application.camera.position);
-          this.character.position.addScaledVector(this.getForwardVector(), -2);
+          this.character.position.addScaledVector(
+            this.getForwardVector(),
+            CHARACTER_SCALE
+          );
         }
       }
     });
@@ -154,7 +158,7 @@ class UserController {
     }
   }
 
-  updatePlayer(deltaTime: number) {
+  updateFirstPersonPlayer(deltaTime: number) {
     if (
       this.application.colliders.worldOctree &&
       this.application.colliders.playerCollider
@@ -173,6 +177,65 @@ class UserController {
       this.playerCollisions();
       this.application.camera.position.copy(
         this.application.colliders.playerCollider.end
+      );
+    }
+  }
+
+  updatePlayerOnThirdPerson(deltaTime: number) {
+    if (
+      this.application.colliders.worldOctree &&
+      this.application.colliders.playerCollider
+    ) {
+      let damping = Math.exp(-4 * deltaTime) - 1;
+      if (!this.playerOnFloor) {
+        this.playerVelocity.y -= this.gravity * deltaTime;
+        // small air resistance
+        damping *= 0.1;
+      }
+      this.playerVelocity.addScaledVector(this.playerVelocity, damping);
+      const deltaPosition = this.playerVelocity
+        .clone()
+        .multiplyScalar(deltaTime);
+      this.application.colliders.playerCollider.translate(deltaPosition);
+      this.playerCollisions();
+
+      this.application.camera.getWorldDirection(this.tempCameraVector);
+      const cameraDirection = this.tempCameraVector.setY(0).normalize();
+
+      // Get the X-Z plane in which player is looking to compare with camera
+      this.character.getWorldDirection(this.tempModelVector);
+      const playerDirection = this.tempModelVector.setY(0).normalize();
+      cameraDirection.angleTo(this.xAxis) * (cameraDirection.z > 0 ? 1 : -1);
+
+      // Get the angle to x-axis. z component is used to compare if the angle is clockwise or anticlockwise since angleTo returns a positive value
+      const cameraAngle =
+        cameraDirection.angleTo(this.xAxis) * (cameraDirection.z > 0 ? 1 : -1);
+      const playerAngle =
+        playerDirection.angleTo(this.xAxis) * (playerDirection.z > 0 ? 1 : -1);
+
+      // Get the angle to rotate the player to face the camera. Clockwise positive
+      const angleToRotate = playerAngle - cameraAngle;
+
+      // Get the shortest angle from clockwise angle to ensure the player always rotates the shortest angle
+      let sanitisedAngle = angleToRotate;
+      if (angleToRotate > Math.PI) {
+        sanitisedAngle = angleToRotate - 2 * Math.PI;
+      }
+      if (angleToRotate < -Math.PI) {
+        sanitisedAngle = angleToRotate + 2 * Math.PI;
+      }
+
+      // Rotate the model by a tiny value towards the camera direction
+      this.character.rotateY(
+        Math.max(-0.05, Math.min(sanitisedAngle + CHARACTER_Y_ROTATION, 0.05))
+      );
+
+      this.container.position.copy(
+        this.application.colliders.playerCollider.end
+      );
+
+      this.application.camera.lookAt(
+        this.container.position.clone().add(this.character.position)
       );
     }
   }
@@ -225,73 +288,31 @@ class UserController {
       // gives a bit of air control
 
       if (this.keyStates['KeyW']) {
-        if (this.isFPS) {
+        this.playerVelocity.add(
+          this.getForwardVector().multiplyScalar(speedDelta)
+        );
+      }
+
+      if (this.isFPS) {
+        if (this.keyStates['KeyS']) {
           this.playerVelocity.add(
-            this.getForwardVector().multiplyScalar(speedDelta)
-          );
-        } else {
-          this.application.camera.getWorldDirection(this.tempCameraVector);
-          const cameraDirection = this.tempCameraVector.setY(0).normalize();
-
-          // Get the X-Z plane in which player is looking to compare with camera
-          this.character.getWorldDirection(this.tempModelVector);
-          const playerDirection = this.tempModelVector.setY(0).normalize();
-          cameraDirection.angleTo(this.xAxis) *
-            (cameraDirection.z > 0 ? 1 : -1);
-
-          // Get the angle to x-axis. z component is used to compare if the angle is clockwise or anticlockwise since angleTo returns a positive value
-          const cameraAngle =
-            cameraDirection.angleTo(this.xAxis) *
-            (cameraDirection.z > 0 ? 1 : -1);
-          const playerAngle =
-            playerDirection.angleTo(this.xAxis) *
-            (playerDirection.z > 0 ? 1 : -1);
-
-          // Get the angle to rotate the player to face the camera. Clockwise positive
-          const angleToRotate = playerAngle - cameraAngle;
-
-          // Get the shortest angle from clockwise angle to ensure the player always rotates the shortest angle
-          let sanitisedAngle = angleToRotate;
-          if (angleToRotate > Math.PI) {
-            sanitisedAngle = angleToRotate - 2 * Math.PI;
-          }
-          if (angleToRotate < -Math.PI) {
-            sanitisedAngle = angleToRotate + 2 * Math.PI;
-          }
-
-          // Rotate the model by a tiny value towards the camera direction
-          this.character.rotateY(
-            Math.max(
-              -0.05,
-              Math.min(sanitisedAngle + CHARACTER_Y_ROTATION, 0.05)
-            )
-          );
-          this.container.position.add(
-            this.getForwardVector().multiplyScalar(speedDelta)
-          );
-          this.application.camera.lookAt(
-            this.container.position.clone().add(this.character.position)
+            this.getForwardVector().multiplyScalar(-speedDelta)
           );
         }
-      }
-      if (this.keyStates['KeyS']) {
-        this.playerVelocity.add(
-          this.getForwardVector().multiplyScalar(-speedDelta)
-        );
-      }
-      if (this.keyStates['KeyA']) {
-        this.playerVelocity.add(
-          this.getSideVector().multiplyScalar(-speedDelta)
-        );
-      }
-      if (this.keyStates['KeyD']) {
-        this.playerVelocity.add(
-          this.getSideVector().multiplyScalar(speedDelta)
-        );
-      }
-      if (this.playerOnFloor) {
-        if (this.keyStates['Space']) {
-          this.playerVelocity.y = 5;
+        if (this.keyStates['KeyA']) {
+          this.playerVelocity.add(
+            this.getSideVector().multiplyScalar(-speedDelta)
+          );
+        }
+        if (this.keyStates['KeyD']) {
+          this.playerVelocity.add(
+            this.getSideVector().multiplyScalar(speedDelta)
+          );
+        }
+        if (this.playerOnFloor) {
+          if (this.keyStates['Space']) {
+            this.playerVelocity.y = 5;
+          }
         }
       }
     }
@@ -302,10 +323,11 @@ class UserController {
 
     if (this.isFPS) {
       this.controls(deltaTime);
-      this.updatePlayer(deltaTime);
+      this.updateFirstPersonPlayer(deltaTime);
       this.teleportPlayerIfOob();
     } else {
       this.controls(deltaTime);
+      this.updatePlayerOnThirdPerson(deltaTime);
     }
   }
 }
