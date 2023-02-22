@@ -30,3 +30,4 @@ export const PAGE_ENTER = 'PAGE_ENTER';
 
 export const METAMASK_DOWNLOAD_PAGE = 'https://metamask.io/download/';
 export const UNISWAP_PAGE = 'https://app.uniswap.org/#/swap';
+export const DEFAULT_USER_AVATAR = `${CDN_URL}/images/default-avatar.jpg`;

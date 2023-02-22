@@ -26,7 +26,10 @@ const ErrorAlert: React.FC = (): React.ReactElement => {
   }
 
   return (
-    <div className={s.errorAlert}>
+    <div
+      className={s.errorAlert}
+      onClick={() => setShowErrorAlert({ open: false, message: null })}
+    >
       <div className={s.alertWrapper}>
         <div className={s.alertContainer}>
           <div className={s.iconWrapper}>

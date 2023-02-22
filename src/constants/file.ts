@@ -55,16 +55,20 @@ export const SUPPORTED_FILE_EXT: Array<{ mediaType: MediaType; ext: string }> =
       mediaType: MediaType.VIDEO,
       ext: 'mp4',
     },
-    // {
-    //   mediaType: MediaType.VIDEO,
-    //   ext: 'mov'
-    // },
-    // {
-    //   mediaType: MediaType.VIDEO,
-    //   ext: 'webm'
-    // },
-    // {
-    //   mediaType: MediaType.VIDEO,
-    //   ext: 'avi'
-    // },
+    {
+      mediaType: MediaType.VIDEO,
+      ext: 'webm',
+    },
+    {
+      mediaType: MediaType.AUDIO,
+      ext: 'flac',
+    },
+    {
+      mediaType: MediaType.AUDIO,
+      ext: 'mp3',
+    },
+    {
+      mediaType: MediaType.AUDIO,
+      ext: 'wav',
+    },
   ];

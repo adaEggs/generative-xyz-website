@@ -1,0 +1,21 @@
+.model3dPreview {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  .objectPreview {
+    width: 100%;
+    height: 100%;
+
+    .iframeContainer {
+      width: 100%;
+      height: 100%;
+
+      html {
+        overflow: hidden;
+      }
+    }
+  }
+}

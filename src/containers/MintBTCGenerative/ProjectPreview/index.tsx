@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { useContext, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import s from './styles.module.scss';
+import { DEFAULT_USER_AVATAR } from '@constants/common';
 
 const ProjectPreview = () => {
   const user = useSelector(getUserSelector);
@@ -158,9 +159,7 @@ const ProjectPreview = () => {
               <Image
                 className={s.ownerAvatar}
                 alt="owner avatar"
-                src={
-                  user ? user.avatar : `${CDN_URL}/images/default-avatar.jpeg`
-                }
+                src={user ? user.avatar : DEFAULT_USER_AVATAR}
                 width={48}
                 height={48}
               ></Image>

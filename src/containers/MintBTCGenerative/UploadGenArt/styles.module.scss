@@ -123,11 +123,19 @@
   .codeIcon {
     display: inline-block;
     margin-right: 6px;
+  }
 
-    &__error {
-      :global(svg path) {
-        fill: $secondary-red;
-      }
+  :global(.codeIconError_image) {
+    :global(svg path) {
+      fill: $secondary-red;
+    }
+  }
+
+  :global(.codeIconError_video),
+  :global(.codeIconError_model_3d),
+  :global(.codeIconError_audio) {
+    :global(svg path) {
+      stroke: $secondary-red;
     }
   }
 
