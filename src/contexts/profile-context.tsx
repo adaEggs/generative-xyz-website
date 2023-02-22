@@ -360,8 +360,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         ...mintedNFTs.filter(
           mintedNft =>
             !mintingNFTs.find(
-              mintingNft =>
-                mintingNft.inscriptionID === mintedNft.inscriptionNumber
+              mintingNft => mintingNft.inscriptionID === mintedNft.inscriptionID
             )
         ),
       ];
