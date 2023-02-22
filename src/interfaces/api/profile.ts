@@ -49,6 +49,7 @@ export interface IGetMintingCollectedNFTResp {
   projectID: string;
   projectImage: string;
   fileURI: string;
+  inscriptionID: string;
 }
 
 export interface IGetCollectedNFTInsciption {
