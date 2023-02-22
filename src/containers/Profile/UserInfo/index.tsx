@@ -18,6 +18,7 @@ import { useContext } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import s from './UserInfo.module.scss';
 import { toast } from 'react-hot-toast';
+import { DEFAULT_USER_AVATAR } from '@constants/common';
 
 export const UserInfo = (): JSX.Element => {
   const user = useAppSelector(getUserSelector);
@@ -45,7 +46,7 @@ export const UserInfo = (): JSX.Element => {
                   src={
                     currentUser?.avatar
                       ? currentUser.avatar
-                      : `${CDN_URL}/images/default-avatar.jpeg`
+                      : DEFAULT_USER_AVATAR
                   }
                   alt={currentUser?.displayName || ''}
                   width={100}
