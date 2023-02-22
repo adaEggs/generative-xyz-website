@@ -85,7 +85,7 @@ const ArtistsPage = () => {
           <Col md={'12'} xl={'2'} className={s.rightAction}>
             <ButtonIcon
               sizes={'large'}
-              variants={'secondary'}
+              variants={'blue'}
               disabled={isConnecting}
               onClick={onClickToUpload}
               endIcon={
@@ -96,7 +96,7 @@ const ArtistsPage = () => {
                 )
               }
             >
-              {isConnecting ? 'Connecting...' : 'Launch Your Art On Bitcoin'}
+              {isConnecting ? 'Connecting...' : 'Launch your art on Bitcoin'}
             </ButtonIcon>
             <Text
               as={'p'}

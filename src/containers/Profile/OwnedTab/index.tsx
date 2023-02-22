@@ -12,18 +12,6 @@ export const OwnedTab = (): JSX.Element => {
   return (
     <>
       <div className={s.tabContent}>
-        <div className={s.filterWrapper}>
-          {/* <TokenTopFilter
-            keyword=""
-            sort=""
-            onKeyWordChange={() => {
-              //
-            }}
-            onSortChange={() => {
-              //
-            }}
-          /> */}
-        </div>
         <div className={s.tokenListWrapper}>
           {!profileTokens?.total && (
             <Loading isLoaded={isLoadedProfileTokens} />

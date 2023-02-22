@@ -13,6 +13,7 @@ import {
 } from '@interfaces/sandbox';
 import {
   getFileExtensionByFileName,
+  getMediaTypeFromFileExt,
   getSupportedFileExtList,
   unzipFile,
 } from '@utils/file';
@@ -29,7 +30,11 @@ import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { utf8ToBase64 } from '@utils/format';
 import { THIRD_PARTY_SCRIPTS } from '@constants/mint-generative';
-import { SANDBOX_BTC_FILE_SIZE_LIMIT } from '@constants/config';
+import {
+  SANDBOX_BTC_IMAGE_SIZE_LIMIT,
+  SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT,
+} from '@constants/config';
+import { MediaType } from '@enums/file';
 
 const LOG_PREFIX = 'SandboxUtil';
 
@@ -200,7 +205,8 @@ export const processCollectionZipFile = async (
     let error = null;
 
     // Check file extension
-    const fileExt = getFileExtensionByFileName(fileName);
+    const fileExt = getFileExtensionByFileName(fileName) ?? '';
+    const fileMediaType = getMediaTypeFromFileExt(fileExt);
 
     fileExtList.add(fileExt);
     if (fileExtList.size > 1) {
@@ -214,9 +220,17 @@ export const processCollectionZipFile = async (
       error = ImageFileError.INVALID_EXTENSION;
     }
 
-    // Check file size is smaller than SANDBOX_BTC_FILE_SIZE_LIMIT
+    // Check file size is smaller than SANDBOX_BTC_IMAGE_SIZE_LIMIT
     const fileSizeInKb = file.size / 1024;
-    if (fileSizeInKb > SANDBOX_BTC_FILE_SIZE_LIMIT) {
+    if (
+      fileMediaType === MediaType.IMAGE &&
+      fileSizeInKb > SANDBOX_BTC_IMAGE_SIZE_LIMIT
+    ) {
+      error = ImageFileError.TOO_LARGE;
+    } else if (
+      fileMediaType !== MediaType.IMAGE &&
+      fileSizeInKb > SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT
+    ) {
       error = ImageFileError.TOO_LARGE;
     }
 
@@ -239,9 +253,9 @@ export const processHTMLFile = async (file: File): Promise<SandboxFiles> => {
     throw Error(SandboxFileError.WRONG_FORMAT);
   }
 
-  // Check file size is smaller than SANDBOX_BTC_FILE_SIZE_LIMIT
+  // Check file size is smaller than SANDBOX_BTC_IMAGE_SIZE_LIMIT
   const fileSizeInKb = file.size / 1024;
-  if (fileSizeInKb > SANDBOX_BTC_FILE_SIZE_LIMIT) {
+  if (fileSizeInKb > SANDBOX_BTC_IMAGE_SIZE_LIMIT) {
     throw Error(SandboxFileError.TOO_LARGE);
   }
 
