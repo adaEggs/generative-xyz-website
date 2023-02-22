@@ -8,6 +8,7 @@
 
   &_row {
     min-height: rem(40px);
+    gap: rem(10);
   }
 
   &_inner {
@@ -395,6 +396,10 @@
   background: none;
   padding: rem(8px) 0;
   margin-left: rem(15px);
+
+  @include mobile {
+    margin-left: 0;
+  }
 
   svg {
     width: 24px;

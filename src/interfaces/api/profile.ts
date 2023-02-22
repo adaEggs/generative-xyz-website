@@ -1,5 +1,4 @@
 import { IMAGE_TYPE } from '@components/NFTDisplayBox/constant';
-import { IPagingResponse } from '@interfaces/api/paging';
 import { ProjectSocial } from '@interfaces/project';
 import { User } from '@interfaces/user';
 
@@ -21,10 +20,6 @@ export interface IUpdateProfileResponse {
   profileSocial: ProjectSocial;
   walletAddress: string;
   walletAddressBtc: string;
-}
-
-export interface IGetArtistsResponse extends IPagingResponse {
-  result: Array<User>;
 }
 
 // Collected tab
