@@ -132,25 +132,28 @@ export const getCollectedNFTs = async (
     const res = await get<IGetCollectedNFTsResp>(
       `/wallet/wallet-info?address=${btcAddress}`
     );
-    const tasks = res.inscriptions.map((data: IGetCollectedNFTInsciption) => {
-      const randomStr = Date.now().toString();
-      return {
-        inscriptionID: data.inscription_id,
-        inscriptionNumber: `${data.number}`,
-        contentType: data.content_type,
-        name: '',
-        projectName: data.project_name,
-        projectID: data.project_id,
-        image: data.thumbnail,
-        contentLength: randomStr,
-        orderID: randomStr,
-        isCompleted: false,
-        status: CollectedNFTStatus.Success,
-        statusText: 'Success',
-      } as ICollectedNFTItem;
-    });
-    const data = await Promise.all(tasks);
-    return data;
+    if (res && res.inscriptions && res.inscriptions.length > 0) {
+      const tasks = res.inscriptions.map((data: IGetCollectedNFTInsciption) => {
+        const randomStr = Date.now().toString();
+        return {
+          inscriptionID: data.inscription_id,
+          inscriptionNumber: `${data.number}`,
+          contentType: data.content_type,
+          name: '',
+          projectName: data.project_name,
+          projectID: data.project_id,
+          image: data.thumbnail,
+          contentLength: randomStr,
+          orderID: randomStr,
+          isCompleted: false,
+          status: CollectedNFTStatus.Success,
+          statusText: 'Success',
+        } as ICollectedNFTItem;
+      });
+      const data = await Promise.all(tasks);
+      return data;
+    }
+    return [];
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get collected NFTs');
