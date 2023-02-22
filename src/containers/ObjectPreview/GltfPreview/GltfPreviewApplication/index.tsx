@@ -5,15 +5,9 @@ import { GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
 class GltfPreviewApplication extends Base {
   onChainModel?: GLTF;
 
-  getModelDimension(model: THREE.Object3D) {
-    const box3 = new THREE.Box3().setFromObject(model);
-    const size = new THREE.Vector3();
-    return box3.getSize(size);
-  }
-
   async loadMainModel(_url: string) {
     // load main model
-    const gltf = await this.loadModel(_url);
+    const gltf = await this.loadGLBModel(_url);
 
     this.onChainModel = gltf;
 
@@ -22,15 +16,6 @@ class GltfPreviewApplication extends Base {
     this.onChainModel.scene.position.z = 0;
 
     this.onChainModel.scene.rotation.y = 6.3;
-
-    // const circle = this.onChainModel.scene.getObjectByProperty(
-    //   'name',
-    //   'Circle'
-    // );
-
-    // if (circle) {
-    //   this.onChainModel.scene.remove(circle);
-    // }
 
     this.userController?.worldOctree.fromGraphNode(this.onChainModel.scene);
     this.scene.add(this.onChainModel.scene);
@@ -53,13 +38,13 @@ class GltfPreviewApplication extends Base {
   }
 
   async loadHouseSetup() {
-    const gltf = await this.loadModel('/models/candyHouse.glb');
+    const gltf = await this.loadGLBModel('/models/candyHouse.glb');
     const model = gltf.scene;
     this.scene.add(model);
 
-    model.scale.x = 3;
-    model.scale.y = 3;
-    model.scale.z = 3;
+    model.scale.x = 4;
+    model.scale.y = 4;
+    model.scale.z = 4;
 
     model.position.y = -1.1;
 
@@ -91,7 +76,7 @@ class GltfPreviewApplication extends Base {
   render(): void {
     super.render();
     if (this.userController) {
-      this.userController.render();
+      this.userController.update();
     }
   }
 }

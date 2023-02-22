@@ -5,10 +5,9 @@ import { Formik } from 'formik';
 import { toast } from 'react-hot-toast';
 
 import { IUpdateProjectPayload } from '@interfaces/api/project';
-import SvgInset from '@components/SvgInset';
-import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
+import { MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { updateProject } from '@services/project';
+import { deleteProject, updateProject } from '@services/project';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import ImagePreviewInput from '@components/ImagePreviewInput';
 import s from './styles.module.scss';
@@ -20,6 +19,8 @@ import useAsyncEffect from 'use-async-effect';
 import { getCategoryList } from '@services/category';
 import Select, { MultiValue } from 'react-select';
 import MarkdownEditor from '@components/MarkdownEditor';
+import { ROUTE_PATH } from '@constants/route-path';
+import { useRouter } from 'next/router';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -35,6 +36,7 @@ type IUpdateProjectFormValue = {
 };
 
 const FormEditProject = () => {
+  const router = useRouter();
   const { setProjectData, projectData: project } = useContext(
     GenerativeProjectDetailContext
   );
@@ -42,6 +44,7 @@ const FormEditProject = () => {
   const [categoryOptions, setCategoryOptions] = useState<Array<SelectOption>>(
     []
   );
+  const [isDelete, setIsDelete] = useState<boolean>(false);
 
   const nftMinted = useMemo((): number => {
     return project?.mintingInfo?.index || 0;
@@ -117,6 +120,8 @@ const FormEditProject = () => {
     if (newThumbnail) {
       const uploadRes = await uploadFile({ file: newThumbnail });
       thumbnailUrl = uploadRes.url;
+    } else {
+      return;
     }
 
     const isHidden = !values.isHidden;
@@ -172,6 +177,16 @@ const FormEditProject = () => {
     },
     [categoryOptions, project]
   );
+
+  const handleDeleteProject = async () => {
+    const text = `Are you sure delete your project?`;
+    if (confirm(text) == true) {
+      setIsDelete(true);
+      await deleteProject(GENERATIVE_PROJECT_CONTRACT, projectTokenId);
+      setIsDelete(false);
+      router.push(ROUTE_PATH.PROFILE);
+    }
+  };
 
   useAsyncEffect(async () => {
     const { result } = await getCategoryList();
@@ -291,17 +306,6 @@ const FormEditProject = () => {
                           setFieldValue('description', val);
                       }}
                     />
-
-                    {/*<textarea*/}
-                    {/*  id="description"*/}
-                    {/*  name="description"*/}
-                    {/*  onChange={handleChange}*/}
-                    {/*  onBlur={handleBlur}*/}
-                    {/*  value={values.description}*/}
-                    {/*  className={s.input}*/}
-                    {/*  rows={4}*/}
-                    {/*  placeholder="Tell us more about the meaning and inspiration behind your art."*/}
-                    {/*/>*/}
                     {errors.description && touched.description && (
                       <p className={s.error}>{errors.description}</p>
                     )}
@@ -312,6 +316,7 @@ const FormEditProject = () => {
                     className={s.uploadPreviewWrapper_upload}
                     file={values.thumbnail}
                     onFileChange={setNewFile}
+                    maxSizeKb={500}
                     previewHtml={<img src={values.thumbnail} alt="thumbnail" />}
                   />
                   <div className={s.uploadPreviewWrapper_thumb}>
@@ -393,17 +398,22 @@ const FormEditProject = () => {
                 <div className={s.actionWrapper}>
                   <ButtonIcon
                     onClick={() => handleSubmit}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isDelete}
                     type="submit"
                     className={s.nextBtn}
                     sizes="medium"
-                    endIcon={
-                      <SvgInset
-                        svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
-                      />
-                    }
                   >
                     Update
+                  </ButtonIcon>
+                  <ButtonIcon
+                    onClick={handleDeleteProject}
+                    disabled={isSubmitting || isDelete}
+                    type="button"
+                    className={s.nextBtn}
+                    sizes="medium"
+                    variants={'outline'}
+                  >
+                    Delete
                   </ButtonIcon>
                 </div>
               </div>

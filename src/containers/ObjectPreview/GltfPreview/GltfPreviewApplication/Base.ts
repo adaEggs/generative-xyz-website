@@ -1,18 +1,29 @@
 import * as THREE from 'three';
 import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { Sky } from 'three/examples/jsm/objects/Sky';
 import UserController from './UserController';
+import { getDebugMode } from '../helpers';
+// import { ORIGIN_CAMERA_POSITION_INIT } from './constants';
+// import { PLAYER_CAPSULE_END } from './constants';
 
 class Base {
+  order: THREE.EulerOrder = 'YXZ';
   container: HTMLDivElement;
+
+  isDebugging = false;
 
   clock = new THREE.Clock();
   dracoLoader = new DRACOLoader();
   glTFLoader = new GLTFLoader();
+  fbxLoader = new FBXLoader();
 
   renderer!: THREE.WebGLRenderer;
   scene!: THREE.Scene;
+
+  // cameraGroup = new THREE.Group();
+  // thirdPersonCamera = new THREE.Vector3(...ORIGIN_CAMERA_POSITION_INIT);
   camera!: THREE.PerspectiveCamera;
 
   userController!: UserController;
@@ -35,6 +46,7 @@ class Base {
   whiteHouse: boolean;
 
   constructor(id: string, _whiteHouse: boolean) {
+    this.isDebugging = getDebugMode();
     this.whiteHouse = _whiteHouse;
     this.dracoLoader.setDecoderPath('/js/libs/draco/');
     this.container = document.getElementById(id) as HTMLDivElement;
@@ -55,6 +67,21 @@ class Base {
     this.animate = this.animate.bind(this);
 
     this.animate();
+
+    this.addEventListeners();
+  }
+
+  addEventListeners() {
+    // document.body.addEventListener('mousemove', event => {
+    //   // move orig
+    // });
+    window.addEventListener('resize', this.onWindowResize);
+  }
+
+  getModelDimension(model: THREE.Object3D) {
+    const box3 = new THREE.Box3().setFromObject(model);
+    const size = new THREE.Vector3();
+    return box3.getSize(size);
   }
 
   createGalaxyStars() {
@@ -98,9 +125,14 @@ class Base {
       1000
     );
 
-    this.camera.rotation.order = 'YXZ';
+    this.camera.rotation.order = this.order;
     this.camera.rotation.y = 0.02;
     this.camera.rotation.x = 0.5;
+
+    // this.camera.lookAt(this.thirdPersonCamera);
+
+    // this.cameraGroup.add(this.camera);
+    // this.scene.add(this.cameraGroup);
   }
 
   createRenderer() {
@@ -150,6 +182,11 @@ class Base {
       this.topLight.distance = 200;
       this.scene.add(this.topLight);
 
+      if (this.isDebugging) {
+        const topLightHelper = new THREE.SpotLightHelper(this.topLight);
+        this.scene.add(topLightHelper);
+      }
+
       this.bottomLight = new THREE.SpotLight(0xffee88, 1);
       this.bottomLight.position.set(0, -50, 0);
       this.bottomLight.angle = 0.3;
@@ -157,8 +194,11 @@ class Base {
       this.bottomLight.decay = 0;
       this.bottomLight.distance = 200;
       this.scene.add(this.bottomLight);
-      // const spotLightHelper1 = new THREE.SpotLightHelper(spotLight1);
-      // this.scene.add(spotLightHelper1);
+
+      if (this.isDebugging) {
+        const bottomLightHelper = new THREE.SpotLightHelper(this.bottomLight);
+        this.scene.add(bottomLightHelper);
+      }
 
       this.spotLight1 = new THREE.SpotLight(0x7f00ff, 1);
       this.spotLight1.position.set(50, 0, 50);
@@ -167,8 +207,11 @@ class Base {
       this.spotLight1.decay = 0;
       this.spotLight1.distance = 100;
       this.scene.add(this.spotLight1);
-      // const spotLightHelper2 = new THREE.SpotLightHelper(this.spotLight2);
-      // this.scene.add(spotLightHelper2);
+
+      if (this.isDebugging) {
+        const spotLightHelper1 = new THREE.SpotLightHelper(this.spotLight1);
+        this.scene.add(spotLightHelper1);
+      }
 
       this.spotLight2 = new THREE.SpotLight(0xff7f00, 1);
       this.spotLight2.position.set(-50, 0, 50);
@@ -177,8 +220,11 @@ class Base {
       this.spotLight2.decay = 0;
       this.spotLight2.distance = 100;
       this.scene.add(this.spotLight2);
-      // // const spotLightHelper3 = new THREE.SpotLightHelper(spotLight3);
-      // // this.scene.add(spotLightHelper3);
+
+      if (this.isDebugging) {
+        const spotLightHelper2 = new THREE.SpotLightHelper(this.spotLight2);
+        this.scene.add(spotLightHelper2);
+      }
 
       this.spotLight3 = new THREE.SpotLight(0xb00c3f, 1);
       this.spotLight3.position.set(50, 0, -50);
@@ -187,8 +233,11 @@ class Base {
       this.spotLight3.decay = 0;
       this.spotLight3.distance = 100;
       this.scene.add(this.spotLight3);
-      // // const spotLightHelper4 = new THREE.SpotLightHelper(spotLight4);
-      // // this.scene.add(spotLightHelper4);
+
+      if (this.isDebugging) {
+        const spotLightHelper3 = new THREE.SpotLightHelper(this.spotLight3);
+        this.scene.add(spotLightHelper3);
+      }
 
       this.spotLight4 = new THREE.SpotLight(0x0c8cbf, 1);
       this.spotLight4.position.set(-50, 0, -50);
@@ -197,6 +246,11 @@ class Base {
       this.spotLight4.decay = 0;
       this.spotLight4.distance = 100;
       this.scene.add(this.spotLight4);
+
+      if (this.isDebugging) {
+        const spotLightHelper4 = new THREE.SpotLightHelper(this.spotLight4);
+        this.scene.add(spotLightHelper4);
+      }
 
       const pointLightSphere = new THREE.SphereGeometry(0.25, 16, 8);
       this.pointLight1 = new THREE.PointLight(0xff0040, 2, 50);
@@ -339,10 +393,18 @@ class Base {
     }
   }
 
-  async loadModel(url: string): Promise<GLTF> {
+  async loadGLBModel(url: string): Promise<GLTF> {
     return new Promise(resolve => {
       this.glTFLoader.load(url, gltf => {
         resolve(gltf);
+      });
+    });
+  }
+
+  async loadFBXModel(url: string): Promise<THREE.Group> {
+    return new Promise(resolve => {
+      this.fbxLoader.load(url, group => {
+        resolve(group);
       });
     });
   }

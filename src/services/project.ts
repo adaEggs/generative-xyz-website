@@ -15,7 +15,7 @@ import {
   IUploadBTCProjectFilePayload,
   IUploadBTCProjectFileResponse,
 } from '@interfaces/api/project';
-import { get, post, postFile, put } from '@services/http-client';
+import { deleteMethod, get, post, postFile, put } from '@services/http-client';
 import log from '@utils/logger';
 import querystring from 'query-string';
 import { orderBy } from 'lodash';
@@ -184,6 +184,21 @@ export const updateProject = async (
     const res = await put<IUpdateProjectPayload, Project>(
       `${API_PATH}/${contractAddress}/tokens/${projectId}`,
       payload
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to create btc project', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to create btc project');
+  }
+};
+
+export const deleteProject = async (
+  contractAddress: string,
+  projectId: string
+): Promise<Project> => {
+  try {
+    const res = await deleteMethod<Project>(
+      `${API_PATH}/${contractAddress}/${projectId}`
     );
     return res;
   } catch (err: unknown) {
