@@ -66,9 +66,8 @@ class UserController {
           }
         });
         this.character = object;
-        this.container.add(this.character);
 
-        // this.application.scene.add(this.character);
+        this.character.rotateY(-1.5);
       }
     }, 1000);
   }
@@ -84,7 +83,10 @@ class UserController {
         // change to view
         this.isFPS = !this.isFPS;
 
-        if (!this.isFPS) {
+        if (this.isFPS) {
+          this.container.remove(this.character);
+        } else {
+          this.container.add(this.character);
           this.cameraOrigin.copy(this.application.camera.position);
           this.application.camera.getWorldDirection(this.tempCameraVector);
           const cameraDirection = this.tempCameraVector.setY(0).normalize();
