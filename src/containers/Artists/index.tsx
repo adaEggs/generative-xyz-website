@@ -3,7 +3,6 @@ import { Col, Row } from 'react-bootstrap';
 import s from './styles.module.scss';
 import { Container } from 'react-bootstrap';
 import React, { useCallback, useContext, useState } from 'react';
-import { getArtists } from '@services/profile';
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
@@ -22,6 +21,7 @@ import { useAppSelector } from '@redux';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { WalletContext } from '@contexts/wallet-context';
+import { getArtists } from '@services/user';
 
 const LOG_PREFIX = 'ArtistsPage';
 
