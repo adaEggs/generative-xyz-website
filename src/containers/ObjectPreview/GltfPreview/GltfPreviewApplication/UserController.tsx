@@ -12,6 +12,11 @@ import {
 } from './constants';
 
 class UserController {
+  character?: THREE.Object3D;
+
+  gravity = GRAVITY;
+  // First person shooter
+  isFPS = true;
   application: GltfPreviewApplication;
   worldOctree: Octree;
   playerCollider: Capsule;
@@ -22,9 +27,14 @@ class UserController {
 
   playerOnFloor = false;
 
+  xAxis = new THREE.Vector3(1, 0, 0);
+  tempCameraVector = new THREE.Vector3();
+  tempModelVector = new THREE.Vector3();
+
   constructor(_app: GltfPreviewApplication) {
     this.application = _app;
     this.worldOctree = new Octree();
+
     this.playerCollider = new Capsule(
       new THREE.Vector3(...PLAYER_CAPSULE_START),
       new THREE.Vector3(...PLAYER_CAPSULE_END),
@@ -36,6 +46,36 @@ class UserController {
     this.playerDirection = new THREE.Vector3();
 
     this.addEventListeners();
+    this.loaderCharacter();
+  }
+
+  updateCharacterPosition() {
+    if (this.character) {
+      this.character.position.copy(this.application.camera.position);
+    }
+  }
+  loaderCharacter() {
+    setTimeout(async () => {
+      if (!this.character) {
+        const object = await this.application.loadFBXModel(
+          '/models/wizardbroom.fbx'
+        );
+
+        const box = this.application.getModelDimension(object);
+        const scaleSize = 1 / box.y;
+        object.scale.x = scaleSize;
+        object.scale.y = scaleSize;
+        object.scale.z = scaleSize;
+
+        object.traverse(child => {
+          if ((child as THREE.Mesh).isMesh) {
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+        this.character = object;
+      }
+    }, 1000);
   }
 
   addEventListeners() {
@@ -44,6 +84,19 @@ class UserController {
     });
     document.addEventListener('keyup', event => {
       this.keyStates[event.code] = false;
+
+      if (event.code === 'KeyV') {
+        // change to view
+        this.isFPS = !this.isFPS;
+
+        if (this.character) {
+          if (this.isFPS) {
+            this.application.scene.remove(this.character);
+          } else {
+            this.application.scene.add(this.character);
+          }
+        }
+      }
     });
 
     document.body.addEventListener('mousedown', () => {
@@ -52,13 +105,42 @@ class UserController {
 
     document.body.addEventListener('mousemove', event => {
       if (document.pointerLockElement === document.body) {
-        this.application.camera.rotation.y -= event.movementX / 500;
-        this.application.camera.rotation.x -= event.movementY / 500;
-
-        // console.log(
-        //   this.application.camera.rotation.y,
-        //   this.application.camera.rotation.x
-        // );
+        const { movementX, movementY } = event;
+        // if (this.isFPS) {
+        //   this.application.camera.rotation.y -= movementX / 500;
+        //   this.application.camera.rotation.x -= movementY / 500;
+        //   if (this.application.camera.rotation.x > 1) {
+        //     this.application.camera.rotation.x = 1;
+        //   }
+        //   if (this.application.camera.rotation.x < -1) {
+        //     this.application.camera.rotation.x = -1;
+        //   }
+        // } else {
+        //   if (this.character) {
+        //     const offset = new THREE.Spherical().setFromVector3(
+        //       this.application.camera.position
+        //         .clone()
+        //         .sub(this.character.position)
+        //     );
+        //     const phi = offset.phi - movementY * 0.02;
+        //     offset.theta -= movementX * 0.02;
+        //     offset.phi = Math.max(0.01, Math.min(0.35 * Math.PI, phi));
+        //     this.application.camera.position.copy(
+        //       this.character.position
+        //         .clone()
+        //         .add(new THREE.Vector3().setFromSpherical(offset))
+        //     );
+        //     this.application.camera.lookAt(this.character.position);
+        //   }
+        // }
+        this.application.camera.rotation.y -= movementX / 500;
+        this.application.camera.rotation.x -= movementY / 500;
+        if (this.application.camera.rotation.x > 1) {
+          this.application.camera.rotation.x = 1;
+        }
+        if (this.application.camera.rotation.x < -1) {
+          this.application.camera.rotation.x = -1;
+        }
       }
     });
   }
@@ -82,7 +164,7 @@ class UserController {
     if (this.worldOctree && this.playerCollider) {
       let damping = Math.exp(-4 * deltaTime) - 1;
       if (!this.playerOnFloor) {
-        this.playerVelocity.y -= GRAVITY * deltaTime;
+        this.playerVelocity.y -= this.gravity * deltaTime;
         // small air resistance
         damping *= 0.1;
       }
@@ -127,9 +209,10 @@ class UserController {
   }
 
   controls(deltaTime: number) {
+    const speedDelta = this.playerOnFloor ? deltaTime * 30 : deltaTime;
     if (this.worldOctree && this.playerCollider) {
       // gives a bit of air control
-      const speedDelta = deltaTime * 50;
+
       if (this.keyStates['KeyW']) {
         this.playerVelocity.add(
           this.getForwardVector().multiplyScalar(speedDelta)
@@ -152,17 +235,21 @@ class UserController {
       }
       if (this.playerOnFloor) {
         if (this.keyStates['Space']) {
-          this.playerVelocity.y = 15;
+          this.playerVelocity.y = 5;
         }
       }
     }
   }
 
-  render() {
+  update() {
     const deltaTime = this.application.clock.getDelta();
+
     this.controls(deltaTime);
     this.updatePlayer(deltaTime);
-    this.teleportPlayerIfOob();
+    if (this.isFPS) {
+      this.teleportPlayerIfOob();
+    }
+    this.updateCharacterPosition();
   }
 }
 
