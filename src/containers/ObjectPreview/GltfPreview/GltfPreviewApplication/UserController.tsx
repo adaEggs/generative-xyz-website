@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import * as THREE from 'three';
-import { Capsule } from 'three/examples/jsm/math/Capsule';
-import { Octree } from 'three/examples/jsm/math/Octree';
 import GltfPreviewApplication from '.';
 import {
   PLAYER_CAPSULE_START,
@@ -12,14 +10,12 @@ import {
 } from './constants';
 
 class UserController {
-  character?: THREE.Object3D;
+  character!: THREE.Object3D;
 
   gravity = GRAVITY;
   // First person shooter
   isFPS = true;
   application: GltfPreviewApplication;
-  worldOctree: Octree;
-  playerCollider: Capsule;
 
   keyStates: Record<string, boolean> = {};
   playerVelocity: THREE.Vector3;
@@ -27,15 +23,15 @@ class UserController {
 
   playerOnFloor = false;
 
+  cameraOrigin = new THREE.Vector3();
+  xAxis = new THREE.Vector3(1, 0, 0);
+  tempCameraVector = new THREE.Vector3();
+  tempModelVector = new THREE.Vector3();
+
+  container = new THREE.Group();
+
   constructor(_app: GltfPreviewApplication) {
     this.application = _app;
-    this.worldOctree = new Octree();
-
-    this.playerCollider = new Capsule(
-      new THREE.Vector3(...PLAYER_CAPSULE_START),
-      new THREE.Vector3(...PLAYER_CAPSULE_END),
-      PLAYER_CAPSULE_RADIUS
-    );
 
     this.keyStates = {};
     this.playerVelocity = new THREE.Vector3();
@@ -43,6 +39,9 @@ class UserController {
 
     this.addEventListeners();
     this.loaderCharacter();
+
+    this.application.scene.add(this.container);
+    this.container.add(this.application.camera);
   }
 
   updateCharacterPosition() {
@@ -90,6 +89,7 @@ class UserController {
             this.application.scene.remove(this.character);
           } else {
             this.application.scene.add(this.character);
+            this.application.camera.lookAt(this.cameraOrigin);
           }
         }
       }
@@ -102,20 +102,38 @@ class UserController {
     document.body.addEventListener('mousemove', event => {
       if (document.pointerLockElement === document.body) {
         const { movementX, movementY } = event;
-        this.application.camera.rotation.y -= movementX / 500;
-        this.application.camera.rotation.x -= movementY / 500;
-        if (this.application.camera.rotation.x > 1) {
-          this.application.camera.rotation.x = 1;
-        }
-        if (this.application.camera.rotation.x < -1) {
-          this.application.camera.rotation.x = -1;
+
+        if (this.isFPS) {
+          this.application.camera.rotation.y -= movementX / 500;
+          this.application.camera.rotation.x -= movementY / 500;
+          if (this.application.camera.rotation.x > 1) {
+            this.application.camera.rotation.x = 1;
+          }
+          if (this.application.camera.rotation.x < -1) {
+            this.application.camera.rotation.x = -1;
+          }
+        } else {
+          const offset = new THREE.Spherical().setFromVector3(
+            this.application.camera.position.clone().sub(this.cameraOrigin)
+          );
+          const phi = offset.phi - movementY * 0.02;
+          offset.theta -= movementX * 0.02;
+          offset.phi = Math.max(0.01, Math.min(0.35 * Math.PI, phi));
+          this.application.camera.position.copy(
+            this.cameraOrigin
+              .clone()
+              .add(new THREE.Vector3().setFromSpherical(offset))
+          );
+          this.application.camera.lookAt(this.character.position);
         }
       }
     });
   }
 
   playerCollisions() {
-    const result = this.worldOctree.capsuleIntersect(this.playerCollider);
+    const result = this.application.colliders.worldOctree.capsuleIntersect(
+      this.application.colliders.playerCollider
+    );
     this.playerOnFloor = false;
     if (result) {
       this.playerOnFloor = result.normal.y > 0;
@@ -125,12 +143,17 @@ class UserController {
           -result.normal.dot(this.playerVelocity)
         );
       }
-      this.playerCollider.translate(result.normal.multiplyScalar(result.depth));
+      this.application.colliders.playerCollider.translate(
+        result.normal.multiplyScalar(result.depth)
+      );
     }
   }
 
   updatePlayer(deltaTime: number) {
-    if (this.worldOctree && this.playerCollider) {
+    if (
+      this.application.colliders.worldOctree &&
+      this.application.colliders.playerCollider
+    ) {
       let damping = Math.exp(-4 * deltaTime) - 1;
       if (!this.playerOnFloor) {
         this.playerVelocity.y -= this.gravity * deltaTime;
@@ -141,21 +164,27 @@ class UserController {
       const deltaPosition = this.playerVelocity
         .clone()
         .multiplyScalar(deltaTime);
-      this.playerCollider.translate(deltaPosition);
+      this.application.colliders.playerCollider.translate(deltaPosition);
       this.playerCollisions();
-      this.application.camera.position.copy(this.playerCollider.end);
+      this.application.camera.position.copy(
+        this.application.colliders.playerCollider.end
+      );
     }
   }
 
   teleportPlayerIfOob() {
     if (this.application.camera.position.y <= -25) {
-      //@ts-ignore
-      this.playerCollider.start.set(...PLAYER_CAPSULE_START);
+      this.application.colliders.playerCollider.start.set(
+        // @ts-ignore
+        ...PLAYER_CAPSULE_START
+      );
 
-      //@ts-ignore
-      this.playerCollider.end.set(...PLAYER_CAPSULE_END);
-      this.playerCollider.radius = PLAYER_CAPSULE_RADIUS;
-      this.application.camera.position.copy(this.playerCollider.end);
+      // @ts-ignore
+      this.application.colliders.playerCollider.end.set(...PLAYER_CAPSULE_END);
+      this.application.colliders.playerCollider.radius = PLAYER_CAPSULE_RADIUS;
+      this.application.camera.position.copy(
+        this.application.colliders.playerCollider.end
+      );
 
       //@ts-ignore
       this.application.camera.rotation.set(...DEFAULT_CAMERA_ROTATION);
@@ -179,7 +208,10 @@ class UserController {
 
   controls(deltaTime: number) {
     const speedDelta = this.playerOnFloor ? deltaTime * 30 : deltaTime;
-    if (this.worldOctree && this.playerCollider) {
+    if (
+      this.application.colliders.worldOctree &&
+      this.application.colliders.playerCollider
+    ) {
       // gives a bit of air control
 
       if (this.keyStates['KeyW']) {

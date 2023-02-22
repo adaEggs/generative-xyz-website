@@ -5,6 +5,7 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { Sky } from 'three/examples/jsm/objects/Sky';
 import UserController from './UserController';
 import { getDebugMode } from '../helpers';
+import Colliders from './Colliders';
 // import { ORIGIN_CAMERA_POSITION_INIT } from './constants';
 // import { PLAYER_CAPSULE_END } from './constants';
 
@@ -44,6 +45,7 @@ class Base {
 
   particle = new THREE.Object3D();
   whiteHouse: boolean;
+  colliders: Colliders;
 
   constructor(id: string, _whiteHouse: boolean) {
     this.isDebugging = getDebugMode();
@@ -53,14 +55,16 @@ class Base {
 
     this.glTFLoader.setDRACOLoader(this.dracoLoader);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.userController = new UserController(this as any);
+    this.colliders = new Colliders();
 
     this.createScene();
     this.createCamera();
     this.createRenderer();
     this.createFloor();
     this.createBasicLights();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.userController = new UserController(this as any);
 
     this.onWindowResize = this.onWindowResize.bind(this);
 
@@ -336,7 +340,7 @@ class Base {
     floor.position.y = 0;
     this.scene.add(floor);
 
-    this.userController.worldOctree.fromGraphNode(floor);
+    this.colliders.worldOctree.fromGraphNode(floor);
   }
 
   onWindowResize() {

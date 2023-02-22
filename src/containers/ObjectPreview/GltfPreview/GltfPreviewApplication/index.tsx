@@ -17,7 +17,7 @@ class GltfPreviewApplication extends Base {
 
     this.onChainModel.scene.rotation.y = 6.3;
 
-    this.userController?.worldOctree.fromGraphNode(this.onChainModel.scene);
+    this.colliders.worldOctree.fromGraphNode(this.onChainModel.scene);
     this.scene.add(this.onChainModel.scene);
 
     this.onChainModel.scene.traverse(function (mesh) {
@@ -48,7 +48,7 @@ class GltfPreviewApplication extends Base {
 
     model.position.y = -1.1;
 
-    this.userController.worldOctree.fromGraphNode(model);
+    this.colliders.worldOctree.fromGraphNode(model);
 
     model.traverse(mesh => {
       if ((mesh as THREE.Mesh).isMesh) {
