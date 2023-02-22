@@ -37,6 +37,11 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
       ? `#${project.inscriptionNumber}`
       : project.projectName || '';
 
+  const isNotShowBlur =
+    project.status === CollectedNFTStatus.Success ||
+    project.statusText === 'Minted' ||
+    project.statusText === 'Transferring';
+
   return (
     <Link href={linkPath} className={`${s.projectCard} ${className}`}>
       <div className={s.projectCard_inner}>
@@ -54,9 +59,7 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                 loading={'lazy'}
               />
             </div>
-            {project.status !== CollectedNFTStatus.Success && (
-              <div className={s.projectCard_thumb_backdrop} />
-            )}
+            {!isNotShowBlur && <div className={s.projectCard_thumb_backdrop} />}
           </div>
         ) : (
           <div className={`${s.projectCard_thumb}`}>
@@ -65,12 +68,9 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                 inscriptionID={project.inscriptionID}
                 type={project.contentType}
                 variants="absolute"
-                // className={s.projectCard_thumb_box_img}
               />
             </div>
-            {project.status !== CollectedNFTStatus.Success && (
-              <div className={s.projectCard_thumb_backdrop} />
-            )}
+            {!isNotShowBlur && <div className={s.projectCard_thumb_backdrop} />}
           </div>
         )}
         <div className={s.projectCard_inner_info}>

@@ -55,4 +55,12 @@ export const HOST_ORDINALS_EXPLORER =
 
 export const GLB_COLLECTION_ID = process.env.NEXT_PUBLIC_GLB_COLLECTION_ID!;
 
+// Datadog
+// Datadog config
+export const DD_APP_ID = process.env.NEXT_PUBLIC_DD_APP_ID!;
+export const DD_CLIENT_TOKEN = process.env.NEXT_PUBLIC_DD_CLIENT_TOKEN!;
+export const DD_SITE = 'datadoghq.com';
+export const DD_SERVICE = process.env.NEXT_PUBLIC_DD_SERVICE!;
+export const ENABLE_DD = process.env.NEXT_PUBLIC_ENABLE_DD! === 'true';
+
 /* eslint-enable @typescript-eslint/no-non-null-assertion */
