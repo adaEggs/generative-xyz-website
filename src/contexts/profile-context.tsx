@@ -351,11 +351,21 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const fetchDataCollectedNFTs = async () => {
     try {
-      const res = await Promise.all([
-        ...(await getMintingCollectedNFTs(currentBtcAddressRef.current)),
-        ...(await getCollectedNFTs(currentBtcAddressRef.current)),
+      const [mintingNFTs, mintedNFTs] = await Promise.all([
+        await getMintingCollectedNFTs(currentBtcAddressRef.current),
+        await getCollectedNFTs(currentBtcAddressRef.current),
       ]);
-      setCollectedNFTs(res || []);
+      const filterNTFs = [
+        ...mintingNFTs,
+        ...mintedNFTs.filter(
+          mintedNft =>
+            !mintingNFTs.find(
+              mintingNft =>
+                mintingNft.inscriptionID === mintedNft.inscriptionNumber
+            )
+        ),
+      ];
+      setCollectedNFTs(filterNTFs);
     } catch (error) {
       // handle fetch data error here
     } finally {

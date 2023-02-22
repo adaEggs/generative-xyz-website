@@ -1,5 +1,7 @@
 .wrapper {
   position: relative;
+  min-width: rem(300);
+  background-color: $background;
 
   @include mobile {
     min-width: rem(200);
@@ -18,37 +20,26 @@
     padding: rem(8);
   }
 
-  &.expand {
-    border-color: $black-40;
+  // &.expand {
+  //   border-color: $black-40;
 
-    .input {
-      width: rem(200);
-      transition: width 0.75s cubic-bezier(0, 0.795, 0, 1);
+  //   .input {
+  //     width: rem(300);
+  //     transition: width 0.75s cubic-bezier(0, 0.795, 0, 1);
 
-      @include mobile {
-        width: rem(100);
-      }
-    }
-
-    .dropdownOptions {
-      width: rem(120);
-      overflow: visible;
-
-      @include mobile {
-        width: rem(100);
-      }
-    }
-
-    .h_divider {
-      display: block;
-    }
-  }
+  //     @include mobile {
+  //       width: rem(100);
+  //     }
+  //   }
+  // }
 
   .input {
-    width: 0;
-    transition: width 0.75s cubic-bezier(0, 0.795, 0, 1);
+    width: rem(300);
+    background-color: transparent;
 
     @include mobile {
+      width: rem(200);
+
       &::placeholder {
         font-size: rem(14);
       }
@@ -63,86 +54,16 @@
       opacity: 1;
     }
   }
-
-  .dropdownOptions {
-    width: 0;
-    overflow: hidden;
-
-    :global(.select__control) {
-      border: none;
-      width: rem(120);
-      min-height: unset;
-      box-shadow: none;
-      cursor: pointer;
-
-      @include mobile {
-        width: rem(100);
-        font-size: rem(14);
-      }
-    }
-
-    :global(.select__indicator-separator) {
-      display: none;
-    }
-
-    :global(.select__menu) {
-      border-radius: 2px;
-      margin-top: rem(20);
-      width: rem(150);
-      transform: translateX(-11px);
-      box-shadow: $shadow;
-      border: 1px solid $black-10;
-
-      @include mobile {
-        width: rem(120);
-      }
-    }
-
-    :global(.select__menu-list) {
-      padding: 0;
-      border-radius: 2px;
-    }
-
-    :global(.select__option):hover {
-      background-color: $black-10;
-      cursor: pointer;
-    }
-
-    :global(.select__dropdown-indicator) {
-      padding: 0;
-    }
-
-    :global(.select__value-container) {
-      padding: 0;
-    }
-
-    :global(.select__option--is-selected) {
-      background-color: #fff;
-      color: $black-100;
-    }
-  }
-
-  .h_divider {
-    width: 1px;
-    height: rem(20);
-    background-color: $black-40;
-    margin: 0 rem(12);
-    display: none;
-
-    @include mobile {
-      margin: 0 rem(8);
-    }
-  }
 }
 
 .searchResult_wrapper {
   position: absolute;
   width: 100%;
-  min-width: rem(300);
+  min-width: rem(320);
   background-color: $white;
-  border: 1px solid $black-40;
+  box-shadow: 35px 15px 120px 0 #00000026;
   margin-top: rem(12);
-  max-height: rem(300);
+  max-height: rem(700);
   overflow-y: scroll;
   right: 0;
 
@@ -158,18 +79,18 @@
   }
 
   .searchResult_item {
-    padding: rem(12) !important;
-    border-bottom: 1px solid $black-10;
+    padding: rem(10) rem(16) !important;
     display: flex;
-    flex-direction: column;
-    gap: rem(4);
+    // flex-direction: column;
+    align-items: center;
+    gap: rem(12);
 
     &_link {
       cursor: pointer;
 
       &:hover,
       &:focus {
-        background-color: $black-10;
+        background-color: $black-5;
       }
     }
 
@@ -189,7 +110,14 @@
     white-space: nowrap;
     overflow: hidden;
     display: inline-block;
+    flex: 1;
 
     @include text-ellipsis;
+  }
+
+  .list_heading {
+    padding-top: rem(14);
+    padding-left: rem(16);
+    padding-bottom: rem(6);
   }
 }
