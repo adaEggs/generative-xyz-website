@@ -1,19 +1,20 @@
-import React, { useEffect, useRef, useState } from 'react';
-import s from './styles.module.scss';
-import SvgInset from '@components/SvgInset';
-import { CDN_URL } from '@constants/config';
-import Text from '@components/Text';
-import { Project } from '@interfaces/project';
-import { debounce } from 'lodash';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
-import { getProjectList } from '@services/project';
-import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
-import { v4 } from 'uuid';
-import { useRouter } from 'next/router';
-import { ROUTE_PATH } from '@constants/route-path';
+import Link from '@components/Link';
 import { Loading } from '@components/Loading';
+import SvgInset from '@components/SvgInset';
+import Text from '@components/Text';
+import { CDN_URL } from '@constants/config';
+import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { ROUTE_PATH } from '@constants/route-path';
+import { LogLevel } from '@enums/log-level';
+import useOnClickOutside from '@hooks/useOnClickOutSide';
+import { Project } from '@interfaces/project';
+import { getProjectList } from '@services/project';
+import log from '@utils/logger';
 import cs from 'classnames';
+import { debounce } from 'lodash';
+import { useEffect, useRef, useState } from 'react';
+import { v4 } from 'uuid';
+import s from './styles.module.scss';
 
 const LOG_PREFIX = 'SearchCollection';
 
@@ -25,6 +26,7 @@ const SearchCollection = () => {
   const [expandSearch, setExpandSearch] = useState(false);
 
   const inputSearchRef = useRef<HTMLInputElement>(null);
+  const resultSearchRef = useRef<HTMLDivElement>(null);
 
   const handleSearchCollections = async () => {
     try {
@@ -60,6 +62,8 @@ const SearchCollection = () => {
     if (searchText) handleSearchCollections();
   }, [searchText]);
 
+  useOnClickOutside(resultSearchRef, () => handleCloseSearchResult());
+
   return (
     <div className={s.wrapper}>
       <div className={cs(s.searchInput_wrapper, { [s.expand]: expandSearch })}>
@@ -71,7 +75,7 @@ const SearchCollection = () => {
             setShowResult(true);
           }, 300)}
           onFocus={() => setShowResult(true)}
-          onBlur={handleCloseSearchResult}
+          //   onBlur={handleCloseSearchResult}
           ref={inputSearchRef}
         ></input>
         <div
@@ -89,7 +93,7 @@ const SearchCollection = () => {
         </div>
       )}
       {!isLoading && showResult && searchText && foundCollections && (
-        <div className={s.searchResult_wrapper}>
+        <div className={s.searchResult_wrapper} ref={resultSearchRef}>
           {foundCollections.length === 0 ? (
             <div className={s.searchResult_item}>No Collection Found</div>
           ) : (
@@ -119,12 +123,10 @@ const SearchCollectionItem = ({
   creatorName?: string;
   collectionId?: string;
 }) => {
-  const router = useRouter();
-
   return (
-    <div
+    <Link
       className={cs(s.searchResult_item, s.searchResult_item_link)}
-      onClick={() => router.push(`${ROUTE_PATH.GENERATIVE}/${collectionId}`)}
+      href={`${ROUTE_PATH.GENERATIVE}/${collectionId}`}
     >
       <Text
         as="span"
@@ -138,7 +140,7 @@ const SearchCollectionItem = ({
           by {creatorName}
         </Text>
       )}
-    </div>
+    </Link>
   );
 };
 
