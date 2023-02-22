@@ -228,34 +228,6 @@ class UserController {
           this.application.camera.getWorldDirection(this.tempCameraVector);
           const cameraDirection = this.tempCameraVector.setY(0).normalize();
 
-          // Get the X-Z plane in which player is looking to compare with camera
-          this.character.getWorldDirection(this.tempModelVector);
-          const playerDirection = this.tempModelVector.setY(0).normalize();
-
-          // Get the angle to x-axis. z component is used to compare if the angle is clockwise or anticlockwise since angleTo returns a positive value
-          const cameraAngle =
-            cameraDirection.angleTo(this.xAxis) *
-            (cameraDirection.z > 0 ? 1 : -1);
-          const playerAngle =
-            playerDirection.angleTo(this.xAxis) *
-            (playerDirection.z > 0 ? 1 : -1);
-
-          // Get the angle to rotate the player to face the camera. Clockwise positive
-          const angleToRotate = playerAngle - cameraAngle;
-
-          // Get the shortest angle from clockwise angle to ensure the player always rotates the shortest angle
-          let sanitisedAngle = angleToRotate;
-          if (angleToRotate > Math.PI) {
-            sanitisedAngle = angleToRotate - 2 * Math.PI;
-          }
-          if (angleToRotate < -Math.PI) {
-            sanitisedAngle = angleToRotate + 2 * Math.PI;
-          }
-
-          // Rotate the model by a tiny value towards the camera direction
-          this.character.rotateY(
-            Math.max(-speedDelta, Math.min(sanitisedAngle, speedDelta))
-          );
           this.container.position.add(
             cameraDirection.multiplyScalar(speedDelta)
           );
@@ -263,7 +235,7 @@ class UserController {
             this.container.position.clone().add(this.cameraOrigin)
           );
 
-          this.character.position.copy(this.cameraOrigin);
+          this.character.position.copy(this.container.position);
         }
       }
       if (this.keyStates['KeyS']) {
@@ -307,6 +279,7 @@ class UserController {
     } else {
       this.controls(deltaTime);
       // console.log(this.application.camera.position, this.cameraOrigin);
+      console.log(this.character.position);
     }
   }
 }
