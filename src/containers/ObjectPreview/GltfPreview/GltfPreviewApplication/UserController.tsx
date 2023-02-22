@@ -93,6 +93,14 @@ class UserController {
             this.getForwardVector(),
             CHARACTER_SCALE
           );
+
+          this.container.position.copy(
+            this.application.colliders.playerCollider.end
+          );
+
+          this.application.camera.lookAt(
+            this.container.position.clone().add(this.character.position)
+          );
         }
       }
     });
@@ -327,7 +335,7 @@ class UserController {
       this.teleportPlayerIfOob();
     } else {
       this.controls(deltaTime);
-      this.updatePlayerOnThirdPerson(deltaTime);
+      // this.updatePlayerOnThirdPerson(deltaTime);
     }
   }
 }
