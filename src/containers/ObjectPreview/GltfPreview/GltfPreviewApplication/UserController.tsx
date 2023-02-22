@@ -27,10 +27,6 @@ class UserController {
 
   playerOnFloor = false;
 
-  xAxis = new THREE.Vector3(1, 0, 0);
-  tempCameraVector = new THREE.Vector3();
-  tempModelVector = new THREE.Vector3();
-
   constructor(_app: GltfPreviewApplication) {
     this.application = _app;
     this.worldOctree = new Octree();
@@ -106,33 +102,6 @@ class UserController {
     document.body.addEventListener('mousemove', event => {
       if (document.pointerLockElement === document.body) {
         const { movementX, movementY } = event;
-        // if (this.isFPS) {
-        //   this.application.camera.rotation.y -= movementX / 500;
-        //   this.application.camera.rotation.x -= movementY / 500;
-        //   if (this.application.camera.rotation.x > 1) {
-        //     this.application.camera.rotation.x = 1;
-        //   }
-        //   if (this.application.camera.rotation.x < -1) {
-        //     this.application.camera.rotation.x = -1;
-        //   }
-        // } else {
-        //   if (this.character) {
-        //     const offset = new THREE.Spherical().setFromVector3(
-        //       this.application.camera.position
-        //         .clone()
-        //         .sub(this.character.position)
-        //     );
-        //     const phi = offset.phi - movementY * 0.02;
-        //     offset.theta -= movementX * 0.02;
-        //     offset.phi = Math.max(0.01, Math.min(0.35 * Math.PI, phi));
-        //     this.application.camera.position.copy(
-        //       this.character.position
-        //         .clone()
-        //         .add(new THREE.Vector3().setFromSpherical(offset))
-        //     );
-        //     this.application.camera.lookAt(this.character.position);
-        //   }
-        // }
         this.application.camera.rotation.y -= movementX / 500;
         this.application.camera.rotation.x -= movementY / 500;
         if (this.application.camera.rotation.x > 1) {
@@ -247,9 +216,9 @@ class UserController {
     this.controls(deltaTime);
     this.updatePlayer(deltaTime);
     if (this.isFPS) {
+      this.updateCharacterPosition();
       this.teleportPlayerIfOob();
     }
-    this.updateCharacterPosition();
   }
 }
 
