@@ -14,10 +14,10 @@ const toXOnly = (pubKey: Buffer) =>
 const defaultPath = "m/86'/0'/0'/0/0";
 
 // sign message with first sign transaction
-const MESSAGE_TAP_R0OT =
+const TAPR0OT_MESSAGE =
   'Sign this message to generate your Bitcoin Taproot key. This key will be used for your generative.xyz transactions.';
 
-const getBitcoinOrdKeySignContent = (message: string): Buffer => {
+const getBitcoinKeySignContent = (message: string): Buffer => {
   return Buffer.from(message);
 };
 
@@ -32,24 +32,23 @@ const generateBitcoinKey = async ({
     window.ethereum as ethers.providers.ExternalProvider
   );
   const toSign =
-    '0x' + getBitcoinOrdKeySignContent(MESSAGE_TAP_R0OT).toString('hex');
+    '0x' + getBitcoinKeySignContent(TAPR0OT_MESSAGE).toString('hex');
   const signature = await provider.send('personal_sign', [
     toSign,
     address.toString(),
   ]);
 
-  const private_key = ethers.utils.arrayify(
+  const seed = ethers.utils.arrayify(
     ethers.utils.keccak256(ethers.utils.arrayify(signature))
   );
 
-  const root = bip32.fromSeed(Buffer.from(private_key));
+  const root = bip32.fromSeed(Buffer.from(seed));
 
   // Taproot
-  const childTaproot = root.derivePath(defaultPath);
+  const taprootChild = root.derivePath(defaultPath);
   const { address: sendAddressTaproot } = bitcoin.payments.p2tr({
-    internalPubkey: toXOnly(childTaproot.publicKey),
+    internalPubkey: toXOnly(taprootChild.publicKey),
   });
-  const privateKeyTaproot = childTaproot.privateKey;
 
   // Segwit
   const signSegwit = await Segwit.signBitcoinSegwitKey({
@@ -58,20 +57,18 @@ const generateBitcoinKey = async ({
   });
   return {
     taproot: {
-      privateKey: privateKeyTaproot,
       sendAddress: sendAddressTaproot,
       signature,
-      message: MESSAGE_TAP_R0OT,
+      message: TAPR0OT_MESSAGE,
     },
 
     segwit: {
-      privateKey: signSegwit.privateKey,
       sendAddress: signSegwit.address,
       signature: signSegwit.signature,
-      message: messageSegwit,
-      messagePrefix: signSegwit.signMessagePrefix,
+      message: signSegwit.message,
+      messagePrefix: signSegwit.messagePrefix,
     },
   };
 };
 
-export { generateBitcoinKey, getBitcoinOrdKeySignContent };
+export { generateBitcoinKey, getBitcoinKeySignContent };

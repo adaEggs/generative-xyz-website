@@ -69,7 +69,7 @@
     "react-svg": "^15.1.16",
     "react-tagsinput": "^3.20.0",
     "reselect": "^4.1.7",
-    "segwit": "https://github.com/matterhorn063/segwit#0.0.7",
+    "segwit": "https://github.com/generative-xyz/generative-segwit-sdk#0.0.3",
     "split-type": "^0.3.3",
     "supports-webp": "^3.0.0",
     "three": "^0.149.0",
