@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import GltfPreviewApplication from './GltfPreviewApplication';
 import styles from './styles.module.scss';
 import Instruction from '../components/Instruction';
@@ -15,24 +15,31 @@ const GLTFPreview: React.FC<IProps> = ({ url, whiteHouse = false }) => {
   const [isShowInstruction, setIsShowInstruction] = useState(true);
   const gltfPreviewAppRef = useRef<GltfPreviewApplication>();
 
+  const [totalLoaderStep, setTotalLoaderStep] = useState(0);
+  const [stepDone, setStepDone] = useState(0);
+
   useEffect(() => {
+    const keyStates: Record<string, boolean> = {};
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let clearTimeOutHandler: any;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const keyDownHandler = (e: any) => {
-      if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'Space'].includes(e.code)) {
-        setIsShowInstruction(false);
-      }
+      keyStates[e.code] = true;
+      setIsShowInstruction(false);
     };
     window.addEventListener('keydown', keyDownHandler);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const keyUpHandler = () => {
+    const keyUpHandler = (e: any) => {
+      keyStates[e.code] = false;
       if (clearTimeOutHandler) {
         clearTimeout(clearTimeOutHandler);
       }
       clearTimeOutHandler = setTimeout(() => {
-        setIsShowInstruction(true);
+        if (Object.values(keyStates).every(v => !v)) {
+          setIsShowInstruction(true);
+        }
       }, 1000);
     };
     window.addEventListener('keyup', keyUpHandler);
@@ -51,17 +58,44 @@ const GLTFPreview: React.FC<IProps> = ({ url, whiteHouse = false }) => {
 
   useEffect(() => {
     if (url && gltfPreviewAppRef.current) {
-      gltfPreviewAppRef.current.start(url as string, () => {
-        setIsLoading(false);
-        // setIsLoaded(true);
-      });
+      gltfPreviewAppRef.current.start(
+        url as string,
+        totalStep => {
+          setTotalLoaderStep(totalStep);
+        },
+        doneStep => {
+          setStepDone(doneStep);
+        },
+        () => {
+          setIsLoading(false);
+        }
+      );
     }
   }, [url]);
+
+  const processBar = useMemo(() => {
+    if (totalLoaderStep) {
+      return `${(stepDone / totalLoaderStep) * 100}%`;
+    }
+    return `0%`;
+  }, [stepDone, totalLoaderStep]);
 
   return (
     <>
       <div className={styles.gltfPreview}>
-        {isLoading && <div className={styles.loading}>Loading...</div>}
+        {isLoading && (
+          <div className={styles.loading}>
+            <div className={styles.loadingText}>
+              <div>Loading...</div>
+              <div
+                className={styles.loadingProcess}
+                style={{
+                  width: processBar,
+                }}
+              ></div>
+            </div>
+          </div>
+        )}
         <div className={styles.viewer} id={id}></div>
         {isShowInstruction && <Instruction className={styles.instruction} />}
       </div>
