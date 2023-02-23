@@ -18,6 +18,7 @@ import { toast } from 'react-hot-toast';
 import { SocialVerify } from '@components/SocialVerify';
 import { SOCIALS } from '@constants/common';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
+import { IconVerified } from '@components/IconVerified';
 
 export const UserInfo = (): JSX.Element => {
   const user = useAppSelector(getUserSelector);
@@ -42,17 +43,25 @@ export const UserInfo = (): JSX.Element => {
         {
           <div className={s.userInfo_content_wrapper}>
             <div className={s.userInfo_content_wrapper_info}>
-              <Heading
-                as={'h4'}
-                title={
-                  currentUser?.displayName ||
-                  formatAddress(currentUser?.walletAddress)
-                }
-                className={s.userInfo_content_wrapper_info_name}
-              >
-                {currentUser?.displayName ||
-                  formatAddress(currentUser?.walletAddress)}
-              </Heading>
+              <div className={s.userInfo_content_wrapper_info_inner}>
+                <Heading
+                  as={'h4'}
+                  title={
+                    currentUser?.displayName ||
+                    formatAddress(currentUser?.walletAddress)
+                  }
+                  className={s.userInfo_content_wrapper_info_name}
+                >
+                  {currentUser?.displayName ||
+                    formatAddress(currentUser?.walletAddress)}
+                </Heading>
+                {isTwVerified ? (
+                  <IconVerified />
+                ) : (
+                  <SocialVerify link={SOCIALS.twitter} />
+                )}
+              </div>
+
               {currentUser?.profileSocial?.twitter && (
                 <div className={s.creator_social}>
                   <span className={s.creator_divider}></span>
@@ -77,11 +86,6 @@ export const UserInfo = (): JSX.Element => {
                         </Link>
                       </Text>
                     </div>
-                    {!isTwVerified && (
-                      <>
-                        <SocialVerify social="Twitter" link={SOCIALS.twitter} />
-                      </>
-                    )}
                   </div>
                 </div>
               )}
@@ -89,17 +93,14 @@ export const UserInfo = (): JSX.Element => {
 
             <div className={s.userInfo_content_address}>
               {currentUser?.walletAddressBtcTaproot && (
-                <div className={s.userInfo_content_btcWallet}>
+                <div
+                  className={`${s.userInfo_content_btcWallet} ${s.userInfo_content_wallet}`}
+                >
+                  <SvgInset
+                    size={20}
+                    svgUrl={`${CDN_URL}/icons/Bitcoin%20(BTC).svg`}
+                  />
                   <Text size={'18'} color={'black-06'} fontWeight={'semibold'}>
-                    <span
-                      style={{
-                        color: 'orange',
-                        fontSize: 24,
-                        marginRight: 8,
-                      }}
-                    >
-                      ₿
-                    </span>{' '}
                     {ellipsisCenter({
                       str: currentUser?.walletAddressBtcTaproot || '',
                       limit: 10,
@@ -117,17 +118,14 @@ export const UserInfo = (): JSX.Element => {
                   />
                 </div>
               )}
-              <div className={s.userInfo_content_evmWallet}>
+              <div
+                className={`${s.userInfo_content_evmWallet} ${s.userInfo_content_wallet}`}
+              >
+                <SvgInset
+                  size={20}
+                  svgUrl={`${CDN_URL}/icons/Ethereum%20(ETH).svg`}
+                />
                 <Text size={'18'} color={'black-06'} fontWeight={'semibold'}>
-                  <span
-                    style={{
-                      color: '#9AA9DD',
-                      fontSize: 24,
-                      marginRight: 8,
-                    }}
-                  >
-                    Ξ
-                  </span>{' '}
                   {ellipsisCenter({
                     str: currentUser?.walletAddress || '',
                     limit: 10,

@@ -40,6 +40,7 @@ import {
   formatAddress,
   formatBTCPrice,
   formatEthPrice,
+  formatWebDomain,
 } from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
 import log from '@utils/logger';
@@ -324,7 +325,7 @@ const ProjectIntroSection = ({
                   size={24}
                   svgUrl={`${CDN_URL}/icons/Twitter.svg`}
                 />
-                <Text size={'18'} color="black-60">
+                <Text size={'18'}>
                   <Link
                     href={project?.creatorProfile?.profileSocial?.twitter || ''}
                     target="_blank"
@@ -348,14 +349,14 @@ const ProjectIntroSection = ({
                     size={24}
                     svgUrl={`${CDN_URL}/icons/link-copy.svg`}
                   />
-                  <Text size={'18'} color="black-60">
+                  <Text size={'18'}>
                     <Link
                       href={project?.creatorProfile?.profileSocial?.web || ''}
                       target="_blank"
                     >
-                      {project?.creatorProfile?.profileSocial?.web
-                        .replaceAll('https://', '')
-                        .replaceAll('http://', '')}
+                      {formatWebDomain(
+                        project?.creatorProfile?.profileSocial?.web || ''
+                      )}
                     </Link>
                   </Text>
                 </div>

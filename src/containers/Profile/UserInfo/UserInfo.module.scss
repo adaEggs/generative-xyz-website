@@ -5,6 +5,12 @@
   &_content {
     position: relative;
 
+    &_wallet {
+      align-items: center;
+      display: flex;
+      gap: rem(8px);
+    }
+
     &_wrapper {
       margin-top: rem(24px);
     }
@@ -120,6 +126,12 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  &_inner {
+    display: flex;
+    gap: rem(8px);
+    align-items: center;
   }
 }
 
