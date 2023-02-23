@@ -3,8 +3,9 @@ const cache = {}
 const referrers = {}
 
 async function fetchUrl(url, file) {
-  const record = await fetch(url)
-  const options = /\.m?js([#?].*)?$/.test(file) ? { headers: { 'content-type': 'text/javascript' } } : undefined
+  const record = await fetch(url);
+  const isJSFile = /\.m?js([#?].*)?$/.test(file);
+  const options = isJSFile ? { headers: { 'content-type': 'text/javascript' } } : undefined;
   return new Response(record.body, options);
 }
 
@@ -92,11 +93,10 @@ self.addEventListener("message", async (event) => {
 
 // Cache
 const CACHE_VERSION = 'v1.2.12';
-const STATIC_VERSION = 'v1.2.12';
 
 const CURRENT_CACHES = {
   assets: `assets-cache-${CACHE_VERSION}`,
-  static: `static-cache-${STATIC_VERSION}`,
+  static: `static-cache-${CACHE_VERSION}`,
 };
 
 self.addEventListener("activate", (event) => {
