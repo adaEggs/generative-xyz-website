@@ -46,7 +46,7 @@ const Profile: React.FC = (): React.ReactElement => {
                     eventKey="createdTab"
                     title={
                       <>
-                        Created <sup>{profileProjects.total}</sup>
+                        Created <sup>{profileProjects?.total || 0}</sup>
                       </>
                     }
                   >
