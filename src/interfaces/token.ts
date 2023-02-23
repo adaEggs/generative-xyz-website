@@ -28,6 +28,8 @@ export type Token = {
   isCompleted: boolean;
   priceBTC: string;
   orderID: string;
+  projectID?: string;
+  projectName?: string;
   stats: {
     price: string;
   };
