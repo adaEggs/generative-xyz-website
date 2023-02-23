@@ -12,7 +12,6 @@ import { getUserSelector } from '@redux/user/selector';
 import { sendAAEvent } from '@services/aa-tracking';
 import { reportProject } from '@services/project';
 import log from '@utils/logger';
-import { debounce } from 'lodash';
 import { useRouter } from 'next/router';
 import { useContext, useState } from 'react';
 import { Modal } from 'react-bootstrap';
@@ -35,6 +34,7 @@ const ReportModal = (props: Props) => {
   const router = useRouter();
   const { projectID } = router.query as { projectID: string };
   const [reportLink, setReportLink] = useState('');
+  const [reported, setReported] = useState(false);
 
   const handleConnectWallet = async (): Promise<void> => {
     try {
@@ -67,6 +67,8 @@ const ReportModal = (props: Props) => {
           projectId: projectID,
         },
       });
+      setReported(true);
+
       onHideModal();
     } catch (err: unknown) {
       log('failed to report project', LogLevel.ERROR, LOG_PREFIX);
@@ -92,7 +94,7 @@ const ReportModal = (props: Props) => {
         </Button>
       </Modal.Header>
       <Modal.Body>
-        {isReported ? (
+        {isReported || reported ? (
           <>
             <Heading as="h5" fontWeight="medium">
               Thanks for reporting a collection!
@@ -129,9 +131,7 @@ const ReportModal = (props: Props) => {
                 label="ORIGINAL COLLECTION"
                 sizes={'small'}
                 className={s.original_input}
-                onBlur={debounce(e => {
-                  setReportLink(e.target.value);
-                }, 500)}
+                onBlur={e => setReportLink(e.target.value)}
                 placeholder="Link to original creator"
               />
             </div>
