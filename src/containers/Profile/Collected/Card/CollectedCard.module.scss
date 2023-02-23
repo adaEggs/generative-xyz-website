@@ -84,7 +84,12 @@
     }
   }
 
+  &_info_wrapper {
+    display: flex;
+  }
+
   &_info {
+    position: relative;
     padding: {
       top: rem(24px);
       left: rem(16px);
@@ -127,6 +132,12 @@
       .projectCard_progress {
         margin-top: rem(5);
       }
+    }
+
+    &_share {
+      position: absolute;
+      right: rem(18);
+      top: rem(28);
     }
   }
 

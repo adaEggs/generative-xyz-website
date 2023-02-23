@@ -21,6 +21,8 @@ import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -134,7 +136,12 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
                   previewHtml={<Avatar imgSrcs={values?.avatar} fill />}
                 />
                 {user?.avatar && (
-                  <span className={s.account_avatar_label}>Upload</span>
+                  <span className={s.account_avatar_label}>
+                    <SvgInset
+                      svgUrl={`${CDN_URL}/icons/camera-01.svg`}
+                      size={24}
+                    />
+                  </span>
                 )}
               </div>
               <div className={s.account_form_wrapper}>
@@ -204,8 +211,8 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
                 <div className={s.input_item}>
                   <Input
                     name={'walletAddressBtc'}
-                    label={'BTC Wallet Address'}
-                    placeholder="3FZb..."
+                    label={'Your BTC address for payment'}
+                    placeholder="Please enter your BTC address"
                     className={s.input_wallet}
                     errors={{
                       walletAddressBtc: errors.walletAddressBtc || '',
@@ -214,31 +221,6 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
                   />
                 </div>
               )}
-
-              <div className={s.input_item}>
-                <Input
-                  name={'metamaskAddress'}
-                  label={'Metamask wallet address'}
-                  type="readonly"
-                  disabled={true}
-                  className={s.input_metamaskAddress}
-                  defaultValue={user?.walletAddress}
-                />
-              </div>
-
-              {!!user?.walletAddressBtcTaproot && (
-                <div className={s.input_item}>
-                  <Input
-                    name={'metamaskAddress'}
-                    label={'BTC wallet taproot wallet address'}
-                    type="readonly"
-                    disabled={true}
-                    className={s.input_metamaskAddress}
-                    defaultValue={user?.walletAddressBtcTaproot || ''}
-                  />
-                </div>
-              )}
-
               <div className={s.account_wallet_action}>
                 <div>
                   {user?.walletAddress ? (

@@ -136,6 +136,7 @@
         font-size: rem(16);
         position: relative;
         cursor: pointer;
+        color: $black-40-solid;
 
         @include mobile {
           text-align: center;
@@ -166,16 +167,16 @@
         }
       }
 
-      .active,
+      .active a,
       a:hover {
         transition: all 0.3s;
         color: $black-100;
       }
 
       &.dark {
-        color: $white-60-solid;
+        color: $black-40-solid;
 
-        .active,
+        .active a,
         a:hover {
           transition: all 0.3s;
           color: $white;

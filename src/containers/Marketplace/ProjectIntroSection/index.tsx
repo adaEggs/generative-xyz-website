@@ -1,9 +1,7 @@
-import Avatar from '@components/Avatar';
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
 import { Loading } from '@components/Loading';
-import MintingProgressBar from '@components/MintingProgressBar';
 import ProjectDescription from '@components/ProjectDescription';
 import { SocialVerify } from '@components/SocialVerify';
 import SvgInset from '@components/SvgInset';
@@ -42,6 +40,7 @@ import {
   formatAddress,
   formatBTCPrice,
   formatEthPrice,
+  formatWebDomain,
 } from '@utils/format';
 import { checkIsBitcoinProject } from '@utils/generative';
 import log from '@utils/logger';
@@ -56,6 +55,7 @@ import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import ReportModal from './ReportModal';
 import s from './styles.module.scss';
+import { IconVerified } from '@components/IconVerified';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -247,8 +247,15 @@ const ProjectIntroSection = ({
   }, [isCreated, user]);
 
   const isTwVerified = useMemo(() => {
-    return project?.creatorProfile?.profileSocial?.twitterVerified || false;
+    return !project?.creatorProfile?.profileSocial?.twitterVerified || false;
   }, [project?.creatorProfile?.profileSocial]);
+
+  const minted = useMemo((): string => {
+    return `${
+      (project?.mintingInfo?.index || 0) +
+      (Number(project?.mintingInfo.indexReserve) || 0)
+    }/${project?.maxSupply || project?.limit}`;
+  }, [project]);
 
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
@@ -264,6 +271,24 @@ const ProjectIntroSection = ({
     return (
       <div className={s.info}>
         <div className={`${s.projectHeader} ${isCreated ? s.hasEdit : ''}`}>
+          <Link
+            href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddress}`}
+            className={s.creator_info}
+          >
+            <Heading
+              className={s.projectHeader_creator}
+              as="h4"
+              fontWeight="medium"
+            >
+              {project?.creatorProfile?.displayName ||
+                formatAddress(project?.creatorProfile?.walletAddress || '')}
+            </Heading>
+            {isTwVerified ? (
+              <IconVerified />
+            ) : (
+              <SocialVerify link={SOCIALS.twitter} />
+            )}
+          </Link>
           <Heading
             className={s.projectHeader_title}
             as="h4"
@@ -290,52 +315,53 @@ const ProjectIntroSection = ({
             </div>
           )}
         </div>
-        <div className={s.creator}>
-          <Link
-            href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddress}`}
-            className={s.creator_info}
-          >
-            <Avatar
-              imgSrcs={project?.creatorProfile?.avatar || ''}
-              width={24}
-              height={24}
-            />
-            <Text size={'18'} color={'black-60'}>
-              {project?.creatorProfile?.displayName ||
-                formatAddress(project?.creatorProfile?.walletAddress || '')}
-            </Text>
-          </Link>
+
+        <div className={s.creator_social}>
           {project?.creatorProfile?.profileSocial?.twitter && (
-            <div className={s.creator_social}>
+            <div className={`${s.creator_social_item}`}>
+              <div className={s.creator_social_item_inner}>
+                <SvgInset
+                  className={`${s.creator_social_twitter}`}
+                  size={24}
+                  svgUrl={`${CDN_URL}/icons/Twitter.svg`}
+                />
+                <Text size={'18'}>
+                  <Link
+                    href={project?.creatorProfile?.profileSocial?.twitter || ''}
+                    target="_blank"
+                  >
+                    @
+                    {project?.creatorProfile?.profileSocial?.twitter
+                      .split('/')
+                      .pop()}
+                  </Link>
+                </Text>
+              </div>
+            </div>
+          )}
+          {project?.creatorProfile?.profileSocial?.web && (
+            <>
               <span className={s.creator_divider}></span>
               <div className={`${s.creator_social_item}`}>
                 <div className={s.creator_social_item_inner}>
                   <SvgInset
                     className={`${s.creator_social_twitter}`}
-                    size={20}
-                    svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                    size={24}
+                    svgUrl={`${CDN_URL}/icons/link-copy.svg`}
                   />
-                  <Text size={'18'} color="black-60">
+                  <Text size={'18'}>
                     <Link
-                      href={
-                        project?.creatorProfile?.profileSocial?.twitter || ''
-                      }
+                      href={project?.creatorProfile?.profileSocial?.web || ''}
                       target="_blank"
                     >
-                      @
-                      {project?.creatorProfile?.profileSocial?.twitter
-                        .split('/')
-                        .pop()}
+                      {formatWebDomain(
+                        project?.creatorProfile?.profileSocial?.web || ''
+                      )}
                     </Link>
                   </Text>
                 </div>
-                {!isTwVerified && (
-                  <>
-                    <SocialVerify social="Twitter" link={SOCIALS.twitter} />
-                  </>
-                )}
               </div>
-            </div>
+            </>
           )}
         </div>
         {mobileScreen && (
@@ -344,22 +370,15 @@ const ProjectIntroSection = ({
           </div>
         )}
 
-        {project?.mintingInfo.index !== project?.maxSupply && (
-          <MintingProgressBar
-            current={project?.mintingInfo?.index}
-            total={project?.maxSupply || project?.limit}
-            className={s.progressBar}
-          />
-        )}
         {isBitcoinProject && (
           <div className={s.stats}>
             {isLimitMinted && (
               <div className={s.stats_item}>
                 <Text size="12" fontWeight="medium">
-                  Mint Price
+                  MINTED
                 </Text>
                 <Heading as="h6" fontWeight="medium">
-                  {Number(project?.mintPrice) ? `${priceMemo} BTC` : 'Free'}
+                  {minted}
                 </Heading>
               </div>
             )}
@@ -451,7 +470,7 @@ const ProjectIntroSection = ({
                               fontWeight="semibold"
                               color="primary-333"
                             >
-                              Mint fee:{' '}
+                              Inscription fee:{' '}
                               {formatBTCPrice(Number(project?.networkFee))} BTC
                             </Text>
                           </Tooltip>
@@ -499,8 +518,8 @@ const ProjectIntroSection = ({
                               fontWeight="semibold"
                               color="primary-333"
                             >
-                              Mint fee: {formatEthPrice(project?.networkFeeEth)}{' '}
-                              ETH
+                              Inscription fee:{' '}
+                              {formatEthPrice(project?.networkFeeEth)} ETH
                             </Text>
                           </Tooltip>
                         ) : (
@@ -698,15 +717,6 @@ const ProjectIntroSection = ({
             </div>
           </li>
           <li>
-            {/* <div>
-              <TwitterShare
-                url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-                title={''}
-                hashtags={[]}
-              />
-            </div> */}
-          </li>
-          <li>
             <div
               className={s.projectBtn}
               onClick={() => setShowReportModal(true)}
@@ -724,7 +734,13 @@ const ProjectIntroSection = ({
 
         {showReportMsg && (
           <div className={s.reportMsg}>
-            <Text>This collection is currently under review.</Text>
+            <SvgInset
+              size={18}
+              svgUrl={`${CDN_URL}/icons/ic-bell-ringing.svg`}
+            />
+            <Text size={'14'} fontWeight="bold">
+              This collection is currently under review.
+            </Text>
           </div>
         )}
       </div>

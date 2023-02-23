@@ -85,7 +85,7 @@ const ArtistsPage = () => {
           <Col md={'12'} xl={'2'} className={s.rightAction}>
             <ButtonIcon
               sizes={'large'}
-              variants={'blue'}
+              variants={'blue-deep'}
               disabled={isConnecting}
               onClick={onClickToUpload}
               endIcon={

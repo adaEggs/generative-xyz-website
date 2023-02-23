@@ -304,4 +304,23 @@
       opacity: 0.2;
     }
   }
+
+  &.blue-deep {
+    color: $white;
+    background-color: #4f43e2;
+    font-size: rem(16px);
+    line-height: 140%;
+
+    svg path {
+      stroke: white !important;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:disabled {
+      opacity: 0.2;
+    }
+  }
 }

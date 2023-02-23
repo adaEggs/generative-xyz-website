@@ -104,16 +104,6 @@ const ReportModal = (props: Props) => {
                 taken.
               </Text>
             </div>
-            {/* <div className={s.actionWrapper}>
-              <Button
-                disabled={isConnecting}
-                onClick={onHideModal}
-                className={s.actionBtn}
-                variants="secondary"
-              >
-                Cancel
-              </Button>
-            </div> */}
           </>
         ) : (
           <>
@@ -127,7 +117,6 @@ const ReportModal = (props: Props) => {
               </Text>
               <Input
                 name={'originalCreator'}
-                label="ORIGINAL COLLECTION"
                 sizes={'small'}
                 className={s.original_input}
                 onBlur={e => setReportLink(e.target.value)}

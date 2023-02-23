@@ -31,7 +31,11 @@ const Profile: React.FC = (): React.ReactElement => {
                     <Tab
                       tabClassName={s.tab}
                       eventKey="collectedTab"
-                      title={`Collected (${collectedNFTs.length})`}
+                      title={
+                        <>
+                          Collection <sup>{collectedNFTs.length}</sup>
+                        </>
+                      }
                     >
                       <Collected />
                     </Tab>
@@ -40,7 +44,11 @@ const Profile: React.FC = (): React.ReactElement => {
                   <Tab
                     tabClassName={s.tab}
                     eventKey="createdTab"
-                    title={`Created (${profileProjects?.total || 0})`}
+                    title={
+                      <>
+                        Created <sup>{profileProjects?.total || 0}</sup>
+                      </>
+                    }
                   >
                     <CreatedTab />
                   </Tab>

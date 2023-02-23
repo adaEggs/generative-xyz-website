@@ -112,6 +112,7 @@ export const formatCurrency = (value: number): string => {
     const decimalStr = exponentialToDecimal(num).split('.')[1];
     return decimalStr.length;
   }
+
   const decimalLength = getDecimalPart(value);
   return value
     .toFixed(decimalLength > 2 ? decimalLength : 2)
@@ -155,4 +156,8 @@ export const ellipsisCenter = (payload: {
   } catch {
     return str;
   }
+};
+
+export const formatWebDomain = (link: string): string => {
+  return link.replaceAll('https://', '').replaceAll('http://', '');
 };

@@ -31,7 +31,7 @@ const EditProfile = (): JSX.Element => {
                 onClick={() => setTab('wallet')}
               >
                 <Text as={'span'} size={'20'}>
-                  Wallet
+                  Artist Payments
                 </Text>
               </li>
             </ul>

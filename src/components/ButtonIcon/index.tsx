@@ -11,7 +11,8 @@ type ButtonVariantsType =
   | 'outline-small'
   | 'ghost'
   | 'filter'
-  | 'blue';
+  | 'blue'
+  | 'blue-deep';
 type ButtonSizesType = 'large' | 'medium' | 'mid' | 'small' | 'xsmall';
 
 interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
