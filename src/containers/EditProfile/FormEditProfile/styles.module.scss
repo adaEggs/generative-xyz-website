@@ -2,16 +2,16 @@
   &_avatar {
     margin-bottom: rem(24px);
     position: relative;
-    border-radius: 50%;
-    overflow: hidden;
-    width: rem(120px);
-    height: rem(120px);
 
     &_el {
       position: relative;
-      border-radius: 50%;
-      overflow: hidden;
-      cursor: pointer;
+
+      label {
+        border-radius: 50%;
+        overflow: hidden;
+        width: rem(120px);
+        height: rem(120px);
+      }
     }
 
     &_label {

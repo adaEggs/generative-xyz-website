@@ -20,11 +20,13 @@ import { useRouter } from 'next/router';
 import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
+import { DEFAULT_USER_AVATAR } from '@constants/common';
 
 const LOG_PREFIX = 'FormEditProfile';
 
 const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
   const user = useAppSelector(getUserSelector);
+  const [uploadError, setUploadError] = useState<boolean>(false);
   const route = useRouter();
   const dispatch = useAppDispatch();
   const walletCtx = useContext(WalletContext);
@@ -71,7 +73,7 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
     if (newFile) {
       const uploadRes = await uploadFile({ file: newFile });
       avatarUrl = uploadRes.url;
-    }
+    } else if (uploadError) return;
 
     const payload: IUpdateProfilePayload = {
       avatar: avatarUrl || '',
@@ -106,7 +108,7 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
       initialValues={{
         nickname: user?.displayName || '',
         bio: user?.bio || '',
-        avatar: user?.avatar || '',
+        avatar: user?.avatar || DEFAULT_USER_AVATAR,
         website: user?.profileSocial?.web || '',
         instagram: user?.profileSocial?.instagram || '',
         discord: user?.profileSocial?.discord || '',
@@ -128,7 +130,8 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
                   className={s.account_avatar_el}
                   file={values.avatar}
                   onFileChange={setNewFile}
-                  previewHtml={<Avatar imgSrcs={user?.avatar || ''} fill />}
+                  onError={setUploadError}
+                  previewHtml={<Avatar imgSrcs={values?.avatar} fill />}
                 />
                 {user?.avatar && (
                   <span className={s.account_avatar_label}>Upload</span>
@@ -160,7 +163,6 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
                     useFormik
                   />
                 </div>
-
                 <div className={s.input_item}>
                   <div className={s.input_social}>
                     <Input
