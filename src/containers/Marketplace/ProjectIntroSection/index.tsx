@@ -446,7 +446,7 @@ const ProjectIntroSection = ({
                             fontWeight="semibold"
                             color="primary-333"
                           >
-                            Mint fee:{' '}
+                            Inscription fee:{' '}
                             {formatBTCPrice(Number(project?.networkFee))} BTC
                           </Text>
                         </Tooltip>
@@ -493,8 +493,8 @@ const ProjectIntroSection = ({
                             fontWeight="semibold"
                             color="primary-333"
                           >
-                            Mint fee: {formatEthPrice(project?.networkFeeEth)}{' '}
-                            ETH
+                            Inscription fee:{' '}
+                            {formatEthPrice(project?.networkFeeEth)} ETH
                           </Text>
                         </Tooltip>
                       ) : (
