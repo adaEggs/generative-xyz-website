@@ -16,7 +16,7 @@ import {
 import cs from 'classnames';
 import React, { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
-
+import Image from 'next/image';
 import ButtonIcon from '@components/ButtonIcon';
 import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
 import s from './styles.module.scss';
@@ -44,7 +44,6 @@ const CollectionItem = ({
   const isBTCListable =
     (data.buyable || (!data.buyable && !data.isCompleted)) && !!data.priceBTC;
   const isBTCDisable = !data.buyable && !data.isCompleted && !!data.priceBTC;
-
   const [thumb, setThumb] = useState<string>(data.image);
 
   const onThumbError = () => {
@@ -145,7 +144,8 @@ const CollectionItem = ({
             }`}
           >
             <div className={s.collectionCard_thumb_inner}>
-              <img
+              <Image
+                fill
                 onError={onThumbError}
                 src={thumb}
                 alt={data.name}

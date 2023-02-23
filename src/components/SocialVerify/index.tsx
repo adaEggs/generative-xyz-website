@@ -5,22 +5,21 @@ import s from './styles.module.scss';
 import Text from '@components/Text';
 
 export const SocialVerify: React.FC<{
-  social: string;
   link: string;
-}> = ({ social = '', link = '#' }) => {
+}> = ({ link = '#' }) => {
   return (
     <div className={s.whiteList_icon}>
-      <SvgInset size={20} svgUrl={`${CDN_URL}/icons/ic-question-circle.svg`} />
+      <SvgInset size={34} svgUrl={`${CDN_URL}/icons/badge-question.svg`} />
       <div className={`whiteList_content ${s.whiteList_content} tooltip`}>
         <div className={`${s.whiteList_content_inner}`}>
           <div className={'tooltip-arrow'} />
           <div className={'tooltip-inner'}>
             <Text size="14" fontWeight="semibold" color="primary-333">
-              Please send a direct message to{' '}
+              Is this you? Ping us at{' '}
               <a href={link} target="_blank" rel="noreferrer">
                 @generative_xyz
               </a>{' '}
-              to verify your {social}.
+              to get verified.
             </Text>
           </div>
         </div>
