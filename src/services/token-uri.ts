@@ -2,6 +2,8 @@ import { LogLevel } from '@enums/log-level';
 import {
   IGetGenerativeTokenAttributesParams,
   IGetGenerativeTokenAttributesResponse,
+  IGetGenerativeTokenUriListParams,
+  IGetGenerativeTokenUriListResponse,
   IGetGenerativeTokenUriParams,
   IGetGenerativeTokenUriResponse,
 } from '@interfaces/api/token-uri';
@@ -42,5 +44,20 @@ export const getTokenAttributes = async (
   } catch (err: unknown) {
     log('failed to get token attributes', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get token attributes');
+  }
+};
+
+export const getTokenUriList = async (
+  params: IGetGenerativeTokenUriListParams
+): Promise<IGetGenerativeTokenUriListResponse> => {
+  try {
+    const qs = '?' + querystring.stringify(params);
+    const res = await get<IGetGenerativeTokenUriListResponse>(
+      `/token-uri${qs}`
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get token uri', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get token uri');
   }
 };
