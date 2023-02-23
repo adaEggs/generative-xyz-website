@@ -110,13 +110,6 @@
         align-items: center;
         gap: rem(6);
       }
-
-      &:not(.isVerified) {
-        .creator_social_item_inner {
-          filter: grayscale(100%);
-          opacity: 0.5;
-        }
-      }
     }
 
     &_twitter {
