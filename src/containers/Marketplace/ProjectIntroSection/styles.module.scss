@@ -97,8 +97,9 @@
 
   &_social {
     display: flex;
-    gap: rem(20);
+    gap: rem(16);
     align-items: center;
+    margin-top: rem(10px);
 
     &_item {
       display: flex;
@@ -121,10 +122,6 @@
   }
 }
 
-.progressBar {
-  margin-bottom: rem(24px);
-}
-
 .CTA {
   display: flex;
   margin-bottom: rem(10px);
@@ -139,14 +136,6 @@
     @include mobile {
       width: 100%;
     }
-
-    // &__eth {
-    //   background: #00aa6c !important;
-
-    //   &:hover {
-    //     background: #01b875 !important;
-    //   }
-    // }
 
     &__wallet {
       padding-top: rem(17px);
@@ -361,6 +350,10 @@
       flex: 0 0 auto;
       margin-top: rem(5px);
     }
+  }
+
+  &_title {
+    font-style: italic;
   }
 }
 

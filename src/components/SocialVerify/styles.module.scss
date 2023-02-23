@@ -18,7 +18,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  width: rem(220px);
+  width: rem(280px);
   background: $white;
   opacity: 0;
   visibility: hidden;
@@ -27,6 +27,8 @@
     position: relative;
 
     :global(.tooltip-arrow) {
+      padding: 8px 16px;
+
       &::before {
         left: 50%;
         z-index: 2;
@@ -37,7 +39,8 @@
   }
 
   a {
-    text-decoration: underline;
+    text-decoration: none;
+    color: #3cf;
 
     &:hover {
       color: unset;

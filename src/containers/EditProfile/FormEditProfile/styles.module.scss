@@ -17,8 +17,6 @@
     &_label {
       position: absolute;
       background: rgba($primary-brand, 0.6);
-      height: 100%;
-      width: 100%;
       z-index: 2;
       top: 0;
       left: 0;
@@ -29,6 +27,10 @@
       justify-content: center;
       color: white;
       pointer-events: none;
+      border-radius: 50%;
+      overflow: hidden;
+      width: rem(120px);
+      height: rem(120px);
     }
 
     &:hover {
