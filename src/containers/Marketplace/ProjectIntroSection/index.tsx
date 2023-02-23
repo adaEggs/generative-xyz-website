@@ -717,15 +717,6 @@ const ProjectIntroSection = ({
             </div>
           </li>
           <li>
-            {/* <div>
-              <TwitterShare
-                url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-                title={''}
-                hashtags={[]}
-              />
-            </div> */}
-          </li>
-          <li>
             <div
               className={s.projectBtn}
               onClick={() => setShowReportModal(true)}
@@ -743,7 +734,13 @@ const ProjectIntroSection = ({
 
         {showReportMsg && (
           <div className={s.reportMsg}>
-            <Text>This collection is currently under review.</Text>
+            <SvgInset
+              size={18}
+              svgUrl={`${CDN_URL}/icons/ic-bell-ringing.svg`}
+            />
+            <Text size={'14'} fontWeight="bold">
+              This collection is currently under review.
+            </Text>
           </div>
         )}
       </div>

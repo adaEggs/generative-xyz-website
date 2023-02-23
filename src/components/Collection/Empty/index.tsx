@@ -19,6 +19,7 @@ import { WalletContext } from '@contexts/wallet-context';
 import Web3 from 'web3';
 import cs from 'classnames';
 import { checkIsBitcoinProject } from '@utils/generative';
+import Image from 'next/image';
 
 const LOG_PREFIX = 'Empty';
 
@@ -115,7 +116,12 @@ export const Empty = ({
     <div className={cs(s.empty, 'empty', className)}>
       <div className={cs(s.empty_inner, mintedOut && s.minted_out)}>
         <div className={s.empty_thumb}>
-          <img src={`${CDN_URL}/images/wiz-gif.gif`} alt="wiz-gif.svg" />
+          <Image
+            width={196}
+            height={200}
+            src={`${CDN_URL}/images/wiz-gif.gif`}
+            alt="wiz-gif.svg"
+          />
         </div>
         <div className={s.empty_desc}>
           {mintedOut ? (
