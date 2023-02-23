@@ -727,6 +727,16 @@ const ProjectIntroSection = ({
     );
   };
 
+  const hasReported = useMemo(() => {
+    if (!project?.reportUsers || !user) return false;
+
+    const reportedAddressList = project?.reportUsers.map(
+      item => item.reportUserAddress
+    );
+
+    return reportedAddressList.includes(user?.walletAddress || '');
+  }, [project?.reportUsers]);
+
   useEffect(() => {
     handleFetchMarketplaceStats();
   }, [projectDetail]);
@@ -766,6 +776,7 @@ const ProjectIntroSection = ({
       <ReportModal
         isShow={showReportModal}
         onHideModal={() => setShowReportModal(false)}
+        isReported={hasReported}
       />
     </div>
   );

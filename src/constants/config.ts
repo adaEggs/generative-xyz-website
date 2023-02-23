@@ -28,6 +28,9 @@ export const SECONDS_PER_BLOCK = parseInt(
   10
 );
 
+// Report
+export const REPORT_COUNT_THRESHOLD = 3;
+
 // Mint tool
 export const MINT_TOOL_MAX_FILE_SIZE = 1;
 export const MINT_TRANSFER_FEE = 16000;

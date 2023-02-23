@@ -104,7 +104,6 @@ export type IUpdateProjectPayload = Pick<
 > & { isHidden: boolean; categories: string[] };
 
 export interface IReportProjectPayload {
-  // projectID: string;
   originalLink?: string;
 }
 export type IReportProjectResponse = Project;
