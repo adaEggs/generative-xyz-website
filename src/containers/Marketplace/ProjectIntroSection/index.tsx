@@ -6,32 +6,37 @@ import LinkShare from '@components/LinkShare';
 import { Loading } from '@components/Loading';
 import MintingProgressBar from '@components/MintingProgressBar';
 import ProjectDescription from '@components/ProjectDescription';
+import { SocialVerify } from '@components/SocialVerify';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
 import TwitterShare from '@components/TwitterShare';
+import { SOCIALS } from '@constants/common';
 import {
   CDN_URL,
   NETWORK_CHAIN_ID,
   REPORT_COUNT_THRESHOLD,
 } from '@constants/config';
+import { EXTERNAL_LINK } from '@constants/external-link';
+import { IC_EDIT_PROFILE } from '@constants/icons';
 import { ROUTE_PATH } from '@constants/route-path';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
+import { PaymentMethod } from '@enums/mint-generative';
 import useContractOperation from '@hooks/useContractOperation';
 import useWindowSize from '@hooks/useWindowSize';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
-import { Token } from '@interfaces/token';
-import { EXTERNAL_LINK } from '@constants/external-link';
-import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { Project } from '@interfaces/project';
+import { Token } from '@interfaces/token';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
+import { isWalletWhiteList } from '@utils/common';
 import { convertToETH } from '@utils/currency';
 import {
   base64ToUtf8,
@@ -50,13 +55,8 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
-import s from './styles.module.scss';
-import { PaymentMethod } from '@enums/mint-generative';
-import { IC_EDIT_PROFILE } from '@constants/icons';
-import { SocialVerify } from '@components/SocialVerify';
-import { SOCIALS } from '@constants/common';
 import ReportModal from './ReportModal';
-import { isProduction, isWalletWhiteList } from '@utils/common';
+import s from './styles.module.scss';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -704,31 +704,29 @@ const ProjectIntroSection = ({
               </div>
             </OverlayTrigger>
           </li>
-          {!isProduction() && (
-            <li>
-              <OverlayTrigger
-                placement="bottom"
-                delay={{ show: 100, hide: 200 }}
-                overlay={
-                  <Tooltip id="variation-tooltip">
-                    <Text size="14" fontWeight="semibold" color="primary-333">
-                      Copypasta Report
-                    </Text>
-                  </Tooltip>
-                }
+          <li>
+            <OverlayTrigger
+              placement="bottom"
+              delay={{ show: 100, hide: 200 }}
+              overlay={
+                <Tooltip id="variation-tooltip">
+                  <Text size="14" fontWeight="semibold" color="primary-333">
+                    Copypasta Report
+                  </Text>
+                </Tooltip>
+              }
+            >
+              <div
+                className={s.reportBtn}
+                onClick={() => setShowReportModal(true)}
               >
-                <div
-                  className={s.reportBtn}
-                  onClick={() => setShowReportModal(true)}
-                >
-                  <SvgInset
-                    size={16}
-                    svgUrl={`${CDN_URL}/icons/ic-pasta-plate.svg`}
-                  />
-                </div>
-              </OverlayTrigger>
-            </li>
-          )}
+                <SvgInset
+                  size={16}
+                  svgUrl={`${CDN_URL}/icons/ic-pasta-plate.svg`}
+                />
+              </div>
+            </OverlayTrigger>
+          </li>
         </ul>
 
         {showReportMsg && (
