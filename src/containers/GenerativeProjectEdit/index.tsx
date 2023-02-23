@@ -11,6 +11,7 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
+import { isWalletWhiteList } from '@utils/common';
 
 const GenerativeProjectEdit = (): JSX.Element => {
   const user = useAppSelector(getUserSelector);
@@ -19,7 +20,10 @@ const GenerativeProjectEdit = (): JSX.Element => {
 
   useEffect(() => {
     if (!user || !projectData) return;
-    if (user?.walletAddress !== projectData?.creatorAddr) {
+    if (
+      user?.walletAddress !== projectData?.creatorAddr &&
+      !isWalletWhiteList(user?.walletAddress || '')
+    ) {
       router.push(ROUTE_PATH.DROPS);
     }
   }, [user, projectData]);

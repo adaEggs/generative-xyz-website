@@ -42,11 +42,13 @@ const PreviewController: React.FC<IProps> = (
   );
 
   const renderPreviewByType = useMemo((): React.ReactElement => {
-    const mediaType = getMediaTypeFromFileExt(thumbnailExt);
-    if (!mediaType) {
-      return <></>;
+    // Check ordinal
+    const isOrdinalPreview = thumbnailUrl.includes('i0');
+    if (isOrdinalPreview) {
+      return <ImagePreview url={thumbnailUrl} />;
     }
 
+    // Check hardcode glb collection
     if (projectID === GLB_COLLECTION_ID) {
       return (
         <Model3DPreview
@@ -57,6 +59,7 @@ const PreviewController: React.FC<IProps> = (
       );
     }
 
+    const mediaType = getMediaTypeFromFileExt(thumbnailExt);
     switch (mediaType) {
       case MediaType.IMAGE:
         return <ImagePreview url={thumbnailUrl} />;

@@ -51,6 +51,7 @@ import { PaymentMethod } from '@enums/mint-generative';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 import { SocialVerify } from '@components/SocialVerify';
 import { SOCIALS } from '@constants/common';
+import { isWalletWhiteList } from '@utils/common';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -236,6 +237,10 @@ const ProjectIntroSection = ({
     return project?.creatorAddr === user?.walletAddress;
   }, [user, project]);
 
+  const isEdit = useMemo((): boolean => {
+    return isCreated || isWalletWhiteList(user?.walletAddress || '');
+  }, [isCreated, user]);
+
   const isTwVerified = useMemo(() => {
     return project?.creatorProfile?.profileSocial?.twitterVerified || false;
   }, [project?.creatorProfile?.profileSocial]);
@@ -261,7 +266,7 @@ const ProjectIntroSection = ({
           >
             {project?.name}
           </Heading>
-          {isCreated && (
+          {isEdit && (
             <div className={s.projectHeader_btn}>
               <ButtonIcon
                 sizes="xsmall"
