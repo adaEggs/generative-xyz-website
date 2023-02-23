@@ -8,6 +8,7 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
+import { toast } from 'react-hot-toast';
 import { TwitterShareButton } from 'react-share';
 import s from './styles.module.scss';
 
@@ -25,6 +26,12 @@ const MintSuccess = () => {
 
   const handleOpenLink = (): void => {
     window.open(SOCIALS.discord);
+  };
+
+  const handleCopyLink = (url: string): void => {
+    navigator.clipboard.writeText(url);
+    toast.remove();
+    toast.success('Copied');
   };
 
   return (
@@ -67,6 +74,18 @@ const MintSuccess = () => {
               }
             >
               Share
+            </Button>
+          </div>
+          <div className={s.shareBtn}>
+            <Button
+              sizes="large"
+              onClick={() =>
+                handleCopyLink(
+                  `${location.origin}${mintedProjectUrl}?referral_code=${user?.id}`
+                )
+              }
+            >
+              Refer your friends
             </Button>
           </div>
         </div>

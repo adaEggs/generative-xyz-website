@@ -1,13 +1,18 @@
 import Link from '@components/Link';
 import NFTDisplayBox from '@components/NFTDisplayBox';
+import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
+import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import useWindowSize from '@hooks/useWindowSize';
 import { CollectedNFTStatus, ICollectedNFTItem } from '@interfaces/api/profile';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { TwitterShareButton } from 'react-share';
 import s from './CollectedCard.module.scss';
 
 interface IPros {
@@ -18,6 +23,7 @@ interface IPros {
 
 export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
+  const user = useAppSelector(getUserSelector);
 
   const [thumb, setThumb] = useState<string>(project.image);
 
@@ -93,6 +99,20 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   {projectName}
                 </Text>
               )}
+              {project.status === CollectedNFTStatus.Success && (
+                <div className={s.projectCard_info_share}>
+                  <TwitterShareButton
+                    url={`${location.origin}${linkPath}?referral_code=${user?.id}`}
+                    title={''}
+                    hashtags={[]}
+                  >
+                    <SvgInset
+                      size={20}
+                      svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                    />
+                  </TwitterShareButton>
+                </div>
+              )}
             </div>
           ) : (
             <div className={cs(s.projectCard_info, s.desktop)}>
@@ -115,11 +135,25 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   </Text>
                 </div>
               )}
+              {project.status === CollectedNFTStatus.Success && (
+                <div className={s.projectCard_info_share}>
+                  <TwitterShareButton
+                    url={`${location.origin}${linkPath}?referral_code=${user?.id}`}
+                    title={''}
+                    hashtags={[]}
+                  >
+                    <SvgInset
+                      size={16}
+                      svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                    />
+                  </TwitterShareButton>
+                </div>
+              )}
             </div>
           )}
         </div>
       </div>
-      <div className={s.mask} />
+      {/* <div className={s.mask} /> */}
     </Link>
   );
 };
