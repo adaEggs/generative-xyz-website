@@ -1,4 +1,5 @@
 export const METAMASK_INSTALL_URL = 'https://metamask.io/download/';
+
 export const WALLET_WHITELIST = [
   '0xe23fcb129d6ea1b847202b14a56f957e5a464f64',
   '0x668ea0470396138acd0b9ccf6fbdb8a845b717b0',
