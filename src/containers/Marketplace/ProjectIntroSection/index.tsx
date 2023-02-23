@@ -303,11 +303,7 @@ const ProjectIntroSection = ({
           {project?.creatorProfile?.profileSocial?.twitter && (
             <div className={s.creator_social}>
               <span className={s.creator_divider}></span>
-              <div
-                className={`${s.creator_social_item} ${
-                  isTwVerified ? s.isVerified : ''
-                }`}
-              >
+              <div className={`${s.creator_social_item}`}>
                 <div className={s.creator_social_item_inner}>
                   <SvgInset
                     className={`${s.creator_social_twitter}`}
@@ -444,7 +440,7 @@ const ProjectIntroSection = ({
                             fontWeight="semibold"
                             color="primary-333"
                           >
-                            Network fee:{' '}
+                            Mint free:{' '}
                             {formatBTCPrice(Number(project?.networkFee))} BTC
                           </Text>
                         </Tooltip>
@@ -491,8 +487,8 @@ const ProjectIntroSection = ({
                             fontWeight="semibold"
                             color="primary-333"
                           >
-                            Network fee:{' '}
-                            {formatEthPrice(project?.networkFeeEth)} ETH
+                            Mint free: {formatEthPrice(project?.networkFeeEth)}{' '}
+                            ETH
                           </Text>
                         </Tooltip>
                       ) : (
