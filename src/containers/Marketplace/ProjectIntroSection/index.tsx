@@ -2,7 +2,6 @@ import Avatar from '@components/Avatar';
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
-import LinkShare from '@components/LinkShare';
 import { Loading } from '@components/Loading';
 import MintingProgressBar from '@components/MintingProgressBar';
 import ProjectDescription from '@components/ProjectDescription';
@@ -10,7 +9,6 @@ import { SocialVerify } from '@components/SocialVerify';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
-import TwitterShare from '@components/TwitterShare';
 import { SOCIALS } from '@constants/common';
 import {
   CDN_URL,
@@ -53,6 +51,7 @@ import { useRouter } from 'next/router';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import toast from 'react-hot-toast';
+import { TwitterShareButton } from 'react-share';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import ReportModal from './ReportModal';
@@ -387,7 +386,7 @@ const ProjectIntroSection = ({
           </div>
         )}
 
-        {!isWhitelist && project?.status && (
+        {!isWhitelist && project?.status && !project?.isHidden && (
           <div className={s.CTA}>
             {!isBitcoinProject && (
               <ButtonIcon
@@ -409,128 +408,136 @@ const ProjectIntroSection = ({
                 </Text>
               </ButtonIcon>
             )}
-            {isBitcoinProject && isAvailable && !!project?.btcFloorPrice && (
-              <>
-                <ButtonIcon
-                  sizes="large"
-                  className={`${s.mint_btn}`}
-                  onClick={() => {
-                    const element = document.getElementById('PROJECT_LIST');
-                    if (!element) return;
-                    element.scrollIntoView({
-                      behavior: 'smooth',
-                    });
-                  }}
-                >
-                  <Text as="span" size="14" fontWeight="medium">
-                    <>
-                      <span>{`Buy now • ${formatBTCPrice(
-                        project.btcFloorPrice
-                      )} BTC`}</span>
-                    </>
-                  </Text>
-                </ButtonIcon>
-              </>
-            )}
-            {isBitcoinProject && isAvailable && isLimitMinted && (
-              <ul>
-                <li>
-                  <OverlayTrigger
-                    placement="bottom"
-                    delay={{ show: 0, hide: 100 }}
-                    overlay={
-                      project?.networkFee ? (
-                        <Tooltip id="btc-fee-tooltip">
-                          <Text
-                            size="14"
-                            fontWeight="semibold"
-                            color="primary-333"
-                          >
-                            Mint fee:{' '}
-                            {formatBTCPrice(Number(project?.networkFee))} BTC
-                          </Text>
-                        </Tooltip>
-                      ) : (
-                        <></>
-                      )
-                    }
+            {isBitcoinProject &&
+              isAvailable &&
+              !!project?.btcFloorPrice &&
+              !project?.isHidden && (
+                <>
+                  <ButtonIcon
+                    sizes="large"
+                    className={`${s.mint_btn}`}
+                    onClick={() => {
+                      const element = document.getElementById('PROJECT_LIST');
+                      if (!element) return;
+                      element.scrollIntoView({
+                        behavior: 'smooth',
+                      });
+                    }}
                   >
-                    <ButtonIcon
-                      sizes="large"
-                      className={s.mint_btn}
-                      onClick={() => {
-                        openMintBTCModal && openMintBTCModal(PaymentMethod.BTC);
-                      }}
+                    <Text as="span" size="14" fontWeight="medium">
+                      <>
+                        <span>{`Buy now • ${formatBTCPrice(
+                          project.btcFloorPrice
+                        )} BTC`}</span>
+                      </>
+                    </Text>
+                  </ButtonIcon>
+                </>
+              )}
+            {isBitcoinProject &&
+              isAvailable &&
+              isLimitMinted &&
+              !project?.isHidden && (
+                <ul>
+                  <li>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 0, hide: 100 }}
+                      overlay={
+                        project?.networkFee ? (
+                          <Tooltip id="btc-fee-tooltip">
+                            <Text
+                              size="14"
+                              fontWeight="semibold"
+                              color="primary-333"
+                            >
+                              Mint fee:{' '}
+                              {formatBTCPrice(Number(project?.networkFee))} BTC
+                            </Text>
+                          </Tooltip>
+                        ) : (
+                          <></>
+                        )
+                      }
                     >
-                      <Text as="span" size="14" fontWeight="medium">
-                        {isMinting && 'Minting...'}
-                        {!isMinting && (
-                          <>
-                            <span>{`Mint`}</span>
-                            <span>
-                              {Number(project?.mintPrice) ? (
-                                <span>{priceMemo}</span>
-                              ) : (
-                                'with'
-                              )}
-                              {` BTC`}
-                            </span>
-                          </>
-                        )}
-                      </Text>
-                    </ButtonIcon>
-                  </OverlayTrigger>
-                </li>
-                <li>
-                  <OverlayTrigger
-                    placement="bottom"
-                    delay={{ show: 0, hide: 100 }}
-                    overlay={
-                      project?.networkFeeEth ? (
-                        <Tooltip id="btc-fee-tooltip">
-                          <Text
-                            size="14"
-                            fontWeight="semibold"
-                            color="primary-333"
-                          >
-                            Mint fee: {formatEthPrice(project?.networkFeeEth)}{' '}
-                            ETH
-                          </Text>
-                        </Tooltip>
-                      ) : (
-                        <></>
-                      )
-                    }
-                  >
-                    <ButtonIcon
-                      sizes="large"
-                      variants="outline"
-                      className={`${s.mint_btn} ${s.mint_btn__eth}`}
-                      onClick={() => {
-                        openMintBTCModal && openMintBTCModal(PaymentMethod.ETH);
-                      }}
+                      <ButtonIcon
+                        sizes="large"
+                        className={s.mint_btn}
+                        onClick={() => {
+                          openMintBTCModal &&
+                            openMintBTCModal(PaymentMethod.BTC);
+                        }}
+                      >
+                        <Text as="span" size="14" fontWeight="medium">
+                          {isMinting && 'Minting...'}
+                          {!isMinting && (
+                            <>
+                              <span>{`Mint`}</span>
+                              <span>
+                                {Number(project?.mintPrice) ? (
+                                  <span>{priceMemo}</span>
+                                ) : (
+                                  'with'
+                                )}
+                                {` BTC`}
+                              </span>
+                            </>
+                          )}
+                        </Text>
+                      </ButtonIcon>
+                    </OverlayTrigger>
+                  </li>
+                  <li>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 0, hide: 100 }}
+                      overlay={
+                        project?.networkFeeEth ? (
+                          <Tooltip id="btc-fee-tooltip">
+                            <Text
+                              size="14"
+                              fontWeight="semibold"
+                              color="primary-333"
+                            >
+                              Mint fee: {formatEthPrice(project?.networkFeeEth)}{' '}
+                              ETH
+                            </Text>
+                          </Tooltip>
+                        ) : (
+                          <></>
+                        )
+                      }
                     >
-                      <Text as="span" size="14" fontWeight="medium">
-                        {isMinting && 'Minting...'}
-                        {!isMinting && (
-                          <>
-                            <span>{`Mint`}</span>
-                            <span>
-                              {Number(project?.mintPriceEth) ? (
-                                <span>{priceEthMemo}</span>
-                              ) : (
-                                'with'
-                              )}
-                              {` ETH`}
-                            </span>
-                          </>
-                        )}
-                      </Text>
-                    </ButtonIcon>
-                  </OverlayTrigger>
-                </li>
-              </ul>
-            )}
+                      <ButtonIcon
+                        sizes="large"
+                        variants="outline"
+                        className={`${s.mint_btn} ${s.mint_btn__eth}`}
+                        onClick={() => {
+                          openMintBTCModal &&
+                            openMintBTCModal(PaymentMethod.ETH);
+                        }}
+                      >
+                        <Text as="span" size="14" fontWeight="medium">
+                          {isMinting && 'Minting...'}
+                          {!isMinting && (
+                            <>
+                              <span>{`Mint`}</span>
+                              <span>
+                                {Number(project?.mintPriceEth) ? (
+                                  <span>{priceEthMemo}</span>
+                                ) : (
+                                  'with'
+                                )}
+                                {` ETH`}
+                              </span>
+                            </>
+                          )}
+                        </Text>
+                      </ButtonIcon>
+                    </OverlayTrigger>
+                  </li>
+                </ul>
+              )}
           </div>
         )}
         {isWhitelist &&
@@ -665,77 +672,59 @@ const ProjectIntroSection = ({
         )}
         <ul className={s.shares}>
           <li>
-            <OverlayTrigger
-              placement="bottom"
-              delay={{ show: 100, hide: 200 }}
-              overlay={
-                <Tooltip id="variation-tooltip">
-                  <Text size="14" fontWeight="semibold" color="primary-333">
-                    Copy link
-                  </Text>
-                </Tooltip>
-              }
-            >
-              <div>
-                <LinkShare
-                  url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-                />
-              </div>
-            </OverlayTrigger>
-          </li>
-          <li>
-            <OverlayTrigger
-              placement="bottom"
-              delay={{ show: 100, hide: 200 }}
-              overlay={
-                <Tooltip id="variation-tooltip">
-                  <Text size="14" fontWeight="semibold" color="primary-333">
-                    Share on Twitter
-                  </Text>
-                </Tooltip>
-              }
-            >
-              <div>
-                <TwitterShare
-                  url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-                  title={''}
-                  hashtags={[]}
-                />
-              </div>
-            </OverlayTrigger>
-          </li>
-          <li>
-            <OverlayTrigger
-              placement="bottom"
-              delay={{ show: 100, hide: 200 }}
-              overlay={
-                <Tooltip id="variation-tooltip">
-                  <Text size="14" fontWeight="semibold" color="primary-333">
-                    Copypasta Report
-                  </Text>
-                </Tooltip>
-              }
-            >
-              <div
-                className={s.reportBtn}
-                onClick={() => setShowReportModal(true)}
+            <div>
+              {/* <LinkShare
+                url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+              /> */}
+              <TwitterShareButton
+                url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                title={''}
+                hashtags={[]}
               >
-                <SvgInset
-                  size={16}
-                  svgUrl={`${CDN_URL}/icons/ic-pasta-plate.svg`}
-                />
-              </div>
-            </OverlayTrigger>
+                <ButtonIcon
+                  sizes="small"
+                  variants="outline-small"
+                  className={s.projectBtn}
+                  startIcon={
+                    <SvgInset
+                      size={14}
+                      svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                    />
+                  }
+                >
+                  Share
+                </ButtonIcon>
+              </TwitterShareButton>
+            </div>
+          </li>
+          <li>
+            {/* <div>
+              <TwitterShare
+                url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                title={''}
+                hashtags={[]}
+              />
+            </div> */}
+          </li>
+          <li>
+            <div
+              className={s.projectBtn}
+              onClick={() => setShowReportModal(true)}
+            >
+              <SvgInset
+                size={14}
+                svgUrl={`${CDN_URL}/icons/ic-pasta-plate.svg`}
+              />
+              <Text as="span" size="14" fontWeight="medium">
+                Copypasta Alert
+              </Text>
+            </div>
           </li>
         </ul>
 
         {showReportMsg && (
           <div className={s.reportMsg}>
-            <Text>
-              This collection is removed because it is reported as a fake
-              collection or possible scam. Should you need any further support,
-              contact us on Discord.
-            </Text>
+            <Text>This collection is currently under review.</Text>
           </div>
         )}
       </div>

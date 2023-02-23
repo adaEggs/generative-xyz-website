@@ -96,16 +96,15 @@ const ReportModal = (props: Props) => {
         {isReported || reported ? (
           <>
             <Heading as="h5" fontWeight="medium">
-              Thanks for reporting a collection!
+              Thank you for making Generative safe!
             </Heading>
             <div className={s.reportWrapper}>
               <Text fontWeight="medium">
-                The collection you reported has been reviewed and action has
-                been taken. Thank you for helping to make Generative a better
-                place.
+                This collection is currently under review and action will be
+                taken.
               </Text>
             </div>
-            <div className={s.actionWrapper}>
+            {/* <div className={s.actionWrapper}>
               <Button
                 disabled={isConnecting}
                 onClick={onHideModal}
@@ -114,16 +113,17 @@ const ReportModal = (props: Props) => {
               >
                 Cancel
               </Button>
-            </div>
+            </div> */}
           </>
         ) : (
           <>
             <Heading as="h5" fontWeight="medium">
-              Report this collection
+              Copypasta Alert
             </Heading>
             <div className={s.reportWrapper}>
               <Text fontWeight="medium">
-                I think this collection is fake collection or possible scam.
+                Thank you for alerting! Please let us know the original artwork,
+                and we’ll review it ASAP.
               </Text>
               <Input
                 name={'originalCreator'}
@@ -131,25 +131,17 @@ const ReportModal = (props: Props) => {
                 sizes={'small'}
                 className={s.original_input}
                 onBlur={e => setReportLink(e.target.value)}
-                placeholder="Link to original creator"
+                placeholder="Enter the original artwork URL"
               />
             </div>
 
             <div className={s.actionWrapper}>
               <Button
                 disabled={isConnecting}
-                onClick={onHideModal}
-                className={s.actionBtn}
-                variants="secondary"
-              >
-                Cancel
-              </Button>
-              <Button
-                disabled={isConnecting}
                 onClick={handleSubmitReport}
                 className={s.actionBtn}
               >
-                Confirm
+                Alert
               </Button>
             </div>
           </>
