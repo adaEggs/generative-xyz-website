@@ -289,6 +289,8 @@ const ProjectIntroSection = ({
               <SocialVerify link={SOCIALS.twitter} />
             )}
           </Link>
+        </div>
+        <div className={s.projectHeader_heading}>
           <Heading
             className={s.projectHeader_title}
             as="h4"
