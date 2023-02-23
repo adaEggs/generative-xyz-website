@@ -20,6 +20,8 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { v4 } from 'uuid';
 import s from './styles.module.scss';
+import { getTokenUriList } from '@services/token-uri';
+import { Token } from '@interfaces/token';
 
 const LOG_PREFIX = 'SearchCollection';
 
@@ -30,6 +32,7 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
   const [isLoading, setIsLoading] = useState(false);
   // const [expandSearch, setExpandSearch] = useState(false);
   const [foundUsers, setFoundUsers] = useState<User[]>();
+  const [foundItems, setFoundItems] = useState<Token[]>();
 
   const inputSearchRef = useRef<HTMLInputElement>(null);
   const resultSearchRef = useRef<HTMLDivElement>(null);
@@ -38,7 +41,7 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
   const handleSearch = async () => {
     try {
       setIsLoading(true);
-      const [projects, members] = await Promise.all([
+      const [projects, members, items] = await Promise.all([
         getProjectList({
           contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
           limit: 5,
@@ -50,6 +53,11 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
           page: 1,
           search: searchText,
         }),
+        getTokenUriList({
+          limit: 5,
+          page: 1,
+          search: searchText,
+        }),
       ]);
 
       if (projects && projects.result) {
@@ -57,6 +65,9 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
       }
       if (members && members.result) {
         setFoundUsers(members.result);
+      }
+      if (items && items.result) {
+        setFoundItems(items.result);
       }
 
       setIsLoading(false);
@@ -111,9 +122,12 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
             <SearchCollectionsResult list={foundCollections} />
           )}
           {foundUsers && <SearchMembersResult list={foundUsers} />}
-          {!foundCollections && !foundUsers && (
-            <div className={s.searchResult_item}>No Result Found</div>
-          )}
+          {foundItems && <SearchTokensResult list={foundItems} />}
+          {foundCollections?.length === 0 &&
+            foundUsers?.length === 0 &&
+            foundItems?.length === 0 && (
+              <div className={s.searchResult_item}>No Result Found</div>
+            )}
         </div>
       )}
     </div>
@@ -167,6 +181,30 @@ const SearchMembersResult = ({ list }: { list: User[] }) => {
     </>
   );
 };
+const SearchTokensResult = ({ list }: { list: Token[] }) => {
+  if (list.length === 0) return null;
+
+  return (
+    <>
+      <div className={s.list_heading}>
+        <Text size="12" fontWeight="medium" color="black-40-solid">
+          ITEMS
+        </Text>
+      </div>
+      {list.map(token => (
+        <SearchTokenItem
+          key={`token-${v4()}`}
+          thumbnail={token.image}
+          tokenName={token.name}
+          collectionId={token.projectID}
+          tokenId={token.tokenID}
+          inscriptionIndex={token.inscriptionIndex}
+          projectName={token.projectName}
+        />
+      ))}
+    </>
+  );
+};
 
 const SearchCollectionItem = ({
   projectName,
@@ -201,6 +239,40 @@ const SearchCollectionItem = ({
             by {creatorName}
           </Text>
         )}
+      </div>
+    </Link>
+  );
+};
+
+const SearchTokenItem = ({
+  thumbnail = '',
+  tokenName,
+  collectionId,
+  tokenId,
+  inscriptionIndex,
+  projectName,
+}: {
+  tokenName: string;
+  collectionId?: string;
+  tokenId?: string;
+  inscriptionIndex?: string;
+  thumbnail?: string;
+  projectName?: string;
+}) => {
+  return (
+    <Link
+      className={cs(s.searchResult_item, s.searchResult_item_link)}
+      href={`${ROUTE_PATH.GENERATIVE}/${collectionId}/${tokenId}`}
+    >
+      <div className={s.searchResult_collectionThumbnail}>
+        <Image src={thumbnail} alt={tokenName} width={34} height={34} />
+      </div>
+      <div className={s.searchResult_collectionInfo}>
+        <Text as="span" className={s.searchResult_collectionName}>
+          {inscriptionIndex
+            ? `${projectName} #${inscriptionIndex}`
+            : `${projectName} #${formatLongAddress(tokenId)}`}
+        </Text>
       </div>
     </Link>
   );

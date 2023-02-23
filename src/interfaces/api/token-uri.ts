@@ -1,3 +1,4 @@
+import { IPagingParams } from './paging';
 import { Token, TokenAttribute } from '@interfaces/token';
 
 export interface IGenerativeProjectSocial {
@@ -30,3 +31,10 @@ export interface IGetProfileTokensResponse {
   total: number;
   page: number;
 }
+
+export interface IGetGenerativeTokenUriListParams extends IPagingParams {
+  search?: string;
+  cursor?: string;
+}
+
+export type IGetGenerativeTokenUriListResponse = IGetProfileTokensResponse;
