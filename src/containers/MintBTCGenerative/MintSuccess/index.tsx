@@ -3,13 +3,12 @@ import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import { SOCIALS } from '@constants/common';
 import { CDN_URL } from '@constants/config';
-import { ROUTE_PATH } from '@constants/route-path';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
-import { FacebookShareButton, TwitterShareButton } from 'react-share';
+import { TwitterShareButton } from 'react-share';
 import s from './styles.module.scss';
 
 const MintSuccess = () => {
@@ -30,8 +29,10 @@ const MintSuccess = () => {
 
   return (
     <div className={s.mintSuccess}>
-      <h2 className={s.title}>Your Generative NFT is now on the Blockchain.</h2>
-      <Heading as="h5">Introduce your art to the world!</Heading>
+      <h2 className={s.title}> Introduce your art to the world!</h2>
+      <Heading as="h5">
+        Promote yourself to communities and invite other artists to join.
+      </Heading>
       <div className={s.actionWrapper}>
         <div className={s.social_btns}>
           <TwitterShareButton
@@ -68,24 +69,6 @@ const MintSuccess = () => {
               Share
             </Button>
           </div>
-          <FacebookShareButton
-            url={`${ROUTE_PATH.HOME}${mintedProjectUrl}?referral_code=${user?.id}`}
-            className={s.shareBtn}
-          >
-            <Button
-              sizes="large"
-              variants="outline-small"
-              className={s.facebook_btn}
-              startIcon={
-                <SvgInset
-                  size={20}
-                  svgUrl={`${CDN_URL}/icons/ic-facebook-outline.svg`}
-                />
-              }
-            >
-              Share
-            </Button>
-          </FacebookShareButton>
         </div>
         <Button
           sizes="large"

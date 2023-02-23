@@ -364,18 +364,18 @@
   }
 }
 
-.reportBtn {
-  width: 34px;
-  height: 34px;
-  border-radius: 2px;
-  border: 1px solid $black-20;
-  display: grid;
-  place-items: center;
+.projectBtn {
   transition: all 0.2s;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: rem(4);
+  padding: rem(5) rem(10);
+  border: 1px solid $black-20 !important;
 
   &:hover {
     background-color: $black-100;
+    color: $white;
 
     svg,
     path {
@@ -385,6 +385,12 @@
 }
 
 .reportMsg {
-  margin-top: rem(16);
-  color: $secondary-red;
+  margin-top: rem(24);
+  display: flex;
+  align-items: center;
+  gap: rem(8);
+  color: $secondary-orange;
+  padding: rem(6) rem(16);
+  border: 1px solid $secondary-orange;
+  background-color: #ff7e210f;
 }
