@@ -21,7 +21,10 @@ const PreviewController: React.FC<IProps> = (
 ): React.ReactElement => {
   const { data } = props;
   const router = useRouter();
-  const { projectID } = router.query as { projectID: string };
+  const { projectID, tokenID } = router.query as {
+    projectID: string;
+    tokenID: string;
+  };
   const thumbnailUrl = useMemo(() => {
     return data?.image || '';
   }, [data]);
@@ -49,7 +52,7 @@ const PreviewController: React.FC<IProps> = (
     }
 
     // Check hardcode glb collection
-    if (projectID === GLB_COLLECTION_ID) {
+    if (!tokenID && projectID === GLB_COLLECTION_ID) {
       return (
         <Model3DPreview
           tokenID={data?.tokenID ?? ''}
@@ -78,7 +81,7 @@ const PreviewController: React.FC<IProps> = (
       default:
         return renderPlaceholderThumbnail;
     }
-  }, [thumbnailExt, thumbnailUrl, data, projectID]);
+  }, [thumbnailExt, thumbnailUrl, data, projectID, tokenID]);
 
   if (!data) {
     return <></>;
