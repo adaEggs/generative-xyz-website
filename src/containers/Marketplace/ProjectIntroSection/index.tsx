@@ -56,7 +56,7 @@ import { IC_EDIT_PROFILE } from '@constants/icons';
 import { SocialVerify } from '@components/SocialVerify';
 import { SOCIALS } from '@constants/common';
 import ReportModal from './ReportModal';
-import { isWalletWhiteList } from '@utils/common';
+import { isProduction, isWalletWhiteList } from '@utils/common';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -708,30 +708,33 @@ const ProjectIntroSection = ({
               </div>
             </OverlayTrigger>
           </li>
-          <li>
-            <OverlayTrigger
-              placement="bottom"
-              delay={{ show: 100, hide: 200 }}
-              overlay={
-                <Tooltip id="variation-tooltip">
-                  <Text size="14" fontWeight="semibold" color="primary-333">
-                    Report
-                  </Text>
-                </Tooltip>
-              }
-            >
-              <div
-                className={s.reportBtn}
-                onClick={() => setShowReportModal(true)}
+          {!isProduction() && (
+            <li>
+              <OverlayTrigger
+                placement="bottom"
+                delay={{ show: 100, hide: 200 }}
+                overlay={
+                  <Tooltip id="variation-tooltip">
+                    <Text size="14" fontWeight="semibold" color="primary-333">
+                      Report
+                    </Text>
+                  </Tooltip>
+                }
               >
-                <SvgInset
-                  size={16}
-                  svgUrl={`${CDN_URL}/icons/ic-more-vertical.svg`}
-                />
-              </div>
-            </OverlayTrigger>
-          </li>
+                <div
+                  className={s.reportBtn}
+                  onClick={() => setShowReportModal(true)}
+                >
+                  <SvgInset
+                    size={16}
+                    svgUrl={`${CDN_URL}/icons/ic-more-vertical.svg`}
+                  />
+                </div>
+              </OverlayTrigger>
+            </li>
+          )}
         </ul>
+
         {showReportMsg && (
           <div className={s.reportMsg}>
             <Text>
