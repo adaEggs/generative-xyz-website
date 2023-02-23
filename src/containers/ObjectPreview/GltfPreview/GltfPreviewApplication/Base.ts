@@ -1,12 +1,11 @@
 import * as THREE from 'three';
-import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+
 import { Sky } from 'three/examples/jsm/objects/Sky';
 import UserController from './UserController';
 import { getDebugMode } from '../helpers';
-// import { ORIGIN_CAMERA_POSITION_INIT } from './constants';
-// import { PLAYER_CAPSULE_END } from './constants';
+import Colliders from './Colliders';
+import ObjectLoader from './ObjectLoader';
+import DecorObject from './DecorObject';
 
 class Base {
   order: THREE.EulerOrder = 'YXZ';
@@ -15,15 +14,9 @@ class Base {
   isDebugging = false;
 
   clock = new THREE.Clock();
-  dracoLoader = new DRACOLoader();
-  glTFLoader = new GLTFLoader();
-  fbxLoader = new FBXLoader();
 
   renderer!: THREE.WebGLRenderer;
   scene!: THREE.Scene;
-
-  // cameraGroup = new THREE.Group();
-  // thirdPersonCamera = new THREE.Vector3(...ORIGIN_CAMERA_POSITION_INIT);
   camera!: THREE.PerspectiveCamera;
 
   userController!: UserController;
@@ -42,25 +35,30 @@ class Base {
   pointLight3!: THREE.PointLight;
   pointLight4!: THREE.PointLight;
 
-  particle = new THREE.Object3D();
   whiteHouse: boolean;
+  colliders: Colliders;
+  objectLoader: ObjectLoader;
+  decorObject: DecorObject;
 
   constructor(id: string, _whiteHouse: boolean) {
     this.isDebugging = getDebugMode();
     this.whiteHouse = _whiteHouse;
-    this.dracoLoader.setDecoderPath('/js/libs/draco/');
     this.container = document.getElementById(id) as HTMLDivElement;
 
-    this.glTFLoader.setDRACOLoader(this.dracoLoader);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.userController = new UserController(this as any);
+    this.colliders = new Colliders();
+    this.objectLoader = new ObjectLoader();
 
     this.createScene();
     this.createCamera();
     this.createRenderer();
     this.createFloor();
     this.createBasicLights();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.decorObject = new DecorObject(this as any);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.userController = new UserController(this as any);
 
     this.onWindowResize = this.onWindowResize.bind(this);
 
@@ -82,33 +80,6 @@ class Base {
     const box3 = new THREE.Box3().setFromObject(model);
     const size = new THREE.Vector3();
     return box3.getSize(size);
-  }
-
-  createGalaxyStars() {
-    this.scene.add(this.particle);
-
-    setTimeout(() => {
-      const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-
-      const material = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        // flatShading: true,
-      });
-      const sphere = new THREE.Mesh(geometry, material);
-      for (let i = 0; i < 1000; i++) {
-        const mesh = sphere.clone();
-        mesh.position
-          .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
-          .normalize();
-        mesh.position.multiplyScalar(90 + Math.random() * 700);
-        mesh.rotation.set(
-          Math.random() * 2,
-          Math.random() * 2,
-          Math.random() * 2
-        );
-        this.particle.add(mesh);
-      }
-    }, 1500);
   }
 
   createScene() {
@@ -150,29 +121,27 @@ class Base {
   }
 
   createBasicLights() {
-    setTimeout(() => {
-      const ambientLight = new THREE.AmbientLight(0xb9d5ff, 1);
-      this.scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(0xb9d5ff, 1);
+    this.scene.add(ambientLight);
 
-      this.dirLight = new THREE.DirectionalLight(0xffe87c, 1);
-      this.dirLight.position.set(-60, 100, 30);
-      this.dirLight.castShadow = true;
-      this.dirLight.shadow.camera.left = -50;
-      this.dirLight.shadow.camera.right = 50;
-      this.dirLight.shadow.camera.top = 50;
-      this.dirLight.shadow.camera.bottom = -50;
-      this.dirLight.shadow.camera.far = 3500;
-      this.dirLight.shadow.bias = -0.0001;
-      this.dirLight.shadow.mapSize.width = 2048;
-      this.dirLight.shadow.mapSize.height = 2048;
-      this.dirLight.shadow.radius = 2;
-      this.dirLight.shadow.blurSamples = 10;
-      this.scene.add(this.dirLight);
-    }, 0);
+    this.dirLight = new THREE.DirectionalLight(0xffe87c, 1);
+    this.dirLight.position.set(-60, 100, 30);
+    this.dirLight.castShadow = true;
+    this.dirLight.shadow.camera.left = -50;
+    this.dirLight.shadow.camera.right = 50;
+    this.dirLight.shadow.camera.top = 50;
+    this.dirLight.shadow.camera.bottom = -50;
+    this.dirLight.shadow.camera.far = 3500;
+    this.dirLight.shadow.bias = -0.0001;
+    this.dirLight.shadow.mapSize.width = 2048;
+    this.dirLight.shadow.mapSize.height = 2048;
+    this.dirLight.shadow.radius = 2;
+    this.dirLight.shadow.blurSamples = 10;
+    this.scene.add(this.dirLight);
   }
 
   createDecoLights() {
-    setTimeout(() => {
+    return new Promise(resolve => {
       // Top
       this.topLight = new THREE.SpotLight(0xffee88, 4);
       this.topLight.position.set(0, 100, 0);
@@ -288,11 +257,12 @@ class Base {
         )
       );
       this.scene.add(this.pointLight4);
-    }, 0);
+      resolve(true);
+    });
   }
 
   createSky() {
-    setTimeout(() => {
+    return new Promise(resolve => {
       const sky = new Sky();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (sky.material as any).color = new THREE.Color(0xffe87c);
@@ -319,7 +289,9 @@ class Base {
       sun.setFromSphericalCoords(1, phi, theta);
       uniforms['sunPosition'].value.copy(sun);
       this.renderer.toneMappingExposure = effectController.exposure;
-    }, 0);
+
+      resolve(true);
+    });
   }
 
   createFloor() {
@@ -336,7 +308,7 @@ class Base {
     floor.position.y = 0;
     this.scene.add(floor);
 
-    this.userController.worldOctree.fromGraphNode(floor);
+    this.colliders.worldOctree.fromGraphNode(floor);
   }
 
   onWindowResize() {
@@ -353,8 +325,7 @@ class Base {
   render() {
     this.renderer.render(this.scene, this.camera);
 
-    this.particle.rotation.x += 0.0;
-    this.particle.rotation.y -= 0.004;
+    this.decorObject.update();
 
     const sLTime = performance.now() / 1000;
     if (this.topLight) {
@@ -391,22 +362,6 @@ class Base {
       this.pointLight4.position.y = Math.cos(plTime * 0.7) * 20;
       this.pointLight4.position.z = Math.sin(plTime * 0.5) * 10;
     }
-  }
-
-  async loadGLBModel(url: string): Promise<GLTF> {
-    return new Promise(resolve => {
-      this.glTFLoader.load(url, gltf => {
-        resolve(gltf);
-      });
-    });
-  }
-
-  async loadFBXModel(url: string): Promise<THREE.Group> {
-    return new Promise(resolve => {
-      this.fbxLoader.load(url, group => {
-        resolve(group);
-      });
-    });
   }
 }
 
