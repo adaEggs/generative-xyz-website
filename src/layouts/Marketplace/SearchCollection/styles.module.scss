@@ -1,7 +1,28 @@
 .wrapper {
+
+  --s-wrapper-bg-color: #{$background};
+  --s-searchResult_wrapper-bg-color: #{$white};
+  --s-searchResult_wrapper-boxshadow: #00000026;
+  --s-searchResult_item-focus: #{$black-5};
+  --s-searchResult_item_link_color: #{$primary-brand};
+  --s-stroke: #{$primary-brand};
+  --s-input-color: #{$primary-brand};
+  --s-sec-color: #898989;
+
+  &.dark{
+    --s-wrapper-bg-color: #2E2E2E;
+    --s-searchResult_wrapper-bg-color: #2E2E2E;
+    --s-searchResult_wrapper-boxshadow: rgba(0, 0, 0, 0.15);
+    --s-searchResult_item-focus: #5B5B5B;
+    --s-searchResult_item_link_color: #ffffff;
+    --s-stroke: #ffffff;
+    --s-input-color: #ffffff;
+    --s-sec-color: #898989;
+  }
+
   position: relative;
   min-width: rem(300);
-  background-color: $background;
+  background-color: var(--s-wrapper-bg-color);
 
   @include mobile {
     min-width: rem(200);
@@ -20,22 +41,10 @@
     padding: rem(8);
   }
 
-  // &.expand {
-  //   border-color: $black-40;
-
-  //   .input {
-  //     width: rem(300);
-  //     transition: width 0.75s cubic-bezier(0, 0.795, 0, 1);
-
-  //     @include mobile {
-  //       width: rem(100);
-  //     }
-  //   }
-  // }
-
   .input {
     width: rem(300);
     background-color: transparent;
+    color: var(--s-input-color);
 
     @include mobile {
       width: rem(200);
@@ -50,6 +59,10 @@
     opacity: 0.7;
     cursor: pointer;
 
+    svg path{
+      stroke: var(--s-stroke);
+    }
+
     &:hover {
       opacity: 1;
     }
@@ -60,8 +73,8 @@
   position: absolute;
   width: 100%;
   min-width: rem(320);
-  background-color: $white;
-  box-shadow: 35px 15px 120px 0 #00000026;
+  background-color: var(--s-searchResult_wrapper-bg-color);
+  box-shadow: 35px 15px 120px 0 var(--s-searchResult_wrapper-boxshadow);
   margin-top: rem(12);
   max-height: rem(700);
   overflow-y: scroll;
@@ -81,16 +94,16 @@
   .searchResult_item {
     padding: rem(10) rem(16) !important;
     display: flex;
-    // flex-direction: column;
     align-items: center;
     gap: rem(12);
 
     &_link {
       cursor: pointer;
+      color: var(--s-searchResult_item_link_color);
 
       &:hover,
       &:focus {
-        background-color: $black-5;
+        background-color: var(--s-searchResult_item-focus);
       }
     }
 
@@ -119,5 +132,16 @@
     padding-top: rem(14);
     padding-left: rem(16);
     padding-bottom: rem(6);
+  }
+
+  .searchResult_collectionThumbnail{
+    width: rem(34px);
+    height: rem(34px);
+    background-color: #F7F9FB;
+    img{
+      object-fit: contain;
+      width: 100%;
+      height: 100%;
+    }
   }
 }

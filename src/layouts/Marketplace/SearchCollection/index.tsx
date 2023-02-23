@@ -23,7 +23,7 @@ import s from './styles.module.scss';
 
 const LOG_PREFIX = 'SearchCollection';
 
-const SearchCollection = () => {
+const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
   const [foundCollections, setFoundCollections] = useState<Project[]>();
   const [searchText, setSearchText] = useState<string>('');
   const [showResult, setShowResult] = useState(false);
@@ -79,7 +79,7 @@ const SearchCollection = () => {
   useOnClickOutside(resultSearchRef, () => handleCloseSearchResult());
 
   return (
-    <div className={s.wrapper} ref={wrapperRef}>
+    <div className={`${s.wrapper} ${s[theme]}`} ref={wrapperRef}>
       <div className={cs(s.searchInput_wrapper)}>
         <input
           className={s.input}
@@ -92,9 +92,8 @@ const SearchCollection = () => {
             setSearchText(e.target.value);
             setShowResult(true);
           }}
-          //   onBlur={handleCloseSearchResult}
           ref={inputSearchRef}
-        ></input>
+        />
         <div className={s.searchIcon}>
           <SvgInset size={16} svgUrl={`${CDN_URL}/icons/ic-search-14x14.svg`} />
         </div>
@@ -127,7 +126,7 @@ const SearchCollectionsResult = ({ list }: { list: Project[] }) => {
   return (
     <>
       <div className={s.list_heading}>
-        <Text size="12" fontWeight="medium" color="black-40">
+        <Text size="12" fontWeight="medium" color="black-40-solid">
           COLLECTIONS
         </Text>
       </div>
@@ -153,7 +152,7 @@ const SearchMembersResult = ({ list }: { list: User[] }) => {
   return (
     <>
       <div className={s.list_heading}>
-        <Text size="12" fontWeight="medium" color="black-40">
+        <Text size="12" fontWeight="medium" color="black-40-solid">
           MEMBERS
         </Text>
       </div>
@@ -194,7 +193,7 @@ const SearchCollectionItem = ({
         </Text>
         {creatorName && (
           <Text
-            color="black-40"
+            color="black-40-solid"
             size="12"
             as="span"
             className={s.searchResult_creatorName}

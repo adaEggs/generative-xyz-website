@@ -50,9 +50,7 @@ const Header: React.FC<IProp> = ({
   const refMenu = useRef<HTMLDivElement | null>(null);
 
   const isGrailPage = useMemo(
-    () =>
-      router.pathname === ROUTE_PATH.DISPLAY ||
-      router.pathname === ROUTE_PATH.ARTISTS,
+    () => router.pathname === ROUTE_PATH.DISPLAY,
     [router.pathname]
   );
 
@@ -200,8 +198,7 @@ const Header: React.FC<IProp> = ({
                   </Text>
                 </Link>
                 <div className={styles.header_right}>
-                  {!isGrailPage && <SearchCollection />}
-
+                  {!isGrailPage && <SearchCollection theme={theme} />}
                   <ul className={`${styles.navBar} ${styles[theme]}`}>
                     <li
                       className={cs(
