@@ -10,7 +10,11 @@ import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
 import TwitterShare from '@components/TwitterShare';
-import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
+import {
+  CDN_URL,
+  NETWORK_CHAIN_ID,
+  REPORT_COUNT_THRESHOLD,
+} from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
@@ -723,6 +727,15 @@ const ProjectIntroSection = ({
             </OverlayTrigger>
           </li>
         </ul>
+        {showReportMsg && (
+          <div className={s.reportMsg}>
+            <Text>
+              This collection is removed because it is reported as a fake
+              collection or possible scam. Should you need any further support,
+              contact us on Discord.
+            </Text>
+          </div>
+        )}
       </div>
     );
   };
@@ -735,6 +748,15 @@ const ProjectIntroSection = ({
     );
 
     return reportedAddressList.includes(user?.walletAddress || '');
+  }, [project?.reportUsers]);
+
+  const showReportMsg = useMemo(() => {
+    if (
+      project?.reportUsers &&
+      project?.reportUsers.length >= REPORT_COUNT_THRESHOLD
+    )
+      return true;
+    return false;
   }, [project?.reportUsers]);
 
   useEffect(() => {

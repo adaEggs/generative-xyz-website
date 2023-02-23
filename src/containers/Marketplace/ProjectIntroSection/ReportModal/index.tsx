@@ -92,7 +92,7 @@ const ReportModal = (props: Props) => {
         </Button>
       </Modal.Header>
       <Modal.Body>
-        {!isReported ? (
+        {isReported ? (
           <>
             <Heading as="h5" fontWeight="medium">
               Thanks for reporting a collection!
