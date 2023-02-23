@@ -211,8 +211,8 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
                 <div className={s.input_item}>
                   <Input
                     name={'walletAddressBtc'}
-                    label={'BTC Wallet Address'}
-                    placeholder="3FZb..."
+                    label={'Your BTC address for payment'}
+                    placeholder="Please enter your BTC address"
                     className={s.input_wallet}
                     errors={{
                       walletAddressBtc: errors.walletAddressBtc || '',
@@ -221,31 +221,6 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
                   />
                 </div>
               )}
-
-              <div className={s.input_item}>
-                <Input
-                  name={'metamaskAddress'}
-                  label={'Metamask wallet address'}
-                  type="readonly"
-                  disabled={true}
-                  className={s.input_metamaskAddress}
-                  defaultValue={user?.walletAddress}
-                />
-              </div>
-
-              {!!user?.walletAddressBtcTaproot && (
-                <div className={s.input_item}>
-                  <Input
-                    name={'metamaskAddress'}
-                    label={'BTC wallet taproot wallet address'}
-                    type="readonly"
-                    disabled={true}
-                    className={s.input_metamaskAddress}
-                    defaultValue={user?.walletAddressBtcTaproot || ''}
-                  />
-                </div>
-              )}
-
               <div className={s.account_wallet_action}>
                 <div>
                   {user?.walletAddress ? (
