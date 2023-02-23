@@ -31,10 +31,7 @@ const CollectionItem = ({
   data: Token;
   className?: string;
 }) => {
-  const tokenID = useMemo(
-    () => data.name.split('#')[1] || data.name,
-    [data.name]
-  );
+  const tokenID = data.tokenID;
   const route = useRouter();
   const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
