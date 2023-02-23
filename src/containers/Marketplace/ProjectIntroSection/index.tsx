@@ -247,7 +247,7 @@ const ProjectIntroSection = ({
   }, [isCreated, user]);
 
   const isTwVerified = useMemo(() => {
-    return !project?.creatorProfile?.profileSocial?.twitterVerified || false;
+    return project?.creatorProfile?.profileSocial?.twitterVerified || false;
   }, [project?.creatorProfile?.profileSocial]);
 
   const minted = useMemo((): string => {
