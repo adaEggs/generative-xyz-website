@@ -10,7 +10,11 @@ import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
 import TwitterShare from '@components/TwitterShare';
-import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
+import {
+  CDN_URL,
+  NETWORK_CHAIN_ID,
+  REPORT_COUNT_THRESHOLD,
+} from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
@@ -51,7 +55,8 @@ import { PaymentMethod } from '@enums/mint-generative';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 import { SocialVerify } from '@components/SocialVerify';
 import { SOCIALS } from '@constants/common';
-import { isWalletWhiteList } from '@utils/common';
+import ReportModal from './ReportModal';
+import { isProduction, isWalletWhiteList } from '@utils/common';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -78,6 +83,7 @@ const ProjectIntroSection = ({
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
   const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
     const exists = project?.desc.includes('Interaction');
@@ -663,21 +669,103 @@ const ProjectIntroSection = ({
         )}
         <ul className={s.shares}>
           <li>
-            <LinkShare
-              url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-            />
+            <OverlayTrigger
+              placement="bottom"
+              delay={{ show: 100, hide: 200 }}
+              overlay={
+                <Tooltip id="variation-tooltip">
+                  <Text size="14" fontWeight="semibold" color="primary-333">
+                    Copy link
+                  </Text>
+                </Tooltip>
+              }
+            >
+              <div>
+                <LinkShare
+                  url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                />
+              </div>
+            </OverlayTrigger>
           </li>
           <li>
-            <TwitterShare
-              url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-              title={''}
-              hashtags={[]}
-            />
+            <OverlayTrigger
+              placement="bottom"
+              delay={{ show: 100, hide: 200 }}
+              overlay={
+                <Tooltip id="variation-tooltip">
+                  <Text size="14" fontWeight="semibold" color="primary-333">
+                    Share on Twitter
+                  </Text>
+                </Tooltip>
+              }
+            >
+              <div>
+                <TwitterShare
+                  url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                  title={''}
+                  hashtags={[]}
+                />
+              </div>
+            </OverlayTrigger>
           </li>
+          {!isProduction() && (
+            <li>
+              <OverlayTrigger
+                placement="bottom"
+                delay={{ show: 100, hide: 200 }}
+                overlay={
+                  <Tooltip id="variation-tooltip">
+                    <Text size="14" fontWeight="semibold" color="primary-333">
+                      Report
+                    </Text>
+                  </Tooltip>
+                }
+              >
+                <div
+                  className={s.reportBtn}
+                  onClick={() => setShowReportModal(true)}
+                >
+                  <SvgInset
+                    size={16}
+                    svgUrl={`${CDN_URL}/icons/ic-more-vertical.svg`}
+                  />
+                </div>
+              </OverlayTrigger>
+            </li>
+          )}
         </ul>
+
+        {showReportMsg && (
+          <div className={s.reportMsg}>
+            <Text>
+              This collection is removed because it is reported as a fake
+              collection or possible scam. Should you need any further support,
+              contact us on Discord.
+            </Text>
+          </div>
+        )}
       </div>
     );
   };
+
+  const hasReported = useMemo(() => {
+    if (!project?.reportUsers || !user) return false;
+
+    const reportedAddressList = project?.reportUsers.map(
+      item => item.reportUserAddress
+    );
+
+    return reportedAddressList.includes(user?.walletAddress || '');
+  }, [project?.reportUsers]);
+
+  const showReportMsg = useMemo(() => {
+    if (
+      project?.reportUsers &&
+      project?.reportUsers.length >= REPORT_COUNT_THRESHOLD
+    )
+      return true;
+    return false;
+  }, [project?.reportUsers]);
 
   useEffect(() => {
     handleFetchMarketplaceStats();
@@ -715,6 +803,11 @@ const ProjectIntroSection = ({
           <ThumbnailPreview data={projectDetail as Token} allowVariantion />
         </div>
       )}
+      <ReportModal
+        isShow={showReportModal}
+        onHideModal={() => setShowReportModal(false)}
+        isReported={hasReported}
+      />
     </div>
   );
 };
