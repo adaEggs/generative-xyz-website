@@ -25,34 +25,44 @@ export interface IUpdateProfileResponse {
 // Collected tab
 
 export enum CollectedNFTStatus {
-  Minting = 'minting',
-  Success = 'success',
+  Minting,
+  Success,
 }
 export interface ICollectedNFTItem {
+  id?: string;
   inscriptionID?: string;
   name: string;
   image: string;
   projectName?: string;
   projectID?: string;
-  orderID?: string;
-  isCompleted: boolean;
   inscriptionNumber?: string;
   contentType?: IMAGE_TYPE;
-  contentLength?: string;
+  isCancel: boolean;
   status: CollectedNFTStatus;
   statusText: string;
+  receiveAddress?: string;
+}
+
+export interface ICollectedNFTItemDetail extends ICollectedNFTItem {
+  progressStatus?: {
+    [key: string]: { message: string; tx?: string; status: boolean };
+  };
 }
 
 export interface IGetMintingCollectedNFTResp {
   status: string;
+  isCancel: boolean;
   projectName: string;
   projectID: string;
   projectImage: string;
   fileURI: string;
   inscriptionID: string;
+  id: string;
+  receiveAddress: string;
 }
 
-export interface IGetCollectedNFTInsciption {
+export interface IGetCollectedNFTInsciptionResp {
+  id: string;
   inscription_id: string;
   offset: number;
   number: number;
@@ -63,11 +73,5 @@ export interface IGetCollectedNFTInsciption {
 }
 
 export interface IGetCollectedNFTsResp {
-  inscriptions: Array<IGetCollectedNFTInsciption>;
-}
-
-export interface IInscriptionResp {
-  content_type: IMAGE_TYPE;
-  inscription_id: string;
-  number: number;
+  inscriptions: Array<IGetCollectedNFTInsciptionResp>;
 }

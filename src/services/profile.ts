@@ -2,7 +2,8 @@ import { LogLevel } from '@enums/log-level';
 import {
   CollectedNFTStatus,
   ICollectedNFTItem,
-  IGetCollectedNFTInsciption,
+  ICollectedNFTItemDetail,
+  IGetCollectedNFTInsciptionResp,
   IGetCollectedNFTsResp,
   IGetMintingCollectedNFTResp,
   IGetProfileResponse,
@@ -11,7 +12,7 @@ import {
 } from '@interfaces/api/profile';
 import { IGetProjectItemsResponse } from '@interfaces/api/project';
 import { IGetProfileTokensResponse } from '@interfaces/api/token-uri';
-import { get, put } from '@services/http-client';
+import { get, put, del } from '@services/http-client';
 import log from '@utils/logger';
 
 const LOG_PREFIX = 'ProfileService';
@@ -115,23 +116,23 @@ export const getCollectedNFTs = async (
       `/wallet/wallet-info?address=${btcAddress}`
     );
     if (res && res.inscriptions && res.inscriptions.length > 0) {
-      const tasks = res.inscriptions.map((data: IGetCollectedNFTInsciption) => {
-        const randomStr = Date.now().toString();
-        return {
-          inscriptionID: data.inscription_id,
-          inscriptionNumber: `${data.number}`,
-          contentType: data.content_type,
-          name: '',
-          projectName: data.project_name,
-          projectID: data.project_id,
-          image: data.thumbnail,
-          contentLength: randomStr,
-          orderID: randomStr,
-          isCompleted: false,
-          status: CollectedNFTStatus.Success,
-          statusText: 'Success',
-        } as ICollectedNFTItem;
-      });
+      const tasks = res.inscriptions.map(
+        (data: IGetCollectedNFTInsciptionResp) => {
+          return {
+            id: data.id || '',
+            inscriptionID: data.inscription_id,
+            inscriptionNumber: `${data.number}`,
+            contentType: data.content_type,
+            name: '',
+            projectName: data.project_name,
+            projectID: data.project_id,
+            image: data.thumbnail,
+            isCancel: false,
+            status: CollectedNFTStatus.Success,
+            statusText: '',
+          } as ICollectedNFTItem;
+        }
+      );
       const data = await Promise.all(tasks);
       return data;
     }
@@ -152,18 +153,17 @@ export const getMintingCollectedNFTs = async (
     let tasks: ICollectedNFTItem[] = [];
     if (res && res.length > 0) {
       tasks = res.map((item: IGetMintingCollectedNFTResp) => {
-        const randomStr = Date.now().toString();
         return {
+          id: item.id,
           image: item.fileURI || item.projectImage,
           name: '',
           projectName: item.projectName,
           projectID: item.projectID,
-          orderID: randomStr,
-          isCompleted: false,
-          contentLength: randomStr,
           inscriptionID: item.inscriptionID || '',
+          isCancel: item.isCancel || false,
           status: CollectedNFTStatus.Minting,
           statusText: item.status,
+          receiveAddress: item.receiveAddress,
         };
       });
     }
@@ -171,5 +171,42 @@ export const getMintingCollectedNFTs = async (
   } catch (err: unknown) {
     log('failed to get minting collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     return [];
+  }
+};
+
+export const getDetailMintingCollectedNFT = async (
+  mintID: string
+): Promise<ICollectedNFTItemDetail> => {
+  try {
+    const res = await get<IGetMintingCollectedNFTResp>(
+      `/mint-nft-btc/receive-address/${mintID}`
+    );
+    return {
+      id: res.id || '',
+      image: res.fileURI || res.projectImage,
+      name: '',
+      projectName: res.projectName,
+      projectID: res.projectID,
+      inscriptionID: res.inscriptionID || '',
+      isCancel: res.isCancel || false,
+      status: CollectedNFTStatus.Minting,
+      statusText: res.status,
+      receiveAddress: res.receiveAddress,
+    };
+  } catch (err: unknown) {
+    log('failed to get detail collected NFT', LogLevel.ERROR, LOG_PREFIX);
+    throw Error();
+  }
+};
+
+export const cancelMintingCollectedNFT = async (
+  mintID: string
+): Promise<boolean> => {
+  try {
+    await del(`/mint-nft-btc/receive-address/${mintID}`);
+    return true;
+  } catch (err: unknown) {
+    log('failed to get detail collected NFT', LogLevel.ERROR, LOG_PREFIX);
+    throw Error();
   }
 };
