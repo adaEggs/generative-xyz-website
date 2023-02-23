@@ -18,6 +18,7 @@ interface IProps {
   placeHolderHtml?: JSX.Element;
   previewHtml?: JSX.Element;
   maxSizeKb?: number;
+  onError?: (r: boolean) => void;
 }
 
 const ImagePreviewInput: React.FC<IProps> = ({
@@ -27,6 +28,7 @@ const ImagePreviewInput: React.FC<IProps> = ({
   onFileChange,
   previewHtml,
   maxSizeKb = 1024,
+  onError,
 }: IProps): React.ReactElement => {
   const [preview, setPreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -64,8 +66,10 @@ const ImagePreviewInput: React.FC<IProps> = ({
           maxSizeKb * 1024
         )}.`
       );
+      onError && onError(true);
     } else {
       onFileChange(newFile);
+      onError && onError(false);
     }
   };
 
@@ -107,5 +111,4 @@ const ImagePreviewInput: React.FC<IProps> = ({
     </div>
   );
 };
-
 export default ImagePreviewInput;

@@ -393,6 +393,33 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.1.1.tgz#c9c61d9fe5ca5ac664e1153bb0aa0eba1c6d6308"
   integrity sha512-jwx+WCqszn53YHOfvFMJJRd/B2GqkCBt+1MJSG6o5/s8+ytHMvDZXsJgUEWLk12UnLd7HYKac4BYU5i/Ron1Cw==
 
+"@datadog/browser-core@4.34.1":
+  version "4.34.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-core/-/browser-core-4.34.1.tgz#495b44d97703cf1c8bcca7a98cce8d0dbe090898"
+  integrity sha512-xZUMxSEUlzXVGU8fvIG5J4xGGBShrxgTTmCd9p7Ju/rUPnWV0hTqhPIXwSgbMvHgmX1vNwoNvydmlzhNVpKr3g==
+
+"@datadog/browser-logs@^4.34.1":
+  version "4.34.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-logs/-/browser-logs-4.34.1.tgz#30b869d1d6a449edaf038f187e8ddd2d530b8804"
+  integrity sha512-bLhPxlipxjszF3QhlA5zo0UTpTCe5cOYUCx9jHr2RR7HmDakD0hO0TRbCx6dw6L1LWYNlyTWHldhEQkhK0NQ/A==
+  dependencies:
+    "@datadog/browser-core" "4.34.1"
+
+"@datadog/browser-rum-core@4.34.1":
+  version "4.34.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum-core/-/browser-rum-core-4.34.1.tgz#ff863a16b68d2ed48b3e88ccfaa38c8eb2b6dde2"
+  integrity sha512-s1nHAXREKRlTl2EOn+J/786D7pvQ2lg9MunhmC5Juh9DeNrYrmAooxbrXCaCy0gKRBHbm68HM4h59FXuA5iNGg==
+  dependencies:
+    "@datadog/browser-core" "4.34.1"
+
+"@datadog/browser-rum@^4.34.1":
+  version "4.34.1"
+  resolved "https://registry.yarnpkg.com/@datadog/browser-rum/-/browser-rum-4.34.1.tgz#67f3f40288185c2b72a056a0612737c63d216165"
+  integrity sha512-fKw1EUwlPNliUJnOftsIgNGbW70+pZGwt2BbiUsWxp+CBHsw+MRFENUJybAK2l4PqNm+AZKVkvultiCDGvo3gg==
+  dependencies:
+    "@datadog/browser-core" "4.34.1"
+    "@datadog/browser-rum-core" "4.34.1"
+
 "@emotion/babel-plugin@^11.10.6", "@emotion/babel-plugin@^11.7.1":
   version "11.10.6"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.10.6.tgz#a68ee4b019d661d6f37dec4b8903255766925ead"
@@ -420,6 +447,17 @@
     "@emotion/utils" "^1.2.0"
     "@emotion/weak-memoize" "^0.3.0"
     stylis "4.1.3"
+
+"@emotion/css@^11.1.3":
+  version "11.10.6"
+  resolved "https://registry.yarnpkg.com/@emotion/css/-/css-11.10.6.tgz#5d226fdd8ef2a46d28e4eb09f66dc01a3bda5a04"
+  integrity sha512-88Sr+3heKAKpj9PCqq5A1hAmAkoSIvwEq1O2TwDij7fUtsJpdkV4jMTISSTouFeRvsGvXIpuSuDQ4C1YdfNGXw==
+  dependencies:
+    "@emotion/babel-plugin" "^11.10.6"
+    "@emotion/cache" "^11.10.5"
+    "@emotion/serialize" "^1.1.1"
+    "@emotion/sheet" "^1.2.1"
+    "@emotion/utils" "^1.2.0"
 
 "@emotion/hash@^0.9.0":
   version "0.9.0"
@@ -1193,6 +1231,23 @@
   dependencies:
     "@swc/helpers" "^0.4.14"
 
+"@react-three/fiber@^7.0.1":
+  version "7.0.29"
+  resolved "https://registry.yarnpkg.com/@react-three/fiber/-/fiber-7.0.29.tgz#fadb4950137d751fda80b254cb803b7f6b0f941a"
+  integrity sha512-TE+/iaGrjluGsPwN2RkLXxKD4ak+unsh0YKIFKGcuAOW9jYcAyMGKAtgFO8MS7/HNCrZZQQSg23sJ8IPgtdkDg==
+  dependencies:
+    "@babel/runtime" "^7.13.10"
+    "@types/react-reconciler" "^0.26.2"
+    react-merge-refs "^1.1.0"
+    react-reconciler "^0.26.2"
+    react-three-fiber "0.0.0-deprecated"
+    react-use-measure "^2.1.1"
+    resize-observer-polyfill "^1.5.1"
+    scheduler "^0.20.2"
+    use-asset "^1.0.4"
+    utility-types "^3.10.0"
+    zustand "^3.5.1"
+
 "@reduxjs/toolkit@^1.9.1":
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-1.9.2.tgz#4cd153491118038e2eebcb63b2264e42a8a2d74c"
@@ -1478,6 +1533,13 @@
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@types/react-lazyload/-/react-lazyload-3.2.0.tgz#b763f8f0c724df2c969d7e0b3a56c6aa2720fa1f"
   integrity sha512-4+r+z8Cf7L/mgxA1vl5uHx5GS/8gY2jqq2p5r5WCm+nUsg9KilwQ+8uaJA3EUlLj57AOzOfGGwwRJ5LOVl8fwA==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-reconciler@^0.26.2":
+  version "0.26.7"
+  resolved "https://registry.yarnpkg.com/@types/react-reconciler/-/react-reconciler-0.26.7.tgz#0c4643f30821ae057e401b0d9037e03e8e9b2a36"
+  integrity sha512-mBDYl8x+oyPX/VBb3E638N0B7xG+SPk/EAMcVPeexqus/5aTpTphQi0curhhshOqRrc9t6OPoJfEUkbymse/lQ==
   dependencies:
     "@types/react" "*"
 
@@ -2164,9 +2226,9 @@ bitcoinjs-lib@^6.1.0:
     varuint-bitcoin "^1.1.2"
     wif "^2.0.1"
 
-"bitcoinjs-message@https://github.com/matterhorn063/bitcoinjs-message#0.0.3":
+"bitcoinjs-message@https://github.com/generative-xyz/bitcoinjs-message#0.0.1":
   version "2.2.0"
-  resolved "https://github.com/matterhorn063/bitcoinjs-message#1eaacff373b26a3a6da89af82a1faf608fc90aa8"
+  resolved "https://github.com/generative-xyz/bitcoinjs-message#10901782dbe1dc4c3b9b7c8156a5ecbe64d61b3f"
   dependencies:
     bech32 "^1.1.3"
     bs58check "^2.1.2"
@@ -2841,6 +2903,11 @@ dayjs@^1.11.7:
   version "1.11.7"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.7.tgz#4b296922642f70999544d1144a2c25730fce63e2"
   integrity sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==
+
+debounce@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.2.1.tgz#38881d8f4166a5c5848020c11827b834bcb3e0a5"
+  integrity sha512-XRRe6Glud4rd/ZGQfiV1ruXSfbvfJedlV9Y6zOlP+2K04vBYiJEte6stfFkCP03aMnY5tsipamumUjL14fofug==
 
 debug@2.6.9, debug@^2.1.3, debug@^2.2.0:
   version "2.6.9"
@@ -6773,6 +6840,24 @@ raw-body@2.5.1:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
+react-audio-visualizers-core@^0.1.3:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/react-audio-visualizers-core/-/react-audio-visualizers-core-0.1.4.tgz#a5d1d1e5da4780851ce027d54caccd6ee5e583ca"
+  integrity sha512-bO3sMY8QHhCZ2TjxguVgQJZiBOsbC/hL8eu+9a2WtjOySIO1qg7A2ZpOZrUvlEtN5D2yeIZScpilciJM6CjR9Q==
+  dependencies:
+    "@emotion/css" "^11.1.3"
+    typescript "^4.3.4"
+
+react-audio-visualizers@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/react-audio-visualizers/-/react-audio-visualizers-0.1.1.tgz#dd3611baf34169bb55a224d316d210dbca7e3ebd"
+  integrity sha512-ftIzPiEiEeTXwzVCK9ttz36s9a600fU4wGrz4pvYrYeQqt9+X+B2Ig6FnHIjXqQRL4CC5tuBMPKSyDMo5Qp+QQ==
+  dependencies:
+    "@react-three/fiber" "^7.0.1"
+    react-audio-visualizers-core "^0.1.3"
+    three "^0.129.0"
+    typescript "^4.3.4"
+
 react-bootstrap@^2.7.0:
   version "2.7.2"
   resolved "https://registry.yarnpkg.com/react-bootstrap/-/react-bootstrap-2.7.2.tgz#100069ea7b4807cccbc5fef1e33bc90283262602"
@@ -6878,6 +6963,11 @@ react-markdown@7.0.1:
     unist-util-visit "^4.0.0"
     vfile "^5.0.0"
 
+react-merge-refs@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-merge-refs/-/react-merge-refs-1.1.0.tgz#73d88b892c6c68cbb7a66e0800faa374f4c38b06"
+  integrity sha512-alTKsjEL0dKH/ru1Iyn7vliS2QRcBp9zZPGoWxUOvRGWPUYgjo+V01is7p04It6KhgrzhJGnIj9GgX8W4bZoCQ==
+
 react-qr-code@^2.0.11:
   version "2.0.11"
   resolved "https://registry.yarnpkg.com/react-qr-code/-/react-qr-code-2.0.11.tgz#444c759a2100424972e17135fbe0e32eaffa19e8"
@@ -6885,6 +6975,15 @@ react-qr-code@^2.0.11:
   dependencies:
     prop-types "^15.8.1"
     qr.js "0.0.0"
+
+react-reconciler@^0.26.2:
+  version "0.26.2"
+  resolved "https://registry.yarnpkg.com/react-reconciler/-/react-reconciler-0.26.2.tgz#bbad0e2d1309423f76cf3c3309ac6c96e05e9d91"
+  integrity sha512-nK6kgY28HwrMNwDnMui3dvm3rCFjZrcGiuwLc5COUipBK5hWHLOxMJhSnSomirqWwjPBJKV1QcbkI0VJr7Gl1Q==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    scheduler "^0.20.2"
 
 react-redux@^8.0.5:
   version "8.0.5"
@@ -6956,6 +7055,11 @@ react-tagsinput@^3.20.0:
   resolved "https://registry.yarnpkg.com/react-tagsinput/-/react-tagsinput-3.20.0.tgz#2aa802ee95ba13efa2ea1e04f638f4e5013f0334"
   integrity sha512-znuxyJAXj0rd3wIabBK5+WN5RHBk9EkS25DrojBdHjT+0p/6SFvOScdugHcwzksdNGnu7Oo7+oVw+LiHMkUXJg==
 
+react-three-fiber@0.0.0-deprecated:
+  version "0.0.0-deprecated"
+  resolved "https://registry.yarnpkg.com/react-three-fiber/-/react-three-fiber-0.0.0-deprecated.tgz#c737242487d824cf9520307308b7e4c4071a278f"
+  integrity sha512-EblIqTAsIpkYeM8bZtC4lcpTE0A2zCEGipFB52RgcQq/q+0oryrk7Sxt+sqhIjUu6xMNEVywV8dr74lz5yWO6A==
+
 react-transition-group@^4.3.0, react-transition-group@^4.4.2:
   version "4.4.5"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.5.tgz#e53d4e3f3344da8521489fbef8f2581d42becdd1"
@@ -6965,6 +7069,13 @@ react-transition-group@^4.3.0, react-transition-group@^4.4.2:
     dom-helpers "^5.0.1"
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
+
+react-use-measure@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/react-use-measure/-/react-use-measure-2.1.1.tgz#5824537f4ee01c9469c45d5f7a8446177c6cc4ba"
+  integrity sha512-nocZhN26cproIiIduswYpV5y5lQpSQS1y/4KuvUCjSKmw7ZWIS/+g3aFnX3WdBkyuGUtTLif3UTqnLLhbDoQig==
+  dependencies:
+    debounce "^1.2.1"
 
 react@18.2.0:
   version "18.2.0"
@@ -7218,6 +7329,11 @@ reselect@^4.1.7:
   resolved "https://registry.yarnpkg.com/reselect/-/reselect-4.1.7.tgz#56480d9ff3d3188970ee2b76527bd94a95567a42"
   integrity sha512-Zu1xbUt3/OPwsXL46hvOOoQrap2azE7ZQbokq61BQfiXvhewsKDwhMeZjTX9sX0nvw1t/U5Audyn1I9P/m9z0A==
 
+resize-observer-polyfill@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz#0e9020dd3d21024458d4ebd27e23e40269810464"
+  integrity sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==
+
 resolve-alpn@^1.0.0, resolve-alpn@^1.2.0:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/resolve-alpn/-/resolve-alpn-1.2.1.tgz#b7adbdac3546aaaec20b45e7d8265927072726f9"
@@ -7359,6 +7475,14 @@ sass@^1.56.2:
     immutable "^4.0.0"
     source-map-js ">=0.6.2 <2.0.0"
 
+scheduler@^0.20.2:
+  version "0.20.2"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.20.2.tgz#4baee39436e34aa93b4874bddcbf0fe8b8b50e91"
+  integrity sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+
 scheduler@^0.23.0:
   version "0.23.0"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.23.0.tgz#ba8041afc3d30eb206a487b6b384002e4e61fdfe"
@@ -7404,14 +7528,14 @@ secp256k1@^4.0.1:
     node-addon-api "^2.0.0"
     node-gyp-build "^4.2.0"
 
-"segwit@https://github.com/matterhorn063/segwit#0.0.7":
-  version "0.1.0"
-  resolved "https://github.com/matterhorn063/segwit#5ff68d0572207716e6241d9dbb21ad6519edaeaf"
+"segwit@https://github.com/generative-xyz/generative-segwit-sdk#0.0.3":
+  version "0.0.1"
+  resolved "https://github.com/generative-xyz/generative-segwit-sdk#037d1f28fb73727cc63209d849377051d202e7d9"
   dependencies:
     "@types/node" "^18.13.0"
     bip32 "^3.1.0"
     bitcoinjs-lib "5.0.0"
-    bitcoinjs-message "https://github.com/matterhorn063/bitcoinjs-message#0.0.3"
+    bitcoinjs-message "https://github.com/generative-xyz/bitcoinjs-message#0.0.1"
 
 "semver@2 || 3 || 4 || 5":
   version "5.7.1"
@@ -8043,6 +8167,11 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==
 
+three@^0.129.0:
+  version "0.129.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.129.0.tgz#f5e530bbc96eac5d5b4749cb5da886ef0d42f554"
+  integrity sha512-wiWio1yVRg2Oj6WEWsTHQo5eSzYpEwSBtPSi3OofNpvFbf26HFfb9kw4FZJNjII4qxzp0b1xLB11+tKkBGB1ZA==
+
 three@^0.149.0:
   version "0.149.0"
   resolved "https://registry.yarnpkg.com/three/-/three-0.149.0.tgz#a9cf78b17d02f063ffe6dfca1e300eff2eab2927"
@@ -8299,7 +8428,7 @@ typeforce@^1.11.3, typeforce@^1.11.5:
   resolved "https://registry.yarnpkg.com/typeforce/-/typeforce-1.18.0.tgz#d7416a2c5845e085034d70fcc5b6cc4a90edbfdc"
   integrity sha512-7uc1O8h1M1g0rArakJdf0uLRSSgFcYexrVoKo+bzJd32gd4gDy2L/Z+8/FjPnU9ydY3pEnVPtr9FyscYY60K1g==
 
-typescript@^4.6.4, typescript@^4.9.4:
+typescript@^4.3.4, typescript@^4.6.4, typescript@^4.9.4:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
@@ -8473,6 +8602,13 @@ url-set-query@^1.0.0:
   resolved "https://registry.yarnpkg.com/url-set-query/-/url-set-query-1.0.0.tgz#016e8cfd7c20ee05cafe7795e892bd0702faa339"
   integrity sha512-3AChu4NiXquPfeckE5R5cGdiHCMWJx1dwCWOmWIL4KHAziJNOFIYJlpGFeKDvwLPHovZRCxK3cYlwzqI9Vp+Gg==
 
+use-asset@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/use-asset/-/use-asset-1.0.4.tgz#506caafc29f602890593799e58b577b70293a6e2"
+  integrity sha512-7/hqDrWa0iMnCoET9W1T07EmD4Eg/Wmoj/X8TGBc++ECRK4m5yTsjP4O6s0yagbxfqIOuUkIxe2/sA+VR2GxZA==
+  dependencies:
+    fast-deep-equal "^3.1.3"
+
 use-async-effect@^2.2.7:
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/use-async-effect/-/use-async-effect-2.2.7.tgz#5812f875a8d7996c396fb49798d0377e90575989"
@@ -8515,6 +8651,11 @@ util@^0.12.5:
     is-generator-function "^1.0.7"
     is-typed-array "^1.1.3"
     which-typed-array "^1.1.2"
+
+utility-types@^3.10.0:
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/utility-types/-/utility-types-3.10.0.tgz#ea4148f9a741015f05ed74fd615e1d20e6bed82b"
+  integrity sha512-O11mqxmi7wMKCo6HKFt5AhO4BwY3VV68YU07tgxfz8zJTIxr4BpsezN49Ffwy9j3ZpwwJp4fkRwjRzq3uWE6Rg==
 
 utils-merge@1.0.1:
   version "1.0.1"
@@ -9164,6 +9305,11 @@ yup@^0.32.11:
     nanoclone "^0.2.1"
     property-expr "^2.0.4"
     toposort "^2.0.2"
+
+zustand@^3.5.1:
+  version "3.7.2"
+  resolved "https://registry.yarnpkg.com/zustand/-/zustand-3.7.2.tgz#7b44c4f4a5bfd7a8296a3957b13e1c346f42514d"
+  integrity sha512-PIJDIZKtokhof+9+60cpockVOq05sJzHCriyvaLBmEJixseQ1a5Kdov6fWZfWOu5SK9c+FhH1jU0tntLxRJYMA==
 
 zwitch@^2.0.0, zwitch@^2.0.4:
   version "2.0.4"

@@ -41,6 +41,7 @@ const FormEditProject = () => {
     GenerativeProjectDetailContext
   );
   const [newFile, setNewFile] = useState<File | null>();
+  const [uploadError, setUploadError] = useState<boolean>(false);
   const [categoryOptions, setCategoryOptions] = useState<Array<SelectOption>>(
     []
   );
@@ -88,8 +89,9 @@ const FormEditProject = () => {
       errors.maxSupply = 'Invalid number. Must be greater than 0.';
     } else if (
       projectFiles !== 0 &&
-      parseInt(values.maxSupply.toString(), 10) > projectFiles &&
-      parseInt(values.maxSupply.toString(), 10) >= nftMinted
+      projectFiles !== 1 &&
+      (parseInt(values.maxSupply.toString(), 10) > projectFiles ||
+        parseInt(values.maxSupply.toString(), 10) < nftMinted)
     ) {
       errors.maxSupply = `Invalid number. Must be between ${
         nftMinted || 1
@@ -120,7 +122,7 @@ const FormEditProject = () => {
     if (newThumbnail) {
       const uploadRes = await uploadFile({ file: newThumbnail });
       thumbnailUrl = uploadRes.url;
-    } else {
+    } else if (uploadError) {
       return;
     }
 
@@ -317,6 +319,7 @@ const FormEditProject = () => {
                     file={values.thumbnail}
                     onFileChange={setNewFile}
                     maxSizeKb={500}
+                    onError={setUploadError}
                     previewHtml={<img src={values.thumbnail} alt="thumbnail" />}
                   />
                   <div className={s.uploadPreviewWrapper_thumb}>

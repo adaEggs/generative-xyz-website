@@ -3,12 +3,20 @@ import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { SOCIALS } from '@constants/common';
-import { CDN_URL, SANDBOX_BTC_FILE_SIZE_LIMIT } from '@constants/config';
+import {
+  CDN_URL,
+  SANDBOX_BTC_IMAGE_SIZE_LIMIT,
+  SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT,
+} from '@constants/config';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
 import { LogLevel } from '@enums/log-level';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { ImageFileError, SandboxFileError } from '@enums/sandbox';
-import { getSupportedFileExtList } from '@utils/file';
+import {
+  getFileExtensionByFileName,
+  getMediaTypeFromFileExt,
+  getSupportedFileExtList,
+} from '@utils/file';
 import { postReferralCode } from '@services/referrals';
 import log from '@utils/logger';
 import { getReferral } from '@utils/referral';
@@ -20,6 +28,7 @@ import { useRouter } from 'next/router';
 import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
 import DropFile from '../DropFile';
 import s from './styles.module.scss';
+import { MediaType } from '@enums/file';
 
 const LOG_PREFIX = 'UploadGenArt';
 
@@ -49,7 +58,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
       if ((err as Error).message === SandboxFileError.WRONG_FORMAT) {
         errorMessage += 'Invalid file format.';
       } else if ((err as Error).message === SandboxFileError.TOO_LARGE) {
-        errorMessage += `File size error, maximum file size is ${SANDBOX_BTC_FILE_SIZE_LIMIT}kb.`;
+        errorMessage += `File size error, maximum file size is ${SANDBOX_BTC_IMAGE_SIZE_LIMIT}kb.`;
       }
       setShowErrorAlert({ open: true, message: errorMessage });
     }
@@ -132,15 +141,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
             </div>
           </div>
           <div className={s.container}>
-            <div className={s.checkboxWrapper}>
-              {/* <Checkbox
-                checked={isProjectWork}
-                onClick={handleChangeIsProjectWork}
-                className={s.checkbox}
-                id="workProperly"
-                label="My NFT collection is ready to go!"
-              /> */}
-            </div>
             <div className={s.actionWrapper}>
               <Button
                 disabled={!filesSandbox}
@@ -188,13 +188,30 @@ const UploadGenArt: React.FC = (): ReactElement => {
   const getFileError = (errorType: ImageFileError): string => {
     switch (errorType) {
       case ImageFileError.TOO_LARGE:
-        return `File size error, maximum file size is ${SANDBOX_BTC_FILE_SIZE_LIMIT}kb.`;
+        return `File size error, maximum file size is ${SANDBOX_BTC_IMAGE_SIZE_LIMIT}KB for images or ${
+          SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT / 1000
+        }MB for others.`;
       case ImageFileError.INVALID_EXTENSION:
         return `Invalid file format. Supported file extensions are ${getSupportedFileExtList().join(
           ', '
         )}.`;
       default:
         return '';
+    }
+  };
+
+  const getIconByFileType = (fileMediaType: string | null): string => {
+    switch (fileMediaType) {
+      case MediaType.IMAGE:
+        return `${CDN_URL}/icons/ic-image-24x24.svg`;
+      case MediaType.MODEL_3D:
+        return `${CDN_URL}/icons/ic-3d-24x24.svg`;
+      case MediaType.VIDEO:
+        return `${CDN_URL}/icons/ic-video-24x24.svg`;
+      case MediaType.AUDIO:
+        return `${CDN_URL}/icons/ic-audio-24x24.svg`;
+      default:
+        return `${CDN_URL}/icons/ic-file-24x24.svg`;
     }
   };
 
@@ -224,40 +241,42 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 </Heading>
               </div>
               <ul className={s.zipFileList}>
-                {fileList.map((fileItem, index) => (
-                  <li key={index} className={s.fileItem}>
-                    <div className={s.fileInfo}>
-                      {fileItem.error ? (
+                {fileList.map((fileItem, index) => {
+                  const fileExt =
+                    getFileExtensionByFileName(fileItem.name) ?? '';
+                  const fileMediaType = getMediaTypeFromFileExt(fileExt);
+
+                  return (
+                    <li key={index} className={s.fileItem}>
+                      <div className={s.fileInfo}>
                         <SvgInset
-                          className={cs(s.codeIcon, s.codeIcon__error)}
+                          className={cs(s.codeIcon, {
+                            [`codeIconError_${fileMediaType?.toLowerCase()}`]:
+                              fileItem.error,
+                          })}
                           size={24}
-                          svgUrl={`${CDN_URL}/icons/ic-image-error-24x24.svg`}
+                          svgUrl={getIconByFileType(fileMediaType)}
                         />
-                      ) : (
-                        <SvgInset
-                          className={s.codeIcon}
-                          size={24}
-                          svgUrl={`${CDN_URL}/icons/ic-image-check-24x24.svg`}
-                        />
+                        <Text
+                          as={'span'}
+                          size={'18'}
+                          color={cs('primary-color', {
+                            [`${s.errorText}`]: !!fileItem.error,
+                          })}
+                          className={s.fileName}
+                        >
+                          {fileItem.name}{' '}
+                          {`(${prettyPrintBytes(fileItem.size)})`}
+                        </Text>
+                      </div>
+                      {fileItem.error && (
+                        <p className={s.fileError}>
+                          {getFileError(fileItem.error)}
+                        </p>
                       )}
-                      <Text
-                        as={'span'}
-                        size={'18'}
-                        color={cs('primary-color', {
-                          [`${s.errorText}`]: !!fileItem.error,
-                        })}
-                        className={s.fileName}
-                      >
-                        {fileItem.name} {`(${prettyPrintBytes(fileItem.size)})`}
-                      </Text>
-                    </div>
-                    {fileItem.error && (
-                      <p className={s.fileError}>
-                        {getFileError(fileItem.error)}
-                      </p>
-                    )}
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
             <div className={s.actionWrapper}>

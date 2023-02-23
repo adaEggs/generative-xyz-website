@@ -1,7 +1,6 @@
 import Avatar from '@components/Avatar';
 import ButtonIcon from '@components/ButtonIcon';
 import Input from '@components/Formik/Input';
-import Heading from '@components/Heading';
 import ImagePreviewInput from '@components/ImagePreviewInput';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
@@ -18,13 +17,13 @@ import { validateBTCAddress } from '@utils/validate';
 import { Formik } from 'formik';
 import _isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
 
 const LOG_PREFIX = 'FormEditProfile';
 
-const FormEditProfile = () => {
+const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
   const user = useAppSelector(getUserSelector);
   const route = useRouter();
   const dispatch = useAppDispatch();
@@ -39,6 +38,9 @@ const FormEditProfile = () => {
   };
 
   const [newFile, setNewFile] = useState<File | null | undefined>();
+  const isAccountTab = useMemo((): boolean => {
+    return tab === 'account';
+  }, [tab]);
 
   const validateForm = (values: Record<string, string>) => {
     const errors: Record<string, string> = {};
@@ -119,111 +121,146 @@ const FormEditProfile = () => {
     >
       {({ handleSubmit, isSubmitting, dirty, errors, values }) => (
         <form className={s.account}>
-          <div className={s.account_avatar}>
-            <ImagePreviewInput
-              file={values.avatar}
-              onFileChange={setNewFile}
-              previewHtml={<Avatar imgSrcs={user?.avatar || ''} fill />}
-            />
-            {user?.avatar && (
-              <ButtonIcon
-                variants="secondary"
-                className={s.change_btn}
-                style={{ pointerEvents: 'none' }}
-              >
-                Changes
-              </ButtonIcon>
-            )}
-          </div>
-          <div className={s.account_form}>
-            <Heading as="h4" fontWeight="bold">
-              Account Info
-            </Heading>
-            <div className={s.account_form_wrapper}>
-              <div className={s.input_item}>
-                <Input
-                  name={'nickname'}
-                  label={'nickname'}
-                  placeholder="Nickname"
-                  className={s.input_nickname}
-                  useFormik
-                  errors={{ nickname: errors.nickname || '' }}
-                ></Input>
-                <Text size="14" className="text-secondary-color">
-                  Other users will see your nickname instead of your wallet
-                  address.
-                </Text>
+          {isAccountTab ? (
+            <div className={s.account_form}>
+              <div className={s.account_avatar}>
+                <ImagePreviewInput
+                  className={s.account_avatar_el}
+                  file={values.avatar}
+                  onFileChange={setNewFile}
+                  previewHtml={<Avatar imgSrcs={user?.avatar || ''} fill />}
+                />
+                {user?.avatar && (
+                  <span className={s.account_avatar_label}>Upload</span>
+                )}
               </div>
-              <div className={s.input_item}>
-                <Input
-                  placeholder="Tell us more about yourself"
-                  name={'bio'}
-                  label={'bio'}
-                  className={s.input_bio}
-                  as="textarea"
-                  errors={{ bio: errors.bio || '' }}
-                  useFormik
-                ></Input>
+              <div className={s.account_form_wrapper}>
+                <div className={s.input_item}>
+                  <Input
+                    name={'nickname'}
+                    label={'nickname'}
+                    placeholder="Nickname"
+                    className={s.input_nickname}
+                    useFormik
+                    errors={{ nickname: errors.nickname || '' }}
+                  />
+                  <Text size="14" className="text-secondary-color">
+                    Other users will see your nickname instead of your wallet
+                    address.
+                  </Text>
+                </div>
+                <div className={s.input_item}>
+                  <Input
+                    placeholder="Tell us more about yourself"
+                    name={'bio'}
+                    label={'bio'}
+                    className={s.input_bio}
+                    as="textarea"
+                    errors={{ bio: errors.bio || '' }}
+                    useFormik
+                  />
+                </div>
+
+                <div className={s.input_item}>
+                  <div className={s.input_social}>
+                    <Input
+                      name={'website'}
+                      label={'website'}
+                      placeholder="https://"
+                      className={s.input_website}
+                      useFormik
+                      errors={{ website: errors.website || '' }}
+                    />
+                    <Input
+                      name={'twitter'}
+                      label={'twitter'}
+                      placeholder="https://twitter.com/..."
+                      className={s.input_website}
+                      errors={{ twitter: errors.twitter || '' }}
+                      useFormik
+                    />
+                    <div className={s.submit_btn_lists}>
+                      <ButtonIcon
+                        onClick={() => handleSubmit()}
+                        className={s.submit_btn}
+                        disabled={
+                          isSubmitting ||
+                          (!dirty && !newFile) ||
+                          !_isEmpty(errors)
+                        }
+                      >
+                        Save changes
+                      </ButtonIcon>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className={s.input_item}>
-                <Input
-                  name={'walletAddressBtc'}
-                  label={'BTC Wallet Address'}
-                  placeholder="3FZb..."
-                  className={s.input_wallet}
-                  errors={{
-                    walletAddressBtc: errors.walletAddressBtc || '',
-                  }}
-                  useFormik
-                ></Input>
-              </div>
+            </div>
+          ) : (
+            <div className={s.account_wallet}>
+              {!!user?.walletAddressBtc && (
+                <div className={s.input_item}>
+                  <Input
+                    name={'walletAddressBtc'}
+                    label={'BTC Wallet Address'}
+                    placeholder="3FZb..."
+                    className={s.input_wallet}
+                    errors={{
+                      walletAddressBtc: errors.walletAddressBtc || '',
+                    }}
+                    useFormik
+                  />
+                </div>
+              )}
 
               <div className={s.input_item}>
-                <Text
-                  size="18"
-                  fontWeight="bold"
-                  style={{ marginBottom: '10px' }}
-                >
-                  Social Connections
-                </Text>
-                <div className={s.input_social}>
+                <Input
+                  name={'metamaskAddress'}
+                  label={'Metamask wallet address'}
+                  type="readonly"
+                  disabled={true}
+                  className={s.input_metamaskAddress}
+                  defaultValue={user?.walletAddress}
+                />
+              </div>
+
+              {!!user?.walletAddressBtcTaproot && (
+                <div className={s.input_item}>
                   <Input
-                    name={'website'}
-                    label={'website'}
-                    placeholder="https://"
-                    className={s.input_website}
-                    useFormik
-                    errors={{ website: errors.website || '' }}
-                  ></Input>
-                  {/* <Input
-                    name={'instagram'}
-                    label={'instagram'}
-                    placeholder="Instagram"
-                    className={s.input_website}
-                    useFormik
-                  ></Input> */}
-                  {/* <Input
-                    name={'discord'}
-                    label={'discord'}
-                    placeholder="Discord"
-                    className={s.input_website}
-                    useFormik
-                  ></Input> */}
-                  {/* <Input
-                    name={'etherScan'}
-                    label={'etherScan'}
-                    placeholder="Etherscan"
-                    className={s.input_website}
-                    useFormik
-                  ></Input> */}
-                  <Input
-                    name={'twitter'}
-                    label={'twitter'}
-                    placeholder="https://twitter.com/..."
-                    className={s.input_website}
-                    errors={{ twitter: errors.twitter || '' }}
-                    useFormik
-                  ></Input>
+                    name={'metamaskAddress'}
+                    label={'BTC wallet taproot wallet address'}
+                    type="readonly"
+                    disabled={true}
+                    className={s.input_metamaskAddress}
+                    defaultValue={user?.walletAddressBtcTaproot || ''}
+                  />
+                </div>
+              )}
+
+              <div className={s.account_wallet_action}>
+                <div>
+                  {user?.walletAddress ? (
+                    <ButtonIcon
+                      className={s.walletBtn}
+                      variants={'secondary-2'}
+                      onClick={() => {
+                        walletCtx.disconnect();
+                        route.replace(ROUTE_PATH.WALLET);
+                      }}
+                    >
+                      Disconnect wallet
+                    </ButtonIcon>
+                  ) : (
+                    <ButtonIcon
+                      className={s.walletBtn}
+                      variants={'secondary-2'}
+                      onClick={handleConnectWallet}
+                    >
+                      Connect wallet
+                    </ButtonIcon>
+                  )}
+                </div>
+                <div>
                   <ButtonIcon
                     onClick={() => handleSubmit()}
                     className={s.submit_btn}
@@ -236,47 +273,7 @@ const FormEditProfile = () => {
                 </div>
               </div>
             </div>
-          </div>
-          <div className={s.account_wallet}>
-            <Heading as="h4" fontWeight="bold">
-              Wallet
-            </Heading>
-            <Text>Metamask wallet address:</Text>
-            <Text style={{ marginBottom: '6px' }}>
-              {user?.walletAddress || ''}
-            </Text>
-            {!!user?.walletAddressBtc && (
-              <>
-                <Text>BTC wallet address:</Text>
-                <Text style={{ marginBottom: '6px' }}>
-                  {user?.walletAddressBtc || ''}
-                </Text>
-              </>
-            )}
-            {!!user?.walletAddressBtcTaproot && (
-              <>
-                <Text>Ordinals wallet address:</Text>
-                <Text style={{ marginBottom: '6px' }}>
-                  {user?.walletAddressBtcTaproot || ''}
-                </Text>
-              </>
-            )}
-            {user?.walletAddress ? (
-              <ButtonIcon
-                className={s.walletBtn}
-                onClick={() => {
-                  walletCtx.disconnect();
-                  route.replace(ROUTE_PATH.WALLET);
-                }}
-              >
-                Disconnect wallet
-              </ButtonIcon>
-            ) : (
-              <ButtonIcon className={s.walletBtn} onClick={handleConnectWallet}>
-                Connect wallet
-              </ButtonIcon>
-            )}
-          </div>
+          )}
         </form>
       )}
     </Formik>

@@ -1,0 +1,16 @@
+.placeholderThumbnail {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > img {
+    width: rem(200px);
+    height: rem(200px);
+    object-fit: contain;
+  }
+}

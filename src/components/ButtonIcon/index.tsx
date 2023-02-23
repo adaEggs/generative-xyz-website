@@ -6,6 +6,7 @@ type ButtonType = 'button' | 'submit' | 'reset' | undefined;
 type ButtonVariantsType =
   | 'primary'
   | 'secondary'
+  | 'secondary-2'
   | 'outline'
   | 'outline-small'
   | 'ghost'

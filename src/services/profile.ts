@@ -161,6 +161,7 @@ export const getMintingCollectedNFTs = async (
           orderID: randomStr,
           isCompleted: false,
           contentLength: randomStr,
+          inscriptionID: item.inscriptionID || '',
           status: CollectedNFTStatus.Minting,
           statusText: item.status,
         };

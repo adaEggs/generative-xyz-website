@@ -365,7 +365,7 @@ const ProjectIntroSection = ({
                   Floor Price
                 </Text>
                 <Heading as="h6" fontWeight="medium">
-                  {Number(project?.btcFloorPrice) ? `${priceMemo} BTC` : 'Free'}
+                  {formatBTCPrice(project?.btcFloorPrice)}
                 </Heading>
               </div>
             )}
@@ -419,8 +419,9 @@ const ProjectIntroSection = ({
                 >
                   <Text as="span" size="14" fontWeight="medium">
                     <>
-                      <span>{`Buy now • `}</span>
-                      <span>{formatBTCPrice(project.btcFloorPrice)} BTC</span>
+                      <span>{`Buy now • ${formatBTCPrice(
+                        project.btcFloorPrice
+                      )} BTC`}</span>
                     </>
                   </Text>
                 </ButtonIcon>

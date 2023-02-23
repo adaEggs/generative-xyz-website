@@ -31,7 +31,8 @@ export const SECONDS_PER_BLOCK = parseInt(
 // Mint tool
 export const MINT_TOOL_MAX_FILE_SIZE = 1;
 export const MINT_TRANSFER_FEE = 16000;
-export const SANDBOX_BTC_FILE_SIZE_LIMIT = 400; // kb
+export const SANDBOX_BTC_IMAGE_SIZE_LIMIT = 400; // kb
+export const SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT = 3000; // kb
 export const MIN_MINT_BTC_PROJECT_PRICE = 0;
 
 // Mempool
@@ -53,5 +54,13 @@ export const HOST_ORDINALS_EXPLORER =
   'https://ordinals-explorer-v5-dev.generative.xyz';
 
 export const GLB_COLLECTION_ID = process.env.NEXT_PUBLIC_GLB_COLLECTION_ID!;
+
+// Datadog
+// Datadog config
+export const DD_APP_ID = process.env.NEXT_PUBLIC_DD_APP_ID!;
+export const DD_CLIENT_TOKEN = process.env.NEXT_PUBLIC_DD_CLIENT_TOKEN!;
+export const DD_SITE = 'datadoghq.com';
+export const DD_SERVICE = process.env.NEXT_PUBLIC_DD_SERVICE!;
+export const ENABLE_DD = process.env.NEXT_PUBLIC_ENABLE_DD! === 'true';
 
 /* eslint-enable @typescript-eslint/no-non-null-assertion */
