@@ -9,6 +9,7 @@ import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import React, { useState } from 'react';
 import s from './CollectedCard.module.scss';
+import Image from 'next/image';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -52,7 +53,8 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
             }`}
           >
             <div className={s.projectCard_thumb_inner}>
-              <img
+              <Image
+                fill
                 onError={onThumbError}
                 src={convertIpfsToHttp(thumb)}
                 alt={project.name}
