@@ -5,14 +5,15 @@ import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
+import { ProfileContext } from '@contexts/profile-context';
 import useWindowSize from '@hooks/useWindowSize';
 import { CollectedNFTStatus, ICollectedNFTItem } from '@interfaces/api/profile';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
-import { useState } from 'react';
 import { TwitterShareButton } from 'react-share';
+import React, { useContext, useState } from 'react';
 import s from './CollectedCard.module.scss';
 import Image from 'next/image';
 
@@ -25,6 +26,8 @@ interface IPros {
 export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
   const user = useAppSelector(getUserSelector);
+
+  const { handelcancelMintingNFT } = useContext(ProfileContext);
 
   const [thumb, setThumb] = useState<string>(project.image);
 
@@ -46,8 +49,24 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
 
   const isNotShowBlur =
     project.status === CollectedNFTStatus.Success ||
-    project.statusText === 'Minted' ||
     project.statusText === 'Transferring';
+
+  const renderStatusText = () => {
+    return (
+      <>
+        {project.status !== CollectedNFTStatus.Success && (
+          <Text
+            className={s.projectCard_creator_status}
+            size={'16'}
+            fontWeight="medium"
+            color="black-40"
+          >
+            {`${project.statusText}...`}
+          </Text>
+        )}
+      </>
+    );
+  };
 
   return (
     <Link href={linkPath} className={`${s.projectCard} ${className}`}>
@@ -81,55 +100,19 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
             {!isNotShowBlur && <div className={s.projectCard_thumb_backdrop} />}
           </div>
         )}
-        <div className={s.projectCard_inner_info}>
+        <div className={s.projectCard_status}>
           {mobileScreen ? (
             <div className={cs(s.projectCard_info, s.mobile)}>
-              {project.status !== CollectedNFTStatus.Success && (
-                <div className={s.projectCard_creator}>
-                  <Text
-                    className={s.projectCard_creator_status}
-                    size={'16'}
-                    fontWeight="medium"
-                    color="black-40"
-                  >
-                    {`${project.statusText}...`}
-                  </Text>
-                </div>
-              )}
+              {renderStatusText()}
               {projectName && (
                 <Text size="11" fontWeight="medium">
                   {projectName}
                 </Text>
               )}
-              {project.status === CollectedNFTStatus.Success && (
-                <div className={s.projectCard_info_share}>
-                  <TwitterShareButton
-                    url={`${location.origin}${linkPath}?referral_code=${user?.id}`}
-                    title={''}
-                    hashtags={[]}
-                  >
-                    <SvgInset
-                      size={20}
-                      svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
-                    />
-                  </TwitterShareButton>
-                </div>
-              )}
             </div>
           ) : (
             <div className={cs(s.projectCard_info, s.desktop)}>
-              {project.status !== CollectedNFTStatus.Success && (
-                <div className={s.projectCard_creator}>
-                  <Text
-                    className={s.projectCard_creator_status}
-                    size={'16'}
-                    fontWeight="medium"
-                    color="black-40"
-                  >
-                    {`${project.statusText}...`}
-                  </Text>
-                </div>
-              )}
+              {renderStatusText()}
               {projectName && (
                 <div className={s.projectCard_creator}>
                   <Text size={'20'} fontWeight="medium">
@@ -137,25 +120,35 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   </Text>
                 </div>
               )}
-              {project.status === CollectedNFTStatus.Success && (
-                <div className={s.projectCard_info_share}>
-                  <TwitterShareButton
-                    url={`${location.origin}${linkPath}?referral_code=${user?.id}`}
-                    title={''}
-                    hashtags={[]}
-                  >
-                    <SvgInset
-                      size={16}
-                      svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
-                    />
-                  </TwitterShareButton>
-                </div>
-              )}
             </div>
+          )}
+          {project.status === CollectedNFTStatus.Success && (
+            <div className={s.projectCard_info_share}>
+              <TwitterShareButton
+                url={`${location.origin}${linkPath}?referral_code=${user?.id}`}
+                title={''}
+                hashtags={[]}
+              >
+                <SvgInset
+                  size={16}
+                  svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                />
+              </TwitterShareButton>
+            </div>
+          )}
+          {project.isCancel && (
+            <Link
+              href=""
+              className={s.projectCard_status_cancelBtn}
+              onClick={() => handelcancelMintingNFT(project.id)}
+            >
+              <Text as="span" size="14" fontWeight="medium">
+                Cancel
+              </Text>
+            </Link>
           )}
         </div>
       </div>
-      {/* <div className={s.mask} /> */}
     </Link>
   );
 };
