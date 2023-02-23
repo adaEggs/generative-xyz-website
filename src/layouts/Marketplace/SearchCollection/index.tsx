@@ -74,7 +74,6 @@ const SearchCollection = () => {
     if (searchText && searchText.length > 2) {
       handleSearch();
     }
-    inputSearchRef.current?.focus();
   }, [searchText]);
 
   useOnClickOutside(resultSearchRef, () => handleCloseSearchResult());
