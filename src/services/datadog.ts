@@ -9,6 +9,7 @@ import {
 import { datadogLogs } from '@datadog/browser-logs';
 import { datadogRum } from '@datadog/browser-rum';
 import { ApplicationEnvironment } from '@enums/config';
+import { isBrowser } from '@utils/common';
 
 class DatadogService {
   private static instance: DatadogService | null = null;
@@ -62,7 +63,9 @@ class DatadogService {
 
   ddLog(message: string, data?: object): void {
     // Only send error logs to DD
-    datadogLogs.logger.error(message, data);
+    if (isBrowser()) {
+      datadogLogs.logger.error(message, data);
+    }
   }
 }
 
