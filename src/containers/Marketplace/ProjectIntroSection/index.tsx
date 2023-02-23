@@ -716,7 +716,7 @@ const ProjectIntroSection = ({
                 overlay={
                   <Tooltip id="variation-tooltip">
                     <Text size="14" fontWeight="semibold" color="primary-333">
-                      Report
+                      Copypasta Report
                     </Text>
                   </Tooltip>
                 }
@@ -727,7 +727,7 @@ const ProjectIntroSection = ({
                 >
                   <SvgInset
                     size={16}
-                    svgUrl={`${CDN_URL}/icons/ic-more-vertical.svg`}
+                    svgUrl={`${CDN_URL}/icons/ic-pasta-plate.svg`}
                   />
                 </div>
               </OverlayTrigger>
