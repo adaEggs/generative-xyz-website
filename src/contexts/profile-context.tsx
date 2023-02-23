@@ -1,46 +1,48 @@
-import React, {
-  PropsWithChildren,
-  useCallback,
-  useMemo,
-  useState,
-  useEffect,
-  useRef,
-} from 'react';
-import log from '@utils/logger';
+import { SimpleLoading } from '@components/SimpleLoading';
+import { NETWORK_CHAIN_ID } from '@constants/config';
+import { ROUTE_PATH } from '@constants/route-path';
+import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
-import { useAppSelector } from '@redux';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
+import useContractOperation from '@hooks/useContractOperation';
 import {
+  IListingTokensResponse,
+  ITokenOfferListResponse,
+} from '@interfaces/api/marketplace';
+import { ICollectedNFTItem } from '@interfaces/api/profile';
+import { IGetProjectItemsResponse } from '@interfaces/api/project';
+import { IGetProfileTokensResponse } from '@interfaces/api/token-uri';
+import { TokenOffer } from '@interfaces/token';
+import { User } from '@interfaces/user';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import AcceptTokenOffer from '@services/contract-operations/generative-marketplace/accept-token-offer';
+import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
+import {
+  getListingTokensByWallet,
+  getMakeOffersByWallet,
+} from '@services/marketplace';
+import {
+  cancelMintingCollectedNFT,
   getCollectedNFTs,
   getMintingCollectedNFTs,
   getProfileByWallet,
   getProfileProjectsByWallet,
   getProfileTokens,
 } from '@services/profile';
-import { User } from '@interfaces/user';
-import {
-  getListingTokensByWallet,
-  getMakeOffersByWallet,
-} from '@services/marketplace';
-import { getUserSelector } from '@redux/user/selector';
-import { IGetProfileTokensResponse } from '@interfaces/api/token-uri';
-import { IGetProjectItemsResponse } from '@interfaces/api/project';
-import {
-  IListingTokensResponse,
-  ITokenOfferListResponse,
-} from '@interfaces/api/marketplace';
-import { useRouter } from 'next/router';
-import useAsyncEffect from 'use-async-effect';
-import { ROUTE_PATH } from '@constants/route-path';
-import { SimpleLoading } from '@components/SimpleLoading';
-import { TokenOffer } from '@interfaces/token';
-import { NETWORK_CHAIN_ID } from '@constants/config';
-import { ErrorMessage } from '@enums/error-message';
-import useContractOperation from '@hooks/useContractOperation';
-import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
-import AcceptTokenOffer from '@services/contract-operations/generative-marketplace/accept-token-offer';
-import useBTCSignOrd from '@hooks/useBTCSignOrd';
+import log from '@utils/logger';
 import { debounce, isEmpty } from 'lodash';
-import { ICollectedNFTItem } from '@interfaces/api/profile';
+import { useRouter } from 'next/router';
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import toast from 'react-hot-toast';
+import useAsyncEffect from 'use-async-effect';
 
 const LOG_PREFIX = 'ProfileContext';
 
@@ -68,6 +70,7 @@ export interface IProfileContext {
   handleFetchListingTokens: () => void;
   handleCancelOffer: (offer: TokenOffer) => void;
   handleAcceptOfferReceived: (offer: TokenOffer) => void;
+  handelcancelMintingNFT: (mintID?: string) => void;
   debounceFetchDataCollectedNFTs: () => void;
 
   isOfferReceived: boolean;
@@ -91,6 +94,7 @@ const initialValue: IProfileContext = {
   handleFetchListingTokens: () => new Promise<void>(r => r()),
   handleCancelOffer: () => new Promise<void>(r => r()),
   handleAcceptOfferReceived: () => new Promise<void>(r => r()),
+  handelcancelMintingNFT: () => new Promise<void>(r => r()),
   debounceFetchDataCollectedNFTs: () => new Promise<void>(r => r()),
 
   isOfferReceived: false,
@@ -349,6 +353,19 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   const [collectedNFTs, setCollectedNFTs] = useState<ICollectedNFTItem[]>([]);
   const currentBtcAddressRef = useRef(ordAddress);
 
+  const handelcancelMintingNFT = async (mintID?: string) => {
+    if (mintID) {
+      try {
+        const success = await cancelMintingCollectedNFT(mintID);
+        if (success) {
+          setCollectedNFTs(collectedNFTs.filter(nft => nft.id !== mintID));
+        }
+      } catch (error) {
+        toast.error(ErrorMessage.DEFAULT);
+      }
+    }
+  };
+
   const fetchDataCollectedNFTs = async () => {
     try {
       const [mintingNFTs, mintedNFTs] = await Promise.all([
@@ -407,6 +424,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       handleCancelOffer,
       setIsOfferReceived,
       handleAcceptOfferReceived,
+      handelcancelMintingNFT,
       debounceFetchDataCollectedNFTs,
     };
   }, [

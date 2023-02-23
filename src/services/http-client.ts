@@ -150,7 +150,7 @@ export const del = async <R>(
   config?: RequestConfig
 ): Promise<R> => {
   const requestOptions: RequestInit = getRequestOptions(
-    HttpMethod.POST,
+    HttpMethod.DELETE,
     config
   );
   const requestUrl = getRequestEndpoint(
