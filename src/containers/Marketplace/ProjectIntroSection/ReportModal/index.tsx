@@ -68,7 +68,6 @@ const ReportModal = (props: Props) => {
         },
       });
       setReported(true);
-
       onHideModal();
     } catch (err: unknown) {
       log('failed to report project', LogLevel.ERROR, LOG_PREFIX);

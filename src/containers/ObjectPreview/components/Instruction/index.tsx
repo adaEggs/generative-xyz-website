@@ -8,7 +8,13 @@ const Instruction: React.FC<IProps> = ({ className = '' }) => {
       <div className={styles.container}>
         <div className={styles.row}>
           <b>
-            <u>AWSD</u>
+            <u>V</u>
+          </b>{' '}
+          to <i>change fly mode</i>
+        </div>
+        <div className={styles.row}>
+          <b>
+            <u>WASD</u>
           </b>{' '}
           to <i>move</i>
         </div>
@@ -18,6 +24,7 @@ const Instruction: React.FC<IProps> = ({ className = '' }) => {
           </b>{' '}
           to <i>jump</i>
         </div>
+
         <div className={styles.row}>
           <b>
             <u>MOUSE</u>
