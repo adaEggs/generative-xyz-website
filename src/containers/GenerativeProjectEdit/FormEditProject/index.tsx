@@ -181,7 +181,7 @@ const FormEditProject = () => {
   );
 
   const handleDeleteProject = async () => {
-    const text = `Are you sure delete your project?`;
+    const text = `This action cannot be reversed. Do you want to remove this collection?`;
     if (confirm(text) == true) {
       setIsDelete(true);
       await deleteProject(GENERATIVE_PROJECT_CONTRACT, projectTokenId);
