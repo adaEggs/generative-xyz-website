@@ -89,6 +89,7 @@ const FormEditProject = () => {
       errors.maxSupply = 'Invalid number. Must be greater than 0.';
     } else if (
       projectFiles !== 0 &&
+      projectFiles !== 1 &&
       (parseInt(values.maxSupply.toString(), 10) > projectFiles ||
         parseInt(values.maxSupply.toString(), 10) < nftMinted)
     ) {
