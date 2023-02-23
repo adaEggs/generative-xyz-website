@@ -4,21 +4,18 @@ import {
   DD_CLIENT_TOKEN,
   DD_SERVICE,
   DD_SITE,
+  ENABLE_DD,
 } from '@constants/config';
 import { datadogLogs } from '@datadog/browser-logs';
 import { datadogRum } from '@datadog/browser-rum';
 import { ApplicationEnvironment } from '@enums/config';
-import { LogLevel } from '@enums/log-level';
-import log from '@utils/logger';
 
 class DatadogService {
   private static instance: DatadogService | null = null;
+  private enableTracking: boolean =
+    APP_ENV === ApplicationEnvironment.PRODUCTION && ENABLE_DD;
 
   static getInstance(): DatadogService {
-    log(`____DD_SERVICE ${DD_SERVICE}`, LogLevel.TEST);
-    log(`____DD_CLIENT_TOKEN ${DD_CLIENT_TOKEN}`, LogLevel.TEST);
-    log(`____DD_SERVICE ${DD_SERVICE}`, LogLevel.TEST);
-
     if (!DatadogService.instance) {
       DatadogService.instance = new DatadogService();
     }
@@ -26,7 +23,7 @@ class DatadogService {
   }
 
   init(): void {
-    if (APP_ENV === ApplicationEnvironment.PRODUCTION) {
+    if (this.enableTracking) {
       // Datadog RUM
       datadogRum.init({
         applicationId: DD_APP_ID,
@@ -51,14 +48,14 @@ class DatadogService {
 
   startRUMTracking(): void {
     // Only track on production
-    if (APP_ENV === ApplicationEnvironment.PRODUCTION) {
+    if (this.enableTracking) {
       datadogRum.startSessionReplayRecording();
     }
   }
 
   stopRUMTracking(): void {
     // Only track on production
-    if (APP_ENV === ApplicationEnvironment.PRODUCTION) {
+    if (this.enableTracking) {
       datadogRum.stopSessionReplayRecording();
     }
   }
