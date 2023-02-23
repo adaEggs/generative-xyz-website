@@ -3,9 +3,11 @@ import ClientOnly from '@components/Utils/ClientOnly';
 import { CreatedTab } from '@containers/Profile/Created';
 import { UserInfo } from '@containers/Profile/UserInfo';
 import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
 import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
-import { Container, Tab, Tabs, Row, Col } from 'react-bootstrap';
+import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import { Collected } from './Collected';
 import s from './Profile.module.scss';
 
@@ -14,7 +16,11 @@ const Profile: React.FC = (): React.ReactElement => {
     useContext(ProfileContext);
 
   const router = useRouter();
+
   const { walletAddress } = router.query as { walletAddress: string };
+  const user = useAppSelector(getUserSelector);
+
+  const isOwner = !walletAddress || user?.walletAddress === walletAddress;
 
   return (
     <div className={s.profile}>
@@ -27,7 +33,7 @@ const Profile: React.FC = (): React.ReactElement => {
             <ClientOnly>
               <div className={s.wrapTabs}>
                 <Tabs className={s.tabs}>
-                  {!walletAddress && (
+                  {isOwner && (
                     <Tab
                       tabClassName={s.tab}
                       eventKey="collectedTab"
