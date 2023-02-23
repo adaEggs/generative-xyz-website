@@ -14,6 +14,8 @@ import {
   IUpdateProjectPayload,
   IUploadBTCProjectFilePayload,
   IUploadBTCProjectFileResponse,
+  IReportProjectPayload,
+  IReportProjectResponse,
 } from '@interfaces/api/project';
 import { deleteMethod, get, post, postFile, put } from '@services/http-client';
 import log from '@utils/logger';
@@ -203,5 +205,20 @@ export const deleteProject = async (
   } catch (err: unknown) {
     log('failed to create btc project', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to create btc project');
+  }
+};
+
+export const reportProject = async (
+  { projectID }: { projectID: string },
+  payload: IReportProjectPayload
+): Promise<void> => {
+  try {
+    await post<IReportProjectPayload, IReportProjectResponse>(
+      `${API_PATH}/${projectID}/report`,
+      payload
+    );
+  } catch (err: unknown) {
+    log('failed to report project', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to report project');
   }
 };

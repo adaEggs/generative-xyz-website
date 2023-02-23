@@ -54,6 +54,10 @@ export type Project = {
   totalImages?: number;
   categories?: string[];
   btcFloorPrice: number; // satoshi number
+  reportUsers?: {
+    originalLink?: string;
+    reportUserAddress: string;
+  }[];
 };
 
 export type BTCProject = Project & {

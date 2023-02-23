@@ -110,13 +110,6 @@
         align-items: center;
         gap: rem(6);
       }
-
-      &:not(.isVerified) {
-        .creator_social_item_inner {
-          filter: grayscale(100%);
-          opacity: 0.5;
-        }
-      }
     }
 
     &_twitter {
@@ -369,4 +362,29 @@
       margin-top: rem(5px);
     }
   }
+}
+
+.reportBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 2px;
+  border: 1px solid $black-20;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s;
+  cursor: pointer;
+
+  &:hover {
+    background-color: $black-100;
+
+    svg,
+    path {
+      stroke: $white;
+    }
+  }
+}
+
+.reportMsg {
+  margin-top: rem(16);
+  color: $secondary-red;
 }

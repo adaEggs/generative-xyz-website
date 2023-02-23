@@ -6,28 +6,37 @@ import LinkShare from '@components/LinkShare';
 import { Loading } from '@components/Loading';
 import MintingProgressBar from '@components/MintingProgressBar';
 import ProjectDescription from '@components/ProjectDescription';
+import { SocialVerify } from '@components/SocialVerify';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
 import TwitterShare from '@components/TwitterShare';
-import { CDN_URL, NETWORK_CHAIN_ID } from '@constants/config';
+import { SOCIALS } from '@constants/common';
+import {
+  CDN_URL,
+  NETWORK_CHAIN_ID,
+  REPORT_COUNT_THRESHOLD,
+} from '@constants/config';
+import { EXTERNAL_LINK } from '@constants/external-link';
+import { IC_EDIT_PROFILE } from '@constants/icons';
 import { ROUTE_PATH } from '@constants/route-path';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
+import { PaymentMethod } from '@enums/mint-generative';
 import useContractOperation from '@hooks/useContractOperation';
 import useWindowSize from '@hooks/useWindowSize';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { MarketplaceStats } from '@interfaces/marketplace';
-import { Token } from '@interfaces/token';
-import { EXTERNAL_LINK } from '@constants/external-link';
-import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { Project } from '@interfaces/project';
+import { Token } from '@interfaces/token';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
+import { isWalletWhiteList } from '@utils/common';
 import { convertToETH } from '@utils/currency';
 import {
   base64ToUtf8,
@@ -46,12 +55,8 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import toast from 'react-hot-toast';
 import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
+import ReportModal from './ReportModal';
 import s from './styles.module.scss';
-import { PaymentMethod } from '@enums/mint-generative';
-import { IC_EDIT_PROFILE } from '@constants/icons';
-import { SocialVerify } from '@components/SocialVerify';
-import { SOCIALS } from '@constants/common';
-import { isWalletWhiteList } from '@utils/common';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -78,6 +83,7 @@ const ProjectIntroSection = ({
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [projectDetail, setProjectDetail] = useState<Omit<Token, 'owner'>>();
   const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
     const exists = project?.desc.includes('Interaction');
@@ -303,11 +309,7 @@ const ProjectIntroSection = ({
           {project?.creatorProfile?.profileSocial?.twitter && (
             <div className={s.creator_social}>
               <span className={s.creator_divider}></span>
-              <div
-                className={`${s.creator_social_item} ${
-                  isTwVerified ? s.isVerified : ''
-                }`}
-              >
+              <div className={`${s.creator_social_item}`}>
                 <div className={s.creator_social_item_inner}>
                   <SvgInset
                     className={`${s.creator_social_twitter}`}
@@ -444,7 +446,7 @@ const ProjectIntroSection = ({
                             fontWeight="semibold"
                             color="primary-333"
                           >
-                            Network fee:{' '}
+                            Mint fee:{' '}
                             {formatBTCPrice(Number(project?.networkFee))} BTC
                           </Text>
                         </Tooltip>
@@ -491,8 +493,8 @@ const ProjectIntroSection = ({
                             fontWeight="semibold"
                             color="primary-333"
                           >
-                            Network fee:{' '}
-                            {formatEthPrice(project?.networkFeeEth)} ETH
+                            Mint fee: {formatEthPrice(project?.networkFeeEth)}{' '}
+                            ETH
                           </Text>
                         </Tooltip>
                       ) : (
@@ -663,21 +665,101 @@ const ProjectIntroSection = ({
         )}
         <ul className={s.shares}>
           <li>
-            <LinkShare
-              url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-            />
+            <OverlayTrigger
+              placement="bottom"
+              delay={{ show: 100, hide: 200 }}
+              overlay={
+                <Tooltip id="variation-tooltip">
+                  <Text size="14" fontWeight="semibold" color="primary-333">
+                    Copy link
+                  </Text>
+                </Tooltip>
+              }
+            >
+              <div>
+                <LinkShare
+                  url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                />
+              </div>
+            </OverlayTrigger>
           </li>
           <li>
-            <TwitterShare
-              url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-              title={''}
-              hashtags={[]}
-            />
+            <OverlayTrigger
+              placement="bottom"
+              delay={{ show: 100, hide: 200 }}
+              overlay={
+                <Tooltip id="variation-tooltip">
+                  <Text size="14" fontWeight="semibold" color="primary-333">
+                    Share on Twitter
+                  </Text>
+                </Tooltip>
+              }
+            >
+              <div>
+                <TwitterShare
+                  url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                  title={''}
+                  hashtags={[]}
+                />
+              </div>
+            </OverlayTrigger>
+          </li>
+          <li>
+            <OverlayTrigger
+              placement="bottom"
+              delay={{ show: 100, hide: 200 }}
+              overlay={
+                <Tooltip id="variation-tooltip">
+                  <Text size="14" fontWeight="semibold" color="primary-333">
+                    Copypasta Report
+                  </Text>
+                </Tooltip>
+              }
+            >
+              <div
+                className={s.reportBtn}
+                onClick={() => setShowReportModal(true)}
+              >
+                <SvgInset
+                  size={16}
+                  svgUrl={`${CDN_URL}/icons/ic-pasta-plate.svg`}
+                />
+              </div>
+            </OverlayTrigger>
           </li>
         </ul>
+
+        {showReportMsg && (
+          <div className={s.reportMsg}>
+            <Text>
+              This collection is removed because it is reported as a fake
+              collection or possible scam. Should you need any further support,
+              contact us on Discord.
+            </Text>
+          </div>
+        )}
       </div>
     );
   };
+
+  const hasReported = useMemo(() => {
+    if (!project?.reportUsers || !user) return false;
+
+    const reportedAddressList = project?.reportUsers.map(
+      item => item.reportUserAddress
+    );
+
+    return reportedAddressList.includes(user?.walletAddress || '');
+  }, [project?.reportUsers]);
+
+  const showReportMsg = useMemo(() => {
+    if (
+      project?.reportUsers &&
+      project?.reportUsers.length >= REPORT_COUNT_THRESHOLD
+    )
+      return true;
+    return false;
+  }, [project?.reportUsers]);
 
   useEffect(() => {
     handleFetchMarketplaceStats();
@@ -715,6 +797,11 @@ const ProjectIntroSection = ({
           <ThumbnailPreview data={projectDetail as Token} allowVariantion />
         </div>
       )}
+      <ReportModal
+        isShow={showReportModal}
+        onHideModal={() => setShowReportModal(false)}
+        isReported={hasReported}
+      />
     </div>
   );
 };

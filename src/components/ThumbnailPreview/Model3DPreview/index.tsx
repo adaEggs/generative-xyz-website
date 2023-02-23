@@ -27,7 +27,7 @@ const Model3DPreview: React.FC<IProps> = (
             />
           </div>
         )}
-        {projectID === GLB_COLLECTION_ID && (
+        {!tokenID && projectID === GLB_COLLECTION_ID && (
           <div className={s.objectPreview}>
             <iframe
               className={s.iframeContainer}

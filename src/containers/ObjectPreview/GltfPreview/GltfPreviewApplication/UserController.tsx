@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import * as THREE from 'three';
-import { Capsule } from 'three/examples/jsm/math/Capsule';
-import { Octree } from 'three/examples/jsm/math/Octree';
 import GltfPreviewApplication from '.';
 import {
   PLAYER_CAPSULE_START,
@@ -9,17 +7,17 @@ import {
   PLAYER_CAPSULE_RADIUS,
   GRAVITY,
   DEFAULT_CAMERA_ROTATION,
+  ORIGIN_CAMERA,
+  CHARACTER_Y_ROTATION,
 } from './constants';
 
 class UserController {
-  character?: THREE.Object3D;
+  character!: THREE.Object3D;
 
   gravity = GRAVITY;
   // First person shooter
   isFPS = true;
   application: GltfPreviewApplication;
-  worldOctree: Octree;
-  playerCollider: Capsule;
 
   keyStates: Record<string, boolean> = {};
   playerVelocity: THREE.Vector3;
@@ -27,19 +25,21 @@ class UserController {
 
   playerOnFloor = false;
 
+  cameraOrigin = new THREE.Vector3(...ORIGIN_CAMERA);
   xAxis = new THREE.Vector3(1, 0, 0);
   tempCameraVector = new THREE.Vector3();
   tempModelVector = new THREE.Vector3();
 
+  container = new THREE.Group();
+
+  mousedown = false;
+
+  interactive = false;
+
+  // sphere: THREE.Mesh;
+
   constructor(_app: GltfPreviewApplication) {
     this.application = _app;
-    this.worldOctree = new Octree();
-
-    this.playerCollider = new Capsule(
-      new THREE.Vector3(...PLAYER_CAPSULE_START),
-      new THREE.Vector3(...PLAYER_CAPSULE_END),
-      PLAYER_CAPSULE_RADIUS
-    );
 
     this.keyStates = {};
     this.playerVelocity = new THREE.Vector3();
@@ -47,22 +47,88 @@ class UserController {
 
     this.addEventListeners();
     this.loaderCharacter();
+
+    this.application.scene.add(this.container);
+    this.container.add(this.application.camera);
+
+    // const geometry = new THREE.SphereGeometry(0.1, 32, 32);
+
+    // const material = new THREE.MeshBasicMaterial({
+    //   color: 0xff0000,
+    //   // flatShading: true,
+    // });
+    // this.sphere = new THREE.Mesh(geometry, material);
   }
 
-  updateCharacterPosition() {
-    if (this.character) {
-      this.character.position.copy(this.application.camera.position);
+  initView() {
+    if (this.isFPS) {
+      this.gravity = GRAVITY;
+      // this.container.remove(this.sphere);
+      this.container.remove(this.character);
+      this.application.camera.position.copy(this.cameraOrigin);
+      // this.application.camera.rotation.x = 0.5;
+    } else {
+      this.gravity = 0;
+      // this.container.add(this.sphere);
+      this.container.add(this.character);
+      this.application.camera.getWorldDirection(this.tempCameraVector);
+      const cameraDirection = this.tempCameraVector.setY(0).normalize();
+
+      this.cameraOrigin.copy(this.application.camera.position);
+      this.application.camera.position.addScaledVector(cameraDirection, -1);
+
+      // this.application.camera.position.y += 0.5;
+      // this.application.camera.position.z -= 0.5;
+      this.application.camera.lookAt(this.cameraOrigin);
+
+      this.character.position.copy(this.cameraOrigin);
+
+      // this.application.camera.rotation.x = -0.3;
+      // this.application.camera.rotation.y = -0.1;
+      // this.application.camera.rotation.z = 0;
     }
   }
+
+  setCharacterRotation() {
+    this.application.camera.getWorldDirection(this.tempCameraVector);
+    const cameraDirection = this.tempCameraVector.setY(0).normalize();
+
+    // Get the X-Z plane in which player is looking to compare with camera
+    this.character.getWorldDirection(this.tempModelVector);
+    const playerDirection = this.tempModelVector.setY(0).normalize();
+    cameraDirection.angleTo(this.xAxis) * (cameraDirection.z > 0 ? 1 : -1);
+
+    // Get the angle to x-axis. z component is used to compare if the angle is clockwise or anticlockwise since angleTo returns a positive value
+    const cameraAngle =
+      cameraDirection.angleTo(this.xAxis) * (cameraDirection.z > 0 ? 1 : -1);
+    const playerAngle =
+      playerDirection.angleTo(this.xAxis) * (playerDirection.z > 0 ? 1 : -1);
+
+    // Get the angle to rotate the player to face the camera. Clockwise positive
+    const angleToRotate = playerAngle - cameraAngle;
+
+    // Get the shortest angle from clockwise angle to ensure the player always rotates the shortest angle
+    let sanitisedAngle = angleToRotate;
+    if (angleToRotate > Math.PI) {
+      sanitisedAngle = angleToRotate - 2 * Math.PI;
+    }
+    if (angleToRotate < -Math.PI) {
+      sanitisedAngle = angleToRotate + 2 * Math.PI;
+    }
+    this.character.rotateY(
+      Math.max(-0.05, Math.min(sanitisedAngle + CHARACTER_Y_ROTATION, 0.05))
+    );
+  }
+
   loaderCharacter() {
     setTimeout(async () => {
       if (!this.character) {
-        const object = await this.application.loadFBXModel(
+        const object = await this.application.objectLoader.loadFBXModel(
           '/models/wizardbroom.fbx'
         );
 
         const box = this.application.getModelDimension(object);
-        const scaleSize = 1 / box.y;
+        const scaleSize = 0.5 / box.y;
         object.scale.x = scaleSize;
         object.scale.y = scaleSize;
         object.scale.z = scaleSize;
@@ -74,12 +140,17 @@ class UserController {
           }
         });
         this.character = object;
+
+        this.setCharacterRotation();
+
+        this.initView();
       }
     }, 1000);
   }
 
   addEventListeners() {
     document.addEventListener('keydown', event => {
+      this.interactive = true;
       this.keyStates[event.code] = true;
     });
     document.addEventListener('keyup', event => {
@@ -89,64 +160,56 @@ class UserController {
         // change to view
         this.isFPS = !this.isFPS;
 
-        if (this.character) {
-          if (this.isFPS) {
-            this.application.scene.remove(this.character);
-          } else {
-            this.application.scene.add(this.character);
-          }
-        }
+        this.interactive = false;
+
+        this.initView();
       }
     });
 
-    document.body.addEventListener('mousedown', () => {
-      document.body.requestPointerLock();
+    window.addEventListener('pointerdown', () => {
+      this.mousedown = true;
     });
 
-    document.body.addEventListener('mousemove', event => {
-      if (document.pointerLockElement === document.body) {
-        const { movementX, movementY } = event;
-        // if (this.isFPS) {
-        //   this.application.camera.rotation.y -= movementX / 500;
-        //   this.application.camera.rotation.x -= movementY / 500;
-        //   if (this.application.camera.rotation.x > 1) {
-        //     this.application.camera.rotation.x = 1;
-        //   }
-        //   if (this.application.camera.rotation.x < -1) {
-        //     this.application.camera.rotation.x = -1;
-        //   }
-        // } else {
-        //   if (this.character) {
-        //     const offset = new THREE.Spherical().setFromVector3(
-        //       this.application.camera.position
-        //         .clone()
-        //         .sub(this.character.position)
-        //     );
-        //     const phi = offset.phi - movementY * 0.02;
-        //     offset.theta -= movementX * 0.02;
-        //     offset.phi = Math.max(0.01, Math.min(0.35 * Math.PI, phi));
-        //     this.application.camera.position.copy(
-        //       this.character.position
-        //         .clone()
-        //         .add(new THREE.Vector3().setFromSpherical(offset))
-        //     );
-        //     this.application.camera.lookAt(this.character.position);
-        //   }
-        // }
-        this.application.camera.rotation.y -= movementX / 500;
-        this.application.camera.rotation.x -= movementY / 500;
-        if (this.application.camera.rotation.x > 1) {
-          this.application.camera.rotation.x = 1;
-        }
-        if (this.application.camera.rotation.x < -1) {
-          this.application.camera.rotation.x = -1;
+    window.addEventListener('pointerup', () => {
+      this.mousedown = false;
+    });
+
+    window.addEventListener('pointermove', e => {
+      if (this.mousedown) {
+        const { movementX, movementY } = e;
+        if (this.isFPS) {
+          this.application.camera.rotation.y -= movementX / 500;
+          this.application.camera.rotation.x -= movementY / 500;
+          if (this.application.camera.rotation.x > 1) {
+            this.application.camera.rotation.x = 1;
+          }
+          if (this.application.camera.rotation.x < -1) {
+            this.application.camera.rotation.x = -1;
+          }
+        } else {
+          const offset = new THREE.Spherical().setFromVector3(
+            this.application.camera.position.clone().sub(this.cameraOrigin)
+          );
+          const phi = offset.phi - movementY * 0.02;
+          offset.theta -= movementX * 0.02;
+          offset.phi = Math.max(0.01, Math.min(1 * Math.PI, phi));
+          this.application.camera.position.copy(
+            this.cameraOrigin
+              .clone()
+              .add(new THREE.Vector3().setFromSpherical(offset))
+          );
+          this.application.camera.lookAt(
+            this.container.position.clone().add(this.cameraOrigin)
+          );
         }
       }
     });
   }
 
   playerCollisions() {
-    const result = this.worldOctree.capsuleIntersect(this.playerCollider);
+    const result = this.application.colliders.worldOctree.capsuleIntersect(
+      this.application.colliders.playerCollider
+    );
     this.playerOnFloor = false;
     if (result) {
       this.playerOnFloor = result.normal.y > 0;
@@ -156,12 +219,17 @@ class UserController {
           -result.normal.dot(this.playerVelocity)
         );
       }
-      this.playerCollider.translate(result.normal.multiplyScalar(result.depth));
+      this.application.colliders.playerCollider.translate(
+        result.normal.multiplyScalar(result.depth)
+      );
     }
   }
 
-  updatePlayer(deltaTime: number) {
-    if (this.worldOctree && this.playerCollider) {
+  updateFirstPersonPlayer(deltaTime: number) {
+    if (
+      this.application.colliders.worldOctree &&
+      this.application.colliders.playerCollider
+    ) {
       let damping = Math.exp(-4 * deltaTime) - 1;
       if (!this.playerOnFloor) {
         this.playerVelocity.y -= this.gravity * deltaTime;
@@ -172,21 +240,67 @@ class UserController {
       const deltaPosition = this.playerVelocity
         .clone()
         .multiplyScalar(deltaTime);
-      this.playerCollider.translate(deltaPosition);
+      this.application.colliders.playerCollider.translate(deltaPosition);
       this.playerCollisions();
-      this.application.camera.position.copy(this.playerCollider.end);
+      this.application.camera.position.copy(
+        this.application.colliders.playerCollider.end
+      );
+    }
+  }
+
+  updateThirdPersonPlayer(deltaTime: number) {
+    if (
+      this.character &&
+      this.application.colliders.worldOctree &&
+      this.application.colliders.playerCollider
+    ) {
+      let damping = Math.exp(-4 * deltaTime) - 1;
+      if (!this.playerOnFloor) {
+        this.playerVelocity.y -= this.gravity * deltaTime;
+        // small air resistance
+        damping *= 0.1;
+      }
+      this.playerVelocity.addScaledVector(this.playerVelocity, damping);
+      const deltaPosition = this.playerVelocity
+        .clone()
+        .multiplyScalar(deltaTime);
+      this.application.colliders.playerCollider.translate(deltaPosition);
+      this.playerCollisions();
+      this.cameraOrigin.copy(this.application.colliders.playerCollider.end);
+
+      const oldObjectPosition = new THREE.Vector3();
+      this.character.getWorldPosition(oldObjectPosition);
+
+      // this.sphere.position.copy(this.cameraOrigin);
+      this.character.position.copy(this.cameraOrigin);
+      this.character.position.y =
+        this.cameraOrigin.y -
+        (PLAYER_CAPSULE_END[1] - PLAYER_CAPSULE_START[1]) / 2;
+
+      const newObjectPosition = new THREE.Vector3();
+      this.character.getWorldPosition(newObjectPosition);
+
+      const delta = newObjectPosition.clone().sub(oldObjectPosition);
+
+      this.application.camera.position.add(delta);
+
+      this.setCharacterRotation();
     }
   }
 
   teleportPlayerIfOob() {
     if (this.application.camera.position.y <= -25) {
-      //@ts-ignore
-      this.playerCollider.start.set(...PLAYER_CAPSULE_START);
+      this.application.colliders.playerCollider.start.set(
+        // @ts-ignore
+        ...PLAYER_CAPSULE_START
+      );
 
-      //@ts-ignore
-      this.playerCollider.end.set(...PLAYER_CAPSULE_END);
-      this.playerCollider.radius = PLAYER_CAPSULE_RADIUS;
-      this.application.camera.position.copy(this.playerCollider.end);
+      // @ts-ignore
+      this.application.colliders.playerCollider.end.set(...PLAYER_CAPSULE_END);
+      this.application.colliders.playerCollider.radius = PLAYER_CAPSULE_RADIUS;
+      this.application.camera.position.copy(
+        this.application.colliders.playerCollider.end
+      );
 
       //@ts-ignore
       this.application.camera.rotation.set(...DEFAULT_CAMERA_ROTATION);
@@ -209,33 +323,52 @@ class UserController {
   }
 
   controls(deltaTime: number) {
-    const speedDelta = this.playerOnFloor ? deltaTime * 30 : deltaTime;
-    if (this.worldOctree && this.playerCollider) {
+    if (
+      this.application.colliders.worldOctree &&
+      this.application.colliders.playerCollider
+    ) {
       // gives a bit of air control
+      if (this.isFPS) {
+        const speedDelta = this.playerOnFloor ? deltaTime * 30 : deltaTime;
+        if (this.keyStates['KeyW']) {
+          this.playerVelocity.add(
+            this.getForwardVector().multiplyScalar(speedDelta)
+          );
+        }
 
-      if (this.keyStates['KeyW']) {
-        this.playerVelocity.add(
-          this.getForwardVector().multiplyScalar(speedDelta)
-        );
-      }
-      if (this.keyStates['KeyS']) {
-        this.playerVelocity.add(
-          this.getForwardVector().multiplyScalar(-speedDelta)
-        );
-      }
-      if (this.keyStates['KeyA']) {
-        this.playerVelocity.add(
-          this.getSideVector().multiplyScalar(-speedDelta)
-        );
-      }
-      if (this.keyStates['KeyD']) {
-        this.playerVelocity.add(
-          this.getSideVector().multiplyScalar(speedDelta)
-        );
-      }
-      if (this.playerOnFloor) {
-        if (this.keyStates['Space']) {
-          this.playerVelocity.y = 5;
+        if (this.keyStates['KeyS']) {
+          this.playerVelocity.add(
+            this.getForwardVector().multiplyScalar(-speedDelta)
+          );
+        }
+        if (this.keyStates['KeyA']) {
+          this.playerVelocity.add(
+            this.getSideVector().multiplyScalar(-speedDelta)
+          );
+        }
+        if (this.keyStates['KeyD']) {
+          this.playerVelocity.add(
+            this.getSideVector().multiplyScalar(speedDelta)
+          );
+        }
+        if (this.playerOnFloor) {
+          if (this.keyStates['Space']) {
+            this.playerVelocity.y = 5;
+          }
+        }
+      } else {
+        if (this.interactive) {
+          const speedDelta = deltaTime * 30 * 1.5;
+          this.playerVelocity.add(
+            this.getForwardVector().multiplyScalar(speedDelta)
+          );
+          if (this.keyStates['KeyW']) {
+            this.playerVelocity.y += 0.5;
+          }
+
+          if (this.keyStates['KeyS']) {
+            this.playerVelocity.y -= 0.5;
+          }
         }
       }
     }
@@ -244,12 +377,16 @@ class UserController {
   update() {
     const deltaTime = this.application.clock.getDelta();
 
-    this.controls(deltaTime);
-    this.updatePlayer(deltaTime);
     if (this.isFPS) {
+      this.controls(deltaTime);
+      this.updateFirstPersonPlayer(deltaTime);
       this.teleportPlayerIfOob();
+    } else {
+      this.controls(deltaTime);
+      this.updateThirdPersonPlayer(deltaTime);
     }
-    this.updateCharacterPosition();
+
+    // console.log(this.application.camera.rotation);
   }
 }
 
