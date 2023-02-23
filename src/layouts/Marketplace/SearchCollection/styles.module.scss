@@ -1,9 +1,9 @@
 .wrapper {
   --s-wrapper-bg-color: #{$background};
-  --s-searchResult_wrapper-bg-color: #{$white};
-  --s-searchResult_wrapper-boxshadow: #00000026;
-  --s-searchResult_item-focus: #{$black-5};
-  --s-searchResult_item_link_color: #{$primary-brand};
+  --s-searchresult-wrapper-bg-color: #{$white};
+  --s-searchresult-wrapper-boxshadow: #00000026;
+  --s-searchresult-item-focus: #{$black-5};
+  --s-searchresult-item-link-color: #{$primary-brand};
   --s-stroke: #{$primary-brand};
   --s-input-color: #{$primary-brand};
   --s-sec-color: #898989;
@@ -72,8 +72,8 @@
   position: absolute;
   width: 100%;
   min-width: rem(320);
-  background-color: var(--s-searchResult_wrapper-bg-color);
-  box-shadow: 35px 15px 120px 0 var(--s-searchResult_wrapper-boxshadow);
+  background-color: var(--s-searchresult-wrapper-bg-color);
+  box-shadow: 35px 15px 120px 0 var(--s-searchresult-wrapper-boxshadow);
   margin-top: rem(12);
   max-height: rem(700);
   overflow-y: scroll;
@@ -98,11 +98,11 @@
 
     &_link {
       cursor: pointer;
-      color: var(--s-searchResult_item_link_color);
+      color: var(--s-searchresult-item-link-color);
 
       &:hover,
       &:focus {
-        background-color: var(--s-searchResult_item-focus);
+        background-color: var(--s-searchresult-item-focus);
       }
     }
 
