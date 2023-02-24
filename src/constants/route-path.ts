@@ -1,26 +1,18 @@
-import { isProduction, isStaging } from '@utils/common';
-
 export const ROUTE_PATH = {
-  HOME: isProduction() ? 'https://generative.xyz' : '/',
+  HOME: '/',
   DROPS: '/art-on-bitcoin',
-  CREATE_PROJECT: isProduction()
-    ? 'https://testnet.generative.xyz/mint-generative/upload-project'
-    : '/mint-generative/upload-project',
-  BENEFIT: isProduction() ? 'https://testnet.generative.xyz/create' : '/create',
+  CREATE_PROJECT: '/create',
+  BENEFIT: '/create',
   GENERATIVE: '/generative',
   GENERATIVE_EDIT: '/generative/edit',
   PROFILE: '/profile',
   EDIT_PROFILE: `/profile/edit`,
   SANDBOX: '/sandbox',
   DISPLAY: '/grail',
-  ORDER_NOW: isStaging() ? 'https://generative.xyz/order-now' : '/order-now',
-  LEADERBOARDS: isProduction()
-    ? 'https://testnet.generative.xyz/leaderboards'
-    : '/leaderboards',
+  ORDER_NOW: '/order-now',
+  LEADERBOARDS: '/leaderboards',
   DAO: '/dao',
-  INCENTIVIZED_TESTNET: isProduction()
-    ? 'https://testnet.generative.xyz/incentivized-testnet'
-    : '/incentivized-testnet',
+  INCENTIVIZED_TESTNET: '/incentivized-testnet',
   TRADE: '/marketplace',
   LIVE: '/live',
   REFERRAL: '/referral',

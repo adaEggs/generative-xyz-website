@@ -1,11 +1,32 @@
 import { LogLevel } from '@enums/log-level';
-import { post } from '@services/http-client';
+import { get, post } from '@services/http-client';
 import log from '@utils/logger';
-import { IPostReferralCode } from '@interfaces/api/referrals';
+import {
+  IPostReferralCode,
+  IGetReferralsParams,
+  IGetReferralsResponse,
+} from '@interfaces/api/referrals';
+import queryString from 'query-string';
 
 const LOG_PREFIX = 'ReferralsService';
 
 const API_PATH = '/referrals';
+
+export const getReferrals = async (
+  params: IGetReferralsParams
+): Promise<IGetReferralsResponse> => {
+  try {
+    const qs = '?' + queryString.stringify(params);
+    const res = await get<IGetReferralsResponse>(`${API_PATH}${qs}`);
+    if (res && res.result) {
+      return res;
+    }
+    return { result: [], page: 0, pageSize: 0, total: 0 };
+  } catch (err: unknown) {
+    log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
+    return { result: [], page: 0, pageSize: 0, total: 0 };
+  }
+};
 
 export const postReferralCode = async (
   code: string
@@ -17,7 +38,7 @@ export const postReferralCode = async (
       dataForm
     );
   } catch (err: unknown) {
-    log('failed to get Marketplace Btc List', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get Marketplace Btc List');
+    log('failed to add referee', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to add referee');
   }
 };

@@ -58,6 +58,16 @@ const Profile: React.FC = (): React.ReactElement => {
                   >
                     <CreatedTab />
                   </Tab>
+                  {/* Wait for design to implement. Do not remove */}
+                  {/* {!isProduction() && isOwner && (
+                    <Tab
+                      tabClassName={s.tab}
+                      eventKey="referralTab"
+                      title={'Referral'}
+                    >
+                      <ReferralTab />
+                    </Tab> 
+                  )}*/}
                 </Tabs>
               </div>
             </ClientOnly>

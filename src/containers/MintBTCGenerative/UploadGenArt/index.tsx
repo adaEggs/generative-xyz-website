@@ -210,6 +210,8 @@ const UploadGenArt: React.FC = (): ReactElement => {
         return `${CDN_URL}/icons/ic-video-24x24.svg`;
       case MediaType.AUDIO:
         return `${CDN_URL}/icons/ic-audio-24x24.svg`;
+      case MediaType.IFRAME:
+        return `${CDN_URL}/icons/ic-html-24x24.svg`;
       default:
         return `${CDN_URL}/icons/ic-file-24x24.svg`;
     }
@@ -401,6 +403,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
       await postReferralCode(refCode);
     }
   };
+
   useEffect(() => {
     postRefCode();
   }, []);

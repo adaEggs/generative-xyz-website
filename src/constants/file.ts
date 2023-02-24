@@ -71,4 +71,20 @@ export const SUPPORTED_FILE_EXT: Array<{ mediaType: MediaType; ext: string }> =
       mediaType: MediaType.AUDIO,
       ext: 'wav',
     },
+    {
+      mediaType: MediaType.IFRAME,
+      ext: 'html',
+    },
+    {
+      mediaType: MediaType.PDF,
+      ext: 'pdf',
+    },
+    // {
+    //   mediaType: MediaType.TEXT,
+    //   ext: 'txt',
+    // },
+    // {
+    //   mediaType: MediaType.TEXT,
+    //   ext: 'json',
+    // },
   ];
