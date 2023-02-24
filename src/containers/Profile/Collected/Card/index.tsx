@@ -19,6 +19,7 @@ import Image from 'next/image';
 import ButtonIcon from '@components/ButtonIcon';
 import SendInscriptionModal from '@containers/Profile/Collected/Modal/SendInscription';
 import { HistoryStatusType } from '@interfaces/api/bitcoin';
+import { useRouter } from 'next/router';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -37,6 +38,9 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const toggleModal = () => {
     setShowSendModal(value => !value);
   };
+  const router = useRouter();
+  const { walletAddress } = router.query as { walletAddress: string };
+  const isOwner = !walletAddress || user?.walletAddress === walletAddress;
 
   const [thumb, setThumb] = useState<string>(project.image);
 
@@ -56,12 +60,13 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   }, [history, project.inscriptionID]);
 
   const showSendButton = React.useMemo(() => {
+    if (!isOwner) return false;
     return (
       !isSending &&
       !isLoadingHistory &&
       project?.status === CollectedNFTStatus.Success
     );
-  }, [isSending, isLoadingHistory, project?.status]);
+  }, [isSending, isLoadingHistory, project?.status, isOwner]);
 
   const linkPath =
     project.status === CollectedNFTStatus.Success
