@@ -72,7 +72,6 @@ const ProjectIntroSection = ({
   const router = useRouter();
   const user = useAppSelector(getUserSelector);
   const { mobileScreen } = useWindowSize();
-
   const { getWalletBalance, connect } = useContext(WalletContext);
   const { setPaymentMethod, setIsPopupPayment, setPaymentStep } = useContext(
     BitcoinProjectContext
@@ -771,7 +770,15 @@ const ProjectIntroSection = ({
       <div />
       {!mobileScreen && (
         <div>
-          <ThumbnailPreview data={projectDetail as Token} allowVariantion />
+          <ThumbnailPreview
+            data={
+              {
+                ...projectDetail,
+                animationHtml: project?.animationHtml ?? '',
+              } as Token
+            }
+            allowVariantion
+          />
         </div>
       )}
       <ReportModal
