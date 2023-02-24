@@ -403,6 +403,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
       await postReferralCode(refCode);
     }
   };
+
   useEffect(() => {
     postRefCode();
   }, []);
