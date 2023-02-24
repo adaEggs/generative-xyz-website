@@ -7,62 +7,109 @@ import QRCodeGenerator from '@components/QRCodeGenerator';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
+import { ROUTE_PATH } from '@constants/route-path';
+import { getBTCAddress } from '@containers/GenerativeProjectDetail/MintEthModal/Collecting/utils';
+import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
-import { submitAddressBuyBTC } from '@services/marketplace-btc';
-import { ellipsisCenter, formatBTCPrice, formatEthPrice } from '@utils/format';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import { ellipsisCenter, formatEthPrice } from '@utils/format';
 import log from '@utils/logger';
-import { formatUnixDateTime } from '@utils/time';
-import { validateBTCAddressTaproot, validateEVMAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
-import React, { useState } from 'react';
+import _debounce from 'lodash/debounce';
+import { useRouter } from 'next/router';
+import { default as React, useCallback, useContext, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
 
+const LOG_PREFIX = 'MintEthModal';
+
 interface IFormValue {
   address: string;
 }
+const MintEthModal: React.FC = () => {
+  const router = useRouter();
 
-interface IProps {
-  showModal: boolean;
-  onClose: () => void;
-  onSuccess?: () => void;
-  inscriptionID: string;
-  price: number | string;
-  orderID: string;
-  ordAddress: string;
-  payType: 'eth' | 'btc';
-}
+  const { projectData } = useContext(GenerativeProjectDetailContext);
+  const { transfer } = useContext(WalletContext);
+  const { setIsPopupPayment, paymentMethod } = useContext(
+    BitcoinProjectContext
+  );
 
-const LOG_PREFIX = 'BuyModal';
+  const user = useAppSelector(getUserSelector);
 
-const ModalBuyItem = ({
-  showModal,
-  onClose,
-  price,
-  inscriptionID,
-  orderID,
-  ordAddress,
-  payType = 'btc',
-}: IProps): JSX.Element => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [receiveAddress, setReceiveAddress] = useState('');
-  const [expireTime, setExpireTime] = useState('');
-  const [errMessage, setErrMessage] = useState('');
+  const [isSent, setIsSent] = React.useState(false);
 
+  const [price, setPrice] = React.useState('');
+
+  const formatPrice = formatEthPrice(
+    price ? price : projectData ? projectData?.mintPriceEth : null
+  );
+
+  const userAddress = React.useMemo(() => {
+    return {
+      taproot: user?.walletAddressBtcTaproot || '',
+      evm: user?.walletAddress || '',
+    };
+  }, [user]);
+
+  const handleTransfer = async (
+    toAddress: string,
+    val: string
+  ): Promise<void> => {
+    try {
+      setIsSent(false);
+      await transfer(toAddress, val);
+      setIsSent(true);
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+      onClose();
+    }
+  };
+
+  const onClose = () => {
+    setIsPopupPayment(false);
+  };
+
+  const debounceGetBTCAddress = useCallback(
+    _debounce(async (ordAddress, refundAddress) => {
+      if (!projectData) return;
+      try {
+        setIsLoading(true);
+
+        const { price: _price, address: _address } = await getBTCAddress({
+          walletAddress: ordAddress,
+          refundAddress: refundAddress,
+          projectData,
+          paymentMethod,
+        });
+        if (!_address || !_price) {
+          toast.error(ErrorMessage.DEFAULT);
+          return;
+        }
+
+        setPrice(_price);
+        setReceiverAddress(_address);
+        setsTep('showAddress');
+      } catch (err: unknown) {
+        setReceiverAddress(null);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 500),
+    [projectData]
+  );
+
+  const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [isShowAdvance, setIsShowAdvance] = useState(false);
 
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
-
-  const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
-
-  const unit = payType === 'btc' ? 'BTC' : 'ETH';
-  const formatPrice =
-    payType === 'btc'
-      ? formatBTCPrice(price || 0)
-      : formatEthPrice(`${price || 0}`);
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -70,54 +117,10 @@ const ModalBuyItem = ({
     toast.success('Copied');
   };
 
-  const validateForm = (values: IFormValue) => {
-    const errors: Record<string, string> = {};
+  const [isLoading, setIsLoading] = useState(false);
+  const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
 
-    if (!values.address) {
-      errors.address = 'Address is required.';
-    } else if (
-      payType === 'btc'
-        ? !validateBTCAddressTaproot(values.address)
-        : !validateEVMAddress(values.address)
-    ) {
-      errors.address = 'Invalid wallet address.';
-    }
-    return errors;
-  };
-
-  const onClickPay = () => {
-    if (useWallet === 'default') {
-      onSubmitAddress(ordAddress);
-    }
-  };
-
-  const onSubmitAddress = async (address: string) => {
-    try {
-      setIsLoading(true);
-      const data = await submitAddressBuyBTC({
-        walletAddress: address,
-        inscriptionID,
-        orderID,
-      });
-      if (data?.receiveAddress) {
-        setReceiveAddress(data.receiveAddress);
-        setExpireTime(data.timeoutAt);
-        setsTep('showAddress');
-      }
-    } catch (err: unknown) {
-      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      if (err && err?.message) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        setErrMessage(err?.message);
-      }
-      toast.error(ErrorMessage.DEFAULT);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [addressInput, setAddressInput] = useState<string>('');
 
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
@@ -133,19 +136,38 @@ const ModalBuyItem = ({
     }
   };
 
-  const handleSubmit = async (_data: IFormValue) => {
-    onSubmitAddress(_data.address);
+  const onClickPay = () => {
+    if (useWallet === 'default') {
+      if (userAddress && userAddress.evm && userAddress.taproot) {
+        debounceGetBTCAddress(userAddress.taproot, userAddress.evm);
+      }
+    }
   };
 
-  const handleClose = () => {
-    setIsLoading(false);
-    setReceiveAddress('');
-    setExpireTime('');
-    setErrMessage('');
-    onClose();
+  const validateForm = (values: IFormValue): Record<string, string> => {
+    const errors: Record<string, string> = {};
+
+    if (!values.address) {
+      errors.address = 'Wallet address is required.';
+    } else if (!validateBTCAddressTaproot(values.address)) {
+      errors.address = 'Invalid wallet address.';
+    }
+
+    return errors;
   };
 
-  if (!showModal) {
+  const handleSubmit = async (values: IFormValue): Promise<void> => {
+    if (addressInput !== values.address) {
+      debounceGetBTCAddress(values.address, userAddress.evm);
+      setAddressInput(values.address);
+    }
+  };
+
+  const _onClose = () => {
+    setIsPopupPayment(false);
+  };
+
+  if (!projectData) {
     return <></>;
   }
 
@@ -160,7 +182,7 @@ const ModalBuyItem = ({
           <div className={s.modalContainer}>
             <div className={s.modalHeader}>
               <Button
-                onClick={handleClose}
+                onClick={_onClose}
                 className={s.closeBtn}
                 variants="ghost"
                 type="button"
@@ -174,7 +196,7 @@ const ModalBuyItem = ({
             <Col className={s.modalBody}>
               <Row className={s.row}>
                 <Col md={step === 'info' ? '12' : '6'}>
-                  <h3 className={s.modalTitle}>Payment</h3>
+                  <h3 className={s.modalTitle}>Mint NFT</h3>
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
@@ -187,7 +209,7 @@ const ModalBuyItem = ({
                           size={18}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
-                        <p className={s.text}>{`${formatPrice} ${unit}`}</p>
+                        <p className={s.text}>{`${formatPrice} ETH`}</p>
                       </div>
                     </div>
                   </div>
@@ -281,7 +303,7 @@ const ModalBuyItem = ({
                                       onBlur={handleBlur}
                                       value={values.address}
                                       className={s.input}
-                                      placeholder={`Paste your Ordinals-compatible ${unit} address here`}
+                                      placeholder={`Paste your Ordinals-compatible BTC address here`}
                                     />
                                   </div>
                                   {errors.address && touched.address && (
@@ -324,25 +346,25 @@ const ModalBuyItem = ({
                       </div>
                     )}
 
-                    {!!errMessage && (
+                    {/* {!!errMessage && (
                       <div className={s.error}>{errMessage}</div>
-                    )}
+                    )} */}
                   </div>
                 </Col>
 
-                {receiveAddress && step === 'showAddress' && (
+                {receiverAddress && step === 'showAddress' && (
                   <Col md={'6'}>
                     <div className={s.paymentWrapper}>
                       {!isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
-                            {`Send ${formatPrice} ${unit} to this payment address`}
+                            {`Send ${formatPrice} ETH to this deposit address`}
                           </p>
 
                           <div className={s.btcAddressContainer}>
                             <p className={s.btcAddress}>
                               {ellipsisCenter({
-                                str: receiveAddress || '',
+                                str: receiverAddress || '',
                                 limit: 16,
                               })}
                             </p>
@@ -350,48 +372,57 @@ const ModalBuyItem = ({
                               className={s.icCopy}
                               size={18}
                               svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-                              onClick={() => onClickCopy(receiveAddress || '')}
+                              onClick={() => onClickCopy(receiverAddress || '')}
                             />
                           </div>
 
                           <QRCodeGenerator
                             className={s.qrCodeGenerator}
                             size={128}
-                            value={receiveAddress || ''}
+                            value={receiverAddress || ''}
                           />
-                          {!!expireTime && (
-                            <p className={s.expire}>
-                              Expires at:{' '}
-                              {formatUnixDateTime({
-                                dateTime: Number(expireTime),
-                              })}
-                            </p>
-                          )}
                         </div>
                       )}
                     </div>
 
                     <div className={s.btnContainer}>
-                      {/* <ButtonIcon
-                        sizes="large"
-                        className={s.checkBtn}
-                        onClick={() => router.push(ROUTE_PATH.PROFILE)}
-                        variants="outline-small"
-                      >
-                        <Text as="span" size="16" fontWeight="medium">
-                          Check order status
-                        </Text>
-                      </ButtonIcon>
-                      <div style={{ width: 16 }} /> */}
-                      <ButtonIcon
-                        sizes="large"
-                        className={s.buyBtn}
-                        onClick={handleClose}
-                      >
-                        <Text as="span" size="16" fontWeight="medium">
-                          Continue collecting
-                        </Text>
-                      </ButtonIcon>
+                      {isSent ? (
+                        <>
+                          <ButtonIcon
+                            sizes="large"
+                            className={s.checkBtn}
+                            onClick={() => router.push(ROUTE_PATH.PROFILE)}
+                            variants="outline-small"
+                          >
+                            <Text as="span" size="16" fontWeight="medium">
+                              Check order status
+                            </Text>
+                          </ButtonIcon>
+                          <div style={{ width: 16 }} />
+                          <ButtonIcon
+                            sizes="large"
+                            className={s.buyBtn}
+                            onClick={_onClose}
+                          >
+                            <Text as="span" size="16" fontWeight="medium">
+                              Continue collecting
+                            </Text>
+                          </ButtonIcon>
+                        </>
+                      ) : (
+                        <ButtonIcon
+                          sizes="large"
+                          className={s.buyBtn}
+                          disabled={!receiverAddress}
+                          onClick={() =>
+                            handleTransfer(receiverAddress, formatPrice)
+                          }
+                        >
+                          <Text as="span" size="16" fontWeight="medium">
+                            Tranfer
+                          </Text>
+                        </ButtonIcon>
+                      )}
                     </div>
                   </Col>
                 )}
@@ -404,4 +435,4 @@ const ModalBuyItem = ({
   );
 };
 
-export default ModalBuyItem;
+export default MintEthModal;

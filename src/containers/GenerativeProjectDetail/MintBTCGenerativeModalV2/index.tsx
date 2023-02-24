@@ -310,7 +310,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                                       onBlur={handleBlur}
                                       value={values.address}
                                       className={s.input}
-                                      placeholder={`Enter your Ordinals-compatible address here`}
+                                      placeholder={`Paste your BTC Ordinal wallet address here`}
                                     />
                                   </div>
                                   {errors.address && touched.address && (

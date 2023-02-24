@@ -3,7 +3,7 @@ import { TriggerLoad } from '@components/TriggerLoader';
 import ClientOnly from '@components/Utils/ClientOnly';
 import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModalV2';
 // import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal';
-import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal/Collecting';
+import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal/CollectingV2';
 import ProjectIntroSection from '@containers/Marketplace/ProjectIntroSection';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import {
