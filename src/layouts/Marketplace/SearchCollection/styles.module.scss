@@ -19,6 +19,13 @@
     --s-sec-color: #898989;
   }
 
+  &.focus {
+    transition: all 0.2s;
+    border-color: $secondary-purple-b;
+  }
+
+  transition: all 0.2s;
+  border: 1.5px solid transparent;
   position: relative;
   min-width: rem(300);
   background-color: var(--s-wrapper-bg-color);

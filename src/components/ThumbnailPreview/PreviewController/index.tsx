@@ -1,3 +1,4 @@
+import s from './styles.module.scss';
 import { CDN_URL, GLB_COLLECTION_ID } from '@constants/config';
 import { MediaType } from '@enums/file';
 import { Project } from '@interfaces/project';
@@ -9,9 +10,9 @@ import ImagePreview from '../ImagePreview';
 import Model3DPreview from '../Model3DPreview';
 import VideoPreview from '../VideoPreview';
 import Image from 'next/image';
-import s from './styles.module.scss';
 import AudioPreview from '../AudioPreview';
 import IFramePreview from '../IframePreview';
+import PDFPreview from '../PDFPreview';
 
 interface IProps {
   data: Token | Project | null;
@@ -81,6 +82,8 @@ const PreviewController: React.FC<IProps> = (
         return <AudioPreview url={thumbnailUrl} />;
       case MediaType.IFRAME:
         return <IFramePreview url={thumbnailUrl} />;
+      case MediaType.PDF:
+        return <PDFPreview url={thumbnailUrl} />;
       default:
         return renderPlaceholderThumbnail;
     }
