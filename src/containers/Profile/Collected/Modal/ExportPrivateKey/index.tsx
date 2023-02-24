@@ -1,83 +1,26 @@
 import Button from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
-import React, { useContext } from 'react';
+import React from 'react';
 import s from './styles.module.scss';
-import { ProfileContext } from '@contexts/profile-context';
-import { HistoryStatusType, ITxHistory } from '@interfaces/api/bitcoin';
-import { ellipsisCenter } from '@utils/format';
-import cs from 'classnames';
-import { toast } from 'react-hot-toast';
 
 interface IProps {
   showModal: boolean;
   onClose: () => void;
+  keySet: {
+    privateKey: string;
+    address: string;
+    pubKey: string;
+  };
 }
 
-const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
-  const { history } = useContext(ProfileContext);
-
+const ExportPrivateKeyModal = ({
+  showModal,
+  onClose,
+  keySet,
+}: IProps): JSX.Element => {
   const handleClose = () => {
     onClose();
-  };
-  const handleCopy = (text: string): void => {
-    navigator.clipboard.writeText(text);
-    toast.remove();
-    toast.success('Copied');
-  };
-  const renderItem = (_history: ITxHistory) => {
-    const statusColor =
-      _history.status === HistoryStatusType.failed
-        ? '#ff4747'
-        : _history.status === HistoryStatusType.pending
-        ? '#ff7e21'
-        : '#24c087';
-    return (
-      <div className={s.wrapHistory} key={_history.txhash}>
-        <div className={cs(s.wrapHistory_title, s.wrapHistory_content)}>
-          Hash: {ellipsisCenter({ str: _history.txhash, limit: 10 })}
-          <label
-            className={s.wrapHistory_copy}
-            onClick={() => handleCopy(_history.txhash)}
-          >
-            <SvgInset size={18} svgUrl={`${CDN_URL}/icons/ic-copy.svg`} />
-          </label>
-          <label
-            className={s.wrapHistory_copy}
-            onClick={() =>
-              window.open(
-                `https://www.blockchain.com/explorer/transactions/btc/${_history.txhash}`
-              )
-            }
-          >
-            <img
-              style={{ width: 20, marginTop: -4 }}
-              src={`${CDN_URL}/icons/ic-share.png`}
-              alt="ic-share"
-            />
-          </label>
-        </div>
-        {!!_history.inscription_id && (
-          <div className={cs(s.wrapHistory_marginTop, s.wrapHistory_center)}>
-            ID: #{ellipsisCenter({ str: _history.inscription_id, limit: 10 })}{' '}
-            <label
-              className={s.wrapHistory_copy}
-              onClick={() => handleCopy(_history.inscription_id)}
-            >
-              <SvgInset size={18} svgUrl={`${CDN_URL}/icons/ic-copy.svg`} />
-            </label>
-          </div>
-        )}
-        {!!_history.inscription_number && (
-          <div className={cs(s.wrapHistory_marginTop, s.wrapHistory_content)}>
-            Inscription: #{_history.inscription_number}
-          </div>
-        )}
-        <div className={cs(s.wrapHistory_marginTop, s.wrapHistory_content)}>
-          Status: <span style={{ color: statusColor }}>{_history.status}</span>
-        </div>
-      </div>
-    );
   };
 
   if (!showModal) {
@@ -104,8 +47,13 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
             </div>
             <div className={s.modalBody}>
               <>
-                <h3 className={s.modalTitle}>History</h3>
-                <div className={s.formWrapper}>{history.map(renderItem)}</div>
+                <h3 className={s.modalTitle}>Key</h3>
+                <div className={s.keyTitle}>Private Key</div>
+                <div className={s.keyContent} style={{ marginBottom: 24 }}>
+                  {keySet.privateKey}
+                </div>
+                <div className={s.keyTitle}>Address</div>
+                <div className={s.keyContent}>{keySet.address}</div>
               </>
             </div>
           </div>
@@ -115,4 +63,4 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
   );
 };
 
-export default HistoryModal;
+export default ExportPrivateKeyModal;

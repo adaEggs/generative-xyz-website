@@ -49,7 +49,7 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   };
 
   const isSending = React.useMemo(() => {
-    const findHistory = history.find(
+    const findHistory = (history || []).find(
       tx =>
         !!project.inscriptionID &&
         !!tx.inscription_id &&

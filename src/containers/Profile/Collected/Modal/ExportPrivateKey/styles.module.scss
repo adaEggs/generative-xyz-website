@@ -292,3 +292,19 @@
     margin-top: 12px;
   }
 }
+
+.keyTitle {
+  font-weight: 500;
+  font-size: rem(22px);
+  line-height: 140%;
+  margin-bottom: 8px;
+}
+
+.keyContent {
+  font-weight: 500;
+  font-size: rem(18px);
+  line-break: anywhere;
+  line-height: 140%;
+  background-color: $primary-light;
+  padding: 8px 12px;
+}
