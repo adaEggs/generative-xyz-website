@@ -58,6 +58,7 @@ export type Project = {
     originalLink?: string;
     reportUserAddress: string;
   }[];
+  animationHtml: string;
 };
 
 export type BTCProject = Project & {

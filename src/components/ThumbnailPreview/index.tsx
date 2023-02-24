@@ -1,13 +1,11 @@
+import s from './styles.module.scss';
 import ButtonIcon from '@components/ButtonIcon';
 import Skeleton from '@components/Skeleton';
 import Text from '@components/Text';
-import ClientOnly from '@components/Utils/ClientOnly';
 import { CDN_URL } from '@constants/config';
-import SandboxPreview from '@components/SandboxPreview';
 import { PreviewDisplayMode } from '@enums/mint-generative';
 import { ISandboxRef } from '@interfaces/sandbox';
 import { Token } from '@interfaces/token';
-import { base64ToUtf8 } from '@utils/format';
 import { generateHash } from '@utils/generate-data';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -15,27 +13,33 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Project } from '@interfaces/project';
 import PreviewController from './PreviewController';
-import s from './styles.module.scss';
+import IFramePreview from './IframePreview';
+import ClientOnly from '@components/Utils/ClientOnly';
+import SandboxPreview from '@components/SandboxPreview';
+import { base64ToUtf8 } from '@utils/format';
+import { useRouter } from 'next/router';
 
 type Props = {
   data: Token | Project | null;
   allowVariantion?: boolean;
-  previewToken?: boolean;
   isBitcoinProject?: boolean;
+  previewToken?: boolean;
 };
 
 const ThumbnailPreview = (props: Props) => {
   const { data, allowVariantion = false, previewToken = false } = props;
+  const router = useRouter();
+  const { projectID } = router.query;
   const animationUrl =
     (data as Token)?.animationUrl || (data as Token)?.animation_url || '';
-  const sandboxRef = useRef<ISandboxRef>(null);
-  const playBtnRef = useRef<HTMLButtonElement>(null);
-  const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>();
-  const [hash, setHash] = useState<string>(generateHash());
-  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
   const rawHtmlFile = base64ToUtf8(
     animationUrl.replace('data:text/html;base64,', '')
   );
+  const animationHtml = data?.animationHtml || '';
+  const sandboxRef = useRef<ISandboxRef>(null);
+  const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>();
+  const [hash, setHash] = useState<string>(generateHash());
+  const [previewSrc, setPreviewSrc] = useState<string | null>(null);
 
   const handleIframeLoaded = (): void => {
     if (sandboxRef.current) {
@@ -65,23 +69,27 @@ const ThumbnailPreview = (props: Props) => {
     setHash(generateHash());
   };
 
+  const seed = useMemo((): string => {
+    return previewToken ? `` : `?seed=${hash}`;
+  }, [previewToken, data, hash]);
+
   const canPlay = useMemo(() => {
-    return !!rawHtmlFile && displayMode === PreviewDisplayMode.THUMBNAIL;
-  }, [rawHtmlFile, displayMode]);
+    return !!animationHtml && displayMode === PreviewDisplayMode.THUMBNAIL;
+  }, [animationHtml, displayMode]);
 
   const canPause = useMemo(() => {
-    return !!rawHtmlFile && displayMode === PreviewDisplayMode.ANIMATION;
-  }, [rawHtmlFile, displayMode]);
+    return !!animationHtml && displayMode === PreviewDisplayMode.ANIMATION;
+  }, [animationHtml, displayMode]);
 
   const openPreview = useMemo(() => !!previewSrc, [previewSrc]);
 
   useEffect(() => {
-    if (animationUrl) {
+    if (animationHtml) {
       setDisplayMode(PreviewDisplayMode.ANIMATION);
     } else {
       setDisplayMode(PreviewDisplayMode.THUMBNAIL);
     }
-  }, [animationUrl]);
+  }, [animationHtml]);
 
   return (
     <div className={s.ThumbnailPreview}>
@@ -90,26 +98,42 @@ const ThumbnailPreview = (props: Props) => {
           <Skeleton fill isLoaded={!!data} />
           {data && (
             <>
-              <div className={s.sandboxContent}>
-                <ClientOnly>
-                  <SandboxPreview
-                    showIframe={displayMode === PreviewDisplayMode.ANIMATION}
-                    rawHtml={rawHtmlFile}
-                    ref={sandboxRef}
-                    hash={previewToken ? data.tokenID : hash}
-                    sandboxFiles={null}
-                    onLoaded={handleIframeLoaded}
-                    className={s.thumbnailIframe}
-                  />
-                </ClientOnly>
-              </div>
+              {displayMode === PreviewDisplayMode.ANIMATION && (
+                <>
+                  {projectID === '1000132' ? (
+                    <div className={s.sandboxContent}>
+                      <ClientOnly>
+                        <SandboxPreview
+                          showIframe={
+                            displayMode === PreviewDisplayMode.ANIMATION
+                          }
+                          rawHtml={rawHtmlFile}
+                          ref={sandboxRef}
+                          hash={previewToken ? data.tokenID : hash}
+                          sandboxFiles={null}
+                          onLoaded={handleIframeLoaded}
+                          className={s.thumbnailIframe}
+                        />
+                      </ClientOnly>
+                    </div>
+                  ) : (
+                    <div className={s.sandboxContent}>
+                      <IFramePreview
+                        ref={sandboxRef}
+                        url={`${animationHtml}${seed}`}
+                        onLoaded={handleIframeLoaded}
+                      ></IFramePreview>
+                    </div>
+                  )}
+                </>
+              )}
               {displayMode === PreviewDisplayMode.THUMBNAIL && (
                 <PreviewController data={data} />
               )}
             </>
           )}
         </div>
-        {animationUrl && (
+        {animationHtml && (
           <div className={s.actionWrapper}>
             <div className={s.sandboxControls}>
               {allowVariantion &&
@@ -134,7 +158,6 @@ const ThumbnailPreview = (props: Props) => {
                       className={s.actionBtn}
                       sizes="mid"
                       variants="outline"
-                      ref={playBtnRef}
                       iconOnly
                     >
                       <Image
