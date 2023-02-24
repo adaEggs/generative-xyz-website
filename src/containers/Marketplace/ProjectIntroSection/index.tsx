@@ -374,40 +374,36 @@ const ProjectIntroSection = ({
           </div>
         )}
 
-        {isBitcoinProject && (
-          <div className={s.stats}>
-            {isLimitMinted && (
-              <div className={s.stats_item}>
-                <Text size="12" fontWeight="medium">
-                  MINTED
-                </Text>
-                <Heading as="h6" fontWeight="medium">
-                  {minted}
-                </Heading>
-              </div>
-            )}
-            {!!project?.btcFloorPrice && (
-              <div className={s.stats_item}>
-                <Text size="12" fontWeight="medium">
-                  Floor Price
-                </Text>
-                <Heading as="h6" fontWeight="medium">
-                  {formatBTCPrice(project?.btcFloorPrice)}
-                </Heading>
-              </div>
-            )}
-            {isRoyalty && (
-              <div className={s.stats_item}>
-                <Text size="12" fontWeight="medium">
-                  royalty
-                </Text>
-                <Heading as="h6" fontWeight="medium">
-                  {(project?.royalty || 0) / 100}%
-                </Heading>
-              </div>
-            )}
+        <div className={s.stats}>
+          <div className={s.stats_item}>
+            <Text size="12" fontWeight="medium">
+              MINTED
+            </Text>
+            <Heading as="h6" fontWeight="medium">
+              {minted}
+            </Heading>
           </div>
-        )}
+          {!!project?.btcFloorPrice && (
+            <div className={s.stats_item}>
+              <Text size="12" fontWeight="medium">
+                Floor Price
+              </Text>
+              <Heading as="h6" fontWeight="medium">
+                {formatBTCPrice(project?.btcFloorPrice)}
+              </Heading>
+            </div>
+          )}
+          {isRoyalty && (
+            <div className={s.stats_item}>
+              <Text size="12" fontWeight="medium">
+                royalty
+              </Text>
+              <Heading as="h6" fontWeight="medium">
+                {(project?.royalty || 0) / 100}%
+              </Heading>
+            </div>
+          )}
+        </div>
 
         {!isWhitelist && project?.status && !project?.isHidden && (
           <div className={s.CTA}>
@@ -610,26 +606,6 @@ const ProjectIntroSection = ({
                   </Link>{' '}
                   to prove ownership.
                 </Text>
-                {/* <OverlayTrigger
-                placement="bottom"
-                delay={{ show: 250, hide: 400 }}
-                overlay={
-                  <Tooltip id="whitelist-tooltip">
-                    <Text size="14" fontWeight="semibold" color="primary-333">
-                      This is a free mint. You only need to pay for the
-                      inscription fees, which are similar to gas fees on
-                      Ethereum. The amount is 0.033 ETH (~0.0023 BTC).
-                    </Text>
-                  </Tooltip>
-                }
-              >
-                <div className={s.whiteList_icon}>
-                  <SvgInset
-                    size={16}
-                    svgUrl={`${CDN_URL}/icons/ic-question-circle.svg`}
-                  />
-                </div>
-              </OverlayTrigger> */}
               </div>
             </>
           )}
