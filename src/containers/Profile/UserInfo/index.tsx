@@ -18,7 +18,6 @@ import { toast } from 'react-hot-toast';
 import { SocialVerify } from '@components/SocialVerify';
 import { SOCIALS } from '@constants/common';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
-import { IconVerified } from '@components/IconVerified';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 
 export const UserInfo = (): JSX.Element => {
@@ -56,11 +55,12 @@ export const UserInfo = (): JSX.Element => {
                   {currentUser?.displayName ||
                     formatAddress(currentUser?.walletAddress)}
                 </Heading>
-                {isTwVerified ? (
-                  <IconVerified />
-                ) : (
-                  <SocialVerify link={SOCIALS.twitter} />
-                )}
+                <div className={s.userInfo_content_wrapper_info_icon}>
+                  <SocialVerify
+                    isTwVerified={isTwVerified}
+                    link={SOCIALS.twitter}
+                  />
+                </div>
               </div>
             </div>
 
@@ -146,7 +146,7 @@ export const UserInfo = (): JSX.Element => {
 
             {currentUser?.bio && (
               <Text size={'18'} fontWeight="regular" className={s.bio}>
-                “{currentUser?.bio}”
+                {currentUser?.bio}
               </Text>
             )}
 

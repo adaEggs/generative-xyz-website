@@ -55,7 +55,6 @@ import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import ReportModal from './ReportModal';
 import s from './styles.module.scss';
-import { IconVerified } from '@components/IconVerified';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -284,11 +283,7 @@ const ProjectIntroSection = ({
                 formatAddress(project?.creatorProfile?.walletAddress || '')}
             </Heading>
           </Link>
-          {isTwVerified ? (
-            <IconVerified />
-          ) : (
-            <SocialVerify link={SOCIALS.twitter} />
-          )}
+          <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
         </div>
         <div
           className={`${s.projectHeader_heading} ${isCreated ? s.hasEdit : ''}`}
