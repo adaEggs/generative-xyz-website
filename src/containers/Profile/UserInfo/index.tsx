@@ -19,6 +19,7 @@ import { SocialVerify } from '@components/SocialVerify';
 import { SOCIALS } from '@constants/common';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IconVerified } from '@components/IconVerified';
+import { IC_EDIT_PROFILE } from '@constants/icons';
 
 export const UserInfo = (): JSX.Element => {
   const user = useAppSelector(getUserSelector);
@@ -63,6 +64,45 @@ export const UserInfo = (): JSX.Element => {
               </div>
             </div>
 
+            {/*//todo*/}
+            {/*<div className={s.userInfo_content_ctas}>*/}
+            {/*  <ButtonIcon variants={'primary'} sizes={'large'}>*/}
+            {/*    Receive inscription*/}
+            {/*  </ButtonIcon>*/}
+            {/*  <ButtonIcon variants={'outline'} sizes={'large'}>*/}
+            {/*    Send*/}
+            {/*  </ButtonIcon>*/}
+            {/*</div>*/}
+
+            <div className={s.userInfo_content_address}>
+              {currentUser?.walletAddressBtcTaproot && (
+                <div
+                  className={`${s.userInfo_content_btcWallet} ${s.userInfo_content_wallet}`}
+                >
+                  <SvgInset
+                    size={24}
+                    svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
+                  />
+                  <Text size={'18'} fontWeight={'regular'}>
+                    {ellipsisCenter({
+                      str: currentUser?.walletAddressBtcTaproot || '',
+                      limit: 10,
+                    })}
+                  </Text>
+                  <SvgInset
+                    onClick={() => {
+                      copy(currentUser?.walletAddressBtcTaproot || '');
+                      toast.remove();
+                      toast.success('Copied');
+                    }}
+                    className={s.iconCopy}
+                    size={18}
+                    svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                  />
+                </div>
+              )}
+            </div>
+
             <div className={s.creator_social}>
               {currentUser?.profileSocial?.twitter && (
                 <div className={`${s.creator_social_item}`}>
@@ -84,101 +124,49 @@ export const UserInfo = (): JSX.Element => {
                 </div>
               )}
               {currentUser?.profileSocial?.web && (
-                <>
-                  <span className={s.creator_divider}></span>
-                  <div className={`${s.creator_social_item}`}>
-                    <div className={s.creator_social_item_inner}>
-                      <SvgInset
-                        className={`${s.creator_social_twitter}`}
-                        size={24}
-                        svgUrl={`${CDN_URL}/icons/link-copy.svg`}
-                      />
-                      <Text size={'18'}>
-                        <Link
-                          href={currentUser?.profileSocial?.web || ''}
-                          target="_blank"
-                        >
-                          {formatWebDomain(
-                            currentUser?.profileSocial?.web || ''
-                          )}
-                        </Link>
-                      </Text>
-                    </div>
+                <div className={`${s.creator_social_item}`}>
+                  <div className={s.creator_social_item_inner}>
+                    <SvgInset
+                      className={`${s.creator_social_twitter}`}
+                      size={26}
+                      svgUrl={`${CDN_URL}/icons/link-copy.svg`}
+                    />
+                    <Text size={'18'}>
+                      <Link
+                        href={currentUser?.profileSocial?.web || ''}
+                        target="_blank"
+                      >
+                        {formatWebDomain(currentUser?.profileSocial?.web || '')}
+                      </Link>
+                    </Text>
                   </div>
-                </>
+                </div>
               )}
             </div>
 
-            <div className={s.userInfo_content_address}>
-              {currentUser?.walletAddressBtcTaproot && (
-                <div
-                  className={`${s.userInfo_content_btcWallet} ${s.userInfo_content_wallet}`}
-                >
-                  <SvgInset
-                    size={20}
-                    svgUrl={`${CDN_URL}/icons/Bitcoin%20(BTC).svg`}
-                  />
-                  <Text size={'18'} color={'black-06'} fontWeight={'semibold'}>
-                    {ellipsisCenter({
-                      str: currentUser?.walletAddressBtcTaproot || '',
-                      limit: 10,
-                    })}
-                  </Text>
-                  <SvgInset
-                    onClick={() => {
-                      copy(currentUser?.walletAddressBtcTaproot || '');
-                      toast.remove();
-                      toast.success('Copied');
-                    }}
-                    className={s.iconCopy}
-                    size={20}
-                    svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-                  />
-                </div>
-              )}
-              <div
-                className={`${s.userInfo_content_evmWallet} ${s.userInfo_content_wallet}`}
-              >
-                <SvgInset
-                  size={20}
-                  svgUrl={`${CDN_URL}/icons/Ethereum%20(ETH).svg`}
-                />
-                <Text size={'18'} color={'black-06'} fontWeight={'semibold'}>
-                  {ellipsisCenter({
-                    str: currentUser?.walletAddress || '',
-                    limit: 10,
-                  })}
-                </Text>
-                <SvgInset
-                  onClick={() => {
-                    copy(currentUser?.walletAddress || '');
-                    toast.remove();
-                    toast.success('Copied');
-                  }}
-                  className={s.iconCopy}
-                  size={20}
-                  svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-                />
-              </div>
-            </div>
+            {currentUser?.bio && (
+              <Text size={'18'} fontWeight="regular" className={s.bio}>
+                “{currentUser?.bio}”
+              </Text>
+            )}
+
             {currentUser?.id === user?.id && (
               <div className={s.editProfile}>
                 <ButtonIcon
-                  sizes="medium"
-                  variants={'outline'}
+                  sizes="large"
+                  variants={'ghost'}
                   onClick={() => router.push(ROUTE_PATH.EDIT_PROFILE)}
+                  startIcon={
+                    <>
+                      <SvgInset size={20} svgUrl={IC_EDIT_PROFILE} />
+                    </>
+                  }
                 >
                   <Text fontWeight="medium" as="span">
                     Edit Profile
                   </Text>
                 </ButtonIcon>
               </div>
-            )}
-
-            {currentUser?.bio && (
-              <Text size={'18'} fontWeight="regular" className={s.bio}>
-                “{currentUser?.bio}”
-              </Text>
             )}
           </div>
         }

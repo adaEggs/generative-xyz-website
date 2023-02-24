@@ -42,11 +42,6 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     return creator;
   }, [creator]);
 
-  const isLimitMinted = useMemo((): boolean => {
-    if (!project) return false;
-    return project?.mintingInfo?.index < project?.maxSupply;
-  }, [project]);
-
   const minted = useMemo((): string => {
     return `${project.mintingInfo.index + project.mintingInfo.indexReserve}/${
       project.maxSupply || project.limit
@@ -111,27 +106,27 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 </Heading>
               </div>
               <div className={s.projectCard_info_price}>
-                {isLimitMinted && (
-                  <>
-                    <div className={s.projectCard_info_price_price}>
-                      <Text
-                        className={s.projectCard_info_price_price_wrap}
-                        size={'16'}
-                        fontWeight="medium"
-                        color="black-40-solid"
+                <>
+                  <div className={`${s.projectCard_info_price_price}}`}>
+                    <Text
+                      className={s.projectCard_info_price_price_wrap}
+                      size={'16'}
+                      fontWeight="medium"
+                      color="black-40-solid"
+                    >
+                      <span className={s.projectCard_info_price_price_el}>
+                        {Number(project.mintPrice)
+                          ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
+                          : 'Free'}
+                      </span>
+                      <span
+                        className={`${s.projectCard_info_price_price_minted}`}
                       >
-                        <span className={s.projectCard_info_price_price_el}>
-                          {Number(project.mintPrice)
-                            ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
-                            : 'Free'}
-                        </span>
-                        <span className={s.projectCard_info_price_price_minted}>
-                          {minted}
-                        </span>
-                      </Text>
-                    </div>
-                  </>
-                )}
+                        {minted}
+                      </span>
+                    </Text>
+                  </div>
+                </>
                 {!!project.btcFloorPrice && (
                   <>
                     <div className={s.projectCard_info_price_price}>

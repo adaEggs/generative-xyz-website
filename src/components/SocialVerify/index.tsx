@@ -15,11 +15,10 @@ export const SocialVerify: React.FC<{
           <div className={'tooltip-arrow'} />
           <div className={'tooltip-inner'}>
             <Text size="14" fontWeight="semibold" color="primary-333">
-              Is this you? Ping us at{' '}
+              Want to get verified? Ping us at{' '}
               <a href={link} target="_blank" rel="noreferrer">
-                @generative_xyz
-              </a>{' '}
-              to get verified.
+                @generative_xyz.
+              </a>
             </Text>
           </div>
         </div>

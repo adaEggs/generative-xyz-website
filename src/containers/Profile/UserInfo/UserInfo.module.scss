@@ -22,7 +22,7 @@
 
     &_address {
       width: fit-content;
-      margin-top: rem(0);
+      margin-bottom: rem(16px);
     }
 
     &_avatar {
@@ -75,6 +75,12 @@
         }
       }
     }
+
+    &_ctas {
+      margin-bottom: rem(24px);
+      display: flex;
+      gap: rem(16px);
+    }
   }
 
   &_socials {
@@ -113,6 +119,20 @@
   margin-top: rem(24px);
 }
 
+.editProfile {
+  button {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      background-color: transparent !important;
+      text-decoration: none;
+    }
+  }
+}
+
 .bio {
   max-width: rem(390px);
 }
@@ -122,10 +142,7 @@
   margin-bottom: rem(16px);
 
   &_name {
-    max-width: rem(150px);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    width: calc(100% - #{rem(40px)});
   }
 
   &_inner {
@@ -144,15 +161,13 @@
   }
 
   &_social {
-    display: flex;
-    gap: rem(20);
     margin-bottom: rem(24px);
-    align-items: center;
 
     &_item {
       display: flex;
       align-items: center;
       gap: rem(6);
+      margin-bottom: rem(16px);
 
       a {
         text-decoration: none;

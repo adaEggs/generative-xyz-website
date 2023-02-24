@@ -159,5 +159,5 @@ export const ellipsisCenter = (payload: {
 };
 
 export const formatWebDomain = (link: string): string => {
-  return link.replaceAll('https://', '').replaceAll('http://', '');
+  return link ? new URL(link).hostname : '';
 };

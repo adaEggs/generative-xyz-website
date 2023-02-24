@@ -39,7 +39,7 @@ const Profile: React.FC = (): React.ReactElement => {
                       eventKey="collectedTab"
                       title={
                         <>
-                          Collection <sup>{collectedNFTs.length}</sup>
+                          Collected <sup>{collectedNFTs.length}</sup>
                         </>
                       }
                     >
