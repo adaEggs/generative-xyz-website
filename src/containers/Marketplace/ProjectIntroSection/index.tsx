@@ -120,6 +120,10 @@ const ProjectIntroSection = ({
     return project?.mintingInfo?.index < project?.maxSupply;
   }, [project]);
 
+  const textMint = useMemo((): string => {
+    return Number(project?.mintPrice) ? 'Mint' : 'Free mint';
+  }, [project]);
+
   const handleFetchMarketplaceStats = async () => {
     try {
       if (projectDetail && project?.genNFTAddr) {
@@ -493,15 +497,14 @@ const ProjectIntroSection = ({
                           {isMinting && 'Minting...'}
                           {!isMinting && (
                             <>
-                              <span>{`Mint`}</span>
-                              <span>
-                                {Number(project?.mintPrice) ? (
-                                  <span>{priceMemo}</span>
-                                ) : (
-                                  'with'
-                                )}
-                                {` BTC`}
-                              </span>
+                              <span>{textMint}</span>
+
+                              {Number(project?.mintPrice) ? (
+                                <span>{priceMemo}</span>
+                              ) : (
+                                ' with'
+                              )}
+                              {` BTC`}
                             </>
                           )}
                         </Text>
@@ -542,15 +545,13 @@ const ProjectIntroSection = ({
                           {isMinting && 'Minting...'}
                           {!isMinting && (
                             <>
-                              <span>{`Mint`}</span>
-                              <span>
-                                {Number(project?.mintPriceEth) ? (
-                                  <span>{priceEthMemo}</span>
-                                ) : (
-                                  'with'
-                                )}
-                                {` ETH`}
-                              </span>
+                              <span>{textMint}</span>
+                              {Number(project?.mintPriceEth) ? (
+                                <span>{priceEthMemo}</span>
+                              ) : (
+                                ' with'
+                              )}
+                              {` ETH`}
                             </>
                           )}
                         </Text>
