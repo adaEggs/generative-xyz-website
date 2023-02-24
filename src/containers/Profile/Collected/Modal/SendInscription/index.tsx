@@ -19,6 +19,7 @@ import { ErrorMessage } from '@enums/error-message';
 import { setStorage } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
+import Text from '@components/Text';
 
 interface IFormValue {
   address: string;
@@ -170,13 +171,20 @@ const SendInscriptionModal = ({
                               onBlur={handleBlur}
                               value={values.address}
                               className={s.input}
-                              placeholder="Paste BTC address here"
+                              placeholder="Recipient Bitcoin address"
                             />
                           </div>
                           {errors.address && touched.address && (
                             <p className={s.inputError}>{errors.address}</p>
                           )}
                         </div>
+                        <Text
+                          size="18"
+                          fontWeight="medium"
+                          style={{ marginTop: 32 }}
+                        >
+                          Select the network fee you want to pay:
+                        </Text>
                         <div className={s.mintFeeWrapper}>
                           <div
                             onClick={() => {
