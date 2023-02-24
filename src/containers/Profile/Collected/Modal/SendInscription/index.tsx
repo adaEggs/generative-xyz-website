@@ -6,7 +6,7 @@ import React, { useContext, useState } from 'react';
 import { Formik } from 'formik';
 import s from './styles.module.scss';
 import { Loading } from '@components/Loading';
-import { validateBTCAddressTaproot } from '@utils/validate';
+import { validateBTCAddress } from '@utils/validate';
 import useBitcoin from '@bitcoin/useBitcoin';
 import * as GENERATIVE_SDK from 'generative-sdk';
 import { ProfileContext } from '@contexts/profile-context';
@@ -16,6 +16,7 @@ import { calculateMintFee } from '@utils/inscribe';
 import { FeeRateName } from '@interfaces/api/bitcoin';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
+import { setStorage } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 
 interface IFormValue {
   address: string;
@@ -58,7 +59,7 @@ const SendInscriptionModal = ({
 
     if (!values.address) {
       errors.address = 'Address is required.';
-    } else if (!validateBTCAddressTaproot(values.address)) {
+    } else if (!validateBTCAddress(values.address)) {
       errors.address = 'Invalid wallet address.';
     }
     try {
@@ -86,6 +87,7 @@ const SendInscriptionModal = ({
       });
       toast.success('Transferred successfully');
       onClose();
+      setStorage(inscriptionID);
     } catch (err: unknown) {
       // handle error
       toast.error(ErrorMessage.DEFAULT);

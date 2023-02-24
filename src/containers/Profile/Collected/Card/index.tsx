@@ -20,6 +20,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import SendInscriptionModal from '@containers/Profile/Collected/Modal/SendInscription';
 import { HistoryStatusType } from '@interfaces/api/bitcoin';
 import { useRouter } from 'next/router';
+import { getStorage } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -61,12 +62,20 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
 
   const showSendButton = React.useMemo(() => {
     if (!isOwner) return false;
+    if (!project?.inscriptionID || !!getStorage(project?.inscriptionID))
+      return false;
     return (
       !isSending &&
       !isLoadingHistory &&
       project?.status === CollectedNFTStatus.Success
     );
-  }, [isSending, isLoadingHistory, project?.status, isOwner]);
+  }, [
+    isSending,
+    isLoadingHistory,
+    project?.status,
+    isOwner,
+    project?.inscriptionID,
+  ]);
 
   const linkPath =
     project.status === CollectedNFTStatus.Success

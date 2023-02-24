@@ -4,7 +4,7 @@ import { CDN_URL } from '@constants/config';
 import React, { useContext } from 'react';
 import s from './styles.module.scss';
 import { ProfileContext } from '@contexts/profile-context';
-import { HistoryStatusType, ITxHistory } from '@interfaces/api/bitcoin';
+import { ITxHistory } from '@interfaces/api/bitcoin';
 import { ellipsisCenter } from '@utils/format';
 import cs from 'classnames';
 import { toast } from 'react-hot-toast';
@@ -26,12 +26,12 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
     toast.success('Copied');
   };
   const renderItem = (_history: ITxHistory) => {
-    const statusColor =
-      _history.status === HistoryStatusType.failed
-        ? '#ff4747'
-        : _history.status === HistoryStatusType.pending
-        ? '#ff7e21'
-        : '#24c087';
+    // const statusColor =
+    //   _history.status === HistoryStatusType.failed
+    //     ? '#ff4747'
+    //     : _history.status === HistoryStatusType.pending
+    //     ? '#ff7e21'
+    //     : '#24c087';
     return (
       <div className={s.wrapHistory} key={_history.txhash}>
         <div className={cs(s.wrapHistory_title, s.wrapHistory_content)}>
@@ -73,9 +73,9 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
             Inscription: #{_history.inscription_number}
           </div>
         )}
-        <div className={cs(s.wrapHistory_marginTop, s.wrapHistory_content)}>
-          Status: <span style={{ color: statusColor }}>{_history.status}</span>
-        </div>
+        {/*<div className={cs(s.wrapHistory_marginTop, s.wrapHistory_content)}>*/}
+        {/*  Status: <span style={{ color: statusColor }}>{_history.status}</span>*/}
+        {/*</div>*/}
       </div>
     );
   };
