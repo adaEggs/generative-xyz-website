@@ -7,7 +7,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { ellipsisCenter, formatAddress } from '@utils/format';
+import { ellipsisCenter, formatAddress, formatWebDomain } from '@utils/format';
 import copy from 'copy-to-clipboard';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -61,33 +61,51 @@ export const UserInfo = (): JSX.Element => {
                   <SocialVerify link={SOCIALS.twitter} />
                 )}
               </div>
+            </div>
 
+            <div className={s.creator_social}>
               {currentUser?.profileSocial?.twitter && (
-                <div className={s.creator_social}>
+                <div className={`${s.creator_social_item}`}>
+                  <div className={s.creator_social_item_inner}>
+                    <SvgInset
+                      className={`${s.creator_social_twitter}`}
+                      size={24}
+                      svgUrl={`${CDN_URL}/icons/Twitter.svg`}
+                    />
+                    <Text size={'18'}>
+                      <Link
+                        href={currentUser?.profileSocial?.twitter || ''}
+                        target="_blank"
+                      >
+                        @{currentUser?.profileSocial?.twitter.split('/').pop()}
+                      </Link>
+                    </Text>
+                  </div>
+                </div>
+              )}
+              {currentUser?.profileSocial?.web && (
+                <>
                   <span className={s.creator_divider}></span>
-                  <div
-                    className={`${s.creator_social_item} ${
-                      isTwVerified ? s.isVerified : ''
-                    }`}
-                  >
+                  <div className={`${s.creator_social_item}`}>
                     <div className={s.creator_social_item_inner}>
                       <SvgInset
                         className={`${s.creator_social_twitter}`}
-                        size={20}
-                        svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                        size={24}
+                        svgUrl={`${CDN_URL}/icons/link-copy.svg`}
                       />
-                      <Text size={'18'} color="black-60">
+                      <Text size={'18'}>
                         <Link
-                          href={currentUser?.profileSocial?.twitter || ''}
+                          href={currentUser?.profileSocial?.web || ''}
                           target="_blank"
                         >
-                          @
-                          {currentUser?.profileSocial?.twitter.split('/').pop()}
+                          {formatWebDomain(
+                            currentUser?.profileSocial?.web || ''
+                          )}
                         </Link>
                       </Text>
                     </div>
                   </div>
-                </div>
+                </>
               )}
             </div>
 
