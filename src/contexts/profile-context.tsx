@@ -513,6 +513,9 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       debounceFetchHistory();
     } else {
       setCollectedUTXOs(undefined);
+      setTimeout(() => {
+        setIsLoadedProfileCollected(true);
+      }, 30000);
     }
   }, [currentUser]);
 
