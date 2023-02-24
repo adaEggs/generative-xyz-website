@@ -364,7 +364,15 @@ const ProjectIntroSection = ({
         </div>
         {mobileScreen && (
           <div className={s.reviewOnMobile}>
-            <ThumbnailPreview data={projectDetail as Token} allowVariantion />
+            <ThumbnailPreview
+              data={
+                {
+                  ...projectDetail,
+                  animationHtml: project?.animationHtml ?? '',
+                } as Token
+              }
+              allowVariantion
+            />
           </div>
         )}
 
