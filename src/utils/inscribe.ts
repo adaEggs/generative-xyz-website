@@ -24,5 +24,5 @@ export const calculateNetworkFee = (
 
 export const getOrdinalImgURL = (inscriptionID: string) => {
   if (!inscriptionID) return '';
-  return `https://ordinals-explorer-v5-dev.generative.xyz/preview/${inscriptionID}`;
+  return `https://dev-v5.generativeexplorer.com/preview/${inscriptionID}`;
 };

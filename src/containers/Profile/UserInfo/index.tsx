@@ -12,7 +12,7 @@ import copy from 'copy-to-clipboard';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useContext, useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import s from './UserInfo.module.scss';
 import { toast } from 'react-hot-toast';
 import { SocialVerify } from '@components/SocialVerify';
@@ -20,9 +20,13 @@ import { SOCIALS } from '@constants/common';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 
-export const UserInfo = (): JSX.Element => {
+export const UserInfo = ({
+  toggleModal,
+}: {
+  toggleModal: () => void;
+}): JSX.Element => {
   const user = useAppSelector(getUserSelector);
-  const { currentUser } = useContext(ProfileContext);
+  const { currentUser, isLoadingHistory, history } = useContext(ProfileContext);
   const router = useRouter();
 
   const isTwVerified = useMemo(() => {
@@ -61,6 +65,17 @@ export const UserInfo = (): JSX.Element => {
                     link={SOCIALS.twitter}
                   />
                 </div>
+                {!isLoadingHistory && !!history && !!history.length && (
+                  <div
+                    className={s.userInfo_content_wrapper_icHistory}
+                    onClick={toggleModal}
+                  >
+                    <SvgInset
+                      size={20}
+                      svgUrl={`${CDN_URL}/icons/ic-history.svg`}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 
