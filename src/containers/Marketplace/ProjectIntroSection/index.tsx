@@ -698,15 +698,12 @@ const ProjectIntroSection = ({
           </li>
           <li>
             <div
-              className={s.projectBtn}
+              className={s.reportBtn}
               onClick={() => setShowReportModal(true)}
             >
-              <SvgInset
-                size={14}
-                svgUrl={`${CDN_URL}/icons/ic-pasta-plate.svg`}
-              />
+              <SvgInset size={14} svgUrl={`${CDN_URL}/icons/ic-flag.svg`} />
               <Text as="span" size="14" fontWeight="medium">
-                Copypasta Alert
+                Report
               </Text>
             </div>
           </li>

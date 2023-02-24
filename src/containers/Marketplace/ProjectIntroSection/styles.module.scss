@@ -334,6 +334,13 @@
 .shares {
   display: flex;
   gap: rem(8px);
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .projectHeader {
@@ -381,6 +388,12 @@
       stroke: $white;
     }
   }
+}
+
+.reportBtn {
+  display: flex;
+  align-items: center;
+  gap: rem(4);
 }
 
 .reportMsg {
