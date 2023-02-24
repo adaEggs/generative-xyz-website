@@ -423,11 +423,16 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   const debounceFetchDataCollectedNFTs = debounce(fetchDataCollectedNFTs, 300);
 
   useEffect(() => {
-    if (!isEmpty(ordAddress) && currentBtcAddressRef.current !== ordAddress) {
-      currentBtcAddressRef.current = ordAddress;
+    if (
+      currentUser &&
+      currentUser.walletAddressBtcTaproot &&
+      !isEmpty(currentUser.walletAddressBtcTaproot) &&
+      currentBtcAddressRef.current !== currentUser.walletAddressBtcTaproot
+    ) {
+      currentBtcAddressRef.current = currentUser.walletAddressBtcTaproot;
       debounceFetchDataCollectedNFTs();
     }
-  }, [ordAddress]);
+  }, [currentUser]);
 
   const contextValues = useMemo((): IProfileContext => {
     return {

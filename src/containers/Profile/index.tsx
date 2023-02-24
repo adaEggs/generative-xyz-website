@@ -3,9 +3,6 @@ import ClientOnly from '@components/Utils/ClientOnly';
 import { CreatedTab } from '@containers/Profile/Created';
 import { UserInfo } from '@containers/Profile/UserInfo';
 import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
-import { useAppSelector } from '@redux';
-import { getUserSelector } from '@redux/user/selector';
-import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
 import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import { Collected } from './Collected';
@@ -15,12 +12,12 @@ const Profile: React.FC = (): React.ReactElement => {
   const { isLoaded, profileProjects, collectedNFTs } =
     useContext(ProfileContext);
 
-  const router = useRouter();
+  // const router = useRouter();
 
-  const { walletAddress } = router.query as { walletAddress: string };
-  const user = useAppSelector(getUserSelector);
+  // const { walletAddress } = router.query as { walletAddress: string };
+  // const user = useAppSelector(getUserSelector);
 
-  const isOwner = !walletAddress || user?.walletAddress === walletAddress;
+  // const isOwner = !walletAddress || user?.walletAddress === walletAddress;
 
   return (
     <div className={s.profile}>
@@ -33,19 +30,17 @@ const Profile: React.FC = (): React.ReactElement => {
             <ClientOnly>
               <div className={s.wrapTabs}>
                 <Tabs className={s.tabs}>
-                  {isOwner && (
-                    <Tab
-                      tabClassName={s.tab}
-                      eventKey="collectedTab"
-                      title={
-                        <>
-                          Collected <sup>{collectedNFTs.length}</sup>
-                        </>
-                      }
-                    >
-                      <Collected />
-                    </Tab>
-                  )}
+                  <Tab
+                    tabClassName={s.tab}
+                    eventKey="collectedTab"
+                    title={
+                      <>
+                        Collected <sup>{collectedNFTs.length}</sup>
+                      </>
+                    }
+                  >
+                    <Collected />
+                  </Tab>
 
                   <Tab
                     tabClassName={s.tab}
