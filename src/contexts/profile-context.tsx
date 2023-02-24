@@ -11,6 +11,7 @@ import {
 } from '@interfaces/api/marketplace';
 import { ICollectedNFTItem } from '@interfaces/api/profile';
 import { IGetProjectItemsResponse } from '@interfaces/api/project';
+import { IGetReferralsResponse } from '@interfaces/api/referrals';
 import { IGetProfileTokensResponse } from '@interfaces/api/token-uri';
 import { TokenOffer } from '@interfaces/token';
 import { User } from '@interfaces/user';
@@ -30,6 +31,7 @@ import {
   getProfileProjectsByWallet,
   getProfileTokens,
 } from '@services/profile';
+import { getReferrals } from '@services/referrals';
 import log from '@utils/logger';
 import { debounce, isEmpty } from 'lodash';
 import { useRouter } from 'next/router';
@@ -54,6 +56,7 @@ export interface IProfileContext {
   profileMakeOffer?: ITokenOfferListResponse;
   profileListing?: IListingTokensResponse;
   collectedNFTs: ICollectedNFTItem[];
+  referralListing?: IGetReferralsResponse;
 
   isLoaded: boolean;
 
@@ -63,11 +66,13 @@ export interface IProfileContext {
   isLoadedProfileListing: boolean;
   isLoadedProfileCollected: boolean;
   isLoadingProfileCollected: boolean;
+  isLoadedProfileReferral: boolean;
 
   handleFetchTokens: () => void;
   handleFetchProjects: () => void;
   handleFetchMakeOffers: (r?: boolean) => void;
   handleFetchListingTokens: () => void;
+  handleFetchListingReferrals: () => void;
   handleCancelOffer: (offer: TokenOffer) => void;
   handleAcceptOfferReceived: (offer: TokenOffer) => void;
   handelcancelMintingNFT: (mintID?: string) => void;
@@ -85,8 +90,10 @@ const initialValue: IProfileContext = {
   isLoadedProfileMakeOffer: false,
   isLoadedProfileListing: false,
   isLoadedProfileCollected: false,
+  isLoadedProfileReferral: false,
   isLoadingProfileCollected: false,
   collectedNFTs: [],
+  referralListing: undefined,
 
   handleFetchTokens: () => new Promise<void>(r => r()),
   handleFetchProjects: () => new Promise<void>(r => r()),
@@ -96,6 +103,7 @@ const initialValue: IProfileContext = {
   handleAcceptOfferReceived: () => new Promise<void>(r => r()),
   handelcancelMintingNFT: () => new Promise<void>(r => r()),
   debounceFetchDataCollectedNFTs: () => new Promise<void>(r => r()),
+  handleFetchListingReferrals: () => new Promise<void>(r => r()),
 
   isOfferReceived: false,
   setIsOfferReceived: _ => {
@@ -141,15 +149,21 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   const [isLoadedProfileProjects, setIsLoadedProfileProjects] =
     useState<boolean>(false);
 
+  const [isLoadedProfileReferral, setIsLoadedProfileReferral] =
+    useState<boolean>(false);
+
   const [profileMakeOffer, setProfileMakeOffer] = useState<
     ITokenOfferListResponse | undefined
   >();
 
   const [isLoadedProfileMakeOffer, setIsLoadedProfileMakeOffer] =
     useState<boolean>(false);
-
   const [profileListing, setProfileListing] = useState<
     IListingTokensResponse | undefined
+  >();
+
+  const [referralListing, setReferralListing] = useState<
+    IGetReferralsResponse | undefined
   >();
 
   const [isLoadedProfileListing, setIsLoadedProfileListing] =
@@ -312,6 +326,22 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     handleFetchMakeOffers();
   };
 
+  const handleFetchListingReferrals = async () => {
+    try {
+      if (currentUser?.walletAddress) {
+        const referralListing = await getReferrals({
+          referrerID: currentUser.id,
+        });
+        setReferralListing(referralListing);
+      }
+    } catch (err: unknown) {
+      log('failed to fetch refferal listing', LogLevel.ERROR, LOG_PREFIX);
+      throw Error();
+    } finally {
+      setIsLoadedProfileReferral(true);
+    }
+  };
+
   useAsyncEffect(async () => {
     setIsLoaded(false);
     if (!router.isReady) return;
@@ -336,6 +366,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     await handleFetchMakeOffers();
     await handleFetchProjects();
     await handleFetchListingTokens();
+    await handleFetchListingReferrals();
   }, [currentUser]);
 
   useEffect(() => {
@@ -407,6 +438,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       profileMakeOffer,
       profileListing,
       collectedNFTs,
+      referralListing,
 
       isLoaded,
       isLoadedProfileTokens,
@@ -416,6 +448,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       isOfferReceived,
       isLoadedProfileCollected,
       isLoadingProfileCollected,
+      isLoadedProfileReferral,
 
       handleFetchTokens,
       handleFetchProjects,
@@ -425,6 +458,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       setIsOfferReceived,
       handleAcceptOfferReceived,
       handelcancelMintingNFT,
+      handleFetchListingReferrals,
       debounceFetchDataCollectedNFTs,
     };
   }, [
@@ -434,6 +468,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     profileProjects,
     profileMakeOffer,
     profileListing,
+    referralListing,
 
     isLoaded,
     isLoadedProfileTokens,
@@ -441,6 +476,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     isLoadedProfileMakeOffer,
     isLoadedProfileListing,
     isOfferReceived,
+    isLoadedProfileReferral,
 
     handleFetchTokens,
     handleFetchProjects,
@@ -449,6 +485,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     handleCancelOffer,
     setIsOfferReceived,
     handleAcceptOfferReceived,
+    handleFetchListingReferrals,
   ]);
 
   return (

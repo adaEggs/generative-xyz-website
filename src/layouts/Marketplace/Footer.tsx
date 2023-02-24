@@ -1,8 +1,9 @@
-import { CONTACT_EMAIL, SOCIALS } from '@constants/common';
+import { SOCIALS } from '@constants/common';
 import React, { useEffect, useRef } from 'react';
 import styles from './Footer.module.scss';
 import SvgInset from '@components/SvgInset';
 import { Container } from 'react-bootstrap';
+import { CDN_URL } from '@constants/config';
 
 interface IProp {
   theme?: 'light' | 'dark';
@@ -30,17 +31,27 @@ const Footer: React.FC<IProp> = ({ theme = 'light' }): React.ReactElement => {
   }, []);
 
   return (
-    <footer ref={refFooter} className={`${styles.footer} ${styles[theme]}`}>
+    <footer
+      ref={refFooter}
+      className={`${styles.footer} ${styles[theme]} ${styles.isFixed}`}
+    >
       <Container>
         <div className={styles.footer_content}>
           <div className={styles.footer_info}>
-            <p>© 2023 Generative</p>
+            <p>Open-source software. Made with ❤️ on Bitcoin.</p>
           </div>
           <div className={styles.footer_right}>
-            <div className={styles.footer_contact}>
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-            </div>
             <ul className={styles.footer_socials}>
+              <li>
+                <a
+                  href={SOCIALS.github}
+                  target="_blank"
+                  className={styles.footer_bottomSocialItem}
+                  rel="noreferrer"
+                >
+                  <SvgInset svgUrl={`${CDN_URL}/icons/ic-footer-github.svg`} />
+                </a>
+              </li>
               <li>
                 <a
                   href={SOCIALS.discord}
@@ -48,11 +59,7 @@ const Footer: React.FC<IProp> = ({ theme = 'light' }): React.ReactElement => {
                   className={styles.footer_bottomSocialItem}
                   rel="noreferrer"
                 >
-                  <SvgInset
-                    svgUrl={
-                      'https://cdn.autonomous.ai/static/upload/images/common/upload/20221012/Groupaa7416858b.svg'
-                    }
-                  />
+                  <SvgInset svgUrl={`${CDN_URL}/icons/ic-footer-discord.svg`} />
                 </a>
               </li>
               <li>
@@ -62,11 +69,7 @@ const Footer: React.FC<IProp> = ({ theme = 'light' }): React.ReactElement => {
                   className={styles.footer_bottomSocialItem}
                   rel="noreferrer"
                 >
-                  <SvgInset
-                    svgUrl={
-                      'https://cdn.autonomous.ai/static/upload/images/common/upload/20221012/Group-10ab2c8e17e.svg'
-                    }
-                  />
+                  <SvgInset svgUrl={`${CDN_URL}/icons/ic-footer-twitter.svg`} />
                 </a>
               </li>
             </ul>

@@ -55,7 +55,6 @@ import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import ReportModal from './ReportModal';
 import s from './styles.module.scss';
-import { IconVerified } from '@components/IconVerified';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -283,11 +282,7 @@ const ProjectIntroSection = ({
                 formatAddress(project?.creatorProfile?.walletAddress || '')}
             </Heading>
           </Link>
-          {isTwVerified ? (
-            <IconVerified />
-          ) : (
-            <SocialVerify link={SOCIALS.twitter} />
-          )}
+          <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
         </div>
         <div
           className={`${s.projectHeader_heading} ${isCreated ? s.hasEdit : ''}`}
@@ -368,45 +363,41 @@ const ProjectIntroSection = ({
           )}
         </div>
         {mobileScreen && (
-          <div>
+          <div className={s.reviewOnMobile}>
             <ThumbnailPreview data={projectDetail as Token} allowVariantion />
           </div>
         )}
 
-        {isBitcoinProject && (
-          <div className={s.stats}>
-            {isLimitMinted && (
-              <div className={s.stats_item}>
-                <Text size="12" fontWeight="medium">
-                  MINTED
-                </Text>
-                <Heading as="h6" fontWeight="medium">
-                  {minted}
-                </Heading>
-              </div>
-            )}
-            {!!project?.btcFloorPrice && (
-              <div className={s.stats_item}>
-                <Text size="12" fontWeight="medium">
-                  Floor Price
-                </Text>
-                <Heading as="h6" fontWeight="medium">
-                  {formatBTCPrice(project?.btcFloorPrice)}
-                </Heading>
-              </div>
-            )}
-            {isRoyalty && (
-              <div className={s.stats_item}>
-                <Text size="12" fontWeight="medium">
-                  royalty
-                </Text>
-                <Heading as="h6" fontWeight="medium">
-                  {(project?.royalty || 0) / 100}%
-                </Heading>
-              </div>
-            )}
+        <div className={s.stats}>
+          <div className={s.stats_item}>
+            <Text size="12" fontWeight="medium">
+              MINTED
+            </Text>
+            <Heading as="h6" fontWeight="medium">
+              {minted}
+            </Heading>
           </div>
-        )}
+          {!!project?.btcFloorPrice && (
+            <div className={s.stats_item}>
+              <Text size="12" fontWeight="medium">
+                Floor Price
+              </Text>
+              <Heading as="h6" fontWeight="medium">
+                {formatBTCPrice(project?.btcFloorPrice)}
+              </Heading>
+            </div>
+          )}
+          {isRoyalty && (
+            <div className={s.stats_item}>
+              <Text size="12" fontWeight="medium">
+                royalty
+              </Text>
+              <Heading as="h6" fontWeight="medium">
+                {(project?.royalty || 0) / 100}%
+              </Heading>
+            </div>
+          )}
+        </div>
 
         {!isWhitelist && project?.status && !project?.isHidden && (
           <div className={s.CTA}>
@@ -609,26 +600,6 @@ const ProjectIntroSection = ({
                   </Link>{' '}
                   to prove ownership.
                 </Text>
-                {/* <OverlayTrigger
-                placement="bottom"
-                delay={{ show: 250, hide: 400 }}
-                overlay={
-                  <Tooltip id="whitelist-tooltip">
-                    <Text size="14" fontWeight="semibold" color="primary-333">
-                      This is a free mint. You only need to pay for the
-                      inscription fees, which are similar to gas fees on
-                      Ethereum. The amount is 0.033 ETH (~0.0023 BTC).
-                    </Text>
-                  </Tooltip>
-                }
-              >
-                <div className={s.whiteList_icon}>
-                  <SvgInset
-                    size={16}
-                    svgUrl={`${CDN_URL}/icons/ic-question-circle.svg`}
-                  />
-                </div>
-              </OverlayTrigger> */}
               </div>
             </>
           )}
@@ -721,15 +692,12 @@ const ProjectIntroSection = ({
           </li>
           <li>
             <div
-              className={s.projectBtn}
+              className={s.reportBtn}
               onClick={() => setShowReportModal(true)}
             >
-              <SvgInset
-                size={14}
-                svgUrl={`${CDN_URL}/icons/ic-pasta-plate.svg`}
-              />
+              <SvgInset size={14} svgUrl={`${CDN_URL}/icons/ic-flag.svg`} />
               <Text as="span" size="14" fontWeight="medium">
-                Copypasta Alert
+                Report
               </Text>
             </div>
           </li>

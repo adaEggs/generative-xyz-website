@@ -1,9 +1,17 @@
 .whiteList_icon {
   position: relative;
+  padding-top: 0.3em;
 
   svg,
   img {
     cursor: pointer;
+    height: rem(20px);
+    width: rem(20px);
+
+    @include min-pc {
+      height: rem(34px);
+      width: rem(34px);
+    }
   }
 
   &:hover {
