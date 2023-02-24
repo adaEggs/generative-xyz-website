@@ -93,7 +93,6 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
     }
 
     const walletAddress = await wallet.connectedAddress();
-    await postRefCode(); // Add to referee list if user has referral code
     return walletAddress;
   }, []);
 
@@ -295,6 +294,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
       user.walletAddress
     ) {
       getWalletBalance();
+      postRefCode();
     }
   }, [walletManager, user]);
 
