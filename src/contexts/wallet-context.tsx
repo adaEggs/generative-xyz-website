@@ -23,6 +23,8 @@ import { METAMASK_DOWNLOAD_PAGE } from '@constants/common';
 import { isMobile } from '@utils/animation';
 import { openMetamaskDeeplink } from '@utils/metamask';
 import { generateBitcoinKey } from '@hooks/useBTCSignOrd/connect.methods';
+import { getReferral } from '@utils/referral';
+import { postReferralCode } from '@services/referrals';
 
 const LOG_PREFIX = 'WalletContext';
 
@@ -112,6 +114,14 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
     },
     []
   );
+
+  const postRefCode = async () => {
+    const refCode = getReferral();
+
+    if (refCode && user && refCode !== user.id) {
+      await postReferralCode(refCode);
+    }
+  };
 
   const connect = useCallback(async (): Promise<void> => {
     if (isDeepLinkRequired()) {
@@ -284,6 +294,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
       user.walletAddress
     ) {
       getWalletBalance();
+      postRefCode();
     }
   }, [walletManager, user]);
 
