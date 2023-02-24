@@ -136,9 +136,17 @@
 }
 
 .creator {
+  &_divider {
+    width: 1px;
+    height: rem(16);
+    display: block;
+    background-color: $black-20;
+  }
+
   &_social {
     display: flex;
     gap: rem(20);
+    margin-bottom: rem(24px);
     align-items: center;
 
     &_item {
@@ -146,17 +154,14 @@
       align-items: center;
       gap: rem(6);
 
+      a {
+        text-decoration: none;
+      }
+
       &_inner {
         display: flex;
         align-items: center;
         gap: rem(6);
-      }
-
-      &:not(.isVerified) {
-        .creator_social_item_inner {
-          filter: grayscale(100%);
-          opacity: 0.5;
-        }
       }
     }
 

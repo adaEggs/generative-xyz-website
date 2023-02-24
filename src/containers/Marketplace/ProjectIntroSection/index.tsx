@@ -270,7 +270,7 @@ const ProjectIntroSection = ({
 
     return (
       <div className={s.info}>
-        <div className={`${s.projectHeader} ${isCreated ? s.hasEdit : ''}`}>
+        <div className={`${s.projectHeader}`}>
           <Link
             href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddress}`}
             className={s.creator_info}
@@ -283,14 +283,16 @@ const ProjectIntroSection = ({
               {project?.creatorProfile?.displayName ||
                 formatAddress(project?.creatorProfile?.walletAddress || '')}
             </Heading>
-            {isTwVerified ? (
-              <IconVerified />
-            ) : (
-              <SocialVerify link={SOCIALS.twitter} />
-            )}
           </Link>
+          {isTwVerified ? (
+            <IconVerified />
+          ) : (
+            <SocialVerify link={SOCIALS.twitter} />
+          )}
         </div>
-        <div className={s.projectHeader_heading}>
+        <div
+          className={`${s.projectHeader_heading} ${isCreated ? s.hasEdit : ''}`}
+        >
           <Heading
             className={s.projectHeader_title}
             as="h4"

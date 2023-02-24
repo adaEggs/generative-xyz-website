@@ -27,8 +27,6 @@
     position: relative;
 
     :global(.tooltip-arrow) {
-      padding: 8px 16px;
-
       &::before {
         left: 50%;
         z-index: 2;
