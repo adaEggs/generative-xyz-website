@@ -11,6 +11,7 @@ import VideoPreview from '../VideoPreview';
 import Image from 'next/image';
 import s from './styles.module.scss';
 import AudioPreview from '../AudioPreview';
+import IFramePreview from '../IframePreview';
 
 interface IProps {
   data: Token | Project | null;
@@ -78,6 +79,8 @@ const PreviewController: React.FC<IProps> = (
         return <VideoPreview url={thumbnailUrl} type={thumbnailExt} />;
       case MediaType.AUDIO:
         return <AudioPreview url={thumbnailUrl} />;
+      case MediaType.IFRAME:
+        return <IFramePreview url={thumbnailUrl} />;
       default:
         return renderPlaceholderThumbnail;
     }
