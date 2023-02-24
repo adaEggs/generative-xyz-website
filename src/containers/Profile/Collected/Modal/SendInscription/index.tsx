@@ -17,6 +17,8 @@ import { FeeRateName } from '@interfaces/api/bitcoin';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import { setStorage } from '@containers/Profile/Collected/Modal/SendInscription/utils';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
 
 interface IFormValue {
   address: string;
@@ -39,12 +41,14 @@ const SendInscriptionModal = ({
     collectedUTXOs,
     feeRate: _FEE_RATE,
     debounceFetchHistory,
+    debounceFetchDataCollectedNFTs,
   } = useContext(ProfileContext);
   const FEE_RATE = _FEE_RATE || {
     fastestFee: 15,
     halfHourFee: 10,
     hourFee: 5,
   };
+  const user = useSelector(getUserSelector);
   const [feeRate, setFeeRate] = useState<FeeRateName>(FeeRateName.halfHourFee);
   const { sendInscription } = useBitcoin({
     inscriptionID: inscriptionID,
@@ -61,6 +65,11 @@ const SendInscriptionModal = ({
       errors.address = 'Address is required.';
     } else if (!validateBTCAddress(values.address)) {
       errors.address = 'Invalid wallet address.';
+    } else if (
+      !!user?.walletAddressBtcTaproot &&
+      values.address === user?.walletAddressBtcTaproot
+    ) {
+      errors.address = "Invalid wallet address, please don't send to yourself.";
     }
     try {
       GENERATIVE_SDK.selectUTXOs(
@@ -96,6 +105,7 @@ const SendInscriptionModal = ({
       // setIsLoading(false);
       setIsLoading(false);
       debounceFetchHistory();
+      debounceFetchDataCollectedNFTs();
     }
   };
 

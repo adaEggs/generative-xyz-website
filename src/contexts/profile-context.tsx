@@ -51,6 +51,7 @@ import {
   IFeeRate,
   ITxHistory,
 } from '@interfaces/api/bitcoin';
+import { getStorage } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 
 const LOG_PREFIX = 'ProfileContext';
 
@@ -437,7 +438,12 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
               mintingNft => mintingNft.inscriptionID === mintedNft.inscriptionID
             )
         ),
-      ];
+      ].filter(item => {
+        const isSending =
+          !!item?.inscriptionID && !!getStorage(item?.inscriptionID);
+        return !isSending;
+      });
+
       setCollectedNFTs(filterNTFs);
     } catch (error) {
       // handle fetch data error here
