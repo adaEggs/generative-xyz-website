@@ -13,6 +13,16 @@
 
     &_wrapper {
       margin-top: rem(24px);
+
+      &_icHistory {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        :hover {
+          opacity: 0.8;
+        }
+      }
     }
 
     &_displayName {
@@ -55,6 +65,15 @@
     }
 
     .iconCopy {
+      cursor: pointer;
+      margin-left: 8px;
+
+      :hover {
+        opacity: 0.9;
+      }
+    }
+
+    .iconExport {
       cursor: pointer;
       margin-left: 8px;
 
