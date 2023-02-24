@@ -1,7 +1,7 @@
 import CollectionList from '@components/Collection/List';
 import { TriggerLoad } from '@components/TriggerLoader';
 import ClientOnly from '@components/Utils/ClientOnly';
-import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModal';
+import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModalV2';
 // import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal';
 import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal/Collecting';
 import ProjectIntroSection from '@containers/Marketplace/ProjectIntroSection';
