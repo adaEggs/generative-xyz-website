@@ -10,8 +10,6 @@ import React, { useContext } from 'react';
 import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import { Collected } from './Collected';
 import s from './Profile.module.scss';
-import ReferralTab from './Referral';
-import { isProduction } from '@utils/common';
 
 const Profile: React.FC = (): React.ReactElement => {
   const { isLoaded, profileProjects, collectedNFTs } =
@@ -60,15 +58,16 @@ const Profile: React.FC = (): React.ReactElement => {
                   >
                     <CreatedTab />
                   </Tab>
-                  {!isProduction() && isOwner && (
+                  {/* Wait for design to implement. Do not remove */}
+                  {/* {!isProduction() && isOwner && (
                     <Tab
                       tabClassName={s.tab}
                       eventKey="referralTab"
                       title={'Referral'}
                     >
                       <ReferralTab />
-                    </Tab>
-                  )}
+                    </Tab> 
+                  )}*/}
                 </Tabs>
               </div>
             </ClientOnly>
