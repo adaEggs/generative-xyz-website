@@ -47,7 +47,7 @@ const InscriptionID: React.FC = (): React.ReactElement => {
         <a
           color={'text-black-80'}
           className={s.row_right}
-          href={`https://ordinals-explorer-v5-dev.generative.xyz/inscription/${tokenData?.inscriptionID}`}
+          href={`https://dev-v5.generativeexplorer.com/inscription/${tokenData?.inscriptionID}`}
           target="_blank"
           rel="noreferrer"
         >

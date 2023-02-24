@@ -27,6 +27,7 @@ const useBTCSignOrd = (): IBTCSignOrgProps => {
       setProcessing(true);
       // check connect wallet
       if (!user || !user.walletAddressBtcTaproot) {
+        if (!cbSigned) return walletCtx.connect();
         await walletCtx.connect();
       }
 
