@@ -75,10 +75,10 @@ export const SUPPORTED_FILE_EXT: Array<{ mediaType: MediaType; ext: string }> =
       mediaType: MediaType.IFRAME,
       ext: 'html',
     },
-    // {
-    //   mediaType: MediaType.PDF,
-    //   ext: 'pdf',
-    // },
+    {
+      mediaType: MediaType.PDF,
+      ext: 'pdf',
+    },
     // {
     //   mediaType: MediaType.TEXT,
     //   ext: 'txt',
