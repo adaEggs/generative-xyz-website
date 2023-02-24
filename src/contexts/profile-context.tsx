@@ -436,6 +436,10 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     ) {
       currentBtcAddressRef.current = currentUser.walletAddressBtcTaproot;
       debounceFetchDataCollectedNFTs();
+    } else {
+      setTimeout(() => {
+        setIsLoadedProfileCollected(true);
+      }, 30000);
     }
   }, [currentUser]);
 
