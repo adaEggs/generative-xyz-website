@@ -55,7 +55,6 @@ import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import ReportModal from './ReportModal';
 import s from './styles.module.scss';
-import { IconVerified } from '@components/IconVerified';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -284,11 +283,7 @@ const ProjectIntroSection = ({
                 formatAddress(project?.creatorProfile?.walletAddress || '')}
             </Heading>
           </Link>
-          {isTwVerified ? (
-            <IconVerified />
-          ) : (
-            <SocialVerify link={SOCIALS.twitter} />
-          )}
+          <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
         </div>
         <div
           className={`${s.projectHeader_heading} ${isCreated ? s.hasEdit : ''}`}
@@ -369,7 +364,7 @@ const ProjectIntroSection = ({
           )}
         </div>
         {mobileScreen && (
-          <div>
+          <div className={s.reviewOnMobile}>
             <ThumbnailPreview data={projectDetail as Token} allowVariantion />
           </div>
         )}
@@ -698,15 +693,12 @@ const ProjectIntroSection = ({
           </li>
           <li>
             <div
-              className={s.projectBtn}
+              className={s.reportBtn}
               onClick={() => setShowReportModal(true)}
             >
-              <SvgInset
-                size={14}
-                svgUrl={`${CDN_URL}/icons/ic-pasta-plate.svg`}
-              />
+              <SvgInset size={14} svgUrl={`${CDN_URL}/icons/ic-flag.svg`} />
               <Text as="span" size="14" fontWeight="medium">
-                Copypasta Alert
+                Report
               </Text>
             </div>
           </li>

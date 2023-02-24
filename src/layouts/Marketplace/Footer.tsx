@@ -44,7 +44,7 @@ const Footer: React.FC<IProp> = ({ theme = 'light' }): React.ReactElement => {
             <ul className={styles.footer_socials}>
               <li>
                 <a
-                  href={SOCIALS.discord}
+                  href={SOCIALS.github}
                   target="_blank"
                   className={styles.footer_bottomSocialItem}
                   rel="noreferrer"
