@@ -232,6 +232,7 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
                       <div className={s.submit_btn_lists}>
                         <ButtonIcon
                           type="button"
+                          variants="outline"
                           className={s.submit_btn}
                           style={{ marginRight: 22 }}
                           onClick={handleExport}
