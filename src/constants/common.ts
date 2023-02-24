@@ -15,6 +15,7 @@ export const DEFAULT_ART_THUMBNAIL = `${CDN_URL}/images/default-thumbnail.svg`;
 export const PLACE_HOLDER_IMAGE = `${CLOUDFRONT_SERVER_NAME}static/upload/images/common/upload/20210519/2560x1600-dark-gray-solid-color-backgrounda218631f0e.jpeg`;
 export const CONTACT_EMAIL = 'gm@generative.xyz';
 export const SOCIALS = {
+  github: 'https://github.com/generative-xyz',
   discord: 'https://generative.xyz/discord',
   twitter: 'https://twitter.com/generative_xyz',
   whitepaper: 'https://docs.generative.xyz/',
