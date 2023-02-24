@@ -30,6 +30,7 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
   const [searchText, setSearchText] = useState<string>('');
   const [showResult, setShowResult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [inputFocus, setInputFocus] = useState(false);
   // const [expandSearch, setExpandSearch] = useState(false);
   const [foundUsers, setFoundUsers] = useState<User[]>();
   const [foundItems, setFoundItems] = useState<Token[]>();
@@ -79,6 +80,7 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
 
   const handleCloseSearchResult = (): void => {
     setShowResult(false);
+    setInputFocus(false);
   };
 
   useEffect(() => {
@@ -89,8 +91,13 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
 
   useOnClickOutside(resultSearchRef, () => handleCloseSearchResult());
 
+  useOnClickOutside(wrapperRef, () => setInputFocus(false));
+
   return (
-    <div className={`${s.wrapper} ${s[theme]}`} ref={wrapperRef}>
+    <div
+      className={cs(s.wrapper, s[theme], { [s.focus]: inputFocus })}
+      ref={wrapperRef}
+    >
       <div className={cs(s.searchInput_wrapper)}>
         <input
           className={s.input}
@@ -102,6 +109,7 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
           onFocus={e => {
             setSearchText(e.target.value);
             setShowResult(true);
+            setInputFocus(true);
           }}
           ref={inputSearchRef}
         />
