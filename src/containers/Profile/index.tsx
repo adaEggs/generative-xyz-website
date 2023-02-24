@@ -10,12 +10,14 @@ import React, { useContext } from 'react';
 import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import { Collected } from './Collected';
 import s from './Profile.module.scss';
+import HistoryModal from '@containers/Profile/Collected/Modal/History';
 
 const Profile: React.FC = (): React.ReactElement => {
   const { isLoaded, profileProjects, collectedNFTs } =
     useContext(ProfileContext);
 
   const router = useRouter();
+  const [showModal, setShowModal] = React.useState(false);
 
   const { walletAddress } = router.query as { walletAddress: string };
   const user = useAppSelector(getUserSelector);
@@ -27,7 +29,7 @@ const Profile: React.FC = (): React.ReactElement => {
       <Container>
         <Row>
           <Col xl={3}>
-            <UserInfo />
+            <UserInfo toggleModal={() => setShowModal(true)} />
           </Col>
           <Col xl={9}>
             <ClientOnly>
@@ -79,6 +81,7 @@ const Profile: React.FC = (): React.ReactElement => {
         isLoaded={isLoaded}
         isPage={true}
       />
+      <HistoryModal showModal={showModal} onClose={() => setShowModal(false)} />
     </div>
   );
 };

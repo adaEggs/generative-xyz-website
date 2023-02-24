@@ -13,6 +13,16 @@
 
     &_wrapper {
       margin-top: rem(24px);
+
+      &_icHistory {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        :hover {
+          opacity: 0.8;
+        }
+      }
     }
 
     &_displayName {
