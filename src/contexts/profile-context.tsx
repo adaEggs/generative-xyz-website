@@ -143,6 +143,9 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     string | undefined
   >();
   const { walletAddress } = router.query as { walletAddress: string };
+
+  const isOwner = !walletAddress || user?.walletAddress === walletAddress;
+
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const { call: cancelOffer } = useContractOperation(
@@ -427,7 +430,9 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   const fetchDataCollectedNFTs = async () => {
     try {
       const [mintingNFTs, mintedNFTs] = await Promise.all([
-        await getMintingCollectedNFTs(currentBtcAddressRef.current),
+        isOwner
+          ? await getMintingCollectedNFTs(currentBtcAddressRef.current)
+          : [],
         await getCollectedNFTs(currentBtcAddressRef.current),
       ]);
       const filterNTFs = [
