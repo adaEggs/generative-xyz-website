@@ -115,27 +115,28 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   };
 
   const featuresList = () => {
-    if (
-      tokenData?.attributes &&
-      tokenData.attributes?.length > 0 &&
-      projectData?.traitStat &&
-      projectData?.traitStat?.length > 0
-    ) {
+    const isTraitState =
+      projectData?.traitStat && projectData?.traitStat?.length > 0;
+
+    if (tokenData?.attributes && tokenData.attributes?.length > 0) {
       return tokenData.attributes.map(attr => {
-        const foundTrait = projectData?.traitStat.find(
-          trait => trait.traitName === attr.trait_type
-        );
+        let rarityValue = 0;
+        if (isTraitState) {
+          const foundTrait = projectData?.traitStat.find(
+            trait => trait.traitName === attr.trait_type
+          );
 
-        const rarityValue = foundTrait?.traitValuesStat.find(
-          stat => stat.value.toString() === attr.value.toString()
-        )?.rarity;
-
+          rarityValue =
+            foundTrait?.traitValuesStat.find(
+              stat => stat.value.toString() === attr.value.toString()
+            )?.rarity || 0;
+        }
         return {
           id: `attr-${v4()}`,
           info: attr.trait_type,
           value: attr.value.toString(),
           link: '',
-          rarity: rarityValue ? `${rarityValue}%` : '--%',
+          rarity: rarityValue ? `${rarityValue}%` : '',
         };
       });
     }
