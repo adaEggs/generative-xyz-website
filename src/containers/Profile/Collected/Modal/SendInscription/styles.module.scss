@@ -23,11 +23,11 @@
     width: 90%;
 
     @include min-tablet {
-      width: rem(680px);
+      width: rem(720px);
     }
 
     @include min-pc-superWide {
-      width: rem(680px);
+      width: rem(720px);
     }
   }
 
