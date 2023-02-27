@@ -19,7 +19,7 @@ export async function getServerSideProps() {
       seoInfo: {
         title: 'Generative',
         description: 'Unique artwork at your fingertips to mint and buy',
-        image: `${CDN_URL}/images/collection.jpg`,
+        image: `${CDN_URL}/images/homepage.jpg`,
       },
     },
   };
