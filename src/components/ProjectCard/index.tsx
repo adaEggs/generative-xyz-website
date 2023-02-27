@@ -42,6 +42,17 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     return creator;
   }, [creator]);
 
+  const isMinted = useMemo((): boolean => {
+    return (
+      project.mintingInfo.index + project.mintingInfo.indexReserve >=
+      (project.maxSupply || project.limit)
+    );
+  }, [project]);
+
+  const isOnlyMintedShow = useMemo((): boolean => {
+    return !project.btcFloorPrice && isMinted;
+  }, [project, isMinted]);
+
   const minted = useMemo((): string => {
     return `${project.mintingInfo.index + project.mintingInfo.indexReserve}/${
       project.maxSupply || project.limit
@@ -106,36 +117,31 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 </Heading>
               </div>
               <div className={s.projectCard_info_price}>
-                <>
-                  <div className={`${s.projectCard_info_price_price}}`}>
-                    <Text
-                      className={s.projectCard_info_price_price_wrap}
-                      size={'16'}
-                      fontWeight="medium"
-                      color="black-40-solid"
-                    >
-                      <span className={s.projectCard_info_price_price_el}>
-                        {Number(project.mintPrice)
+                <div className={`${s.projectCard_info_price_price}`}>
+                  <Text
+                    className={s.projectCard_info_price_price_wrap}
+                    size={'16'}
+                    fontWeight="medium"
+                    color="black-40-solid"
+                  >
+                    <span className={s.projectCard_info_price_price_el}>
+                      {project.btcFloorPrice
+                        ? `${formatBTCPrice(project.btcFloorPrice)} BTC`
+                        : !isMinted
+                        ? Number(project.mintPrice)
                           ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
-                          : 'Free'}
-                      </span>
-                      <span
-                        className={`${s.projectCard_info_price_price_minted}`}
-                      >
-                        {minted}
-                      </span>
-                    </Text>
-                  </div>
-                </>
-                {!!project.btcFloorPrice && (
-                  <>
-                    <div className={s.projectCard_info_price_price}>
-                      <Text size={'16'} fontWeight="medium" color="black-40">
-                        {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
-                      </Text>
-                    </div>
-                  </>
-                )}
+                          : 'Free'
+                        : ''}
+                    </span>
+                    <span
+                      className={`${s.projectCard_info_price_price_minted} ${
+                        isOnlyMintedShow ? s.isOnlyMintedShow : ''
+                      }`}
+                    >
+                      {minted}
+                    </span>
+                  </Text>
+                </div>
               </div>
             </div>
           )}

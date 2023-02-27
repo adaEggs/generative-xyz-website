@@ -55,7 +55,6 @@ import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import ReportModal from './ReportModal';
 import s from './styles.module.scss';
-import { IconVerified } from '@components/IconVerified';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -73,7 +72,6 @@ const ProjectIntroSection = ({
   const router = useRouter();
   const user = useAppSelector(getUserSelector);
   const { mobileScreen } = useWindowSize();
-
   const { getWalletBalance, connect } = useContext(WalletContext);
   const { setPaymentMethod, setIsPopupPayment, setPaymentStep } = useContext(
     BitcoinProjectContext
@@ -120,6 +118,10 @@ const ProjectIntroSection = ({
   const isLimitMinted = useMemo((): boolean => {
     if (!project) return false;
     return project?.mintingInfo?.index < project?.maxSupply;
+  }, [project]);
+
+  const textMint = useMemo((): string => {
+    return Number(project?.mintPrice) ? 'Mint' : 'Free mint';
   }, [project]);
 
   const handleFetchMarketplaceStats = async () => {
@@ -284,11 +286,7 @@ const ProjectIntroSection = ({
                 formatAddress(project?.creatorProfile?.walletAddress || '')}
             </Heading>
           </Link>
-          {isTwVerified ? (
-            <IconVerified />
-          ) : (
-            <SocialVerify link={SOCIALS.twitter} />
-          )}
+          <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
         </div>
         <div
           className={`${s.projectHeader_heading} ${isCreated ? s.hasEdit : ''}`}
@@ -369,8 +367,16 @@ const ProjectIntroSection = ({
           )}
         </div>
         {mobileScreen && (
-          <div>
-            <ThumbnailPreview data={projectDetail as Token} allowVariantion />
+          <div className={s.reviewOnMobile}>
+            <ThumbnailPreview
+              data={
+                {
+                  ...projectDetail,
+                  animationHtml: project?.animationHtml ?? '',
+                } as Token
+              }
+              allowVariantion
+            />
           </div>
         )}
 
@@ -491,15 +497,14 @@ const ProjectIntroSection = ({
                           {isMinting && 'Minting...'}
                           {!isMinting && (
                             <>
-                              <span>{`Mint`}</span>
-                              <span>
-                                {Number(project?.mintPrice) ? (
-                                  <span>{priceMemo}</span>
-                                ) : (
-                                  'with'
-                                )}
-                                {` BTC`}
-                              </span>
+                              <span>{textMint}</span>
+
+                              {Number(project?.mintPrice) ? (
+                                <span>{priceMemo}</span>
+                              ) : (
+                                ' with'
+                              )}
+                              {` BTC`}
                             </>
                           )}
                         </Text>
@@ -540,15 +545,13 @@ const ProjectIntroSection = ({
                           {isMinting && 'Minting...'}
                           {!isMinting && (
                             <>
-                              <span>{`Mint`}</span>
-                              <span>
-                                {Number(project?.mintPriceEth) ? (
-                                  <span>{priceEthMemo}</span>
-                                ) : (
-                                  'with'
-                                )}
-                                {` ETH`}
-                              </span>
+                              <span>{textMint}</span>
+                              {Number(project?.mintPriceEth) ? (
+                                <span>{priceEthMemo}</span>
+                              ) : (
+                                ' with'
+                              )}
+                              {` ETH`}
                             </>
                           )}
                         </Text>
@@ -776,7 +779,15 @@ const ProjectIntroSection = ({
       <div />
       {!mobileScreen && (
         <div>
-          <ThumbnailPreview data={projectDetail as Token} allowVariantion />
+          <ThumbnailPreview
+            data={
+              {
+                ...projectDetail,
+                animationHtml: project?.animationHtml ?? '',
+              } as Token
+            }
+            allowVariantion
+          />
         </div>
       )}
       <ReportModal

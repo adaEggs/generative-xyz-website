@@ -1,6 +1,7 @@
 import MarketplaceLayout from '@layouts/Marketplace';
 import { NextPage } from 'next';
 import ArtistsPage from '@containers/Artists';
+import { CDN_URL } from '@constants/config';
 
 const MetamaskXOrdinalsPage: NextPage = () => {
   return (
@@ -13,3 +14,16 @@ const MetamaskXOrdinalsPage: NextPage = () => {
 };
 
 export default MetamaskXOrdinalsPage;
+
+export async function getServerSideProps() {
+  return {
+    props: {
+      seoInfo: {
+        title: 'Generative | Artists',
+        description:
+          'Be the first on Bitcoin. Fully on-chain, decentralized, and immutable.',
+        image: `${CDN_URL}/images/artist-seo.jpg`,
+      },
+    },
+  };
+}
