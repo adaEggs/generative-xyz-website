@@ -1,17 +1,22 @@
+import Avatar from '@components/Avatar';
 import ButtonIcon from '@components/ButtonIcon';
+import ModalBuyItem from '@components/Collection/ModalBuyItem';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
 import { Loading } from '@components/Loading';
 import ProjectDescription from '@components/ProjectDescription';
 import Stats from '@components/Stats';
+import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
+import { CDN_URL } from '@constants/config';
 import { EXTERNAL_LINK } from '@constants/external-link';
 import { ROUTE_PATH } from '@constants/route-path';
 import {
   GenerativeTokenDetailContext,
   GenerativeTokenDetailProvider,
 } from '@contexts/generative-token-detail-context';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
@@ -32,15 +37,10 @@ import CancelListingModal from './CancelListingModal';
 import ListingTokenModal from './ListingTokenModal';
 import MakeOfferModal from './MakeOfferModal';
 import MoreItemsSection from './MoreItemsSection';
+import s from './styles.module.scss';
 import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
-import s from './styles.module.scss';
-import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
-import Avatar from '@components/Avatar';
-import { CDN_URL } from '@constants/config';
-import SvgInset from '@components/SvgInset';
-import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -442,7 +442,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
         </>
       )}
       {!!tokenData?.buyable && !!ordAddress && showModal && (
-        <ModalBuyItemViaBTC
+        <ModalBuyItem
           showModal={showModal}
           onClose={toggleModal}
           onSuccess={refreshPage}
@@ -450,6 +450,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           price={tokenData.priceBTC}
           orderID={tokenData.orderID}
           ordAddress={ordAddress}
+          payType="btc"
         />
       )}
     </>
