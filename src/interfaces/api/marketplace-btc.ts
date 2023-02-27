@@ -78,6 +78,7 @@ export interface IGetMarketplaceBtcNFTDetail {
 export interface ISubmitBTCAddressResponse {
   receiveAddress: string;
   timeoutAt: string;
+  price?: string;
 }
 
 export interface ISubmitBTCAddressPayload {
