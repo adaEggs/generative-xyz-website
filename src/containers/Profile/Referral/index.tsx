@@ -4,6 +4,7 @@ import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Table from '@components/Table';
 import Text from '@components/Text';
+import ToogleSwitch from '@components/Toggle';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
@@ -11,7 +12,7 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { formatBTCPrice, formatLongAddress } from '@utils/format';
 import copy from 'copy-to-clipboard';
-import { useContext, useMemo } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './Referral.module.scss';
@@ -23,15 +24,19 @@ const ReferralTab = () => {
   const { referralListing, isLoadedProfileReferral } =
     useContext(ProfileContext);
 
-  // const [currency, setCurrency] = useState<'BTC' | 'ETH'>('BTC');
+  const [isETHCurrency, setIsCurrency] = useState(false);
 
   const TABLE_REFERRALS_HEADING = [
     'Referee',
     'Total volume',
     'Earn',
     <>
-      <Stack direction="horizontal" gap={2}>
-        {/* <ToogleSwitch size="16" onChange={() => setCurrency('ETH')} /> */}
+      <Stack direction="horizontal" gap={2} className={s.switch_currency}>
+        <ToogleSwitch
+          size="16"
+          checked={isETHCurrency}
+          onChange={() => setIsCurrency(!isETHCurrency)}
+        />
         <Text fontWeight="medium" color="primary-color">
           ETH
         </Text>
@@ -60,9 +65,16 @@ const ReferralTab = () => {
           </Stack>
         ),
         volume: (
-          <>{formatBTCPrice(item.referree?.volume || withdrawAmount)} BTC</>
+          <>
+            {formatBTCPrice(item.referree?.volume || withdrawAmount)}{' '}
+            {isETHCurrency ? 'ETH' : 'BTC'}
+          </>
         ),
-        earning: <>{calculateWithdrawAmount} BTC</>,
+        earning: (
+          <>
+            {calculateWithdrawAmount} {isETHCurrency ? 'ETH' : 'BTC'}
+          </>
+        ),
         action: (
           <div className={s.actions}>
             <ButtonIcon

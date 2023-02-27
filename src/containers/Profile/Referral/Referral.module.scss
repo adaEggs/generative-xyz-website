@@ -4,7 +4,7 @@
 
 .referral_link {
   margin: {
-    bottom: rem(24);
+    bottom: rem(50);
   }
 
   .link {
@@ -32,6 +32,10 @@
   :hover {
     opacity: 0.9;
   }
+}
+
+.switch_currency {
+  justify-content: flex-end;
 }
 
 .Refferal_table {

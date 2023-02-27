@@ -62,7 +62,7 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
   const validateForm = (values: Record<string, string>) => {
     const errors: Record<string, string> = {};
     const twitterRegex = /^https?:\/\/twitter\.com\/[A-Za-z0-9_]{1,15}\/?$/;
-    const httpsRegex = /^https:\/\//;
+    const httpsRegex = /^(http|https):\/\//;
 
     if (values.twitter !== '' && !twitterRegex.test(values.twitter)) {
       errors.twitter = 'Invalid twitter link.';
