@@ -4,10 +4,12 @@ import { CDN_URL } from '@constants/config';
 import React, { useContext } from 'react';
 import s from './styles.module.scss';
 import { ProfileContext } from '@contexts/profile-context';
-import { ITxHistory } from '@interfaces/api/bitcoin';
 import { ellipsisCenter, formatBTCPrice } from '@utils/format';
-import cs from 'classnames';
 import { toast } from 'react-hot-toast';
+import Table from '@components/Table';
+import Text from '@components/Text';
+import { formatUnixDateTime } from '@utils/time';
+import { Stack } from 'react-bootstrap';
 
 interface IProps {
   showModal: boolean;
@@ -20,57 +22,62 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const handleClose = () => {
     onClose();
   };
+  const TABLE_HISTORY_HEADING = ['Date', 'Hash', 'Inscription', 'Amount'];
+
   const handleCopy = (text: string): void => {
     navigator.clipboard.writeText(text);
     toast.remove();
     toast.success('Copied');
   };
-  const renderItem = (_history: ITxHistory) => {
-    return (
-      <div className={s.wrapHistory} key={_history.txhash}>
-        <div className={cs(s.wrapHistory_title, s.wrapHistory_content)}>
-          Hash: {ellipsisCenter({ str: _history.txhash, limit: 10 })}
-          <label
+
+  const tableData = history.map(item => ({
+    id: `${item.txhash}-history`,
+    render: {
+      date: (
+        <Text size="16" fontWeight="medium" color="black-100">
+          {item.created_at
+            ? formatUnixDateTime({ dateTime: Number(item.created_at) })
+            : '---'}
+        </Text>
+      ),
+      hash: (
+        <Stack direction="horizontal" gap={3}>
+          <Text size="16" fontWeight="medium" color="black-100">
+            {ellipsisCenter({ str: item.txhash, limit: 6 })}
+          </Text>
+
+          <SvgInset
+            size={18}
+            svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
             className={s.wrapHistory_copy}
-            onClick={() => handleCopy(_history.txhash)}
-          >
-            <SvgInset size={18} svgUrl={`${CDN_URL}/icons/ic-copy.svg`} />
-          </label>
-          <label
+            onClick={() => handleCopy(item.txhash)}
+          />
+          <SvgInset
+            size={16}
+            svgUrl={`${CDN_URL}/icons/ic-share.svg`}
             className={s.wrapHistory_copy}
             onClick={() =>
               window.open(
-                `https://www.blockchain.com/explorer/transactions/btc/${_history.txhash}`
+                `https://www.blockchain.com/explorer/transactions/btc/${item.txhash}`
               )
             }
-          >
-            <SvgInset size={18} svgUrl={`${CDN_URL}/icons/ic-share.svg`} />
-          </label>
-        </div>
-        {!!_history.send_amount && (
-          <div className={cs(s.wrapHistory_marginTop, s.wrapHistory_center)}>
-            Amount: {formatBTCPrice(_history.send_amount)}
-          </div>
-        )}
-        {!!_history.inscription_id && (
-          <div className={cs(s.wrapHistory_marginTop, s.wrapHistory_center)}>
-            ID: #{ellipsisCenter({ str: _history.inscription_id, limit: 10 })}{' '}
-            <label
-              className={s.wrapHistory_copy}
-              onClick={() => handleCopy(_history.inscription_id)}
-            >
-              <SvgInset size={18} svgUrl={`${CDN_URL}/icons/ic-copy.svg`} />
-            </label>
-          </div>
-        )}
-        {!!_history.inscription_number && (
-          <div className={cs(s.wrapHistory_marginTop, s.wrapHistory_content)}>
-            Inscription: #{_history.inscription_number}
-          </div>
-        )}
-      </div>
-    );
-  };
+          />
+        </Stack>
+      ),
+      number: (
+        <Text size="16" fontWeight="medium" color="black-100">
+          {item.inscription_number ? `#${item.inscription_number}` : '---'}
+        </Text>
+      ),
+      amount: (
+        <Text size="16" fontWeight="medium" color="black-100">
+          {item.send_amount
+            ? `${formatBTCPrice(item.send_amount.toString())} BTC`
+            : '---'}
+        </Text>
+      ),
+    },
+  }));
 
   if (!showModal) {
     return <></>;
@@ -95,10 +102,13 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
               </Button>
             </div>
             <div className={s.modalBody}>
-              <>
-                <h3 className={s.modalTitle}>History</h3>
-                <div className={s.formWrapper}>{history.map(renderItem)}</div>
-              </>
+              <h3 className={s.modalTitle}>History</h3>
+              <Table
+                tableHead={TABLE_HISTORY_HEADING}
+                data={tableData}
+                className={s.historyTable}
+              />
+              {/*<div className={s.formWrapper}>{history.map(renderItem)}</div>*/}
             </div>
           </div>
         </div>
