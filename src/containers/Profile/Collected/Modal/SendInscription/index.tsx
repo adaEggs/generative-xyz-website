@@ -200,6 +200,7 @@ const SendInscriptionModal = ({
                               className={s.feeDetail}
                             >{`${FEE_RATE?.hourFee} sats/vByte`}</p>
                             <p className={s.feeTotal}>
+                              ~{' '}
                               {`${formatBTCPrice(
                                 SDK.estimateTxFee(2, 2, FEE_RATE?.hourFee)
                               )} BTC`}
@@ -219,6 +220,7 @@ const SendInscriptionModal = ({
                               className={s.feeDetail}
                             >{`${FEE_RATE?.halfHourFee} sats/vByte`}</p>
                             <p className={s.feeTotal}>
+                              ~{' '}
                               {`${formatBTCPrice(
                                 SDK.estimateTxFee(2, 2, FEE_RATE?.halfHourFee)
                               )} BTC`}
@@ -238,6 +240,7 @@ const SendInscriptionModal = ({
                               className={s.feeDetail}
                             >{`${FEE_RATE?.fastestFee} sats/vByte`}</p>
                             <p className={s.feeTotal}>
+                              ~{' '}
                               {`${formatBTCPrice(
                                 SDK.estimateTxFee(2, 2, FEE_RATE?.fastestFee)
                               )} BTC`}

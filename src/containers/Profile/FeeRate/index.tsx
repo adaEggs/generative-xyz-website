@@ -30,6 +30,7 @@ const FeeRate = ({ handleChangeFee, selectedRate, allRate }: IProps) => {
           <p className={s.feeTitle}>Economy</p>
           <p className={s.feeDetail}>{`${allRate?.hourFee} sats/vByte`}</p>
           <p className={s.feeTotal}>
+            ~{' '}
             {`${formatBTCPrice(SDK.estimateTxFee(2, 2, allRate?.hourFee))} BTC`}
           </p>
         </div>
@@ -45,6 +46,7 @@ const FeeRate = ({ handleChangeFee, selectedRate, allRate }: IProps) => {
           <p className={s.feeTitle}>Faster</p>
           <p className={s.feeDetail}>{`${allRate?.halfHourFee} sats/vByte`}</p>
           <p className={s.feeTotal}>
+            ~{' '}
             {`${formatBTCPrice(
               SDK.estimateTxFee(2, 2, allRate?.halfHourFee)
             )} BTC`}
@@ -62,6 +64,7 @@ const FeeRate = ({ handleChangeFee, selectedRate, allRate }: IProps) => {
           <p className={s.feeTitle}>Fastest</p>
           <p className={s.feeDetail}>{`${allRate?.fastestFee} sats/vByte`}</p>
           <p className={s.feeTotal}>
+            ~{' '}
             {`${formatBTCPrice(
               SDK.estimateTxFee(2, 2, allRate?.fastestFee)
             )} BTC`}

@@ -5,7 +5,7 @@ import React, { useContext } from 'react';
 import s from './styles.module.scss';
 import { ProfileContext } from '@contexts/profile-context';
 import { ITxHistory } from '@interfaces/api/bitcoin';
-import { ellipsisCenter } from '@utils/format';
+import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import cs from 'classnames';
 import { toast } from 'react-hot-toast';
 
@@ -47,6 +47,11 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
             <SvgInset size={18} svgUrl={`${CDN_URL}/icons/ic-share.svg`} />
           </label>
         </div>
+        {!!_history.send_amount && (
+          <div className={cs(s.wrapHistory_marginTop, s.wrapHistory_center)}>
+            Amount: {formatBTCPrice(_history.send_amount)}
+          </div>
+        )}
         {!!_history.inscription_id && (
           <div className={cs(s.wrapHistory_marginTop, s.wrapHistory_center)}>
             ID: #{ellipsisCenter({ str: _history.inscription_id, limit: 10 })}{' '}

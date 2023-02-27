@@ -22,7 +22,7 @@ import { IC_EDIT_PROFILE } from '@constants/icons';
 import ButtonSendBTC from '@containers/Profile/ButtonSendBTC';
 import ButtonReceiver from '@containers/Profile/ButtonReceiver';
 
-export const UserInfo = (): JSX.Element => {
+export const UserInfo = ({ toggle }: { toggle: () => void }): JSX.Element => {
   const user = useAppSelector(getUserSelector);
   const { currentUser } = useContext(ProfileContext);
   const router = useRouter();
@@ -93,6 +93,12 @@ export const UserInfo = (): JSX.Element => {
                     className={s.iconCopy}
                     size={18}
                     svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                  />
+                  <SvgInset
+                    onClick={toggle}
+                    size={18}
+                    svgUrl={`${CDN_URL}/icons/ic-history.svg`}
+                    className={s.iconHistory}
                   />
                 </div>
               )}
