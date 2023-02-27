@@ -58,4 +58,5 @@ export interface ITxHistory {
   inscription_id: string;
   inscription_number: number;
   send_amount: number;
+  created_at: string;
 }
