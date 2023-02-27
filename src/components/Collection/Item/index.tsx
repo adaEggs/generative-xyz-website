@@ -18,7 +18,7 @@ import React, { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import Image from 'next/image';
 import ButtonIcon from '@components/ButtonIcon';
-import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
+import ModalBuyItem from '@components/Collection/ModalBuyItem';
 import s from './styles.module.scss';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import useBTCSignOrd from '@hooks/useBTCSignOrd';
@@ -220,13 +220,14 @@ const CollectionItem = ({
         </div>
       </div>
       {data.buyable && !!ordAddress && showModal && (
-        <ModalBuyItemViaBTC
+        <ModalBuyItem
           showModal={showModal}
           orderID={data.orderID}
           inscriptionID={data.tokenID}
           price={data.priceBTC}
           onClose={toggleModal}
           ordAddress={ordAddress}
+          payType="btc"
         />
       )}
     </div>
