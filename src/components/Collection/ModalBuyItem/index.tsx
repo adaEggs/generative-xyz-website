@@ -59,11 +59,13 @@ const ModalBuyItem = ({
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [addressInput, setAddressInput] = useState<string>('');
 
+  const [ethPrice, setEthPrice] = useState(price);
+
   const unit = payType === 'btc' ? 'BTC' : 'ETH';
   const formatPrice =
     payType === 'btc'
       ? formatBTCPrice(price || 0, '0.0')
-      : formatEthPrice(`${price || 0}`, '0.0');
+      : formatEthPrice(`${ethPrice || 0}`, '0.0');
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -103,6 +105,9 @@ const ModalBuyItem = ({
         orderID,
         payType,
       });
+      if (payType === 'eth' && data && data.price) {
+        setEthPrice(data.price);
+      }
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);
         setExpireTime(data.timeoutAt);
