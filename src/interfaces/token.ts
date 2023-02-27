@@ -33,6 +33,7 @@ export type Token = {
   stats: {
     price: string;
   };
+  animationHtml: string;
 };
 
 export type TokenOffer = {

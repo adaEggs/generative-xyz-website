@@ -10,7 +10,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { getTokenUri } from '@services/token-uri';
 
-const EXPLORER = 'https://ordinals-explorer-v5-dev.generative.xyz';
+const EXPLORER = 'https://dev-v5.generativeexplorer.com';
 // CDN_URL;
 type ContentVariantsType = 'full' | 'absolute';
 

@@ -43,7 +43,7 @@
   @include fullViewScreen;
 
   @include mobile {
-    height: auto;
+    height: rem(400px);
   }
 
   .sandboxContent {

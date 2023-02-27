@@ -248,7 +248,6 @@ const Header: React.FC<IProp> = ({
                           onClick={handleYourVault}
                         >
                           WALLET
-                          {user && ProfileDropdown()}
                         </a>
                       </li>
                     )}
