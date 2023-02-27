@@ -19,6 +19,7 @@ import { SocialVerify } from '@components/SocialVerify';
 import { SOCIALS } from '@constants/common';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IC_EDIT_PROFILE } from '@constants/icons';
+import ButtonSendBTC from '@containers/Profile/ButtonSendBTC';
 
 export const UserInfo = ({
   toggleModal,
@@ -79,15 +80,12 @@ export const UserInfo = ({
               </div>
             </div>
 
-            {/*//todo*/}
-            {/*<div className={s.userInfo_content_ctas}>*/}
-            {/*  <ButtonIcon variants={'primary'} sizes={'large'}>*/}
-            {/*    Receive inscription*/}
-            {/*  </ButtonIcon>*/}
-            {/*  <ButtonIcon variants={'outline'} sizes={'large'}>*/}
-            {/*    Send*/}
-            {/*  </ButtonIcon>*/}
-            {/*</div>*/}
+            <div className={s.userInfo_content_ctas}>
+              <ButtonIcon variants={'primary'} sizes={'large'}>
+                Receive inscription
+              </ButtonIcon>
+              <ButtonSendBTC />
+            </div>
 
             <div className={s.userInfo_content_address}>
               {currentUser?.walletAddressBtcTaproot && (
