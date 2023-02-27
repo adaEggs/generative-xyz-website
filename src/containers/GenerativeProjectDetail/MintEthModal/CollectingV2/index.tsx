@@ -228,13 +228,13 @@ const MintEthModal: React.FC = () => {
                               Number(projectData.networkFeeEth)
                             }`
                           : projectData?.mintPriceEth || ''
-                      )} BTC`}</p>
+                      )} ETH`}</p>
                     </div>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Inscription fee</p>
                       <p
                         className={s.paymentPrice_price}
-                      >{`${feePriceFormat} BTC`}</p>
+                      >{`${feePriceFormat} ETH`}</p>
                     </div>
                     <div className={s.indicator} />
 
@@ -249,7 +249,7 @@ const MintEthModal: React.FC = () => {
                           size={18}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
-                        <p className={s.text}>{`${totalFormatPrice} BTC`}</p>
+                        <p className={s.text}>{`${totalFormatPrice} ETH`}</p>
                       </div>
                     </div>
                   </div>
