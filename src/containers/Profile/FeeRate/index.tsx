@@ -3,8 +3,8 @@ import s from '@containers/Profile/FeeRate/styles.module.scss';
 import { FeeRateName, IFeeRate } from '@interfaces/api/bitcoin';
 import cs from 'classnames';
 import { formatBTCPrice } from '@utils/format';
-import { calculateMintFee } from '@utils/inscribe';
 import React from 'react';
+import * as SDK from 'generative-sdk';
 
 interface IProps {
   handleChangeFee: (rate: FeeRateName) => void;
@@ -30,7 +30,7 @@ const FeeRate = ({ handleChangeFee, selectedRate, allRate }: IProps) => {
           <p className={s.feeTitle}>Economy</p>
           <p className={s.feeDetail}>{`${allRate?.hourFee} sats/vByte`}</p>
           <p className={s.feeTotal}>
-            {`${formatBTCPrice(calculateMintFee(allRate?.hourFee, 0))} BTC`}
+            {`${formatBTCPrice(SDK.estimateTxFee(2, 2, allRate?.hourFee))} BTC`}
           </p>
         </div>
         <div
@@ -45,7 +45,9 @@ const FeeRate = ({ handleChangeFee, selectedRate, allRate }: IProps) => {
           <p className={s.feeTitle}>Faster</p>
           <p className={s.feeDetail}>{`${allRate?.halfHourFee} sats/vByte`}</p>
           <p className={s.feeTotal}>
-            {`${formatBTCPrice(calculateMintFee(allRate?.halfHourFee, 0))} BTC`}
+            {`${formatBTCPrice(
+              SDK.estimateTxFee(2, 2, allRate?.halfHourFee)
+            )} BTC`}
           </p>
         </div>
         <div
@@ -60,7 +62,9 @@ const FeeRate = ({ handleChangeFee, selectedRate, allRate }: IProps) => {
           <p className={s.feeTitle}>Fastest</p>
           <p className={s.feeDetail}>{`${allRate?.fastestFee} sats/vByte`}</p>
           <p className={s.feeTotal}>
-            {`${formatBTCPrice(calculateMintFee(allRate?.fastestFee, 0))} BTC`}
+            {`${formatBTCPrice(
+              SDK.estimateTxFee(2, 2, allRate?.fastestFee)
+            )} BTC`}
           </p>
         </div>
       </div>

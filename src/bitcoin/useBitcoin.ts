@@ -33,7 +33,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex, selectedUTXOs } = GENERATIVE_SDK.createTx(
+    const { txID, txHex } = GENERATIVE_SDK.createTx(
       privateKey,
       collectedUTXOs.txrefs,
       collectedUTXOs.inscriptions_by_outputs,
@@ -53,7 +53,6 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       send_amount: 0,
       type: TrackTxType.inscription,
     });
-    setPendingUTXOs(selectedUTXOs);
   };
 
   const sendBitcoin = async ({
@@ -67,7 +66,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex } = GENERATIVE_SDK.createTx(
+    const { txID, txHex, selectedUTXOs } = GENERATIVE_SDK.createTx(
       privateKey,
       collectedUTXOs.txrefs,
       collectedUTXOs.inscriptions_by_outputs,
@@ -87,6 +86,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       send_amount: 0,
       type: TrackTxType.normal,
     });
+    setPendingUTXOs(selectedUTXOs);
   };
 
   const getBalance = (_collectedUTXOs: ICollectedUTXOResp | undefined) => {

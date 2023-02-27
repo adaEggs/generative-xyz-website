@@ -31,7 +31,8 @@ interface IProps {
 
 const ModalSendBTC = ({ isShow, onHideModal }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
-  const { collectedUTXOs, currentUser } = useContext(ProfileContext);
+  const { collectedUTXOs, currentUser, debounceFetchCollectedUTXOs } =
+    useContext(ProfileContext);
   const { selectedRate, handleChangeFee, allRate } = useFeeRate();
   const { sendBitcoin } = useBitcoin();
 
@@ -86,6 +87,7 @@ const ModalSendBTC = ({ isShow, onHideModal }: IProps): JSX.Element => {
         amount: convertToSatoshiNumber(_data.amount),
       });
       toast.success('Transferred successfully');
+      debounceFetchCollectedUTXOs();
       onHideModal();
     } catch (err: unknown) {
       // handle error
@@ -159,7 +161,7 @@ const ModalSendBTC = ({ isShow, onHideModal }: IProps): JSX.Element => {
                       type="number"
                       name="amount"
                       min="0"
-                      step="0.01"
+                      step="0.00000001"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.amount}

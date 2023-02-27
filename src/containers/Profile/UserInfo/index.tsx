@@ -7,17 +7,12 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import {
-  ellipsisCenter,
-  formatAddress,
-  formatBTCPrice,
-  formatWebDomain,
-} from '@utils/format';
+import { ellipsisCenter, formatAddress, formatWebDomain } from '@utils/format';
 import copy from 'copy-to-clipboard';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext, useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import s from './UserInfo.module.scss';
 import { toast } from 'react-hot-toast';
 import { SocialVerify } from '@components/SocialVerify';
@@ -25,19 +20,12 @@ import { SOCIALS } from '@constants/common';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 import ButtonSendBTC from '@containers/Profile/ButtonSendBTC';
-import { Col, Row } from 'react-bootstrap';
-import useBitcoin from '@bitcoin/useBitcoin';
 import ButtonReceiver from '@containers/Profile/ButtonReceiver';
 
-export const UserInfo = ({
-  toggleModal,
-}: {
-  toggleModal: () => void;
-}): JSX.Element => {
+export const UserInfo = (): JSX.Element => {
   const user = useAppSelector(getUserSelector);
-  const { currentUser, isLoadingHistory, history } = useContext(ProfileContext);
+  const { currentUser } = useContext(ProfileContext);
   const router = useRouter();
-  const { satoshiAmount } = useBitcoin();
 
   const isTwVerified = useMemo(() => {
     return currentUser?.profileSocial?.twitterVerified || false;
@@ -77,83 +65,39 @@ export const UserInfo = ({
                 </div>
               </div>
             </div>
-            <Row
-              style={{
-                rowGap: '12px',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <Col xl="6" className={s.userInfo_content_address}>
-                {currentUser?.walletAddressBtcTaproot && (
-                  <>
-                    <Text
-                      color="black-40-solid"
-                      size="12"
-                      className={s.userInfo_content_title}
-                    >
-                      MY WALLET
-                    </Text>
-                    <div
-                      className={`${s.userInfo_content_btcWallet} ${s.userInfo_content_wallet}`}
-                    >
-                      <SvgInset
-                        size={24}
-                        svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
-                      />
-                      <Text size={'20'} fontWeight="medium">
-                        {ellipsisCenter({
-                          str: currentUser?.walletAddressBtcTaproot || '',
-                          limit: 6,
-                        })}
-                      </Text>
-                      <SvgInset
-                        onClick={() => {
-                          copy(currentUser?.walletAddressBtcTaproot || '');
-                          toast.remove();
-                          toast.success('Copied');
-                        }}
-                        className={s.iconCopy}
-                        size={18}
-                        svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-                      />
-                    </div>
-                  </>
-                )}
-              </Col>
-              <Col xl={{ order: 1, span: 6 }}>
-                <Text
-                  color="black-40-solid"
-                  size="12"
-                  className={s.userInfo_content_title}
-                >
-                  Total balance
-                </Text>
-                <div
-                  className={`${s.userInfo_content_btcWallet} ${s.userInfo_content_wallet}`}
-                >
-                  <Text size={'20'} fontWeight="medium">
-                    {formatBTCPrice(satoshiAmount.toString())} BTC
-                  </Text>
-                  {!isLoadingHistory && !!history && !!history.length && (
-                    <div
-                      className={s.userInfo_content_wrapper_icHistory}
-                      onClick={toggleModal}
-                    >
-                      <SvgInset
-                        size={20}
-                        className={s.iconHistory}
-                        svgUrl={`${CDN_URL}/icons/ic-history.svg`}
-                      />
-                    </div>
-                  )}
-                </div>
-              </Col>
-            </Row>
             <div className={s.userInfo_content_ctas}>
               <ButtonReceiver />
               <ButtonSendBTC />
             </div>
+            <div className={s.userInfo_content_address}>
+              {currentUser?.walletAddressBtcTaproot && (
+                <div
+                  className={`${s.userInfo_content_btcWallet} ${s.userInfo_content_wallet}`}
+                >
+                  <SvgInset
+                    size={24}
+                    svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
+                  />
+                  <Text size={'18'} fontWeight={'regular'}>
+                    {ellipsisCenter({
+                      str: currentUser?.walletAddressBtcTaproot || '',
+                      limit: 10,
+                    })}
+                  </Text>
+                  <SvgInset
+                    onClick={() => {
+                      copy(currentUser?.walletAddressBtcTaproot || '');
+                      toast.remove();
+                      toast.success('Copied');
+                    }}
+                    className={s.iconCopy}
+                    size={18}
+                    svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                  />
+                </div>
+              )}
+            </div>
+
             <div className={s.creator_social}>
               {currentUser?.profileSocial?.twitter && (
                 <div className={`${s.creator_social_item}`}>

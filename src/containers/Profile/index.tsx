@@ -13,12 +13,17 @@ import ReferralTab from './Referral';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
+import useBitcoin from '@bitcoin/useBitcoin';
+import { formatBTCPrice } from '@utils/format';
+import BalanceTab from '@containers/Profile/BalanceTab';
 
 const Profile: React.FC = (): React.ReactElement => {
   const user = useAppSelector(getUserSelector);
   const { isLoaded, profileProjects, collectedNFTs } =
     useContext(ProfileContext);
   const router = useRouter();
+
+  const { satoshiAmount } = useBitcoin();
 
   const [showModal, setShowModal] = React.useState(false);
   const { walletAddress } = router.query as { walletAddress: string };
@@ -29,7 +34,7 @@ const Profile: React.FC = (): React.ReactElement => {
       <Container>
         <Row>
           <Col xl={3}>
-            <UserInfo toggleModal={() => setShowModal(true)} />
+            <UserInfo />
           </Col>
           <Col xl={9}>
             <ClientOnly>
@@ -66,6 +71,15 @@ const Profile: React.FC = (): React.ReactElement => {
                       title={'Referral'}
                     >
                       <ReferralTab />
+                    </Tab>
+                  )}
+                  {isOwner && (
+                    <Tab
+                      tabClassName={s.tab}
+                      eventKey="balanceTab"
+                      title={`${formatBTCPrice(satoshiAmount.toString())} BTC`}
+                    >
+                      <BalanceTab />
                     </Tab>
                   )}
                 </Tabs>
