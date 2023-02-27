@@ -9,6 +9,8 @@ export const NETWORK_CHAIN_ID: number = parseInt(
   10
 );
 export const CDN_URL = process.env.NEXT_PUBLIC_CDN_URL!;
+export const GENERATIVE_EXPLORER_URL =
+  process.env.NEXT_PUBLIC_GENERATIVE_EXPLORER!;
 export const APP_TOKEN_SYMBOL = 'GEN';
 export const SERVICE_FEE = 2.5 / 100;
 export const CHUNK_SIZE = 32 * 1024 * 1024; // MB
