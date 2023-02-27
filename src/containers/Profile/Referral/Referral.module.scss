@@ -1,8 +1,28 @@
+.wrapper {
+  margin-top: rem(58);
+}
+
 .referral_link {
   margin: {
-    top: rem(24);
     bottom: rem(24);
   }
+
+  .link {
+    display: flex;
+    align-items: center;
+    padding: rem(14) rem(11);
+    gap: rem(20);
+    border: 1px solid $black-10;
+  }
+}
+
+.referee {
+  gap: rem(10);
+  padding-left: rem(5);
+}
+
+.actions {
+  text-align: right;
 }
 
 .iconCopy {
@@ -11,5 +31,30 @@
 
   :hover {
     opacity: 0.9;
+  }
+}
+
+.Refferal_table {
+  :global(tbody tr td) {
+    padding: {
+      top: rem(13) !important;
+      bottom: rem(13) !important;
+    }
+  }
+}
+
+.Withdraw_all {
+  &_btn {
+    display: flex;
+    align-items: center;
+    gap: rem(10);
+    margin-left: auto;
+
+    .dots {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: $white;
+    }
   }
 }
