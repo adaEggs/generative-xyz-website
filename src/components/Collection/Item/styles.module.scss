@@ -56,13 +56,12 @@
   }
 
   &_info {
-
     padding: {
       top: rem(24px);
       left: rem(16px);
       right: rem(16px);
       bottom: rem(16px);
-    };
+    }
 
     @include mobile {
       top: rem(12px);
