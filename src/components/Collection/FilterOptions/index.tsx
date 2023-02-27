@@ -2,15 +2,12 @@ import ButtonIcon from '@components/ButtonIcon';
 import Dropdown from '@components/Dropdown';
 import Heading from '@components/Heading';
 import Text from '@components/Text';
-import ToogleSwitch from '@components/Toggle';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { TraitStats } from '@interfaces/project';
 import { useCallback, useContext, useEffect } from 'react';
 import { Stack } from 'react-bootstrap';
 import { v4 } from 'uuid';
 import styles from './styles.module.scss';
-import { debounce } from 'lodash';
-import Web3 from 'web3';
 
 type Props = {
   attributes?: TraitStats[];
@@ -18,8 +15,8 @@ type Props = {
 
 const FilterOptions = ({ attributes }: Props) => {
   const {
-    filterBuyNow,
-    setFilterBuyNow,
+    // filterBuyNow,
+    // setFilterBuyNow,
     filterTraits,
     setFilterTraits,
     query,
@@ -27,8 +24,8 @@ const FilterOptions = ({ attributes }: Props) => {
     setPage,
     showFilter,
     setShowFilter,
-    filterPrice,
-    setFilterPrice,
+    // filterPrice,
+    // setFilterPrice,
   } = useContext(GenerativeProjectDetailContext);
 
   const initialAttributesMap = useCallback(() => {
@@ -60,32 +57,32 @@ const FilterOptions = ({ attributes }: Props) => {
     initialAttributesMap();
   };
 
-  const handleMinPriceChange = (value: string) => {
-    if (value) {
-      setFilterPrice({
-        ...filterPrice,
-        from_price: `${Web3.utils.toWei(value, 'ether') || ''}`,
-      });
-    } else {
-      setFilterPrice({
-        ...filterPrice,
-        from_price: '',
-      });
-    }
-  };
-  const handleMaxPriceChange = (value: string) => {
-    if (value) {
-      setFilterPrice({
-        ...filterPrice,
-        to_price: `${Web3.utils.toWei(value, 'ether')}`,
-      });
-    } else {
-      setFilterPrice({
-        ...filterPrice,
-        to_price: '',
-      });
-    }
-  };
+  // const handleMinPriceChange = (value: string) => {
+  //   if (value) {
+  //     setFilterPrice({
+  //       ...filterPrice,
+  //       from_price: `${Web3.utils.toWei(value, 'ether') || ''}`,
+  //     });
+  //   } else {
+  //     setFilterPrice({
+  //       ...filterPrice,
+  //       from_price: '',
+  //     });
+  //   }
+  // };
+  // const handleMaxPriceChange = (value: string) => {
+  //   if (value) {
+  //     setFilterPrice({
+  //       ...filterPrice,
+  //       to_price: `${Web3.utils.toWei(value, 'ether')}`,
+  //     });
+  //   } else {
+  //     setFilterPrice({
+  //       ...filterPrice,
+  //       to_price: '',
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
     initialAttributesMap();
@@ -96,7 +93,8 @@ const FilterOptions = ({ attributes }: Props) => {
       <Heading fontWeight="semibold" className={styles.filter_title}>
         Filter
       </Heading>
-      <div className={styles.filter_buy}>
+      {/* DO NOT REMOVE CODE BELOW */}
+      {/* <div className={styles.filter_buy}>
         <Text size="18" fontWeight="medium">
           Buy now
         </Text>
@@ -130,8 +128,7 @@ const FilterOptions = ({ attributes }: Props) => {
           ></input>
           <Text>ETH</Text>
         </div>
-        {/* <ToogleSwitch onChange={() => setFilterBuyNow(!filterBuyNow)} /> */}
-      </div>
+      </div> */}
       {attributes && attributes?.length > 0 && (
         <>
           <div className="divider"></div>

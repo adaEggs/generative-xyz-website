@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import s from './TokenID.module.scss';
-import { Loading } from '@components/Loading';
-import Heading from '@components/Heading';
-import Text from '@components/Text';
-import { Container } from 'react-bootstrap';
 import ButtonIcon from '@components/ButtonIcon';
+import ModalBuyItem from '@components/Collection/ModalBuyItem';
+import Heading from '@components/Heading';
+import { Loading } from '@components/Loading';
 import MarkdownPreview from '@components/MarkdownPreview';
-import { ellipsisCenter, formatBTCPrice } from '@utils/format';
-import useWindowSize from '@hooks/useWindowSize';
-import { getMarketplaceBtcNFTDetail } from '@services/marketplace-btc';
-import BigNumber from 'bignumber.js';
-import BuyTokenModal from '@containers/Trade/BuyTokenModal';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
-import { toast } from 'react-hot-toast';
-import { ErrorMessage } from '@enums/error-message';
-import { ROUTE_PATH } from '@constants/route-path';
 import NFTDisplayBox from '@components/NFTDisplayBox';
-import { IGetMarketplaceBtcNFTDetail } from '@interfaces/api/marketplace-btc';
+import Text from '@components/Text';
+import { ROUTE_PATH } from '@constants/route-path';
+import { ErrorMessage } from '@enums/error-message';
+import { LogLevel } from '@enums/log-level';
 import useBTCSignOrd from '@hooks/useBTCSignOrd';
+import useWindowSize from '@hooks/useWindowSize';
+import { IGetMarketplaceBtcNFTDetail } from '@interfaces/api/marketplace-btc';
+import { getMarketplaceBtcNFTDetail } from '@services/marketplace-btc';
+import { ellipsisCenter, formatBTCPrice } from '@utils/format';
+import log from '@utils/logger';
+import BigNumber from 'bignumber.js';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { Container } from 'react-bootstrap';
+import { toast } from 'react-hot-toast';
+import s from './TokenID.module.scss';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -222,13 +222,14 @@ const TokenID: React.FC = (): React.ReactElement => {
         !!tokenData?.price &&
         !!ordAddress &&
         showModal && (
-          <BuyTokenModal
+          <ModalBuyItem
             showModal={showModal}
             onClose={() => setShowModal(false)}
             inscriptionID={tokenData.inscriptionID || ''}
             price={new BigNumber(tokenData?.price || 0).toNumber()}
             orderID={tokenData.orderID}
             ordAddress={ordAddress}
+            payType="btc"
           />
         )}
     </Container>
