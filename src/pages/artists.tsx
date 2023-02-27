@@ -19,9 +19,9 @@ export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: 'Generative | Artists',
+        title: 'Generative',
         description:
-          'Be the first on Bitcoin. Fully on-chain, decentralized, and immutable.',
+          'Be the first to launch art on Bitcoin. Join the over 200 artists. Fully on-chain, decentralized, and immutable.',
         image: `${CDN_URL}/images/artist-seo.jpg`,
       },
     },

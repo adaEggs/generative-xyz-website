@@ -22,7 +22,8 @@ export async function getServerSideProps() {
     props: {
       seoInfo: {
         title: 'Generative',
-        description: 'Bring your generative art to life',
+        description:
+          'A groundbreaking digital frame that renders generative artworks and allows collectors to interact with their art.',
         image: `${CDN_URL}/images/display.jpg`,
       },
     },

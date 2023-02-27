@@ -20,7 +20,7 @@ export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: `${SEO_TITLE} | Wallet`,
+        title: SEO_TITLE,
         description: 'Securely keep your Ordinal Inscription.',
         image: `${CDN_URL}/images/wallet-seo.jpg`,
       },
