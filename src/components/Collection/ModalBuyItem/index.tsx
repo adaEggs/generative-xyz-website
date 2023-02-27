@@ -255,7 +255,7 @@ const ModalBuyItem = ({
                           <div className={s.noteContainer}>
                             Your Ordinal inscription will be stored securely in
                             your Generative Wallet. We recommend Generative
-                            Wallet for ease-for-use, security, and the best
+                            Wallet for ease-of-use, security, and the best
                             experience on Generative.
                           </div>
                         )}
@@ -279,10 +279,10 @@ const ModalBuyItem = ({
                             }) => (
                               <form onSubmit={handleSubmit}>
                                 <div className={s.formItem}>
-                                  <label className={s.label} htmlFor="address">
+                                  {/* <label className={s.label} htmlFor="address">
                                     {`Enter the Ordinals-compatible BTC address to
                                 receive your buying inscription`}
-                                  </label>
+                                  </label> */}
                                   <div className={s.inputContainer}>
                                     <input
                                       id="address"
@@ -347,7 +347,12 @@ const ModalBuyItem = ({
                       {receiveAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
-                            {`Send ${formatPrice} ${unit} to this payment address`}
+                            Send{' '}
+                            <span style={{ fontWeight: 'bold' }}>
+                              {' '}
+                              {formatPrice} {unit}
+                            </span>{' '}
+                            to this payment address
                           </p>
 
                           <div className={s.btcAddressContainer}>
