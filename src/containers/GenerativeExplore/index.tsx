@@ -10,8 +10,8 @@ import { checkIsBitcoinProject } from '@utils/generative';
 import log from '@utils/logger';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
-import Skeleton from '@components/Skeleton';
 import { getTokenUri } from '@services/token-uri';
+import { Loading } from '@components/Loading';
 
 const LOG_PREFIX = 'GenerativeExplore';
 
@@ -85,7 +85,7 @@ const GenerativeExplore: React.FC = (): React.ReactElement => {
     <ClientOnly>
       <div className={s.generativeExplore}>
         {isLoading ? (
-          <Skeleton fill />
+          <Loading isLoaded={false} />
         ) : (
           <>
             {hasError ? (
