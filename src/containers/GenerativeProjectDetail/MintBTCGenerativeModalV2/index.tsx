@@ -54,10 +54,11 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const [addressInput, setAddressInput] = useState<string>('');
 
-  const priceFormat = formatBTCPrice(Number(projectData?.mintPrice));
-  const feePriceFormat = formatBTCPrice(Number(projectData?.networkFee));
+  const priceFormat = formatBTCPrice(Number(projectData?.mintPrice), '0.0');
+  const feePriceFormat = formatBTCPrice(Number(projectData?.networkFee), '0.0');
   const totalPriceFormat = formatBTCPrice(
-    Number(projectData?.networkFee) + Number(projectData?.mintPrice)
+    Number(projectData?.networkFee) + Number(projectData?.mintPrice),
+    '0.0'
   );
 
   const userBtcAddress = useMemo(

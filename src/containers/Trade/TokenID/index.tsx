@@ -12,7 +12,7 @@ import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import useWindowSize from '@hooks/useWindowSize';
 import { IGetMarketplaceBtcNFTDetail } from '@interfaces/api/marketplace-btc';
 import { getMarketplaceBtcNFTDetail } from '@services/marketplace-btc';
-import { ellipsisCenter, formatBTCPrice } from '@utils/format';
+import { ellipsisCenter, formatBTCPrice, formatEthPrice } from '@utils/format';
 import log from '@utils/logger';
 import BigNumber from 'bignumber.js';
 import { useRouter } from 'next/router';
@@ -33,11 +33,26 @@ const TokenID: React.FC = (): React.ReactElement => {
   const { mobileScreen } = useWindowSize();
   const [showModal, setShowModal] = useState<boolean>(false);
   const { ordAddress, onButtonClick } = useBTCSignOrd();
+  const [payType, setPayType] = useState<'btc' | 'eth'>('btc');
 
   const onShowModal = () => {
     onButtonClick({
       cbSigned: () => setShowModal(true),
     }).then();
+  };
+
+  const onClickBuyBTC = () => {
+    if (tokenData && tokenData.buyable) {
+      setPayType('btc');
+      onShowModal();
+    }
+  };
+
+  const onClickBuyETH = () => {
+    if (tokenData && tokenData.buyable) {
+      setPayType('eth');
+      onShowModal();
+    }
   };
 
   const renderLoading = () => {
@@ -104,19 +119,47 @@ const TokenID: React.FC = (): React.ReactElement => {
             This inscription is not available for buying now.
           </Text>
         )}
-        <ButtonIcon
-          sizes="large"
-          className={s.info_buyBtn}
-          onClick={() => {
-            // return setShowModal(true);
-            if (tokenData.buyable) return onShowModal();
-            router.push(ROUTE_PATH.TRADE);
-          }}
-        >
-          <Text as="span" size="14" fontWeight="medium">
-            {tokenData.buyable ? 'Buy Now' : 'Buy others'}
-          </Text>
-        </ButtonIcon>
+        {tokenData.buyable ? (
+          <>
+            <ButtonIcon
+              sizes="large"
+              className={s.info_buyBtn}
+              onClick={onClickBuyBTC}
+            >
+              <Text as="span" size="14" fontWeight="medium">
+                {`Buy • ${formatBTCPrice(tokenData.price)} BTC`}
+              </Text>
+            </ButtonIcon>
+            {tokenData.paymentListingInfo.eth &&
+              tokenData.paymentListingInfo.eth.price && (
+                <ButtonIcon
+                  sizes="large"
+                  className={s.info_buyBtn}
+                  style={{ marginTop: 8 }}
+                  onClick={onClickBuyETH}
+                  variants="outline"
+                >
+                  <Text as="span" size="14" fontWeight="medium">
+                    {`Buy • ${formatEthPrice(
+                      tokenData.paymentListingInfo.eth.price
+                    )} ETH`}
+                  </Text>
+                </ButtonIcon>
+              )}
+          </>
+        ) : (
+          <ButtonIcon
+            sizes="large"
+            className={s.info_buyBtn}
+            onClick={() => {
+              router.push(ROUTE_PATH.TRADE);
+            }}
+          >
+            <Text as="span" size="14" fontWeight="medium">
+              {'Buy others'}
+            </Text>
+          </ButtonIcon>
+        )}
         {mobileScreen && (
           <NFTDisplayBox
             inscriptionID={tokenData.inscriptionID}
@@ -226,10 +269,18 @@ const TokenID: React.FC = (): React.ReactElement => {
             showModal={showModal}
             onClose={() => setShowModal(false)}
             inscriptionID={tokenData.inscriptionID || ''}
-            price={new BigNumber(tokenData?.price || 0).toNumber()}
+            price={
+              payType === 'btc'
+                ? new BigNumber(tokenData?.price || 0).toNumber()
+                : new BigNumber(
+                    tokenData.paymentListingInfo.eth
+                      ? tokenData.paymentListingInfo.eth.price
+                      : 0
+                  ).toNumber()
+            }
             orderID={tokenData.orderID}
             ordAddress={ordAddress}
-            payType="btc"
+            payType={payType}
           />
         )}
     </Container>
