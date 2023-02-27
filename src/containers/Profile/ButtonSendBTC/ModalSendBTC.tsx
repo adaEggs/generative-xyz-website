@@ -15,7 +15,11 @@ import FeeRate from '@containers/Profile/FeeRate';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { Modal } from 'react-bootstrap';
 import BigNumber from 'bignumber.js';
-import { convertToSatoshiNumber, formatBTCOriginalPrice } from '@utils/format';
+import {
+  convertToSatoshiNumber,
+  formatBTCOriginalPrice,
+  formatBTCPrice,
+} from '@utils/format';
 import useBitcoin from '@bitcoin/useBitcoin';
 import { MINIMUM_SATOSHI } from '@bitcoin/contants';
 
@@ -34,7 +38,7 @@ const ModalSendBTC = ({ isShow, onHideModal }: IProps): JSX.Element => {
   const { collectedUTXOs, currentUser, debounceFetchCollectedUTXOs } =
     useContext(ProfileContext);
   const { selectedRate, handleChangeFee, allRate } = useFeeRate();
-  const { sendBitcoin } = useBitcoin();
+  const { sendBitcoin, satoshiAmount } = useBitcoin();
 
   const validateForm = (values: IFormValue) => {
     const errors: Record<string, string> = {};
@@ -153,8 +157,9 @@ const ModalSendBTC = ({ isShow, onHideModal }: IProps): JSX.Element => {
                 </div>
                 <div className={s.formItem}>
                   <label className={s.label} htmlFor="amount">
-                    Amount
+                    Amount ( {formatBTCPrice(satoshiAmount.toString())} BTC )
                   </label>
+
                   <div className={s.inputContainer}>
                     <input
                       id="amount"

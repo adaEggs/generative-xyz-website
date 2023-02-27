@@ -34,7 +34,7 @@ const Profile: React.FC = (): React.ReactElement => {
       <Container>
         <Row>
           <Col xl={3}>
-            <UserInfo />
+            <UserInfo toggle={() => setShowModal(true)} />
           </Col>
           <Col xl={9}>
             <ClientOnly>
