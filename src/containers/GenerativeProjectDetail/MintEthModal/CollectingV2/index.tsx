@@ -23,7 +23,13 @@ import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
 import _debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
-import { default as React, useCallback, useContext, useState } from 'react';
+import {
+  default as React,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
@@ -75,13 +81,15 @@ const MintEthModal: React.FC = () => {
       setIsSent(true);
     } catch (err: unknown) {
       log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-      onClose();
+      _onClose();
     }
   };
 
-  const onClose = () => {
-    setIsPopupPayment(false);
-  };
+  useEffect(() => {
+    if (receiverAddress) {
+      handleTransfer(receiverAddress, formatEthPrice(price));
+    }
+  }, [receiverAddress, price]);
 
   const debounceGetBTCAddress = useCallback(
     _debounce(async (ordAddress, refundAddress) => {
@@ -398,7 +406,7 @@ const MintEthModal: React.FC = () => {
                     </div>
 
                     <div className={s.btnContainer}>
-                      {isSent ? (
+                      {isSent && (
                         <>
                           <ButtonIcon
                             sizes="large"
@@ -421,20 +429,6 @@ const MintEthModal: React.FC = () => {
                             </Text>
                           </ButtonIcon>
                         </>
-                      ) : (
-                        <ButtonIcon
-                          sizes="large"
-                          className={s.buyBtn}
-                          disabled={!receiverAddress}
-                          onClick={() =>
-                            receiverAddress &&
-                            handleTransfer(receiverAddress, formatPrice)
-                          }
-                        >
-                          <Text as="span" size="16" fontWeight="medium">
-                            Tranfer
-                          </Text>
-                        </ButtonIcon>
                       )}
                     </div>
                   </Col>
