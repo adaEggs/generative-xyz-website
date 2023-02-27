@@ -51,7 +51,8 @@ const MintEthModal: React.FC = () => {
   const user = useAppSelector(getUserSelector);
 
   const [isSent, setIsSent] = React.useState(false);
-  const [price, setPrice] = React.useState('');
+  const [totalPrice, setTotalPrice] = React.useState('');
+
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [isShowAdvance, setIsShowAdvance] = useState(false);
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
@@ -60,9 +61,14 @@ const MintEthModal: React.FC = () => {
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [addressInput, setAddressInput] = useState<string>('');
 
-  const formatPrice = formatEthPrice(
-    price ? price : projectData ? projectData?.mintPriceEth : null
+  const totalFormatPrice = formatEthPrice(
+    totalPrice ||
+      `${
+        Number(projectData?.mintPriceEth) + Number(projectData?.networkFeeEth)
+      }` ||
+      ''
   );
+  const feePriceFormat = formatEthPrice(projectData?.networkFeeEth || '');
 
   const userAddress = React.useMemo(() => {
     return {
@@ -87,9 +93,9 @@ const MintEthModal: React.FC = () => {
 
   useEffect(() => {
     if (receiverAddress) {
-      handleTransfer(receiverAddress, formatEthPrice(price));
+      handleTransfer(receiverAddress, formatEthPrice(totalPrice));
     }
-  }, [receiverAddress, price]);
+  }, [receiverAddress, totalPrice]);
 
   const debounceGetBTCAddress = useCallback(
     _debounce(async (ordAddress, refundAddress) => {
@@ -108,7 +114,7 @@ const MintEthModal: React.FC = () => {
           return;
         }
 
-        setPrice(_price);
+        setTotalPrice(_price);
         setReceiverAddress(_address);
         setsTep('showAddress');
       } catch (err: unknown) {
@@ -211,20 +217,39 @@ const MintEthModal: React.FC = () => {
             <Col className={s.modalBody}>
               <Row className={s.row}>
                 <Col md={step === 'info' ? '12' : '6'}>
-                  <h3 className={s.modalTitle}>Mint NFT</h3>
+                  <h3 className={s.modalTitle}>Payment</h3>
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
+                      <p className={s.paymentPrice_price}>{`${formatEthPrice(
+                        totalPrice
+                          ? `${
+                              Number(totalPrice) -
+                              Number(projectData.networkFeeEth)
+                            }`
+                          : projectData?.mintPriceEth || ''
+                      )} BTC`}</p>
+                    </div>
+                    <div className={s.paymentPrice}>
+                      <p className={s.paymentPrice_title}>Inscription fee</p>
+                      <p
+                        className={s.paymentPrice_price}
+                      >{`${feePriceFormat} BTC`}</p>
+                    </div>
+                    <div className={s.indicator} />
+
+                    <div className={s.paymentPrice}>
+                      <p className={s.paymentPrice_title}>Total</p>
                       <div
                         className={s.paymentPrice_copyContainer}
-                        onClick={() => onClickCopy(`${formatPrice}`)}
+                        onClick={() => onClickCopy(`${totalFormatPrice}`)}
                       >
                         <SvgInset
                           className={s.ic}
                           size={18}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
-                        <p className={s.text}>{`${formatPrice} ETH`}</p>
+                        <p className={s.text}>{`${totalFormatPrice} BTC`}</p>
                       </div>
                     </div>
                   </div>
@@ -281,7 +306,7 @@ const MintEthModal: React.FC = () => {
                           <div className={s.noteContainer}>
                             Your Ordinal inscription will be stored securely in
                             your Generative Wallet. We recommend Generative
-                            Wallet for ease-for-use, security, and the best
+                            Wallet for ease-of-use, security, and the best
                             experience on Generative.
                           </div>
                         )}
@@ -305,10 +330,10 @@ const MintEthModal: React.FC = () => {
                             }) => (
                               <form onSubmit={handleSubmit}>
                                 <div className={s.formItem}>
-                                  <label className={s.label} htmlFor="address">
+                                  {/* <label className={s.label} htmlFor="address">
                                     {`Enter the Ordinals-compatible address to
                                 receive your minting inscription`}
-                                  </label>
+                                  </label> */}
                                   <div className={s.inputContainer}>
                                     <input
                                       id="address"
@@ -373,7 +398,11 @@ const MintEthModal: React.FC = () => {
                       {receiverAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
-                            {`Send ${formatPrice} ETH to this deposit address`}
+                            Send{' '}
+                            <span style={{ fontWeight: 'bold' }}>
+                              {totalFormatPrice} ETH
+                            </span>{' '}
+                            to this address
                           </p>
 
                           <div className={s.btcAddressContainer}>
