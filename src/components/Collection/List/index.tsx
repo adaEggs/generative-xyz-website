@@ -3,10 +3,11 @@ import CollectionItem from '@components/Collection/Item';
 import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 import cs from 'classnames';
-import { useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import FilterOptions from '../FilterOptions';
 import CollectionListLoading from '../Loading';
 import s from './CollectionList.module.scss';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 
 const CollectionList = ({
   listData,
@@ -17,20 +18,21 @@ const CollectionList = ({
   projectInfo?: Project | null;
   isLoaded?: boolean;
 }) => {
-  // const { showFilter } = useContext(GenerativeProjectDetailContext);
+  const { showFilter } = useContext(GenerativeProjectDetailContext);
 
   const hasTraitAtrribute = useMemo(
     () => projectInfo?.traitStat && projectInfo?.traitStat?.length > 0,
     [projectInfo?.traitStat]
   );
+  // const hasTraitAtrribute = true;
 
   return (
     <div
       className={`${s.listToken} grid  ${
-        hasTraitAtrribute ? s.showFilter : 'grid-cols-1'
+        showFilter && hasTraitAtrribute ? s.showFilter : 'grid-cols-1'
       }`}
     >
-      {hasTraitAtrribute && (
+      {showFilter && hasTraitAtrribute && (
         <FilterOptions attributes={projectInfo?.traitStat} />
       )}
       <div className="position-relative">
