@@ -399,8 +399,12 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     await handleFetchMakeOffers();
     await handleFetchProjects();
     await handleFetchListingTokens();
-    await handleFetchListingReferrals();
   }, [currentUser]);
+
+  useAsyncEffect(async () => {
+    if (!router.isReady || !currentUser) return;
+    await handleFetchListingReferrals();
+  }, [currentUser, currency]);
 
   useEffect(() => {
     handleFetchMakeOffers();
