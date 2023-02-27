@@ -8,11 +8,12 @@ import ToogleSwitch from '@components/Toggle';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
+import { CurrencyType } from '@enums/currency';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { formatBTCPrice, formatLongAddress } from '@utils/format';
 import copy from 'copy-to-clipboard';
-import { useContext, useMemo, useState } from 'react';
+import { useContext, useMemo } from 'react';
 import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './Referral.module.scss';
@@ -21,10 +22,10 @@ import s from './Referral.module.scss';
 const ReferralTab = () => {
   const user = useAppSelector(getUserSelector);
 
-  const { referralListing, isLoadedProfileReferral } =
+  const { referralListing, isLoadedProfileReferral, currency, setCurrency } =
     useContext(ProfileContext);
 
-  const [isETHCurrency, setIsCurrency] = useState(false);
+  // const [isETHCurrency, setIsETHCurrency] = useState(false);
 
   const TABLE_REFERRALS_HEADING = [
     'Referee',
@@ -34,8 +35,14 @@ const ReferralTab = () => {
       <Stack direction="horizontal" gap={2} className={s.switch_currency}>
         <ToogleSwitch
           size="16"
-          checked={isETHCurrency}
-          onChange={() => setIsCurrency(!isETHCurrency)}
+          checked={currency === CurrencyType.ETH}
+          onChange={() => {
+            if (currency === CurrencyType.ETH) {
+              setCurrency(CurrencyType.BTC);
+            } else {
+              setCurrency(CurrencyType.ETH);
+            }
+          }}
         />
         <Text fontWeight="medium" color="primary-color">
           ETH
@@ -66,13 +73,13 @@ const ReferralTab = () => {
         ),
         volume: (
           <>
-            {formatBTCPrice(item.referree?.volume || withdrawAmount)}{' '}
-            {isETHCurrency ? 'ETH' : 'BTC'}
+            {formatBTCPrice(item.referreeVolumn?.amount || withdrawAmount)}{' '}
+            {currency}
           </>
         ),
         earning: (
           <>
-            {calculateWithdrawAmount} {isETHCurrency ? 'ETH' : 'BTC'}
+            {calculateWithdrawAmount} {currency}
           </>
         ),
         action: (

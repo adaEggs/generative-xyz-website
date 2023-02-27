@@ -52,6 +52,7 @@ import {
   ITxHistory,
 } from '@interfaces/api/bitcoin';
 import { getStorage } from '@containers/Profile/Collected/Modal/SendInscription/utils';
+import { CurrencyType } from '@enums/currency';
 
 const LOG_PREFIX = 'ProfileContext';
 
@@ -68,6 +69,7 @@ export interface IProfileContext {
   feeRate: IFeeRate | undefined;
   history: ITxHistory[];
   isLoadingHistory: boolean;
+  currency: CurrencyType;
 
   isLoaded: boolean;
 
@@ -93,6 +95,7 @@ export interface IProfileContext {
   debounceFetchHistory: () => void;
   isOfferReceived: boolean;
   setIsOfferReceived: React.Dispatch<React.SetStateAction<boolean>>;
+  setCurrency: React.Dispatch<React.SetStateAction<CurrencyType>>;
 }
 
 const initialValue: IProfileContext = {
@@ -111,6 +114,7 @@ const initialValue: IProfileContext = {
   feeRate: undefined,
   history: [],
   isLoadingHistory: false,
+  currency: CurrencyType.BTC,
 
   handleFetchTokens: () => new Promise<void>(r => r()),
   handleFetchProjects: () => new Promise<void>(r => r()),
@@ -127,6 +131,9 @@ const initialValue: IProfileContext = {
   debounceFetchHistory: () => new Promise<void>(r => r()),
   isOfferReceived: false,
   setIsOfferReceived: _ => {
+    return;
+  },
+  setCurrency: _ => {
     return;
   },
 };
@@ -191,6 +198,8 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const [isLoadedProfileListing, setIsLoadedProfileListing] =
     useState<boolean>(false);
+
+  const [currency, setCurrency] = useState<CurrencyType>(CurrencyType.BTC);
 
   const [isOfferReceived, setIsOfferReceived] = useState<boolean>(false);
 
@@ -354,6 +363,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       if (currentUser?.walletAddress) {
         const referralListing = await getReferrals({
           referrerID: currentUser.id,
+          amountType: currency.toLowerCase(),
         });
         setReferralListing(referralListing);
       }
@@ -537,6 +547,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       feeRate,
       history,
       isLoadingHistory,
+      currency,
 
       isLoaded,
       isLoadedProfileTokens,
@@ -561,6 +572,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       debounceFetchCollectedUTXOs,
       debounceFetchFeeRate,
       debounceFetchHistory,
+      setCurrency,
     };
   }, [
     currentUser,
@@ -570,6 +582,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     profileMakeOffer,
     profileListing,
     referralListing,
+    currency,
 
     isLoaded,
     isLoadedProfileTokens,
@@ -587,6 +600,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     setIsOfferReceived,
     handleAcceptOfferReceived,
     handleFetchListingReferrals,
+    setCurrency,
   ]);
 
   return (
