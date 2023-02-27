@@ -57,6 +57,7 @@ const ModalBuyItem = ({
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
 
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
+  const [addressInput, setAddressInput] = useState<string>('');
 
   const unit = payType === 'btc' ? 'BTC' : 'ETH';
   const formatPrice =
@@ -81,7 +82,13 @@ const ModalBuyItem = ({
         : !validateEVMAddress(values.address)
     ) {
       errors.address = 'Invalid wallet address.';
+    } else {
+      if (step === 'showAddress' && addressInput !== values.address) {
+        setAddressInput(values.address);
+        onSubmitAddress(values.address);
+      }
     }
+
     return errors;
   };
 
@@ -122,19 +129,23 @@ const ModalBuyItem = ({
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
-      setsTep('info');
+      if (step === 'showAddress' && ordAddress) {
+        onSubmitAddress(ordAddress);
+      }
     }
   };
 
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
-      setsTep('info');
     }
   };
 
   const handleSubmit = async (_data: IFormValue) => {
-    onSubmitAddress(_data.address);
+    if (addressInput !== _data.address) {
+      setAddressInput(_data.address);
+      onSubmitAddress(_data.address);
+    }
   };
 
   const handleClose = () => {
@@ -268,10 +279,10 @@ const ModalBuyItem = ({
                             }) => (
                               <form onSubmit={handleSubmit}>
                                 <div className={s.formItem}>
-                                  {/* <label className={s.label} htmlFor="address">
-                                {`Enter the Ordinals-compatible address to
+                                  <label className={s.label} htmlFor="address">
+                                    {`Enter the Ordinals-compatible BTC address to
                                 receive your buying inscription`}
-                              </label> */}
+                                  </label>
                                   <div className={s.inputContainer}>
                                     <input
                                       id="address"
@@ -281,7 +292,7 @@ const ModalBuyItem = ({
                                       onBlur={handleBlur}
                                       value={values.address}
                                       className={s.input}
-                                      placeholder={`Paste your Ordinals-compatible ${unit} address here`}
+                                      placeholder={`Paste your Ordinals-compatible BTC address here`}
                                     />
                                   </div>
                                   {errors.address && touched.address && (
@@ -330,10 +341,10 @@ const ModalBuyItem = ({
                   </div>
                 </Col>
 
-                {receiveAddress && step === 'showAddress' && (
+                {step === 'showAddress' && (
                   <Col md={'6'}>
                     <div className={s.paymentWrapper}>
-                      {!isLoading && (
+                      {receiveAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
                             {`Send ${formatPrice} ${unit} to this payment address`}
@@ -367,6 +378,11 @@ const ModalBuyItem = ({
                               })}
                             </p>
                           )}
+                        </div>
+                      )}
+                      {isLoading && (
+                        <div className={s.loadingWrapper}>
+                          <Loading isLoaded={false} />
                         </div>
                       )}
                     </div>

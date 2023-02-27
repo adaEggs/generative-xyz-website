@@ -45,8 +45,14 @@ const MintEthModal: React.FC = () => {
   const user = useAppSelector(getUserSelector);
 
   const [isSent, setIsSent] = React.useState(false);
-
   const [price, setPrice] = React.useState('');
+  const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
+  const [isShowAdvance, setIsShowAdvance] = useState(false);
+  const [step, setsTep] = useState<'info' | 'showAddress'>('info');
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
+  const [addressInput, setAddressInput] = useState<string>('');
 
   const formatPrice = formatEthPrice(
     price ? price : projectData ? projectData?.mintPriceEth : null
@@ -106,33 +112,29 @@ const MintEthModal: React.FC = () => {
     [projectData]
   );
 
-  const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
-  const [isShowAdvance, setIsShowAdvance] = useState(false);
-
-  const [step, setsTep] = useState<'info' | 'showAddress'>('info');
-
   const onClickCopy = (text: string) => {
     copy(text);
     toast.remove();
     toast.success('Copied');
   };
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
-
-  const [addressInput, setAddressInput] = useState<string>('');
-
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
-      setsTep('info');
+      if (
+        step === 'showAddress' &&
+        userAddress &&
+        userAddress.evm &&
+        userAddress.taproot
+      ) {
+        debounceGetBTCAddress(userAddress.taproot, userAddress.evm);
+      }
     }
   };
 
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
-      setsTep('info');
     }
   };
 
@@ -151,6 +153,11 @@ const MintEthModal: React.FC = () => {
       errors.address = 'Wallet address is required.';
     } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
+    } else {
+      if (step === 'showAddress' && addressInput !== values.address) {
+        setAddressInput(values.address);
+        debounceGetBTCAddress(values.address, userAddress.evm);
+      }
     }
 
     return errors;
@@ -290,10 +297,10 @@ const MintEthModal: React.FC = () => {
                             }) => (
                               <form onSubmit={handleSubmit}>
                                 <div className={s.formItem}>
-                                  {/* <label className={s.label} htmlFor="address">
-                                {`Enter the Ordinals-compatible address to
-                                receive your buying inscription`}
-                              </label> */}
+                                  <label className={s.label} htmlFor="address">
+                                    {`Enter the Ordinals-compatible address to
+                                receive your minting inscription`}
+                                  </label>
                                   <div className={s.inputContainer}>
                                     <input
                                       id="address"
@@ -340,7 +347,7 @@ const MintEthModal: React.FC = () => {
                       </ButtonIcon>
                     )}
 
-                    {isLoading && (
+                    {step === 'info' && isLoading && (
                       <div className={s.loadingWrapper}>
                         <Loading isLoaded={false} />
                       </div>
@@ -352,10 +359,10 @@ const MintEthModal: React.FC = () => {
                   </div>
                 </Col>
 
-                {receiverAddress && step === 'showAddress' && (
+                {step === 'showAddress' && (
                   <Col md={'6'}>
                     <div className={s.paymentWrapper}>
-                      {!isLoading && (
+                      {receiverAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
                             {`Send ${formatPrice} ETH to this deposit address`}
@@ -381,6 +388,11 @@ const MintEthModal: React.FC = () => {
                             size={128}
                             value={receiverAddress || ''}
                           />
+                        </div>
+                      )}
+                      {isLoading && (
+                        <div className={s.loadingWrapper}>
+                          <Loading isLoaded={false} />
                         </div>
                       )}
                     </div>
@@ -415,6 +427,7 @@ const MintEthModal: React.FC = () => {
                           className={s.buyBtn}
                           disabled={!receiverAddress}
                           onClick={() =>
+                            receiverAddress &&
                             handleTransfer(receiverAddress, formatPrice)
                           }
                         >

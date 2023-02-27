@@ -68,14 +68,15 @@ const MintBTCGenerativeModal: React.FC = () => {
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
-      setsTep('info');
+      if (step === 'showAddress' && userBtcAddress) {
+        debounceGetBTCAddress(userBtcAddress, userBtcAddress);
+      }
     }
   };
 
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
-      setsTep('info');
     }
   };
 
@@ -119,7 +120,6 @@ const MintBTCGenerativeModal: React.FC = () => {
           totalPrice: formatBTCPrice(Number(price)),
         },
       });
-
       setReceiverAddress(address);
       setsTep('showAddress');
     } catch (err: unknown) {
@@ -144,6 +144,11 @@ const MintBTCGenerativeModal: React.FC = () => {
       errors.address = 'Wallet address is required.';
     } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
+    } else {
+      if (step === 'showAddress' && addressInput !== values.address) {
+        setAddressInput(values.address);
+        debounceGetBTCAddress(values.address, values.address);
+      }
     }
 
     return errors;
@@ -297,10 +302,10 @@ const MintBTCGenerativeModal: React.FC = () => {
                             }) => (
                               <form onSubmit={handleSubmit}>
                                 <div className={s.formItem}>
-                                  {/* <label className={s.label} htmlFor="address">
-                                {`Enter the Ordinals-compatible address to
-                                receive your buying inscription`}
-                              </label> */}
+                                  <label className={s.label} htmlFor="address">
+                                    {`Enter the Ordinals-compatible BTC address to
+                                receive your minting inscription`}
+                                  </label>
                                   <div className={s.inputContainer}>
                                     <input
                                       id="address"
@@ -347,7 +352,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                       </ButtonIcon>
                     )}
 
-                    {isLoading && (
+                    {step === 'info' && isLoading && (
                       <div className={s.loadingWrapper}>
                         <Loading isLoaded={false} />
                       </div>
@@ -359,10 +364,10 @@ const MintBTCGenerativeModal: React.FC = () => {
                   </div>
                 </Col>
 
-                {receiverAddress && step === 'showAddress' && (
+                {step === 'showAddress' && (
                   <Col md={'6'}>
                     <div className={s.paymentWrapper}>
-                      {!isLoading && (
+                      {receiverAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
                             {`Send ${totalPriceFormat} BTC to this deposit address`}
@@ -390,12 +395,17 @@ const MintBTCGenerativeModal: React.FC = () => {
                           />
                         </div>
                       )}
+                      {isLoading && (
+                        <div className={s.loadingWrapper}>
+                          <Loading isLoaded={false} />
+                        </div>
+                      )}
                     </div>
 
                     <div className={s.btnContainer}>
                       <ButtonIcon
                         sizes="large"
-                        className={s.checkBtn}
+                        className={s.buyBtn}
                         onClick={() => router.push(ROUTE_PATH.PROFILE)}
                         variants="outline-small"
                       >
