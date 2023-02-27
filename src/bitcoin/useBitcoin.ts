@@ -83,7 +83,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       receiver: receiverAddress,
       inscription_id: '',
       inscription_number: 0,
-      send_amount: 0,
+      send_amount: amount,
       type: TrackTxType.normal,
     });
     setPendingUTXOs(selectedUTXOs);
