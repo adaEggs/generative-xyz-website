@@ -13,7 +13,7 @@ import { submitAddressBuyBTC } from '@services/marketplace-btc';
 import { ellipsisCenter, formatBTCPrice, formatEthPrice } from '@utils/format';
 import log from '@utils/logger';
 import { formatUnixDateTime } from '@utils/time';
-import { validateBTCAddressTaproot, validateEVMAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
 import React, { useState } from 'react';
@@ -62,8 +62,8 @@ const ModalBuyItem = ({
   const unit = payType === 'btc' ? 'BTC' : 'ETH';
   const formatPrice =
     payType === 'btc'
-      ? formatBTCPrice(price || 0)
-      : formatEthPrice(`${price || 0}`);
+      ? formatBTCPrice(price || 0, '0.0')
+      : formatEthPrice(`${price || 0}`, '0.0');
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -76,11 +76,7 @@ const ModalBuyItem = ({
 
     if (!values.address) {
       errors.address = 'Address is required.';
-    } else if (
-      payType === 'btc'
-        ? !validateBTCAddressTaproot(values.address)
-        : !validateEVMAddress(values.address)
-    ) {
+    } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
       if (step === 'showAddress' && addressInput !== values.address) {
@@ -105,6 +101,7 @@ const ModalBuyItem = ({
         walletAddress: address,
         inscriptionID,
         orderID,
+        payType,
       });
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);

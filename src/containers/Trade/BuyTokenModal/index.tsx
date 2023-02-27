@@ -69,6 +69,7 @@ const ListForSaleModal = ({
         walletAddress: _data.address,
         inscriptionID,
         orderID,
+        payType: 'btc',
       });
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);
