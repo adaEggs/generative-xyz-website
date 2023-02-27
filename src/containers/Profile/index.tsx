@@ -19,7 +19,7 @@ import BalanceTab from '@containers/Profile/BalanceTab';
 
 const Profile: React.FC = (): React.ReactElement => {
   const user = useAppSelector(getUserSelector);
-  const { isLoaded, profileProjects, collectedNFTs } =
+  const { isLoaded, profileProjects, collectedNFTs, isLoadingUTXOs } =
     useContext(ProfileContext);
   const router = useRouter();
 
@@ -77,7 +77,11 @@ const Profile: React.FC = (): React.ReactElement => {
                     <Tab
                       tabClassName={s.tab}
                       eventKey="balanceTab"
-                      title={`${formatBTCPrice(satoshiAmount.toString())} BTC`}
+                      title={
+                        isLoadingUTXOs
+                          ? 'loading...'
+                          : `${formatBTCPrice(satoshiAmount.toString())} BTC`
+                      }
                     >
                       <BalanceTab />
                     </Tab>

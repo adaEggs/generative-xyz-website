@@ -35,8 +35,12 @@ interface IProps {
 
 const ModalSendBTC = ({ isShow, onHideModal }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
-  const { collectedUTXOs, currentUser, debounceFetchCollectedUTXOs } =
-    useContext(ProfileContext);
+  const {
+    collectedUTXOs,
+    currentUser,
+    debounceFetchCollectedUTXOs,
+    debounceFetchHistory,
+  } = useContext(ProfileContext);
   const { selectedRate, handleChangeFee, allRate } = useFeeRate();
   const { sendBitcoin, satoshiAmount } = useBitcoin();
 
@@ -92,6 +96,7 @@ const ModalSendBTC = ({ isShow, onHideModal }: IProps): JSX.Element => {
       });
       toast.success('Transferred successfully');
       debounceFetchCollectedUTXOs();
+      debounceFetchHistory();
       onHideModal();
     } catch (err: unknown) {
       // handle error

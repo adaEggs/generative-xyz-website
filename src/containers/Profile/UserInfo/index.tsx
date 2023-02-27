@@ -24,7 +24,7 @@ import ButtonReceiver from '@containers/Profile/ButtonReceiver';
 
 export const UserInfo = ({ toggle }: { toggle: () => void }): JSX.Element => {
   const user = useAppSelector(getUserSelector);
-  const { currentUser } = useContext(ProfileContext);
+  const { currentUser, isLoadingHistory, history } = useContext(ProfileContext);
   const router = useRouter();
 
   const isTwVerified = useMemo(() => {
@@ -94,12 +94,14 @@ export const UserInfo = ({ toggle }: { toggle: () => void }): JSX.Element => {
                     size={18}
                     svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                   />
-                  <SvgInset
-                    onClick={toggle}
-                    size={18}
-                    svgUrl={`${CDN_URL}/icons/ic-history.svg`}
-                    className={s.iconHistory}
-                  />
+                  {!isLoadingHistory && !!history && !!history.length && (
+                    <SvgInset
+                      onClick={toggle}
+                      size={18}
+                      svgUrl={`${CDN_URL}/icons/ic-history.svg`}
+                      className={s.iconHistory}
+                    />
+                  )}
                 </div>
               )}
             </div>
