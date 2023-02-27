@@ -32,7 +32,7 @@ const ModalReceiver = ({ isShow, onHideModal }: IProps): JSX.Element => {
           />
         </Button>
         <Text className={s.modalHeader_title} size="20">
-          Receiver
+          Receive Inscription
         </Text>
       </Modal.Header>
       <Modal.Body>

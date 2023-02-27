@@ -16,7 +16,7 @@ import { calculateMintFee } from '@utils/inscribe';
 import { FeeRateName } from '@interfaces/api/bitcoin';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-import { setStorage } from '@containers/Profile/Collected/Modal/SendInscription/utils';
+import { setStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import Text from '@components/Text';
@@ -97,7 +97,7 @@ const SendInscriptionModal = ({
       });
       toast.success('Transferred successfully');
       onClose();
-      setStorage(inscriptionID);
+      setStorageIns(inscriptionID);
     } catch (err: unknown) {
       // handle error
       toast.error(ErrorMessage.DEFAULT);

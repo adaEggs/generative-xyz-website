@@ -2,7 +2,7 @@ const getStorageKey = (insID: string) => {
   return `${insID}-storage-send-inscription`;
 };
 
-const getStorage = (insID: string) => {
+const getStorageIns = (insID: string) => {
   const key = getStorageKey(insID);
   const time = localStorage.getItem(key);
   const expiredTime = 60 * 30 * 1000;
@@ -13,9 +13,9 @@ const getStorage = (insID: string) => {
   return time;
 };
 
-const setStorage = (insID: string) => {
+const setStorageIns = (insID: string) => {
   const key = getStorageKey(insID);
   localStorage.setItem(key, new Date().getTime().toString());
 };
 
-export { getStorageKey, getStorage, setStorage };
+export { getStorageIns, setStorageIns };
