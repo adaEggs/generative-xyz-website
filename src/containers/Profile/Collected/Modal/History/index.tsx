@@ -4,7 +4,8 @@ import { CDN_URL } from '@constants/config';
 import React, { useContext } from 'react';
 import s from './styles.module.scss';
 import { ProfileContext } from '@contexts/profile-context';
-import { ellipsisCenter, formatBTCPrice } from '@utils/format';
+// import { ellipsisCenter, formatBTCPrice } from '@utils/format';
+import { ellipsisCenter } from '@utils/format';
 import { toast } from 'react-hot-toast';
 import Table from '@components/Table';
 import Text from '@components/Text';
@@ -22,15 +23,15 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const handleClose = () => {
     onClose();
   };
-  const TABLE_HISTORY_HEADING = ['Date', 'Hash', 'Inscription', 'Amount'];
-
+  // const TABLE_HISTORY_HEADING = ['Date', 'Hash', 'Inscription', 'Amount'];
+  const TABLE_HISTORY_HEADING = ['Date', 'Hash'];
   const handleCopy = (text: string): void => {
     navigator.clipboard.writeText(text);
     toast.remove();
     toast.success('Copied');
   };
 
-  const tableData = history.map(item => ({
+  const tableData = (history || []).map(item => ({
     id: `${item.txhash}-history`,
     render: {
       date: (
@@ -64,18 +65,18 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
           />
         </Stack>
       ),
-      number: (
-        <Text size="16" fontWeight="medium" color="black-100">
-          {item.inscription_number ? `#${item.inscription_number}` : '---'}
-        </Text>
-      ),
-      amount: (
-        <Text size="16" fontWeight="medium" color="black-100">
-          {item.send_amount
-            ? `${formatBTCPrice(item.send_amount.toString())} BTC`
-            : '---'}
-        </Text>
-      ),
+      // number: (
+      //   <Text size="16" fontWeight="medium" color="black-100">
+      //     {item.inscription_number ? `#${item.inscription_number}` : '---'}
+      //   </Text>
+      // ),
+      // amount: (
+      //   <Text size="16" fontWeight="medium" color="black-100">
+      //     {item.send_amount
+      //       ? `${formatBTCPrice(item.send_amount.toString())} BTC`
+      //       : '---'}
+      //   </Text>
+      // ),
     },
   }));
 
