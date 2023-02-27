@@ -67,6 +67,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-wrap: wrap;
   gap: rem(16px);
 
   .send {
@@ -76,7 +77,7 @@
   }
 
   .receiver {
-    width: 200px;
+    width: fit-content;
     display: flex;
     justify-content: center;
   }
