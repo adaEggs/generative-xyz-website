@@ -12,14 +12,14 @@ import * as GENERATIVE_SDK from 'generative-sdk';
 import { ProfileContext } from '@contexts/profile-context';
 import cs from 'classnames';
 import { formatBTCPrice } from '@utils/format';
-import { calculateMintFee } from '@utils/inscribe';
 import { FeeRateName } from '@interfaces/api/bitcoin';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
-import { setStorage } from '@containers/Profile/Collected/Modal/SendInscription/utils';
+import { setStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import Text from '@components/Text';
+import * as SDK from 'generative-sdk';
 
 interface IFormValue {
   address: string;
@@ -97,7 +97,7 @@ const SendInscriptionModal = ({
       });
       toast.success('Transferred successfully');
       onClose();
-      setStorage(inscriptionID);
+      setStorageIns(inscriptionID);
     } catch (err: unknown) {
       // handle error
       toast.error(ErrorMessage.DEFAULT);
@@ -201,7 +201,7 @@ const SendInscriptionModal = ({
                             >{`${FEE_RATE?.hourFee} sats/vByte`}</p>
                             <p className={s.feeTotal}>
                               {`${formatBTCPrice(
-                                calculateMintFee(FEE_RATE?.hourFee, 0)
+                                SDK.estimateTxFee(2, 2, FEE_RATE?.hourFee)
                               )} BTC`}
                             </p>
                           </div>
@@ -220,7 +220,7 @@ const SendInscriptionModal = ({
                             >{`${FEE_RATE?.halfHourFee} sats/vByte`}</p>
                             <p className={s.feeTotal}>
                               {`${formatBTCPrice(
-                                calculateMintFee(FEE_RATE?.halfHourFee, 0)
+                                SDK.estimateTxFee(2, 2, FEE_RATE?.halfHourFee)
                               )} BTC`}
                             </p>
                           </div>
@@ -239,7 +239,7 @@ const SendInscriptionModal = ({
                             >{`${FEE_RATE?.fastestFee} sats/vByte`}</p>
                             <p className={s.feeTotal}>
                               {`${formatBTCPrice(
-                                calculateMintFee(FEE_RATE?.fastestFee, 0)
+                                SDK.estimateTxFee(2, 2, FEE_RATE?.fastestFee)
                               )} BTC`}
                             </p>
                           </div>

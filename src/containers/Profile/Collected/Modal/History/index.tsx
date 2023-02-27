@@ -26,12 +26,6 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
     toast.success('Copied');
   };
   const renderItem = (_history: ITxHistory) => {
-    // const statusColor =
-    //   _history.status === HistoryStatusType.failed
-    //     ? '#ff4747'
-    //     : _history.status === HistoryStatusType.pending
-    //     ? '#ff7e21'
-    //     : '#24c087';
     return (
       <div className={s.wrapHistory} key={_history.txhash}>
         <div className={cs(s.wrapHistory_title, s.wrapHistory_content)}>
@@ -50,11 +44,7 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
               )
             }
           >
-            <img
-              style={{ width: 20, marginTop: -4 }}
-              src={`${CDN_URL}/icons/ic-share.png`}
-              alt="ic-share"
-            />
+            <SvgInset size={18} svgUrl={`${CDN_URL}/icons/ic-share.svg`} />
           </label>
         </div>
         {!!_history.inscription_id && (
@@ -73,9 +63,6 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
             Inscription: #{_history.inscription_number}
           </div>
         )}
-        {/*<div className={cs(s.wrapHistory_marginTop, s.wrapHistory_content)}>*/}
-        {/*  Status: <span style={{ color: statusColor }}>{_history.status}</span>*/}
-        {/*</div>*/}
       </div>
     );
   };

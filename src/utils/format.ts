@@ -161,3 +161,14 @@ export const ellipsisCenter = (payload: {
 export const formatWebDomain = (link: string): string => {
   return link ? new URL(link).hostname : '';
 };
+
+export const convertToSatoshiNumber = (amount: number | string): number => {
+  if (!amount) throw 'Invalid amount';
+  return new BigNumber(amount).multipliedBy(1e8).toNumber();
+};
+
+export const formatBTCOriginalPrice = (price: number | string): string => {
+  if (!price) return '--';
+  const priceNumb = new BigNumber(price).dividedBy(1e8);
+  return priceNumb.toString().replace(',', '.');
+};
