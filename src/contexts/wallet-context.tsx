@@ -294,9 +294,14 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
       user.walletAddress
     ) {
       getWalletBalance();
-      postRefCode();
     }
   }, [walletManager, user]);
+
+  useEffect(() => {
+    if (user && user.walletAddress) {
+      postRefCode();
+    }
+  }, [user]);
 
   const contextValues = useMemo((): IWalletContext => {
     return {
