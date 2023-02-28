@@ -189,7 +189,13 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             The inscription is being purchased{' '}
           </ButtonIcon>
         ) : (
-          <>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
             <ButtonIcon
               className={s.buy_btc_button}
               onClick={() => toggleModal('btc')}
@@ -202,13 +208,14 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   className={s.buy_btc_button}
                   onClick={() => toggleModal('eth')}
                   variants="outline"
+                  style={{ marginLeft: 8 }}
                 >
                   {`Buy • ${formatEthPrice(
                     tokenData.listingDetail.paymentListingInfo.eth.price
                   )} ETH`}
                 </ButtonIcon>
               )}
-          </>
+          </div>
         )}
       </div>
     );

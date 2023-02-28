@@ -430,18 +430,17 @@ const ModalBuyItem = ({
                         </Text>
                       </ButtonIcon>
                       <div style={{ width: 16 }} /> */}
-                      {payType === 'btc' ||
-                        (payType === 'eth' && isSent && (
-                          <ButtonIcon
-                            sizes="large"
-                            className={s.buyBtn}
-                            onClick={handleClose}
-                          >
-                            <Text as="span" size="16" fontWeight="medium">
-                              Continue collecting
-                            </Text>
-                          </ButtonIcon>
-                        ))}
+                      {(payType === 'btc' || (payType === 'eth' && isSent)) && (
+                        <ButtonIcon
+                          sizes="large"
+                          className={s.buyBtn}
+                          onClick={handleClose}
+                        >
+                          <Text as="span" size="16" fontWeight="medium">
+                            Continue collecting
+                          </Text>
+                        </ButtonIcon>
+                      )}
                     </div>
                   </Col>
                 )}
