@@ -27,7 +27,7 @@ export const CollectedList = ({
             {listData?.map((project, index) => (
               <CollectedCard
                 className={'col-12'}
-                key={`project-item-${project.inscriptionID}`}
+                key={`project-item-${index.toString()}`}
                 project={project}
                 index={index}
               />
