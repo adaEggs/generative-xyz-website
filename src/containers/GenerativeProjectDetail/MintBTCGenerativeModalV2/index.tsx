@@ -54,10 +54,11 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const [addressInput, setAddressInput] = useState<string>('');
 
-  const priceFormat = formatBTCPrice(Number(projectData?.mintPrice));
-  const feePriceFormat = formatBTCPrice(Number(projectData?.networkFee));
+  const priceFormat = formatBTCPrice(Number(projectData?.mintPrice), '0.0');
+  const feePriceFormat = formatBTCPrice(Number(projectData?.networkFee), '0.0');
   const totalPriceFormat = formatBTCPrice(
-    Number(projectData?.networkFee) + Number(projectData?.mintPrice)
+    Number(projectData?.networkFee) + Number(projectData?.mintPrice),
+    '0.0'
   );
 
   const userBtcAddress = useMemo(
@@ -194,7 +195,7 @@ const MintBTCGenerativeModal: React.FC = () => {
             <Col className={s.modalBody}>
               <Row className={s.row}>
                 <Col md={step === 'info' ? '12' : '6'}>
-                  <h3 className={s.modalTitle}>Mint NFT</h3>
+                  <h3 className={s.modalTitle}>Payment</h3>
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
@@ -203,7 +204,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                       >{`${priceFormat} BTC`}</p>
                     </div>
                     <div className={s.paymentPrice}>
-                      <p className={s.paymentPrice_title}>Fee</p>
+                      <p className={s.paymentPrice_title}>Inscription fee</p>
                       <p
                         className={s.paymentPrice_price}
                       >{`${feePriceFormat} BTC`}</p>
@@ -278,7 +279,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                           <div className={s.noteContainer}>
                             Your Ordinal inscription will be stored securely in
                             your Generative Wallet. We recommend Generative
-                            Wallet for ease-for-use, security, and the best
+                            Wallet for ease-of-use, security, and the best
                             experience on Generative.
                           </div>
                         )}
@@ -302,10 +303,10 @@ const MintBTCGenerativeModal: React.FC = () => {
                             }) => (
                               <form onSubmit={handleSubmit}>
                                 <div className={s.formItem}>
-                                  <label className={s.label} htmlFor="address">
+                                  {/* <label className={s.label} htmlFor="address">
                                     {`Enter the Ordinals-compatible BTC address to
                                 receive your minting inscription`}
-                                  </label>
+                                  </label> */}
                                   <div className={s.inputContainer}>
                                     <input
                                       id="address"
@@ -370,7 +371,11 @@ const MintBTCGenerativeModal: React.FC = () => {
                       {receiverAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
-                            {`Send ${totalPriceFormat} BTC to this deposit address`}
+                            Send{' '}
+                            <span style={{ fontWeight: 'bold' }}>
+                              {totalPriceFormat} BTC
+                            </span>{' '}
+                            to this address
                           </p>
 
                           <div className={s.btcAddressContainer}>

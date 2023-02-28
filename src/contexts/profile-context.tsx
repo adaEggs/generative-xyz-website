@@ -51,8 +51,8 @@ import {
   IFeeRate,
   ITxHistory,
 } from '@interfaces/api/bitcoin';
-import { getStorage } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 import { CurrencyType } from '@enums/currency';
+import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 
 const LOG_PREFIX = 'ProfileContext';
 
@@ -71,6 +71,7 @@ export interface IProfileContext {
   isLoadingHistory: boolean;
   currency: CurrencyType;
 
+  isLoadingUTXOs: boolean;
   isLoaded: boolean;
 
   isLoadedProfileTokens: boolean;
@@ -108,6 +109,7 @@ const initialValue: IProfileContext = {
   isLoadedProfileCollected: false,
   isLoadedProfileReferral: false,
   isLoadingProfileCollected: false,
+  isLoadingUTXOs: false,
   collectedNFTs: [],
   referralListing: undefined,
   collectedUTXOs: undefined,
@@ -425,6 +427,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   const [feeRate, setFeeRate] = useState<IFeeRate | undefined>();
   const [history, setHistory] = useState<ITxHistory[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState<boolean>(false);
+  const [isLoadingUTXOs, setIsLoadingUTXOs] = useState<boolean>(false);
 
   const currentBtcAddressRef = useRef(ordAddress);
 
@@ -459,7 +462,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         ),
       ].filter(item => {
         const isSending =
-          !!item?.inscriptionID && !!getStorage(item?.inscriptionID);
+          !!item?.inscriptionID && !!getStorageIns(item?.inscriptionID);
         return !isSending;
       });
 
@@ -476,10 +479,13 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const fetchCollectedUTXOs = async () => {
     try {
+      setIsLoadingUTXOs(true);
       const resp = await getCollectedUTXO(currentBtcAddressRef.current);
       setCollectedUTXOs(resp);
     } catch (error) {
       // handle fetch data error here
+    } finally {
+      setIsLoadingUTXOs(false);
     }
   };
 
@@ -552,6 +558,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       history,
       isLoadingHistory,
       currency,
+      isLoadingUTXOs,
 
       isLoaded,
       isLoadedProfileTokens,

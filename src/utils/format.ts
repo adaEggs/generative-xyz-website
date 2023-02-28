@@ -121,14 +121,20 @@ export const formatCurrency = (value: number): string => {
 
 export const tokenID = (tokenName: string) => tokenName.split('#')[1];
 
-export const formatBTCPrice = (price: number | string): string => {
-  if (!price) return '--';
+export const formatBTCPrice = (
+  price: number | string,
+  emptyStr?: string
+): string => {
+  if (!price) return emptyStr || '--';
   const priceNumb = new BigNumber(price).dividedBy(1e8).toNumber();
   return ceilPrecised(priceNumb).toString().replace(',', '.');
 };
 
-export const formatEthPrice = (price: string | null): string => {
-  if (!price) return '--';
+export const formatEthPrice = (
+  price: string | null,
+  emptyStr?: string
+): string => {
+  if (!price) return emptyStr || '--';
   return ceilPrecised(parseFloat(Web3.utils.fromWei(price, 'ether')))
     .toString()
     .replace(',', '.');
@@ -160,4 +166,15 @@ export const ellipsisCenter = (payload: {
 
 export const formatWebDomain = (link: string): string => {
   return link ? new URL(link).hostname : '';
+};
+
+export const convertToSatoshiNumber = (amount: number | string): number => {
+  if (!amount) throw 'Invalid amount';
+  return new BigNumber(amount).multipliedBy(1e8).toNumber();
+};
+
+export const formatBTCOriginalPrice = (price: number | string): string => {
+  if (!price) return '--';
+  const priceNumb = new BigNumber(price).dividedBy(1e8);
+  return priceNumb.toString().replace(',', '.');
 };

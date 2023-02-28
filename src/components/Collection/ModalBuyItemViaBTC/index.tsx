@@ -16,6 +16,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import Text from '@components/Text';
 import { formatUnixDateTime } from '@utils/time';
 import { formatBTCPrice } from '@utils/format';
+import { ISubmitBTCAddressPayload } from '@interfaces/api/marketplace-btc';
 
 interface IFormValue {
   address: string;
@@ -68,7 +69,8 @@ const ModalBuyItemViaBTC = ({
         walletAddress: _data.address,
         inscriptionID,
         orderID,
-      });
+        payType: 'btc',
+      } as ISubmitBTCAddressPayload);
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);
         setExpireTime(data.timeoutAt);

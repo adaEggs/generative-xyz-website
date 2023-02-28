@@ -28,11 +28,11 @@
     max-height: 90%;
 
     @include min-tablet {
-      width: rem(620px);
+      width: rem(820px);
     }
 
     @include min-pc-superWide {
-      width: rem(620px);
+      width: rem(820px);
     }
   }
 
@@ -281,14 +281,23 @@
 
   &_copy {
     cursor: pointer;
-    margin-left: 12px;
+    margin-left: 6px;
 
     :hover {
-      opacity: 0.8;
+      opacity: 0.9;
     }
   }
 
   &_marginTop {
     margin-top: 12px;
+  }
+}
+
+.historyTable {
+  :global(tbody tr td) {
+    padding: {
+      top: rem(13) !important;
+      bottom: rem(13) !important;
+    }
   }
 }

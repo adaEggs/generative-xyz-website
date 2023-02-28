@@ -37,6 +37,7 @@ export enum TrackTxType {
 
 export interface ITrackTx {
   address: string;
+  receiver: string;
   type: TrackTxType;
   inscription_id: string;
   inscription_number: number;
@@ -57,4 +58,5 @@ export interface ITxHistory {
   inscription_id: string;
   inscription_number: number;
   send_amount: number;
+  created_at: string;
 }

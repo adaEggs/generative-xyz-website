@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import { Loading } from '@components/Loading';
-import { validateBTCAddressTaproot } from '@utils/validate';
+import { validateBTCAddressTaproot, validateEVMAddress } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
@@ -23,8 +23,10 @@ import { debounce } from 'lodash';
 import cs from 'classnames';
 import {
   IListingFee,
-  IPostMarketplaceBtcListNFTParams,
+  IPostMarketplaceBtcListNFTForms,
 } from '@interfaces/api/marketplace-btc';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
 
 // const FEE_CHARGE_PERCENT = 0.1;
 const MIN_PRICE = 0.005;
@@ -46,6 +48,8 @@ const ListForSaleModal = ({
   onClose,
   ordAddress,
 }: IProps): JSX.Element => {
+  const user = useAppSelector(getUserSelector);
+
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
   const [expireTime, setExpireTime] = useState('');
@@ -55,13 +59,27 @@ const ListForSaleModal = ({
     ...INITIAL_LISTING_FEE,
   });
 
-  const validateForm = (values: IPostMarketplaceBtcListNFTParams) => {
+  const [useEth, setUseEth] = useState(false);
+
+  const onClickCheckboxEth = () => {
+    setUseEth(!useEth);
+  };
+
+  const validateForm = (values: IPostMarketplaceBtcListNFTForms) => {
     const errors: Record<string, string> = {};
 
     if (!values.receiveAddress) {
       errors.receiveAddress = 'Address is required.';
     } else if (!validateBTCAddressTaproot(values.receiveAddress)) {
       errors.receiveAddress = 'Invalid wallet address.';
+    }
+
+    if (useEth) {
+      if (!values.receiveETHAddress) {
+        errors.receiveETHAddress = 'Address is required.';
+      } else if (!validateEVMAddress(values.receiveETHAddress)) {
+        errors.receiveETHAddress = 'Invalid wallet address.';
+      }
     }
 
     if (!values.receiveOrdAddress) {
@@ -81,11 +99,21 @@ const ListForSaleModal = ({
     return errors;
   };
 
-  const handleSubmit = async (_data: IPostMarketplaceBtcListNFTParams) => {
+  const handleSubmit = async (_data: IPostMarketplaceBtcListNFTForms) => {
     try {
       setIsLoading(true);
+      const data = {
+        ordWalletAddress: ordAddress,
+        payType: useEth
+          ? { btc: _data.receiveAddress, eth: _data.receiveETHAddress }
+          : { btc: _data.receiveAddress },
+        inscriptionID: _data.inscriptionID,
+        name: _data.name,
+        description: _data.description,
+        price: _data.price,
+      };
       const res = await postMarketplaceBtcListNFT({
-        ..._data,
+        ...data,
         price: new BigNumber(_data.price || 0).multipliedBy(1e8).toString(),
       });
       if (res.receiveAddress) {
@@ -176,7 +204,8 @@ const ListForSaleModal = ({
                         name: '',
                         description: '',
                         price: '',
-                        receiveAddress: '',
+                        receiveAddress: ordAddress,
+                        receiveETHAddress: user ? user.walletAddress : '',
                         receiveOrdAddress: ordAddress,
                       }}
                       validate={validateForm}
@@ -208,7 +237,7 @@ const ListForSaleModal = ({
                                 onBlur={handleBlur}
                                 value={values.inscriptionID}
                                 className={s.input}
-                                placeholder="https://ordinals.com/inscription/12345"
+                                placeholder="https://ordinals.com/inscription/abcd12345"
                               />
                             </div>
                             {errors.inscriptionID && touched.inscriptionID && (
@@ -237,6 +266,19 @@ const ListForSaleModal = ({
                             {errors.price && touched.price && (
                               <p className={s.inputError}>{errors.price}</p>
                             )}
+                            <div className={s.checkBoxContainer}>
+                              <SvgInset
+                                className={s.checkBoxIc}
+                                size={18}
+                                svgUrl={`${CDN_URL}/icons/${
+                                  useEth ? 'ic_checkboxed' : 'ic_checkbox'
+                                }.svg`}
+                                onClick={onClickCheckboxEth}
+                              />
+                              <p className={s.checkBoxlabel}>
+                                {`I'd like to receive payment in ETH too.`}
+                              </p>
+                            </div>
                           </div>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="receiveAddress">
@@ -261,6 +303,36 @@ const ListForSaleModal = ({
                                   {errors.receiveAddress}
                                 </p>
                               )}
+                            {useEth && (
+                              <>
+                                <label
+                                  style={{ marginTop: 16 }}
+                                  className={s.label}
+                                  htmlFor="receiveAddress"
+                                >
+                                  Enter your ETH address to receive payment{' '}
+                                  <sup className={s.requiredTag}>*</sup>
+                                </label>
+                                <div className={s.inputContainer}>
+                                  <input
+                                    id="receiveETHAddress"
+                                    type="address"
+                                    name="receiveETHAddress"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.receiveETHAddress}
+                                    className={s.input}
+                                    placeholder="Paste your ETH address here"
+                                  />
+                                </div>
+                                {errors.receiveETHAddress &&
+                                  touched.receiveETHAddress && (
+                                    <p className={s.inputError}>
+                                      {errors.receiveETHAddress}
+                                    </p>
+                                  )}
+                              </>
+                            )}
                           </div>
                           <div className={s.formItem}>
                             <label

@@ -68,6 +68,11 @@
   }
 
   &_info {
+    .projectCard_info_price {
+      display: flex;
+      flex-direction: column;
+    }
+
     &.desktop {
       .projectCard_info_title {
         display: flex;

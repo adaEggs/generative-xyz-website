@@ -131,7 +131,6 @@ export const RecentWorks = (): JSX.Element => {
       }
     } catch (err: unknown) {
       log('failed to fetch category list', LogLevel.ERROR, LOG_PREFIX);
-      throw Error();
     }
   };
 

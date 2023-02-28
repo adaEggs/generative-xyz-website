@@ -8,6 +8,8 @@ import {
   ITxHistory,
 } from '@interfaces/api/bitcoin';
 import axios from 'axios';
+import { getPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
+import { getUTXOKey } from '@containers/Profile/ButtonSendBTC/utils';
 
 const LOG_PREFIX = 'COLLECTED_NFT';
 
@@ -19,7 +21,17 @@ export const getCollectedUTXO = async (
     const res = await get<ICollectedUTXOResp>(
       `/wallet/wallet-info?address=${btcAddress}`
     );
-    return res;
+
+    const pendingUTXOs = getPendingUTXOs();
+    const data = {
+      ...res,
+      txrefs: res.txrefs.filter(item => {
+        const txIDKey = getUTXOKey(item);
+        const isPending = pendingUTXOs.some(tx => tx.txIDKey === txIDKey);
+        return !isPending;
+      }),
+    };
+    return data;
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw err;

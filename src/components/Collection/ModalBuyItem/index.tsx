@@ -13,7 +13,7 @@ import { submitAddressBuyBTC } from '@services/marketplace-btc';
 import { ellipsisCenter, formatBTCPrice, formatEthPrice } from '@utils/format';
 import log from '@utils/logger';
 import { formatUnixDateTime } from '@utils/time';
-import { validateBTCAddressTaproot, validateEVMAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
 import React, { useState } from 'react';
@@ -59,11 +59,13 @@ const ModalBuyItem = ({
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [addressInput, setAddressInput] = useState<string>('');
 
+  const [ethPrice, setEthPrice] = useState(price);
+
   const unit = payType === 'btc' ? 'BTC' : 'ETH';
   const formatPrice =
     payType === 'btc'
-      ? formatBTCPrice(price || 0)
-      : formatEthPrice(`${price || 0}`);
+      ? formatBTCPrice(price || 0, '0.0')
+      : formatEthPrice(`${ethPrice || 0}`, '0.0');
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -76,11 +78,7 @@ const ModalBuyItem = ({
 
     if (!values.address) {
       errors.address = 'Address is required.';
-    } else if (
-      payType === 'btc'
-        ? !validateBTCAddressTaproot(values.address)
-        : !validateEVMAddress(values.address)
-    ) {
+    } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
       if (step === 'showAddress' && addressInput !== values.address) {
@@ -105,7 +103,11 @@ const ModalBuyItem = ({
         walletAddress: address,
         inscriptionID,
         orderID,
+        payType,
       });
+      if (payType === 'eth' && data && data.price) {
+        setEthPrice(data.price);
+      }
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);
         setExpireTime(data.timeoutAt);
@@ -255,7 +257,7 @@ const ModalBuyItem = ({
                           <div className={s.noteContainer}>
                             Your Ordinal inscription will be stored securely in
                             your Generative Wallet. We recommend Generative
-                            Wallet for ease-for-use, security, and the best
+                            Wallet for ease-of-use, security, and the best
                             experience on Generative.
                           </div>
                         )}
@@ -279,10 +281,10 @@ const ModalBuyItem = ({
                             }) => (
                               <form onSubmit={handleSubmit}>
                                 <div className={s.formItem}>
-                                  <label className={s.label} htmlFor="address">
+                                  {/* <label className={s.label} htmlFor="address">
                                     {`Enter the Ordinals-compatible BTC address to
                                 receive your buying inscription`}
-                                  </label>
+                                  </label> */}
                                   <div className={s.inputContainer}>
                                     <input
                                       id="address"
@@ -347,7 +349,12 @@ const ModalBuyItem = ({
                       {receiveAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
-                            {`Send ${formatPrice} ${unit} to this payment address`}
+                            Send{' '}
+                            <span style={{ fontWeight: 'bold' }}>
+                              {' '}
+                              {formatPrice} {unit}
+                            </span>{' '}
+                            to this payment address
                           </p>
 
                           <div className={s.btcAddressContainer}>
