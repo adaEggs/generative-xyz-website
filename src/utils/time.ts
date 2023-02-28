@@ -24,8 +24,8 @@ interface IExpired {
 
 const isExpiredTime = ({ time, expiredMin = 1 }: IExpired) => {
   if (!time || !isNumber(time)) return false;
-  const now = new Date().getTime();
-  expiredMin = expiredMin * 60 * 1000;
+  const now = Math.floor(new Date().getTime() / 1000);
+  expiredMin = expiredMin * 60;
   return now - Number(time) > expiredMin;
 };
 
