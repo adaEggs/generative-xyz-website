@@ -89,7 +89,7 @@
   }
 
   .formWrapper {
-    padding-bottom: rem(24px);
+    padding-bottom: rem(0);
 
     @include mobile {
       padding-bottom: rem(0);
@@ -116,9 +116,15 @@
     @include calcFontAuto(18px, 24px);
   }
 
+  .modalTitleAdvance {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 26px;
+  }
+
   .formItem {
-    margin-top: 16px;
-    margin-bottom: 16px;
+    margin-top: rem(16px);
+    margin-bottom: rem(24px);
     width: 100%;
   }
 
@@ -323,12 +329,12 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-top: rem(24px);
 }
 
 .buyBtn {
   justify-content: center;
   width: 100%;
-  margin-top: rem(24px);
 }
 
 .checkBtn {
@@ -405,6 +411,13 @@
       color: red;
     }
 
+    &_total {
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 30px;
+      color: #333;
+    }
+
     &_copyContainer {
       display: flex;
       flex-direction: row;
@@ -472,7 +485,8 @@
   font-size: 14px;
   line-height: 22px;
   color: #4185ec;
-  margin-top: 16px;
+  margin-top: rem(16px);
+  margin-bottom: rem(24px);
 }
 
 .checkBtn {
@@ -498,8 +512,8 @@
   }
 
   .icArrow {
-    transform: rotate(90deg);
     cursor: pointer;
+    transform: rotate(90deg);
   }
 
   .close {

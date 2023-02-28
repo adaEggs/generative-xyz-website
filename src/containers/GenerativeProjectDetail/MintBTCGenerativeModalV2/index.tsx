@@ -212,7 +212,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                     <div className={s.indicator} />
 
                     <div className={s.paymentPrice}>
-                      <p className={s.paymentPrice_title}>Total</p>
+                      <p className={s.paymentPrice_total}>Total</p>
                       <div className={s.paymentPrice_copyContainer}>
                         <SvgInset
                           className={s.ic}
@@ -226,7 +226,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                   </div>
                   <div className={s.formWrapper}>
                     <div className={s.advancedContainer}>
-                      <h3 className={s.modalTitle}>Advanced</h3>
+                      <h3 className={s.modalTitleAdvance}>Advanced</h3>
                       <SvgInset
                         className={`${s.icArrow} ${
                           isShowAdvance ? s.close : ''
@@ -236,70 +236,72 @@ const MintBTCGenerativeModal: React.FC = () => {
                         onClick={() => setIsShowAdvance(!isShowAdvance)}
                       />
                     </div>
-                    {isShowAdvance && (
-                      <>
-                        <div className={s.checkboxContainer}>
-                          <div className={s.checkbox}>
-                            <SvgInset
-                              className={s.checkbox_ic}
-                              size={18}
-                              svgUrl={`${CDN_URL}/icons/${
-                                useWallet === 'default'
-                                  ? 'ic_checkboxed'
-                                  : 'ic_checkbox'
-                              }.svg`}
-                              onClick={onClickUseDefault}
-                            />
-                            <p className={s.checkbox_text}>
-                              Your Generative Wallet
-                            </p>
-                          </div>
-                          <div
-                            className={s.checkbox}
-                            style={{ marginLeft: 24 }}
-                          >
-                            <SvgInset
-                              className={s.checkbox_ic}
-                              size={18}
-                              svgUrl={`${CDN_URL}/icons/${
-                                useWallet === 'another'
-                                  ? 'ic_checkboxed'
-                                  : 'ic_checkbox'
-                              }.svg`}
-                              onClick={onClickUseAnother}
-                            />
-                            <p className={s.checkbox_text}>
-                              Send to another wallet
-                            </p>
-                          </div>
-                        </div>
-                        {useWallet === 'default' && (
-                          <div className={s.noteContainer}>
-                            Your Ordinal inscription will be stored securely in
-                            your Generative Wallet. We recommend Generative
-                            Wallet for ease-of-use, security, and the best
-                            experience on Generative.
-                          </div>
-                        )}
 
-                        {useWallet === 'another' && (
-                          <Formik
-                            key="mintBTCGenerativeForm"
-                            initialValues={{
-                              address: '',
-                            }}
-                            validate={validateForm}
-                            onSubmit={handleSubmit}
-                          >
-                            {({
-                              values,
-                              errors,
-                              touched,
-                              handleChange,
-                              handleBlur,
-                              handleSubmit,
-                            }) => (
-                              <form onSubmit={handleSubmit}>
+                    <Formik
+                      key="mintBTCGenerativeForm"
+                      initialValues={{
+                        address: '',
+                      }}
+                      validate={validateForm}
+                      onSubmit={handleSubmit}
+                    >
+                      {({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                      }) => (
+                        <form onSubmit={handleSubmit}>
+                          {isShowAdvance && (
+                            <>
+                              <div className={s.checkboxContainer}>
+                                <div className={s.checkbox}>
+                                  <SvgInset
+                                    className={s.checkbox_ic}
+                                    size={18}
+                                    svgUrl={`${CDN_URL}/icons/${
+                                      useWallet === 'default'
+                                        ? 'ic_checkboxed'
+                                        : 'ic_checkbox'
+                                    }.svg`}
+                                    onClick={onClickUseDefault}
+                                  />
+                                  <p className={s.checkbox_text}>
+                                    Your Generative Wallet
+                                  </p>
+                                </div>
+                                <div
+                                  className={s.checkbox}
+                                  style={{ marginLeft: 24 }}
+                                >
+                                  <SvgInset
+                                    className={s.checkbox_ic}
+                                    size={18}
+                                    svgUrl={`${CDN_URL}/icons/${
+                                      useWallet === 'another'
+                                        ? 'ic_checkboxed'
+                                        : 'ic_checkbox'
+                                    }.svg`}
+                                    onClick={onClickUseAnother}
+                                  />
+                                  <p className={s.checkbox_text}>
+                                    Send to another wallet
+                                  </p>
+                                </div>
+                              </div>
+                              {useWallet === 'default' && (
+                                <div className={s.noteContainer}>
+                                  Your Ordinal inscription will be stored
+                                  securely in your Generative Wallet. We
+                                  recommend Generative Wallet for ease-of-use,
+                                  security, and the best experience on
+                                  Generative.
+                                </div>
+                              )}
+
+                              {useWallet === 'another' && (
                                 <div className={s.formItem}>
                                   {/* <label className={s.label} htmlFor="address">
                                     {`Enter the Ordinals-compatible BTC address to
@@ -323,22 +325,23 @@ const MintBTCGenerativeModal: React.FC = () => {
                                     </p>
                                   )}
                                 </div>
-                                {step === 'info' && useWallet === 'another' && (
-                                  <ButtonIcon
-                                    type="submit"
-                                    sizes="large"
-                                    className={s.buyBtn}
-                                    disabled={isLoading}
-                                  >
-                                    Pay
-                                  </ButtonIcon>
-                                )}
-                              </form>
-                            )}
-                          </Formik>
-                        )}
-                      </>
-                    )}
+                              )}
+                            </>
+                          )}
+
+                          {step === 'info' && useWallet === 'another' && (
+                            <ButtonIcon
+                              type="submit"
+                              sizes="large"
+                              className={s.buyBtn}
+                              disabled={isLoading}
+                            >
+                              Pay
+                            </ButtonIcon>
+                          )}
+                        </form>
+                      )}
+                    </Formik>
 
                     {step === 'info' && useWallet === 'default' && (
                       <ButtonIcon
