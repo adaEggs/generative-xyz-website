@@ -34,6 +34,18 @@ export type Token = {
     price: string;
   };
   animationHtml: string;
+  listingDetail?: {
+    paymentListingInfo: {
+      btc: {
+        paymentAddress: string;
+        price: string;
+      };
+      eth?: {
+        paymentAddress: string;
+        price: string;
+      };
+    };
+  };
 };
 
 export type TokenOffer = {

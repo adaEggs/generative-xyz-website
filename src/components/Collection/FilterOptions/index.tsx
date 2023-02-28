@@ -4,7 +4,7 @@ import Heading from '@components/Heading';
 import Text from '@components/Text';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { TraitStats } from '@interfaces/project';
-import { useCallback, useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Stack } from 'react-bootstrap';
 import { v4 } from 'uuid';
 import styles from './styles.module.scss';
@@ -28,13 +28,18 @@ const FilterOptions = ({ attributes }: Props) => {
     // setFilterPrice,
   } = useContext(GenerativeProjectDetailContext);
 
-  const initialAttributesMap = useCallback(() => {
+  const initialAttributesMap = () => {
     const attrMap = new Map();
+
     attributes?.forEach(attr => {
-      attrMap.set(attr.traitName, '');
+      filterTraits.split(',').forEach(trait => {
+        if (trait.split(':')[0] === attr.traitName) {
+          attrMap.set(attr.traitName, trait.split(':')[1]);
+        }
+      });
     });
     setQuery(attrMap);
-  }, [attributes]);
+  };
 
   const handleSelectFilter = (
     values: { value: string; label: string }[],
@@ -48,7 +53,7 @@ const FilterOptions = ({ attributes }: Props) => {
       }
     });
     setFilterTraits(str.substring(1));
-    setQuery(newQuery || null);
+
     setPage(1);
   };
 
@@ -85,8 +90,10 @@ const FilterOptions = ({ attributes }: Props) => {
   // };
 
   useEffect(() => {
-    initialAttributesMap();
-  }, [attributes]);
+    if (attributes) {
+      initialAttributesMap();
+    }
+  }, [attributes, filterTraits]);
 
   return (
     <div className={styles.filter_wrapper}>
@@ -164,7 +171,7 @@ const FilterOptions = ({ attributes }: Props) => {
 
                   return (
                     <Dropdown
-                      values={filterTraits ? defaultValue : []}
+                      values={defaultValue}
                       options={options}
                       multi={false}
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any

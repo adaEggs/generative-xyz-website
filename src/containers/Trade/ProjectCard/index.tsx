@@ -7,9 +7,9 @@ import cs from 'classnames';
 import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
 import React from 'react';
-import BigNumber from 'bignumber.js';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
+import { formatBTCPrice, formatEthPrice } from '@utils/format';
 
 interface IPros {
   project: IGetMarketplaceBtcListItem;
@@ -19,10 +19,6 @@ interface IPros {
 
 export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
-
-  const convertBTCPrice = () => {
-    return new BigNumber(project.price || 0).div(1e8).toString();
-  };
 
   return (
     <div className={`${s.projectCard} ${className}`}>
@@ -41,11 +37,19 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 <Text size="14" fontWeight="semibold">
                   #{project.inscriptionNumber}
                 </Text>
-                {(Number(project?.price) || 0) > 0 && (
-                  <Text size="12" fontWeight="semibold">
-                    {convertBTCPrice()}&nbsp;BTC
-                  </Text>
-                )}
+                <div className={s.projectCard_info_price}>
+                  {(Number(project?.price) || 0) > 0 && (
+                    <Text size="12" fontWeight="semibold">
+                      {formatBTCPrice(project?.price)}&nbsp;BTC{' '}
+                      {project.paymentListingInfo &&
+                        project.paymentListingInfo.eth &&
+                        project.paymentListingInfo.eth.price &&
+                        `| ${formatEthPrice(
+                          project.paymentListingInfo.eth.price
+                        )} ETH`}
+                    </Text>
+                  )}
+                </div>
               </div>
             </div>
           ) : (
@@ -54,11 +58,21 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 <Heading as={'h4'}>
                   <span title={project.name}>#{project.inscriptionNumber}</span>
                 </Heading>
-                {(Number(project?.price) || 0) > 0 && (
-                  <Heading as={'h4'} className={s.projectCard_info_price}>
-                    {convertBTCPrice()}&nbsp;BTC
-                  </Heading>
-                )}
+                <div className={s.projectCard_info_price}>
+                  {(Number(project?.price) || 0) > 0 && (
+                    <Heading as={'h4'} className={s.projectCard_info_price}>
+                      {formatBTCPrice(project?.price)}&nbsp;BTC{' '}
+                      {project.paymentListingInfo &&
+                        project.paymentListingInfo.eth &&
+                        project.paymentListingInfo.eth.price &&
+                        (Number(project.paymentListingInfo.eth.price) || 0) >
+                          0 &&
+                        `| ${formatEthPrice(
+                          project.paymentListingInfo.eth.price
+                        )} ETH`}
+                    </Heading>
+                  )}
+                </div>
               </div>
               {project?.buyable && (
                 <div className={cs(s.btnBuyNow)}>Buy Now </div>

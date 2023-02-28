@@ -177,7 +177,7 @@ const InscriptionID: React.FC = (): React.ReactElement => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    fetchData().then();
+    fetchData().then().catch();
     const intervalID = setInterval(fetchData, 60000);
     return () => {
       clearInterval(intervalID);

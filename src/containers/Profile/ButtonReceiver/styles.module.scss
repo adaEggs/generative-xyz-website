@@ -1,0 +1,77 @@
+.modalWrapper {
+  :global(.modal-content) {
+    border-radius: 2px;
+    padding: rem(48) rem(24);
+    position: relative;
+  }
+}
+
+.modalHeader {
+  border: none;
+
+  &_title {
+    font-weight: 700;
+    color: $black-100;
+    margin-bottom: rem(24px);
+    line-height: (34 / 24);
+
+    @include calcFontAuto(18px, 24px);
+  }
+
+  &_closeBtn {
+    padding: rem(18.8) !important;
+    background-color: transparent !important;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &:hover {
+      .closeIcon {
+        transform: rotate(90deg);
+        transition: all 0.3s;
+
+        :global(svg path) {
+          fill: $black-100;
+          fill-opacity: 1;
+        }
+      }
+    }
+  }
+}
+
+.qrCodeWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .wrapAddress {
+    border: 1px solid #c8c8c8;
+    background: #f8f8f8;
+    padding: 8px;
+    margin-top: rem(24px);
+    display: flex;
+    align-items: center;
+
+    @include min-tablet {
+      padding-left: rem(40px);
+      padding-right: rem(40px);
+    }
+  }
+
+  .address {
+    font-size: 16px;
+    line-height: 120%;
+    word-break: break-all;
+    margin-right: rem(24px);
+  }
+
+  .iconCopy {
+    cursor: pointer;
+    margin-left: 8px;
+
+    :hover {
+      opacity: 0.9;
+    }
+  }
+}

@@ -12,6 +12,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow-y: auto;
   }
 
   .modalWrapper {
@@ -88,7 +89,7 @@
   }
 
   .formWrapper {
-    padding-bottom: rem(40px);
+    padding-bottom: rem(24px);
 
     @include mobile {
       padding-bottom: rem(0);
@@ -327,7 +328,7 @@
 .buyBtn {
   justify-content: center;
   width: 100%;
-  margin-top: rem(35);
+  margin-top: rem(24px);
 }
 
 .checkBtn {
@@ -408,7 +409,14 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      cursor: pointer;
+
+      .ic {
+        cursor: pointer;
+
+        :hover {
+          opacity: 0.8;
+        }
+      }
 
       .text {
         font-weight: 500;

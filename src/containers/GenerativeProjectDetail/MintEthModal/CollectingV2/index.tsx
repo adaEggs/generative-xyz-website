@@ -66,9 +66,13 @@ const MintEthModal: React.FC = () => {
       `${
         Number(projectData?.mintPriceEth) + Number(projectData?.networkFeeEth)
       }` ||
-      ''
+      '',
+    '0.0'
   );
-  const feePriceFormat = formatEthPrice(projectData?.networkFeeEth || '');
+  const feePriceFormat = formatEthPrice(
+    projectData?.networkFeeEth || '',
+    '0.0'
+  );
 
   const userAddress = React.useMemo(() => {
     return {
@@ -227,7 +231,8 @@ const MintEthModal: React.FC = () => {
                               Number(totalPrice) -
                               Number(projectData.networkFeeEth)
                             }`
-                          : projectData?.mintPriceEth || ''
+                          : projectData?.mintPriceEth || '',
+                        '0.0'
                       )} ETH`}</p>
                     </div>
                     <div className={s.paymentPrice}>

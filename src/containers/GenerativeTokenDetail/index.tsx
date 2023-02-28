@@ -23,6 +23,7 @@ import { getUserSelector } from '@redux/user/selector';
 import {
   formatAddress,
   formatBTCPrice,
+  formatEthPrice,
   formatLongAddress,
   formatTokenId,
 } from '@utils/format';
@@ -72,11 +73,15 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     !!tokenData?.priceBTC;
   const isBTCDisable =
     !tokenData?.buyable && !tokenData?.isCompleted && !!tokenData?.priceBTC;
+  const [payType, setPayType] = useState<'eth' | 'btc'>('btc');
 
-  const toggleModal = () => {
+  const toggleModal = (_payType?: 'eth' | 'btc') => {
     if (isBTCDisable) return;
     return onButtonClick({
       cbSigned: () => {
+        if (_payType) {
+          setPayType(_payType);
+        }
         setShowModal(show => !show);
       },
     });
@@ -175,13 +180,43 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             </Text>
           </Heading>
         </div>
-        <ButtonIcon
-          disabled={isBTCDisable}
-          className={s.buy_btc_button}
-          onClick={toggleModal}
-        >
-          {isBTCDisable ? 'The inscription is being purchased' : 'Buy now'}
-        </ButtonIcon>
+        {isBTCDisable ? (
+          <ButtonIcon
+            disabled={isBTCDisable}
+            className={s.buy_btc_button}
+            onClick={() => toggleModal()}
+          >
+            The inscription is being purchased{' '}
+          </ButtonIcon>
+        ) : (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <ButtonIcon
+              className={s.buy_btc_button}
+              onClick={() => toggleModal('btc')}
+            >
+              {`Buy • ${formatBTCPrice(tokenData.priceBTC)} BTC`}
+            </ButtonIcon>
+            {tokenData.listingDetail &&
+              tokenData.listingDetail.paymentListingInfo.eth && (
+                <ButtonIcon
+                  className={s.buy_btc_button}
+                  onClick={() => toggleModal('eth')}
+                  variants="outline"
+                  style={{ marginLeft: 8 }}
+                >
+                  {`Buy • ${formatEthPrice(
+                    tokenData.listingDetail.paymentListingInfo.eth.price
+                  )} ETH`}
+                </ButtonIcon>
+              )}
+          </div>
+        )}
       </div>
     );
   };
@@ -447,10 +482,17 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           onClose={toggleModal}
           onSuccess={refreshPage}
           inscriptionID={tokenData.tokenID}
-          price={tokenData.priceBTC}
+          price={
+            payType === 'btc'
+              ? tokenData.priceBTC
+              : tokenData.listingDetail &&
+                tokenData.listingDetail.paymentListingInfo.eth
+              ? tokenData.listingDetail.paymentListingInfo.eth.price
+              : '0'
+          }
           orderID={tokenData.orderID}
           ordAddress={ordAddress}
-          payType="btc"
+          payType={payType}
         />
       )}
     </>
