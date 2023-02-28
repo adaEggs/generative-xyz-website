@@ -11,11 +11,12 @@ import ButtonIcon from '@components/ButtonIcon';
 const MetamaskXOrdinals = () => {
   const { ordAddress: _, onButtonClick } = useBTCSignOrd();
   const router = useRouter();
+  const { next } = router.query;
 
   const onConnect = () => {
     onButtonClick({
       cbSigned: () => {
-        router.replace('/profile');
+        router.replace((next as string) || '/profile');
       },
     });
   };
