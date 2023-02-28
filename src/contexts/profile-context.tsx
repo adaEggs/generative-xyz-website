@@ -392,6 +392,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const handleFetchListingReferrals = async () => {
     try {
+      setIsLoadedProfileReferral(false);
       if (currentUser?.walletAddress) {
         const referralListing = await getReferrals({
           referrerID: currentUser.id,

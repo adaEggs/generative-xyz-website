@@ -1,54 +1,66 @@
-import React, { useContext } from 'react';
-import s from './ArtistCollectionEarn.module.scss';
+import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import Table from '@components/Table';
-import { Stack } from 'react-bootstrap';
-import ToogleSwitch from '@components/Toggle';
+import Text from '@components/Text';
+import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { CurrencyType } from '@enums/currency';
-import Text from '@components/Text';
-import cs from 'classnames';
-import { useRouter } from 'next/router';
-import { ROUTE_PATH } from '@constants/route-path';
-import Image from 'next/image';
-import { formatBTCPrice, formatEthPrice } from '@utils/format';
-import ButtonIcon from '@components/ButtonIcon';
-import { withdrawRefereeReward } from '@services/profile';
-import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
+import { withdrawRefereeReward } from '@services/profile';
+import { formatBTCPrice, formatEthPrice } from '@utils/format';
+import log from '@utils/logger';
+import cs from 'classnames';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
+import { Stack } from 'react-bootstrap';
+import s from './ArtistCollectionEarn.module.scss';
 
 const LOG_PREFIX = 'ArtistCollectionEarn';
 
 const ArtistCollectionEarn = () => {
   const router = useRouter();
-  const { profileProjects, currency, setCurrency } = useContext(ProfileContext);
-
+  const { profileProjects, currency } = useContext(ProfileContext);
   const TABLE_ARTISTS_HEADING = [
     'Collection',
     'Outputs',
     'Mint price',
     'Total volume',
-    <>
-      <Stack direction="horizontal" gap={2} className={s.switch_currency}>
-        <ToogleSwitch
-          size="16"
-          checked={currency === CurrencyType.ETH}
-          onChange={() => {
-            if (currency === CurrencyType.ETH) {
-              setCurrency(CurrencyType.BTC);
-            } else {
-              setCurrency(CurrencyType.ETH);
-            }
-          }}
-        />
-        <Text fontWeight="medium" color="primary-color">
-          ETH
-        </Text>
-      </Stack>
-    </>,
+    '',
+    // <>
+    //   <Stack direction="horizontal" gap={2} className={s.switch_currency}>
+    //     <ToogleSwitch
+    //       size="16"
+    //       checked={currency === CurrencyType.ETH}
+    //       onChange={() => {
+    //         if (currency === CurrencyType.ETH) {
+    //           setCurrency(CurrencyType.BTC);
+    //         } else {
+    //           setCurrency(CurrencyType.ETH);
+    //         }
+    //       }}
+    //     />
+    //     <Text fontWeight="medium" color="primary-color">
+    //       ETH
+    //     </Text>
+    //   </Stack>
+    // </>,
   ];
 
-  const handleWithdraw = async (amount: string, projectID: string) => {
+  // const handleFetchTotalVolume = async (projectID: string) => {
+  //   try {
+  //     const response = await getProjectVolume(
+  //       { contractAddress: GENERATIVE_PROJECT_CONTRACT, projectID },
+  //       { payType: currency.toLowerCase() }
+  //     );
+  //     return response;
+  //   } catch (err: unknown) {
+  //     log('failed to fetch volume', LogLevel.ERROR, LOG_PREFIX);
+  //     throw Error();
+  //   }
+  // };
+
+  const handleWithdraw = async (amount: string, projectID: string[]) => {
     const payload = {
       items: [
         {
@@ -67,16 +79,20 @@ const ArtistCollectionEarn = () => {
     }
   };
 
-  //   const calculateTotalWithdraw = profileProjects?.result.reduce(
-  //     (total, currentValue) => {
-  //       // TODO: Update this to use the correct value
-  //       return total + parseFloat(currentValue?.totalVolume || '');
-  //     },
-  //     0
-  //   );
+  const calculateTotalWithdraw = profileProjects?.result.reduce(
+    (total, currentValue) => {
+      // TODO: Update this to use the correct value
+      return total + parseFloat(currentValue?.totalVolume || '');
+    },
+    0
+  );
+
+  const allMyColelctions = profileProjects?.result?.map(item => {
+    return item.tokenID;
+  });
 
   const recordsData = profileProjects?.result?.map(item => {
-    const totalVolume = '100000000';
+    const totalVolume = '1000000';
 
     return {
       id: `${item.id}-record`,
@@ -127,7 +143,7 @@ const ArtistCollectionEarn = () => {
               sizes="small"
               variants="outline-small"
               disabled={!Number(totalVolume)}
-              onClick={() => handleWithdraw(totalVolume || '', item.tokenID)}
+              // onClick={() => handleWithdraw(totalVolume || '', [item.tokenID])}
             >
               Withdraw
             </ButtonIcon>
@@ -145,15 +161,17 @@ const ArtistCollectionEarn = () => {
       <Table
         tableHead={TABLE_ARTISTS_HEADING}
         data={recordsData}
-        className={s.Refferal_table}
+        className={s.Records_table}
       ></Table>
-      {/* {!!calculateTotalWithdraw && (
+      {!!calculateTotalWithdraw && allMyColelctions && (
         <div className={s.Withdraw_all}>
           <ButtonIcon
             sizes="large"
             className={s.Withdraw_all_btn}
             disabled={!calculateTotalWithdraw}
-            onClick={() => handleWithdraw(`${calculateTotalWithdraw}`)}
+            onClick={() =>
+              handleWithdraw(`${calculateTotalWithdraw}`, allMyColelctions)
+            }
           >
             <span>Withdraw all</span>
             <>
@@ -162,7 +180,7 @@ const ArtistCollectionEarn = () => {
             </>
           </ButtonIcon>
         </div>
-      )} */}
+      )}
     </div>
   );
 };
