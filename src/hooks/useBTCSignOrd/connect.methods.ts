@@ -4,6 +4,10 @@ import * as bitcoin from 'bitcoinjs-lib';
 import BIP32Factory from 'bip32';
 import { Buffer } from 'buffer';
 import * as Segwit from 'segwit';
+import { clearAuthStorage } from '@utils/auth';
+import { resetUser } from '@redux/user/action';
+import store from '@redux';
+import { ROUTE_PATH } from '@constants/route-path';
 
 bitcoin.initEccLib(ecc);
 const bip32 = BIP32Factory(ecc);
@@ -22,32 +26,43 @@ const getBitcoinKeySignContent = (message: string): Buffer => {
 };
 
 export const generateBitcoinTaprootKey = async (address: string) => {
-  const provider = new ethers.providers.Web3Provider(
-    window.ethereum as ethers.providers.ExternalProvider
-  );
-  const toSign =
-    '0x' + getBitcoinKeySignContent(TAPROOT_MESSAGE).toString('hex');
-  const signature = await provider.send('personal_sign', [
-    toSign,
-    address.toString(),
-  ]);
-  const seed = ethers.utils.arrayify(
-    ethers.utils.keccak256(ethers.utils.arrayify(signature))
-  );
-  const root = bip32.fromSeed(Buffer.from(seed));
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const provider = new ethers.providers.Web3Provider(
+      window.ethereum as ethers.providers.ExternalProvider
+    );
+    const toSign =
+      '0x' + getBitcoinKeySignContent(TAPROOT_MESSAGE).toString('hex');
+    const signature = await provider.send('personal_sign', [
+      toSign,
+      address.toString(),
+    ]);
+    const seed = ethers.utils.arrayify(
+      ethers.utils.keccak256(ethers.utils.arrayify(signature))
+    );
+    const root = bip32.fromSeed(Buffer.from(seed));
 
-  // Taproot
-  const taprootChild = root.derivePath(defaultPath);
-  const { address: taprootAddress } = bitcoin.payments.p2tr({
-    internalPubkey: toXOnly(taprootChild.publicKey),
-  });
+    // Taproot
+    const taprootChild = root.derivePath(defaultPath);
+    const { address: taprootAddress } = bitcoin.payments.p2tr({
+      internalPubkey: toXOnly(taprootChild.publicKey),
+    });
 
-  return {
-    root,
-    taprootChild,
-    address: taprootAddress,
-    signature,
-  };
+    return {
+      root,
+      taprootChild,
+      address: taprootAddress,
+      signature,
+    };
+  } catch (error) {
+    const isMetamaskAuthError = await isAuthMetamaskError(error, address);
+    if (isMetamaskAuthError && !!store && !!store.dispatch) {
+      await clearAuthStorage();
+      await store.dispatch(resetUser());
+      window.location.replace(ROUTE_PATH.WALLET);
+    }
+    throw error;
+  }
 };
 
 const generateBitcoinKey = async ({
@@ -85,4 +100,23 @@ const generateBitcoinKey = async ({
   };
 };
 
-export { generateBitcoinKey, getBitcoinKeySignContent };
+const isAuthMetamaskError = async (error: unknown, profileAddress: string) => {
+  const provider = new ethers.providers.Web3Provider(
+    window.ethereum as ethers.providers.ExternalProvider
+  );
+  let currentAccount;
+  const accounts = await provider.send('eth_requestAccounts', []);
+  if (!!accounts && !!accounts.length) {
+    currentAccount = accounts[0];
+    // force re-sign in
+    if (!!error && !!currentAccount && currentAccount !== profileAddress) {
+      const values = Object.values(error || {});
+      if (!!values && !!values.length && values.some(value => value === 4100)) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
+export { generateBitcoinKey, getBitcoinKeySignContent, isAuthMetamaskError };
