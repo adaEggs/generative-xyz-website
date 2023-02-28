@@ -69,8 +69,9 @@ export const getHistory = async (address: string): Promise<ITxHistory[]> => {
     return (res || []).map(history => {
       let statusColor: HistoryStatusColor = '#ff7e21';
       let status: HistoryStatusType = HistoryStatusType.pending;
+      const now = new Date().getTime();
       const isExpired = isExpiredTime({
-        time: history.created_at,
+        time: history.created_at || now,
         expiredMin: 4,
       });
       if (isExpired) {
