@@ -45,6 +45,12 @@ export const MENU_HEADER = [
     route: ROUTE_PATH.WALLET,
     activePath: '/wallet',
   },
+  {
+    id: 'menu-8',
+    name: 'Free',
+    route: ROUTE_PATH.FREE,
+    activePath: 'free',
+  },
 ];
 
 export const RIGHT_MENU = [

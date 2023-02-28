@@ -50,6 +50,15 @@
         color: #4f43e2 !important;
       }
     }
+
+    li {
+      &.active {
+        a {
+          color: var(--color-hover);
+          font-weight: 700;
+        }
+      }
+    }
   }
 
   .connectWallet {

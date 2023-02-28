@@ -130,9 +130,14 @@
 
   .filterWrapper {
     > button {
-      width: rem(97);
+      width: rem(105);
+      max-height: rem(46);
       animation: fade-in 0.1s ease;
       align-items: center;
+
+      > div:first-of-type {
+        width: 16px !important;
+      }
     }
   }
 }
