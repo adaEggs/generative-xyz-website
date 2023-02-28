@@ -225,21 +225,27 @@ const MintEthModal: React.FC = () => {
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
-                      <p className={s.paymentPrice_price}>{`${formatEthPrice(
-                        totalPrice
-                          ? `${
-                              Number(totalPrice) -
-                              Number(projectData.networkFeeEth)
-                            }`
-                          : projectData?.mintPriceEth || '',
-                        '0.0'
-                      )} ETH`}</p>
+                      <p className={s.paymentPrice_price}>{`${
+                        projectData?.mintPriceEth === '0'
+                          ? '0.0'
+                          : formatEthPrice(
+                              totalPrice
+                                ? `${
+                                    Number(totalPrice) -
+                                    Number(projectData.networkFeeEth)
+                                  }`
+                                : projectData?.mintPriceEth || '',
+                              '0.0'
+                            )
+                      } ETH`}</p>
                     </div>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Inscription fee</p>
-                      <p
-                        className={s.paymentPrice_price}
-                      >{`${feePriceFormat} ETH`}</p>
+                      <p className={s.paymentPrice_price}>{`${
+                        projectData?.mintPriceEth === '0'
+                          ? totalFormatPrice
+                          : feePriceFormat
+                      } ETH`}</p>
                     </div>
                     <div className={s.indicator} />
 
