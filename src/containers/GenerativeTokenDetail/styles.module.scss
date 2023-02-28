@@ -12,6 +12,32 @@
   }
 }
 
+.projectHeader {
+  display: flex;
+  gap: rem(8px);
+
+  &_title {
+    font-style: italic;
+  }
+
+  &_heading {
+    &.hasEdit {
+      display: flex;
+
+      .projectHeader_title {
+        flex: 0 0 auto;
+        margin-right: rem(30px);
+        max-width: calc(100% - #{rem(120px)});
+      }
+
+      .projectHeader_btn {
+        flex: 0 0 auto;
+        margin-top: rem(5px);
+      }
+    }
+  }
+}
+
 .itemInfo {
   position: relative;
   height: 100%;
@@ -20,6 +46,7 @@
 
   &_heading {
     width: 100%;
+    margin-bottom: rem(8px);
 
     span {
       display: block;

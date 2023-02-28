@@ -1,15 +1,14 @@
-import Avatar from '@components/Avatar';
 import ButtonIcon from '@components/ButtonIcon';
 import ModalBuyItem from '@components/Collection/ModalBuyItem';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
 import { Loading } from '@components/Loading';
 import ProjectDescription from '@components/ProjectDescription';
+import { SocialVerify } from '@components/SocialVerify';
 import Stats from '@components/Stats';
-import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
-import { CDN_URL } from '@constants/config';
+import { SOCIALS } from '@constants/common';
 import { EXTERNAL_LINK } from '@constants/external-link';
 import { ROUTE_PATH } from '@constants/route-path';
 import {
@@ -29,7 +28,7 @@ import {
 } from '@utils/format';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -38,10 +37,10 @@ import CancelListingModal from './CancelListingModal';
 import ListingTokenModal from './ListingTokenModal';
 import MakeOfferModal from './MakeOfferModal';
 import MoreItemsSection from './MoreItemsSection';
-import s from './styles.module.scss';
 import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
+import s from './styles.module.scss';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -95,6 +94,10 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       link: `${EXTERNAL_LINK.ORDINALS}/inscription/${tokenData?.tokenID || ''}`,
     },
   ];
+
+  const isTwVerified = useMemo(() => {
+    return projectData?.creatorProfile?.profileSocial?.twitterVerified || false;
+  }, [projectData?.creatorProfile?.profileSocial]);
 
   const handleOpenListingTokenModal = (): void => {
     openListingModal();
@@ -229,28 +232,49 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
         <div className={s.wrapper}>
           <div className={s.itemInfo}>
             <Loading isLoaded={!!tokenData} className={s.loading_token} />
-            <Heading
-              as="h4"
-              className={s.itemInfo_heading}
-              fontWeight="medium"
-              style={{ marginBottom: '20px' }}
-            >
-              <span title={`#${formatTokenId(tokenData?.tokenID || '')}`}>
-                #
+            <div className={`${s.projectHeader}`}>
+              <Link
+                href={`${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddress}`}
+                className={s.creator_info}
+              >
+                <Heading
+                  className={s.projectHeader_creator}
+                  as="h4"
+                  fontWeight="medium"
+                >
+                  {projectData?.creatorProfile?.displayName ||
+                    formatAddress(
+                      projectData?.creatorProfile?.walletAddress || ''
+                    )}
+                </Heading>
+              </Link>
+              <SocialVerify
+                isTwVerified={isTwVerified}
+                link={SOCIALS.twitter}
+              />
+            </div>
+            <Heading as="h4" className={s.itemInfo_heading} fontWeight="medium">
+              <span
+                title={`${projectData?.name} #${formatTokenId(
+                  tokenData?.tokenID || ''
+                )}`}
+              >
+                {projectData?.name} #
                 {tokenData?.inscriptionIndex
                   ? tokenData?.inscriptionIndex
                   : formatTokenId(tokenData?.tokenID || '')}
               </span>
             </Heading>
 
-            <Heading as="h6" fontWeight="medium">
+            <Text size="18">
+              Onwned by{' '}
               <Link
                 href={`${ROUTE_PATH.GENERATIVE}/${projectID}`}
                 className={s.projectName}
               >
                 {projectData?.name}
               </Link>
-            </Heading>
+            </Text>
 
             {/* <Text
               size={'18'}
@@ -267,47 +291,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   )}
               </div>
             </Text> */}
-            <div className={s.creator}>
-              <div className={s.creator_info}>
-                <Avatar
-                  imgSrcs={projectData?.creatorProfile?.avatar || ''}
-                  width={24}
-                  height={24}
-                />
-                <Text size={'18'} color={'black-60'}>
-                  {projectData?.creatorProfile?.displayName ||
-                    formatAddress(
-                      projectData?.creatorProfile?.walletAddress || ''
-                    )}
-                </Text>
-              </div>
-              {projectData?.creatorProfile?.profileSocial?.twitter && (
-                <div className={s.creator_social}>
-                  <span className={s.creator_divider}></span>
-                  <div className={s.creator_social_item}>
-                    <SvgInset
-                      className={s.creator_social_twitter}
-                      size={16}
-                      svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
-                    />
-                    <Text size={'18'} color="black-60">
-                      <Link
-                        href={
-                          projectData?.creatorProfile?.profileSocial?.twitter ||
-                          ''
-                        }
-                        target="_blank"
-                      >
-                        @
-                        {projectData?.creatorProfile?.profileSocial?.twitter
-                          .split('/')
-                          .pop()}
-                      </Link>
-                    </Text>
-                  </div>
-                </div>
-              )}
-            </div>
             {/* {isBitcoinProject && (
               <Link
                 target="_blank"
