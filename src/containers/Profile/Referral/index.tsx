@@ -12,7 +12,11 @@ import { LogLevel } from '@enums/log-level';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { withdrawRefereeReward } from '@services/profile';
-import { formatBTCPrice, formatLongAddress } from '@utils/format';
+import {
+  formatBTCPrice,
+  formatEthPrice,
+  formatLongAddress,
+} from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import copy from 'copy-to-clipboard';
@@ -21,6 +25,8 @@ import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './Referral.module.scss';
+import Heading from '@components/Heading';
+import ArtistCollectionEarn from './ArtistCollectionEarn';
 // import ToogleSwitch from '@components/Toggle';
 
 const LOG_PREFIX = 'ReferralTab';
@@ -143,14 +149,14 @@ const ReferralTab = () => {
   return (
     <div className={s.wrapper}>
       <div className={s.referral_link}>
+        <Heading as="h4" fontWeight="semibold">
+          Referral
+        </Heading>
         <Stack direction="horizontal" className="justify-between">
           <div>
             <Text size="18" fontWeight="medium">
               Refer an artist by sending your referral link to earn 1% of their
               sale volume.
-            </Text>
-            <Text size="18" fontWeight="medium">
-              *secondary sales are not counted*
             </Text>
           </div>
           <div className={s.link}>
@@ -188,13 +194,19 @@ const ReferralTab = () => {
                 <span>Withdraw all</span>
                 <>
                   <span className={s.dots}></span>
-                  <span>{calculateTotalWithdraw} BTC</span>
+                  <span>
+                    {currency === CurrencyType.ETH
+                      ? formatEthPrice(`${calculateTotalWithdraw}`)
+                      : formatBTCPrice(calculateTotalWithdraw)}
+                    {currency}
+                  </span>
                 </>
               </ButtonIcon>
             </div>
           )}
         </>
       )}
+      <ArtistCollectionEarn />
     </div>
   );
 };
