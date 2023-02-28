@@ -2,9 +2,12 @@ import { LogLevel } from '@enums/log-level';
 import {
   IGenerateReceiverAddressPayload,
   IGenerateReceiverAddressResponse,
+  IGetInscriptionListByUserParams,
+  IGetInscriptionListByUserResponse,
 } from '@interfaces/api/inscribe';
-import { post } from '@services/http-client';
+import { post, get } from '@services/http-client';
 import log from '@utils/logger';
+import querystring from 'query-string';
 
 const LOG_PREFIX = 'InscribeService';
 
@@ -22,5 +25,20 @@ export const generateReceiverAddress = async (
   } catch (err: unknown) {
     log('failed to generate receiver address', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to generate receiver address');
+  }
+};
+
+export const getInscriptionListByUser = async (
+  params: IGetInscriptionListByUserParams
+): Promise<IGetInscriptionListByUserResponse> => {
+  try {
+    const qs = '?' + querystring.stringify(params);
+    const res = await get<IGetInscriptionListByUserResponse>(
+      `${API_PATH}/list${qs}`
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get inscription list by user', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get inscription list by user');
   }
 };

@@ -1,4 +1,5 @@
-import { InscriptionInfo } from '@interfaces/inscribe';
+import { InscriptionInfo, InscriptionItem } from '@interfaces/inscribe';
+import { IPagingParams } from './paging';
 
 export interface IGenerateReceiverAddressPayload {
   walletAddress: string;
@@ -8,3 +9,12 @@ export interface IGenerateReceiverAddressPayload {
 }
 
 export type IGenerateReceiverAddressResponse = InscriptionInfo;
+
+export type IGetInscriptionListByUserParams = IPagingParams;
+
+export interface IGetInscriptionListByUserResponse {
+  page: number;
+  pageSize: number;
+  result: Array<InscriptionItem>;
+  total: number;
+}

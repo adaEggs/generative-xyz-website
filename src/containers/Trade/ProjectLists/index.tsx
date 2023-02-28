@@ -30,14 +30,14 @@ export const ProjectList = ({
               isNFTBuy ? (
                 <ProjectCard
                   className={'col-12'}
-                  key={`project-item-${project.inscriptionID}`}
+                  key={`project-item-${index}`}
                   project={project}
                   index={index}
                 />
               ) : (
                 <ProjectCardOrd
                   className={'col-12'}
-                  key={`project-item-${project.inscriptionID}`}
+                  key={`project-item-${index}`}
                   project={project}
                   index={index}
                 />

@@ -13,13 +13,13 @@ import ReferralTab from './Referral';
 import { useRouter } from 'next/router';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
+import FreeInscriptions from './Free';
 
 const Profile: React.FC = (): React.ReactElement => {
   const user = useAppSelector(getUserSelector);
-  const { isLoaded, profileProjects, collectedNFTs } =
+  const { isLoaded, profileProjects, collectedNFTs, totalFreeInscription } =
     useContext(ProfileContext);
   const router = useRouter();
-
   const [showModal, setShowModal] = React.useState(false);
   const { walletAddress } = router.query as { walletAddress: string };
   const isOwner = !walletAddress || user?.walletAddress === walletAddress;
@@ -68,6 +68,17 @@ const Profile: React.FC = (): React.ReactElement => {
                       <ReferralTab />
                     </Tab>
                   )}
+                  <Tab
+                    tabClassName={s.tab}
+                    eventKey="freeTab"
+                    title={
+                      <>
+                        Free <sup>{totalFreeInscription}</sup>
+                      </>
+                    }
+                  >
+                    <FreeInscriptions />
+                  </Tab>
                 </Tabs>
               </div>
             </ClientOnly>
