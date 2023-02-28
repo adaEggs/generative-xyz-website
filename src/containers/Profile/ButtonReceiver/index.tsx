@@ -2,7 +2,15 @@ import ButtonIcon from '@components/ButtonIcon';
 import React from 'react';
 import ModalReceiver from '@containers/Profile/ButtonReceiver/ModalReceiver';
 
-const ButtonReceiver = ({ className }: { className?: string }) => {
+interface IProps {
+  className?: string;
+  title?: string;
+}
+
+const ButtonReceiver = ({
+  className,
+  title = 'Receive inscription',
+}: IProps) => {
   const [isShow, setShow] = React.useState(false);
 
   const toggle = () => setShow(value => !value);
@@ -15,9 +23,9 @@ const ButtonReceiver = ({ className }: { className?: string }) => {
         onClick={toggle}
         className={`${className}`}
       >
-        Receive inscription
+        {title}
       </ButtonIcon>
-      <ModalReceiver isShow={isShow} onHideModal={toggle} />
+      <ModalReceiver isShow={isShow} onHideModal={toggle} title={title} />
     </>
   );
 };
