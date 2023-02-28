@@ -58,7 +58,7 @@ const Page404 = (): JSX.Element => {
           as="h5"
           animOption={{ screen: 0.3, offset: 0, type: 'random' }}
         >
-          To continue you need to connect your wallet.
+          This page doesn’t exist.
         </Heading>
         <ul className={s.error404_ctas}>
           {!user && (

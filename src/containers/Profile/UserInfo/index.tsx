@@ -130,7 +130,7 @@ export const UserInfo = ({ toggle }: { toggle: () => void }): JSX.Element => {
                 <div className={`${s.creator_social_item}`}>
                   <div className={s.creator_social_item_inner}>
                     <SvgInset
-                      className={`${s.creator_social_twitter}`}
+                      // className={`${s.creator_social_twitter}`}
                       size={26}
                       svgUrl={`${CDN_URL}/icons/link-copy.svg`}
                     />
