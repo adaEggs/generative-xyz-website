@@ -7,6 +7,7 @@ import QRCodeGenerator from '@components/QRCodeGenerator';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
+import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
 import { submitAddressBuyBTC } from '@services/marketplace-btc';
@@ -16,7 +17,7 @@ import { formatUnixDateTime } from '@utils/time';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
@@ -47,6 +48,8 @@ const ModalBuyItem = ({
   ordAddress,
   payType = 'btc',
 }: IProps): JSX.Element => {
+  const { transfer } = useContext(WalletContext);
+
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
   const [expireTime, setExpireTime] = useState('');
@@ -60,12 +63,33 @@ const ModalBuyItem = ({
   const [addressInput, setAddressInput] = useState<string>('');
 
   const [ethPrice, setEthPrice] = useState(price);
+  const [isSent, setIsSent] = React.useState(false);
 
   const unit = payType === 'btc' ? 'BTC' : 'ETH';
   const formatPrice =
     payType === 'btc'
       ? formatBTCPrice(price || 0, '0.0')
       : formatEthPrice(`${ethPrice || 0}`, '0.0');
+
+  const handleTransfer = async (
+    toAddress: string,
+    val: string
+  ): Promise<void> => {
+    try {
+      setIsSent(false);
+      await transfer(toAddress, val);
+      setIsSent(true);
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+      handleClose();
+    }
+  };
+
+  useEffect(() => {
+    if (payType === 'eth' && receiveAddress && ethPrice) {
+      handleTransfer(receiveAddress, formatEthPrice(`${ethPrice || 0}`));
+    }
+  }, [receiveAddress, ethPrice]);
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -331,7 +355,7 @@ const ModalBuyItem = ({
                       </ButtonIcon>
                     )}
 
-                    {isLoading && (
+                    {step === 'info' && isLoading && (
                       <div className={s.loadingWrapper}>
                         <Loading isLoaded={false} />
                       </div>
@@ -406,15 +430,18 @@ const ModalBuyItem = ({
                         </Text>
                       </ButtonIcon>
                       <div style={{ width: 16 }} /> */}
-                      <ButtonIcon
-                        sizes="large"
-                        className={s.buyBtn}
-                        onClick={handleClose}
-                      >
-                        <Text as="span" size="16" fontWeight="medium">
-                          Continue collecting
-                        </Text>
-                      </ButtonIcon>
+                      {payType === 'btc' ||
+                        (payType === 'eth' && isSent && (
+                          <ButtonIcon
+                            sizes="large"
+                            className={s.buyBtn}
+                            onClick={handleClose}
+                          >
+                            <Text as="span" size="16" fontWeight="medium">
+                              Continue collecting
+                            </Text>
+                          </ButtonIcon>
+                        ))}
                     </div>
                   </Col>
                 )}
