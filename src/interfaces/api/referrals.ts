@@ -25,6 +25,10 @@ export interface IGetReferralsResponse extends IPagingResponse {
     referreeVolumn: {
       amount: string;
       amountType: string;
+      projectID?: string;
+      percent?: number;
+      earn?: string;
+      GenEarn?: string;
     };
   }[];
 }

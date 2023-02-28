@@ -1,6 +1,5 @@
 import Avatar from '@components/Avatar';
 import ButtonIcon from '@components/ButtonIcon';
-import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Table from '@components/Table';
 import Text from '@components/Text';
@@ -9,9 +8,12 @@ import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { CurrencyType } from '@enums/currency';
+import { LogLevel } from '@enums/log-level';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
+import { withdrawRefereeReward } from '@services/profile';
 import { formatBTCPrice, formatLongAddress } from '@utils/format';
+import log from '@utils/logger';
 import cs from 'classnames';
 import copy from 'copy-to-clipboard';
 import { useRouter } from 'next/router';
@@ -19,9 +21,6 @@ import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './Referral.module.scss';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
-import { withdrawRefereeReward } from '@services/profile';
 // import ToogleSwitch from '@components/Toggle';
 
 const LOG_PREFIX = 'ReferralTab';
@@ -60,16 +59,15 @@ const ReferralTab = () => {
 
   const referralLink = `${location.origin}${ROUTE_PATH.HOME}?referral_code=${user?.id}`;
 
-  const handleWithdraw = async () => {
+  const handleWithdraw = async (amount: string) => {
     const payload = {
       items: [
         {
-          amount: '10000000',
+          amount: amount,
           paymentType: currency.toLowerCase(),
         },
       ],
     };
-    // console.log('🚀 ~ handleWithdraw ~ payload:', payload);
 
     try {
       await withdrawRefereeReward(payload);
@@ -80,9 +78,10 @@ const ReferralTab = () => {
   };
 
   const referralData = referralListing?.result?.map(item => {
-    const totalVolume = item.referreeVolumn?.amount; // 0.1 BTC
-    // const totalVolume = '100000000'; // 0.1 BTC
-    const calculateWithdrawAmount = formatBTCPrice(Number(totalVolume) / 100);
+    const totalVolume = item.referreeVolumn?.amount;
+    const calculateWithdrawAmount = formatBTCPrice(
+      Number(item.referreeVolumn.earn)
+    );
 
     return {
       id: `${item.referreeID}-referral`,
@@ -123,8 +122,8 @@ const ReferralTab = () => {
             <ButtonIcon
               sizes="small"
               variants="outline-small"
-              // disabled={!Number(totalVolume)}
-              onClick={handleWithdraw}
+              disabled={!Number(calculateWithdrawAmount)}
+              onClick={() => handleWithdraw(item.referreeVolumn.earn || '')}
             >
               Withdraw
             </ButtonIcon>
@@ -134,14 +133,9 @@ const ReferralTab = () => {
     };
   });
 
-  const handleWithdrawlAll = () => {
-    return 0;
-  };
-
   const calculateTotalWithdraw = referralListing?.result.reduce(
     (total, currentValue) => {
-      // TODO: change currentValue.referreeVolumn.amount to item.earnAmount
-      return total + parseFloat(currentValue.referreeVolumn.amount);
+      return total + parseFloat(currentValue?.referreeVolumn?.earn || '');
     },
     0
   );
@@ -150,9 +144,15 @@ const ReferralTab = () => {
     <div className={s.wrapper}>
       <div className={s.referral_link}>
         <Stack direction="horizontal" className="justify-between">
-          <Heading as="h4" fontWeight="bold">
-            Referral List:
-          </Heading>
+          <div>
+            <Text size="18" fontWeight="medium">
+              Refer an artist by sending your referral link to earn 1% of their
+              sale volume.
+            </Text>
+            <Text size="18" fontWeight="medium">
+              *secondary sales are not counted*
+            </Text>
+          </div>
           <div className={s.link}>
             <Text size="18" fontWeight="medium">
               {referralLink}
@@ -182,8 +182,8 @@ const ReferralTab = () => {
               <ButtonIcon
                 sizes="large"
                 className={s.Withdraw_all_btn}
-                // disabled={!calculateTotalWithdraw}
-                onClick={handleWithdrawlAll}
+                disabled={!calculateTotalWithdraw}
+                onClick={() => handleWithdraw(`${calculateTotalWithdraw}`)}
               >
                 <span>Withdraw all</span>
                 <>
