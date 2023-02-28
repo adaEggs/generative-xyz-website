@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Stack } from 'react-bootstrap';
 import { v4 } from 'uuid';
 import s from './styles.module.scss';
+import { useEffect, useState } from 'react';
 
 type TStats = {
   data:
@@ -18,12 +19,35 @@ type TStats = {
     | null;
 };
 
+const MAX_LINES = 5;
+
 const Stats = ({ data }: TStats) => {
+  const [seeMore, setSeeMore] = useState(false);
+  const [showData, setShowData] = useState<TStats>({ data });
+
+  const handleShowMore = () => {
+    setShowData({ data });
+    setSeeMore(false);
+  };
+
+  const handleShowLess = () => {
+    setShowData({ data: data?.slice(0, MAX_LINES) || data });
+    setSeeMore(true);
+  };
+
+  useEffect(() => {
+    if (data && data.length > MAX_LINES) {
+      handleShowLess();
+    }
+  }, [data]);
+
   if (!data) return null;
+
   return (
     <>
-      {data.length > 0 &&
-        data.map(item => (
+      {showData?.data &&
+        showData?.data.length > 0 &&
+        showData?.data.map(item => (
           <div className={s.statsInfo} key={`token-${v4()}`}>
             <Text size="18" color="black-80">
               {item.info}
@@ -45,6 +69,30 @@ const Stats = ({ data }: TStats) => {
             </Stack>
           </div>
         ))}
+      {data.length > MAX_LINES ? (
+        seeMore ? (
+          <>
+            <Text fontWeight="semibold">...</Text>
+            <Text
+              as="span"
+              onClick={handleShowMore}
+              fontWeight="semibold"
+              className={s.seeMore}
+            >
+              See more
+            </Text>
+          </>
+        ) : (
+          <Text
+            as="span"
+            onClick={handleShowLess}
+            fontWeight="semibold"
+            className={s.seeMore}
+          >
+            See less
+          </Text>
+        )
+      ) : null}
     </>
   );
 };

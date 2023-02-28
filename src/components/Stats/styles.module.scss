@@ -6,3 +6,12 @@
   padding-bottom: rem(6px);
   color: $primary-333;
 }
+
+.seeMore {
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+  }
+}

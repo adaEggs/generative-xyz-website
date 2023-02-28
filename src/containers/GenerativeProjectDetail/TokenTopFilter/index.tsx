@@ -54,7 +54,7 @@ const TokenTopFilter: React.FC<IProps> = ({
     <div className={cs(s.tokenTopFilter, className)}>
       <div className={cs(s.filterWrapper)}>
         <ButtonIcon
-          variants={showFilter ? 'primary' : 'outline'}
+          variants={showFilter ? 'primary' : 'outline-small'}
           startIcon={
             showFilter ? (
               <SvgInset size={16} svgUrl={`${CDN_URL}/icons/ic-close.svg`} />
