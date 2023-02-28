@@ -12,6 +12,7 @@ export interface IPostReferralCode {
 export interface IGetReferralsParams extends IPagingParams {
   referrerID?: string;
   referreeID?: string;
+  amountType?: string;
 }
 
 export interface IGetReferralsResponse extends IPagingResponse {
@@ -21,5 +22,9 @@ export interface IGetReferralsResponse extends IPagingResponse {
     referreeID: string;
     referree: Referral;
     referrer: Referral;
+    referreeVolumn: {
+      amount: string;
+      amountType: string;
+    };
   }[];
 }

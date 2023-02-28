@@ -51,6 +51,7 @@ import {
   IFeeRate,
   ITxHistory,
 } from '@interfaces/api/bitcoin';
+import { CurrencyType } from '@enums/currency';
 import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 import { getInscriptionListByUser } from '@services/inscribe';
 import { InscriptionItem } from '@interfaces/inscribe';
@@ -71,6 +72,8 @@ export interface IProfileContext {
   feeRate: IFeeRate | undefined;
   history: ITxHistory[];
   isLoadingHistory: boolean;
+  currency: CurrencyType;
+
   isLoadingUTXOs: boolean;
   isLoaded: boolean;
 
@@ -96,6 +99,7 @@ export interface IProfileContext {
   debounceFetchHistory: () => void;
   isOfferReceived: boolean;
   setIsOfferReceived: React.Dispatch<React.SetStateAction<boolean>>;
+  setCurrency: React.Dispatch<React.SetStateAction<CurrencyType>>;
   freePage: number;
   isLoadingFree: boolean;
   freeInscriptions: Array<InscriptionItem>;
@@ -120,6 +124,7 @@ const initialValue: IProfileContext = {
   feeRate: undefined,
   history: [],
   isLoadingHistory: false,
+  currency: CurrencyType.BTC,
 
   handleFetchTokens: () => new Promise<void>(r => r()),
   handleFetchProjects: () => new Promise<void>(r => r()),
@@ -136,6 +141,9 @@ const initialValue: IProfileContext = {
   debounceFetchHistory: () => new Promise<void>(r => r()),
   isOfferReceived: false,
   setIsOfferReceived: _ => {
+    return;
+  },
+  setCurrency: _ => {
     return;
   },
   freePage: 0,
@@ -193,6 +201,9 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   >();
   const [isLoadedProfileListing, setIsLoadedProfileListing] =
     useState<boolean>(false);
+
+  const [currency, setCurrency] = useState<CurrencyType>(CurrencyType.BTC);
+
   const [isOfferReceived, setIsOfferReceived] = useState<boolean>(false);
   const [freePage, setFreePage] = useState(0);
   const [isLoadingFree, setIsLoadingFree] = useState(true);
@@ -384,6 +395,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       if (currentUser?.walletAddress) {
         const referralListing = await getReferrals({
           referrerID: currentUser.id,
+          amountType: currency.toLowerCase(),
         });
         setReferralListing(referralListing);
       }
@@ -419,9 +431,13 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     handleFetchMakeOffers();
     handleFetchProjects();
     handleFetchListingTokens();
-    handleFetchListingReferrals();
     handleFetchFreeInscriptions();
   }, [currentUser]);
+
+  useAsyncEffect(async () => {
+    if (!router.isReady || !currentUser) return;
+    await handleFetchListingReferrals();
+  }, [currentUser, currency]);
 
   useEffect(() => {
     handleFetchMakeOffers();
@@ -572,6 +588,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       feeRate,
       history,
       isLoadingHistory,
+      currency,
       isLoadingUTXOs,
 
       isLoaded,
@@ -597,6 +614,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       debounceFetchCollectedUTXOs,
       debounceFetchFeeRate,
       debounceFetchHistory,
+      setCurrency,
       freeInscriptions,
       freePage,
       isLoadingFree,
@@ -611,6 +629,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     profileMakeOffer,
     profileListing,
     referralListing,
+    currency,
 
     isLoaded,
     isLoadedProfileTokens,
@@ -628,6 +647,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     setIsOfferReceived,
     handleAcceptOfferReceived,
     handleFetchListingReferrals,
+    setCurrency,
 
     freeInscriptions,
     freePage,
