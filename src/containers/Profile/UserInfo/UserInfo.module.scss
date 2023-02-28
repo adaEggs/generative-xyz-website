@@ -113,6 +113,11 @@
       margin-bottom: rem(24px);
       display: flex;
       gap: rem(16px);
+
+      &_receiver {
+        width: 75%;
+        justify-content: center;
+      }
     }
   }
 

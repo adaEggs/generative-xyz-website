@@ -19,7 +19,6 @@ import { SocialVerify } from '@components/SocialVerify';
 import { SOCIALS } from '@constants/common';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IC_EDIT_PROFILE } from '@constants/icons';
-import ButtonSendBTC from '@containers/Profile/ButtonSendBTC';
 import ButtonReceiver from '@containers/Profile/ButtonReceiver';
 
 export const UserInfo = ({ toggle }: { toggle: () => void }): JSX.Element => {
@@ -65,10 +64,6 @@ export const UserInfo = ({ toggle }: { toggle: () => void }): JSX.Element => {
                 </div>
               </div>
             </div>
-            <div className={s.userInfo_content_ctas}>
-              <ButtonReceiver />
-              <ButtonSendBTC />
-            </div>
             <div className={s.userInfo_content_address}>
               {currentUser?.walletAddressBtcTaproot && (
                 <div
@@ -104,6 +99,9 @@ export const UserInfo = ({ toggle }: { toggle: () => void }): JSX.Element => {
                   )}
                 </div>
               )}
+            </div>
+            <div className={s.userInfo_content_ctas}>
+              <ButtonReceiver className={s.userInfo_content_ctas_receiver} />
             </div>
 
             <div className={s.creator_social}>

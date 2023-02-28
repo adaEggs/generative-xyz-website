@@ -11,7 +11,7 @@ import { CDN_URL } from '@constants/config';
 
 const BalanceTab = () => {
   const TABLE_BALANCE_HEADING = [
-    'Assets name',
+    'Asset',
     'Balance',
     <p style={{ textAlign: 'center' }} key="action">
       Action
@@ -46,7 +46,7 @@ const BalanceTab = () => {
         ),
         action: (
           <div className={s.ctas}>
-            <ButtonReceiver className={s.receiver} />
+            <ButtonReceiver className={s.receiver} title="Receive BTC" />
             <ButtonSendBTC className={s.send} />
           </div>
         ),

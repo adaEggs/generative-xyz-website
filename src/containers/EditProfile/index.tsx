@@ -34,6 +34,14 @@ const EditProfile = (): JSX.Element => {
                   Artist Payments
                 </Text>
               </li>
+              <li
+                className={`${tab === 'export' ? s.isActive : ''}`}
+                onClick={() => setTab('export')}
+              >
+                <Text as={'span'} size={'20'}>
+                  Key
+                </Text>
+              </li>
             </ul>
             <div className={s.wrapper}>
               <FormEditProfile tab={tab} />
