@@ -51,9 +51,12 @@ export enum HistoryStatusType {
   success = 'Success',
 }
 
+export type HistoryStatusColor = '#ff7e21' | '#24c087' | '#ff4747';
+
 export interface ITxHistory {
   txhash: string;
   status: HistoryStatusType;
+  statusColor: HistoryStatusColor;
   type: ITrackTx;
   inscription_id: string;
   inscription_number: number;

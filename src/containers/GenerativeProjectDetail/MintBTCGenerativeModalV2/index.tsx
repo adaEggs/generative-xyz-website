@@ -213,14 +213,12 @@ const MintBTCGenerativeModal: React.FC = () => {
 
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Total</p>
-                      <div
-                        className={s.paymentPrice_copyContainer}
-                        onClick={() => onClickCopy(`${totalPriceFormat}`)}
-                      >
+                      <div className={s.paymentPrice_copyContainer}>
                         <SvgInset
                           className={s.ic}
                           size={18}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                          onClick={() => onClickCopy(`${totalPriceFormat}`)}
                         />
                         <p className={s.text}>{`${totalPriceFormat} BTC`}</p>
                       </div>
@@ -412,7 +410,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                         sizes="large"
                         className={s.buyBtn}
                         onClick={() => router.push(ROUTE_PATH.PROFILE)}
-                        variants="outline-small"
+                        variants="outline"
                       >
                         <Text as="span" size="16" fontWeight="medium">
                           Check order status

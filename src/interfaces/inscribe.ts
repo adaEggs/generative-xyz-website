@@ -12,3 +12,20 @@ export interface InscriptionInfo {
   timeout_at: string;
   userAddress: string;
 }
+
+export interface InscriptionItem {
+  amount: string;
+  expiredAt: string;
+  feeRate: number;
+  fileURI: string;
+  inscriptionID: string;
+  isConfirm: boolean;
+  isMinted: boolean;
+  isSuccess: boolean;
+  status: number;
+  txMintNft: string;
+  txSendBTC: string;
+  txSendNft: string;
+  uuid: string;
+  userUuid: string;
+}

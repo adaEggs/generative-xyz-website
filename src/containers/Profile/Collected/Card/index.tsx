@@ -153,6 +153,10 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   type={project.contentType}
                   variants="absolute"
                 />
+                <Link
+                  href={linkPath}
+                  className={s.projectCard_thumb_inner_mask}
+                />
               </div>
               {!isNotShowBlur && (
                 <div className={s.projectCard_thumb_backdrop} />
