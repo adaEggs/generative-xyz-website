@@ -1,0 +1,8 @@
+.freeInscriptions {
+  margin-top: rem(50px);
+
+  @include mobile {
+    margin-top: rem(24px);
+    padding-bottom: rem(48px);
+  }
+}
