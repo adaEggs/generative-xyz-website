@@ -30,9 +30,12 @@ const FilterOptions = ({ attributes }: Props) => {
 
   const initialAttributesMap = () => {
     const attrMap = new Map();
+
     attributes?.forEach(attr => {
       filterTraits.split(',').forEach(trait => {
-        attrMap.set(attr.traitName, trait.split(':')[1]);
+        if (trait.split(':')[0] === attr.traitName) {
+          attrMap.set(attr.traitName, trait.split(':')[1]);
+        }
       });
     });
     setQuery(attrMap);
@@ -50,7 +53,7 @@ const FilterOptions = ({ attributes }: Props) => {
       }
     });
     setFilterTraits(str.substring(1));
-    setQuery(newQuery || null);
+
     setPage(1);
   };
 
