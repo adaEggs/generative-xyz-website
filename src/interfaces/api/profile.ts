@@ -10,6 +10,7 @@ export interface IUpdateProfilePayload {
   displayName?: string;
   profileSocial?: ProjectSocial;
   walletAddressBtc?: string;
+  walletAddressPayment: string;
 }
 export interface IUpdateProfileResponse {
   avatar: string;

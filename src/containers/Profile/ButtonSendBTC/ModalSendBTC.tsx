@@ -161,10 +161,14 @@ const ModalSendBTC = ({ isShow, onHideModal }: IProps): JSX.Element => {
                   )}
                 </div>
                 <div className={s.formItem}>
-                  <label className={s.label} htmlFor="amount">
-                    Amount ( {formatBTCPrice(satoshiAmount.toString())} BTC )
-                  </label>
-
+                  <div className={s.row}>
+                    <label className={s.label} htmlFor="amount">
+                      Amount
+                    </label>
+                    <label className={s.label} htmlFor="amount">
+                      Balance: {formatBTCPrice(satoshiAmount.toString())} BTC
+                    </label>
+                  </div>
                   <div className={s.inputContainer}>
                     <input
                       id="amount"

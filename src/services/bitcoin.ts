@@ -6,10 +6,13 @@ import {
   ICollectedUTXOResp,
   IFeeRate,
   ITxHistory,
+  HistoryStatusType,
+  HistoryStatusColor,
 } from '@interfaces/api/bitcoin';
 import axios from 'axios';
 import { getPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
 import { getUTXOKey } from '@containers/Profile/ButtonSendBTC/utils';
+import { isExpiredTime } from '@utils/time';
 
 const LOG_PREFIX = 'COLLECTED_NFT';
 
@@ -63,7 +66,34 @@ export const getHistory = async (address: string): Promise<ITxHistory[]> => {
     const res = await get<ITxHistory[]>(
       `/wallet/txs?address=${address}&limit=100&offset=0`
     );
-    return res;
+    return (res || []).map(history => {
+      let statusColor: HistoryStatusColor = '#ff7e21';
+      let status: HistoryStatusType = HistoryStatusType.pending;
+      const now = new Date().getTime();
+      const isExpired = isExpiredTime({
+        time: history.created_at || now,
+        expiredMin: 4,
+      });
+      if (isExpired) {
+        status = history.status;
+        switch (status) {
+          case HistoryStatusType.pending:
+            statusColor = '#ff7e21';
+            break;
+          case HistoryStatusType.success:
+            statusColor = '#24c087';
+            break;
+          case HistoryStatusType.failed:
+            statusColor = '#ff4747';
+            break;
+        }
+      }
+      return {
+        ...history,
+        statusColor,
+        status,
+      };
+    });
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw err;

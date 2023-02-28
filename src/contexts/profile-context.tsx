@@ -53,6 +53,9 @@ import {
 } from '@interfaces/api/bitcoin';
 import { CurrencyType } from '@enums/currency';
 import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
+import { getInscriptionListByUser } from '@services/inscribe';
+import { InscriptionItem } from '@interfaces/inscribe';
+import _uniqBy from 'lodash/uniqBy';
 
 const LOG_PREFIX = 'ProfileContext';
 
@@ -97,6 +100,11 @@ export interface IProfileContext {
   isOfferReceived: boolean;
   setIsOfferReceived: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrency: React.Dispatch<React.SetStateAction<CurrencyType>>;
+  freePage: number;
+  isLoadingFree: boolean;
+  freeInscriptions: Array<InscriptionItem>;
+  totalFreeInscription: number;
+  handleFetchFreeInscriptions: () => void;
 }
 
 const initialValue: IProfileContext = {
@@ -138,6 +146,11 @@ const initialValue: IProfileContext = {
   setCurrency: _ => {
     return;
   },
+  freePage: 0,
+  isLoadingFree: true,
+  freeInscriptions: [],
+  totalFreeInscription: 0,
+  handleFetchFreeInscriptions: () => new Promise<void>(r => r()),
 };
 
 export const ProfileContext =
@@ -152,58 +165,52 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     string | undefined
   >();
   const { walletAddress } = router.query as { walletAddress: string };
-
   const isOwner = !walletAddress || user?.walletAddress === walletAddress;
-
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const { call: cancelOffer } = useContractOperation(
     CancelTokenOfferOperation,
     true
   );
-
   const { call: acceptOfferReceived } = useContractOperation(
     AcceptTokenOffer,
     true
   );
-
   const [profileTokens, setProfileTokens] = useState<
     IGetProfileTokensResponse | undefined
   >();
-
   const [isLoadedProfileTokens, setIsLoadedProfileTokens] =
     useState<boolean>(false);
-
   const [profileProjects, setProfileProjects] = useState<
     IGetProjectItemsResponse | undefined
   >();
-
   const [isLoadedProfileProjects, setIsLoadedProfileProjects] =
     useState<boolean>(false);
-
   const [isLoadedProfileReferral, setIsLoadedProfileReferral] =
     useState<boolean>(false);
-
   const [profileMakeOffer, setProfileMakeOffer] = useState<
     ITokenOfferListResponse | undefined
   >();
-
   const [isLoadedProfileMakeOffer, setIsLoadedProfileMakeOffer] =
     useState<boolean>(false);
   const [profileListing, setProfileListing] = useState<
     IListingTokensResponse | undefined
   >();
-
   const [referralListing, setReferralListing] = useState<
     IGetReferralsResponse | undefined
   >();
-
   const [isLoadedProfileListing, setIsLoadedProfileListing] =
     useState<boolean>(false);
 
   const [currency, setCurrency] = useState<CurrencyType>(CurrencyType.BTC);
 
   const [isOfferReceived, setIsOfferReceived] = useState<boolean>(false);
+  const [freePage, setFreePage] = useState(0);
+  const [isLoadingFree, setIsLoadingFree] = useState(true);
+  const [freeInscriptions, setFreeInscriptions] = useState<
+    Array<InscriptionItem>
+  >([]);
+  const [totalFreeInscription, setTotalFreeInscription] = useState(0);
 
   const handleFetchProjects = useCallback(async () => {
     try {
@@ -328,6 +335,29 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     }
   }, [walletAddress]);
 
+  const handleFetchFreeInscriptions = async () => {
+    if (!user) return;
+    try {
+      setIsLoadingFree(true);
+      const nextPage = freePage + 1;
+      const res = await getInscriptionListByUser({
+        page: nextPage,
+        limit: 12,
+      });
+      setFreePage(nextPage);
+      setTotalFreeInscription(res.total);
+      const newInscriptions = _uniqBy(
+        [...freeInscriptions, ...res.result],
+        'uuid'
+      );
+      setFreeInscriptions(Array.from(newInscriptions));
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+    } finally {
+      setIsLoadingFree(false);
+    }
+  };
+
   const handleCancelOffer = async (offer: TokenOffer): Promise<void> => {
     const tx = await cancelOffer({
       offerId: offer.offeringID,
@@ -397,10 +427,11 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   useAsyncEffect(async () => {
     if (!router.isReady || !currentUser) return;
 
-    await handleFetchTokens();
-    await handleFetchMakeOffers();
-    await handleFetchProjects();
-    await handleFetchListingTokens();
+    handleFetchTokens();
+    handleFetchMakeOffers();
+    handleFetchProjects();
+    handleFetchListingTokens();
+    handleFetchFreeInscriptions();
   }, [currentUser]);
 
   useAsyncEffect(async () => {
@@ -584,6 +615,11 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       debounceFetchFeeRate,
       debounceFetchHistory,
       setCurrency,
+      freeInscriptions,
+      freePage,
+      isLoadingFree,
+      totalFreeInscription,
+      handleFetchFreeInscriptions,
     };
   }, [
     currentUser,
@@ -612,6 +648,12 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     handleAcceptOfferReceived,
     handleFetchListingReferrals,
     setCurrency,
+
+    freeInscriptions,
+    freePage,
+    isLoadingFree,
+    totalFreeInscription,
+    handleFetchFreeInscriptions,
   ]);
 
   return (

@@ -13,7 +13,7 @@ import { getUserSelector } from '@redux/user/selector';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import { TwitterShareButton } from 'react-share';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import s from './CollectedCard.module.scss';
 import Image from 'next/image';
 import ButtonIcon from '@components/ButtonIcon';
@@ -44,6 +44,12 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const isOwner = !walletAddress || user?.walletAddress === walletAddress;
 
   const [thumb, setThumb] = useState<string>(project.image);
+
+  useEffect(() => {
+    if (thumb !== project.image) {
+      setThumb(project.image);
+    }
+  }, [project.image]);
 
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
@@ -152,6 +158,10 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   inscriptionID={project.inscriptionID}
                   type={project.contentType}
                   variants="absolute"
+                />
+                <Link
+                  href={linkPath}
+                  className={s.projectCard_thumb_inner_mask}
                 />
               </div>
               {!isNotShowBlur && (

@@ -1,18 +1,23 @@
 import { SeeMore } from '@components/SeeMore';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
 import s from './styles.module.scss';
+import cs from 'classnames';
 
 type Props = {
   desc: string;
   hasInteraction?: boolean;
   profileBio?: string;
+  tokenDetail?: ReactNode | null;
+  attributes?: ReactNode | null;
 };
 
 const ProjectDescription = ({
   desc,
   hasInteraction = false,
   profileBio,
+  tokenDetail,
+  attributes,
 }: Props) => {
   const [projectDescription, setProjectDescription] = useState('');
   const [projectInteraction, setProjectInteraction] = useState('');
@@ -64,6 +69,27 @@ const ProjectDescription = ({
         <Tab tabClassName={s.tab} eventKey="profile" title={`Artist Profile`}>
           <div className={s.project_desc}>
             <SeeMore render={render}>{profileBio || ''}</SeeMore>
+          </div>
+        </Tab>
+      )}
+      {!!attributes && (
+        <Tab tabClassName={s.tab} eventKey="features" title={`Features`}>
+          <div className={s.project_desc}>
+            {/* <SeeMore render={render}>{attributes || ''}</SeeMore> */}
+            {attributes}
+          </div>
+        </Tab>
+      )}
+
+      {!!tokenDetail && (
+        <Tab
+          tabClassName={cs(s.tab, 'test')}
+          eventKey="token"
+          title={`ORDINAL THEORY`}
+        >
+          <div className={s.project_desc}>
+            {tokenDetail}
+            {/* <SeeMore render={render}>{tokenDetail || ''}</SeeMore> */}
           </div>
         </Tab>
       )}

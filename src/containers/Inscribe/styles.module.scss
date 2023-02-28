@@ -5,6 +5,7 @@
 
   @include mobile {
     display: block;
+    margin-top: 0;
   }
 
   .formLeft {
@@ -18,11 +19,21 @@
     }
 
     .formItem {
-      height: 100%;
       margin-bottom: 0;
     }
 
+    .dropZoneWrapper {
+      width: 100%;
+      height: 0;
+      padding-top: 100%;
+      position: relative;
+    }
+
     .dropZoneContainer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
       height: 100%;
 
       label {
@@ -45,10 +56,17 @@
 }
 
 .mintTool {
-  padding-top: rem(60px);
-  padding-bottom: rem(60px);
   background: #e5ecf6;
-  min-height: calc(100vh - 160px);
+  min-height: calc(100vh - 88px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include mobile {
+    min-height: auto;
+    align-items: flex-start;
+    padding: rem(0);
+  }
 
   .container {
     margin: 0 auto;
@@ -60,11 +78,9 @@
 
     @include mobile {
       width: 100%;
+      padding: rem(16px);
+      box-shadow: none;
     }
-  }
-
-  @include mobile {
-    padding: rem(24px);
   }
 
   .title {
@@ -200,6 +216,13 @@
     color: $secondary-red;
     line-height: rem(20px);
     margin-top: rem(6px);
+  }
+
+  .submitBtn {
+    @include mobile() {
+      width: 100%;
+      justify-content: center;
+    }
   }
 
   .qrCodeContainer {

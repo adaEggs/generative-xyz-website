@@ -16,18 +16,22 @@ import { getUserSelector } from '@redux/user/selector';
 import useBitcoin from '@bitcoin/useBitcoin';
 import { formatBTCPrice } from '@utils/format';
 import BalanceTab from '@containers/Profile/BalanceTab';
+import FreeInscriptions from './Free';
 
 const Profile: React.FC = (): React.ReactElement => {
   const user = useAppSelector(getUserSelector);
-  const { isLoaded, profileProjects, collectedNFTs, isLoadingUTXOs } =
-    useContext(ProfileContext);
+  const {
+    isLoaded,
+    profileProjects,
+    collectedNFTs,
+    totalFreeInscription,
+    isLoadingUTXOs,
+  } = useContext(ProfileContext);
   const router = useRouter();
-
-  const { satoshiAmount } = useBitcoin();
-
   const [showModal, setShowModal] = React.useState(false);
   const { walletAddress } = router.query as { walletAddress: string };
   const isOwner = !walletAddress || user?.walletAddress === walletAddress;
+  const { satoshiAmount } = useBitcoin();
 
   return (
     <div className={s.profile}>
@@ -86,6 +90,17 @@ const Profile: React.FC = (): React.ReactElement => {
                       <BalanceTab />
                     </Tab>
                   )}
+                  <Tab
+                    tabClassName={s.tab}
+                    eventKey="freeTab"
+                    title={
+                      <>
+                        Free <sup>{totalFreeInscription}</sup>
+                      </>
+                    }
+                  >
+                    <FreeInscriptions />
+                  </Tab>
                 </Tabs>
               </div>
             </ClientOnly>
