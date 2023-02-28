@@ -1,4 +1,5 @@
 import moment from 'moment';
+import isNumber from 'lodash/isNumber';
 
 const FORMAT_PATTERN = 'DD MMM hh:mm A';
 
@@ -16,4 +17,16 @@ const formatDateTime = ({
   formatPattern = FORMAT_PATTERN,
 }: IFormatDate) => moment(dateTime).format(formatPattern);
 
-export { formatUnixDateTime, formatDateTime };
+interface IExpired {
+  time: number | string | undefined;
+  expiredMin?: number;
+}
+
+const isExpiredTime = ({ time, expiredMin = 1 }: IExpired) => {
+  if (!time || !isNumber(time)) return false;
+  const now = new Date().getTime();
+  expiredMin = expiredMin * 60 * 1000;
+  return now - Number(time) > expiredMin;
+};
+
+export { formatUnixDateTime, formatDateTime, isExpiredTime };

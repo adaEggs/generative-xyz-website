@@ -30,6 +30,12 @@
   padding: 0;
 }
 
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .closeBtn {
   padding: rem(18.8) !important;
   background-color: transparent !important;

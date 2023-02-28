@@ -13,7 +13,7 @@ import { getUserSelector } from '@redux/user/selector';
 import { uploadFile } from '@services/file';
 import { updateProfile } from '@services/profile';
 import log from '@utils/logger';
-import { validateBTCAddress } from '@utils/validate';
+import { validateBTCAddress, validateEVMAddress } from '@utils/validate';
 import { Formik } from 'formik';
 import _isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
@@ -75,6 +75,13 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
       errors.walletAddressBtc = 'Invalid wallet address.';
     }
 
+    if (
+      !validateEVMAddress(values.walletAddressPayment) &&
+      values.walletAddressPayment !== ''
+    ) {
+      errors.walletAddressPayment = 'Invalid wallet address.';
+    }
+
     if (!httpsRegex.test(values.website) && values.website !== '') {
       errors.website = 'Invalid website link.';
     }
@@ -102,6 +109,7 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
         etherScan: values.etherScan || '',
       },
       walletAddressBtc: values.walletAddressBtc || '',
+      walletAddressPayment: values.walletAddressPayment || '',
     };
 
     const res = await updateProfile(payload);
@@ -158,6 +166,7 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
           etherScan: user?.profileSocial?.etherScan || '',
           twitter: user?.profileSocial?.twitter || '',
           walletAddressBtc: user?.walletAddressBtc || '',
+          walletAddressPayment: user?.walletAddressPayment || '',
         }}
         validate={validateForm}
         onSubmit={handleSubmit}
@@ -261,11 +270,25 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
                   <div className={s.input_item}>
                     <Input
                       name={'walletAddressBtc'}
-                      label={'Your BTC address for payment'}
+                      label={'Your BTC address for payments'}
                       placeholder="Please enter your BTC address"
                       className={s.input_wallet}
                       errors={{
                         walletAddressBtc: errors.walletAddressBtc || '',
+                      }}
+                      useFormik
+                    />
+                  </div>
+                )}
+                {!!user?.walletAddress && (
+                  <div className={s.input_item}>
+                    <Input
+                      name={'walletAddressPayment'}
+                      label={'Your ETH address for payments'}
+                      placeholder="Please enter your ETH address"
+                      className={s.input_wallet}
+                      errors={{
+                        walletAddressPayment: errors.walletAddressPayment || '',
                       }}
                       useFormik
                     />
