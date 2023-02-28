@@ -22,6 +22,7 @@ import {
 } from '@utils/format';
 import useBitcoin from '@bitcoin/useBitcoin';
 import { MINIMUM_SATOSHI } from '@bitcoin/contants';
+import Text from '@components/Text';
 
 interface IFormValue {
   address: string;
@@ -31,9 +32,10 @@ interface IFormValue {
 interface IProps {
   isShow: boolean;
   onHideModal: () => void;
+  title: string;
 }
 
-const ModalSendBTC = ({ isShow, onHideModal }: IProps): JSX.Element => {
+const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const {
     collectedUTXOs,
@@ -115,12 +117,19 @@ const ModalSendBTC = ({ isShow, onHideModal }: IProps): JSX.Element => {
   return (
     <Modal className={s.modalWrapper} centered show={isShow}>
       <Modal.Header className={s.modalHeader}>
-        <Button onClick={_onHideModal} className={s.closeBtn} variants="ghost">
+        <Button
+          onClick={onHideModal}
+          className={s.modalHeader_closeBtn}
+          variants="ghost"
+        >
           <SvgInset
             className={s.closeIcon}
             svgUrl={`${CDN_URL}/icons/ic-x-circle-contained-28x28.svg`}
           />
         </Button>
+        <Text className={s.modalHeader_title} size="20">
+          {title}
+        </Text>
       </Modal.Header>
       <Modal.Body>
         <Formik
