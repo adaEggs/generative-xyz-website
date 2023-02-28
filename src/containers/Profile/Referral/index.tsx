@@ -19,7 +19,12 @@ import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './Referral.module.scss';
+import log from '@utils/logger';
+import { LogLevel } from '@enums/log-level';
+import { withdrawRefereeReward } from '@services/profile';
 // import ToogleSwitch from '@components/Toggle';
+
+const LOG_PREFIX = 'ReferralTab';
 
 const ReferralTab = () => {
   const user = useAppSelector(getUserSelector);
@@ -54,6 +59,25 @@ const ReferralTab = () => {
   ];
 
   const referralLink = `${location.origin}${ROUTE_PATH.HOME}?referral_code=${user?.id}`;
+
+  const handleWithdraw = async () => {
+    const payload = {
+      items: [
+        {
+          amount: '10000000',
+          paymentType: currency.toLowerCase(),
+        },
+      ],
+    };
+    // console.log('🚀 ~ handleWithdraw ~ payload:', payload);
+
+    try {
+      await withdrawRefereeReward(payload);
+    } catch (err: unknown) {
+      log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
+      throw Error();
+    }
+  };
 
   const referralData = referralListing?.result?.map(item => {
     const totalVolume = item.referreeVolumn?.amount; // 0.1 BTC
@@ -99,7 +123,8 @@ const ReferralTab = () => {
             <ButtonIcon
               sizes="small"
               variants="outline-small"
-              disabled={!Number(totalVolume)}
+              // disabled={!Number(totalVolume)}
+              onClick={handleWithdraw}
             >
               Withdraw
             </ButtonIcon>
@@ -108,6 +133,10 @@ const ReferralTab = () => {
       },
     };
   });
+
+  const handleWithdrawlAll = () => {
+    return 0;
+  };
 
   const calculateTotalWithdraw = referralListing?.result.reduce(
     (total, currentValue) => {
@@ -153,7 +182,8 @@ const ReferralTab = () => {
               <ButtonIcon
                 sizes="large"
                 className={s.Withdraw_all_btn}
-                disabled={!calculateTotalWithdraw}
+                // disabled={!calculateTotalWithdraw}
+                onClick={handleWithdrawlAll}
               >
                 <span>Withdraw all</span>
                 <>
