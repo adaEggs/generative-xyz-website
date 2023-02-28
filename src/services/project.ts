@@ -55,6 +55,21 @@ export const getProjectDetail = async (
   }
 };
 
+export const getProjectVolume = async (
+  params: IGetProjectDetailParams,
+  { payType }: { payType: string }
+): Promise<IGetProjectDetailResponse> => {
+  try {
+    const res = await get<IGetProjectDetailResponse>(
+      `${API_PATH}/${params.contractAddress}/tokens/${params.projectID}/volumn?payType=${payType}`
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get project detail', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get project detail');
+  }
+};
+
 export const getRandomProject =
   async (): Promise<IGetProjectDetailResponse> => {
     try {
