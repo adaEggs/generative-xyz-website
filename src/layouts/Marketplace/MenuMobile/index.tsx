@@ -37,25 +37,31 @@ const MenuMobile = React.forwardRef(
       return `${url}?${querystring.stringify(query)}`;
     };
 
-    // const showWalletButton = (): boolean => {
-    //   if (!isProduction()) return true;
-    //   if (router.pathname === ROUTE_PATH.ORDER_NOW) {
-    //     return true;
-    //   } else return false;
-    // };
-
     return (
       <div ref={ref} className={`${s.menuMobile} ${s[theme || 'light']}`}>
         <div className={s.menuMobile_inner}>
           <ul className={`${s.navBar}`}>
             <li
               className={cs(
-                activePath === MENU_HEADER[0].activePath && s.active
+                (activePath === MENU_HEADER[0].activePath ||
+                  activePath === '') &&
+                  s.active
               )}
               key={`header-${MENU_HEADER[0].id}`}
             >
               <Link href={getUrlWithQueryParams(MENU_HEADER[0].route)}>
                 {MENU_HEADER[0].name}
+              </Link>
+            </li>
+
+            <li
+              className={cs(
+                activePath === MENU_HEADER[7].activePath && s.active
+              )}
+              key={`header-${MENU_HEADER[7].id}`}
+            >
+              <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
+                {MENU_HEADER[7].name}
               </Link>
             </li>
 
