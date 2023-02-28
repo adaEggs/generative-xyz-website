@@ -1,0 +1,33 @@
+.wrapper {
+  margin-top: rem(52);
+  margin-bottom: rem(90);
+}
+
+.switch_currency {
+  justify-content: flex-end;
+}
+
+.collection {
+  gap: rem(5);
+  padding-left: rem(5);
+}
+
+.actions {
+  text-align: right;
+}
+
+.Withdraw_all {
+  &_btn {
+    display: flex;
+    align-items: center;
+    gap: rem(10);
+    margin-left: auto;
+
+    .dots {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: $white;
+    }
+  }
+}
