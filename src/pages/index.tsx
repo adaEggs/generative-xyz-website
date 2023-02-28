@@ -18,8 +18,8 @@ export async function getServerSideProps() {
     props: {
       seoInfo: {
         title: 'Generative',
-        description: 'Be the first to launch and collect art on Bitcoin ',
-        image: `${CDN_URL}/images/homepage.jpg`,
+        description: 'Be the first to launch and collect art on Bitcoin',
+        image: `${CDN_URL}/images/image.png`,
       },
     },
   };

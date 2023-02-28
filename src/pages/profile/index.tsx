@@ -20,8 +20,8 @@ export async function getServerSideProps() {
       seoInfo: {
         title: 'Generative',
         description:
-          'Be the first to launch art on Bitcoin. Join the over 200 artists. Fully on-chain, decentralized, and immutable.',
-        image: `${CDN_URL}/images/display.jpg`,
+          'Be the first to launch and collect art on Bitcoin. Fully on-chain, decentralized, and immutable.',
+        image: `${CDN_URL}/images/artists.png`,
       },
     },
   };

@@ -21,10 +21,10 @@ export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: 'Generative',
+        title: 'Generative | Grail',
         description:
           'A groundbreaking digital frame that renders generative artworks and allows collectors to interact with their art.',
-        image: `${CDN_URL}/images/display.jpg`,
+        image: `${CDN_URL}/images/grail.jpg`,
       },
     },
   };

@@ -1,5 +1,4 @@
 import { CDN_URL } from '@constants/config';
-import { SEO_TITLE } from '@constants/seo-default-info';
 import MetamaskXOrdinals from '@containers/MetamaskXOrdinals';
 import MarketplaceLayout from '@layouts/Marketplace';
 import { NextPage } from 'next';
@@ -20,8 +19,8 @@ export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: SEO_TITLE,
-        description: 'Securely keep your Ordinal Inscription.',
+        title: 'Generative | Wallet',
+        description: 'Securely keep your Ordinal Inscriptions.',
         image: `${CDN_URL}/images/wallet-seo.jpg`,
       },
     },

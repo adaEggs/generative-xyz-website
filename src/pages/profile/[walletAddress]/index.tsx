@@ -27,7 +27,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     return {
       props: {
         seoInfo: {
-          title: `${SEO_TITLE} | ${res.walletAddress || 'Profile'}`,
+          title: res.walletAddress || SEO_TITLE,
           description: res.bio || '',
           image: res.avatar || DEFAULT_USER_AVATAR,
         },
