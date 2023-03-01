@@ -446,9 +446,9 @@ const MintEthModal: React.FC = () => {
                         <>
                           <ButtonIcon
                             sizes="large"
-                            className={s.checkBtn}
+                            className={s.buyBtn}
                             onClick={() => router.push(ROUTE_PATH.PROFILE)}
-                            variants="outline-small"
+                            variants="outline"
                           >
                             <Text as="span" size="16" fontWeight="medium">
                               Check order status
