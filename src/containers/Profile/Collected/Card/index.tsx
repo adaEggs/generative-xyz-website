@@ -15,11 +15,9 @@ import cs from 'classnames';
 import { TwitterShareButton } from 'react-share';
 import React, { useContext, useEffect, useState } from 'react';
 import s from './CollectedCard.module.scss';
-import Image from 'next/image';
 import ButtonIcon from '@components/ButtonIcon';
 import SendInscriptionModal from '@containers/Profile/Collected/Modal/SendInscription';
 import { HistoryStatusType } from '@interfaces/api/bitcoin';
-import { useRouter } from 'next/router';
 import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 
 interface IPros {
@@ -33,15 +31,18 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const user = useAppSelector(getUserSelector);
   const [showSendModal, setShowSendModal] = React.useState(false);
 
-  const { handelcancelMintingNFT, feeRate, isLoadingHistory, history } =
-    useContext(ProfileContext);
+  const {
+    handelcancelMintingNFT,
+    feeRate,
+    isLoadingHistory,
+    history,
+    currentUser,
+  } = useContext(ProfileContext);
 
   const toggleModal = () => {
     setShowSendModal(value => !value);
   };
-  const router = useRouter();
-  const { walletAddress } = router.query as { walletAddress: string };
-  const isOwner = !walletAddress || user?.walletAddress === walletAddress;
+  const isOwner = currentUser?.id === user?.id;
 
   const [thumb, setThumb] = useState<string>(project.image);
 
@@ -139,8 +140,7 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
               }`}
             >
               <div className={s.projectCard_thumb_inner}>
-                <Image
-                  fill
+                <img
                   onError={onThumbError}
                   src={convertIpfsToHttp(thumb)}
                   alt={project.name}

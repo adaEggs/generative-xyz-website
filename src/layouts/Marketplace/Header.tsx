@@ -55,7 +55,8 @@ const Header: React.FC<IProp> = ({
     {
       id: 'view-profile',
       name: 'View Profile',
-      onClick: () => router.push(ROUTE_PATH.PROFILE),
+      onClick: (btcAddress?: string) =>
+        router.push(`${ROUTE_PATH.PROFILE}/${btcAddress}`),
     },
     {
       id: 'disconect-wallet',
@@ -131,7 +132,13 @@ const Header: React.FC<IProp> = ({
               (item.id != 'faucet' || isTestnet()) && (
                 <li
                   className="dropdown-item"
-                  onClick={item.onClick}
+                  onClick={() => {
+                    if (item.id !== 'view-profile') {
+                      item.onClick(user?.walletAddressBtcTaproot || '');
+                    } else {
+                      item.onClick();
+                    }
+                  }}
                   key={item.id}
                 >
                   {item.name}
@@ -160,7 +167,7 @@ const Header: React.FC<IProp> = ({
 
   const handleYourVault = () => {
     if (user) {
-      router.push(ROUTE_PATH.PROFILE);
+      router.push(`${ROUTE_PATH.PROFILE}/${user?.walletAddressBtcTaproot}`);
     } else {
       handleConnectWallet();
     }

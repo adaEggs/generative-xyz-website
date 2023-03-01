@@ -15,7 +15,7 @@ import {
   getProjectIdFromTokenId,
 } from '@utils/format';
 import cs from 'classnames';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import Image from 'next/image';
 import ButtonIcon from '@components/ButtonIcon';
@@ -52,6 +52,13 @@ const CollectionItem = ({
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
+
+  useEffect(() => {
+    const fileExt = data.image.split('.').pop();
+    if (fileExt && fileExt === 'glb' && data.thumbnail) {
+      setThumb(data.thumbnail);
+    }
+  }, [data.image]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const toggleModal = (event?: any, _payType?: 'eth' | 'btc') => {

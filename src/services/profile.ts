@@ -214,7 +214,7 @@ export const cancelMintingCollectedNFT = async (
 
 // Referral tab
 
-export const withdrawRefereeReward = async (
+export const withdrawRewardEarned = async (
   payload: IWithdrawRefereeRewardPayload
 ): Promise<void> => {
   try {
