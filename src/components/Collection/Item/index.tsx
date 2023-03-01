@@ -10,6 +10,7 @@ import { convertToETH } from '@utils/currency';
 import {
   formatAddress,
   formatBTCPrice,
+  formatEthPrice,
   formatTokenId,
   getProjectIdFromTokenId,
 } from '@utils/format';
@@ -18,7 +19,7 @@ import React, { useContext, useMemo, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import Image from 'next/image';
 import ButtonIcon from '@components/ButtonIcon';
-import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
+import ModalBuyItem from '@components/Collection/ModalBuyItem';
 import s from './styles.module.scss';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import useBTCSignOrd from '@hooks/useBTCSignOrd';
@@ -41,6 +42,8 @@ const CollectionItem = ({
   const [showModal, setShowModal] = useState<boolean>(false);
   const { ordAddress, onButtonClick } = useBTCSignOrd();
 
+  const [payType, setPayType] = useState<'eth' | 'btc'>('btc');
+
   const isBTCListable =
     (data.buyable || (!data.buyable && !data.isCompleted)) && !!data.priceBTC;
   const isBTCDisable = !data.buyable && !data.isCompleted && !!data.priceBTC;
@@ -51,7 +54,7 @@ const CollectionItem = ({
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const toggleModal = (event?: any) => {
+  const toggleModal = (event?: any, _payType?: 'eth' | 'btc') => {
     if (event && event.stopPropagation) {
       event.stopPropagation();
     }
@@ -59,27 +62,69 @@ const CollectionItem = ({
 
     onButtonClick({
       cbSigned: () => {
+        if (_payType) {
+          setPayType(_payType);
+        }
         setShowModal(show => !show);
       },
-    }).then();
+    })
+      .then()
+      .catch();
   };
 
   const renderButton = () => {
     if (isBTCListable)
       return (
-        <ButtonIcon
-          sizes={'small'}
-          className={s.buy_now}
-          onClick={toggleModal}
-          type="button"
-          name="button-buy"
-        >
-          <Text as="span" fontWeight="medium">
-            {isBTCDisable
-              ? 'The inscription is being purchased'
-              : `Buy now • ${formatBTCPrice(data.priceBTC)} BTC`}
-          </Text>
-        </ButtonIcon>
+        <>
+          {isBTCDisable ? (
+            <ButtonIcon
+              sizes={'small'}
+              className={s.buy_now}
+              onClick={e => toggleModal(e)}
+              disabled={isBTCDisable}
+              type="button"
+              name="button-buy"
+            >
+              <Text as="span" fontWeight="medium">
+                The inscription is being purchased
+              </Text>
+            </ButtonIcon>
+          ) : (
+            <div
+              style={{ marginLeft: 4, display: 'flex', alignSelf: 'flex-end' }}
+            >
+              <ButtonIcon
+                sizes={'small'}
+                className={s.buy_now}
+                onClick={e => toggleModal(e, 'btc')}
+                type="button"
+                name="button-buy"
+                style={{ marginRight: 4 }}
+              >
+                <Text as="span" fontWeight="medium">
+                  {`Buy ${formatBTCPrice(data.priceBTC)} BTC`}
+                </Text>
+              </ButtonIcon>
+              {data.listingDetail &&
+                data.listingDetail.paymentListingInfo.eth && (
+                  <ButtonIcon
+                    sizes={'small'}
+                    className={s.buy_now}
+                    onClick={e => toggleModal(e, 'eth')}
+                    type="button"
+                    name="button-buy"
+                    variants="outline"
+                  >
+                    <Text as="span" fontWeight="medium">
+                      {`Buy ${formatEthPrice(
+                        data.listingDetail.paymentListingInfo.eth.price
+                      )} ETH`}
+                    </Text>
+                  </ButtonIcon>
+                )}
+            </div>
+          )}
+        </>
       );
     return null;
   };
@@ -220,13 +265,20 @@ const CollectionItem = ({
         </div>
       </div>
       {data.buyable && !!ordAddress && showModal && (
-        <ModalBuyItemViaBTC
+        <ModalBuyItem
           showModal={showModal}
           orderID={data.orderID}
           inscriptionID={data.tokenID}
-          price={data.priceBTC}
+          price={
+            payType === 'btc'
+              ? data.priceBTC
+              : data.listingDetail && data.listingDetail.paymentListingInfo.eth
+              ? data.listingDetail.paymentListingInfo.eth.price
+              : '0'
+          }
           onClose={toggleModal}
           ordAddress={ordAddress}
+          payType={payType}
         />
       )}
     </div>

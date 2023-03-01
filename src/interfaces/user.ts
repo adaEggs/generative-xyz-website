@@ -12,4 +12,5 @@ export type User = {
   walletAddressBtc?: string;
   walletAddressBtcTaproot?: string;
   projects?: { name: string; projectId: string }[];
+  walletAddressPayment?: string;
 };

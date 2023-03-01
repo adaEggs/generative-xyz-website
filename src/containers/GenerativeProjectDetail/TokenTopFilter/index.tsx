@@ -2,53 +2,49 @@ import ButtonIcon from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import { SelectOption } from '@interfaces/select-input';
 import cs from 'classnames';
-import { debounce } from 'lodash';
-import Image from 'next/image';
-import React, { useContext, useMemo } from 'react';
-import Select, { SingleValue } from 'react-select';
+import React, { useContext } from 'react';
 import s from './styles.module.scss';
 
-const SORT_OPTIONS: Array<{ value: string; label: string }> = [
-  {
-    value: 'newest',
-    label: 'Recently Listed',
-  },
-  {
-    value: 'minted-newest',
-    label: 'Date minted: Newest',
-  },
-  {
-    value: 'token-price-desc',
-    label: 'Price: High to Low',
-  },
-  {
-    value: 'token-price-asc',
-    label: 'Price: Low to High',
-  },
-];
+// const SORT_OPTIONS: Array<{ value: string; label: string }> = [
+//   {
+//     value: 'newest',
+//     label: 'Recently Listed',
+//   },
+//   {
+//     value: 'minted-newest',
+//     label: 'Date minted: Newest',
+//   },
+//   {
+//     value: 'token-price-desc',
+//     label: 'Price: High to Low',
+//   },
+//   {
+//     value: 'token-price-asc',
+//     label: 'Price: Low to High',
+//   },
+// ];
 
 interface IProps {
-  keyword: string;
-  sort: string;
-  onKeyWordChange: (k: string) => void;
-  onSortChange: (v: string) => void;
-  placeholderSearch?: string;
+  // keyword: string;
+  // sort: string;
+  // onKeyWordChange: (k: string) => void;
+  // onSortChange: (v: string) => void;
+  // placeholderSearch?: string;
   className?: string;
 }
 
 const TokenTopFilter: React.FC<IProps> = ({
-  keyword,
-  sort,
-  onKeyWordChange,
-  onSortChange,
-  placeholderSearch,
+  // keyword,
+  // sort,
+  // onKeyWordChange,
+  // onSortChange,
+  // placeholderSearch,
   className,
 }: IProps): React.ReactElement => {
-  const selectedOption = useMemo(() => {
-    return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
-  }, [sort]);
+  // const selectedOption = useMemo(() => {
+  //   return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
+  // }, [sort]);
 
   const { showFilter, setShowFilter } = useContext(
     GenerativeProjectDetailContext
@@ -58,7 +54,7 @@ const TokenTopFilter: React.FC<IProps> = ({
     <div className={cs(s.tokenTopFilter, className)}>
       <div className={cs(s.filterWrapper)}>
         <ButtonIcon
-          variants={showFilter ? 'primary' : 'outline'}
+          variants={showFilter ? 'primary' : 'outline-small'}
           startIcon={
             showFilter ? (
               <SvgInset size={16} svgUrl={`${CDN_URL}/icons/ic-close.svg`} />
@@ -71,7 +67,8 @@ const TokenTopFilter: React.FC<IProps> = ({
           Filter
         </ButtonIcon>
       </div>
-      <div className={s.inputWrapper}>
+      {/* DO NOT REMOVE CODE BELOW */}
+      {/* <div className={s.inputWrapper}>
         <div className={s.inputPrefixWrapper}>
           <Image
             src={`${CDN_URL}/icons/ic-search-14x14.svg`}
@@ -102,7 +99,7 @@ const TokenTopFilter: React.FC<IProps> = ({
             if (op) onSortChange(op.value);
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
 };

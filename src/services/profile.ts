@@ -9,10 +9,11 @@ import {
   IGetProfileResponse,
   IUpdateProfilePayload,
   IUpdateProfileResponse,
+  IWithdrawRefereeRewardPayload,
 } from '@interfaces/api/profile';
 import { IGetProjectItemsResponse } from '@interfaces/api/project';
 import { IGetProfileTokensResponse } from '@interfaces/api/token-uri';
-import { get, put, del } from '@services/http-client';
+import { get, put, del, post } from '@services/http-client';
 import log from '@utils/logger';
 
 const LOG_PREFIX = 'ProfileService';
@@ -207,6 +208,24 @@ export const cancelMintingCollectedNFT = async (
     return true;
   } catch (err: unknown) {
     log('failed to get detail collected NFT', LogLevel.ERROR, LOG_PREFIX);
+    throw Error();
+  }
+};
+
+// Referral tab
+
+export const withdrawRefereeReward = async (
+  payload: IWithdrawRefereeRewardPayload
+): Promise<void> => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const res = await post<IWithdrawRefereeRewardPayload, any>(
+      `${API_PATH}/withdraw`,
+      payload
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
     throw Error();
   }
 };

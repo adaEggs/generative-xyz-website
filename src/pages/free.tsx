@@ -17,7 +17,7 @@ export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: 'Generative | Inscribe',
+        title: 'Generative | Free',
         description: 'Inscribe NFTs on Bitcoin. For free.',
         image: `${CDN_URL}/images/marketplace.jpg`,
       },

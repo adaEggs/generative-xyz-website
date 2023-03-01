@@ -1,5 +1,6 @@
 import { Form } from 'react-bootstrap';
 import s from './styles.module.scss';
+import cs from 'classnames';
 
 type TToogleSwitch = {
   id?: string;
@@ -7,6 +8,7 @@ type TToogleSwitch = {
   checked?: boolean;
   disabled?: boolean;
   onChange?: () => void;
+  size?: '16' | '20' | '24';
 };
 
 const ToogleSwitch = ({
@@ -15,6 +17,7 @@ const ToogleSwitch = ({
   checked,
   disabled,
   onChange,
+  size = '24',
 }: TToogleSwitch) => {
   return (
     <Form>
@@ -25,7 +28,7 @@ const ToogleSwitch = ({
         checked={checked}
         disabled={disabled}
         onChange={onChange}
-        className={s.switch_btn}
+        className={cs(s.switch_btn, s[`size-${size}`])}
       />
     </Form>
   );

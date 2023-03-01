@@ -1,0 +1,2 @@
+const MINIMUM_SATOSHI = 546;
+export { MINIMUM_SATOSHI };
