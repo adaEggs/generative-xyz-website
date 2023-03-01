@@ -353,9 +353,9 @@
 }
 
 .header {
+  &_left,
   &_right {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
     gap: rem(48);
 
@@ -389,6 +389,10 @@
         }
       }
     }
+  }
+
+  &_right {
+    justify-content: flex-end;
   }
 }
 

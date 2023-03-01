@@ -27,6 +27,7 @@ export const ROUTE_PATH = {
   ARTISTS: '/artists',
   FREE: '/free',
   AUTHENTIC: '/authentic',
+  AIRDROP: '/airdrop',
 };
 
 export const STANDALONE_PAGES = [
