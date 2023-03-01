@@ -1,10 +1,15 @@
 .wrapper {
   margin-top: rem(58);
+  position: relative;
+
+  .loading {
+    background-color: $white;
+  }
 }
 
 .referral_link {
   margin: {
-    bottom: rem(50);
+    bottom: rem(48);
   }
 
   .link {

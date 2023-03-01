@@ -1,5 +1,6 @@
 import Avatar from '@components/Avatar';
 import ButtonIcon from '@components/ButtonIcon';
+import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Table from '@components/Table';
 import Text from '@components/Text';
@@ -12,7 +13,11 @@ import { LogLevel } from '@enums/log-level';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { withdrawRefereeReward } from '@services/profile';
-import { formatBTCPrice, formatLongAddress } from '@utils/format';
+import {
+  formatBTCPrice,
+  formatEthPrice,
+  formatLongAddress,
+} from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import copy from 'copy-to-clipboard';
@@ -21,15 +26,13 @@ import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './Referral.module.scss';
-// import ToogleSwitch from '@components/Toggle';
 
 const LOG_PREFIX = 'ReferralTab';
 
 const ReferralTab = () => {
   const user = useAppSelector(getUserSelector);
   const router = useRouter();
-  const { referralListing, isLoadedProfileReferral, currency, setCurrency } =
-    useContext(ProfileContext);
+  const { referralListing, currency, setCurrency } = useContext(ProfileContext);
 
   // const [isETHCurrency, setIsETHCurrency] = useState(false);
 
@@ -142,15 +145,16 @@ const ReferralTab = () => {
 
   return (
     <div className={s.wrapper}>
+      {/* <Loading isLoaded={needLoading} className={s.loading} /> */}
       <div className={s.referral_link}>
+        <Heading as="h4" fontWeight="semibold">
+          Referral
+        </Heading>
         <Stack direction="horizontal" className="justify-between">
           <div>
             <Text size="18" fontWeight="medium">
               Refer an artist by sending your referral link to earn 1% of their
               sale volume.
-            </Text>
-            <Text size="18" fontWeight="medium">
-              *secondary sales are not counted*
             </Text>
           </div>
           <div className={s.link}>
@@ -170,31 +174,34 @@ const ReferralTab = () => {
           </div>
         </Stack>
       </div>
-      {isLoadedProfileReferral && (
-        <>
-          <Table
-            tableHead={TABLE_REFERRALS_HEADING}
-            data={referralData}
-            className={s.Refferal_table}
-          ></Table>
-          {!!calculateTotalWithdraw && (
-            <div className={s.Withdraw_all}>
-              <ButtonIcon
-                sizes="large"
-                className={s.Withdraw_all_btn}
-                disabled={!calculateTotalWithdraw}
-                onClick={() => handleWithdraw(`${calculateTotalWithdraw}`)}
-              >
-                <span>Withdraw all</span>
-                <>
-                  <span className={s.dots}></span>
-                  <span>{calculateTotalWithdraw} BTC</span>
-                </>
-              </ButtonIcon>
-            </div>
-          )}
-        </>
+
+      <Table
+        tableHead={TABLE_REFERRALS_HEADING}
+        data={referralData}
+        className={s.Refferal_table}
+      ></Table>
+      {!!calculateTotalWithdraw && (
+        <div className={s.Withdraw_all}>
+          <ButtonIcon
+            sizes="large"
+            className={s.Withdraw_all_btn}
+            disabled={!calculateTotalWithdraw}
+            onClick={() => handleWithdraw(`${calculateTotalWithdraw}`)}
+          >
+            <span>Withdraw all</span>
+            <>
+              <span className={s.dots}></span>
+              <span>
+                {currency === CurrencyType.ETH
+                  ? formatEthPrice(`${calculateTotalWithdraw}`)
+                  : formatBTCPrice(calculateTotalWithdraw)}
+                {currency}
+              </span>
+            </>
+          </ButtonIcon>
+        </div>
       )}
+      {/* <ArtistCollectionEarn /> */}
     </div>
   );
 };

@@ -135,7 +135,7 @@ export const formatEthPrice = (
   emptyStr?: string
 ): string => {
   if (!price) return emptyStr || '--';
-  return ceilPrecised(parseFloat(Web3.utils.fromWei(price, 'ether')))
+  return ceilPrecised(parseFloat(Web3.utils.fromWei(price, 'ether')), 4)
     .toString()
     .replace(',', '.');
 };
