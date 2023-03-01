@@ -1,15 +1,17 @@
-import ButtonIcon from '@components/ButtonIcon';
+import ButtonIcon, { ButtonSizesType } from '@components/ButtonIcon';
 import React from 'react';
 import ModalReceiver from '@containers/Profile/ButtonReceiver/ModalReceiver';
 
 interface IProps {
   className?: string;
   title?: string;
+  sizes?: ButtonSizesType;
 }
 
 const ButtonReceiver = ({
   className,
   title = 'Receive inscription',
+  sizes = 'large',
 }: IProps) => {
   const [isShow, setShow] = React.useState(false);
 
@@ -19,7 +21,7 @@ const ButtonReceiver = ({
     <>
       <ButtonIcon
         variants={'primary'}
-        sizes={'large'}
+        sizes={sizes}
         onClick={toggle}
         className={`${className}`}
       >
