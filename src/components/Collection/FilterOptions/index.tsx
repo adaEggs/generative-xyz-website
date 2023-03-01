@@ -4,7 +4,7 @@ import Heading from '@components/Heading';
 import Text from '@components/Text';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { TraitStats } from '@interfaces/project';
-import { ReactNode, useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import { v4 } from 'uuid';
 import styles from './styles.module.scss';
@@ -167,29 +167,30 @@ const FilterOptions = ({ attributes }: Props) => {
                 sortedAttributes.map(attr => {
                   const _traitStats = [...attr.traitValuesStat];
 
-                  const options: Array<{ value: string; label: ReactNode }> =
+                  const options: Array<{ value: string; label: string }> =
                     _traitStats
                       .sort((a, b) => a.rarity - b.rarity)
                       .map(item => {
                         return {
                           value: item.value,
-                          label: (
-                            <Stack
-                              direction="horizontal"
-                              className="justify-between"
-                            >
-                              <Text size="14" fontWeight="medium">
-                                {item.value}
-                              </Text>
-                              <Text
-                                size="12"
-                                fontWeight="medium"
-                                color="black-40"
-                              >
-                                {item.rarity}%
-                              </Text>
-                            </Stack>
-                          ),
+                          label: item.value,
+                          // (
+                          //   <Stack
+                          //     direction="horizontal"
+                          //     className="justify-between"
+                          //   >
+                          //     <Text size="14" fontWeight="medium">
+                          //       {item.value}
+                          //     </Text>
+                          //     <Text
+                          //       size="12"
+                          //       fontWeight="medium"
+                          //       color="black-40"
+                          //     >
+                          //       {item.rarity}%
+                          //     </Text>
+                          //   </Stack>
+                          // ),
                         };
                       });
 
