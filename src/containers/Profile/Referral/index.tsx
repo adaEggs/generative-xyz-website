@@ -12,12 +12,8 @@ import { CurrencyType } from '@enums/currency';
 import { LogLevel } from '@enums/log-level';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { withdrawRefereeReward } from '@services/profile';
-import {
-  formatBTCPrice,
-  formatEthPrice,
-  formatLongAddress,
-} from '@utils/format';
+import { withdrawRewardEarned } from '@services/profile';
+import { formatBTCPrice, formatLongAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import copy from 'copy-to-clipboard';
@@ -25,6 +21,7 @@ import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
+import ArtistCollectionEarn from './ArtistCollectionEarn';
 import s from './Referral.module.scss';
 
 const LOG_PREFIX = 'ReferralTab';
@@ -62,18 +59,20 @@ const ReferralTab = () => {
 
   const referralLink = `${location.origin}${ROUTE_PATH.HOME}?referral_code=${user?.id}`;
 
-  const handleWithdraw = async (amount: string) => {
+  const handleWithdraw = async (amount: string, id: string) => {
     const payload = {
       items: [
         {
-          amount: amount,
+          amount,
           paymentType: currency.toLowerCase(),
+          type: 'referal',
+          id,
         },
       ],
     };
 
     try {
-      await withdrawRefereeReward(payload);
+      await withdrawRewardEarned(payload);
     } catch (err: unknown) {
       log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
       throw Error();
@@ -126,7 +125,9 @@ const ReferralTab = () => {
               sizes="small"
               variants="outline-small"
               disabled={!Number(calculateWithdrawAmount)}
-              onClick={() => handleWithdraw(item.referreeVolumn.earn || '')}
+              onClick={() =>
+                handleWithdraw(item.referreeVolumn.earn || '', item.referreeID)
+              }
             >
               Withdraw
             </ButtonIcon>
@@ -136,12 +137,12 @@ const ReferralTab = () => {
     };
   });
 
-  const calculateTotalWithdraw = referralListing?.result.reduce(
-    (total, currentValue) => {
-      return total + parseFloat(currentValue?.referreeVolumn?.earn || '');
-    },
-    0
-  );
+  // const calculateTotalWithdraw = referralListing?.result.reduce(
+  //   (total, currentValue) => {
+  //     return total + parseFloat(currentValue?.referreeVolumn?.earn || '');
+  //   },
+  //   0
+  // );
 
   return (
     <div className={s.wrapper}>
@@ -180,7 +181,7 @@ const ReferralTab = () => {
         data={referralData}
         className={s.Refferal_table}
       ></Table>
-      {!!calculateTotalWithdraw && (
+      {/* {!!calculateTotalWithdraw && (
         <div className={s.Withdraw_all}>
           <ButtonIcon
             sizes="large"
@@ -200,8 +201,8 @@ const ReferralTab = () => {
             </>
           </ButtonIcon>
         </div>
-      )}
-      {/* <ArtistCollectionEarn /> */}
+      )} */}
+      <ArtistCollectionEarn />
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { CurrencyType } from '@enums/currency';
 import { LogLevel } from '@enums/log-level';
-import { withdrawRefereeReward } from '@services/profile';
+import { withdrawRewardEarned } from '@services/profile';
 import { formatBTCPrice, formatEthPrice } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
@@ -60,36 +60,45 @@ const ArtistCollectionEarn = () => {
   //   }
   // };
 
-  const handleWithdraw = async (amount: string, projectID: string[]) => {
+  const handleWithdraw = async (amount: string, projectID: string) => {
     const payload = {
       items: [
         {
           amount: amount,
-          projectID: projectID,
           paymentType: currency.toLowerCase(),
+          id: projectID,
+          type: 'project',
         },
       ],
     };
 
     try {
-      await withdrawRefereeReward(payload);
+      await withdrawRewardEarned(payload);
     } catch (err: unknown) {
       log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
       throw Error();
     }
   };
 
-  const calculateTotalWithdraw = profileProjects?.result.reduce(
-    (total, currentValue) => {
-      // TODO: Update this to use the correct value
-      return total + parseFloat(currentValue?.totalVolume || '');
-    },
-    0
-  );
+  // const calculateTotalWithdraw = profileProjects?.result.reduce(
+  //   (total, currentValue) => {
+  //     // TODO: Update this to use the correct value
+  //     return total + parseFloat(currentValue?.totalVolume || '');
+  //   },
+  //   0
+  // );
 
-  const allMyColelctions = profileProjects?.result?.map(item => {
-    return item.tokenID;
-  });
+  // const allMyColelctions = profileProjects?.result?.map(async item => {
+  //   try {
+  //     const response = await handleFetchTotalVolume(item.tokenID);
+  //     if (response) {
+  //       return response;
+  //     }
+  //   } catch (err: unknown) {
+  //     log('failed to fetch total volume', LogLevel.ERROR, LOG_PREFIX);
+  //     throw Error();
+  //   }
+  // });
 
   const recordsData = profileProjects?.result?.map(item => {
     const totalVolume = '1000000';
@@ -143,7 +152,7 @@ const ArtistCollectionEarn = () => {
               sizes="small"
               variants="outline-small"
               disabled={!Number(totalVolume)}
-              // onClick={() => handleWithdraw(totalVolume || '', [item.tokenID])}
+              onClick={() => handleWithdraw(totalVolume || '', item.tokenID)}
             >
               Withdraw
             </ButtonIcon>
@@ -163,7 +172,7 @@ const ArtistCollectionEarn = () => {
         data={recordsData}
         className={s.Records_table}
       ></Table>
-      {!!calculateTotalWithdraw && allMyColelctions && (
+      {/* {!!calculateTotalWithdraw && allMyColelctions && (
         <div className={s.Withdraw_all}>
           <ButtonIcon
             sizes="large"
@@ -180,7 +189,7 @@ const ArtistCollectionEarn = () => {
             </>
           </ButtonIcon>
         </div>
-      )}
+      )} */}
     </div>
   );
 };
