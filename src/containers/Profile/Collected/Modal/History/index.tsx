@@ -75,9 +75,43 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
           </>
         ),
         number: (
-          <Text size="16" fontWeight="medium" color="black-100">
-            {item.inscription_number ? `#${item.inscription_number}` : '---'}
-          </Text>
+          <>
+            {!!item.inscription_id && !!item.inscription_number ? (
+              <div>
+                <Stack direction="horizontal" gap={3}>
+                  <Text size="16" fontWeight="medium" color="black-100">
+                    {`${ellipsisCenter({
+                      str: item.inscription_id,
+                      limit: 6,
+                    })}`}
+                  </Text>
+                  <SvgInset
+                    size={18}
+                    svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                    className={s.wrapHistory_copy}
+                    onClick={() => handleCopy(item.inscription_id)}
+                  />
+                  <SvgInset
+                    size={16}
+                    svgUrl={`${CDN_URL}/icons/ic-share.svg`}
+                    className={s.wrapHistory_copy}
+                    onClick={() =>
+                      window.open(
+                        `https://ordinals.com/inscription/${item.inscription_id}`
+                      )
+                    }
+                  />
+                </Stack>
+                <Text size="16" fontWeight="medium" color="black-100">
+                  {`#${item.inscription_number}`}
+                </Text>
+              </div>
+            ) : (
+              <Text size="16" fontWeight="medium" color="black-100">
+                ---
+              </Text>
+            )}
+          </>
         ),
         amount: (
           <Text size="16" fontWeight="medium" color="black-100">
