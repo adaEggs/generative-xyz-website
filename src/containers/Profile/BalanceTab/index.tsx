@@ -13,9 +13,9 @@ const BalanceTab = () => {
   const TABLE_BALANCE_HEADING = [
     'Asset',
     'Balance',
-    <p style={{ textAlign: 'center' }} key="action">
-      Action
-    </p>,
+    <div key="action-header" className={s.headerAction}>
+      <p className={s.headerAction_text}>Action</p>
+    </div>,
   ];
   const { satoshiAmount } = useBitcoin();
 
@@ -46,8 +46,12 @@ const BalanceTab = () => {
         ),
         action: (
           <div className={s.ctas}>
-            <ButtonReceiver className={s.receiver} title="Receive BTC" />
-            <ButtonSendBTC className={s.send} />
+            <ButtonReceiver
+              sizes="small"
+              className={s.receiver}
+              title="Receive BTC"
+            />
+            <ButtonSendBTC className={s.send} sizes="small" />
           </div>
         ),
       },
@@ -56,6 +60,7 @@ const BalanceTab = () => {
 
   return (
     <div className={s.wrapper}>
+      <Text className={s.wrapper_title}>Your assets</Text>
       <Table
         tableHead={TABLE_BALANCE_HEADING}
         data={tableData}
