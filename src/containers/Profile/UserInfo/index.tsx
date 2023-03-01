@@ -20,6 +20,7 @@ import { SOCIALS } from '@constants/common';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 import ButtonReceiver from '@containers/Profile/ButtonReceiver';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 interface IProps {
   toggle: () => void;
@@ -105,12 +106,47 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                       className={s.iconHistory}
                     />
                   )}
+                  <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 100, hide: 200 }}
+                    overlay={
+                      <Tooltip id="play-tooltip">
+                        <div className={s.wallet_tooltip}>
+                          <Text fontWeight="semibold" color="primary-333">
+                            What is Generative wallet?
+                          </Text>
+                          <Text
+                            size="14"
+                            fontWeight="medium"
+                            color="primary-333"
+                          >
+                            It’s your own BTC wallet built on your Metamask that
+                            can receive and send inscriptions and BTC. Only you
+                            can sign on Metamask to process a transaction. The
+                            derived key is not saved in the browser’s local
+                            storage.
+                          </Text>
+                        </div>
+                      </Tooltip>
+                    }
+                  >
+                    <div>
+                      <SvgInset
+                        size={20}
+                        svgUrl={`${CDN_URL}/icons/ic-question-circle.svg`}
+                        className={s.iconQuestion}
+                      />
+                    </div>
+                  </OverlayTrigger>
                 </div>
               )}
             </div>
             {isOwner && (
               <div className={s.userInfo_content_ctas}>
-                <ButtonReceiver className={s.userInfo_content_ctas_receiver} />
+                <ButtonReceiver
+                  sizes="medium"
+                  className={s.userInfo_content_ctas_receiver}
+                />
               </div>
             )}
             <div className={s.creator_social}>
@@ -155,9 +191,21 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
             </div>
 
             {currentUser?.bio && (
-              <Text size={'18'} fontWeight="regular" className={s.bio}>
-                {currentUser?.bio}
-              </Text>
+              <div className={`${s.creator_social_item}`}>
+                <div
+                  className={`${s.creator_social_item_inner} ${s.creator_bio}`}
+                >
+                  <SvgInset
+                    // className={`${s.creator_social_twitter}`}
+                    size={16}
+                    svgUrl={`${CDN_URL}/icons/ic-info.svg`}
+                    className={s.info_icon}
+                  />
+                  <Text size={'18'} fontWeight="regular" className={s.bio}>
+                    {currentUser?.bio}
+                  </Text>
+                </div>
+              </div>
             )}
 
             {currentUser?.id === user?.id && (
