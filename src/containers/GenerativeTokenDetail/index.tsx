@@ -343,26 +343,25 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   tokenData?.tokenID || ''
                 )}`}
               >
-                {projectData?.name} #
+                <Link href={`${ROUTE_PATH.GENERATIVE}/${projectData?.tokenID}`}>
+                  {projectData?.name}{' '}
+                </Link>
+                #
                 {tokenData?.inscriptionIndex
                   ? tokenData?.inscriptionIndex
                   : formatTokenId(tokenData?.tokenID || '')}
               </span>
             </Heading>
-            {(tokenData?.owner || tokenData?.ownerAddr) && (
+            {tokenData?.owner && (
               <Text size="18" className={s.owner}>
                 Owned by{' '}
-                {tokenData?.owner ? (
-                  <Link
-                    href={`${ROUTE_PATH.PROFILE}/${tokenData?.owner?.walletAddress}`}
-                    className={s.projectName}
-                  >
-                    {tokenData?.owner?.displayName ||
-                      formatLongAddress(tokenData?.owner?.walletAddress || '')}
-                  </Link>
-                ) : (
-                  <>{formatLongAddress(tokenData?.ownerAddr || '')}</>
-                )}
+                <Link
+                  href={`${ROUTE_PATH.PROFILE}/${tokenData?.owner?.walletAddress}`}
+                  className={s.projectName}
+                >
+                  {tokenData?.owner?.displayName ||
+                    formatLongAddress(tokenData?.owner?.walletAddress || '')}
+                </Link>
               </Text>
             )}
 
