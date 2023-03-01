@@ -440,6 +440,13 @@ const MintEthModal: React.FC = () => {
                           />
                         </div>
                       )}
+                      {isSent && (
+                        <img
+                          alt=""
+                          className={s.thumbnail}
+                          src={projectData.image}
+                        />
+                      )}
                       {isLoading && (
                         <div className={s.loadingWrapper}>
                           <Loading isLoaded={false} />
