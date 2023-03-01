@@ -15,7 +15,6 @@ import cs from 'classnames';
 import { TwitterShareButton } from 'react-share';
 import React, { useContext, useEffect, useState } from 'react';
 import s from './CollectedCard.module.scss';
-import Image from 'next/image';
 import ButtonIcon from '@components/ButtonIcon';
 import SendInscriptionModal from '@containers/Profile/Collected/Modal/SendInscription';
 import { HistoryStatusType } from '@interfaces/api/bitcoin';
@@ -141,8 +140,7 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
               }`}
             >
               <div className={s.projectCard_thumb_inner}>
-                <Image
-                  fill
+                <img
                   onError={onThumbError}
                   src={convertIpfsToHttp(thumb)}
                   alt={project.name}
