@@ -1,9 +1,11 @@
-import CollectionList from '@components/Collection/List';
+import CollectionItem from '@components/Collection/Item';
+import CollectionListLoading from '@components/Collection/Loading';
 import Heading from '@components/Heading';
 import { LogLevel } from '@enums/log-level';
 import { Token } from '@interfaces/token';
 import { getProjectItems } from '@services/project';
 import log from '@utils/logger';
+import cs from 'classnames';
 import { useEffect, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
@@ -81,8 +83,30 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
       </Stack>
       <div className={s.listWrapper}>
         {/* <Loading isLoaded={isLoaded} className={s.loading} /> */}
+        <div className="position-relative">
+          {!isLoaded && (
+            <>
+              <CollectionListLoading
+                numOfItems={4}
+                showFilter={false}
+                maxFourCols
+              />
+            </>
+          )}
 
-        <CollectionList listData={listItems} isLoaded={isLoaded} />
+          {isLoaded && (
+            <div className={cs(s.collectionList, `row animate-grid`)}>
+              {listItems?.map(item => (
+                <CollectionItem
+                  className={`${'col-xl-3 col-lg-4 col-12'} `}
+                  key={`collection-item-${item.tokenID}`}
+                  data={item}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+        {/* <CollectionList listData={listItems} isLoaded={isLoaded} /> */}
         {/* {isLoaded && (
           <div className={s.view_collection}>
             <ButtonIcon
