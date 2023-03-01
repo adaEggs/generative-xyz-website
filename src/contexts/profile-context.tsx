@@ -165,7 +165,6 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     string | undefined
   >();
   const { walletAddress } = router.query as { walletAddress: string };
-  const isOwner = !walletAddress || user?.walletAddress === walletAddress;
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const { call: cancelOffer } = useContractOperation(
@@ -211,6 +210,8 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     Array<InscriptionItem>
   >([]);
   const [totalFreeInscription, setTotalFreeInscription] = useState(0);
+
+  const isOwner = currentUser?.id === user?.id;
 
   const handleFetchProjects = useCallback(async () => {
     try {
