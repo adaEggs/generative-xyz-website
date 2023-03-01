@@ -50,7 +50,7 @@ const PreviewController: React.FC<IProps> = (
     // Check ordinal
     const isOrdinalPreview = thumbnailUrl.includes('i0');
     if (isOrdinalPreview) {
-      return <ImagePreview url={thumbnailUrl} />;
+      return <IFramePreview url={thumbnailUrl} />;
     }
 
     // Check hardcode glb collection

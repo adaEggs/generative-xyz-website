@@ -1,5 +1,12 @@
 .wrapper {
   margin-top: rem(58);
+
+  &_title {
+    font-size: rem(34px) !important;
+    font-weight: 700;
+    line-height: 44px;
+    margin-bottom: rem(48px);
+  }
 }
 
 .referral_link {
@@ -66,12 +73,12 @@
 .ctas {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   flex-wrap: wrap;
   gap: rem(16px);
 
   .send {
-    width: 140px;
+    min-width: 110px;
     display: flex;
     justify-content: center;
   }
@@ -80,5 +87,16 @@
     width: fit-content;
     display: flex;
     justify-content: center;
+  }
+}
+
+.headerAction {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  &_text {
+    text-align: center;
+    width: 240px;
   }
 }

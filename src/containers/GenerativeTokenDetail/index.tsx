@@ -42,6 +42,7 @@ import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
+import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
@@ -74,6 +75,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const isBTCDisable =
     !tokenData?.buyable && !tokenData?.isCompleted && !!tokenData?.priceBTC;
   const [payType, setPayType] = useState<'eth' | 'btc'>('btc');
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const toggleModal = (_payType?: 'eth' | 'btc') => {
     if (isBTCDisable) return;
@@ -163,6 +165,16 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     typeof window !== 'undefined' && window.location.origin
       ? window.location.origin
       : '';
+
+  const hasReported = useMemo(() => {
+    if (!projectData?.reportUsers || !user) return false;
+
+    const reportedAddressList = projectData?.reportUsers.map(
+      item => item.reportUserAddress
+    );
+
+    return reportedAddressList.includes(user?.walletAddress || '');
+  }, [projectData?.reportUsers]);
 
   const handleOpenListingTokenModal = (): void => {
     openListingModal();
@@ -331,16 +343,18 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   tokenData?.tokenID || ''
                 )}`}
               >
-                {projectData?.name} #
+                <Link href={`${ROUTE_PATH.GENERATIVE}/${projectData?.tokenID}`}>
+                  {projectData?.name}{' '}
+                </Link>
+                #
                 {tokenData?.inscriptionIndex
                   ? tokenData?.inscriptionIndex
                   : formatTokenId(tokenData?.tokenID || '')}
               </span>
             </Heading>
-
-            <Text size="18" className={s.owner}>
-              Owned by{' '}
-              {tokenData?.owner ? (
+            {tokenData?.owner && (
+              <Text size="18" className={s.owner}>
+                Owned by{' '}
                 <Link
                   href={`${ROUTE_PATH.PROFILE}/${tokenData?.owner?.walletAddress}`}
                   className={s.projectName}
@@ -348,10 +362,8 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   {tokenData?.owner?.displayName ||
                     formatLongAddress(tokenData?.owner?.walletAddress || '')}
                 </Link>
-              ) : (
-                <>{formatLongAddress(tokenData?.ownerAddr || '')}</>
-              )}
-            </Text>
+              </Text>
+            )}
 
             {/* <Text
               size={'18'}
@@ -457,9 +469,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 <ProjectDescription
                   desc={tokenDescription || ''}
                   // hasInteraction={hasProjectInteraction}
-                  profileBio={
-                    (!featuresList() && projectData?.creatorProfile?.bio) || ''
-                  }
                   attributes={
                     featuresList() ? <Stats data={featuresList()} /> : ''
                   }
@@ -517,6 +526,17 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                       Share
                     </ButtonIcon>
                   </TwitterShareButton>
+                </div>
+              </li>
+              <li>
+                <div
+                  className={s.reportBtn}
+                  onClick={() => setShowReportModal(true)}
+                >
+                  <SvgInset size={14} svgUrl={`${CDN_URL}/icons/ic-flag.svg`} />
+                  <Text as="span" size="14" fontWeight="medium">
+                    Report
+                  </Text>
                 </div>
               </li>
             </ul>
@@ -590,6 +610,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           payType={payType}
         />
       )}
+      <ReportModal
+        isShow={showReportModal}
+        onHideModal={() => setShowReportModal(false)}
+        isReported={hasReported}
+      />
     </>
   );
 };

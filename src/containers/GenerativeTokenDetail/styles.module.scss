@@ -9,6 +9,10 @@
     padding-top: rem(40px);
     margin-bottom: rem(90px);
   }
+
+  a:hover {
+    text-decoration: underline;
+  }
 }
 
 .projectHeader {
@@ -196,7 +200,22 @@
 }
 
 .shares {
+  display: flex;
+  gap: rem(8px);
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
   margin-top: rem(24);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.reportBtn {
+  display: flex;
+  align-items: center;
+  gap: rem(4);
 }
 
 .walletAddress {
