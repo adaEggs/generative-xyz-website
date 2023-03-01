@@ -64,7 +64,7 @@ const Profile: React.FC = (): React.ReactElement => {
                     <Tab
                       tabClassName={s.tab}
                       eventKey="referralTab"
-                      title={'Referral'}
+                      title={'Activities'}
                     >
                       <ReferralTab />
                     </Tab>

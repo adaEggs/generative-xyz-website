@@ -16,6 +16,7 @@ import {
   IUploadBTCProjectFileResponse,
   IReportProjectPayload,
   IReportProjectResponse,
+  IGetProjectVolumeResponse,
 } from '@interfaces/api/project';
 import { deleteMethod, get, post, postFile, put } from '@services/http-client';
 import log from '@utils/logger';
@@ -58,9 +59,9 @@ export const getProjectDetail = async (
 export const getProjectVolume = async (
   params: IGetProjectDetailParams,
   { payType }: { payType: string }
-): Promise<IGetProjectDetailResponse> => {
+): Promise<IGetProjectVolumeResponse> => {
   try {
-    const res = await get<IGetProjectDetailResponse>(
+    const res = await get<IGetProjectVolumeResponse>(
       `${API_PATH}/${params.contractAddress}/tokens/${params.projectID}/volumn?payType=${payType}`
     );
     return res;

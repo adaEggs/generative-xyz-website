@@ -78,9 +78,8 @@ export interface IGetCollectedNFTsResp {
 }
 
 export interface IWithdrawRefereeRewardPayload {
-  items: Array<{
-    amount: string;
-    paymentType?: string;
-    // projectID?: "1000264"
-  }>;
+  amount: string;
+  paymentType: string;
+  type: string;
+  id: string;
 }
