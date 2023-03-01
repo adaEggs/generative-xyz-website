@@ -62,14 +62,10 @@ const ArtistCollectionEarn = () => {
 
   const handleWithdraw = async (amount: string, projectID: string) => {
     const payload = {
-      items: [
-        {
-          amount: amount,
-          paymentType: currency.toLowerCase(),
-          id: projectID,
-          type: 'project',
-        },
-      ],
+      amount: amount,
+      paymentType: currency.toLowerCase(),
+      id: projectID,
+      type: 'project',
     };
 
     try {

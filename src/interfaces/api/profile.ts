@@ -78,10 +78,8 @@ export interface IGetCollectedNFTsResp {
 }
 
 export interface IWithdrawRefereeRewardPayload {
-  items: Array<{
-    amount: string;
-    paymentType: string;
-    type: string;
-    id: string;
-  }>;
+  amount: string;
+  paymentType: string;
+  type: string;
+  id: string;
 }

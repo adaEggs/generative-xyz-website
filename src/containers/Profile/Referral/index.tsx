@@ -61,14 +61,10 @@ const ReferralTab = () => {
 
   const handleWithdraw = async (amount: string, id: string) => {
     const payload = {
-      items: [
-        {
-          amount,
-          paymentType: currency.toLowerCase(),
-          type: 'referal',
-          id,
-        },
-      ],
+      amount,
+      paymentType: currency.toLowerCase(),
+      type: 'referal',
+      id,
     };
 
     try {
