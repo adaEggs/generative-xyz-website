@@ -1,6 +1,6 @@
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
-import Table from '@components/Table';
+import Table, { TColumn } from '@components/Table';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
@@ -12,9 +12,13 @@ import log from '@utils/logger';
 import cs from 'classnames';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './ArtistCollectionEarn.module.scss';
+import { getProjectVolume } from '@services/project';
+import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import useAsyncEffect from 'use-async-effect';
+import { ProjectVolume } from '@interfaces/project';
 
 const LOG_PREFIX = 'ArtistCollectionEarn';
 
@@ -46,19 +50,21 @@ const ArtistCollectionEarn = () => {
     //   </Stack>
     // </>,
   ];
+  const [totalVolumeList, setTotalVolumeList] = useState<ProjectVolume[]>();
+  const [tableData, setTableData] = useState<TColumn[]>();
 
-  // const handleFetchTotalVolume = async (projectID: string) => {
-  //   try {
-  //     const response = await getProjectVolume(
-  //       { contractAddress: GENERATIVE_PROJECT_CONTRACT, projectID },
-  //       { payType: currency.toLowerCase() }
-  //     );
-  //     return response;
-  //   } catch (err: unknown) {
-  //     log('failed to fetch volume', LogLevel.ERROR, LOG_PREFIX);
-  //     throw Error();
-  //   }
-  // };
+  const handleFetchTotalVolume = async (projectID: string) => {
+    try {
+      const response = await getProjectVolume(
+        { contractAddress: GENERATIVE_PROJECT_CONTRACT, projectID },
+        { payType: currency.toLowerCase() }
+      );
+      return response;
+    } catch (err: unknown) {
+      log('failed to fetch volume', LogLevel.ERROR, LOG_PREFIX);
+      throw Error();
+    }
+  };
 
   const handleWithdraw = async (amount: string, projectID: string) => {
     const payload = {
@@ -83,21 +89,10 @@ const ArtistCollectionEarn = () => {
   //   },
   //   0
   // );
-
-  // const allMyColelctions = profileProjects?.result?.map(async item => {
-  //   try {
-  //     const response = await handleFetchTotalVolume(item.tokenID);
-  //     if (response) {
-  //       return response;
-  //     }
-  //   } catch (err: unknown) {
-  //     log('failed to fetch total volume', LogLevel.ERROR, LOG_PREFIX);
-  //     throw Error();
-  //   }
-  // });
-
   const recordsData = profileProjects?.result?.map(item => {
-    const totalVolume = '1000000';
+    const totalVolume = totalVolumeList?.find(
+      project => project.projectID === item.tokenID
+    )?.amount;
 
     return {
       id: `${item.id}-record`,
@@ -132,7 +127,9 @@ const ArtistCollectionEarn = () => {
         ),
         volume: (
           <>
-            {totalVolume ? '--' : `${formatBTCPrice(totalVolume)} ${currency}`}
+            {currency === CurrencyType.ETH
+              ? `${formatEthPrice(totalVolume || '')} ETH`
+              : `${formatBTCPrice(totalVolume || '')} BTC`}
           </>
         ),
         // earning: (
@@ -158,6 +155,31 @@ const ArtistCollectionEarn = () => {
     };
   });
 
+  useAsyncEffect(async () => {
+    if (profileProjects?.result && profileProjects?.result.length > 0) {
+      const list: ProjectVolume[] = [];
+      profileProjects?.result?.map(async item => {
+        try {
+          const response = await handleFetchTotalVolume(item.tokenID);
+          if (response) {
+            list.push(response);
+          }
+        } catch (err: unknown) {
+          log('failed to fetch total volume', LogLevel.ERROR, LOG_PREFIX);
+          throw Error();
+        } finally {
+          setTotalVolumeList(list);
+        }
+      });
+    }
+  }, [profileProjects?.result, currency]);
+
+  useEffect(() => {
+    if (totalVolumeList && totalVolumeList.length > 0) {
+      setTableData(recordsData);
+    }
+  }, [totalVolumeList]);
+
   return (
     <div className={s.wrapper}>
       <Heading as="h4" fontWeight="semibold">
@@ -165,7 +187,7 @@ const ArtistCollectionEarn = () => {
       </Heading>
       <Table
         tableHead={TABLE_ARTISTS_HEADING}
-        data={recordsData}
+        data={tableData}
         className={s.Records_table}
       ></Table>
       {/* {!!calculateTotalWithdraw && allMyColelctions && (
