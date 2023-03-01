@@ -409,7 +409,7 @@ const ModalBuyItem = ({
                 {step === 'showAddress' && (
                   <Col md={'6'}>
                     <div className={s.paymentWrapper}>
-                      {receiveAddress && !isLoading && (
+                      {!isSent && receiveAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
                             Send{' '}
