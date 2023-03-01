@@ -7,7 +7,7 @@ import Instruction from '../components/Instruction';
 interface IProps {
   url: string;
   whiteHouse?: boolean;
-  download?: false;
+  download?: boolean;
 }
 
 const GLTFPreview: React.FC<IProps> = ({
