@@ -101,6 +101,10 @@
     padding-top: rem(48px);
     padding-bottom: rem(40px);
     min-height: 344px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
     @include mobile {
       padding-top: rem(16px);
@@ -518,4 +522,9 @@
   .close {
     transform: rotate(-180deg);
   }
+}
+
+.thumbnail {
+  width: rem(200px);
+  height: rem(200px);
 }
