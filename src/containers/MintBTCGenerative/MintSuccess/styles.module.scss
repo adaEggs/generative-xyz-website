@@ -26,6 +26,7 @@
     .social_btns {
       display: flex;
       gap: rem(10);
+      flex-wrap: wrap;
     }
 
     .shareBtn > button {

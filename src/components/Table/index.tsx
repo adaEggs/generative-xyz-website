@@ -4,7 +4,7 @@ import { v4 } from 'uuid';
 import cs from 'classnames';
 import s from './styles.module.scss';
 
-type TColumn = {
+export type TColumn = {
   id: string;
   config?: Record<string, string | number | undefined>;
   render: {

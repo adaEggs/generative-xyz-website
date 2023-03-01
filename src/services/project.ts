@@ -16,6 +16,7 @@ import {
   IUploadBTCProjectFileResponse,
   IReportProjectPayload,
   IReportProjectResponse,
+  IGetProjectVolumeResponse,
 } from '@interfaces/api/project';
 import { deleteMethod, get, post, postFile, put } from '@services/http-client';
 import log from '@utils/logger';
@@ -49,6 +50,21 @@ export const getProjectDetail = async (
       };
     }
     return { ...project };
+  } catch (err: unknown) {
+    log('failed to get project detail', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get project detail');
+  }
+};
+
+export const getProjectVolume = async (
+  params: IGetProjectDetailParams,
+  { payType }: { payType: string }
+): Promise<IGetProjectVolumeResponse> => {
+  try {
+    const res = await get<IGetProjectVolumeResponse>(
+      `${API_PATH}/${params.contractAddress}/tokens/${params.projectID}/volumn?payType=${payType}`
+    );
+    return res;
   } catch (err: unknown) {
     log('failed to get project detail', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get project detail');

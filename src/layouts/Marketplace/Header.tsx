@@ -22,7 +22,6 @@ import _isEmpty from 'lodash/isEmpty';
 import { MENU_HEADER } from '@constants/header';
 import MenuMobile from '@layouts/Marketplace/MenuMobile';
 import { gsap } from 'gsap';
-import { isProduction } from '@utils/common';
 import SearchCollection from './SearchCollection';
 
 const LOG_PREFIX = 'MarketplaceHeader';
@@ -36,7 +35,6 @@ interface IProp {
 
 const Header: React.FC<IProp> = ({
   theme = 'light',
-  isShowFaucet = false,
   isDisplay = false,
 }): React.ReactElement => {
   const { connect, disconnect, walletBalance } = useContext(WalletContext);
@@ -45,7 +43,6 @@ const Header: React.FC<IProp> = ({
   const { query } = router;
   const activePath = router.pathname.split('/')[1];
   const [isConnecting, setIsConnecting] = useState(false);
-  const [isFaucet, _] = useState<boolean>(isShowFaucet);
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const refMenu = useRef<HTMLDivElement | null>(null);
 
@@ -58,7 +55,8 @@ const Header: React.FC<IProp> = ({
     {
       id: 'view-profile',
       name: 'View Profile',
-      onClick: () => router.push(ROUTE_PATH.PROFILE),
+      onClick: (btcAddress?: string) =>
+        router.push(`${ROUTE_PATH.PROFILE}/${btcAddress}`),
     },
     {
       id: 'disconect-wallet',
@@ -134,7 +132,13 @@ const Header: React.FC<IProp> = ({
               (item.id != 'faucet' || isTestnet()) && (
                 <li
                   className="dropdown-item"
-                  onClick={item.onClick}
+                  onClick={() => {
+                    if (item.id !== 'view-profile') {
+                      item.onClick(user?.walletAddressBtcTaproot || '');
+                    } else {
+                      item.onClick();
+                    }
+                  }}
                   key={item.id}
                 >
                   {item.name}
@@ -146,12 +150,6 @@ const Header: React.FC<IProp> = ({
   };
 
   const refHeader = useRef<HTMLDivElement>(null);
-  const clickToFaucet = (): void => {
-    const faucet = getFaucetLink();
-    if (faucet) {
-      window.open(faucet, '_blank');
-    }
-  };
 
   useEffect(() => {
     if (refMenu.current) {
@@ -169,7 +167,7 @@ const Header: React.FC<IProp> = ({
 
   const handleYourVault = () => {
     if (user) {
-      router.push(ROUTE_PATH.PROFILE);
+      router.push(`${ROUTE_PATH.PROFILE}/${user?.walletAddressBtcTaproot}`);
     } else {
       handleConnectWallet();
     }
@@ -209,6 +207,18 @@ const Header: React.FC<IProp> = ({
                     >
                       <Link href={getUrlWithQueryParams(MENU_HEADER[0].route)}>
                         {MENU_HEADER[0].name}
+                      </Link>
+                    </li>
+
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[7].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[7].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
+                        {MENU_HEADER[7].name}
                       </Link>
                     </li>
 
@@ -285,19 +295,6 @@ const Header: React.FC<IProp> = ({
           </Container>
         </div>
       </header>
-      {isFaucet && !isProduction() && (
-        <div className={styles.testNet}>
-          <img
-            src={`${CDN_URL}/icons/star-shooting-horizontal.svg`}
-            alt="star-shooting-horizontal"
-          />
-          Welcome to Generative testnet! Don’t have ETH for testnet? Request
-          some
-          <a onClick={clickToFaucet} target="_blank" rel="noreferrer">
-            {' here.'}
-          </a>
-        </div>
-      )}
 
       {isDisplay && <QuickBuy />}
       <MenuMobile

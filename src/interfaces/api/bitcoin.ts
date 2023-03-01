@@ -37,6 +37,7 @@ export enum TrackTxType {
 
 export interface ITrackTx {
   address: string;
+  receiver: string;
   type: TrackTxType;
   inscription_id: string;
   inscription_number: number;
@@ -50,11 +51,15 @@ export enum HistoryStatusType {
   success = 'Success',
 }
 
+export type HistoryStatusColor = '#ff7e21' | '#24c087' | '#ff4747';
+
 export interface ITxHistory {
   txhash: string;
   status: HistoryStatusType;
+  statusColor: HistoryStatusColor;
   type: ITrackTx;
   inscription_id: string;
   inscription_number: number;
   send_amount: number;
+  created_at: string;
 }

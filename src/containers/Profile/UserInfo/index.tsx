@@ -12,22 +12,27 @@ import copy from 'copy-to-clipboard';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext, useMemo } from 'react';
+import { useContext, useMemo } from 'react';
 import s from './UserInfo.module.scss';
 import { toast } from 'react-hot-toast';
 import { SocialVerify } from '@components/SocialVerify';
 import { SOCIALS } from '@constants/common';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IC_EDIT_PROFILE } from '@constants/icons';
+import ButtonReceiver from '@containers/Profile/ButtonReceiver';
 
-export const UserInfo = ({
-  toggleModal,
-}: {
-  toggleModal: () => void;
-}): JSX.Element => {
+interface IProps {
+  toggle: () => void;
+}
+
+export const UserInfo = ({ toggle }: IProps): JSX.Element => {
   const user = useAppSelector(getUserSelector);
   const { currentUser, isLoadingHistory, history } = useContext(ProfileContext);
   const router = useRouter();
+
+  const isOwner = currentUser?.id === user?.id;
+  const showHistory =
+    !isLoadingHistory && !!history && !!history.length && isOwner;
 
   const isTwVerified = useMemo(() => {
     return currentUser?.profileSocial?.twitterVerified || false;
@@ -65,30 +70,8 @@ export const UserInfo = ({
                     link={SOCIALS.twitter}
                   />
                 </div>
-                {!isLoadingHistory && !!history && !!history.length && (
-                  <div
-                    className={s.userInfo_content_wrapper_icHistory}
-                    onClick={toggleModal}
-                  >
-                    <SvgInset
-                      size={20}
-                      svgUrl={`${CDN_URL}/icons/ic-history.svg`}
-                    />
-                  </div>
-                )}
               </div>
             </div>
-
-            {/*//todo*/}
-            {/*<div className={s.userInfo_content_ctas}>*/}
-            {/*  <ButtonIcon variants={'primary'} sizes={'large'}>*/}
-            {/*    Receive inscription*/}
-            {/*  </ButtonIcon>*/}
-            {/*  <ButtonIcon variants={'outline'} sizes={'large'}>*/}
-            {/*    Send*/}
-            {/*  </ButtonIcon>*/}
-            {/*</div>*/}
-
             <div className={s.userInfo_content_address}>
               {currentUser?.walletAddressBtcTaproot && (
                 <div
@@ -114,10 +97,22 @@ export const UserInfo = ({
                     size={18}
                     svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                   />
+                  {showHistory && (
+                    <SvgInset
+                      onClick={toggle}
+                      size={18}
+                      svgUrl={`${CDN_URL}/icons/ic-history.svg`}
+                      className={s.iconHistory}
+                    />
+                  )}
                 </div>
               )}
             </div>
-
+            {isOwner && (
+              <div className={s.userInfo_content_ctas}>
+                <ButtonReceiver className={s.userInfo_content_ctas_receiver} />
+              </div>
+            )}
             <div className={s.creator_social}>
               {currentUser?.profileSocial?.twitter && (
                 <div className={`${s.creator_social_item}`}>
@@ -142,7 +137,7 @@ export const UserInfo = ({
                 <div className={`${s.creator_social_item}`}>
                   <div className={s.creator_social_item_inner}>
                     <SvgInset
-                      className={`${s.creator_social_twitter}`}
+                      // className={`${s.creator_social_twitter}`}
                       size={26}
                       svgUrl={`${CDN_URL}/icons/link-copy.svg`}
                     />

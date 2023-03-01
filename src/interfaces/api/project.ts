@@ -7,6 +7,11 @@ export interface IGetProjectDetailParams {
   projectID: string;
 }
 
+export interface IGetProjectVolumeParams {
+  contractAddress: string;
+  projectID: string;
+}
+
 export type IGetProjectDetailResponse = Project;
 
 export interface IGetProjectItemsParams {
@@ -107,3 +112,9 @@ export interface IReportProjectPayload {
   originalLink?: string;
 }
 export type IReportProjectResponse = Project;
+
+export interface IGetProjectVolumeResponse {
+  amount: string;
+  payType: string;
+  projectID: string;
+}

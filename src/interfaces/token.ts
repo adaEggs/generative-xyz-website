@@ -46,6 +46,14 @@ export type Token = {
       };
     };
   };
+
+  ordinalsData?: {
+    sat: string;
+    contentLength: string;
+    contentType: string;
+    timeStamp: string;
+    block: string;
+  };
 };
 
 export type TokenOffer = {

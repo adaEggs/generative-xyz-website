@@ -55,6 +55,7 @@ import Web3 from 'web3';
 import { TransactionReceipt } from 'web3-eth';
 import ReportModal from './ReportModal';
 import s from './styles.module.scss';
+import { checkForHttpRegex } from '@utils/string';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -347,19 +348,25 @@ const ProjectIntroSection = ({
               <div className={`${s.creator_social_item}`}>
                 <div className={s.creator_social_item_inner}>
                   <SvgInset
-                    className={`${s.creator_social_twitter}`}
+                    // className={`${s.creator_social_twitter}`}
                     size={24}
                     svgUrl={`${CDN_URL}/icons/link-copy.svg`}
                   />
                   <Text size={'18'}>
-                    <Link
-                      href={project?.creatorProfile?.profileSocial?.web || ''}
-                      target="_blank"
-                    >
-                      {formatWebDomain(
-                        project?.creatorProfile?.profileSocial?.web || ''
-                      )}
-                    </Link>
+                    {checkForHttpRegex(
+                      project?.creatorProfile?.profileSocial?.web
+                    ) ? (
+                      <Link
+                        href={project?.creatorProfile?.profileSocial?.web || ''}
+                        target="_blank"
+                      >
+                        {formatWebDomain(
+                          project?.creatorProfile?.profileSocial?.web || ''
+                        )}
+                      </Link>
+                    ) : (
+                      project?.creatorProfile?.profileSocial?.web
+                    )}
                   </Text>
                 </div>
               </div>

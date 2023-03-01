@@ -6,9 +6,11 @@
   margin-bottom: rem(24);
   gap: rem(32);
   border: none;
+  flex-wrap: nowrap;
 
   :global(.nav-link) {
     text-transform: uppercase;
+    white-space: nowrap;
     color: $black-40;
     font-size: rem(14px);
     font-weight: 500;

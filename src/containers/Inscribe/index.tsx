@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import DropFile from './DropFile';
 import s from './styles.module.scss';
 import { Formik } from 'formik';
@@ -22,6 +22,10 @@ import ClientOnly from '@components/Utils/ClientOnly';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import BigNumber from 'bignumber.js';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
+import { WalletContext } from '@contexts/wallet-context';
+import RequestConnectWallet from '@containers/RequestConnectWallet';
 
 const LOG_PREFIX = 'Inscribe';
 
@@ -30,6 +34,8 @@ interface IFormValue {
 }
 
 const Inscribe: React.FC = (): React.ReactElement => {
+  const user = useSelector(getUserSelector);
+  const walletCtx = useContext(WalletContext);
   const [file, setFile] = useState<File | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
   const [show, setShow] = useState<boolean>(false);
@@ -40,6 +46,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
   const [feeRate, setFeeRate] = useState<InscribeMintFeeRate>(
     InscribeMintFeeRate.FASTEST
   );
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleChangeFile = (file: File | null): void => {
     setFile(file);
@@ -89,6 +96,24 @@ const Inscribe: React.FC = (): React.ReactElement => {
     }
   };
 
+  const handleCopy = (): void => {
+    if (!inscriptionInfo) return;
+    navigator.clipboard.writeText(inscriptionInfo.segwitAddress);
+    toast.remove();
+    toast.success('Copied');
+  };
+
+  const handleConnectWallet = async (): Promise<void> => {
+    try {
+      setIsProcessing(true);
+      await walletCtx.connect();
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   useAsyncEffect(async () => {
     if (!file) {
       return;
@@ -101,12 +126,14 @@ const Inscribe: React.FC = (): React.ReactElement => {
     }
   }, [file]);
 
-  const handleCopy = (): void => {
-    if (!inscriptionInfo) return;
-    navigator.clipboard.writeText(inscriptionInfo.segwitAddress);
-    toast.remove();
-    toast.success('Copied');
-  };
+  if (!user) {
+    return (
+      <RequestConnectWallet
+        isProcessing={isProcessing}
+        handleConnectWallet={handleConnectWallet}
+      />
+    );
+  }
 
   return (
     <ClientOnly>
@@ -134,14 +161,16 @@ const Inscribe: React.FC = (): React.ReactElement => {
                     <div className={s.formContent}>
                       <div className={s.formLeft}>
                         <div className={s.formItem}>
-                          <DropFile
-                            className={s.dropZoneContainer}
-                            onChange={handleChangeFile}
-                            fileOrFiles={file ? [file] : null}
-                          />
-                          {fileError && (
-                            <p className={s.inputError}>{fileError}</p>
-                          )}
+                          <div className={s.dropZoneWrapper}>
+                            <DropFile
+                              className={s.dropZoneContainer}
+                              onChange={handleChangeFile}
+                              fileOrFiles={file ? [file] : null}
+                            />
+                            {fileError && (
+                              <p className={s.inputError}>{fileError}</p>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className={s.formRight}>
@@ -311,7 +340,11 @@ const Inscribe: React.FC = (): React.ReactElement => {
                               That’s it. Check your wallet in about an hour.
                             </div>
                           ) : (
-                            <Button disabled={isMinting} type="submit">
+                            <Button
+                              className={s.submitBtn}
+                              disabled={isMinting}
+                              type="submit"
+                            >
                               Inscribe
                             </Button>
                           )}

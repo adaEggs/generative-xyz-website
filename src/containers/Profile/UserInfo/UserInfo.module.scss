@@ -32,7 +32,11 @@
 
     &_address {
       width: fit-content;
-      margin-bottom: rem(16px);
+    }
+
+    &_title {
+      width: fit-content;
+      text-transform: uppercase;
     }
 
     &_avatar {
@@ -82,6 +86,15 @@
       }
     }
 
+    .iconHistory {
+      cursor: pointer;
+      margin-left: 8px;
+
+      :hover {
+        opacity: 0.9;
+      }
+    }
+
     &_display {
       display: flex;
       flex-wrap: wrap;
@@ -96,9 +109,15 @@
     }
 
     &_ctas {
+      margin-top: rem(24px);
       margin-bottom: rem(24px);
       display: flex;
       gap: rem(16px);
+
+      &_receiver {
+        width: 75%;
+        justify-content: center;
+      }
     }
   }
 

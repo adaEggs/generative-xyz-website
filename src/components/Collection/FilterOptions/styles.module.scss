@@ -103,11 +103,12 @@
   .filter_wrapper {
     position: fixed;
     top: rem(65);
-    height: 100vh;
+    height: calc(100vh - 65px);
     background: $white;
     left: 0;
     width: 100%;
     z-index: 7;
     padding: 16px;
+    overflow-y: scroll;
   }
 }

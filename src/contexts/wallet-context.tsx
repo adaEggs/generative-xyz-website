@@ -25,6 +25,9 @@ import { openMetamaskDeeplink } from '@utils/metamask';
 import { generateBitcoinKey } from '@hooks/useBTCSignOrd/connect.methods';
 import { getReferral } from '@utils/referral';
 import { postReferralCode } from '@services/referrals';
+import { WalletEvent } from '@enums/wallet-event';
+import { useRouter } from 'next/router';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const LOG_PREFIX = 'WalletContext';
 
@@ -68,6 +71,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   const walletManagerRef = useRef<WalletManager | null>(walletManager);
   const dispatch = useAppDispatch();
   const user = useSelector(getUserSelector);
+  const route = useRouter();
 
   const isDeepLinkRequired = (): boolean => {
     const wallet = walletManagerRef.current;
@@ -280,6 +284,23 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
     return 0;
   };
 
+  const switchAccountListener = () => {
+    const userAddress = user?.walletAddress;
+    if (walletManager && walletManager.isConnected() && !!userAddress) {
+      walletManager.registerEvent(WalletEvent.ACCOUNT_CHANGED, accounts => {
+        if (!!accounts && Array.isArray(accounts) && !!accounts.length) {
+          const switchedAccount = accounts[0] as string;
+          // handle switched account, clear data
+          if (switchedAccount !== userAddress) {
+            clearAuthStorage();
+            dispatch(resetUser());
+            route.replace(ROUTE_PATH.WALLET);
+          }
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     const walletManagerInstance = new WalletManager();
     walletManagerRef.current = walletManagerInstance;
@@ -294,9 +315,19 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
       user.walletAddress
     ) {
       getWalletBalance();
-      postRefCode();
     }
   }, [walletManager, user]);
+
+  useEffect(() => {
+    if (user && user.walletAddress) {
+      postRefCode();
+    }
+  }, [user]);
+
+  // listen event switch account
+  useEffect(() => {
+    switchAccountListener();
+  }, [walletManager, user?.walletAddress]);
 
   const contextValues = useMemo((): IWalletContext => {
     return {

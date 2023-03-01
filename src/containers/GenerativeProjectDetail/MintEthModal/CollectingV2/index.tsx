@@ -241,9 +241,11 @@ const MintEthModal: React.FC = () => {
                     </div>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Inscription fee</p>
-                      <p
-                        className={s.paymentPrice_price}
-                      >{`${feePriceFormat} ETH`}</p>
+                      <p className={s.paymentPrice_price}>{`${
+                        projectData?.mintPriceEth === '0'
+                          ? totalFormatPrice
+                          : feePriceFormat
+                      } ETH`}</p>
                     </div>
                     <div className={s.indicator} />
 

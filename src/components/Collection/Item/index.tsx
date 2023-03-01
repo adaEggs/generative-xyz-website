@@ -67,7 +67,9 @@ const CollectionItem = ({
         }
         setShowModal(show => !show);
       },
-    }).then();
+    })
+      .then()
+      .catch();
   };
 
   const renderButton = () => {

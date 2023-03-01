@@ -31,7 +31,9 @@ export const RecentWorks = (): JSX.Element => {
   const onShowModal = () => {
     onButtonClick({
       cbSigned: () => setShowModal(true),
-    }).then();
+    })
+      .then()
+      .catch();
   };
 
   const fetchData = async () => {

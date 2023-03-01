@@ -36,14 +36,14 @@
       }
     }
 
-    @include w-min($screen-lg) {
+    @include w-min(1091px) {
       display: grid;
       grid-template-columns: rem(520px);
       grid-template-rows: auto;
       justify-content: center;
 
       &__twoColumn {
-        grid-template-columns: rem(520px) minmax(auto, 415px);
+        grid-template-columns: rem(520px) minmax(auto, rem(450px));
         column-gap: rem(100px);
       }
     }
