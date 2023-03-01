@@ -1,8 +1,25 @@
 .instruction {
   user-select: none;
+  width: 100%;
 
   .container {
     width: 100%;
     height: 100%;
+    display: flex;
+
+    .left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: flex-end;
+    }
   }
 }

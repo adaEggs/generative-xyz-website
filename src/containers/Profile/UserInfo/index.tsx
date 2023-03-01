@@ -21,10 +21,18 @@ import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 import ButtonReceiver from '@containers/Profile/ButtonReceiver';
 
-export const UserInfo = ({ toggle }: { toggle: () => void }): JSX.Element => {
+interface IProps {
+  toggle: () => void;
+}
+
+export const UserInfo = ({ toggle }: IProps): JSX.Element => {
   const user = useAppSelector(getUserSelector);
   const { currentUser, isLoadingHistory, history } = useContext(ProfileContext);
   const router = useRouter();
+
+  const isOwner = currentUser?.id === user?.id;
+  const showHistory =
+    !isLoadingHistory && !!history && !!history.length && isOwner;
 
   const isTwVerified = useMemo(() => {
     return currentUser?.profileSocial?.twitterVerified || false;
@@ -89,7 +97,7 @@ export const UserInfo = ({ toggle }: { toggle: () => void }): JSX.Element => {
                     size={18}
                     svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                   />
-                  {!isLoadingHistory && !!history && !!history.length && (
+                  {showHistory && (
                     <SvgInset
                       onClick={toggle}
                       size={18}
@@ -100,10 +108,11 @@ export const UserInfo = ({ toggle }: { toggle: () => void }): JSX.Element => {
                 </div>
               )}
             </div>
-            <div className={s.userInfo_content_ctas}>
-              <ButtonReceiver className={s.userInfo_content_ctas_receiver} />
-            </div>
-
+            {isOwner && (
+              <div className={s.userInfo_content_ctas}>
+                <ButtonReceiver className={s.userInfo_content_ctas_receiver} />
+              </div>
+            )}
             <div className={s.creator_social}>
               {currentUser?.profileSocial?.twitter && (
                 <div className={`${s.creator_social_item}`}>

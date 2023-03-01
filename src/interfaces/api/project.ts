@@ -112,3 +112,9 @@ export interface IReportProjectPayload {
   originalLink?: string;
 }
 export type IReportProjectResponse = Project;
+
+export interface IGetProjectVolumeResponse {
+  amount: string;
+  payType: string;
+  projectID: string;
+}

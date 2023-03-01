@@ -13,7 +13,7 @@ type ButtonVariantsType =
   | 'filter'
   | 'blue'
   | 'blue-deep';
-type ButtonSizesType = 'large' | 'medium' | 'mid' | 'small' | 'xsmall';
+export type ButtonSizesType = 'large' | 'medium' | 'mid' | 'small' | 'xsmall';
 
 interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   className?: string;

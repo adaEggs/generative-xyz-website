@@ -7,18 +7,15 @@ import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import { useRouter } from 'next/router';
 import { Container } from 'react-bootstrap';
 import ButtonIcon from '@components/ButtonIcon';
+import { ROUTE_PATH } from '@constants/route-path';
+import React from 'react';
 
 const MetamaskXOrdinals = () => {
-  const { ordAddress: _, onButtonClick } = useBTCSignOrd();
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
   const router = useRouter();
-  const { next } = router.query;
 
   const onConnect = () => {
-    onButtonClick({
-      cbSigned: () => {
-        router.replace((next as string) || '/profile');
-      },
-    });
+    onButtonClick({});
   };
 
   const renderDescItem = (child: () => React.ReactElement) => {
@@ -33,6 +30,11 @@ const MetamaskXOrdinals = () => {
       </div>
     );
   };
+
+  React.useEffect(() => {
+    if (!ordAddress) return;
+    router.replace(`${ROUTE_PATH.PROFILE}/${ordAddress}`);
+  }, [ordAddress]);
 
   return (
     <Container>

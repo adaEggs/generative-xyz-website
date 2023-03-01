@@ -71,6 +71,12 @@ const ModalBuyItem = ({
       ? formatBTCPrice(price || 0, '0.0')
       : formatEthPrice(`${ethPrice || 0}`, '0.0');
 
+  useEffect(() => {
+    if (payType === 'eth' && ordAddress) {
+      onSubmitAddress(ordAddress);
+    }
+  }, [ordAddress]);
+
   const handleTransfer = async (
     toAddress: string,
     val: string
@@ -86,10 +92,15 @@ const ModalBuyItem = ({
   };
 
   useEffect(() => {
-    if (payType === 'eth' && receiveAddress && ethPrice) {
+    if (
+      payType === 'eth' &&
+      step === 'showAddress' &&
+      receiveAddress &&
+      ethPrice
+    ) {
       handleTransfer(receiveAddress, formatEthPrice(`${ethPrice || 0}`));
     }
-  }, [receiveAddress, ethPrice]);
+  }, [receiveAddress, ethPrice, step]);
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -105,9 +116,16 @@ const ModalBuyItem = ({
     } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
-      if (step === 'showAddress' && addressInput !== values.address) {
-        setAddressInput(values.address);
-        onSubmitAddress(values.address);
+      if (payType === 'eth') {
+        if (addressInput !== values.address) {
+          setAddressInput(values.address);
+          onSubmitAddress(values.address);
+        }
+      } else {
+        if (step === 'showAddress' && addressInput !== values.address) {
+          setAddressInput(values.address);
+          onSubmitAddress(values.address);
+        }
       }
     }
 
@@ -116,7 +134,11 @@ const ModalBuyItem = ({
 
   const onClickPay = () => {
     if (useWallet === 'default') {
-      onSubmitAddress(ordAddress);
+      if (payType === 'eth') {
+        setsTep('showAddress');
+      } else {
+        onSubmitAddress(ordAddress);
+      }
     }
   };
 
@@ -135,7 +157,9 @@ const ModalBuyItem = ({
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);
         setExpireTime(data.timeoutAt);
-        setsTep('showAddress');
+        if (payType === 'btc') {
+          setsTep('showAddress');
+        }
       }
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -155,8 +179,14 @@ const ModalBuyItem = ({
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
-      if (step === 'showAddress' && ordAddress) {
-        onSubmitAddress(ordAddress);
+      if (payType === 'btc') {
+        if (step === 'showAddress' && ordAddress) {
+          onSubmitAddress(ordAddress);
+        }
+      } else {
+        if (ordAddress) {
+          onSubmitAddress(ordAddress);
+        }
       }
     }
   };
@@ -164,13 +194,20 @@ const ModalBuyItem = ({
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
+      if (addressInput) {
+        onSubmitAddress(addressInput);
+      }
     }
   };
 
   const handleSubmit = async (_data: IFormValue) => {
-    if (addressInput !== _data.address) {
-      setAddressInput(_data.address);
-      onSubmitAddress(_data.address);
+    if (payType === 'eth') {
+      setsTep('showAddress');
+    } else {
+      if (addressInput !== _data.address) {
+        setAddressInput(_data.address);
+        onSubmitAddress(_data.address);
+      }
     }
   };
 
@@ -372,7 +409,7 @@ const ModalBuyItem = ({
                 {step === 'showAddress' && (
                   <Col md={'6'}>
                     <div className={s.paymentWrapper}>
-                      {receiveAddress && !isLoading && (
+                      {!isSent && receiveAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
                             Send{' '}

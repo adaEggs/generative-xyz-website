@@ -10,7 +10,6 @@ import s from './Profile.module.scss';
 import HistoryModal from '@containers/Profile/Collected/Modal/History';
 import { isProduction } from '@utils/common';
 import ReferralTab from './Referral';
-import { useRouter } from 'next/router';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import useBitcoin from '@bitcoin/useBitcoin';
@@ -26,12 +25,11 @@ const Profile: React.FC = (): React.ReactElement => {
     collectedNFTs,
     totalFreeInscription,
     isLoadingUTXOs,
+    currentUser,
   } = useContext(ProfileContext);
-  const router = useRouter();
   const [showModal, setShowModal] = React.useState(false);
-  const { walletAddress } = router.query as { walletAddress: string };
-  const isOwner = !walletAddress || user?.walletAddress === walletAddress;
   const { satoshiAmount } = useBitcoin();
+  const isOwner = currentUser?.id === user?.id;
 
   return (
     <div className={s.profile}>
@@ -64,7 +62,7 @@ const Profile: React.FC = (): React.ReactElement => {
                     <Tab
                       tabClassName={s.tab}
                       eventKey="referralTab"
-                      title={'Referral'}
+                      title={'Activities'}
                     >
                       <ReferralTab />
                     </Tab>
