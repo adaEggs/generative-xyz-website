@@ -7,9 +7,14 @@ import Instruction from '../components/Instruction';
 interface IProps {
   url: string;
   whiteHouse?: boolean;
+  download?: false;
 }
 
-const GLTFPreview: React.FC<IProps> = ({ url, whiteHouse = false }) => {
+const GLTFPreview: React.FC<IProps> = ({
+  url,
+  whiteHouse = false,
+  download = false,
+}) => {
   const [id] = useState(v4());
   const [isLoading, setIsLoading] = useState(true);
   const [isShowInstruction, setIsShowInstruction] = useState(true);
@@ -97,7 +102,13 @@ const GLTFPreview: React.FC<IProps> = ({ url, whiteHouse = false }) => {
           </div>
         )}
         <div className={styles.viewer} id={id}></div>
-        {isShowInstruction && <Instruction className={styles.instruction} />}
+        {isShowInstruction && (
+          <Instruction
+            download={download}
+            className={styles.instruction}
+            url={url}
+          />
+        )}
       </div>
     </>
   );
