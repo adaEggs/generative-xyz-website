@@ -78,6 +78,9 @@ const MintBTCGenerativeModal: React.FC = () => {
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
+      if (step === 'showAddress' && addressInput) {
+        debounceGetBTCAddress(addressInput, addressInput);
+      }
     }
   };
 

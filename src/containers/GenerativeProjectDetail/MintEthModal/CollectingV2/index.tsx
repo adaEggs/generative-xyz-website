@@ -28,6 +28,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useRef,
   useState,
 } from 'react';
 import { Col, Row } from 'react-bootstrap';
@@ -61,18 +62,12 @@ const MintEthModal: React.FC = () => {
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [addressInput, setAddressInput] = useState<string>('');
 
-  const totalFormatPrice = formatEthPrice(
-    totalPrice ||
-      `${
-        Number(projectData?.mintPriceEth) + Number(projectData?.networkFeeEth)
-      }` ||
-      '',
-    '0.0'
-  );
-  const feePriceFormat = formatEthPrice(
-    projectData?.networkFeeEth || '',
-    '0.0'
-  );
+  const currentAddress = useRef('');
+
+  const totalFormatPrice = totalPrice ? formatEthPrice(totalPrice, '0.0') : '';
+  const feePriceFormat = totalPrice
+    ? formatEthPrice(projectData?.networkFeeEth || '', '0.0')
+    : '';
 
   const userAddress = React.useMemo(() => {
     return {
@@ -80,6 +75,12 @@ const MintEthModal: React.FC = () => {
       evm: user?.walletAddress || '',
     };
   }, [user]);
+
+  useEffect(() => {
+    if (userAddress && userAddress.evm && userAddress.taproot) {
+      debounceGetBTCAddress(userAddress.taproot, userAddress.evm);
+    }
+  }, [userAddress]);
 
   const handleTransfer = async (
     toAddress: string,
@@ -96,10 +97,10 @@ const MintEthModal: React.FC = () => {
   };
 
   useEffect(() => {
-    if (receiverAddress) {
+    if (step === 'showAddress' && receiverAddress && totalPrice) {
       handleTransfer(receiverAddress, formatEthPrice(totalPrice));
     }
-  }, [receiverAddress, totalPrice]);
+  }, [step, receiverAddress]);
 
   const debounceGetBTCAddress = useCallback(
     _debounce(async (ordAddress, refundAddress) => {
@@ -118,9 +119,9 @@ const MintEthModal: React.FC = () => {
           return;
         }
 
+        currentAddress.current = ordAddress;
         setTotalPrice(_price);
         setReceiverAddress(_address);
-        setsTep('showAddress');
       } catch (err: unknown) {
         setReceiverAddress(null);
       } finally {
@@ -140,10 +141,10 @@ const MintEthModal: React.FC = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
       if (
-        step === 'showAddress' &&
         userAddress &&
         userAddress.evm &&
-        userAddress.taproot
+        userAddress.taproot &&
+        userAddress.taproot !== currentAddress.current
       ) {
         debounceGetBTCAddress(userAddress.taproot, userAddress.evm);
       }
@@ -153,14 +154,15 @@ const MintEthModal: React.FC = () => {
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
+      if (addressInput && addressInput !== currentAddress.current) {
+        debounceGetBTCAddress(addressInput, userAddress.evm);
+      }
     }
   };
 
   const onClickPay = () => {
     if (useWallet === 'default') {
-      if (userAddress && userAddress.evm && userAddress.taproot) {
-        debounceGetBTCAddress(userAddress.taproot, userAddress.evm);
-      }
+      setsTep('showAddress');
     }
   };
 
@@ -172,7 +174,10 @@ const MintEthModal: React.FC = () => {
     } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
-      if (step === 'showAddress' && addressInput !== values.address) {
+      if (
+        addressInput !== values.address &&
+        values.address !== currentAddress.current
+      ) {
         setAddressInput(values.address);
         debounceGetBTCAddress(values.address, userAddress.evm);
       }
@@ -181,11 +186,8 @@ const MintEthModal: React.FC = () => {
     return errors;
   };
 
-  const handleSubmit = async (values: IFormValue): Promise<void> => {
-    if (addressInput !== values.address) {
-      debounceGetBTCAddress(values.address, userAddress.evm);
-      setAddressInput(values.address);
-    }
+  const handleSubmit = async (): Promise<void> => {
+    setsTep('showAddress');
   };
 
   const _onClose = () => {
@@ -226,17 +228,15 @@ const MintEthModal: React.FC = () => {
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
                       <p className={s.paymentPrice_price}>{`${
-                        projectData?.mintPriceEth === '0'
-                          ? '0.0'
-                          : formatEthPrice(
-                              totalPrice
-                                ? `${
-                                    Number(totalPrice) -
-                                    Number(projectData.networkFeeEth)
-                                  }`
-                                : projectData?.mintPriceEth || '',
+                        totalPrice
+                          ? formatEthPrice(
+                              `${
+                                Number(totalPrice) -
+                                Number(projectData.networkFeeEth)
+                              }`,
                               '0.0'
                             )
+                          : ''
                       } ETH`}</p>
                     </div>
                     <div className={s.paymentPrice}>
@@ -386,7 +386,7 @@ const MintEthModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading}
+                        disabled={isLoading || totalPrice === ''}
                         onClick={onClickPay}
                       >
                         Pay
@@ -408,7 +408,7 @@ const MintEthModal: React.FC = () => {
                 {step === 'showAddress' && (
                   <Col md={'6'}>
                     <div className={s.paymentWrapper}>
-                      {receiverAddress && !isLoading && (
+                      {!isSent && receiverAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
                             Send{' '}
@@ -452,9 +452,9 @@ const MintEthModal: React.FC = () => {
                         <>
                           <ButtonIcon
                             sizes="large"
-                            className={s.checkBtn}
+                            className={s.buyBtn}
                             onClick={() => router.push(ROUTE_PATH.PROFILE)}
-                            variants="outline-small"
+                            variants="outline"
                           >
                             <Text as="span" size="16" fontWeight="medium">
                               Check order status
