@@ -4,13 +4,17 @@ import { InscribeMintFeeRate } from '@enums/inscribe';
 export const calculateMintFee = (
   feeRate: InscribeMintFeeRate,
   fileSizeByte: number,
-  transferFee = MINT_TRANSFER_FEE
+  isAuthentic = false
 ): number => {
   const minSize = 1024 * 4;
   if (fileSizeByte < minSize) {
     fileSizeByte = minSize;
   }
-  return (feeRate * fileSizeByte) / 4 + transferFee;
+  const totalFee = (feeRate * fileSizeByte) / 4 + MINT_TRANSFER_FEE;
+  if (isAuthentic) {
+    return totalFee * 1.2;
+  }
+  return totalFee;
 };
 
 export const calculateNetworkFee = (

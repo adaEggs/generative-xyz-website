@@ -48,3 +48,11 @@ export interface ICompleteMultipartUploadPayload {
 export interface ICompleteMultipartUploadResponse {
   fileUrl: string;
 }
+
+export interface IResizeImagePayload {
+  file: string; // fileBase64
+}
+
+export interface IResizeImageResponse {
+  file: string; // fileBase64
+}

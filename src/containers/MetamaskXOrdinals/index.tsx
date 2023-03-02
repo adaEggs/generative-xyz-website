@@ -13,6 +13,7 @@ import React from 'react';
 const MetamaskXOrdinals = () => {
   const { ordAddress, onButtonClick } = useBTCSignOrd();
   const router = useRouter();
+  const { next } = router.query;
 
   const onConnect = () => {
     onButtonClick({});
@@ -33,7 +34,11 @@ const MetamaskXOrdinals = () => {
 
   React.useEffect(() => {
     if (!ordAddress) return;
-    router.replace(`${ROUTE_PATH.PROFILE}/${ordAddress}`);
+    if (next) {
+      router.replace(next as string);
+    } else {
+      router.replace(`${ROUTE_PATH.PROFILE}/${ordAddress}`);
+    }
   }, [ordAddress]);
 
   return (

@@ -6,6 +6,8 @@ import {
   IInitiateMultipartUploadResponse,
   IMinifyFilePayload,
   IMinifyFileResponse,
+  IResizeImagePayload,
+  IResizeImageResponse,
   IUploadFilePayload,
   IUploadFileResponse,
 } from '@interfaces/api/files';
@@ -77,5 +79,18 @@ export const completeMultipartUpload = async (
   } catch (err: unknown) {
     log('failed to complete multipart upload file', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to complete multipart upload file');
+  }
+};
+
+export const resizeImage = async (payload: IResizeImagePayload) => {
+  try {
+    const res = await post<IResizeImagePayload, IResizeImageResponse>(
+      `${API_PATH}/image/resize`,
+      payload
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to resize image', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to resize image');
   }
 };
