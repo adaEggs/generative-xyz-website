@@ -109,7 +109,7 @@ const Airdrop: React.FC = (): React.ReactElement => {
             <div className="row align-items-center">
               <div className="col-lg-6 col-12">
                 <div className="image__fit">
-                  <img src={`${CDN_URL}/images/airdrop-3.svg`} alt="visual" />
+                  <img src={`${CDN_URL}/images/airdrop-4.svg`} alt="visual" />
                 </div>
               </div>
               <div className={cs('col-lg-6 col-12', s.rightContent)}>

@@ -12,7 +12,7 @@ import { formatAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import { useRouter } from 'next/router';
-import React, { useContext, useRef, useState, useEffect, useMemo } from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import styles from './Header.module.scss';
 import { getFaucetLink, isTestnet } from '@utils/chain';
@@ -49,10 +49,6 @@ const Header: React.FC<IProp> = ({
   const refMenu = useRef<HTMLDivElement | null>(null);
   const freeToolsRef = useRef<HTMLLIElement | null>(null);
   const [isOpenFreetools, setIsOpenFreetools] = useState(false);
-  const isGrailPage = useMemo(
-    () => router.pathname === ROUTE_PATH.DISPLAY,
-    [router.pathname]
-  );
 
   const PROFILE_MENU = [
     {
@@ -306,7 +302,8 @@ const Header: React.FC<IProp> = ({
                 </div>
 
                 <div className={styles.header_right}>
-                  {!isGrailPage && <SearchCollection theme={theme} />}
+                  <SearchCollection theme={theme} />
+
                   <ul className={`${styles.navBar} ${styles[theme]}`}>
                     <li
                       ref={freeToolsRef}

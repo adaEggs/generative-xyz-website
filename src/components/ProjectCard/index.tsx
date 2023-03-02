@@ -130,7 +130,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                   <div className={s.projectCard_info_mintoutContainer}>
                     <SvgInset svgUrl={`${CDN_URL}/icons/ic_mintedout.svg`} />
                     <Text className={s.projectCard_info_mintoutContainer_text}>
-                      Minted out
+                      {`${project?.mintingInfo.index} Minted out`}
                     </Text>
                   </div>
                 ) : (

@@ -72,7 +72,7 @@ const Profile: React.FC = (): React.ReactElement => {
                       eventKey="balanceTab"
                       title={
                         isLoadingUTXOs
-                          ? 'loading...'
+                          ? 'Loading...'
                           : `${formatBTCPrice(satoshiAmount.toString())} BTC`
                       }
                     >
@@ -82,7 +82,7 @@ const Profile: React.FC = (): React.ReactElement => {
                   <Tab
                     tabClassName={s.tab}
                     eventKey="freeTab"
-                    title={<>{totalFreeInscription} Free</>}
+                    title={<>{totalFreeInscription} Free inscriptions</>}
                   >
                     <FreeInscriptions />
                   </Tab>
