@@ -390,7 +390,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               </Link>
             )} */}
             {renderBuyBTCView()}
-            {mobileScreen && <ThumbnailPreview data={tokenData} previewToken />}
+            {mobileScreen && (
+              <div className={s.reviewOnMobile}>
+                <ThumbnailPreview data={tokenData} previewToken />
+              </div>
+            )}
             {!isBitcoinProject && (
               <>
                 <div className={s.prices}>
@@ -560,7 +564,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           </div>
           <div></div>
           {!mobileScreen && (
-            <div>
+            <div className={s.thumbnailBg}>
               <ThumbnailPreview
                 data={tokenData}
                 isBitcoinProject={isBitcoinProject}
