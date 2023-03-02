@@ -36,6 +36,7 @@ const CollectionList = ({
         <FilterOptions attributes={projectInfo?.traitStat} />
       )}
       <div className="position-relative">
+        <div className="filter-list"></div>
         {!isLoaded && (
           <>
             <CollectionListLoading
