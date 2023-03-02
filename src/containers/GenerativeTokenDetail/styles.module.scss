@@ -278,7 +278,7 @@ a.info_creatorLink {
 }
 
 .reviewOnMobile {
-  // margin-top: rem(16px);
+  margin-top: rem(24px);
   padding: rem(32);
   background-color: $primary-light;
 }
@@ -286,4 +286,8 @@ a.info_creatorLink {
 .thumbnailBg {
   padding: rem(64px);
   background-color: $primary-light;
+}
+
+.shares_wrapper {
+  padding-right: rem(60);
 }

@@ -272,464 +272,480 @@ const ProjectIntroSection = ({
       );
 
     return (
-      <div className={s.info}>
-        <div className={`${s.projectHeader}`}>
-          <Link
-            href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddress}`}
-            className={s.creator_info}
+      <div className={s.info_wrapper}>
+        <div className={s.info}>
+          <div className={`${s.projectHeader}`}>
+            <Link
+              href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddress}`}
+              className={s.creator_info}
+            >
+              <Heading
+                className={s.projectHeader_creator}
+                as="h4"
+                fontWeight="medium"
+              >
+                {project?.creatorProfile?.displayName ||
+                  formatAddress(project?.creatorProfile?.walletAddress || '')}
+              </Heading>
+            </Link>
+            <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
+          </div>
+          <div
+            className={`${s.projectHeader_heading} ${
+              isCreated ? s.hasEdit : ''
+            }`}
           >
             <Heading
-              className={s.projectHeader_creator}
+              className={s.projectHeader_title}
               as="h4"
               fontWeight="medium"
             >
-              {project?.creatorProfile?.displayName ||
-                formatAddress(project?.creatorProfile?.walletAddress || '')}
+              {project?.name}
             </Heading>
-          </Link>
-          <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
-        </div>
-        <div
-          className={`${s.projectHeader_heading} ${isCreated ? s.hasEdit : ''}`}
-        >
-          <Heading
-            className={s.projectHeader_title}
-            as="h4"
-            fontWeight="medium"
-          >
-            {project?.name}
-          </Heading>
-          {isEdit && (
-            <div className={s.projectHeader_btn}>
-              <ButtonIcon
-                sizes="xsmall"
-                variants={'outline'}
-                startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}
-                onClick={() =>
-                  router.push(
-                    `${ROUTE_PATH.GENERATIVE_EDIT}/${project?.tokenID}`
-                  )
-                }
-              >
-                <Text fontWeight="medium" as="span">
-                  Edit
-                </Text>
-              </ButtonIcon>
-            </div>
-          )}
-        </div>
-
-        <div className={s.creator_social}>
-          {project?.creatorProfile?.profileSocial?.twitter && (
-            <div className={`${s.creator_social_item}`}>
-              <div className={s.creator_social_item_inner}>
-                <SvgInset
-                  className={`${s.creator_social_twitter}`}
-                  size={24}
-                  svgUrl={`${CDN_URL}/icons/Twitter.svg`}
-                />
-                <Text size={'18'}>
-                  <Link
-                    href={project?.creatorProfile?.profileSocial?.twitter || ''}
-                    target="_blank"
-                  >
-                    @
-                    {project?.creatorProfile?.profileSocial?.twitter
-                      .split('/')
-                      .pop()}
-                  </Link>
-                </Text>
+            {isEdit && (
+              <div className={s.projectHeader_btn}>
+                <ButtonIcon
+                  sizes="xsmall"
+                  variants={'outline'}
+                  startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}
+                  onClick={() =>
+                    router.push(
+                      `${ROUTE_PATH.GENERATIVE_EDIT}/${project?.tokenID}`
+                    )
+                  }
+                >
+                  <Text fontWeight="medium" as="span">
+                    Edit
+                  </Text>
+                </ButtonIcon>
               </div>
-            </div>
-          )}
-          {project?.creatorProfile?.profileSocial?.web && (
-            <>
-              <span className={s.creator_divider}></span>
+            )}
+          </div>
+
+          <div className={s.creator_social}>
+            {project?.creatorProfile?.profileSocial?.twitter && (
               <div className={`${s.creator_social_item}`}>
                 <div className={s.creator_social_item_inner}>
                   <SvgInset
-                    // className={`${s.creator_social_twitter}`}
+                    className={`${s.creator_social_twitter}`}
                     size={24}
-                    svgUrl={`${CDN_URL}/icons/link-copy.svg`}
+                    svgUrl={`${CDN_URL}/icons/Twitter.svg`}
                   />
                   <Text size={'18'}>
-                    {checkForHttpRegex(
-                      project?.creatorProfile?.profileSocial?.web
-                    ) ? (
-                      <Link
-                        href={project?.creatorProfile?.profileSocial?.web || ''}
-                        target="_blank"
-                      >
-                        {formatWebDomain(
-                          project?.creatorProfile?.profileSocial?.web || ''
-                        )}
-                      </Link>
-                    ) : (
-                      project?.creatorProfile?.profileSocial?.web
-                    )}
+                    <Link
+                      href={
+                        project?.creatorProfile?.profileSocial?.twitter || ''
+                      }
+                      target="_blank"
+                    >
+                      @
+                      {project?.creatorProfile?.profileSocial?.twitter
+                        .split('/')
+                        .pop()}
+                    </Link>
                   </Text>
                 </div>
               </div>
-            </>
-          )}
-        </div>
-        {mobileScreen && (
-          <div className={s.reviewOnMobile}>
-            <ThumbnailPreview
-              data={
-                {
-                  ...projectDetail,
-                  animationHtml: project?.animationHtml ?? '',
-                } as Token
-              }
-              allowVariantion
-            />
-          </div>
-        )}
-
-        <div className={s.stats}>
-          <div className={s.stats_item}>
-            <Text size="12" fontWeight="medium">
-              MINTED
-            </Text>
-            <Heading as="h6" fontWeight="medium">
-              {minted}
-            </Heading>
-          </div>
-          {!!project?.btcFloorPrice && (
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="medium">
-                Floor Price
-              </Text>
-              <Heading as="h6" fontWeight="medium">
-                {formatBTCPrice(project?.btcFloorPrice)}
-              </Heading>
-            </div>
-          )}
-          {isRoyalty && (
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="medium">
-                royalty
-              </Text>
-              <Heading as="h6" fontWeight="medium">
-                {(project?.royalty || 0) / 100}%
-              </Heading>
-            </div>
-          )}
-        </div>
-
-        {!isWhitelist && project?.status && !project?.isHidden && (
-          <div className={s.CTA}>
-            {!isBitcoinProject && (
-              <ButtonIcon
-                sizes="large"
-                className={s.mint_btn}
-                disabled={isMinting}
-                onClick={handleMintToken}
-              >
-                <Text as="span" size="14" fontWeight="medium">
-                  {isMinting && 'Minting...'}
-                  {!isMinting && project?.mintPrice && (
-                    <>
-                      {`Mint now Ξ${Web3.utils.fromWei(
-                        project?.mintPrice,
-                        'ether'
-                      )}`}
-                    </>
-                  )}
-                </Text>
-              </ButtonIcon>
             )}
-            {isBitcoinProject &&
-              isAvailable &&
-              !!project?.btcFloorPrice &&
-              !project?.isHidden && (
-                <>
-                  <ButtonIcon
-                    sizes="large"
-                    className={`${s.mint_btn}`}
-                    onClick={() => {
-                      const element = document.getElementById('PROJECT_LIST');
-                      if (!element) return;
-                      element.scrollIntoView({
-                        behavior: 'smooth',
-                      });
-                    }}
-                  >
-                    <Text as="span" size="14" fontWeight="medium">
-                      <>
-                        <span>{`Buy now • ${formatBTCPrice(
-                          project.btcFloorPrice
-                        )} BTC`}</span>
-                      </>
-                    </Text>
-                  </ButtonIcon>
-                </>
-              )}
-            {isBitcoinProject &&
-              isAvailable &&
-              isLimitMinted &&
-              !project?.isHidden && (
-                <ul>
-                  <li>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 0, hide: 100 }}
-                      overlay={
-                        project?.networkFee ? (
-                          <Tooltip id="btc-fee-tooltip">
-                            <Text
-                              size="14"
-                              fontWeight="semibold"
-                              color="primary-333"
-                            >
-                              Inscription fee:{' '}
-                              {formatBTCPrice(Number(project?.networkFee))} BTC
-                            </Text>
-                          </Tooltip>
-                        ) : (
-                          <></>
-                        )
-                      }
-                    >
-                      <ButtonIcon
-                        sizes="large"
-                        className={s.mint_btn}
-                        onClick={() => {
-                          openMintBTCModal &&
-                            openMintBTCModal(PaymentMethod.BTC);
-                        }}
-                      >
-                        <Text as="span" size="14" fontWeight="medium">
-                          {isMinting && 'Minting...'}
-                          {!isMinting && (
-                            <>
-                              <span>{textMint}</span>
-
-                              {Number(project?.mintPrice) ? (
-                                <span>{priceMemo}</span>
-                              ) : (
-                                ' with'
-                              )}
-                              {` BTC`}
-                            </>
+            {project?.creatorProfile?.profileSocial?.web && (
+              <>
+                <span className={s.creator_divider}></span>
+                <div className={`${s.creator_social_item}`}>
+                  <div className={s.creator_social_item_inner}>
+                    <SvgInset
+                      // className={`${s.creator_social_twitter}`}
+                      size={24}
+                      svgUrl={`${CDN_URL}/icons/link-copy.svg`}
+                    />
+                    <Text size={'18'}>
+                      {checkForHttpRegex(
+                        project?.creatorProfile?.profileSocial?.web
+                      ) ? (
+                        <Link
+                          href={
+                            project?.creatorProfile?.profileSocial?.web || ''
+                          }
+                          target="_blank"
+                        >
+                          {formatWebDomain(
+                            project?.creatorProfile?.profileSocial?.web || ''
                           )}
-                        </Text>
-                      </ButtonIcon>
-                    </OverlayTrigger>
-                  </li>
-                  <li>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 0, hide: 100 }}
-                      overlay={
-                        project?.networkFeeEth ? (
-                          <Tooltip id="btc-fee-tooltip">
-                            <Text
-                              size="14"
-                              fontWeight="semibold"
-                              color="primary-333"
-                            >
-                              Inscription fee:{' '}
-                              {formatEthPrice(project?.networkFeeEth)} ETH
-                            </Text>
-                          </Tooltip>
-                        ) : (
-                          <></>
-                        )
-                      }
-                    >
-                      <ButtonIcon
-                        sizes="large"
-                        variants="outline"
-                        className={`${s.mint_btn} ${s.mint_btn__eth}`}
-                        onClick={() => {
-                          openMintBTCModal &&
-                            openMintBTCModal(PaymentMethod.ETH);
-                        }}
-                      >
-                        <Text as="span" size="14" fontWeight="medium">
-                          {isMinting && 'Minting...'}
-                          {!isMinting && (
-                            <>
-                              <span>{textMint}</span>
-                              {Number(project?.mintPriceEth) ? (
-                                <span>{priceEthMemo}</span>
-                              ) : (
-                                ' with'
-                              )}
-                              {` ETH`}
-                            </>
-                          )}
-                        </Text>
-                      </ButtonIcon>
-                    </OverlayTrigger>
-                  </li>
-                </ul>
-              )}
-          </div>
-        )}
-        {isWhitelist &&
-          !!project?.whiteListEthContracts &&
-          project?.whiteListEthContracts.length > 0 && (
-            <>
-              <ButtonIcon
-                sizes="large"
-                onClick={onHandlePaymentWithWallet}
-                className={s.mint_free}
-              >
-                Mint Satoshi free
-              </ButtonIcon>
-              <div className={s.whiteListWallet}>
-                <Text size="12" as="span" color="black-60">
-                  If you’re a member of{' '}
-                </Text>
-                <OverlayTrigger
-                  placement="bottom"
-                  delay={{ show: 100, hide: 300 }}
-                  overlay={
-                    <Tooltip id="whitelist-tooltip">
-                      <Text size="12" fontWeight="semibold" color="primary-333">
-                        ArtBlocks, CryptoPunks, BAYC, MAYC, Meebits, Proof,
-                        Moonbirds, Moonbirds Oddities, CloneX, gmDAO.
-                      </Text>
-                    </Tooltip>
-                  }
-                >
-                  <div className="d-inline cursor-pointer">
-                    <Text size="12" as="span" color="purple-c">
-                      these communities
+                        </Link>
+                      ) : (
+                        project?.creatorProfile?.profileSocial?.web
+                      )}
                     </Text>
                   </div>
-                </OverlayTrigger>
-                <Text size="12" as="span" color="black-60">
-                  {' '}
-                  (ArtBlocks, CryptoPunks, BAYC, etc.), you can claim your
-                  Satoshi for free. Only pay the network inscription fees, which
-                  are 0.033 ETH (~0.0023 BTC). Generative integrates with{' '}
-                  <Link
-                    href={EXTERNAL_LINK.DELEGATE_CASH}
-                    target="_blank"
-                    className="hover-underline text-purple-c hover-purple-c"
-                  >
-                    delegate.cash
-                  </Link>{' '}
-                  to prove ownership.
-                </Text>
-              </div>
-            </>
+                </div>
+              </>
+            )}
+          </div>
+          {mobileScreen && (
+            <div className={s.reviewOnMobile}>
+              <ThumbnailPreview
+                data={
+                  {
+                    ...projectDetail,
+                    animationHtml: project?.animationHtml ?? '',
+                  } as Token
+                }
+                allowVariantion
+              />
+            </div>
           )}
 
-        {!isBitcoinProject && (
           <div className={s.stats}>
             <div className={s.stats_item}>
               <Text size="12" fontWeight="medium">
-                Outputs
+                MINTED
               </Text>
               <Heading as="h6" fontWeight="medium">
-                {project?.mintingInfo?.index}
+                {minted}
               </Heading>
             </div>
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="medium">
-                Total Volume
-              </Text>
-              <Heading as="h6" fontWeight="medium">
-                {convertToETH(marketplaceStats?.totalTradingVolumn || '')}
-              </Heading>
-            </div>
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="medium">
-                Floor price
-              </Text>
-              <Heading as="h6" fontWeight="medium">
-                {convertToETH(marketplaceStats?.floorPrice || '')}
-              </Heading>
-            </div>
-
-            <div className={s.stats_item}>
-              <Text size="12" fontWeight="medium">
-                royalty
-              </Text>
-              <Heading as="h6" fontWeight="medium">
-                {(project?.royalty || 0) / 100}%
-              </Heading>
-            </div>
+            {!!project?.btcFloorPrice && (
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  Floor Price
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {formatBTCPrice(project?.btcFloorPrice)}
+                </Heading>
+              </div>
+            )}
+            {isRoyalty && (
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  royalty
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {(project?.royalty || 0) / 100}%
+                </Heading>
+              </div>
+            )}
           </div>
-        )}
 
-        <div className={s.project_info}>
-          <ProjectDescription
-            desc={project?.desc || ''}
-            hasInteraction={hasProjectInteraction}
-            profileBio={project?.creatorProfile?.bio || ''}
-          />
-          <>
-            <Text size="14" color="black-40">
-              Created date: {mintedDate}
-            </Text>
-
-            <Text size="14" color="black-40">
-              Fully on-chain: {isFullonChain ? 'Yes' : 'No'}
-            </Text>
-          </>
-        </div>
-        {!isBitcoinProject && (
-          <div className={s.license}>
-            <Text size="14">License: {project?.license}</Text>
-          </div>
-        )}
-        <ul className={s.shares}>
-          <li>
-            <div>
-              {/* <LinkShare
-                url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-              /> */}
-              <TwitterShareButton
-                url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-                title={''}
-                hashtags={[]}
-              >
+          {!isWhitelist && project?.status && !project?.isHidden && (
+            <div className={s.CTA}>
+              {!isBitcoinProject && (
                 <ButtonIcon
-                  sizes="small"
-                  variants="outline-small"
-                  className={s.projectBtn}
-                  startIcon={
-                    <SvgInset
-                      size={14}
-                      svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
-                    />
-                  }
+                  sizes="large"
+                  className={s.mint_btn}
+                  disabled={isMinting}
+                  onClick={handleMintToken}
                 >
-                  Share
+                  <Text as="span" size="14" fontWeight="medium">
+                    {isMinting && 'Minting...'}
+                    {!isMinting && project?.mintPrice && (
+                      <>
+                        {`Mint now Ξ${Web3.utils.fromWei(
+                          project?.mintPrice,
+                          'ether'
+                        )}`}
+                      </>
+                    )}
+                  </Text>
                 </ButtonIcon>
-              </TwitterShareButton>
+              )}
+              {isBitcoinProject &&
+                isAvailable &&
+                !!project?.btcFloorPrice &&
+                !project?.isHidden && (
+                  <>
+                    <ButtonIcon
+                      sizes="large"
+                      className={`${s.mint_btn}`}
+                      onClick={() => {
+                        const element = document.getElementById('PROJECT_LIST');
+                        if (!element) return;
+                        element.scrollIntoView({
+                          behavior: 'smooth',
+                        });
+                      }}
+                    >
+                      <Text as="span" size="14" fontWeight="medium">
+                        <>
+                          <span>{`Buy now • ${formatBTCPrice(
+                            project.btcFloorPrice
+                          )} BTC`}</span>
+                        </>
+                      </Text>
+                    </ButtonIcon>
+                  </>
+                )}
+              {isBitcoinProject &&
+                isAvailable &&
+                isLimitMinted &&
+                !project?.isHidden && (
+                  <ul>
+                    <li>
+                      <OverlayTrigger
+                        placement="bottom"
+                        delay={{ show: 0, hide: 100 }}
+                        overlay={
+                          project?.networkFee ? (
+                            <Tooltip id="btc-fee-tooltip">
+                              <Text
+                                size="14"
+                                fontWeight="semibold"
+                                color="primary-333"
+                              >
+                                Inscription fee:{' '}
+                                {formatBTCPrice(Number(project?.networkFee))}{' '}
+                                BTC
+                              </Text>
+                            </Tooltip>
+                          ) : (
+                            <></>
+                          )
+                        }
+                      >
+                        <ButtonIcon
+                          sizes="large"
+                          className={s.mint_btn}
+                          onClick={() => {
+                            openMintBTCModal &&
+                              openMintBTCModal(PaymentMethod.BTC);
+                          }}
+                        >
+                          <Text as="span" size="14" fontWeight="medium">
+                            {isMinting && 'Minting...'}
+                            {!isMinting && (
+                              <>
+                                <span>{textMint}</span>
+
+                                {Number(project?.mintPrice) ? (
+                                  <span>{priceMemo}</span>
+                                ) : (
+                                  ' with'
+                                )}
+                                {` BTC`}
+                              </>
+                            )}
+                          </Text>
+                        </ButtonIcon>
+                      </OverlayTrigger>
+                    </li>
+                    <li>
+                      <OverlayTrigger
+                        placement="bottom"
+                        delay={{ show: 0, hide: 100 }}
+                        overlay={
+                          project?.networkFeeEth ? (
+                            <Tooltip id="btc-fee-tooltip">
+                              <Text
+                                size="14"
+                                fontWeight="semibold"
+                                color="primary-333"
+                              >
+                                Inscription fee:{' '}
+                                {formatEthPrice(project?.networkFeeEth)} ETH
+                              </Text>
+                            </Tooltip>
+                          ) : (
+                            <></>
+                          )
+                        }
+                      >
+                        <ButtonIcon
+                          sizes="large"
+                          variants="outline"
+                          className={`${s.mint_btn} ${s.mint_btn__eth}`}
+                          onClick={() => {
+                            openMintBTCModal &&
+                              openMintBTCModal(PaymentMethod.ETH);
+                          }}
+                        >
+                          <Text as="span" size="14" fontWeight="medium">
+                            {isMinting && 'Minting...'}
+                            {!isMinting && (
+                              <>
+                                <span>{textMint}</span>
+                                {Number(project?.mintPriceEth) ? (
+                                  <span>{priceEthMemo}</span>
+                                ) : (
+                                  ' with'
+                                )}
+                                {` ETH`}
+                              </>
+                            )}
+                          </Text>
+                        </ButtonIcon>
+                      </OverlayTrigger>
+                    </li>
+                  </ul>
+                )}
             </div>
-          </li>
-          <li>
-            <div
-              className={s.reportBtn}
-              onClick={() => setShowReportModal(true)}
-            >
-              <SvgInset size={14} svgUrl={`${CDN_URL}/icons/ic-flag.svg`} />
-              <Text as="span" size="14" fontWeight="medium">
-                Report
+          )}
+          {isWhitelist &&
+            !!project?.whiteListEthContracts &&
+            project?.whiteListEthContracts.length > 0 && (
+              <>
+                <ButtonIcon
+                  sizes="large"
+                  onClick={onHandlePaymentWithWallet}
+                  className={s.mint_free}
+                >
+                  Mint Satoshi free
+                </ButtonIcon>
+                <div className={s.whiteListWallet}>
+                  <Text size="12" as="span" color="black-60">
+                    If you’re a member of{' '}
+                  </Text>
+                  <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 100, hide: 300 }}
+                    overlay={
+                      <Tooltip id="whitelist-tooltip">
+                        <Text
+                          size="12"
+                          fontWeight="semibold"
+                          color="primary-333"
+                        >
+                          ArtBlocks, CryptoPunks, BAYC, MAYC, Meebits, Proof,
+                          Moonbirds, Moonbirds Oddities, CloneX, gmDAO.
+                        </Text>
+                      </Tooltip>
+                    }
+                  >
+                    <div className="d-inline cursor-pointer">
+                      <Text size="12" as="span" color="purple-c">
+                        these communities
+                      </Text>
+                    </div>
+                  </OverlayTrigger>
+                  <Text size="12" as="span" color="black-60">
+                    {' '}
+                    (ArtBlocks, CryptoPunks, BAYC, etc.), you can claim your
+                    Satoshi for free. Only pay the network inscription fees,
+                    which are 0.033 ETH (~0.0023 BTC). Generative integrates
+                    with{' '}
+                    <Link
+                      href={EXTERNAL_LINK.DELEGATE_CASH}
+                      target="_blank"
+                      className="hover-underline text-purple-c hover-purple-c"
+                    >
+                      delegate.cash
+                    </Link>{' '}
+                    to prove ownership.
+                  </Text>
+                </div>
+              </>
+            )}
+
+          {!isBitcoinProject && (
+            <div className={s.stats}>
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  Outputs
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {project?.mintingInfo?.index}
+                </Heading>
+              </div>
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  Total Volume
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {convertToETH(marketplaceStats?.totalTradingVolumn || '')}
+                </Heading>
+              </div>
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  Floor price
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {convertToETH(marketplaceStats?.floorPrice || '')}
+                </Heading>
+              </div>
+
+              <div className={s.stats_item}>
+                <Text size="12" fontWeight="medium">
+                  royalty
+                </Text>
+                <Heading as="h6" fontWeight="medium">
+                  {(project?.royalty || 0) / 100}%
+                </Heading>
+              </div>
+            </div>
+          )}
+
+          <div className={s.project_info}>
+            <ProjectDescription
+              desc={project?.desc || ''}
+              hasInteraction={hasProjectInteraction}
+              profileBio={project?.creatorProfile?.bio || ''}
+            />
+            <>
+              <Text size="14" color="black-40">
+                Created date: {mintedDate}
+              </Text>
+
+              <Text size="14" color="black-40">
+                Fully on-chain: {isFullonChain ? 'Yes' : 'No'}
+              </Text>
+            </>
+          </div>
+          {!isBitcoinProject && (
+            <div className={s.license}>
+              <Text size="14">License: {project?.license}</Text>
+            </div>
+          )}
+        </div>
+        <div className={s.shares_wrapper}>
+          <ul className={s.shares}>
+            <li>
+              <div>
+                {/* <LinkShare
+               url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+             /> */}
+                <TwitterShareButton
+                  url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                  title={''}
+                  hashtags={[]}
+                >
+                  <ButtonIcon
+                    sizes="small"
+                    variants="outline-small"
+                    className={s.projectBtn}
+                    startIcon={
+                      <SvgInset
+                        size={14}
+                        svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                      />
+                    }
+                  >
+                    Share
+                  </ButtonIcon>
+                </TwitterShareButton>
+              </div>
+            </li>
+            <li>
+              <div
+                className={s.reportBtn}
+                onClick={() => setShowReportModal(true)}
+              >
+                <SvgInset size={14} svgUrl={`${CDN_URL}/icons/ic-flag.svg`} />
+                <Text as="span" size="14" fontWeight="medium">
+                  Report
+                </Text>
+              </div>
+            </li>
+          </ul>
+
+          {showReportMsg && (
+            <div className={s.reportMsg}>
+              <SvgInset
+                size={18}
+                svgUrl={`${CDN_URL}/icons/ic-bell-ringing.svg`}
+              />
+              <Text size={'14'} fontWeight="bold">
+                This collection is currently under review.
               </Text>
             </div>
-          </li>
-        </ul>
-
-        {showReportMsg && (
-          <div className={s.reportMsg}>
-            <SvgInset
-              size={18}
-              svgUrl={`${CDN_URL}/icons/ic-bell-ringing.svg`}
-            />
-            <Text size={'14'} fontWeight="bold">
-              This collection is currently under review.
-            </Text>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     );
   };
