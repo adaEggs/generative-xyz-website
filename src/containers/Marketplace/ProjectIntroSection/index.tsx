@@ -785,7 +785,7 @@ const ProjectIntroSection = ({
       {renderLeftContent()}
       <div />
       {!mobileScreen && (
-        <div>
+        <div className={s.thumbnailBg}>
           <ThumbnailPreview
             data={
               {
