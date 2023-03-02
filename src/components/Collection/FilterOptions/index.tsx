@@ -1,11 +1,11 @@
 import ButtonIcon from '@components/ButtonIcon';
+import Dropdown from '@components/Dropdown';
 import Heading from '@components/Heading';
 import Text from '@components/Text';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { TraitStats } from '@interfaces/project';
 import { useContext, useEffect, useState } from 'react';
 import { Stack } from 'react-bootstrap';
-import Select, { components } from 'react-select';
 import { v4 } from 'uuid';
 import styles from './styles.module.scss';
 
@@ -31,16 +31,14 @@ const FilterOptions = ({ attributes }: Props) => {
   const [sortedAttributes, setSortedAttributes] = useState<TraitStats[] | null>(
     null
   );
-  const [currentTraitOpen, setCurrentTraitOpen] = useState('');
 
   const initialAttributesMap = () => {
     const attrMap = new Map();
 
     attributes?.forEach(attr => {
-      const list: string[] = [];
       filterTraits.split(',').forEach(trait => {
         if (trait.split(':')[0] === attr.traitName) {
-          list.push(trait.split(':')[1]);
+          attrMap.set(attr.traitName, trait.split(':')[1]);
         }
       });
     });
@@ -51,20 +49,11 @@ const FilterOptions = ({ attributes }: Props) => {
     values: { value: string; label: string }[],
     attr: TraitStats
   ) => {
-    setCurrentTraitOpen(attr.traitName);
-    const attrListString: string[] = [];
-    values.forEach(value => {
-      const attrName = value.label.split(':')[0];
-      attrListString.push(attrName);
-    });
-
-    const newQuery = query?.set(attr.traitName, attrListString);
+    const newQuery = query?.set(attr.traitName, values[0].label);
     let str = '';
-    newQuery?.forEach((value: string[], key: string) => {
+    newQuery?.forEach((value: string, key: string) => {
       if (value) {
-        value.forEach(v => {
-          str += `,${key}:${v}`;
-        });
+        str += `,${key}:${value}`;
       }
     });
     setFilterTraits(str.substring(1));
@@ -75,7 +64,6 @@ const FilterOptions = ({ attributes }: Props) => {
   const handleResetAllFilter = () => {
     setFilterTraits('');
     initialAttributesMap();
-    setCurrentTraitOpen('');
   };
 
   // const handleMinPriceChange = (value: string) => {
@@ -179,68 +167,50 @@ const FilterOptions = ({ attributes }: Props) => {
                 sortedAttributes.map(attr => {
                   const _traitStats = [...attr.traitValuesStat];
 
-                  const options: Array<{
-                    value: string;
-                    label: string;
-                  }> = _traitStats
-                    .sort((a, b) => a.rarity - b.rarity)
-                    .map(item => {
-                      return {
-                        value: item.value,
-                        label: `${item.value}:${item.rarity}%`,
+                  const options: Array<{ value: string; label: string }> =
+                    _traitStats
+                      .sort((a, b) => a.rarity - b.rarity)
+                      .map(item => {
+                        return {
+                          value: item.value,
+                          label: item.value,
+                          // (
+                          //   <Stack
+                          //     direction="horizontal"
+                          //     className="justify-between"
+                          //   >
+                          //     <Text size="14" fontWeight="medium">
+                          //       {item.value}
+                          //     </Text>
+                          //     <Text
+                          //       size="12"
+                          //       fontWeight="medium"
+                          //       color="black-40"
+                          //     >
+                          //       {item.rarity}%
+                          //     </Text>
+                          //   </Stack>
+                          // ),
+                        };
+                      });
 
-                        // (
-                        //   <Stack
-                        //     direction="horizontal"
-                        //     className="justify-between"
-                        //   >
-                        //     <Text size="14" fontWeight="medium">
-                        //       {item.value}
-                        //     </Text>
-                        //     <Text
-                        //       size="12"
-                        //       fontWeight="medium"
-                        //       color="black-40"
-                        //     >
-                        //       {item.rarity}%
-                        //     </Text>
-                        //   </Stack>
-                        // ),
-                      };
-                    });
-
-                  // const defaultValue = options.filter(
-                  //   option => option.value === query?.get(attr.traitName)
-                  // );
-                  const defaultValue = options.filter(option => {
-                    if (query?.get(attr.traitName)?.includes(option.value)) {
-                      return option.value;
-                    }
-                  });
+                  const defaultValue = options.filter(
+                    option => option.value === query?.get(attr.traitName)
+                  );
 
                   return (
-                    <Select
-                      defaultMenuIsOpen={currentTraitOpen === attr.traitName}
-                      id={`attributes-${v4()}`}
-                      key={`attributes-${v4()}`}
-                      isMulti
-                      name={`attributes-${v4()}`}
+                    <Dropdown
+                      values={defaultValue}
                       options={options}
-                      className={styles.selectInput}
-                      components={{
-                        Option,
-                      }}
-                      defaultValue={defaultValue}
-                      classNamePrefix="select"
-                      closeMenuOnSelect={false}
-                      hideSelectedOptions={false}
-                      controlShouldRenderValue={false}
-                      isClearable={false}
+                      multi={false}
                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      onChange={(ops: any) => {
-                        handleSelectFilter(ops, attr);
-                      }}
+                      onChange={(values: any) =>
+                        handleSelectFilter(values, attr)
+                      }
                       placeholder={attr.traitName}
+                      className={styles.filter_dropdown}
+                      key={`trait-${v4()}`}
+                      addPlaceholder={`${attr.traitName}: `}
                     />
                   );
                 })}
@@ -258,32 +228,6 @@ const FilterOptions = ({ attributes }: Props) => {
           <Text fontWeight="medium">Cancel</Text>
         </ButtonIcon>
       </div>
-    </div>
-  );
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Option = (props: any) => {
-  const attrName = props.label.split(':')[0];
-  const rarity = props.label.split(':')[1];
-
-  return (
-    <div>
-      <components.Option {...props}>
-        <Stack direction="horizontal" className="justify-between">
-          <label>{attrName}</label>
-          <Stack direction="horizontal" gap={2}>
-            <Text size="12" as="span" color="black-40">
-              {rarity}
-            </Text>
-            <input
-              type="checkbox"
-              checked={props.isSelected}
-              onChange={() => null}
-            />{' '}
-          </Stack>
-        </Stack>
-      </components.Option>
     </div>
   );
 };
