@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import s from './ProjectCard.module.scss';
 import Heading from '@components/Heading';
@@ -17,6 +17,8 @@ import {
 } from '@utils/format';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
+import { CDN_URL } from '@constants/config';
+import SvgInset from '@components/SvgInset';
 
 interface IPros {
   project: Project;
@@ -58,6 +60,13 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
       project.maxSupply || project.limit
     } minted`;
   }, [project]);
+
+  const mintedOut = useMemo(() => {
+    if (project) {
+      return project?.maxSupply === project?.mintingInfo.index;
+    }
+    return false;
+  }, [project?.maxSupply, project?.mintingInfo.index]);
 
   return (
     <Link
@@ -117,31 +126,40 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 </Heading>
               </div>
               <div className={s.projectCard_info_price}>
-                <div className={`${s.projectCard_info_price_price}`}>
-                  <Text
-                    className={s.projectCard_info_price_price_wrap}
-                    size={'16'}
-                    fontWeight="medium"
-                    color="black-40-solid"
-                  >
-                    <span className={s.projectCard_info_price_price_el}>
-                      {project.btcFloorPrice
-                        ? `${formatBTCPrice(project.btcFloorPrice)} BTC`
-                        : !isMinted
-                        ? Number(project.mintPrice)
-                          ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
-                          : 'Free'
-                        : ''}
-                    </span>
-                    <span
-                      className={`${s.projectCard_info_price_price_minted} ${
-                        isOnlyMintedShow ? s.isOnlyMintedShow : ''
-                      }`}
+                {mintedOut ? (
+                  <div className={s.projectCard_info_mintoutContainer}>
+                    <SvgInset svgUrl={`${CDN_URL}/icons/ic_mintedout.svg`} />
+                    <Text className={s.projectCard_info_mintoutContainer_text}>
+                      Minted out
+                    </Text>
+                  </div>
+                ) : (
+                  <div className={`${s.projectCard_info_price_price}`}>
+                    <Text
+                      className={s.projectCard_info_price_price_wrap}
+                      size={'16'}
+                      fontWeight="medium"
+                      color="black-40-solid"
                     >
-                      {minted}
-                    </span>
-                  </Text>
-                </div>
+                      <span className={s.projectCard_info_price_price_el}>
+                        {project.btcFloorPrice
+                          ? `${formatBTCPrice(project.btcFloorPrice)} BTC`
+                          : !isMinted
+                          ? Number(project.mintPrice)
+                            ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
+                            : 'Free'
+                          : ''}
+                      </span>
+                      <span
+                        className={`${s.projectCard_info_price_price_minted} ${
+                          isOnlyMintedShow ? s.isOnlyMintedShow : ''
+                        }`}
+                      >
+                        {minted}
+                      </span>
+                    </Text>
+                  </div>
+                )}
               </div>
             </div>
           )}
