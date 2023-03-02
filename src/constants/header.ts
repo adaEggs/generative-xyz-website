@@ -51,6 +51,12 @@ export const MENU_HEADER = [
     route: ROUTE_PATH.FREE,
     activePath: 'free',
   },
+  {
+    id: 'menu-9',
+    name: 'Airdrop',
+    route: ROUTE_PATH.AIRDROP,
+    activePath: 'airdrop',
+  },
 ];
 
 export const RIGHT_MENU = [

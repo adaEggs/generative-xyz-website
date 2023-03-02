@@ -381,3 +381,12 @@
 @function vhOnMobile($px, $base: 1080px) {
   @return calc(var(--vh) * #{vhMathDiv($px, $base)});
 }
+
+@mixin hideScrollbar {
+  &::-webkit-scrollbar {
+    width: 0 !important;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -4,6 +4,8 @@ import {
   IGenerateReceiverAddressResponse,
   IGetInscriptionListByUserParams,
   IGetInscriptionListByUserResponse,
+  IGetNFTListFromMoralisParams,
+  IGetNFTListFromMoralisResponse,
 } from '@interfaces/api/inscribe';
 import { post, get } from '@services/http-client';
 import log from '@utils/logger';
@@ -40,5 +42,20 @@ export const getInscriptionListByUser = async (
   } catch (err: unknown) {
     log('failed to get inscription list by user', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get inscription list by user');
+  }
+};
+
+export const getNFTListFromMoralis = async (
+  params: IGetNFTListFromMoralisParams
+): Promise<IGetNFTListFromMoralisResponse> => {
+  try {
+    const qs = '?' + querystring.stringify(params);
+    const res = await get<IGetNFTListFromMoralisResponse>(
+      `${API_PATH}/list-nft-from-moralis${qs}`
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get nft list from moralist', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get nft list from moralist');
   }
 };
