@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ButtonIcon, { ButtonSizesType } from '@components/ButtonIcon';
 import ModalBuyListed from '@components/Transactor/ButtonBuyListed/Modal';
 import cs from 'classnames';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { formatBTCPrice } from '@utils/format';
+import { WalletContext } from '@contexts/wallet-context';
 
 interface IProps {
   title?: string;
@@ -18,8 +19,18 @@ const ButtonBuyListed = React.memo(
   ({ title, className, sizes = 'xsmall', inscriptionID, price }: IProps) => {
     const [isShow, setShow] = React.useState(false);
     const user = useSelector(getUserSelector);
+    const walletCtx = useContext(WalletContext);
 
-    const toggleModal = () => setShow(value => !value);
+    const openModal = async () => {
+      if (!user || !user.walletAddressBtcTaproot) {
+        await walletCtx.connect();
+      }
+      setShow(true);
+    };
+
+    const hideModal = () => {
+      setShow(false);
+    };
 
     const label = React.useMemo(() => {
       if (title) return title;
@@ -31,7 +42,7 @@ const ButtonBuyListed = React.memo(
         <ButtonIcon
           sizes={sizes}
           className={cs(`${className}`)}
-          onClick={toggleModal}
+          onClick={openModal}
         >
           {label}
         </ButtonIcon>
@@ -41,7 +52,7 @@ const ButtonBuyListed = React.memo(
             title="Payment"
             isShow={isShow}
             price={price}
-            onHide={toggleModal}
+            onHide={hideModal}
           />
         )}
       </>
