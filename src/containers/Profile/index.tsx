@@ -72,7 +72,7 @@ const Profile: React.FC = (): React.ReactElement => {
                       eventKey="balanceTab"
                       title={
                         isLoadingUTXOs
-                          ? 'loading...'
+                          ? 'Loading...'
                           : `${formatBTCPrice(satoshiAmount.toString())} BTC`
                       }
                     >
