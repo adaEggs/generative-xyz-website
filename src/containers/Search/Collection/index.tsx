@@ -56,9 +56,8 @@ const Collection = ({ className }: CollectionProps): JSX.Element => {
     keyword,
     type: OBJECT_TYPE.PROJECT,
   };
-  const { data } = useSWR(
-    getApiKey(getSearchByKeyword, filterParams),
-    getSearchByKeyword
+  const { data } = useSWR(getApiKey(getSearchByKeyword, filterParams), () =>
+    getSearchByKeyword(filterParams)
   );
   const collections = data?.result || [];
 

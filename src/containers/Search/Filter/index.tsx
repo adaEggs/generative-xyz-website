@@ -27,7 +27,7 @@ const Filter = ({ className }: FilterProps): JSX.Element => {
   };
   const { data: searchResults } = useSWR(
     getApiKey(getSearchByKeyword, filterParams),
-    getSearchByKeyword
+    () => getSearchByKeyword(filterParams)
   );
 
   const onRemoveKeyword = () => {

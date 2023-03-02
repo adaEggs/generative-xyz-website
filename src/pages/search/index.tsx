@@ -5,7 +5,7 @@ import SearchWrapper from '@containers/Search';
 import { PAYLOAD_DEFAULT, OBJECT_TYPE } from '@containers/Search/constant';
 import MarketplaceLayout from '@layouts/Marketplace';
 import { SEO_DESCRIPTION, SEO_IMAGE } from '@constants/seo-default-info';
-import { getSearchByKeyword, getApiKey } from '@services/search';
+import { getSearchByKeyword, getApiKey, swrFetcher } from '@services/search';
 
 interface SearchPageProps {
   fallback?: Record<string, string>;
@@ -18,7 +18,7 @@ const SearchPage: NextPage = ({ fallback }: SearchPageProps) => {
         value={{
           revalidateOnFocus: false,
           revalidateIfStale: false,
-          fetcher: getSearchByKeyword,
+          fetcher: swrFetcher,
           fallback: fallback || {},
         }}
       >
