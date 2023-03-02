@@ -18,11 +18,12 @@ import log from '@utils/logger';
 import cs from 'classnames';
 import copy from 'copy-to-clipboard';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import ArtistCollectionEarn from './ArtistCollectionEarn';
 import s from './Referral.module.scss';
+import WithdrawModal from './WithdrawModal';
 
 const LOG_PREFIX = 'ReferralTab';
 
@@ -31,7 +32,7 @@ const ReferralTab = () => {
   const router = useRouter();
   const { referralListing, currency, setCurrency } = useContext(ProfileContext);
 
-  // const [isETHCurrency, setIsETHCurrency] = useState(false);
+  const [showWithdrawSucessModal, setShowWithdrawSucessModal] = useState(false);
 
   const TABLE_REFERRALS_HEADING = [
     'Referee',
@@ -69,6 +70,7 @@ const ReferralTab = () => {
 
     try {
       await withdrawRewardEarned(payload);
+      setShowWithdrawSucessModal(true);
     } catch (err: unknown) {
       log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
       throw Error();
@@ -202,7 +204,11 @@ const ReferralTab = () => {
           </ButtonIcon>
         </div>
       )} */}
-      <ArtistCollectionEarn />
+      <ArtistCollectionEarn setShowModal={setShowWithdrawSucessModal} />
+      <WithdrawModal
+        isShow={showWithdrawSucessModal}
+        onHideModal={() => setShowWithdrawSucessModal(false)}
+      />
     </div>
   );
 };
