@@ -1,21 +1,20 @@
+import useBitcoin from '@bitcoin/useBitcoin';
 import { Loading } from '@components/Loading';
 import ClientOnly from '@components/Utils/ClientOnly';
+import BalanceTab from '@containers/Profile/BalanceTab';
+import HistoryModal from '@containers/Profile/Collected/Modal/History';
 import { CreatedTab } from '@containers/Profile/Created';
 import { UserInfo } from '@containers/Profile/UserInfo';
 import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import { formatBTCPrice } from '@utils/format';
 import React, { useContext } from 'react';
 import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import { Collected } from './Collected';
-import s from './Profile.module.scss';
-import HistoryModal from '@containers/Profile/Collected/Modal/History';
-import { isProduction } from '@utils/common';
-import ReferralTab from './Referral';
-import { useAppSelector } from '@redux';
-import { getUserSelector } from '@redux/user/selector';
-import useBitcoin from '@bitcoin/useBitcoin';
-import { formatBTCPrice } from '@utils/format';
-import BalanceTab from '@containers/Profile/BalanceTab';
 import FreeInscriptions from './Free';
+import s from './Profile.module.scss';
+import ReferralTab from './Referral';
 
 const Profile: React.FC = (): React.ReactElement => {
   const user = useAppSelector(getUserSelector);
@@ -58,7 +57,7 @@ const Profile: React.FC = (): React.ReactElement => {
                     <CreatedTab />
                   </Tab>
                   {/* Wait for design to implement. Do not remove */}
-                  {!isProduction() && isOwner && (
+                  {isOwner && (
                     <Tab
                       tabClassName={s.tab}
                       eventKey="referralTab"

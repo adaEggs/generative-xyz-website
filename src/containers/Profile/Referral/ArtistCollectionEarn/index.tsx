@@ -195,6 +195,10 @@ const ArtistCollectionEarn = () => {
     }
   }, [totalVolumeList]);
 
+  if (!profileProjects?.result || profileProjects?.result.length === 0) {
+    return null;
+  }
+
   return (
     <div className={s.wrapper}>
       <Heading as="h4" fontWeight="semibold">
