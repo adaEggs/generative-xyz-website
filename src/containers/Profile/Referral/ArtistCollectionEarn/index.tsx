@@ -2,11 +2,15 @@ import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import Table, { TColumn } from '@components/Table';
 import Text from '@components/Text';
+import ToogleSwitch from '@components/Toggle';
+import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { CurrencyType } from '@enums/currency';
 import { LogLevel } from '@enums/log-level';
+import { ProjectVolume } from '@interfaces/project';
 import { withdrawRewardEarned } from '@services/profile';
+import { getProjectVolume } from '@services/project';
 import { formatBTCPrice, formatEthPrice } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
@@ -14,41 +18,42 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { Stack } from 'react-bootstrap';
-import s from './ArtistCollectionEarn.module.scss';
-import { getProjectVolume } from '@services/project';
-import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import useAsyncEffect from 'use-async-effect';
-import { ProjectVolume } from '@interfaces/project';
+import s from './ArtistCollectionEarn.module.scss';
 
 const LOG_PREFIX = 'ArtistCollectionEarn';
 
 const ArtistCollectionEarn = () => {
   const router = useRouter();
-  const { profileProjects, currency } = useContext(ProfileContext);
+  const { profileProjects } = useContext(ProfileContext);
+
+  const [currencyRecord, setCurrencyRecord] = useState<CurrencyType>(
+    CurrencyType.BTC
+  );
+
   const TABLE_ARTISTS_HEADING = [
     'Collection',
     'Outputs',
     'Mint price',
     'Total volume',
-    '',
-    // <>
-    //   <Stack direction="horizontal" gap={2} className={s.switch_currency}>
-    //     <ToogleSwitch
-    //       size="16"
-    //       checked={currency === CurrencyType.ETH}
-    //       onChange={() => {
-    //         if (currency === CurrencyType.ETH) {
-    //           setCurrency(CurrencyType.BTC);
-    //         } else {
-    //           setCurrency(CurrencyType.ETH);
-    //         }
-    //       }}
-    //     />
-    //     <Text fontWeight="medium" color="primary-color">
-    //       ETH
-    //     </Text>
-    //   </Stack>
-    // </>,
+    <>
+      <Stack direction="horizontal" gap={2} className={s.switch_currency}>
+        <ToogleSwitch
+          size="16"
+          checked={currencyRecord === CurrencyType.ETH}
+          onChange={() => {
+            if (currencyRecord === CurrencyType.ETH) {
+              setCurrencyRecord(CurrencyType.BTC);
+            } else {
+              setCurrencyRecord(CurrencyType.ETH);
+            }
+          }}
+        />
+        <Text fontWeight="medium" color="primary-color">
+          ETH
+        </Text>
+      </Stack>
+    </>,
   ];
   const [totalVolumeList, setTotalVolumeList] = useState<ProjectVolume[]>();
   const [tableData, setTableData] = useState<TColumn[]>();
@@ -57,7 +62,7 @@ const ArtistCollectionEarn = () => {
     try {
       const response = await getProjectVolume(
         { contractAddress: GENERATIVE_PROJECT_CONTRACT, projectID },
-        { payType: currency.toLowerCase() }
+        { payType: currencyRecord.toLowerCase() }
       );
       return response;
     } catch (err: unknown) {
@@ -69,7 +74,7 @@ const ArtistCollectionEarn = () => {
   const handleWithdraw = async (amount: string, projectID: string) => {
     const payload = {
       amount: amount,
-      paymentType: currency.toLowerCase(),
+      paymentType: currencyRecord.toLowerCase(),
       id: projectID,
       type: 'project',
     };
@@ -93,6 +98,16 @@ const ArtistCollectionEarn = () => {
     const totalVolume = totalVolumeList?.find(
       project => project.projectID === item.tokenID
     )?.amount;
+
+    const mintPriceEth =
+      !item.mintPriceEth || item.mintPriceEth === '0'
+        ? '-'
+        : `${formatEthPrice(item.mintPriceEth)} ETH`;
+
+    const mintPriceBtc =
+      !item.mintPrice || item.mintPrice === '0'
+        ? '-'
+        : `${formatBTCPrice(item.mintPrice)} BTC`;
 
     return {
       id: `${item.id}-record`,
@@ -120,14 +135,14 @@ const ArtistCollectionEarn = () => {
         ),
         mintPrice: (
           <>
-            {currency === CurrencyType.ETH
-              ? `${formatEthPrice(item.mintPriceEth)} ETH`
-              : `${formatBTCPrice(item.mintPrice)} BTC`}
+            {currencyRecord === CurrencyType.ETH ? mintPriceEth : mintPriceBtc}
           </>
         ),
         volume: (
           <>
-            {currency === CurrencyType.ETH
+            {totalVolume === '0' || !totalVolume
+              ? '-'
+              : currencyRecord === CurrencyType.ETH
               ? `${formatEthPrice(totalVolume || '')} ETH`
               : `${formatBTCPrice(totalVolume || '')} BTC`}
           </>
@@ -136,7 +151,7 @@ const ArtistCollectionEarn = () => {
         //   <>
         //     {totalVolume === '0'
         //       ? '--'
-        //       : ` ${calculateWithdrawAmount} ${currency}`}
+        //       : ` ${calculateWithdrawAmount} ${currencyRecord}`}
         //   </>
         // ),
         action: (
@@ -172,13 +187,17 @@ const ArtistCollectionEarn = () => {
         }
       });
     }
-  }, [profileProjects?.result, currency]);
+  }, [profileProjects?.result, currencyRecord]);
 
   useEffect(() => {
     if (totalVolumeList && totalVolumeList.length > 0) {
       setTableData(recordsData);
     }
   }, [totalVolumeList]);
+
+  if (!profileProjects?.result || profileProjects?.result.length === 0) {
+    return null;
+  }
 
   return (
     <div className={s.wrapper}>

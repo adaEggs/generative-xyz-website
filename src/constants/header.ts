@@ -47,7 +47,7 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-8',
-    name: 'Free',
+    name: 'Free tools',
     route: ROUTE_PATH.FREE,
     activePath: 'free',
   },

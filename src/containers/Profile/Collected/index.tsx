@@ -9,12 +9,8 @@ import s from './Collected.module.scss';
 import { CollectedList } from './List';
 
 export const Collected = (): JSX.Element => {
-  const {
-    isLoadingProfileCollected,
-    collectedNFTs,
-    debounceFetchDataCollectedNFTs,
-    isLoadedProfileCollected,
-  } = useContext(ProfileContext);
+  const { isLoadingProfileCollected, collectedNFTs, isLoadedProfileCollected } =
+    useContext(ProfileContext);
 
   return (
     <div className={s.recentWorks}>
@@ -25,7 +21,9 @@ export const Collected = (): JSX.Element => {
           ) : (
             <InfiniteScroll
               dataLength={collectedNFTs.length}
-              next={debounceFetchDataCollectedNFTs}
+              next={() => {
+                //TODO
+              }}
               className={s.recentWorks_projects_list}
               hasMore={true}
               loader={
