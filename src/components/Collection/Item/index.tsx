@@ -72,7 +72,7 @@ const CollectionItem = ({
         <ButtonBuyListed
           inscriptionID={tokenID}
           price={data.priceBTC}
-          inscriptionNumber={data.inscriptionIndex}
+          inscriptionNumber={Number(data.inscriptionIndex || 0)}
           orderID={data.orderID}
         />
       </Link>

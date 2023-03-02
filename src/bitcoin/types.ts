@@ -9,3 +9,11 @@ export interface ISendBTCProps {
   feeRate: number;
   amount: number;
 }
+
+export interface IBuyInsProps {
+  feeRate: number;
+  price: number;
+  receiverInscriptionAddress: string;
+  sellerSignedPsbtB64: string;
+  inscriptionNumber: number;
+}

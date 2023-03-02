@@ -214,7 +214,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           className={s.buy_btc_button}
           inscriptionID={tokenData?.tokenID}
           price={tokenData?.priceBTC}
-          inscriptionNumber={tokenData.inscriptionIndex}
+          inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
           sizes="medium"
           orderID={tokenData.orderID}
         />

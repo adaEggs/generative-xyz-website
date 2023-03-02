@@ -9,6 +9,8 @@ import {
   HistoryStatusType,
   HistoryStatusColor,
   IListingPayload,
+  IRetrieveOrderPayload,
+  IRetrieveOrderResp,
 } from '@interfaces/api/bitcoin';
 import axios from 'axios';
 import { getPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
@@ -116,7 +118,21 @@ export const submitListForSale = async (
   try {
     return post<IListingPayload, never>(`/dex/listing`, payload);
   } catch (err: unknown) {
-    log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
+    log('failed to post submit list for sale', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
+};
+
+export const retrieveOrder = async (
+  payload: IRetrieveOrderPayload
+): Promise<IRetrieveOrderResp> => {
+  try {
+    const res = await get<IRetrieveOrderResp>(
+      `/dex/retrieve-order?order_id=${payload?.orderID}`
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get retrieve order', LogLevel.ERROR, LOG_PREFIX);
     throw err;
   }
 };

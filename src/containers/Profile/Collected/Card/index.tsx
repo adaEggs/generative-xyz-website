@@ -221,7 +221,10 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                     // TODO
                   }}
                 >
-                  <ButtonListForSale inscriptionID={project.inscriptionID} />
+                  <ButtonListForSale
+                    inscriptionID={project.inscriptionID}
+                    inscriptionNumber={Number(project.inscriptionNumber)}
+                  />
                 </Link>
               )}
               {showSendButton && (

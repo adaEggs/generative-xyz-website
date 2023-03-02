@@ -9,6 +9,13 @@ import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
 import AccordionComponent from '@components/Accordion';
 import { formatBTCPrice } from '@utils/format';
+import { retrieveOrder, submitListForSale } from '@services/bitcoin';
+import { IRetrieveOrderResp } from '@interfaces/api/bitcoin';
+import { LoaderIcon, toast } from 'react-hot-toast';
+import { Loading } from '@components/Loading';
+import { useBitcoin } from '@bitcoin/index';
+import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
+import { getError } from '@utils/text';
 
 interface IFormValues {
   price: string;
@@ -19,131 +26,183 @@ interface IProps extends IBaseModalProps {
   inscriptionID: string;
   price: number | string;
   orderID: string;
+  inscriptionNumber: number;
 }
 
-const ModalBuyListed = React.memo(({ price, ...rest }: IProps) => {
-  const user = useSelector(getUserSelector);
-  const [step, _] = useState<'buy' | 'success'>('buy');
-  const [isLoading, setLoading] = useState<boolean>(false);
+const ModalBuyListed = React.memo(
+  ({ price, orderID, inscriptionID, inscriptionNumber, ...rest }: IProps) => {
+    const user = useSelector(getUserSelector);
+    const [step, _] = useState<'buy' | 'success'>('buy');
+    const [orderData, setOrderData] = useState<IRetrieveOrderResp | undefined>(
+      undefined
+    );
+    const { selectedRate, allRate } = useFeeRate();
+    const [isLoading, setLoading] = useState<boolean>(false);
+    const { buyInscription } = useBitcoin({ inscriptionID });
+    const [error, setError] = useState('');
 
-  const validateForm = (values: IFormValues) => {
-    const errors: Record<string, string> = {};
+    const onSetError = (err: unknown) => {
+      const _err = getError(err);
+      setError(_err.message);
+      toast.error(_err.message);
+    };
 
-    if (!values.price || !new BigNumber(values.price || 0)) {
-      errors.price = 'Required.';
-    }
+    const validateForm = (values: IFormValues) => {
+      const errors: Record<string, string> = {};
 
-    if (!values.receiveBTCAddress) {
-      errors.receiveBTCAddress = 'Address is required.';
-    } else if (!validateBTCAddressTaproot(values.receiveBTCAddress)) {
-      errors.receiveAddress = 'Invalid wallet address.';
-    }
-    return errors;
-  };
+      if (!values.price || !new BigNumber(values.price || 0)) {
+        errors.price = 'Required.';
+      }
 
-  const handleSubmit = async (_: IFormValues) => {
-    try {
-      setLoading(true);
-      return;
-    } catch (err: unknown) {
-      // TODO
-    }
-  };
+      if (!values.receiveBTCAddress) {
+        errors.receiveBTCAddress = 'Address is required.';
+      } else if (!validateBTCAddressTaproot(values.receiveBTCAddress)) {
+        errors.receiveAddress = 'Invalid wallet address.';
+      }
+      return errors;
+    };
 
-  return (
-    <BaseModal {...rest}>
-      <div className={s.container}>
-        <Formik
-          key="mintBTCGenerativeForm"
-          initialValues={{
-            price: '',
-            receiveBTCAddress: user?.walletAddressBtcTaproot || '',
-          }}
-          validate={validateForm}
-          onSubmit={handleSubmit}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            handleChange,
-            handleBlur,
-            handleSubmit,
-          }) => (
-            <form onSubmit={handleSubmit}>
-              {step === 'buy' && (
-                <>
-                  <div className={s.wrapItem}>
-                    <label className={s.wrapItem_label} htmlFor="price">
-                      Price
-                    </label>
-                    <div className={s.inputContainer}>
-                      <input
-                        id="price"
-                        type="number"
-                        name="price"
-                        min="0"
-                        disabled={true}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={formatBTCPrice(price)}
-                        className={s.inputContainer_input}
-                        placeholder="0.00"
-                      />
-                      <div className={s.inputContainer_inputPostfix}>BTC</div>
+    const handleSubmit = async (values: IFormValues) => {
+      if (!orderData) return;
+      try {
+        await buyInscription({
+          feeRate: allRate[selectedRate],
+          inscriptionNumber: inscriptionNumber,
+          price: Number(price),
+          receiverInscriptionAddress: values.receiveBTCAddress,
+          sellerSignedPsbtB64: orderData.raw_psbt,
+        });
+        await submitListForSale({
+          inscription_id: inscriptionID,
+          raw_psbt: orderData.raw_psbt,
+        });
+        setLoading(true);
+        setError('');
+      } catch (err: unknown) {
+        setLoading(true);
+        onSetError(err);
+      }
+    };
+
+    const fetchRetrieve = async () => {
+      try {
+        if (!rest.isShow) return setOrderData(undefined);
+        const order = await retrieveOrder({ orderID });
+        setOrderData(order);
+      } catch (err) {
+        onSetError(err);
+      }
+    };
+
+    React.useEffect(() => {
+      fetchRetrieve().then().catch();
+    }, [rest.isShow]);
+
+    return (
+      <BaseModal {...rest}>
+        <div className={s.container}>
+          <Formik
+            key="buyListedForm"
+            initialValues={{
+              price: '',
+              receiveBTCAddress: user?.walletAddressBtcTaproot || '',
+            }}
+            validate={validateForm}
+            onSubmit={handleSubmit}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                {step === 'buy' && (
+                  <>
+                    <div className={s.wrapItem}>
+                      <label className={s.wrapItem_label} htmlFor="price">
+                        Price
+                      </label>
+                      <div className={s.inputContainer}>
+                        <input
+                          id="price"
+                          type="number"
+                          name="price"
+                          min="0"
+                          disabled={true}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={formatBTCPrice(price)}
+                          className={s.inputContainer_input}
+                          placeholder="0.00"
+                        />
+                        <div className={s.inputContainer_inputPostfix}>BTC</div>
+                      </div>
+                      {!!error && (
+                        <p className={s.inputContainer_inputError}>{error}</p>
+                      )}
                     </div>
-                  </div>
-                  <AccordionComponent
-                    header="Advanced"
-                    content={
-                      <div className={s.advancedContent}>
-                        <div className={s.wrapItem}>
-                          <label
-                            className={s.wrapItem_label}
-                            htmlFor="receiveAddress"
-                          >
-                            Enter your Ordinals-compatible BTC address to
-                            receive payment
-                          </label>
-                          <div className={s.inputContainer}>
-                            <input
-                              id="receiveBTCAddress"
-                              type="address"
-                              name="receiveBTCAddress"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              value={values.receiveBTCAddress}
-                              className={s.inputContainer_input}
-                              placeholder="Paste your Ordinals-compatible BTC address here"
-                            />
-                            {errors.receiveBTCAddress &&
-                              touched.receiveBTCAddress && (
-                                <p className={s.inputContainer_inputError}>
-                                  {errors.receiveBTCAddress}
-                                </p>
-                              )}
+                    <AccordionComponent
+                      header="Advanced"
+                      content={
+                        <div className={s.advancedContent}>
+                          <div className={s.wrapItem}>
+                            <label
+                              className={s.wrapItem_label}
+                              htmlFor="receiveBTCAddress"
+                            >
+                              Enter your Ordinals-compatible BTC address to
+                              receive payment
+                            </label>
+                            <div className={s.inputContainer}>
+                              <input
+                                id="receiveBTCAddress"
+                                type="address"
+                                name="receiveBTCAddress"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.receiveBTCAddress}
+                                className={s.inputContainer_input}
+                                placeholder="Paste your Ordinals-compatible BTC address here"
+                                disabled={isLoading}
+                              />
+                              {errors.receiveBTCAddress &&
+                                touched.receiveBTCAddress && (
+                                  <p className={s.inputContainer_inputError}>
+                                    {errors.receiveBTCAddress}
+                                  </p>
+                                )}
+                            </div>
                           </div>
                         </div>
+                      }
+                    />
+                    {isLoading && (
+                      <div className={s.wrapLoader}>
+                        <Loading isLoaded={isLoading} />
                       </div>
-                    }
-                  />
-                  <ButtonIcon
-                    className={s.btnSend}
-                    disabled={isLoading}
-                    sizes="medium"
-                    type="submit"
-                  >
-                    Buy now
-                  </ButtonIcon>
-                </>
-              )}
-            </form>
-          )}
-        </Formik>
-      </div>
-    </BaseModal>
-  );
-});
+                    )}
+                    <ButtonIcon
+                      className={s.btnSend}
+                      disabled={isLoading}
+                      sizes="medium"
+                      type="submit"
+                      startIcon={isLoading ? <LoaderIcon /> : null}
+                    >
+                      Buy now
+                    </ButtonIcon>
+                  </>
+                )}
+              </form>
+            )}
+          </Formik>
+        </div>
+      </BaseModal>
+    );
+  }
+);
 
 ModalBuyListed.displayName = 'ModalBuyListed';
 

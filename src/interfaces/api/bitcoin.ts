@@ -69,3 +69,11 @@ export interface IListingPayload {
   raw_psbt: string; // base64
   inscription_id: string;
 }
+
+export interface IRetrieveOrderPayload {
+  orderID: string;
+}
+
+export interface IRetrieveOrderResp {
+  raw_psbt: string;
+}

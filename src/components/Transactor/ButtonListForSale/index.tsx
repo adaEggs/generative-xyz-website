@@ -11,6 +11,7 @@ interface IProps {
   title?: string;
   sizes?: ButtonSizesType;
   inscriptionID: string;
+  inscriptionNumber: number;
 }
 
 const ButtonListForSale = React.memo(

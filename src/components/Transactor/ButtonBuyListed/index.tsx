@@ -13,7 +13,7 @@ interface IProps {
   sizes?: ButtonSizesType;
   inscriptionID: string;
   price: number | string;
-  inscriptionNumber?: number | string;
+  inscriptionNumber: number;
   orderID: string;
 }
 
@@ -30,6 +30,7 @@ const ButtonBuyListed = React.memo(
     const [isShow, setShow] = React.useState(false);
     const user = useSelector(getUserSelector);
     const walletCtx = useContext(WalletContext);
+    const taprootAddress = user?.walletAddressBtcTaproot;
 
     const openModal = async () => {
       if (!user || !user.walletAddressBtcTaproot) {
@@ -56,8 +57,9 @@ const ButtonBuyListed = React.memo(
         >
           {label}
         </ButtonIcon>
-        {!!user?.walletAddressBtcTaproot && (
+        {!!taprootAddress && (
           <ModalBuyListed
+            inscriptionNumber={inscriptionNumber}
             orderID={orderID}
             inscriptionID={inscriptionID}
             title={`Payment ${

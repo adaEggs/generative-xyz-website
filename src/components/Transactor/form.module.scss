@@ -105,6 +105,11 @@
     align-items: center;
   }
 
+  .wrapLoader {
+    position: relative;
+    height: 80px;
+  }
+
   .advancedContent {
     margin-top: rem(12px);
   }

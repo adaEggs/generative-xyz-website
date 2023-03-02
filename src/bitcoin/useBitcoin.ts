@@ -6,7 +6,7 @@ import { useContext, useState, useEffect } from 'react';
 import { ProfileContext } from '@contexts/profile-context';
 import { broadcastTx, trackTx } from '@services/bitcoin';
 import { ICollectedUTXOResp, TrackTxType } from '@interfaces/api/bitcoin';
-import { ISendBTCProps, ISendInsProps } from '@bitcoin/types';
+import { IBuyInsProps, ISendBTCProps, ISendInsProps } from '@bitcoin/types';
 import { debounce } from 'lodash';
 import { setPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
 
@@ -42,8 +42,6 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       0,
       feeRate
     );
-    // broadcast tx
-    await broadcastTx(txHex);
     await trackTx({
       txhash: txID,
       address: taprootAddress,
@@ -53,6 +51,8 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       send_amount: 0,
       type: TrackTxType.inscription,
     });
+    // broadcast tx
+    await broadcastTx(txHex);
   };
 
   const sendBitcoin = async ({
@@ -75,8 +75,6 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       amount,
       feeRate
     );
-    // broadcast tx
-    await broadcastTx(txHex);
     await trackTx({
       txhash: txID,
       address: taprootAddress,
@@ -86,9 +84,52 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       send_amount: amount,
       type: TrackTxType.normal,
     });
+    // broadcast tx
+    await broadcastTx(txHex);
     setPendingUTXOs(selectedUTXOs);
   };
 
+  // TODO remove valueInscription
+  const buyInscription = async ({
+    feeRate,
+    price,
+    sellerSignedPsbtB64,
+    receiverInscriptionAddress,
+    inscriptionNumber,
+  }: IBuyInsProps) => {
+    if (!inscriptionID) return;
+    const evmAddress = user?.walletAddress;
+    const taprootAddress = user?.walletAddressBtcTaproot;
+
+    if (!evmAddress || !inscriptionID || !collectedUTXOs || !taprootAddress)
+      return;
+    const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
+    const privateKey = taprootChild.privateKey;
+    if (!privateKey) throw 'Sign error';
+    const { txID, txHex } = await GENERATIVE_SDK.reqBuyInscription({
+      buyerPrivateKey: privateKey,
+      feeRatePerByte: feeRate,
+      inscriptions: collectedUTXOs.inscriptions_by_outputs,
+      price: price,
+      receiverInscriptionAddress: receiverInscriptionAddress,
+      sellerSignedPsbtB64: sellerSignedPsbtB64,
+      utxos: collectedUTXOs.txrefs,
+      valueInscription: 0, // TODO remove
+    });
+    await trackTx({
+      txhash: txID,
+      address: taprootAddress,
+      receiver: receiverInscriptionAddress,
+      inscription_id: inscriptionID,
+      inscription_number: inscriptionNumber,
+      send_amount: price,
+      type: TrackTxType.buyInscription,
+    });
+    // broadcast tx
+    await broadcastTx(txHex);
+  };
+
+  // GET BALANCE
   const getBalance = (_collectedUTXOs: ICollectedUTXOResp | undefined) => {
     if (!_collectedUTXOs) return setAmount(0);
     setAmount(
@@ -98,8 +139,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       })
     );
   };
-
-  const debounceGetBalance = debounce(getBalance, 300);
+  const debounceGetBalance = debounce(getBalance, 200);
 
   useEffect(() => {
     debounceGetBalance(collectedUTXOs);
@@ -108,6 +148,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   return {
     sendInscription,
     sendBitcoin,
+    buyInscription,
     satoshiAmount,
   };
 };
