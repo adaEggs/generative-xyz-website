@@ -315,7 +315,6 @@ const Header: React.FC<IProp> = ({
                         [`${styles.active}`]:
                           activePath === MENU_HEADER[7].activePath,
                       })}
-                      key={`header-${MENU_HEADER[8].id}`}
                     >
                       <a>
                         Free tools
@@ -333,7 +332,6 @@ const Header: React.FC<IProp> = ({
                         activePath === MENU_HEADER[8].activePath &&
                           styles.active
                       )}
-                      key={`header-${MENU_HEADER[8].id}`}
                     >
                       <Link href={getUrlWithQueryParams(MENU_HEADER[8].route)}>
                         {MENU_HEADER[8].name}

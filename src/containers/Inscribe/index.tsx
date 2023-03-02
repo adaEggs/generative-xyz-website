@@ -30,8 +30,7 @@ import { useRouter } from 'next/router';
 import { getNFTDetailFromMoralis } from '@services/token-moralis';
 import { IGenerateReceiverAddressPayload } from '@interfaces/api/inscribe';
 import { checkForHttpRegex } from '@utils/string';
-import { isImageURL } from '@utils/url';
-import { isBase64Image } from '@utils/image';
+import { convertIpfsToHttp, isValidImage } from '@utils/image';
 import { dataURItoBlob } from '@containers/ObjectPreview/GltfPreview/helpers';
 import { v4 as uuidv4 } from 'uuid';
 import { resizeImage } from '@services/file';
@@ -112,10 +111,16 @@ const Inscribe: React.FC = (): React.ReactElement => {
           tokenId: tokenId as string,
         });
         const metadata = JSON.parse(res.metadata);
+
+        if ((metadata.image as string).includes('ipfs')) {
+          metadata.image = convertIpfsToHttp(metadata.image);
+        }
+
         // Handle link
         if (checkForHttpRegex(metadata.image)) {
           // Check if url is image
-          if (isImageURL(metadata.image)) {
+          const isValidUrl = await isValidImage(metadata.image);
+          if (isValidUrl) {
             const imageRes = await fetch(metadata.image);
             const imageBlob = await imageRes.blob();
             const resizedImage = await handleResizeImage(imageBlob);
@@ -126,7 +131,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
         }
         // Handle base64
         else {
-          const isValidBase64 = await isBase64Image(metadata.image);
+          const isValidBase64 = await isValidImage(metadata.image);
           if (isValidBase64) {
             const imageBlob = dataURItoBlob(metadata.image);
             const resizedImage = await handleResizeImage(imageBlob);
@@ -335,7 +340,8 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                     {`${formatBTCPrice(
                                       calculateMintFee(
                                         InscribeMintFeeRate.ECONOMY,
-                                        file?.size || 0
+                                        file?.size || 0,
+                                        !!isAuthentic
                                       )
                                     )} BTC`}
                                   </p>
@@ -358,7 +364,8 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                     {`${formatBTCPrice(
                                       calculateMintFee(
                                         InscribeMintFeeRate.FASTER,
-                                        file?.size || 0
+                                        file?.size || 0,
+                                        !!isAuthentic
                                       )
                                     )} BTC`}
                                   </p>
@@ -383,7 +390,8 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                     {`${formatBTCPrice(
                                       calculateMintFee(
                                         InscribeMintFeeRate.FASTEST,
-                                        file?.size || 0
+                                        file?.size || 0,
+                                        !!isAuthentic
                                       )
                                     )} BTC`}
                                   </p>

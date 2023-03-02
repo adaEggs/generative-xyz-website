@@ -18,7 +18,7 @@ export const convertIpfsToHttp = (uri: string, base?: string): string => {
   }
 };
 
-export const isBase64Image = (url: string): Promise<boolean> =>
+export const isValidImage = (url: string): Promise<boolean> =>
   new Promise(resolve => {
     const img = new Image();
 
