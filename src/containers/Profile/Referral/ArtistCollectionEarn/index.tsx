@@ -2,26 +2,24 @@ import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import Table, { TColumn } from '@components/Table';
 import Text from '@components/Text';
+import ToogleSwitch from '@components/Toggle';
+import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
+import { CurrencyType } from '@enums/currency';
 import { LogLevel } from '@enums/log-level';
+import { ProjectVolume } from '@interfaces/project';
 import { withdrawRewardEarned } from '@services/profile';
+import { getProjectVolume } from '@services/project';
 import { formatBTCPrice, formatEthPrice } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
-import { OverlayTrigger, Stack, Tooltip } from 'react-bootstrap';
-import s from './ArtistCollectionEarn.module.scss';
-import { getProjectVolume } from '@services/project';
-import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { Stack } from 'react-bootstrap';
 import useAsyncEffect from 'use-async-effect';
-import { ProjectVolume } from '@interfaces/project';
-import SvgInset from '@components/SvgInset';
-import { CDN_URL } from '@constants/config';
-import ToogleSwitch from '@components/Toggle';
-import { CurrencyType } from '@enums/currency';
+import s from './ArtistCollectionEarn.module.scss';
 
 const LOG_PREFIX = 'ArtistCollectionEarn';
 
@@ -199,34 +197,9 @@ const ArtistCollectionEarn = () => {
 
   return (
     <div className={s.wrapper}>
-      <Stack direction="horizontal" gap={4}>
-        <Heading as="h4" fontWeight="semibold">
-          Records
-        </Heading>
-        <OverlayTrigger
-          placement="bottom"
-          delay={{ show: 100, hide: 200 }}
-          overlay={
-            <Tooltip id="play-tooltip">
-              <div className={s.referral_tooltip}>
-                {/* TODO: Update copy */}
-                <Text fontWeight="medium" color="primary-333">
-                  Refer an artist by sending your referral link to earn 1% of
-                  their sale volume.
-                </Text>
-              </div>
-            </Tooltip>
-          }
-        >
-          <div>
-            <SvgInset
-              size={16}
-              svgUrl={`${CDN_URL}/icons/ic-question-circle.svg`}
-              className={s.iconQuestion}
-            />
-          </div>
-        </OverlayTrigger>
-      </Stack>
+      <Heading as="h4" fontWeight="semibold">
+        Records
+      </Heading>
       <Table
         tableHead={TABLE_ARTISTS_HEADING}
         data={tableData}
