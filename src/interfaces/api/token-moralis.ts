@@ -1,5 +1,5 @@
-import { MoralisNFT } from "@interfaces/inscribe";
-import { IPagingParams } from "./paging";
+import { MoralisNFT } from '@interfaces/inscribe';
+import { IPagingParams } from './paging';
 
 export interface IGetNFTListFromMoralisParams extends IPagingParams {
   walletAddress?: string;
@@ -23,4 +23,4 @@ export interface IGetNFTDetailFromMoralisParams {
   tokenId: string;
 }
 
-export interface IGetNFTDetailFromMoralisResponse extends MoralisNFT { }
+export type IGetNFTDetailFromMoralisResponse = MoralisNFT;

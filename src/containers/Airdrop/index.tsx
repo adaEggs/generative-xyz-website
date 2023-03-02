@@ -6,20 +6,21 @@ import Link from 'next/link';
 import { ROUTE_PATH } from '@constants/route-path';
 import Image from 'next/image';
 import cs from 'classnames';
+import { SOCIALS } from '@constants/common';
 
 const Airdrop: React.FC = (): React.ReactElement => {
   return (
     <div className={s.airdrop}>
       <div className="container">
         <div className={s.headerInfo}>
-          <p className={s.phaseText}>Phase 1</p>
-          <h1 className={s.headerTitle}>Generative First Airdrop</h1>
+          <p className={s.phaseText}>Phase 0</p>
+          <h1 className={s.headerTitle}>Generative Airdrop 0</h1>
           <p className={s.headerDescription}>
             To celebrate this historic milestone, we&apos;re airdropping keys to
-            unlock boxes that contain $ART tokens to early supporters of the art
-            movement on the Bitcoin network.
+            early supporters of the art movement on the Bitcoin network. The
+            mystery of what the keys open remains unsolved.
           </p>
-          <p className={s.headerDescription}>
+          <p className={cs(s.headerDescription, s.mb24)}>
             Let&apos;s launch a new collection or mint an artwork to receive the
             keys.
           </p>
@@ -59,7 +60,7 @@ const Airdrop: React.FC = (): React.ReactElement => {
                 height={240}
                 src={`${CDN_URL}/images/gold-key-1.svg`}
               />
-              <p className={cs(s.keyName, s.gold)}>GOLD KEY</p>
+              <p className={cs(s.keyName, s.gold)}>GOLDEN KEY</p>
             </div>
             <div className={s.visualItem}>
               <Image
@@ -77,31 +78,11 @@ const Airdrop: React.FC = (): React.ReactElement => {
             <div className="row align-items-center">
               <div className="col-lg-6 col-12">
                 <h2 className={s.sectionTitle}>Who will receive the keys?</h2>
-                <ul className={s.list}>
-                  <li className={s.listItem}>
-                    <Image
-                      width={14}
-                      height={14}
-                      src={`${CDN_URL}/icons/ic-dot-14x14.svg`}
-                      alt="dot-ic"
-                    />
-                    <span className={s.listItemText}>
-                      As an artist, you need to launch a new collection on
-                      Generative.
-                    </span>
-                  </li>
-                  <li className={s.listItem}>
-                    <Image
-                      width={14}
-                      height={14}
-                      src={`${CDN_URL}/icons/ic-dot-14x14.svg`}
-                      alt="dot-ic"
-                    />
-                    <span className={s.listItemText}>
-                      As a collector you need to mint an artwork on Generative.
-                    </span>
-                  </li>
-                </ul>
+                <p className={s.sectionSubDescription}>
+                  As an artist, you need to launch a new collection on
+                  Generative. As a collector you need to mint an artwork on
+                  Generative.
+                </p>
                 <p className={s.sectionDescription}>
                   There is no limit. Collect as many keys as you like.
                 </p>
@@ -121,6 +102,38 @@ const Airdrop: React.FC = (): React.ReactElement => {
                 <div className="image__fit">
                   <img src={`${CDN_URL}/images/airdrop-1.svg`} alt="visual" />
                 </div>
+              </div>
+            </div>
+          </div>
+          <div className={s.contentWrapper}>
+            <div className="row align-items-center">
+              <div className="col-lg-6 col-12">
+                <div className="image__fit">
+                  <img src={`${CDN_URL}/images/airdrop-3.svg`} alt="visual" />
+                </div>
+              </div>
+              <div className={cs('col-lg-6 col-12', s.rightContent)}>
+                <h2 className={s.sectionTitle}>
+                  What will the keys do for you?
+                </h2>
+                <p className={s.sectionSubDescription}>
+                  Let the story begins. There are many keys out there including:
+                  Silver Key, Golden Key, and Magic Key—which is extremely rare.
+                  You take the first step on a mysterious journey. Keep an eye
+                  out for the next episode.
+                </p>
+                <a
+                  className={s.discordLink}
+                  href={SOCIALS.discord}
+                  target="_blank"
+                >
+                  Join our Discord to find more clues
+                  <SvgInset
+                    className={s.linkIcon}
+                    size={20}
+                    svgUrl={`${CDN_URL}/icons/ic-arrow-right-20x20.svg`}
+                  />
+                </a>
               </div>
             </div>
           </div>

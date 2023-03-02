@@ -59,7 +59,7 @@ export const fileToBase64 = (
 
 export const blobToFile = (fileName: string, fileBlob: Blob): File => {
   return new File([fileBlob], fileName);
-}
+};
 
 export const blobToBase64 = (
   blob: Blob
@@ -87,4 +87,4 @@ export const getMediaTypeFromFileExt = (ext: string): MediaType | null => {
 
 export const getFileNameFromUrl = (url: string): string => {
   return url.substring(url.lastIndexOf('/') + 1, url.length);
-}
+};

@@ -1,7 +1,7 @@
 import s from './styles.module.scss';
 import cs from 'classnames';
 import { FileUploader } from 'react-drag-drop-files';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { prettyPrintBytes } from '@utils/units';
 import { CDN_URL, MINT_TOOL_MAX_FILE_SIZE } from '@constants/config';
 import SvgInset from '@components/SvgInset';
@@ -17,7 +17,9 @@ const DropFile: React.FC<IProps> = ({
   className,
   onChange,
 }: IProps) => {
-  const [file, setFile] = useState<File | null>(fileOrFiles?.length ? fileOrFiles[0] : null);
+  const [file, setFile] = useState<File | null>(
+    fileOrFiles?.length ? fileOrFiles[0] : null
+  );
   const [error, setError] = useState<string | null>(null);
 
   const onChangeFile = (file: File): void => {
@@ -35,6 +37,10 @@ const DropFile: React.FC<IProps> = ({
   const onTypeError = (): void => {
     setError('Invalid file extension. Please check and try again.');
   };
+
+  useEffect(() => {
+    setFile(fileOrFiles?.length ? fileOrFiles[0] : null);
+  }, [fileOrFiles]);
 
   return (
     <div

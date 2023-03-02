@@ -11,7 +11,7 @@ import { generateReceiverAddress } from '@services/inscribe';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import useAsyncEffect from 'use-async-effect';
-import { blobToFile, fileToBase64, getFileNameFromUrl } from '@utils/file';
+import { blobToBase64, blobToFile, fileToBase64 } from '@utils/file';
 import { InscribeMintFeeRate } from '@enums/inscribe';
 import { calculateMintFee } from '@utils/inscribe';
 import cs from 'classnames';
@@ -29,6 +29,12 @@ import RequestConnectWallet from '@containers/RequestConnectWallet';
 import { useRouter } from 'next/router';
 import { getNFTDetailFromMoralis } from '@services/token-moralis';
 import { IGenerateReceiverAddressPayload } from '@interfaces/api/inscribe';
+import { checkForHttpRegex } from '@utils/string';
+import { isImageURL } from '@utils/url';
+import { isBase64Image } from '@utils/image';
+import { dataURItoBlob } from '@containers/ObjectPreview/GltfPreview/helpers';
+import { v4 as uuidv4 } from 'uuid';
+import { resizeImage } from '@services/file';
 
 const LOG_PREFIX = 'Inscribe';
 
@@ -53,26 +59,91 @@ const Inscribe: React.FC = (): React.ReactElement => {
   const router = useRouter();
   const { isAuthentic, tokenAddress, tokenId } = router.query;
 
+  const resetAuthenticQueryParams = (): void => {
+    const { pathname, query } = router;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const params = new URLSearchParams(query as any);
+    params.delete('isAuthentic');
+    params.delete('tokenAddress');
+    params.delete('tokenId');
+    router.replace({ pathname, query: params.toString() }, undefined, {
+      shallow: true,
+    });
+  };
+
+  const handleResizeImage = async (imageBlob: Blob): Promise<File | null> => {
+    // Check if image larger than 1MB
+    if (imageBlob.size > 1024 * 1024) {
+      // Call API to get resized base64 string
+      try {
+        const fileBase64 = await blobToBase64(imageBlob);
+        const { file: resizedImageBase64 } = await resizeImage({
+          file: fileBase64 as string,
+        });
+        if (!resizedImageBase64) {
+          resetAuthenticQueryParams();
+          return null;
+        }
+        const resizedBlob = dataURItoBlob(resizedImageBase64);
+        return blobToFile(
+          `${uuidv4()}.${resizedBlob.type.replace('image/', '')}`,
+          resizedBlob
+        );
+      } catch (err: unknown) {
+        log('can not resize image', LogLevel.ERROR, LOG_PREFIX);
+        resetAuthenticQueryParams();
+        return null;
+      }
+    }
+    // If not, convert to File object and return
+    else {
+      return blobToFile(
+        `${uuidv4()}.${imageBlob.type.replace('image/', '')}`,
+        imageBlob
+      );
+    }
+  };
+
   const handleLoadFile = async (): Promise<void> => {
     try {
       if (isAuthentic && tokenAddress && tokenId) {
         const res = await getNFTDetailFromMoralis({
           tokenAddress: tokenAddress as string,
           tokenId: tokenId as string,
-        })
+        });
         const metadata = JSON.parse(res.metadata);
-        const imageRes = await fetch(metadata.image);
-        const imageBlob = await imageRes.blob();
-        const fileName = getFileNameFromUrl(metadata.image);
-        setFile(blobToFile(fileName, imageBlob));
+        // Handle link
+        if (checkForHttpRegex(metadata.image)) {
+          // Check if url is image
+          if (isImageURL(metadata.image)) {
+            const imageRes = await fetch(metadata.image);
+            const imageBlob = await imageRes.blob();
+            const resizedImage = await handleResizeImage(imageBlob);
+            setFile(resizedImage);
+          } else {
+            resetAuthenticQueryParams();
+          }
+        }
+        // Handle base64
+        else {
+          const isValidBase64 = await isBase64Image(metadata.image);
+          if (isValidBase64) {
+            const imageBlob = dataURItoBlob(metadata.image);
+            const resizedImage = await handleResizeImage(imageBlob);
+            setFile(resizedImage);
+          } else {
+            resetAuthenticQueryParams();
+          }
+        }
       }
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
     }
-  }
+  };
 
   const handleChangeFile = (file: File | null): void => {
     setFile(file);
+    handleResizeImage(file as Blob);
   };
 
   const handleChangeFee = (fee: InscribeMintFeeRate): void => {
@@ -109,7 +180,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
         fileName: file?.name || '',
         file: fileBase64,
         fee_rate: feeRate,
-      }
+      };
       if (tokenAddress) {
         payload.tokenAddress = tokenAddress as string;
       }
@@ -160,7 +231,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
     if (router.isReady) {
       handleLoadFile();
     }
-  }, [router])
+  }, [router]);
 
   if (!user) {
     return (

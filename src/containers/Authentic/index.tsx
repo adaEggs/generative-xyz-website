@@ -1,10 +1,10 @@
 import { Loading } from '@components/Loading';
 import { ROUTE_PATH } from '@constants/route-path';
 import { LogLevel } from '@enums/log-level';
-import { IGetNFTListFromMoralisParams } from '@interfaces/api/inscribe';
+import { IGetNFTListFromMoralisParams } from '@interfaces/api/token-moralis';
 import { MoralisNFT } from '@interfaces/inscribe';
 import { getUserSelector } from '@redux/user/selector';
-import { getNFTListFromMoralis } from '@services/inscribe';
+import { getNFTListFromMoralis } from '@services/token-moralis';
 import { getAccessToken } from '@utils/auth';
 import { isBrowser } from '@utils/common';
 import log from '@utils/logger';

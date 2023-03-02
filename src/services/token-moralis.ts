@@ -1,7 +1,12 @@
-import { LogLevel } from "@enums/log-level";
-import { IGetNFTListFromMoralisParams, IGetNFTListFromMoralisResponse, IGetNFTDetailFromMoralisParams, IGetNFTDetailFromMoralisResponse } from "@interfaces/api/token-moralis";
-import log from "@utils/logger";
-import { get } from "@services/http-client";
+import { LogLevel } from '@enums/log-level';
+import {
+  IGetNFTListFromMoralisParams,
+  IGetNFTListFromMoralisResponse,
+  IGetNFTDetailFromMoralisParams,
+  IGetNFTDetailFromMoralisResponse,
+} from '@interfaces/api/token-moralis';
+import log from '@utils/logger';
+import { get } from '@services/http-client';
 import querystring from 'query-string';
 
 const LOG_PREFIX = 'TokenMoralisService';
@@ -26,7 +31,7 @@ export const getNFTDetailFromMoralis = async (
   params: IGetNFTDetailFromMoralisParams
 ): Promise<IGetNFTDetailFromMoralisResponse> => {
   try {
-    const {tokenAddress, ...query} = params;
+    const { tokenAddress, ...query } = params;
     const qs = '?' + querystring.stringify(query);
     const res = await get<IGetNFTDetailFromMoralisResponse>(
       `${API_PATH}/nfts/${tokenAddress}${qs}`

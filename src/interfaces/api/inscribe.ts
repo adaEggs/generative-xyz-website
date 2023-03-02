@@ -1,7 +1,4 @@
-import {
-  InscriptionInfo,
-  InscriptionItem,
-} from '@interfaces/inscribe';
+import { InscriptionInfo, InscriptionItem } from '@interfaces/inscribe';
 import { IPagingParams } from './paging';
 
 export interface IGenerateReceiverAddressPayload {
