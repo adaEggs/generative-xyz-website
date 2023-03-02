@@ -82,7 +82,7 @@ const Profile: React.FC = (): React.ReactElement => {
                   <Tab
                     tabClassName={s.tab}
                     eventKey="freeTab"
-                    title={<>{totalFreeInscription} Free</>}
+                    title={<>{totalFreeInscription} Free inscriptions</>}
                   >
                     <FreeInscriptions />
                   </Tab>
