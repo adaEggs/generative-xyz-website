@@ -12,6 +12,12 @@
   }
 }
 
+.info_wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
 .info {
   padding-top: rem(64px);
 
@@ -414,7 +420,7 @@
 }
 
 .reviewOnMobile {
-  // margin-top: rem(16px);
+  margin-top: rem(24px);
   padding: rem(32);
   background-color: $primary-light;
 }
@@ -422,4 +428,8 @@
 .thumbnailBg {
   padding: rem(64px);
   background-color: $primary-light;
+}
+
+.shares_wrapper {
+  padding-right: rem(60);
 }

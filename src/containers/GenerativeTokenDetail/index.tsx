@@ -314,58 +314,65 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     <>
       <Container>
         <div className={s.wrapper}>
-          <div className={s.itemInfo}>
-            <Loading isLoaded={!!tokenData} className={s.loading_token} />
-            <div className={`${s.projectHeader}`}>
-              <Link
-                href={`${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddress}`}
-                className={s.creator_info}
-              >
-                <Heading
-                  className={s.projectHeader_creator}
-                  as="h4"
-                  fontWeight="medium"
-                >
-                  {projectData?.creatorProfile?.displayName ||
-                    formatAddress(
-                      projectData?.creatorProfile?.walletAddress || ''
-                    )}
-                </Heading>
-              </Link>
-              <SocialVerify
-                isTwVerified={isTwVerified}
-                link={SOCIALS.twitter}
-              />
-            </div>
-            <Heading as="h4" className={s.itemInfo_heading} fontWeight="medium">
-              <span
-                title={`${projectData?.name} #${formatTokenId(
-                  tokenData?.tokenID || ''
-                )}`}
-              >
-                <Link href={`${ROUTE_PATH.GENERATIVE}/${projectData?.tokenID}`}>
-                  {projectData?.name}{' '}
-                </Link>
-                #
-                {tokenData?.inscriptionIndex
-                  ? tokenData?.inscriptionIndex
-                  : formatTokenId(tokenData?.tokenID || '')}
-              </span>
-            </Heading>
-            {tokenData?.owner && (
-              <Text size="18" className={s.owner}>
-                Owned by{' '}
+          <div className={s.itemInfo_wrapper}>
+            <div className={s.itemInfo}>
+              <Loading isLoaded={!!tokenData} className={s.loading_token} />
+              <div className={`${s.projectHeader}`}>
                 <Link
-                  href={`${ROUTE_PATH.PROFILE}/${tokenData?.owner?.walletAddress}`}
-                  className={s.projectName}
+                  href={`${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddress}`}
+                  className={s.creator_info}
                 >
-                  {tokenData?.owner?.displayName ||
-                    formatLongAddress(tokenData?.owner?.walletAddress || '')}
+                  <Heading
+                    className={s.projectHeader_creator}
+                    as="h4"
+                    fontWeight="medium"
+                  >
+                    {projectData?.creatorProfile?.displayName ||
+                      formatAddress(
+                        projectData?.creatorProfile?.walletAddress || ''
+                      )}
+                  </Heading>
                 </Link>
-              </Text>
-            )}
+                <SocialVerify
+                  isTwVerified={isTwVerified}
+                  link={SOCIALS.twitter}
+                />
+              </div>
+              <Heading
+                as="h4"
+                className={s.itemInfo_heading}
+                fontWeight="medium"
+              >
+                <span
+                  title={`${projectData?.name} #${formatTokenId(
+                    tokenData?.tokenID || ''
+                  )}`}
+                >
+                  <Link
+                    href={`${ROUTE_PATH.GENERATIVE}/${projectData?.tokenID}`}
+                  >
+                    {projectData?.name}{' '}
+                  </Link>
+                  #
+                  {tokenData?.inscriptionIndex
+                    ? tokenData?.inscriptionIndex
+                    : formatTokenId(tokenData?.tokenID || '')}
+                </span>
+              </Heading>
+              {tokenData?.owner && (
+                <Text size="18" className={s.owner}>
+                  Owned by{' '}
+                  <Link
+                    href={`${ROUTE_PATH.PROFILE}/${tokenData?.owner?.walletAddress}`}
+                    className={s.projectName}
+                  >
+                    {tokenData?.owner?.displayName ||
+                      formatLongAddress(tokenData?.owner?.walletAddress || '')}
+                  </Link>
+                </Text>
+              )}
 
-            {/* <Text
+              {/* <Text
               size={'18'}
               color={'black-60'}
               style={{ marginBottom: '16px' }}
@@ -380,7 +387,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   )}
               </div>
             </Text> */}
-            {/* {isBitcoinProject && (
+              {/* {isBitcoinProject && (
               <Link
                 target="_blank"
                 href={`https://ordinals.com/inscription/${tokenData?.tokenID}`}
@@ -389,104 +396,104 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 Explorer
               </Link>
             )} */}
-            {renderBuyBTCView()}
-            {mobileScreen && (
-              <div className={s.reviewOnMobile}>
-                <ThumbnailPreview data={tokenData} previewToken />
-              </div>
-            )}
-            {!isBitcoinProject && (
-              <>
-                <div className={s.prices}>
-                  {isTokenListing && (
+              {renderBuyBTCView()}
+              {mobileScreen && (
+                <div className={s.reviewOnMobile}>
+                  <ThumbnailPreview data={tokenData} previewToken />
+                </div>
+              )}
+              {!isBitcoinProject && (
+                <>
+                  <div className={s.prices}>
+                    {isTokenListing && (
+                      <div>
+                        <Text size="12" fontWeight="medium" color="black-40">
+                          Price
+                        </Text>
+                        <Heading as="h6" fontWeight="medium">
+                          Ξ {listingPrice}
+                        </Heading>
+                      </div>
+                    )}
+
                     <div>
                       <Text size="12" fontWeight="medium" color="black-40">
-                        Price
+                        Royalty
                       </Text>
                       <Heading as="h6" fontWeight="medium">
-                        Ξ {listingPrice}
+                        {(projectData?.royalty || 0) / 100}%
                       </Heading>
                     </div>
-                  )}
-
-                  <div>
-                    <Text size="12" fontWeight="medium" color="black-40">
-                      Royalty
-                    </Text>
-                    <Heading as="h6" fontWeight="medium">
-                      {(projectData?.royalty || 0) / 100}%
-                    </Heading>
                   </div>
-                </div>
-                <div className={s.CTA_btn}>
-                  {/* Due to owner and status of this token to render appropriate action */}
-                  {isTokenOwner && !isTokenListing && (
-                    <ButtonIcon
-                      disabled={!tokenData}
-                      onClick={handleOpenListingTokenModal}
-                    >
-                      List for sale
-                    </ButtonIcon>
-                  )}
-                  {isTokenOwner && isTokenListing && (
-                    <ButtonIcon
-                      disabled={!tokenData}
-                      onClick={handleOpenCancelListingTokenModal}
-                    >
-                      Cancel listing
-                    </ButtonIcon>
-                  )}
-                  {isTokenOwner && (
-                    <ButtonIcon
-                      onClick={handleOpenTransferTokenModal}
-                      disabled={!tokenData}
-                      variants="outline"
-                    >
-                      Transfer
-                    </ButtonIcon>
-                  )}
-                  {!isTokenOwner && isTokenListing && (
-                    <>
+                  <div className={s.CTA_btn}>
+                    {/* Due to owner and status of this token to render appropriate action */}
+                    {isTokenOwner && !isTokenListing && (
                       <ButtonIcon
-                        disabled={!listingOffers.length || isBuying}
-                        onClick={handleBuyToken}
+                        disabled={!tokenData}
+                        onClick={handleOpenListingTokenModal}
                       >
-                        Buy
+                        List for sale
                       </ButtonIcon>
-                    </>
-                  )}
-                  {!isTokenOwner && (
-                    <ButtonIcon
-                      onClick={handleOpenMakeOfferModal}
-                      disabled={!tokenData}
-                      variants="outline"
-                    >
-                      Make offer
-                    </ButtonIcon>
-                  )}
+                    )}
+                    {isTokenOwner && isTokenListing && (
+                      <ButtonIcon
+                        disabled={!tokenData}
+                        onClick={handleOpenCancelListingTokenModal}
+                      >
+                        Cancel listing
+                      </ButtonIcon>
+                    )}
+                    {isTokenOwner && (
+                      <ButtonIcon
+                        onClick={handleOpenTransferTokenModal}
+                        disabled={!tokenData}
+                        variants="outline"
+                      >
+                        Transfer
+                      </ButtonIcon>
+                    )}
+                    {!isTokenOwner && isTokenListing && (
+                      <>
+                        <ButtonIcon
+                          disabled={!listingOffers.length || isBuying}
+                          onClick={handleBuyToken}
+                        >
+                          Buy
+                        </ButtonIcon>
+                      </>
+                    )}
+                    {!isTokenOwner && (
+                      <ButtonIcon
+                        onClick={handleOpenMakeOfferModal}
+                        disabled={!tokenData}
+                        variants="outline"
+                      >
+                        Make offer
+                      </ButtonIcon>
+                    )}
+                  </div>
+                </>
+              )}
+
+              <div className={s.accordions}>
+                <div className={s.accordions_item}>
+                  <ProjectDescription
+                    desc={tokenDescription || ''}
+                    // hasInteraction={hasProjectInteraction}
+                    attributes={
+                      featuresList() ? <Stats data={featuresList()} /> : ''
+                    }
+                    tokenDetail={
+                      tokenInfos && tokenInfos.length > 0 ? (
+                        <Stats data={tokenInfos} />
+                      ) : (
+                        ''
+                      )
+                    }
+                  />
                 </div>
-              </>
-            )}
 
-            <div className={s.accordions}>
-              <div className={s.accordions_item}>
-                <ProjectDescription
-                  desc={tokenDescription || ''}
-                  // hasInteraction={hasProjectInteraction}
-                  attributes={
-                    featuresList() ? <Stats data={featuresList()} /> : ''
-                  }
-                  tokenDetail={
-                    tokenInfos && tokenInfos.length > 0 ? (
-                      <Stats data={tokenInfos} />
-                    ) : (
-                      ''
-                    )
-                  }
-                />
-              </div>
-
-              {/* {tokenData?.attributes && tokenData?.attributes?.length > 0 && (
+                {/* {tokenData?.attributes && tokenData?.attributes?.length > 0 && (
                 <div className={s.accordions_item}>
                   <Text
                     size="14"
@@ -503,8 +510,27 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               <div className={s.accordions_item}>
                 <Stats data={tokenInfos} />
               </div> */}
+              </div>
+              <div className="divider"></div>
+
+              {/* <Text size="14" color="black-40">
+              Minted on: {mintedDate}
+            </Text> */}
+              {/* {tokenData?.owner && (
+              <Text size="14" color="black-40" className={s.owner}>
+                Owner:{' '}
+                <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
+                  {tokenData?.owner?.displayName ||
+                    formatAddress(
+                      tokenData?.ownerAddr ||
+                        tokenData?.owner?.walletAddress ||
+                        ''
+                    )}
+                </Link>
+                {isTokenOwner && ' (by you)'}
+              </Text>
+            )} */}
             </div>
-            <div className="divider"></div>
             <ul className={s.shares}>
               <li>
                 <div>
@@ -544,24 +570,8 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 </div>
               </li>
             </ul>
-            {/* <Text size="14" color="black-40">
-              Minted on: {mintedDate}
-            </Text> */}
-            {/* {tokenData?.owner && (
-              <Text size="14" color="black-40" className={s.owner}>
-                Owner:{' '}
-                <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
-                  {tokenData?.owner?.displayName ||
-                    formatAddress(
-                      tokenData?.ownerAddr ||
-                        tokenData?.owner?.walletAddress ||
-                        ''
-                    )}
-                </Link>
-                {isTokenOwner && ' (by you)'}
-              </Text>
-            )} */}
           </div>
+
           <div></div>
           {!mobileScreen && (
             <div className={s.thumbnailBg}>
