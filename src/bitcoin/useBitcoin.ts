@@ -4,9 +4,14 @@ import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { useContext, useState, useEffect } from 'react';
 import { ProfileContext } from '@contexts/profile-context';
-import { broadcastTx, trackTx } from '@services/bitcoin';
+import { broadcastTx, submitListForSale, trackTx } from '@services/bitcoin';
 import { ICollectedUTXOResp, TrackTxType } from '@interfaces/api/bitcoin';
-import { IBuyInsProps, ISendBTCProps, ISendInsProps } from '@bitcoin/types';
+import {
+  IBuyInsProps,
+  IListInsProps,
+  ISendBTCProps,
+  ISendInsProps,
+} from '@bitcoin/types';
 import { debounce } from 'lodash';
 import { setPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
 
@@ -89,7 +94,6 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     setPendingUTXOs(selectedUTXOs);
   };
 
-  // TODO remove valueInscription
   const buyInscription = async ({
     feeRate,
     price,
@@ -114,8 +118,8 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       receiverInscriptionAddress: receiverInscriptionAddress,
       sellerSignedPsbtB64: sellerSignedPsbtB64,
       utxos: collectedUTXOs.txrefs,
-      valueInscription: 0, // TODO remove
     });
+
     await trackTx({
       txhash: txID,
       address: taprootAddress,
@@ -127,6 +131,53 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     });
     // broadcast tx
     await broadcastTx(txHex);
+  };
+
+  const listInscription = async ({
+    receiverBTCAddress,
+    amountPayToSeller,
+    feePayToCreator,
+    creatorAddress,
+    feeRate,
+    inscriptionNumber,
+  }: IListInsProps) => {
+    if (!inscriptionID) return;
+    const evmAddress = user?.walletAddress;
+    const taprootAddress = user?.walletAddressBtcTaproot;
+
+    if (!evmAddress || !inscriptionID || !collectedUTXOs || !taprootAddress)
+      return;
+    const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
+    const privateKey = taprootChild.privateKey;
+    if (!privateKey) throw 'Sign error';
+    const { splitTxID, base64Psbt } =
+      await GENERATIVE_SDK.reqListForSaleInscription({
+        sellerPrivateKey: privateKey,
+        amountPayToSeller: amountPayToSeller,
+        creatorAddress: creatorAddress,
+        feePayToCreator: feePayToCreator,
+        feeRatePerByte: feeRate,
+        inscriptions: collectedUTXOs.inscriptions_by_outputs,
+        receiverBTCAddress: receiverBTCAddress,
+        sellInscriptionID: inscriptionID,
+        utxos: collectedUTXOs.txrefs,
+      });
+
+    await Promise.all([
+      await submitListForSale({
+        raw_psbt: base64Psbt,
+        inscription_id: inscriptionID,
+      }),
+      await trackTx({
+        txhash: splitTxID,
+        address: taprootAddress,
+        receiver: receiverBTCAddress,
+        inscription_id: inscriptionID,
+        inscription_number: inscriptionNumber,
+        send_amount: 0,
+        type: TrackTxType.listSplitInscription,
+      }),
+    ]);
   };
 
   // GET BALANCE
@@ -149,6 +200,8 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     sendInscription,
     sendBitcoin,
     buyInscription,
+    listInscription,
+
     satoshiAmount,
   };
 };

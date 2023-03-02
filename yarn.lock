@@ -2283,6 +2283,19 @@ bitcoinjs-lib@^6.1.0:
     varuint-bitcoin "^1.1.2"
     wif "^2.0.1"
 
+"bitcoinjs-lib@github:generative-xyz/bitcoinjs-lib":
+  version "6.1.0"
+  resolved "https://codeload.github.com/generative-xyz/bitcoinjs-lib/tar.gz/71b05e14bec8001bc344f0d020ae6cc9e2365022"
+  dependencies:
+    bech32 "^2.0.0"
+    bip174 "^2.1.0"
+    bs58check "^2.1.2"
+    create-hash "^1.1.0"
+    ripemd160 "^2.0.2"
+    typeforce "^1.11.3"
+    varuint-bitcoin "^1.1.2"
+    wif "^2.0.1"
+
 "bitcoinjs-message@https://github.com/generative-xyz/bitcoinjs-message#0.0.1":
   version "2.2.0"
   resolved "https://github.com/generative-xyz/bitcoinjs-message#10901782dbe1dc4c3b9b7c8156a5ecbe64d61b3f"
@@ -4406,14 +4419,14 @@ functions-have-names@^1.2.2:
   resolved "https://registry.yarnpkg.com/functions-have-names/-/functions-have-names-1.2.3.tgz#0404fe4ee2ba2f607f0e0ec3c80bae994133b834"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
-"generative-sdk@https://github.com/generative-xyz/generative-sdk#0.0.17":
+"generative-sdk@https://github.com/generative-xyz/generative-sdk#0.0.18":
   version "0.0.1"
-  resolved "https://github.com/generative-xyz/generative-sdk#fc8758c04e38143b9591c4c5955b4386bdce0c53"
+  resolved "https://github.com/generative-xyz/generative-sdk#f7ad3d0704df87f8eadb37909b7f4589c13779b0"
   dependencies:
     "@bitcoinerlab/secp256k1" "^1.0.2"
     "@types/node" "^17.0.13"
     axios "^0.24.0"
-    bitcoinjs-lib "^6.1.0"
+    bitcoinjs-lib "github:generative-xyz/bitcoinjs-lib"
     browserify "^17.0.0"
     ecpair "^2.1.0"
     form-data "^4.0.0"
