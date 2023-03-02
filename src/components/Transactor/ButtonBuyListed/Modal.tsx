@@ -4,7 +4,7 @@ import s from '@components/Transactor/form.module.scss';
 import { Formik } from 'formik';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
-import { validateBTCAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
 import AccordionComponent from '@components/Accordion';
@@ -34,7 +34,7 @@ const ModalBuyListed = React.memo(({ price, ...rest }: IProps) => {
 
     if (!values.receiveBTCAddress) {
       errors.receiveBTCAddress = 'Address is required.';
-    } else if (!validateBTCAddress(values.receiveBTCAddress)) {
+    } else if (!validateBTCAddressTaproot(values.receiveBTCAddress)) {
       errors.receiveAddress = 'Invalid wallet address.';
     }
     return errors;
@@ -101,7 +101,8 @@ const ModalBuyListed = React.memo(({ price, ...rest }: IProps) => {
                             className={s.wrapItem_label}
                             htmlFor="receiveAddress"
                           >
-                            Enter your BTC address to receive payments
+                            Enter your Ordinals-compatible BTC address to
+                            receive payment
                           </label>
                           <div className={s.inputContainer}>
                             <input
@@ -112,7 +113,7 @@ const ModalBuyListed = React.memo(({ price, ...rest }: IProps) => {
                               onBlur={handleBlur}
                               value={values.receiveBTCAddress}
                               className={s.inputContainer_input}
-                              placeholder="Paste your BTC address here"
+                              placeholder="Paste your Ordinals-compatible BTC address here"
                             />
                             {errors.receiveBTCAddress &&
                               touched.receiveBTCAddress && (

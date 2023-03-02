@@ -21,7 +21,6 @@ import { formatBTCPrice } from '@utils/format';
 interface IFormValues {
   price: string;
   receiveBTCAddress: string;
-  // receiveETHAddress: string;
 }
 
 interface IFeeCharge {
@@ -69,18 +68,11 @@ const ModalListForSale = React.memo(({ inscriptionID, ...rest }: IProps) => {
     if (!values.price || !new BigNumber(values.price || 0)) {
       errors.price = 'Required.';
     }
-
     if (!values.receiveBTCAddress) {
       errors.receiveBTCAddress = 'Address is required.';
     } else if (!validateBTCAddress(values.receiveBTCAddress)) {
       errors.receiveAddress = 'Invalid wallet address.';
     }
-
-    // if (!values.receiveETHAddress) {
-    //   errors.receiveETHAddress = 'Address is required.';
-    // } else if (!validateEVMAddress(values.receiveETHAddress)) {
-    //   errors.receiveETHAddress = 'Invalid wallet address.';
-    // }
 
     return errors;
   };
@@ -116,7 +108,7 @@ const ModalListForSale = React.memo(({ inscriptionID, ...rest }: IProps) => {
   };
 
   React.useEffect(() => {
-    onGetListingFee();
+    onGetListingFee().then().catch();
   }, []);
 
   return (
@@ -175,7 +167,7 @@ const ModalListForSale = React.memo(({ inscriptionID, ...rest }: IProps) => {
                             className={s.wrapItem_label}
                             htmlFor="receiveAddress"
                           >
-                            Enter your BTC address to receive payments
+                            Enter your BTC address to receive payment
                           </label>
                           <div className={s.inputContainer}>
                             <input
@@ -196,32 +188,6 @@ const ModalListForSale = React.memo(({ inscriptionID, ...rest }: IProps) => {
                               )}
                           </div>
                         </div>
-                        {/*<div className={s.wrapItem}>*/}
-                        {/*  <label*/}
-                        {/*    className={s.wrapItem_label}*/}
-                        {/*    htmlFor="receiveAddress"*/}
-                        {/*  >*/}
-                        {/*    Enter your ETH address to receive payments*/}
-                        {/*  </label>*/}
-                        {/*  <div className={s.inputContainer}>*/}
-                        {/*    <input*/}
-                        {/*      id="receiveETHAddress"*/}
-                        {/*      type="address"*/}
-                        {/*      name="receiveETHAddress"*/}
-                        {/*      onChange={handleChange}*/}
-                        {/*      onBlur={handleBlur}*/}
-                        {/*      value={values.receiveETHAddress}*/}
-                        {/*      className={s.inputContainer_input}*/}
-                        {/*      placeholder="Paste your ETH address here"*/}
-                        {/*    />*/}
-                        {/*    {errors.receiveETHAddress &&*/}
-                        {/*      touched.receiveETHAddress && (*/}
-                        {/*        <p className={s.inputContainer_inputError}>*/}
-                        {/*          {errors.receiveETHAddress}*/}
-                        {/*        </p>*/}
-                        {/*      )}*/}
-                        {/*  </div>*/}
-                        {/*</div>*/}
                       </div>
                     }
                   />
