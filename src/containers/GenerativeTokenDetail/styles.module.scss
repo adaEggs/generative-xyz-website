@@ -206,6 +206,7 @@
   align-items: center;
   cursor: pointer;
   margin-top: rem(24);
+  padding-right: rem(60);
 
   &:hover {
     text-decoration: underline;
@@ -288,6 +289,8 @@ a.info_creatorLink {
   background-color: $primary-light;
 }
 
-.shares_wrapper {
-  padding-right: rem(60);
+.itemInfo_wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
