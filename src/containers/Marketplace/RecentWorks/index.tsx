@@ -22,7 +22,6 @@ import Select, { SingleValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
 import { LocalStorageKey } from '@enums/local-storage';
-import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -161,10 +160,6 @@ export const RecentWorks = (): JSX.Element => {
   return (
     <div className={s.recentWorks}>
       <Container>
-        <ButtonBuyListed
-          inscriptionID="05fee8dc35f230af3871d883e21e91a59b14a2a99e42aa15b783d404346c4b37i0"
-          price={1e8}
-        />
         <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
           Be the first to collect art on Bitcoin.
         </Heading>

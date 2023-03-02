@@ -13,10 +13,18 @@ interface IProps {
   sizes?: ButtonSizesType;
   inscriptionID: string;
   price: number | string;
+  inscriptionNumber?: number | string;
 }
 
 const ButtonBuyListed = React.memo(
-  ({ title, className, sizes = 'xsmall', inscriptionID, price }: IProps) => {
+  ({
+    title,
+    className,
+    sizes = 'xsmall',
+    inscriptionID,
+    inscriptionNumber,
+    price,
+  }: IProps) => {
     const [isShow, setShow] = React.useState(false);
     const user = useSelector(getUserSelector);
     const walletCtx = useContext(WalletContext);
@@ -34,7 +42,7 @@ const ButtonBuyListed = React.memo(
 
     const label = React.useMemo(() => {
       if (title) return title;
-      return `Buy ${formatBTCPrice(price)} BTC`;
+      return `Buy • ${formatBTCPrice(price)} BTC`;
     }, [title, price]);
 
     return (
@@ -49,7 +57,9 @@ const ButtonBuyListed = React.memo(
         {!!user?.walletAddressBtcTaproot && (
           <ModalBuyListed
             inscriptionID={inscriptionID}
-            title="Payment"
+            title={`Payment ${
+              inscriptionNumber ? `#${inscriptionNumber}` : ''
+            }`}
             isShow={isShow}
             price={price}
             onHide={hideModal}

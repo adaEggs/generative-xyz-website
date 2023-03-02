@@ -8,6 +8,7 @@ import {
   ITxHistory,
   HistoryStatusType,
   HistoryStatusColor,
+  IListingPayload,
 } from '@interfaces/api/bitcoin';
 import axios from 'axios';
 import { getPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
@@ -103,6 +104,17 @@ export const getHistory = async (address: string): Promise<ITxHistory[]> => {
 export const broadcastTx = async (txHex: string): Promise<never> => {
   try {
     return axios.post(`https://blockstream.info/api/tx`, txHex);
+  } catch (err: unknown) {
+    log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
+};
+
+export const submitListForSale = async (
+  payload: IListingPayload
+): Promise<never> => {
+  try {
+    return post<IListingPayload, never>(`/dex/listing`, payload);
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw err;

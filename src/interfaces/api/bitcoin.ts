@@ -33,6 +33,7 @@ export interface IFeeRate {
 export enum TrackTxType {
   normal = 'normal',
   inscription = 'inscription',
+  buyInscription = 'buy-inscription',
 }
 
 export interface ITrackTx {
@@ -62,4 +63,9 @@ export interface ITxHistory {
   inscription_number: number;
   send_amount: number;
   created_at: string;
+}
+
+export interface IListingPayload {
+  raw_psbt: string; // base64
+  inscription_id: string;
 }
