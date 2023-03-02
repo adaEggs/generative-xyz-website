@@ -2,21 +2,24 @@
 
 .wrapper {
   color: $black-100;
-  padding-top: rem(32px);
+  // padding-top: rem(32px);
 
   @include min-tablet {
     display: grid;
     grid-template-columns: 35% 1px calc(65% - 1px);
-    padding-top: rem(40px);
+    // padding-top: rem(40px);
     margin-bottom: rem(40px);
   }
 }
 
 .info {
+  padding-top: rem(64px);
+
   @include min-tablet {
     overflow-y: scroll;
     padding-right: rem(60px);
     position: relative;
+    padding-top: rem(40px);
 
     @include fullViewScreen;
   }
@@ -411,5 +414,12 @@
 }
 
 .reviewOnMobile {
-  margin-top: rem(16px);
+  // margin-top: rem(16px);
+  padding: rem(32);
+  background-color: $primary-light;
+}
+
+.thumbnailBg {
+  padding: rem(64px);
+  background-color: $primary-light;
 }

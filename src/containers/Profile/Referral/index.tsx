@@ -144,7 +144,7 @@ const ReferralTab = () => {
     <div className={s.wrapper}>
       {/* <Loading isLoaded={needLoading} className={s.loading} /> */}
       <div className={s.referral_link}>
-        <Stack>
+        <Stack gap={2}>
           <Heading as="h4" fontWeight="medium">
             Referral
           </Heading>
@@ -170,7 +170,7 @@ const ReferralTab = () => {
               }}
               className={s.iconCopy}
               size={20}
-              svgUrl={`${CDN_URL}/icons/ic-user.svg`}
+              svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
             />
           </div>
         </Stack>
