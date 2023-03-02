@@ -3,21 +3,13 @@ import {
   default as ButtonIcon,
 } from '@components/ButtonIcon';
 import { Loading } from '@components/Loading';
-import QRCodeGenerator from '@components/QRCodeGenerator';
 import SvgInset from '@components/SvgInset';
-import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
-import { WalletContext } from '@contexts/wallet-context';
-import { ErrorMessage } from '@enums/error-message';
-import { LogLevel } from '@enums/log-level';
-import { submitAddressBuyBTC } from '@services/marketplace-btc';
-import { ellipsisCenter, formatBTCPrice, formatEthPrice } from '@utils/format';
-import log from '@utils/logger';
-import { formatUnixDateTime } from '@utils/time';
+import { formatBTCPrice, formatEthPrice } from '@utils/format';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Accordion, Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
@@ -37,70 +29,27 @@ interface IProps {
   payType: 'eth' | 'btc';
 }
 
-const LOG_PREFIX = 'BuyModal';
-
-const ModalBuyItem = ({
+const ModalBuyItemViaPSBT = ({
   showModal,
   onClose,
   price,
-  inscriptionID,
-  orderID,
-  ordAddress,
   payType = 'btc',
 }: IProps): JSX.Element => {
-  const { transfer } = useContext(WalletContext);
-
   const [isLoading, setIsLoading] = useState(false);
-  const [receiveAddress, setReceiveAddress] = useState('');
-  const [expireTime, setExpireTime] = useState('');
   const [errMessage, setErrMessage] = useState('');
 
   const [isShowAdvance, setIsShowAdvance] = useState(false);
 
-  const [step, setsTep] = useState<'info' | 'showAddress'>('info');
-
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
-  const [addressInput, setAddressInput] = useState<string>('');
-
-  const [ethPrice, setEthPrice] = useState(price);
-  const [isSent, setIsSent] = React.useState(false);
 
   const unit = payType === 'btc' ? 'BTC' : 'ETH';
   const formatPrice =
     payType === 'btc'
       ? formatBTCPrice(price || 0, '0.0')
-      : formatEthPrice(`${ethPrice || 0}`, '0.0');
+      : formatEthPrice(`${price || 0}`, '0.0');
 
-  useEffect(() => {
-    if (payType === 'eth' && ordAddress) {
-      onSubmitAddress(ordAddress);
-    }
-  }, [ordAddress]);
-
-  const handleTransfer = async (
-    toAddress: string,
-    val: string
-  ): Promise<void> => {
-    try {
-      setIsSent(false);
-      await transfer(toAddress, val);
-      setIsSent(true);
-    } catch (err: unknown) {
-      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-      handleClose();
-    }
-  };
-
-  useEffect(() => {
-    if (
-      payType === 'eth' &&
-      step === 'showAddress' &&
-      receiveAddress &&
-      ethPrice
-    ) {
-      handleTransfer(receiveAddress, formatEthPrice(`${ethPrice || 0}`));
-    }
-  }, [receiveAddress, ethPrice, step]);
+  const totalFormatPrice = formatPrice;
+  const feePriceFormat = '0.0';
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -115,106 +64,32 @@ const ModalBuyItem = ({
       errors.address = 'Address is required.';
     } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
-    } else {
-      if (payType === 'eth') {
-        if (addressInput !== values.address) {
-          setAddressInput(values.address);
-          onSubmitAddress(values.address);
-        }
-      } else {
-        if (step === 'showAddress' && addressInput !== values.address) {
-          setAddressInput(values.address);
-          onSubmitAddress(values.address);
-        }
-      }
     }
-
     return errors;
   };
 
   const onClickPay = () => {
-    if (useWallet === 'default') {
-      if (payType === 'eth') {
-        setsTep('showAddress');
-      } else {
-        onSubmitAddress(ordAddress);
-      }
-    }
-  };
-
-  const onSubmitAddress = async (address: string) => {
-    try {
-      setIsLoading(true);
-      const data = await submitAddressBuyBTC({
-        walletAddress: address,
-        inscriptionID,
-        orderID,
-        payType,
-      });
-      if (payType === 'eth' && data && data.price) {
-        setEthPrice(data.price);
-      }
-      if (data?.receiveAddress) {
-        setReceiveAddress(data.receiveAddress);
-        setExpireTime(data.timeoutAt);
-        if (payType === 'btc') {
-          setsTep('showAddress');
-        }
-      }
-    } catch (err: unknown) {
-      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      if (err && err?.message) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        setErrMessage(err?.message);
-      }
-      toast.error(ErrorMessage.DEFAULT);
-    } finally {
-      setIsLoading(false);
-    }
+    //TODO
   };
 
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
-      if (payType === 'btc') {
-        if (step === 'showAddress' && ordAddress) {
-          onSubmitAddress(ordAddress);
-        }
-      } else {
-        if (ordAddress) {
-          onSubmitAddress(ordAddress);
-        }
-      }
     }
   };
 
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
-      if (addressInput) {
-        onSubmitAddress(addressInput);
-      }
     }
   };
 
-  const handleSubmit = async (_data: IFormValue) => {
-    if (payType === 'eth') {
-      setsTep('showAddress');
-    } else {
-      if (addressInput !== _data.address) {
-        setAddressInput(_data.address);
-        onSubmitAddress(_data.address);
-      }
-    }
+  const handleSubmit = (_data: IFormValue) => {
+    //TODO
   };
 
   const handleClose = () => {
     setIsLoading(false);
-    setReceiveAddress('');
-    setExpireTime('');
     setErrMessage('');
     onClose();
   };
@@ -226,11 +101,7 @@ const ModalBuyItem = ({
   return (
     <div className={s.mintBTCGenerativeModal}>
       <div className={s.backdrop}>
-        <div
-          className={`${s.modalWrapper}  ${
-            step === 'info' ? s.showInfo : s.showAddress
-          }`}
-        >
+        <div className={`${s.modalWrapper} ${s.showInfo}`}>
           <div className={s.modalContainer}>
             <div className={s.modalHeader}>
               <Button
@@ -247,21 +118,37 @@ const ModalBuyItem = ({
             </div>
             <Col className={s.modalBody}>
               <Row className={s.row}>
-                <Col md={step === 'info' ? '12' : '6'}>
+                <Col md={'12'}>
                   <h3 className={s.modalTitle}>Payment</h3>
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
+                      <p
+                        className={s.paymentPrice_price}
+                      >{`${formatPrice} ${unit}`}</p>
+                    </div>
+                    <div className={s.paymentPrice}>
+                      <p className={s.paymentPrice_title}>Inscription fee</p>
+                      <p
+                        className={s.paymentPrice_price}
+                      >{`${feePriceFormat} ${unit}`}</p>
+                    </div>
+                    <div className={s.indicator} />
+
+                    <div className={s.paymentPrice}>
+                      <p className={s.paymentPrice_total}>Total</p>
                       <div
                         className={s.paymentPrice_copyContainer}
-                        onClick={() => onClickCopy(`${formatPrice}`)}
+                        onClick={() => onClickCopy(`${totalFormatPrice}`)}
                       >
                         <SvgInset
                           className={s.ic}
                           size={18}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
-                        <p className={s.text}>{`${formatPrice} ${unit}`}</p>
+                        <p
+                          className={s.text}
+                        >{`${totalFormatPrice} ${unit}`}</p>
                       </div>
                     </div>
                   </div>
@@ -301,7 +188,6 @@ const ModalBuyItem = ({
                                   svgUrl={`${CDN_URL}/icons/arrow-up.svg`}
                                 />
                               </Accordion.Header>
-
                               <Accordion.Body className={s.accordion_body}>
                                 <div>
                                   <div className={s.checkboxContainer}>
@@ -351,10 +237,6 @@ const ModalBuyItem = ({
 
                                   {useWallet === 'another' && (
                                     <div className={s.formItem}>
-                                      {/* <label className={s.label} htmlFor="address">
-                                    {`Enter the Ordinals-compatible BTC address to
-                                receive your buying inscription`}
-                                  </label> */}
                                       <div className={s.inputContainer}>
                                         <input
                                           id="address"
@@ -377,7 +259,7 @@ const ModalBuyItem = ({
                                 </div>
                               </Accordion.Body>
 
-                              {step === 'info' && useWallet === 'another' && (
+                              {useWallet === 'another' && (
                                 <ButtonIcon
                                   type="submit"
                                   sizes="large"
@@ -392,7 +274,7 @@ const ModalBuyItem = ({
                         )}
                       </Formik>
                     </Accordion>
-                    {step === 'info' && useWallet === 'default' && (
+                    {useWallet === 'default' && (
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
@@ -403,7 +285,7 @@ const ModalBuyItem = ({
                       </ButtonIcon>
                     )}
 
-                    {step === 'info' && isLoading && (
+                    {isLoading && (
                       <div className={s.loadingWrapper}>
                         <Loading isLoaded={false} />
                       </div>
@@ -414,84 +296,6 @@ const ModalBuyItem = ({
                     )}
                   </div>
                 </Col>
-
-                {step === 'showAddress' && (
-                  <Col md={'6'}>
-                    <div className={s.paymentWrapper}>
-                      {!isSent && receiveAddress && !isLoading && (
-                        <div className={s.qrCodeWrapper}>
-                          <p className={s.qrTitle}>
-                            Send{' '}
-                            <span style={{ fontWeight: 'bold' }}>
-                              {' '}
-                              {formatPrice} {unit}
-                            </span>{' '}
-                            to this payment address
-                          </p>
-
-                          <div className={s.btcAddressContainer}>
-                            <p className={s.btcAddress}>
-                              {ellipsisCenter({
-                                str: receiveAddress || '',
-                                limit: 16,
-                              })}
-                            </p>
-                            <SvgInset
-                              className={s.icCopy}
-                              size={18}
-                              svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-                              onClick={() => onClickCopy(receiveAddress || '')}
-                            />
-                          </div>
-
-                          <QRCodeGenerator
-                            className={s.qrCodeGenerator}
-                            size={128}
-                            value={receiveAddress || ''}
-                          />
-                          {!!expireTime && (
-                            <p className={s.expire}>
-                              Expires at:{' '}
-                              {formatUnixDateTime({
-                                dateTime: Number(expireTime),
-                              })}
-                            </p>
-                          )}
-                        </div>
-                      )}
-                      {isLoading && (
-                        <div className={s.loadingWrapper}>
-                          <Loading isLoaded={false} />
-                        </div>
-                      )}
-                    </div>
-
-                    <div className={s.btnContainer}>
-                      {/* <ButtonIcon
-                        sizes="large"
-                        className={s.checkBtn}
-                        onClick={() => router.push(ROUTE_PATH.PROFILE)}
-                        variants="outline-small"
-                      >
-                        <Text as="span" size="16" fontWeight="medium">
-                          Check order status
-                        </Text>
-                      </ButtonIcon>
-                      <div style={{ width: 16 }} /> */}
-                      {(payType === 'btc' || (payType === 'eth' && isSent)) && (
-                        <ButtonIcon
-                          sizes="large"
-                          className={s.continuteBtn}
-                          onClick={handleClose}
-                        >
-                          <Text as="span" size="16" fontWeight="medium">
-                            Continue collecting
-                          </Text>
-                        </ButtonIcon>
-                      )}
-                    </div>
-                  </Col>
-                )}
               </Row>
             </Col>
           </div>
@@ -501,4 +305,4 @@ const ModalBuyItem = ({
   );
 };
 
-export default ModalBuyItem;
+export default ModalBuyItemViaPSBT;
