@@ -44,3 +44,9 @@ export const getApiKey = (
     typeof params === 'string' ? params : reorderKeys(params),
   ]);
 };
+
+export const swrFetcher = async (url: string): Promise<unknown> => {
+  const response: unknown = await get(url);
+
+  return response;
+};

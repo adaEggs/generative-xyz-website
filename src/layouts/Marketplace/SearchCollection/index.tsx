@@ -93,6 +93,7 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
         pathname: ROUTE_PATH.SEARCH,
         query: { keyword: event?.target?.value?.trim() },
       });
+      handleCloseSearchResult();
     }
   };
 
