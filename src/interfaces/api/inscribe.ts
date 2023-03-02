@@ -1,7 +1,6 @@
 import {
   InscriptionInfo,
   InscriptionItem,
-  MoralisNFT,
 } from '@interfaces/inscribe';
 import { IPagingParams } from './paging';
 
@@ -10,6 +9,8 @@ export interface IGenerateReceiverAddressPayload {
   file: string; // Base64
   fileName: string;
   fee_rate: number;
+  tokenAddress?: string;
+  tokenId?: string;
 }
 
 export type IGenerateReceiverAddressResponse = InscriptionInfo;
@@ -22,20 +23,3 @@ export interface IGetInscriptionListByUserResponse {
   result: Array<InscriptionItem>;
   total: number;
 }
-
-export interface IGetNFTListFromMoralisParams extends IPagingParams {
-  walletAddress?: string;
-  cursor?: string; // last id
-}
-
-export type IGetNFTListFromMoralisResponse = Record<
-  string,
-  {
-    result: Array<MoralisNFT>;
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPage: number;
-    cursor: string;
-  }
->;

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DropFile from './DropFile';
 import s from './styles.module.scss';
 import { Formik } from 'formik';
@@ -11,7 +11,7 @@ import { generateReceiverAddress } from '@services/inscribe';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import useAsyncEffect from 'use-async-effect';
-import { fileToBase64 } from '@utils/file';
+import { blobToFile, fileToBase64, getFileNameFromUrl } from '@utils/file';
 import { InscribeMintFeeRate } from '@enums/inscribe';
 import { calculateMintFee } from '@utils/inscribe';
 import cs from 'classnames';
@@ -27,6 +27,8 @@ import { getUserSelector } from '@redux/user/selector';
 import { WalletContext } from '@contexts/wallet-context';
 import RequestConnectWallet from '@containers/RequestConnectWallet';
 import { useRouter } from 'next/router';
+import { getNFTDetailFromMoralis } from '@services/token-moralis';
+import { IGenerateReceiverAddressPayload } from '@interfaces/api/inscribe';
 
 const LOG_PREFIX = 'Inscribe';
 
@@ -49,13 +51,25 @@ const Inscribe: React.FC = (): React.ReactElement => {
   );
   const [isProcessing, setIsProcessing] = useState(false);
   const router = useRouter();
-  const { _isAuthentic, _tokenAddress, _tokenId } = router.query;
+  const { isAuthentic, tokenAddress, tokenId } = router.query;
 
-  // const handleLoadFile = async (): Promise<void> => {
-  //   if (isAuthentic && tokenAddress && tokenId) {
-  //     const token  = await
-  //   }
-  // }
+  const handleLoadFile = async (): Promise<void> => {
+    try {
+      if (isAuthentic && tokenAddress && tokenId) {
+        const res = await getNFTDetailFromMoralis({
+          tokenAddress: tokenAddress as string,
+          tokenId: tokenId as string,
+        })
+        const metadata = JSON.parse(res.metadata);
+        const imageRes = await fetch(metadata.image);
+        const imageBlob = await imageRes.blob();
+        const fileName = getFileNameFromUrl(metadata.image);
+        setFile(blobToFile(fileName, imageBlob));
+      }
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+    }
+  }
 
   const handleChangeFile = (file: File | null): void => {
     setFile(file);
@@ -90,12 +104,19 @@ const Inscribe: React.FC = (): React.ReactElement => {
       const { address } = values;
       setIsMinting(true);
       setInscriptionInfo(null);
-      const res = await generateReceiverAddress({
+      const payload: IGenerateReceiverAddressPayload = {
         walletAddress: address,
         fileName: file?.name || '',
         file: fileBase64,
         fee_rate: feeRate,
-      });
+      }
+      if (tokenAddress) {
+        payload.tokenAddress = tokenAddress as string;
+      }
+      if (tokenId) {
+        payload.tokenId = tokenId as string;
+      }
+      const res = await generateReceiverAddress(payload);
       setInscriptionInfo(res);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -134,6 +155,12 @@ const Inscribe: React.FC = (): React.ReactElement => {
       setFileBase64(base64 as string);
     }
   }, [file]);
+
+  useEffect(() => {
+    if (router.isReady) {
+      handleLoadFile();
+    }
+  }, [router])
 
   if (!user) {
     return (

@@ -57,6 +57,10 @@ export const fileToBase64 = (
     reader.onerror = error => reject(error);
   });
 
+export const blobToFile = (fileName: string, fileBlob: Blob): File => {
+  return new File([fileBlob], fileName);
+}
+
 export const blobToBase64 = (
   blob: Blob
 ): Promise<string | ArrayBuffer | null> =>
@@ -80,3 +84,7 @@ export const getMediaTypeFromFileExt = (ext: string): MediaType | null => {
   }
   return null;
 };
+
+export const getFileNameFromUrl = (url: string): string => {
+  return url.substring(url.lastIndexOf('/') + 1, url.length);
+}

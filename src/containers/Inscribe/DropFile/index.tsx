@@ -8,7 +8,7 @@ import SvgInset from '@components/SvgInset';
 
 export interface IProps {
   className: string;
-  fileOrFiles?: File[] | null;
+  fileOrFiles: File[] | null;
   onChange: (files: File | null) => void;
 }
 
@@ -17,7 +17,7 @@ const DropFile: React.FC<IProps> = ({
   className,
   onChange,
 }: IProps) => {
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | null>(fileOrFiles?.length ? fileOrFiles[0] : null);
   const [error, setError] = useState<string | null>(null);
 
   const onChangeFile = (file: File): void => {
