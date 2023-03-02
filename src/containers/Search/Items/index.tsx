@@ -53,7 +53,7 @@ export const Items = (): JSX.Element => {
     getSearchByKeyword
   );
 
-  const [isLoaded, setIsLoaded] = useState<boolean>(true);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dataOrd, setdataOrd] = useState<any>([]);
   // const [currentPage,
@@ -65,7 +65,7 @@ export const Items = (): JSX.Element => {
       ...(resultByTokens?.result || []),
       ...(resultByInscriptions?.result || []),
     ]);
-    setIsLoaded(false);
+    setIsLoaded(true);
   }, []);
 
   const fetchDataOrdinals = async () => {
@@ -85,7 +85,7 @@ export const Items = (): JSX.Element => {
   };
 
   const debounceFetchDataOrdinals = debounce(fetchDataOrdinals, 300);
-  const itemByType = useMemo(() => {
+  const renderItemByType = useMemo(() => {
     const htmlList = [];
     for (let index = 0; index < dataOrd.length; index++) {
       const element = dataOrd[index];
@@ -128,7 +128,7 @@ export const Items = (): JSX.Element => {
   return (
     <div className={s.items}>
       <Row className={s.items_projects}>
-        {isLoaded ? (
+        {isLoaded === false ? (
           <Col xs={12}>
             <ProjectListLoading numOfItems={12} />
           </Col>
@@ -147,7 +147,7 @@ export const Items = (): JSX.Element => {
             }
             endMessage={<></>}
           >
-            {itemByType}
+            {renderItemByType}
           </InfiniteScroll>
         )}
       </Row>
