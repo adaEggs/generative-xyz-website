@@ -124,34 +124,6 @@ const Airdrop: React.FC = (): React.ReactElement => {
               </div>
             </div>
           </div>
-          <div className={s.contentWrapper}>
-            <div className="row align-items-center">
-              <div className="col-lg-6 col-12">
-                <div className="image__fit">
-                  <img src={`${CDN_URL}/images/airdrop-2.svg`} alt="visual" />
-                </div>
-              </div>
-              <div className={cs('col-lg-6 col-12', s.rightContent)}>
-                <h2 className={s.sectionTitle}>
-                  What will the keys do for you?
-                </h2>
-                <p className={s.sectionSubDescription}>
-                  There are many keys out there including: Silver Key, Golden
-                  Key, and Magic Key—which is extremely rare.
-                </p>
-                <p className={s.sectionSubDescription}>
-                  These keys can be used to open a Treasure box for $ART when we
-                  launch our token and protocol governance. The rarer the key,
-                  the better the rewards.
-                </p>
-                <p className={s.sectionSubDescription}>
-                  The second airdrop will also come soon after the first one and
-                  be even more impressive. Future airdrops will come at a later
-                  date so keep your eyes peeled!
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
