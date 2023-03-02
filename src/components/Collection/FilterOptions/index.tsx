@@ -19,9 +19,9 @@ const FilterOptions = ({ attributes }: Props) => {
     // setFilterBuyNow,
     filterTraits,
     setFilterTraits,
-    // query,
+    query,
     setQuery,
-    // setPage,
+    setPage,
     showFilter,
     setShowFilter,
     // filterPrice,
@@ -31,39 +31,51 @@ const FilterOptions = ({ attributes }: Props) => {
   const [sortedAttributes, setSortedAttributes] = useState<TraitStats[] | null>(
     null
   );
+  const [currentTraitOpen, setCurrentTraitOpen] = useState('');
 
   const initialAttributesMap = () => {
     const attrMap = new Map();
 
     attributes?.forEach(attr => {
+      const list: string[] = [];
       filterTraits.split(',').forEach(trait => {
         if (trait.split(':')[0] === attr.traitName) {
-          attrMap.set(attr.traitName, trait.split(':')[1]);
+          list.push(trait.split(':')[1]);
         }
       });
     });
     setQuery(attrMap);
   };
 
-  // const handleSelectFilter = (
-  //   values: { value: string; label: string }[],
-  //   attr: TraitStats
-  // ) => {
-  //   const newQuery = query?.set(attr.traitName, values[0].label);
-  //   let str = '';
-  //   newQuery?.forEach((value: string, key: string) => {
-  //     if (value) {
-  //       str += `,${key}:${value}`;
-  //     }
-  //   });
-  //   setFilterTraits(str.substring(1));
+  const handleSelectFilter = (
+    values: { value: string; label: string }[],
+    attr: TraitStats
+  ) => {
+    setCurrentTraitOpen(attr.traitName);
+    const attrListString: string[] = [];
+    values.forEach(value => {
+      const attrName = value.label.split(':')[0];
+      attrListString.push(attrName);
+    });
 
-  //   setPage(1);
-  // };
+    const newQuery = query?.set(attr.traitName, attrListString);
+    let str = '';
+    newQuery?.forEach((value: string[], key: string) => {
+      if (value) {
+        value.forEach(v => {
+          str += `,${key}:${v}`;
+        });
+      }
+    });
+    setFilterTraits(str.substring(1));
+
+    setPage(1);
+  };
 
   const handleResetAllFilter = () => {
     setFilterTraits('');
     initialAttributesMap();
+    setCurrentTraitOpen('');
   };
 
   // const handleMinPriceChange = (value: string) => {
@@ -200,9 +212,15 @@ const FilterOptions = ({ attributes }: Props) => {
                   // const defaultValue = options.filter(
                   //   option => option.value === query?.get(attr.traitName)
                   // );
+                  const defaultValue = options.filter(option => {
+                    if (query?.get(attr.traitName)?.includes(option.value)) {
+                      return option.value;
+                    }
+                  });
 
                   return (
                     <Select
+                      defaultMenuIsOpen={currentTraitOpen === attr.traitName}
                       id={`attributes-${v4()}`}
                       key={`attributes-${v4()}`}
                       isMulti
@@ -212,12 +230,16 @@ const FilterOptions = ({ attributes }: Props) => {
                       components={{
                         Option,
                       }}
+                      defaultValue={defaultValue}
                       classNamePrefix="select"
                       closeMenuOnSelect={false}
                       hideSelectedOptions={false}
-                      // onChange={(ops: MultiValue<any>) => {
-                      //   // setFieldValue('categories', ops);
-                      // }}
+                      controlShouldRenderValue={false}
+                      isClearable={false}
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      onChange={(ops: any) => {
+                        handleSelectFilter(ops, attr);
+                      }}
                       placeholder={attr.traitName}
                     />
                   );
