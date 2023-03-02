@@ -104,14 +104,14 @@ const ReferralTab = () => {
         volume: (
           <>
             {totalVolume === '0'
-              ? '--'
+              ? '-'
               : `${formatBTCPrice(totalVolume)} ${currency}`}
           </>
         ),
         earning: (
           <>
             {totalVolume === '0'
-              ? '--'
+              ? '-'
               : ` ${calculateWithdrawAmount} ${currency}`}
           </>
         ),
@@ -144,20 +144,24 @@ const ReferralTab = () => {
     <div className={s.wrapper}>
       {/* <Loading isLoaded={needLoading} className={s.loading} /> */}
       <div className={s.referral_link}>
-        <Heading as="h4" fontWeight="semibold">
-          Referral
-        </Heading>
-        <Stack direction="horizontal" className="justify-between">
-          <div>
-            <Text size="18" fontWeight="medium">
-              Refer an artist by sending your referral link to earn 1% of their
-              sale volume.
-            </Text>
-          </div>
+        <Stack gap={2}>
+          <Heading as="h4" fontWeight="medium">
+            Referral
+          </Heading>
+          <Text size="18">
+            Refer an artist by sending your referral link to{' '}
+            <Text size="18" as="span" fontWeight="semibold">
+              earn 1%
+            </Text>{' '}
+            of their sale volume.
+          </Text>
+        </Stack>
+        <Stack className={s.referral_link_wrapper}>
+          <Text size="12" fontWeight="medium" color="black-60">
+            REFFERAL LINK
+          </Text>
           <div className={s.link}>
-            <Text size="18" fontWeight="medium">
-              {referralLink}
-            </Text>
+            <Text>{referralLink}</Text>
             <SvgInset
               onClick={() => {
                 copy(referralLink || '');

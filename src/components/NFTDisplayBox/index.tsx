@@ -201,7 +201,6 @@ const NFTDisplayBox = ({
             setHTMLContentRender(renderImage());
             return;
           case 'application/json':
-          case 'application/pdf':
           case 'application/pgp-signature':
           case 'application/yaml':
           case 'audio/flac':
@@ -212,6 +211,7 @@ const NFTDisplayBox = ({
           case 'text/html;charset=utf-8':
             handleRenderHTML();
             return;
+          case 'application/pdf':
           case 'text/plain;charset=utf-8':
             setHTMLContentRender(renderIframe());
             return;
