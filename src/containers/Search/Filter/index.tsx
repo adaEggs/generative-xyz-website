@@ -10,7 +10,7 @@ import SvgInset from '@components/SvgInset';
 import { prettyNumberWithCommas } from '@utils/units';
 
 import s from './Filter.module.scss';
-import { PAYLOAD_DEFAULT } from '../constant';
+import { PAYLOAD_DEFAULT, OBJECT_TYPE } from '../constant';
 
 interface FilterProps {
   className?: string;
@@ -20,7 +20,11 @@ const Filter = ({ className }: FilterProps): JSX.Element => {
   const router = useRouter();
   const { keyword = '' } = router.query;
 
-  const filterParams = { ...PAYLOAD_DEFAULT, keyword };
+  const filterParams = {
+    ...PAYLOAD_DEFAULT,
+    keyword,
+    type: OBJECT_TYPE.ARTIST,
+  };
   const { data: searchResults } = useSWR(
     getApiKey(getSearchByKeyword, filterParams),
     getSearchByKeyword
