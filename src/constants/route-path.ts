@@ -25,7 +25,7 @@ export const ROUTE_PATH = {
   SATOSHIS_PAGE: '/satoshis',
   WALLET: '/wallet',
   ARTISTS: '/artists',
-  FREE: '/free',
+  FREE_INSCRIPTION: '/free',
   AUTHENTIC: '/authentic',
   AIRDROP: '/airdrop',
 };
