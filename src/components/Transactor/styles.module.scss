@@ -1,0 +1,61 @@
+.modalWrapper {
+  :global(.modal-dialog) {
+    min-width: fit-content;
+  }
+
+  :global(.modal-content) {
+    width: fit-content;
+    padding: rem(42px) rem(24px);
+    position: relative;
+
+    @include mobile {
+      min-width: 100%;
+    }
+  }
+
+  :global(.modal-body) {
+    width: 100%;
+    padding-top: 0;
+
+    @include min-tablet {
+      width: 520px;
+    }
+
+    @include min-pc-superWide {
+      width: 520px;
+    }
+  }
+}
+
+.modalHeader {
+  border: none;
+
+  &_title {
+    font-weight: 700;
+    color: $black-100;
+    margin-bottom: rem(24px);
+    line-height: 140%;
+
+    @include calcFontAuto(18px, 24px);
+  }
+
+  &_closeBtn {
+    padding: rem(24px) !important;
+    background-color: transparent !important;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &:hover {
+      .closeIcon {
+        transform: rotate(90deg);
+        transition: all 0.3s;
+
+        :global(svg path) {
+          fill: $black-100;
+          fill-opacity: 1;
+        }
+      }
+    }
+  }
+}

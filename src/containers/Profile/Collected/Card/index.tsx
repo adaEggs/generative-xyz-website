@@ -19,6 +19,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import SendInscriptionModal from '@containers/Profile/Collected/Modal/SendInscription';
 import { HistoryStatusType } from '@interfaces/api/bitcoin';
 import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
+import ButtonListForSale from '@components/Transactor/ButtonListForSale';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -213,10 +214,20 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   </ButtonIcon>
                 </TwitterShareButton>
               )}
+              {!!project?.inscriptionID && isOwner && (
+                <Link
+                  href=""
+                  onClick={() => {
+                    // TODO
+                  }}
+                >
+                  <ButtonListForSale inscriptionID={project.inscriptionID} />
+                </Link>
+              )}
               {showSendButton && (
                 <Link href="" onClick={toggleModal}>
                   <ButtonIcon
-                    variants="primary"
+                    variants="outline"
                     className={s.projectCard_status_sendBtn}
                   >
                     Send
