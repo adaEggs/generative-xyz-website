@@ -26,7 +26,7 @@ interface IPros {
   index?: number;
 }
 
-export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
+const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
   const user = useAppSelector(getUserSelector);
   const [showSendModal, setShowSendModal] = React.useState(false);
@@ -252,3 +252,5 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     </>
   );
 };
+
+export default React.memo(CollectedCard);
