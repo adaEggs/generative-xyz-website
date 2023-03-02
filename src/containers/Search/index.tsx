@@ -1,7 +1,7 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
 
-// import Items from './Items';
+import Items from './Items';
 import Filter from './Filter';
 import Collection from './Collection';
 import s from './Search.module.scss';
@@ -14,7 +14,7 @@ const SearchPage = (): JSX.Element => {
       <Container>
         <Collection />
         <Filter />
-        {/* <Items /> */}
+        <Items />
       </Container>
     </div>
   );

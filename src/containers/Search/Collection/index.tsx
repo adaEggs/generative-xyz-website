@@ -2,104 +2,99 @@ import React from 'react';
 import Image from 'next/image';
 import { Row, Col } from 'react-bootstrap';
 import cn from 'classnames';
+import useSWR from 'swr';
+import { useRouter } from 'next/router';
 
+import { IProjectItem } from '@interfaces/api/search';
+import { getSearchByKeyword, getApiKey } from '@services/search';
+import { ROUTE_PATH } from '@constants/route-path';
 import Slider from '@components/Slider';
+import Link from '@components/Link';
 
 import s from './Collection.module.scss';
+import { PAYLOAD_DEFAULT, OBJECT_TYPE } from '../constant';
 
 interface CollectionProps {
   className?: string;
 }
 
-const SLIDER_SETTING = {
-  slidesToShow: 4,
-  slidesToScroll: 1,
-  infinite: true,
-  dots: true,
-  arrows: true,
+export const CollectionItem = ({
+  tokenId,
+  image,
+  name,
+  creatorAddr,
+  mintPrice,
+  index,
+  maxSupply,
+}: IProjectItem): JSX.Element => {
+  return (
+    <Link href={`${ROUTE_PATH.GENERATIVE}/${tokenId}`}>
+      <div className={s.collection_item}>
+        <div className={s.collection_img}>
+          <Image src={image} width={235} height={368} alt={name} />
+        </div>
+        <div className={s.collection_info}>
+          <div className={s.collection_info_name}>{creatorAddr}</div>
+          <div className={s.collection_info_aliasName}>{name}</div>
+          <div className={s.collection_info_payment}>
+            {mintPrice}&nbsp;BTC
+            <span className={s.collection_info_dot}>•</span>
+            {index}/{maxSupply}&nbsp;minted
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
 };
 
-const COLLECTIONS = [
-  {
-    id: 0,
-    imgUrl:
-      'https://cdn.generative.xyz/upload/1677443626-b39s9u4kembdh8bis8qfkscjn6t0q4srvqjkia6ht7kuc80eu24vuttzsqptl4fji0_preview_(6).jpg',
-    name: 'EndlessWorld',
-    name2: 'FantasPoly',
-    amount: '0.02 BTC',
-    hasMin: '50/100 minted',
-  },
-  {
-    id: 2,
-    imgUrl: 'https://cdn.generative.xyz/upload/1676880061-thumbnails.jpg',
-    name: 'EndlessWorld',
-    name2: 'FantasPoly',
-    amount: '0.02 BTC',
-    hasMin: '50/100 minted',
-  },
-  {
-    id: 3,
-    imgUrl:
-      'https://cdn.generative.xyz/upload/1676630151-1676496550-ab04689000dfdfde70035ad699c3212bd808d850d192b0f90fb8d77cced9713ei0.png',
-    name: 'EndlessWorld',
-    name2: 'FantasPoly',
-    amount: '0.02 BTC',
-    hasMin: '50/100 minted',
-  },
-  {
-    id: 4,
-    imgUrl: 'https://cdn.generative.xyz/upload/1676855420-compressed.gif',
-    name: 'EndlessWorld',
-    name2: 'FantasPoly',
-    amount: '0.02 BTC',
-    hasMin: '50/100 minted',
-  },
-  {
-    id: 5,
-    imgUrl: 'https://cdn.generative.xyz/upload/1677256927-angular.png',
-    name: 'EndlessWorld',
-    name2: 'FantasPoly',
-    amount: '0.02 BTC',
-    hasMin: '50/100 minted',
-  },
-];
-
 const Collection = ({ className }: CollectionProps): JSX.Element => {
+  const router = useRouter();
+
+  const { keyword = '' } = router.query;
+  const filterParams = {
+    ...PAYLOAD_DEFAULT,
+    keyword,
+    type: OBJECT_TYPE.PROJECT,
+  };
+  const { data } = useSWR(
+    getApiKey(getSearchByKeyword, filterParams),
+    getSearchByKeyword
+  );
+  const collections = data?.result || [];
+
+  if (collections?.length < 1) return <></>;
+
+  const SLIDER_SETTING = {
+    slidesToShow: 4,
+    slidesToScroll: 4,
+    infinite: collections.length > 4,
+    dots: true,
+    arrows: true,
+  };
+
   return (
     <div className={cn(s.collection, className)}>
       <Row>
-        <Col md={12}>
-          <h6 className={s.collection_title}>Collection results</h6>
-          <Slider settings={SLIDER_SETTING}>
-            {COLLECTIONS.map(collection => (
-              <div key={collection.id}>
-                <div className={s.collection_item}>
-                  <div className={s.collection_img}>
-                    <Image
-                      src={collection.imgUrl}
-                      width={235}
-                      height={368}
-                      alt={collection.name}
-                    />
-                  </div>
-                  <div className={s.collection_info}>
-                    <div className={s.collection_info_name}>
-                      {collection.name}
-                    </div>
-                    <div className={s.collection_info_aliasName}>
-                      {collection.name2}
-                    </div>
-                    <div className={s.collection_info_payment}>
-                      {collection.amount}
-                      <span className={s.collection_info_dot}>•</span>
-                      {collection.hasMin}
-                    </div>
-                  </div>
-                </div>
-              </div>
+        <h6 className={s.collection_title}>Collection results</h6>
+        {collections.length <= 4 ? (
+          <Row>
+            {collections.map(collection => (
+              <Col key={collection?.project?.objectId} md={3}>
+                <CollectionItem {...collection?.project} />
+              </Col>
             ))}
-          </Slider>
-        </Col>
+          </Row>
+        ) : (
+          <Col md={12}>
+            <Slider settings={SLIDER_SETTING}>
+              {collections.map(collection => (
+                <div key={collection?.project?.objectId}>
+                  <CollectionItem {...collection?.project} />
+                </div>
+              ))}
+            </Slider>
+          </Col>
+        )}
       </Row>
     </div>
   );

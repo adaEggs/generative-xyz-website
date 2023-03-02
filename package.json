@@ -78,6 +78,7 @@
     "slick-carousel": "^1.8.1",
     "split-type": "^0.3.3",
     "supports-webp": "^3.0.0",
+    "swr": "^2.0.4",
     "three": "^0.149.0",
     "unzipit": "^1.4.0",
     "use-async-effect": "^2.2.7",

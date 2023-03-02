@@ -1,9 +1,5 @@
 .items {
   &_projects {
-    div[class$='innerScrollContainer'] {
-      // display: flex;
-      // flex-wrap: wrap;
-    }
   }
   &_projectItem {
     display: inline-block;
