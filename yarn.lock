@@ -4406,9 +4406,9 @@ functions-have-names@^1.2.2:
   resolved "https://registry.yarnpkg.com/functions-have-names/-/functions-have-names-1.2.3.tgz#0404fe4ee2ba2f607f0e0ec3c80bae994133b834"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
-"generative-sdk@https://github.com/generative-xyz/generative-sdk#0.0.15":
+"generative-sdk@https://github.com/generative-xyz/generative-sdk#0.0.16":
   version "0.0.1"
-  resolved "https://github.com/generative-xyz/generative-sdk#cb8ddcced046efef2db5234e166c5a34e96502b8"
+  resolved "https://github.com/generative-xyz/generative-sdk#88539e2ca6e90c7c51ba1f593d151a2448e02528"
   dependencies:
     "@bitcoinerlab/secp256k1" "^1.0.2"
     "@types/node" "^17.0.13"

@@ -113,6 +113,11 @@
       margin-bottom: rem(24px);
       display: flex;
       gap: rem(16px);
+
+      &_receiver {
+        width: 75%;
+        justify-content: center;
+      }
     }
   }
 
@@ -147,8 +152,12 @@
   }
 }
 
-.editProfile,
-.bio {
+.wallet_tooltip {
+  width: rem(360);
+  text-align: left;
+}
+
+.editProfile {
   margin-top: rem(24px);
 }
 
@@ -218,6 +227,20 @@
       svg,
       path {
         fill: #3cf;
+      }
+    }
+  }
+
+  &_bio {
+    align-items: flex-start;
+
+    .info_icon {
+      width: rem(24);
+      transform: translateY(6px);
+
+      svg {
+        margin-left: auto;
+        margin-right: auto;
       }
     }
   }

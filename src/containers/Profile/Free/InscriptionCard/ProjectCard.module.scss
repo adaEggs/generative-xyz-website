@@ -1,0 +1,61 @@
+.inscriptionCard {
+  cursor: pointer;
+
+  &.unverifiedInscription {
+    cursor: default;
+  }
+
+  .cardInner {
+    background: #fff;
+    border: 1px solid rgb(0 0 0 / 20%);
+    border-radius: 2px;
+    min-height: 100%;
+    transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
+    position: relative;
+
+    &:hover {
+      box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
+      border-color: #1c1c1c;
+    }
+  }
+
+  .thumbnailWrapper {
+    position: relative;
+    padding-bottom: 100%;
+    border-radius: 2px;
+
+    .defaultImage {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  }
+
+  .iframeWrapper {
+    padding: rem(16px);
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+
+    iframe {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .inscriptionInfo {
+    padding: rem(16px);
+
+    .statusText {
+      color: $black-40;
+      font-style: italic;
+    }
+
+    .title {
+      word-break: break-word;
+    }
+  }
+}

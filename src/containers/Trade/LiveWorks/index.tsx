@@ -30,7 +30,9 @@ export const LiveWorks = (): JSX.Element => {
   const onShowModal = () => {
     onButtonClick({
       cbSigned: () => setShowModal(true),
-    }).then();
+    })
+      .then()
+      .catch();
   };
 
   const router = useRouter();

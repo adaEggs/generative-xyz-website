@@ -120,7 +120,13 @@ const TokenID: React.FC = (): React.ReactElement => {
           </Text>
         )}
         {tokenData.buyable ? (
-          <>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
             <ButtonIcon
               sizes="large"
               className={s.info_buyBtn}
@@ -135,7 +141,7 @@ const TokenID: React.FC = (): React.ReactElement => {
                 <ButtonIcon
                   sizes="large"
                   className={s.info_buyBtn}
-                  style={{ marginTop: 8 }}
+                  style={{ marginLeft: 8 }}
                   onClick={onClickBuyETH}
                   variants="outline"
                 >
@@ -146,7 +152,7 @@ const TokenID: React.FC = (): React.ReactElement => {
                   </Text>
                 </ButtonIcon>
               )}
-          </>
+          </div>
         ) : (
           <ButtonIcon
             sizes="large"
@@ -238,7 +244,7 @@ const TokenID: React.FC = (): React.ReactElement => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    fetchData().then();
+    fetchData().then().catch();
     const intervalID = setInterval(fetchData, 60000);
     return () => {
       clearInterval(intervalID);

@@ -1,8 +1,18 @@
-import ButtonIcon from '@components/ButtonIcon';
+import ButtonIcon, { ButtonSizesType } from '@components/ButtonIcon';
 import ModalSendBTC from '@containers/Profile/ButtonSendBTC/ModalSendBTC';
 import React from 'react';
 
-const ButtonSendBTC = ({ className }: { className?: string }) => {
+interface IProps {
+  className?: string;
+  title?: string;
+  sizes?: ButtonSizesType;
+}
+
+const ButtonSendBTC = ({
+  className,
+  title = 'Send BTC',
+  sizes = 'large',
+}: IProps) => {
   const [isShow, setShow] = React.useState(false);
 
   const toggle = () => setShow(value => !value);
@@ -11,13 +21,13 @@ const ButtonSendBTC = ({ className }: { className?: string }) => {
     <>
       <ButtonIcon
         variants={'outline'}
-        sizes={'large'}
+        sizes={sizes}
         onClick={toggle}
         className={`${className}`}
       >
-        Send
+        {title}
       </ButtonIcon>
-      <ModalSendBTC isShow={isShow} onHideModal={toggle} />
+      <ModalSendBTC isShow={isShow} onHideModal={toggle} title={title} />
     </>
   );
 };

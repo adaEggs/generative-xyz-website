@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import DropFile from './DropFile';
 import s from './styles.module.scss';
 import { Formik } from 'formik';
@@ -11,7 +11,7 @@ import { generateReceiverAddress } from '@services/inscribe';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import useAsyncEffect from 'use-async-effect';
-import { fileToBase64 } from '@utils/file';
+import { blobToBase64, blobToFile, fileToBase64 } from '@utils/file';
 import { InscribeMintFeeRate } from '@enums/inscribe';
 import { calculateMintFee } from '@utils/inscribe';
 import cs from 'classnames';
@@ -22,6 +22,18 @@ import ClientOnly from '@components/Utils/ClientOnly';
 import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 import BigNumber from 'bignumber.js';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
+import { WalletContext } from '@contexts/wallet-context';
+import RequestConnectWallet from '@containers/RequestConnectWallet';
+import { useRouter } from 'next/router';
+import { getNFTDetailFromMoralis } from '@services/token-moralis';
+import { IGenerateReceiverAddressPayload } from '@interfaces/api/inscribe';
+import { checkForHttpRegex } from '@utils/string';
+import { convertIpfsToHttp, isValidImage } from '@utils/image';
+import { dataURItoBlob } from '@containers/ObjectPreview/GltfPreview/helpers';
+import { v4 as uuidv4 } from 'uuid';
+import { resizeImage } from '@services/file';
 
 const LOG_PREFIX = 'Inscribe';
 
@@ -30,6 +42,8 @@ interface IFormValue {
 }
 
 const Inscribe: React.FC = (): React.ReactElement => {
+  const user = useSelector(getUserSelector);
+  const walletCtx = useContext(WalletContext);
   const [file, setFile] = useState<File | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
   const [show, setShow] = useState<boolean>(false);
@@ -40,9 +54,101 @@ const Inscribe: React.FC = (): React.ReactElement => {
   const [feeRate, setFeeRate] = useState<InscribeMintFeeRate>(
     InscribeMintFeeRate.FASTEST
   );
+  const [isProcessing, setIsProcessing] = useState(false);
+  const router = useRouter();
+  const { isAuthentic, tokenAddress, tokenId } = router.query;
+
+  const resetAuthenticQueryParams = (): void => {
+    const { pathname, query } = router;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const params = new URLSearchParams(query as any);
+    params.delete('isAuthentic');
+    params.delete('tokenAddress');
+    params.delete('tokenId');
+    router.replace({ pathname, query: params.toString() }, undefined, {
+      shallow: true,
+    });
+  };
+
+  const handleResizeImage = async (imageBlob: Blob): Promise<File | null> => {
+    // Check if image larger than 1MB
+    if (imageBlob.size > 1024 * 1024) {
+      // Call API to get resized base64 string
+      try {
+        const fileBase64 = await blobToBase64(imageBlob);
+        const { file: resizedImageBase64 } = await resizeImage({
+          file: fileBase64 as string,
+        });
+        if (!resizedImageBase64) {
+          resetAuthenticQueryParams();
+          return null;
+        }
+        const resizedBlob = dataURItoBlob(resizedImageBase64);
+        return blobToFile(
+          `${uuidv4()}.${resizedBlob.type.replace('image/', '')}`,
+          resizedBlob
+        );
+      } catch (err: unknown) {
+        log('can not resize image', LogLevel.ERROR, LOG_PREFIX);
+        resetAuthenticQueryParams();
+        return null;
+      }
+    }
+    // If not, convert to File object and return
+    else {
+      return blobToFile(
+        `${uuidv4()}.${imageBlob.type.replace('image/', '')}`,
+        imageBlob
+      );
+    }
+  };
+
+  const handleLoadFile = async (): Promise<void> => {
+    try {
+      if (isAuthentic && tokenAddress && tokenId) {
+        const res = await getNFTDetailFromMoralis({
+          tokenAddress: tokenAddress as string,
+          tokenId: tokenId as string,
+        });
+        const metadata = JSON.parse(res.metadata);
+
+        if ((metadata.image as string).includes('ipfs')) {
+          metadata.image = convertIpfsToHttp(metadata.image);
+        }
+
+        // Handle link
+        if (checkForHttpRegex(metadata.image)) {
+          // Check if url is image
+          const isValidUrl = await isValidImage(metadata.image);
+          if (isValidUrl) {
+            const imageRes = await fetch(metadata.image);
+            const imageBlob = await imageRes.blob();
+            const resizedImage = await handleResizeImage(imageBlob);
+            setFile(resizedImage);
+          } else {
+            resetAuthenticQueryParams();
+          }
+        }
+        // Handle base64
+        else {
+          const isValidBase64 = await isValidImage(metadata.image);
+          if (isValidBase64) {
+            const imageBlob = dataURItoBlob(metadata.image);
+            const resizedImage = await handleResizeImage(imageBlob);
+            setFile(resizedImage);
+          } else {
+            resetAuthenticQueryParams();
+          }
+        }
+      }
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+    }
+  };
 
   const handleChangeFile = (file: File | null): void => {
     setFile(file);
+    handleResizeImage(file as Blob);
   };
 
   const handleChangeFee = (fee: InscribeMintFeeRate): void => {
@@ -74,18 +180,43 @@ const Inscribe: React.FC = (): React.ReactElement => {
       const { address } = values;
       setIsMinting(true);
       setInscriptionInfo(null);
-      const res = await generateReceiverAddress({
+      const payload: IGenerateReceiverAddressPayload = {
         walletAddress: address,
         fileName: file?.name || '',
         file: fileBase64,
         fee_rate: feeRate,
-      });
+      };
+      if (tokenAddress) {
+        payload.tokenAddress = tokenAddress as string;
+      }
+      if (tokenId) {
+        payload.tokenId = tokenId as string;
+      }
+      const res = await generateReceiverAddress(payload);
       setInscriptionInfo(res);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       toast.error(ErrorMessage.DEFAULT);
     } finally {
       setIsMinting(false);
+    }
+  };
+
+  const handleCopy = (): void => {
+    if (!inscriptionInfo) return;
+    navigator.clipboard.writeText(inscriptionInfo.segwitAddress);
+    toast.remove();
+    toast.success('Copied');
+  };
+
+  const handleConnectWallet = async (): Promise<void> => {
+    try {
+      setIsProcessing(true);
+      await walletCtx.connect();
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -101,12 +232,20 @@ const Inscribe: React.FC = (): React.ReactElement => {
     }
   }, [file]);
 
-  const handleCopy = (): void => {
-    if (!inscriptionInfo) return;
-    navigator.clipboard.writeText(inscriptionInfo.segwitAddress);
-    toast.remove();
-    toast.success('Copied');
-  };
+  useEffect(() => {
+    if (router.isReady) {
+      handleLoadFile();
+    }
+  }, [router]);
+
+  if (!user) {
+    return (
+      <RequestConnectWallet
+        isProcessing={isProcessing}
+        handleConnectWallet={handleConnectWallet}
+      />
+    );
+  }
 
   return (
     <ClientOnly>
@@ -134,14 +273,16 @@ const Inscribe: React.FC = (): React.ReactElement => {
                     <div className={s.formContent}>
                       <div className={s.formLeft}>
                         <div className={s.formItem}>
-                          <DropFile
-                            className={s.dropZoneContainer}
-                            onChange={handleChangeFile}
-                            fileOrFiles={file ? [file] : null}
-                          />
-                          {fileError && (
-                            <p className={s.inputError}>{fileError}</p>
-                          )}
+                          <div className={s.dropZoneWrapper}>
+                            <DropFile
+                              className={s.dropZoneContainer}
+                              onChange={handleChangeFile}
+                              fileOrFiles={file ? [file] : null}
+                            />
+                            {fileError && (
+                              <p className={s.inputError}>{fileError}</p>
+                            )}
+                          </div>
                         </div>
                       </div>
                       <div className={s.formRight}>
@@ -199,7 +340,8 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                     {`${formatBTCPrice(
                                       calculateMintFee(
                                         InscribeMintFeeRate.ECONOMY,
-                                        file?.size || 0
+                                        file?.size || 0,
+                                        !!isAuthentic
                                       )
                                     )} BTC`}
                                   </p>
@@ -222,7 +364,8 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                     {`${formatBTCPrice(
                                       calculateMintFee(
                                         InscribeMintFeeRate.FASTER,
-                                        file?.size || 0
+                                        file?.size || 0,
+                                        !!isAuthentic
                                       )
                                     )} BTC`}
                                   </p>
@@ -247,7 +390,8 @@ const Inscribe: React.FC = (): React.ReactElement => {
                                     {`${formatBTCPrice(
                                       calculateMintFee(
                                         InscribeMintFeeRate.FASTEST,
-                                        file?.size || 0
+                                        file?.size || 0,
+                                        !!isAuthentic
                                       )
                                     )} BTC`}
                                   </p>
@@ -311,7 +455,11 @@ const Inscribe: React.FC = (): React.ReactElement => {
                               That’s it. Check your wallet in about an hour.
                             </div>
                           ) : (
-                            <Button disabled={isMinting} type="submit">
+                            <Button
+                              className={s.submitBtn}
+                              disabled={isMinting}
+                              type="submit"
+                            >
                               Inscribe
                             </Button>
                           )}

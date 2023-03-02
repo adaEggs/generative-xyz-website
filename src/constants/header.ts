@@ -45,6 +45,24 @@ export const MENU_HEADER = [
     route: ROUTE_PATH.WALLET,
     activePath: '/wallet',
   },
+  {
+    id: 'menu-8',
+    name: 'Free Inscription',
+    route: ROUTE_PATH.FREE_INSCRIPTION,
+    activePath: 'free-inscription',
+  },
+  {
+    id: 'menu-9',
+    name: 'Airdrop',
+    route: ROUTE_PATH.AIRDROP,
+    activePath: 'airdrop',
+  },
+  {
+    id: 'menu-10',
+    name: 'Authentic Inscription (coming soon)',
+    route: ROUTE_PATH.AUTHENTIC,
+    activePath: 'authentic',
+  },
 ];
 
 export const RIGHT_MENU = [

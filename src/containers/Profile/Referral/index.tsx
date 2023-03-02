@@ -8,23 +8,30 @@ import ToogleSwitch from '@components/Toggle';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
+import { CurrencyType } from '@enums/currency';
+import { LogLevel } from '@enums/log-level';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
+import { withdrawRewardEarned } from '@services/profile';
 import { formatBTCPrice, formatLongAddress } from '@utils/format';
+import log from '@utils/logger';
+import cs from 'classnames';
 import copy from 'copy-to-clipboard';
-import { useContext, useMemo, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
+import ArtistCollectionEarn from './ArtistCollectionEarn';
 import s from './Referral.module.scss';
-// import ToogleSwitch from '@components/Toggle';
+
+const LOG_PREFIX = 'ReferralTab';
 
 const ReferralTab = () => {
   const user = useAppSelector(getUserSelector);
+  const router = useRouter();
+  const { referralListing, currency, setCurrency } = useContext(ProfileContext);
 
-  const { referralListing, isLoadedProfileReferral } =
-    useContext(ProfileContext);
-
-  const [isETHCurrency, setIsCurrency] = useState(false);
+  // const [isETHCurrency, setIsETHCurrency] = useState(false);
 
   const TABLE_REFERRALS_HEADING = [
     'Referee',
@@ -34,8 +41,14 @@ const ReferralTab = () => {
       <Stack direction="horizontal" gap={2} className={s.switch_currency}>
         <ToogleSwitch
           size="16"
-          checked={isETHCurrency}
-          onChange={() => setIsCurrency(!isETHCurrency)}
+          checked={currency === CurrencyType.ETH}
+          onChange={() => {
+            if (currency === CurrencyType.ETH) {
+              setCurrency(CurrencyType.BTC);
+            } else {
+              setCurrency(CurrencyType.ETH);
+            }
+          }}
         />
         <Text fontWeight="medium" color="primary-color">
           ETH
@@ -46,17 +59,41 @@ const ReferralTab = () => {
 
   const referralLink = `${location.origin}${ROUTE_PATH.HOME}?referral_code=${user?.id}`;
 
+  const handleWithdraw = async (amount: string, id: string) => {
+    const payload = {
+      amount,
+      paymentType: currency.toLowerCase(),
+      type: 'referal',
+      id,
+    };
+
+    try {
+      await withdrawRewardEarned(payload);
+    } catch (err: unknown) {
+      log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
+      throw Error();
+    }
+  };
+
   const referralData = referralListing?.result?.map(item => {
-    const withdrawAmount = '10000000'; // 0.1 BTC
+    const totalVolume = item.referreeVolumn?.amount;
     const calculateWithdrawAmount = formatBTCPrice(
-      Number(withdrawAmount) / 100
+      Number(item.referreeVolumn.earn)
     );
 
     return {
       id: `${item.referreeID}-referral`,
       render: {
         user: (
-          <Stack direction="horizontal" className={s.referee}>
+          <Stack
+            direction="horizontal"
+            className={cs(s.referee, 'cursor-pointer')}
+            onClick={() =>
+              router.push(
+                `${ROUTE_PATH.PROFILE}/${item.referree.walletAddress}`
+              )
+            }
+          >
             <Avatar imgSrcs={item.referree?.avatar} width={48} height={48} />
             <Text size="14" fontWeight="medium">
               {item.referree?.displayName ||
@@ -66,13 +103,16 @@ const ReferralTab = () => {
         ),
         volume: (
           <>
-            {formatBTCPrice(item.referree?.volume || withdrawAmount)}{' '}
-            {isETHCurrency ? 'ETH' : 'BTC'}
+            {totalVolume === '0'
+              ? '-'
+              : `${formatBTCPrice(totalVolume)} ${currency}`}
           </>
         ),
         earning: (
           <>
-            {calculateWithdrawAmount} {isETHCurrency ? 'ETH' : 'BTC'}
+            {totalVolume === '0'
+              ? '-'
+              : ` ${calculateWithdrawAmount} ${currency}`}
           </>
         ),
         action: (
@@ -80,7 +120,10 @@ const ReferralTab = () => {
             <ButtonIcon
               sizes="small"
               variants="outline-small"
-              disabled={!withdrawAmount}
+              disabled={!Number(calculateWithdrawAmount)}
+              onClick={() =>
+                handleWithdraw(item.referreeVolumn.earn || '', item.referreeID)
+              }
             >
               Withdraw
             </ButtonIcon>
@@ -90,21 +133,35 @@ const ReferralTab = () => {
     };
   });
 
-  const calculateTotalWithdraw = useMemo(() => {
-    return 0;
-  }, []);
+  // const calculateTotalWithdraw = referralListing?.result.reduce(
+  //   (total, currentValue) => {
+  //     return total + parseFloat(currentValue?.referreeVolumn?.earn || '');
+  //   },
+  //   0
+  // );
 
   return (
     <div className={s.wrapper}>
+      {/* <Loading isLoaded={needLoading} className={s.loading} /> */}
       <div className={s.referral_link}>
-        <Stack direction="horizontal" className="justify-between">
-          <Heading as="h4" fontWeight="bold">
-            Referral List:
+        <Stack gap={2}>
+          <Heading as="h4" fontWeight="medium">
+            Referral
           </Heading>
+          <Text size="18">
+            Refer an artist by sending your referral link to{' '}
+            <Text size="18" as="span" fontWeight="semibold">
+              earn 1%
+            </Text>{' '}
+            of their sale volume.
+          </Text>
+        </Stack>
+        <Stack className={s.referral_link_wrapper}>
+          <Text size="12" fontWeight="medium" color="black-60">
+            REFFERAL LINK
+          </Text>
           <div className={s.link}>
-            <Text size="18" fontWeight="medium">
-              {referralLink}
-            </Text>
+            <Text>{referralLink}</Text>
             <SvgInset
               onClick={() => {
                 copy(referralLink || '');
@@ -118,30 +175,34 @@ const ReferralTab = () => {
           </div>
         </Stack>
       </div>
-      {isLoadedProfileReferral && (
-        <>
-          <Table
-            tableHead={TABLE_REFERRALS_HEADING}
-            data={referralData}
-            className={s.Refferal_table}
-          ></Table>
-          <div className={s.Withdraw_all}>
-            <ButtonIcon
-              sizes="large"
-              className={s.Withdraw_all_btn}
-              disabled={!calculateTotalWithdraw}
-            >
-              <span>Withdraw all</span>
-              {!!calculateTotalWithdraw && (
-                <>
-                  <span className={s.dots}></span>
-                  <span>{calculateTotalWithdraw} BTC</span>
-                </>
-              )}
-            </ButtonIcon>
-          </div>
-        </>
-      )}
+
+      <Table
+        tableHead={TABLE_REFERRALS_HEADING}
+        data={referralData}
+        className={s.Refferal_table}
+      ></Table>
+      {/* {!!calculateTotalWithdraw && (
+        <div className={s.Withdraw_all}>
+          <ButtonIcon
+            sizes="large"
+            className={s.Withdraw_all_btn}
+            disabled={!calculateTotalWithdraw}
+            onClick={() => handleWithdraw(`${calculateTotalWithdraw}`)}
+          >
+            <span>Withdraw all</span>
+            <>
+              <span className={s.dots}></span>
+              <span>
+                {currency === CurrencyType.ETH
+                  ? formatEthPrice(`${calculateTotalWithdraw}`)
+                  : formatBTCPrice(calculateTotalWithdraw)}
+                {currency}
+              </span>
+            </>
+          </ButtonIcon>
+        </div>
+      )} */}
+      <ArtistCollectionEarn />
     </div>
   );
 };

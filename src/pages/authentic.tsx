@@ -1,23 +1,23 @@
-import { NextPage } from 'next';
 import MarketplaceLayout from '@layouts/Marketplace';
-import Inscribe from '@containers/Inscribe';
+import { NextPage } from 'next';
+import Authentic from '@containers/Authentic';
 import { CDN_URL } from '@constants/config';
 
-const MintToolPage: NextPage = () => {
+const AuthenticPage: NextPage = () => {
   return (
-    <MarketplaceLayout isHideFaucet={true}>
-      <Inscribe />
+    <MarketplaceLayout>
+      <Authentic />
     </MarketplaceLayout>
   );
 };
 
-export default MintToolPage;
+export default AuthenticPage;
 
 export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: 'Generative | Inscribe',
+        title: 'Generative | Authentic',
         description: 'Inscribe NFTs on Bitcoin. For free.',
         image: `${CDN_URL}/images/marketplace.jpg`,
       },

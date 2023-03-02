@@ -13,9 +13,10 @@ import { toast } from 'react-hot-toast';
 interface IProps {
   isShow: boolean;
   onHideModal: () => void;
+  title: string;
 }
 
-const ModalReceiver = ({ isShow, onHideModal }: IProps): JSX.Element => {
+const ModalReceiver = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
   const { currentUser } = useContext(ProfileContext);
 
   return (
@@ -32,7 +33,7 @@ const ModalReceiver = ({ isShow, onHideModal }: IProps): JSX.Element => {
           />
         </Button>
         <Text className={s.modalHeader_title} size="20">
-          Receive Inscription
+          {title}
         </Text>
       </Modal.Header>
       <Modal.Body>

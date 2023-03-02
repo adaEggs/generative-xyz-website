@@ -3,8 +3,9 @@ import { default as BSTable } from 'react-bootstrap/Table';
 import { v4 } from 'uuid';
 import cs from 'classnames';
 import s from './styles.module.scss';
+import { Empty } from '@components/Collection/Empty';
 
-type TColumn = {
+export type TColumn = {
   id: string;
   config?: Record<string, string | number | undefined>;
   render: {
@@ -72,6 +73,13 @@ const Table = ({ tableHead = [], data, className }: Props) => {
       <BSTable bordered className={cs(s.table, className)}>
         <TableHeads />
         <TableBody />
+        {(!tableData || tableData.length === 0) && (
+          <tbody className={s.empty}>
+            <tr>
+              <Empty content="No Data Available." />
+            </tr>
+          </tbody>
+        )}
       </BSTable>
     </div>
   );

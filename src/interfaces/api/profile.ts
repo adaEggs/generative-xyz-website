@@ -10,6 +10,7 @@ export interface IUpdateProfilePayload {
   displayName?: string;
   profileSocial?: ProjectSocial;
   walletAddressBtc?: string;
+  walletAddressPayment: string;
 }
 export interface IUpdateProfileResponse {
   avatar: string;
@@ -74,4 +75,11 @@ export interface IGetCollectedNFTInsciptionResp {
 
 export interface IGetCollectedNFTsResp {
   inscriptions: Array<IGetCollectedNFTInsciptionResp>;
+}
+
+export interface IWithdrawRefereeRewardPayload {
+  amount: string;
+  paymentType: string;
+  type: string;
+  id: string;
 }

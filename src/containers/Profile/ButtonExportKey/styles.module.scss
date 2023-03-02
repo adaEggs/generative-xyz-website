@@ -1,6 +1,4 @@
 .container {
-  z-index: 1000000;
-
   .backdrop {
     background: $black-40;
     backdrop-filter: blur(5px);
@@ -24,7 +22,6 @@
     z-index: 20;
     border-radius: 2px;
     width: 90%;
-    overflow-y: scroll;
     max-height: 90%;
 
     @include min-tablet {
@@ -268,15 +265,36 @@
   }
 }
 
-.wrapHistory {
-  padding: 18px 12px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  background-color: $primary-light;
+.content {
+  &_title {
+    font-weight: 600;
+    font-size: rem(18px);
+    line-height: 140%;
+    margin-bottom: rem(12px);
+  }
 
-  &_center {
+  &_titleAddress {
+    margin-top: rem(28px);
+  }
+
+  &_wrapKey {
+    border: 1px solid #c8c8c8;
+    background: #f8f8f8;
+    padding: 8px;
     display: flex;
     align-items: center;
+
+    @include min-tablet {
+      padding-left: rem(32px);
+      padding-right: rem(32px);
+    }
+  }
+
+  &_key {
+    font-size: 16px;
+    line-height: 120%;
+    word-break: break-all;
+    margin-right: rem(24px);
   }
 
   &_copy {
@@ -287,24 +305,11 @@
       opacity: 0.8;
     }
   }
+}
 
-  &_marginTop {
-    margin-top: 12px;
+.iconShare {
+  path {
+    fill: none;
+    stroke: $white;
   }
-}
-
-.keyTitle {
-  font-weight: 500;
-  font-size: rem(22px);
-  line-height: 140%;
-  margin-bottom: 8px;
-}
-
-.keyContent {
-  font-weight: 500;
-  font-size: rem(18px);
-  line-break: anywhere;
-  line-height: 140%;
-  background-color: $primary-light;
-  padding: 8px 12px;
 }

@@ -125,17 +125,26 @@ export const formatBTCPrice = (
   price: number | string,
   emptyStr?: string
 ): string => {
-  if (!price) return emptyStr || '--';
+  if (!price) return emptyStr || '-';
   const priceNumb = new BigNumber(price).dividedBy(1e8).toNumber();
   return ceilPrecised(priceNumb).toString().replace(',', '.');
 };
+
+// export const formatEthVolumePrice = (
+//   price: string | null,
+//   emptyStr?: string
+// ): string => {
+//   if (!price) return emptyStr || '-';
+//   const priceNumb = new BigNumber(price).dividedBy(1e8).toNumber();
+//   return ceilPrecised(priceNumb).toString().replace(',', '.');
+// };
 
 export const formatEthPrice = (
   price: string | null,
   emptyStr?: string
 ): string => {
-  if (!price) return emptyStr || '--';
-  return ceilPrecised(parseFloat(Web3.utils.fromWei(price, 'ether')))
+  if (!price) return emptyStr || '-';
+  return ceilPrecised(parseFloat(Web3.utils.fromWei(price, 'ether')), 6)
     .toString()
     .replace(',', '.');
 };

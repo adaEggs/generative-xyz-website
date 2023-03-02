@@ -71,6 +71,12 @@ const ModalBuyItem = ({
       ? formatBTCPrice(price || 0, '0.0')
       : formatEthPrice(`${ethPrice || 0}`, '0.0');
 
+  useEffect(() => {
+    if (payType === 'eth' && ordAddress) {
+      onSubmitAddress(ordAddress);
+    }
+  }, [ordAddress]);
+
   const handleTransfer = async (
     toAddress: string,
     val: string
@@ -86,10 +92,15 @@ const ModalBuyItem = ({
   };
 
   useEffect(() => {
-    if (payType === 'eth' && receiveAddress && ethPrice) {
+    if (
+      payType === 'eth' &&
+      step === 'showAddress' &&
+      receiveAddress &&
+      ethPrice
+    ) {
       handleTransfer(receiveAddress, formatEthPrice(`${ethPrice || 0}`));
     }
-  }, [receiveAddress, ethPrice]);
+  }, [receiveAddress, ethPrice, step]);
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -105,9 +116,16 @@ const ModalBuyItem = ({
     } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
-      if (step === 'showAddress' && addressInput !== values.address) {
-        setAddressInput(values.address);
-        onSubmitAddress(values.address);
+      if (payType === 'eth') {
+        if (addressInput !== values.address) {
+          setAddressInput(values.address);
+          onSubmitAddress(values.address);
+        }
+      } else {
+        if (step === 'showAddress' && addressInput !== values.address) {
+          setAddressInput(values.address);
+          onSubmitAddress(values.address);
+        }
       }
     }
 
@@ -116,7 +134,11 @@ const ModalBuyItem = ({
 
   const onClickPay = () => {
     if (useWallet === 'default') {
-      onSubmitAddress(ordAddress);
+      if (payType === 'eth') {
+        setsTep('showAddress');
+      } else {
+        onSubmitAddress(ordAddress);
+      }
     }
   };
 
@@ -135,7 +157,9 @@ const ModalBuyItem = ({
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);
         setExpireTime(data.timeoutAt);
-        setsTep('showAddress');
+        if (payType === 'btc') {
+          setsTep('showAddress');
+        }
       }
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -155,8 +179,14 @@ const ModalBuyItem = ({
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
-      if (step === 'showAddress' && ordAddress) {
-        onSubmitAddress(ordAddress);
+      if (payType === 'btc') {
+        if (step === 'showAddress' && ordAddress) {
+          onSubmitAddress(ordAddress);
+        }
+      } else {
+        if (ordAddress) {
+          onSubmitAddress(ordAddress);
+        }
       }
     }
   };
@@ -164,13 +194,20 @@ const ModalBuyItem = ({
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
+      if (addressInput) {
+        onSubmitAddress(addressInput);
+      }
     }
   };
 
   const handleSubmit = async (_data: IFormValue) => {
-    if (addressInput !== _data.address) {
-      setAddressInput(_data.address);
-      onSubmitAddress(_data.address);
+    if (payType === 'eth') {
+      setsTep('showAddress');
+    } else {
+      if (addressInput !== _data.address) {
+        setAddressInput(_data.address);
+        onSubmitAddress(_data.address);
+      }
     }
   };
 
@@ -230,7 +267,7 @@ const ModalBuyItem = ({
                   </div>
                   <div className={s.formWrapper}>
                     <div className={s.advancedContainer}>
-                      <h3 className={s.modalTitle}>Advanced</h3>
+                      <h3 className={s.modalTitleAdvanced}>Advanced</h3>
                       <SvgInset
                         className={`${s.icArrow} ${
                           isShowAdvance ? s.close : ''
@@ -240,70 +277,71 @@ const ModalBuyItem = ({
                         onClick={() => setIsShowAdvance(!isShowAdvance)}
                       />
                     </div>
-                    {isShowAdvance && (
-                      <>
-                        <div className={s.checkboxContainer}>
-                          <div className={s.checkbox}>
-                            <SvgInset
-                              className={s.checkbox_ic}
-                              size={18}
-                              svgUrl={`${CDN_URL}/icons/${
-                                useWallet === 'default'
-                                  ? 'ic_checkboxed'
-                                  : 'ic_checkbox'
-                              }.svg`}
-                              onClick={onClickUseDefault}
-                            />
-                            <p className={s.checkbox_text}>
-                              Your Generative Wallet
-                            </p>
-                          </div>
-                          <div
-                            className={s.checkbox}
-                            style={{ marginLeft: 24 }}
-                          >
-                            <SvgInset
-                              className={s.checkbox_ic}
-                              size={18}
-                              svgUrl={`${CDN_URL}/icons/${
-                                useWallet === 'another'
-                                  ? 'ic_checkboxed'
-                                  : 'ic_checkbox'
-                              }.svg`}
-                              onClick={onClickUseAnother}
-                            />
-                            <p className={s.checkbox_text}>
-                              Send to another wallet
-                            </p>
-                          </div>
-                        </div>
-                        {useWallet === 'default' && (
-                          <div className={s.noteContainer}>
-                            Your Ordinal inscription will be stored securely in
-                            your Generative Wallet. We recommend Generative
-                            Wallet for ease-of-use, security, and the best
-                            experience on Generative.
-                          </div>
-                        )}
+                    <Formik
+                      key="mintBTCGenerativeForm"
+                      initialValues={{
+                        address: '',
+                      }}
+                      validate={validateForm}
+                      onSubmit={handleSubmit}
+                    >
+                      {({
+                        values,
+                        errors,
+                        touched,
+                        handleChange,
+                        handleBlur,
+                        handleSubmit,
+                      }) => (
+                        <form onSubmit={handleSubmit}>
+                          {isShowAdvance && (
+                            <>
+                              <div className={s.checkboxContainer}>
+                                <div className={s.checkbox}>
+                                  <SvgInset
+                                    className={s.checkbox_ic}
+                                    size={18}
+                                    svgUrl={`${CDN_URL}/icons/${
+                                      useWallet === 'default'
+                                        ? 'ic_checkboxed'
+                                        : 'ic_checkbox'
+                                    }.svg`}
+                                    onClick={onClickUseDefault}
+                                  />
+                                  <p className={s.checkbox_text}>
+                                    Your Generative Wallet
+                                  </p>
+                                </div>
+                                <div
+                                  className={s.checkbox}
+                                  style={{ marginLeft: 24 }}
+                                >
+                                  <SvgInset
+                                    className={s.checkbox_ic}
+                                    size={18}
+                                    svgUrl={`${CDN_URL}/icons/${
+                                      useWallet === 'another'
+                                        ? 'ic_checkboxed'
+                                        : 'ic_checkbox'
+                                    }.svg`}
+                                    onClick={onClickUseAnother}
+                                  />
+                                  <p className={s.checkbox_text}>
+                                    Send to another wallet
+                                  </p>
+                                </div>
+                              </div>
+                              {useWallet === 'default' && (
+                                <div className={s.noteContainer}>
+                                  Your Ordinal inscription will be stored
+                                  securely in your Generative Wallet. We
+                                  recommend Generative Wallet for ease-of-use,
+                                  security, and the best experience on
+                                  Generative.
+                                </div>
+                              )}
 
-                        {useWallet === 'another' && (
-                          <Formik
-                            key="mintBTCGenerativeForm"
-                            initialValues={{
-                              address: '',
-                            }}
-                            validate={validateForm}
-                            onSubmit={handleSubmit}
-                          >
-                            {({
-                              values,
-                              errors,
-                              touched,
-                              handleChange,
-                              handleBlur,
-                              handleSubmit,
-                            }) => (
-                              <form onSubmit={handleSubmit}>
+                              {useWallet === 'another' && (
                                 <div className={s.formItem}>
                                   {/* <label className={s.label} htmlFor="address">
                                     {`Enter the Ordinals-compatible BTC address to
@@ -327,22 +365,23 @@ const ModalBuyItem = ({
                                     </p>
                                   )}
                                 </div>
-                                {step === 'info' && useWallet === 'another' && (
-                                  <ButtonIcon
-                                    type="submit"
-                                    sizes="large"
-                                    className={s.buyBtn}
-                                    disabled={isLoading}
-                                  >
-                                    Pay
-                                  </ButtonIcon>
-                                )}
-                              </form>
-                            )}
-                          </Formik>
-                        )}
-                      </>
-                    )}
+                              )}
+                            </>
+                          )}
+
+                          {step === 'info' && useWallet === 'another' && (
+                            <ButtonIcon
+                              type="submit"
+                              sizes="large"
+                              className={s.buyBtn}
+                              disabled={isLoading}
+                            >
+                              Pay
+                            </ButtonIcon>
+                          )}
+                        </form>
+                      )}
+                    </Formik>
 
                     {step === 'info' && useWallet === 'default' && (
                       <ButtonIcon
@@ -370,7 +409,7 @@ const ModalBuyItem = ({
                 {step === 'showAddress' && (
                   <Col md={'6'}>
                     <div className={s.paymentWrapper}>
-                      {receiveAddress && !isLoading && (
+                      {!isSent && receiveAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
                             Send{' '}
@@ -430,18 +469,17 @@ const ModalBuyItem = ({
                         </Text>
                       </ButtonIcon>
                       <div style={{ width: 16 }} /> */}
-                      {payType === 'btc' ||
-                        (payType === 'eth' && isSent && (
-                          <ButtonIcon
-                            sizes="large"
-                            className={s.buyBtn}
-                            onClick={handleClose}
-                          >
-                            <Text as="span" size="16" fontWeight="medium">
-                              Continue collecting
-                            </Text>
-                          </ButtonIcon>
-                        ))}
+                      {(payType === 'btc' || (payType === 'eth' && isSent)) && (
+                        <ButtonIcon
+                          sizes="large"
+                          className={s.buyBtn}
+                          onClick={handleClose}
+                        >
+                          <Text as="span" size="16" fontWeight="medium">
+                            Continue collecting
+                          </Text>
+                        </ButtonIcon>
+                      )}
                     </div>
                   </Col>
                 )}

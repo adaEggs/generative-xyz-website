@@ -4,8 +4,7 @@ import { CDN_URL } from '@constants/config';
 import React, { useContext } from 'react';
 import s from './styles.module.scss';
 import { ProfileContext } from '@contexts/profile-context';
-// import { ellipsisCenter, formatBTCPrice } from '@utils/format';
-import { ellipsisCenter } from '@utils/format';
+import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import { toast } from 'react-hot-toast';
 import Table from '@components/Table';
 import Text from '@components/Text';
@@ -23,62 +22,107 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
   const handleClose = () => {
     onClose();
   };
-  // const TABLE_HISTORY_HEADING = ['Date', 'Hash', 'Inscription', 'Amount'];
-  const TABLE_HISTORY_HEADING = ['Date', 'Hash'];
+  const TABLE_HISTORY_HEADING = ['Date', 'Hash', 'Inscription', 'Amount'];
   const handleCopy = (text: string): void => {
     navigator.clipboard.writeText(text);
     toast.remove();
     toast.success('Copied');
   };
 
-  const tableData = (history || []).map(item => ({
-    id: `${item.txhash}-history`,
-    render: {
-      date: (
-        <Text size="16" fontWeight="medium" color="black-100">
-          {item.created_at
-            ? formatUnixDateTime({ dateTime: Number(item.created_at) })
-            : '---'}
-        </Text>
-      ),
-      hash: (
-        <Stack direction="horizontal" gap={3}>
+  const tableData = (history || []).map(item => {
+    return {
+      id: `${item.txhash}-history`,
+      render: {
+        date: (
           <Text size="16" fontWeight="medium" color="black-100">
-            {ellipsisCenter({ str: item.txhash, limit: 6 })}
+            {item.created_at
+              ? formatUnixDateTime({ dateTime: Number(item.created_at) })
+              : '---'}
           </Text>
-
-          <SvgInset
-            size={18}
-            svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-            className={s.wrapHistory_copy}
-            onClick={() => handleCopy(item.txhash)}
-          />
-          <SvgInset
-            size={16}
-            svgUrl={`${CDN_URL}/icons/ic-share.svg`}
-            className={s.wrapHistory_copy}
-            onClick={() =>
-              window.open(
-                `https://www.blockchain.com/explorer/transactions/btc/${item.txhash}`
-              )
-            }
-          />
-        </Stack>
-      ),
-      // number: (
-      //   <Text size="16" fontWeight="medium" color="black-100">
-      //     {item.inscription_number ? `#${item.inscription_number}` : '---'}
-      //   </Text>
-      // ),
-      // amount: (
-      //   <Text size="16" fontWeight="medium" color="black-100">
-      //     {item.send_amount
-      //       ? `${formatBTCPrice(item.send_amount.toString())} BTC`
-      //       : '---'}
-      //   </Text>
-      // ),
-    },
-  }));
+        ),
+        hash: (
+          <>
+            <div style={{ width: 'fit-content' }}>
+              <Stack direction="horizontal" gap={3}>
+                <Text size="16" fontWeight="medium" color="black-100">
+                  {ellipsisCenter({ str: item.txhash, limit: 6 })}
+                </Text>
+                <SvgInset
+                  size={18}
+                  svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                  className={s.wrapHistory_copy}
+                  onClick={() => handleCopy(item.txhash)}
+                />
+                <SvgInset
+                  size={16}
+                  svgUrl={`${CDN_URL}/icons/ic-share.svg`}
+                  className={s.wrapHistory_copy}
+                  onClick={() =>
+                    window.open(
+                      `https://www.blockchain.com/explorer/transactions/btc/${item.txhash}`
+                    )
+                  }
+                />
+              </Stack>
+              <Text
+                size="16"
+                fontWeight="medium"
+                style={{ color: item.statusColor }}
+              >
+                {item.status}
+              </Text>
+            </div>
+          </>
+        ),
+        number: (
+          <>
+            {!!item.inscription_id && !!item.inscription_number ? (
+              <div>
+                <Stack direction="horizontal" gap={3}>
+                  <Text size="16" fontWeight="medium" color="black-100">
+                    {`${ellipsisCenter({
+                      str: item.inscription_id,
+                      limit: 6,
+                    })}`}
+                  </Text>
+                  <SvgInset
+                    size={18}
+                    svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                    className={s.wrapHistory_copy}
+                    onClick={() => handleCopy(item.inscription_id)}
+                  />
+                  <SvgInset
+                    size={16}
+                    svgUrl={`${CDN_URL}/icons/ic-share.svg`}
+                    className={s.wrapHistory_copy}
+                    onClick={() =>
+                      window.open(
+                        `https://ordinals.com/inscription/${item.inscription_id}`
+                      )
+                    }
+                  />
+                </Stack>
+                <Text size="16" fontWeight="medium" color="black-100">
+                  {`#${item.inscription_number}`}
+                </Text>
+              </div>
+            ) : (
+              <Text size="16" fontWeight="medium" color="black-100">
+                ---
+              </Text>
+            )}
+          </>
+        ),
+        amount: (
+          <Text size="16" fontWeight="medium" color="black-100">
+            {item.send_amount
+              ? `${formatBTCPrice(item.send_amount.toString())} BTC`
+              : '---'}
+          </Text>
+        ),
+      },
+    };
+  });
 
   if (!showModal) {
     return <></>;
@@ -109,7 +153,6 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
                 data={tableData}
                 className={s.historyTable}
               />
-              {/*<div className={s.formWrapper}>{history.map(renderItem)}</div>*/}
             </div>
           </div>
         </div>

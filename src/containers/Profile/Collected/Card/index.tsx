@@ -13,13 +13,11 @@ import { getUserSelector } from '@redux/user/selector';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import { TwitterShareButton } from 'react-share';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import s from './CollectedCard.module.scss';
-import Image from 'next/image';
 import ButtonIcon from '@components/ButtonIcon';
 import SendInscriptionModal from '@containers/Profile/Collected/Modal/SendInscription';
 import { HistoryStatusType } from '@interfaces/api/bitcoin';
-import { useRouter } from 'next/router';
 import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 
 interface IPros {
@@ -28,22 +26,31 @@ interface IPros {
   index?: number;
 }
 
-export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
+const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
   const user = useAppSelector(getUserSelector);
   const [showSendModal, setShowSendModal] = React.useState(false);
 
-  const { handelcancelMintingNFT, feeRate, isLoadingHistory, history } =
-    useContext(ProfileContext);
+  const {
+    handelcancelMintingNFT,
+    feeRate,
+    isLoadingHistory,
+    history,
+    currentUser,
+  } = useContext(ProfileContext);
 
   const toggleModal = () => {
     setShowSendModal(value => !value);
   };
-  const router = useRouter();
-  const { walletAddress } = router.query as { walletAddress: string };
-  const isOwner = !walletAddress || user?.walletAddress === walletAddress;
+  const isOwner = currentUser?.id === user?.id;
 
   const [thumb, setThumb] = useState<string>(project.image);
+
+  useEffect(() => {
+    if (thumb !== project.image) {
+      setThumb(project.image);
+    }
+  }, [project.image]);
 
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
@@ -133,8 +140,7 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
               }`}
             >
               <div className={s.projectCard_thumb_inner}>
-                <Image
-                  fill
+                <img
                   onError={onThumbError}
                   src={convertIpfsToHttp(thumb)}
                   alt={project.name}
@@ -152,6 +158,10 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   inscriptionID={project.inscriptionID}
                   type={project.contentType}
                   variants="absolute"
+                />
+                <Link
+                  href={linkPath}
+                  className={s.projectCard_thumb_inner_mask}
                 />
               </div>
               {!isNotShowBlur && (
@@ -181,41 +191,50 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                 )}
               </div>
             )}
-            {project.status === CollectedNFTStatus.Success && (
-              <div className={s.projectCard_info_share}>
+            <div className={s.row}>
+              {project.status === CollectedNFTStatus.Success && (
                 <TwitterShareButton
                   url={`${location.origin}${linkPath}?referral_code=${user?.id}`}
                   title={''}
                   hashtags={[]}
                 >
-                  <SvgInset
-                    size={16}
-                    svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
-                  />
+                  <ButtonIcon
+                    sizes="small"
+                    variants="ghost"
+                    className={s.projectCard_info_btnShare}
+                    startIcon={
+                      <SvgInset
+                        size={16}
+                        svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                      />
+                    }
+                  >
+                    Share
+                  </ButtonIcon>
                 </TwitterShareButton>
-              </div>
-            )}
-            {showSendButton && (
-              <Link href="" onClick={toggleModal}>
-                <ButtonIcon
-                  variants="outline"
-                  className={s.projectCard_status_sendBtn}
+              )}
+              {showSendButton && (
+                <Link href="" onClick={toggleModal}>
+                  <ButtonIcon
+                    variants="primary"
+                    className={s.projectCard_status_sendBtn}
+                  >
+                    Send
+                  </ButtonIcon>
+                </Link>
+              )}
+              {project.isCancel && (
+                <Link
+                  href=""
+                  className={s.projectCard_status_cancelBtn}
+                  onClick={() => handelcancelMintingNFT(project.id)}
                 >
-                  Send
-                </ButtonIcon>
-              </Link>
-            )}
-            {project.isCancel && (
-              <Link
-                href=""
-                className={s.projectCard_status_cancelBtn}
-                onClick={() => handelcancelMintingNFT(project.id)}
-              >
-                <Text as="span" size="14" fontWeight="medium">
-                  Cancel
-                </Text>
-              </Link>
-            )}
+                  <Text as="span" size="14" fontWeight="medium">
+                    Cancel
+                  </Text>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </Link>
@@ -233,3 +252,5 @@ export const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     </>
   );
 };
+
+export default React.memo(CollectedCard);

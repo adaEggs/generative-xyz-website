@@ -1,44 +1,39 @@
-import ButtonIcon from '@components/ButtonIcon';
-import CollectionList from '@components/Collection/List';
+import CollectionItem from '@components/Collection/Item';
+import CollectionListLoading from '@components/Collection/Loading';
 import Heading from '@components/Heading';
-import SvgInset from '@components/SvgInset';
-import { CDN_URL } from '@constants/config';
-import { ROUTE_PATH } from '@constants/route-path';
 import { LogLevel } from '@enums/log-level';
-import { SelectOption } from '@interfaces/select-input';
 import { Token } from '@interfaces/token';
 import { getProjectItems } from '@services/project';
 import log from '@utils/logger';
-import { useRouter } from 'next/router';
+import cs from 'classnames';
 import { useEffect, useState } from 'react';
 import { Stack } from 'react-bootstrap';
-import Select, { SingleValue } from 'react-select';
 import s from './styles.module.scss';
 
 const LOG_PREFIX = 'MoreItemsSection';
 
-const SORT_OPTIONS: Array<{ value: string; label: string }> = [
-  {
-    value: 'newest',
-    label: 'Recently listed',
-  },
-  {
-    value: 'minted-newest',
-    label: 'Date minted: Newest',
-  },
-];
+// const SORT_OPTIONS: Array<{ value: string; label: string }> = [
+//   {
+//     value: 'newest',
+//     label: 'Recently listed',
+//   },
+//   {
+//     value: 'minted-newest',
+//     label: 'Date minted: Newest',
+//   },
+// ];
 
 type TMoreItemsSection = {
   genNFTAddr: string;
 };
 
 const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
-  const router = useRouter();
-  const { projectID } = router.query;
+  // const router = useRouter();
+  // const { projectID } = router.query;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [listItems, setListItems] = useState<Token[] | null>(null);
-  const [sort, setSort] = useState('newest');
+  const [sort, _] = useState('newest');
 
   const fetchProjectItems = async (): Promise<void> => {
     setIsLoaded(false);
@@ -72,7 +67,7 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
         <Heading as="h4" fontWeight="bold">
           More from this collection
         </Heading>
-        <div className={s.dropDownWrapper}>
+        {/* <div className={s.dropDownWrapper}>
           <Select
             isSearchable={false}
             isClearable={false}
@@ -84,13 +79,35 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
               if (op) setSort(op.value);
             }}
           />
-        </div>
+        </div> */}
       </Stack>
       <div className={s.listWrapper}>
         {/* <Loading isLoaded={isLoaded} className={s.loading} /> */}
+        <div className="position-relative">
+          {!isLoaded && (
+            <>
+              <CollectionListLoading
+                numOfItems={4}
+                showFilter={false}
+                maxFourCols
+              />
+            </>
+          )}
 
-        <CollectionList listData={listItems} isLoaded={isLoaded} />
-        {isLoaded && (
+          {isLoaded && (
+            <div className={cs(s.collectionList, `row animate-grid`)}>
+              {listItems?.map(item => (
+                <CollectionItem
+                  className={`${'col-xl-3 col-lg-4 col-12'} `}
+                  key={`collection-item-${item.tokenID}`}
+                  data={item}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+        {/* <CollectionList listData={listItems} isLoaded={isLoaded} /> */}
+        {/* {isLoaded && (
           <div className={s.view_collection}>
             <ButtonIcon
               sizes="large"
@@ -108,7 +125,7 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
               View collection
             </ButtonIcon>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

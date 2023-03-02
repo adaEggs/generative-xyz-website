@@ -1,13 +1,13 @@
 import { Empty } from '@components/Collection/Empty';
 import CollectionItem from '@components/Collection/Item';
-import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 import cs from 'classnames';
-import { useContext } from 'react';
+import { useContext, useMemo } from 'react';
 import FilterOptions from '../FilterOptions';
 import CollectionListLoading from '../Loading';
 import s from './CollectionList.module.scss';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 
 const CollectionList = ({
   listData,
@@ -20,17 +20,29 @@ const CollectionList = ({
 }) => {
   const { showFilter } = useContext(GenerativeProjectDetailContext);
 
+  const hasTraitAtrribute = useMemo(
+    () => projectInfo?.traitStat && projectInfo?.traitStat?.length > 0,
+    [projectInfo?.traitStat]
+  );
+  // const hasTraitAtrribute = true;
+
   return (
     <div
       className={`${s.listToken} grid  ${
-        showFilter ? s.showFilter : 'grid-cols-1'
+        showFilter && hasTraitAtrribute ? s.showFilter : 'grid-cols-1'
       }`}
     >
-      {showFilter && <FilterOptions attributes={projectInfo?.traitStat} />}
+      {showFilter && hasTraitAtrribute && (
+        <FilterOptions attributes={projectInfo?.traitStat} />
+      )}
       <div className="position-relative">
+        <div className="filter-list"></div>
         {!isLoaded && (
           <>
-            <CollectionListLoading numOfItems={12} showFilter={showFilter} />
+            <CollectionListLoading
+              numOfItems={12}
+              showFilter={hasTraitAtrribute}
+            />
           </>
         )}
 
@@ -39,7 +51,7 @@ const CollectionList = ({
             {listData?.map(item => (
               <CollectionItem
                 className={`${
-                  showFilter
+                  hasTraitAtrribute
                     ? 'col-wide-3 col-xl-4 col-12'
                     : 'col-wide-2_5 col-xl-3 col-lg-4 col-12'
                 } `}

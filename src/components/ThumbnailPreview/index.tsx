@@ -15,6 +15,7 @@ import { Project } from '@interfaces/project';
 import PreviewController from './PreviewController';
 import IFramePreview from './IframePreview';
 import { useRouter } from 'next/router';
+import cs from 'classnames';
 
 type Props = {
   data: Token | Project | null;
@@ -90,7 +91,12 @@ const ThumbnailPreview = (props: Props) => {
   return (
     <div className={s.ThumbnailPreview}>
       <div className={s.wrapper}>
-        <div className={s.sandboxWrapper}>
+        <div
+          className={cs(
+            s.sandboxWrapper,
+            displayMode === PreviewDisplayMode.THUMBNAIL && s.thumbnail
+          )}
+        >
           <Skeleton fill isLoaded={!!data} />
           {data && (
             <>

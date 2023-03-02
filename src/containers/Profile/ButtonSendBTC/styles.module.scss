@@ -5,13 +5,13 @@
 
   :global(.modal-content) {
     width: fit-content;
-    border-radius: 2px;
-    padding: rem(48px) rem(24px);
+    padding: rem(28px) rem(24px);
     position: relative;
   }
 
   :global(.modal-body) {
     width: 100%;
+    padding-top: 0;
 
     @include min-tablet {
       width: rem(680px);
@@ -24,31 +24,42 @@
 }
 
 .modalHeader {
-  display: flex;
-  justify-content: flex-end;
   border: none;
-  padding: 0;
-}
 
-.closeBtn {
-  padding: rem(18.8) !important;
-  background-color: transparent !important;
-  position: absolute;
-  right: 0;
-  top: 0;
-  // transform: translate(-18px, 18px);
+  &_title {
+    font-weight: 700;
+    color: $black-100;
+    margin-bottom: rem(24px);
+    line-height: (34 / 24);
 
-  &:hover {
-    .closeIcon {
-      transform: rotate(90deg);
-      transition: all 0.3s;
+    @include calcFontAuto(18px, 24px);
+  }
 
-      :global(svg path) {
-        fill: $black-100;
-        fill-opacity: 1;
+  &_closeBtn {
+    padding: rem(18.8) !important;
+    background-color: transparent !important;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &:hover {
+      .closeIcon {
+        transform: rotate(90deg);
+        transition: all 0.3s;
+
+        :global(svg path) {
+          fill: $black-100;
+          fill-opacity: 1;
+        }
       }
     }
   }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .formItem {

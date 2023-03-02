@@ -1,33 +1,35 @@
+import useBitcoin from '@bitcoin/useBitcoin';
 import { Loading } from '@components/Loading';
 import ClientOnly from '@components/Utils/ClientOnly';
+import BalanceTab from '@containers/Profile/BalanceTab';
+import HistoryModal from '@containers/Profile/Collected/Modal/History';
 import { CreatedTab } from '@containers/Profile/Created';
 import { UserInfo } from '@containers/Profile/UserInfo';
 import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import { formatBTCPrice } from '@utils/format';
 import React, { useContext } from 'react';
 import { Col, Container, Row, Tab, Tabs } from 'react-bootstrap';
 import { Collected } from './Collected';
+import FreeInscriptions from './Free';
 import s from './Profile.module.scss';
-import HistoryModal from '@containers/Profile/Collected/Modal/History';
-import { isProduction } from '@utils/common';
 import ReferralTab from './Referral';
-import { useRouter } from 'next/router';
-import { useAppSelector } from '@redux';
-import { getUserSelector } from '@redux/user/selector';
-import useBitcoin from '@bitcoin/useBitcoin';
-import { formatBTCPrice } from '@utils/format';
-import BalanceTab from '@containers/Profile/BalanceTab';
+import { isProduction } from '@utils/common';
 
 const Profile: React.FC = (): React.ReactElement => {
   const user = useAppSelector(getUserSelector);
-  const { isLoaded, profileProjects, collectedNFTs, isLoadingUTXOs } =
-    useContext(ProfileContext);
-  const router = useRouter();
-
-  const { satoshiAmount } = useBitcoin();
-
+  const {
+    isLoaded,
+    profileProjects,
+    collectedNFTs,
+    totalFreeInscription,
+    isLoadingUTXOs,
+    currentUser,
+  } = useContext(ProfileContext);
   const [showModal, setShowModal] = React.useState(false);
-  const { walletAddress } = router.query as { walletAddress: string };
-  const isOwner = !walletAddress || user?.walletAddress === walletAddress;
+  const { satoshiAmount } = useBitcoin();
+  const isOwner = currentUser?.id === user?.id;
 
   return (
     <div className={s.profile}>
@@ -43,11 +45,7 @@ const Profile: React.FC = (): React.ReactElement => {
                   <Tab
                     tabClassName={s.tab}
                     eventKey="collectedTab"
-                    title={
-                      <>
-                        Collected <sup>{collectedNFTs.length}</sup>
-                      </>
-                    }
+                    title={<>{collectedNFTs.length} Collected</>}
                   >
                     <Collected />
                   </Tab>
@@ -55,20 +53,16 @@ const Profile: React.FC = (): React.ReactElement => {
                   <Tab
                     tabClassName={s.tab}
                     eventKey="createdTab"
-                    title={
-                      <>
-                        Created <sup>{profileProjects?.total || 0}</sup>
-                      </>
-                    }
+                    title={<>{profileProjects?.total || 0} Created</>}
                   >
                     <CreatedTab />
                   </Tab>
                   {/* Wait for design to implement. Do not remove */}
-                  {!isProduction() && isOwner && (
+                  {isProduction() && isOwner && (
                     <Tab
                       tabClassName={s.tab}
                       eventKey="referralTab"
-                      title={'Referral'}
+                      title={'Activities'}
                     >
                       <ReferralTab />
                     </Tab>
@@ -79,13 +73,20 @@ const Profile: React.FC = (): React.ReactElement => {
                       eventKey="balanceTab"
                       title={
                         isLoadingUTXOs
-                          ? 'loading...'
+                          ? 'Loading...'
                           : `${formatBTCPrice(satoshiAmount.toString())} BTC`
                       }
                     >
                       <BalanceTab />
                     </Tab>
                   )}
+                  <Tab
+                    tabClassName={s.tab}
+                    eventKey="freeTab"
+                    title={<>{totalFreeInscription} Free inscriptions</>}
+                  >
+                    <FreeInscriptions />
+                  </Tab>
                 </Tabs>
               </div>
             </ClientOnly>

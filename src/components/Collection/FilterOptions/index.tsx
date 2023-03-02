@@ -4,7 +4,7 @@ import Heading from '@components/Heading';
 import Text from '@components/Text';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { TraitStats } from '@interfaces/project';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import { v4 } from 'uuid';
 import styles from './styles.module.scss';
@@ -28,11 +28,18 @@ const FilterOptions = ({ attributes }: Props) => {
     // setFilterPrice,
   } = useContext(GenerativeProjectDetailContext);
 
+  const [sortedAttributes, setSortedAttributes] = useState<TraitStats[] | null>(
+    null
+  );
+
   const initialAttributesMap = () => {
     const attrMap = new Map();
+
     attributes?.forEach(attr => {
       filterTraits.split(',').forEach(trait => {
-        attrMap.set(attr.traitName, trait.split(':')[1]);
+        if (trait.split(':')[0] === attr.traitName) {
+          attrMap.set(attr.traitName, trait.split(':')[1]);
+        }
       });
     });
     setQuery(attrMap);
@@ -50,7 +57,7 @@ const FilterOptions = ({ attributes }: Props) => {
       }
     });
     setFilterTraits(str.substring(1));
-    setQuery(newQuery || null);
+
     setPage(1);
   };
 
@@ -89,6 +96,10 @@ const FilterOptions = ({ attributes }: Props) => {
   useEffect(() => {
     if (attributes) {
       initialAttributesMap();
+      const _attirbutes = [...attributes];
+      setSortedAttributes(
+        _attirbutes.sort((a, b) => a.traitName.localeCompare(b.traitName))
+      );
     }
   }, [attributes, filterTraits]);
 
@@ -133,7 +144,7 @@ const FilterOptions = ({ attributes }: Props) => {
           <Text>ETH</Text>
         </div>
       </div> */}
-      {attributes && attributes?.length > 0 && (
+      {sortedAttributes && sortedAttributes?.length > 0 && (
         <>
           <div className="divider"></div>
           <div className={styles.filter_traits}>
@@ -152,15 +163,36 @@ const FilterOptions = ({ attributes }: Props) => {
               </ButtonIcon>
             </Stack>
             <div className={styles.filter_traits_dropdown}>
-              {attributes?.length > 0 &&
-                attributes.map(attr => {
+              {sortedAttributes?.length > 0 &&
+                sortedAttributes.map(attr => {
+                  const _traitStats = [...attr.traitValuesStat];
+
                   const options: Array<{ value: string; label: string }> =
-                    attr.traitValuesStat.map(item => {
-                      return {
-                        value: item.value,
-                        label: `${item.value}`,
-                      };
-                    });
+                    _traitStats
+                      .sort((a, b) => a.rarity - b.rarity)
+                      .map(item => {
+                        return {
+                          value: item.value,
+                          label: item.value,
+                          // (
+                          //   <Stack
+                          //     direction="horizontal"
+                          //     className="justify-between"
+                          //   >
+                          //     <Text size="14" fontWeight="medium">
+                          //       {item.value}
+                          //     </Text>
+                          //     <Text
+                          //       size="12"
+                          //       fontWeight="medium"
+                          //       color="black-40"
+                          //     >
+                          //       {item.rarity}%
+                          //     </Text>
+                          //   </Stack>
+                          // ),
+                        };
+                      });
 
                   const defaultValue = options.filter(
                     option => option.value === query?.get(attr.traitName)

@@ -1,15 +1,21 @@
 .wrapper {
   color: $black-100;
-  margin-top: rem(32px);
   margin-bottom: rem(48px);
 
   @include min-tablet {
-    margin-top: rem(60px);
-    margin-bottom: rem(90px);
     display: grid;
-    grid-template-columns: rem(420px) 1px 1fr;
-    height: calc(100vh - #{rem(260px)});
+    grid-template-columns: 35% 1px calc(65% - 1px);
+    margin-bottom: rem(90px);
   }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
+.projectHeader {
+  display: flex;
+  gap: rem(8px);
 }
 
 .itemInfo {
@@ -17,9 +23,12 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  padding-top: rem(64px);
 
   &_heading {
     width: 100%;
+    margin-bottom: rem(8px);
+    font-style: italic;
 
     span {
       display: block;
@@ -32,6 +41,10 @@
   @include min-tablet {
     overflow-y: scroll;
     padding-right: rem(60px);
+    position: relative;
+    padding-top: rem(40px);
+
+    @include fullViewScreen;
   }
 
   &::-webkit-scrollbar {
@@ -145,7 +158,7 @@
 }
 
 .owner {
-  margin-bottom: rem(34px);
+  margin-bottom: rem(24px);
 
   > a {
     text-decoration: none;
@@ -183,8 +196,27 @@
   display: flex;
   flex-direction: column;
   gap: rem(24px);
-  margin-bottom: rem(30px);
   margin-top: rem(24);
+}
+
+.shares {
+  display: flex;
+  gap: rem(8px);
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin-top: rem(24);
+  padding-right: rem(60);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.reportBtn {
+  display: flex;
+  align-items: center;
+  gap: rem(4);
 }
 
 .walletAddress {
@@ -244,4 +276,21 @@ a.info_creatorLink {
       }
     }
   }
+}
+
+.reviewOnMobile {
+  margin-top: rem(24px);
+  padding: rem(32);
+  background-color: $primary-light;
+}
+
+.thumbnailBg {
+  padding: rem(64px);
+  background-color: $primary-light;
+}
+
+.itemInfo_wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }

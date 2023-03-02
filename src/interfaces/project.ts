@@ -1,5 +1,6 @@
 import { User } from '@interfaces/user';
 import { MarketplaceStats } from './marketplace';
+import { IGetProjectVolumeResponse } from './api/project';
 
 export type ProjectSocial = {
   web: string;
@@ -59,6 +60,7 @@ export type Project = {
     reportUserAddress: string;
   }[];
   animationHtml: string;
+  totalVolume: string;
 };
 
 export type BTCProject = Project & {
@@ -73,3 +75,5 @@ export type TraitStats = {
     rarity: number;
   }[];
 };
+
+export type ProjectVolume = IGetProjectVolumeResponse;
