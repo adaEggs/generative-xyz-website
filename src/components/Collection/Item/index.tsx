@@ -73,6 +73,7 @@ const CollectionItem = ({
           inscriptionID={tokenID}
           price={data.priceBTC}
           inscriptionNumber={data.inscriptionIndex}
+          orderID={data.orderID}
         />
       </Link>
     );

@@ -201,7 +201,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   };
 
   const tokenDescription = projectData?.desc || '';
-
   const renderBuyButton = () => {
     if (!isBuyable || !tokenData) return null;
     return (
@@ -217,6 +216,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           price={tokenData?.priceBTC}
           inscriptionNumber={tokenData.inscriptionIndex}
           sizes="medium"
+          orderID={tokenData.orderID}
         />
       </Link>
     );

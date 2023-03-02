@@ -18,6 +18,7 @@ interface IFormValues {
 interface IProps extends IBaseModalProps {
   inscriptionID: string;
   price: number | string;
+  orderID: string;
 }
 
 const ModalBuyListed = React.memo(({ price, ...rest }: IProps) => {

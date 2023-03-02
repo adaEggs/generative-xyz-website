@@ -14,16 +14,18 @@ interface IProps {
   inscriptionID: string;
   price: number | string;
   inscriptionNumber?: number | string;
+  orderID: string;
 }
 
 const ButtonBuyListed = React.memo(
   ({
     title,
     className,
-    sizes = 'xsmall',
+    orderID,
     inscriptionID,
     inscriptionNumber,
     price,
+    sizes = 'xsmall',
   }: IProps) => {
     const [isShow, setShow] = React.useState(false);
     const user = useSelector(getUserSelector);
@@ -56,6 +58,7 @@ const ButtonBuyListed = React.memo(
         </ButtonIcon>
         {!!user?.walletAddressBtcTaproot && (
           <ModalBuyListed
+            orderID={orderID}
             inscriptionID={inscriptionID}
             title={`Payment ${
               inscriptionNumber ? `#${inscriptionNumber}` : ''
