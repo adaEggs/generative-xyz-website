@@ -104,6 +104,11 @@ module.exports = withRemoveImports(
           destination: '/create/upload-project',
           permanent: true,
         },
+        {
+          source: '/airdrop',
+          destination: '/',
+          permanent: true,
+        },
       ];
     },
     rewrites: async () => [
