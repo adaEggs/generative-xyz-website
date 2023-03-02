@@ -8,6 +8,7 @@ import { getSearchByKeyword, getApiKey } from '@services/search';
 import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { ProjectCardOrd } from '@containers/Trade/ProjectCardOrd';
 import { ArtistCard } from '@components/ArtistCard';
+// import CollectionItem from '@components/Collection/Item';
 
 import { Loading } from '@components/Loading';
 import debounce from 'lodash/debounce';
@@ -52,7 +53,7 @@ export const Items = (): JSX.Element => {
     getSearchByKeyword
   );
 
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [dataOrd, setdataOrd] = useState<any>([]);
   // const [currentPage,
@@ -64,11 +65,12 @@ export const Items = (): JSX.Element => {
       ...(resultByTokens?.result || []),
       ...(resultByInscriptions?.result || []),
     ]);
+    setIsLoaded(false);
   }, []);
 
   const fetchDataOrdinals = async () => {
     try {
-      setIsLoaded(true);
+      // setIsLoaded(true);
       // filterParams.page = currentPage;
       // const {result} = getSearchByKeyword(filterParams);
       // const newList = dataOrd
@@ -110,6 +112,15 @@ export const Items = (): JSX.Element => {
           />
         );
       }
+      // if (element.objectType === OBJECT_TYPE.TOKEN) {
+      //   htmlList.push(
+      //     <CollectionItem
+      //       className="col-3"
+      //       key={`collection-item-${element?.tokenUri?.tokenId}`}
+      //       data={element?.tokenUri}
+      //     />
+      //   );
+      // }
     }
     return htmlList;
   }, [dataOrd.length]);
@@ -117,7 +128,7 @@ export const Items = (): JSX.Element => {
   return (
     <div className={s.items}>
       <Row className={s.items_projects}>
-        {!isLoaded ? (
+        {isLoaded ? (
           <Col xs={12}>
             <ProjectListLoading numOfItems={12} />
           </Col>
@@ -129,7 +140,7 @@ export const Items = (): JSX.Element => {
             hasMore={true}
             loader={
               isLoading ? (
-                <div className={s.recentWorks_projects_loader}>
+                <div className="">
                   <Loading isLoaded={isLoading} />
                 </div>
               ) : null
