@@ -187,16 +187,15 @@ const Header: React.FC<IProp> = ({
               <div
                 className={`d-flex align-items-center justify-content-between w-100 ${styles.header_row}`}
               >
-                <Link
-                  className={styles.logo}
-                  href={getUrlWithQueryParams(ROUTE_PATH.HOME)}
-                >
-                  <Text size="24" fontWeight={'semibold'}>
-                    Generative
-                  </Text>
-                </Link>
-                <div className={styles.header_right}>
-                  {!isGrailPage && <SearchCollection theme={theme} />}
+                <div className={styles.header_left}>
+                  <Link
+                    className={styles.logo}
+                    href={getUrlWithQueryParams(ROUTE_PATH.HOME)}
+                  >
+                    <Text size="24" fontWeight={'semibold'}>
+                      Generative
+                    </Text>
+                  </Link>
                   <ul className={`${styles.navBar} ${styles[theme]}`}>
                     <li
                       className={cs(
@@ -207,18 +206,6 @@ const Header: React.FC<IProp> = ({
                     >
                       <Link href={getUrlWithQueryParams(MENU_HEADER[0].route)}>
                         {MENU_HEADER[0].name}
-                      </Link>
-                    </li>
-
-                    <li
-                      className={cs(
-                        activePath === MENU_HEADER[7].activePath &&
-                          styles.active
-                      )}
-                      key={`header-${MENU_HEADER[7].id}`}
-                    >
-                      <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
-                        {MENU_HEADER[7].name}
                       </Link>
                     </li>
 
@@ -243,6 +230,23 @@ const Header: React.FC<IProp> = ({
                     >
                       <Link href={getUrlWithQueryParams(MENU_HEADER[2].route)}>
                         {MENU_HEADER[2].name}
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className={styles.header_right}>
+                  {!isGrailPage && <SearchCollection theme={theme} />}
+                  <ul className={`${styles.navBar} ${styles[theme]}`}>
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[7].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[7].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
+                        {MENU_HEADER[7].name}
                       </Link>
                     </li>
 

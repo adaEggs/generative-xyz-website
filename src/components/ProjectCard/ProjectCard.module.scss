@@ -72,7 +72,22 @@
       left: rem(16px);
       right: rem(16px);
       bottom: rem(16px);
-    };
+    }
+
+    &_mintoutContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      &_text {
+        font-style: normal;
+        font-weight: 500;
+        font-size: rem(16px);
+        line-height: rem(26px);
+        color: #ff7e21;
+        margin-left: rem(4px);
+      }
+    }
 
     @include mobile {
       padding: rem(12px) rem(8px);

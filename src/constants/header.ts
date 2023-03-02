@@ -47,9 +47,15 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-8',
-    name: 'Free',
+    name: 'Free tools',
     route: ROUTE_PATH.FREE,
     activePath: 'free',
+  },
+  {
+    id: 'menu-9',
+    name: 'Airdrop',
+    route: ROUTE_PATH.AIRDROP,
+    activePath: 'airdrop',
   },
 ];
 

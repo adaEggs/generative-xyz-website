@@ -26,6 +26,7 @@ import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { WalletContext } from '@contexts/wallet-context';
 import RequestConnectWallet from '@containers/RequestConnectWallet';
+import { useRouter } from 'next/router';
 
 const LOG_PREFIX = 'Inscribe';
 
@@ -47,6 +48,14 @@ const Inscribe: React.FC = (): React.ReactElement => {
     InscribeMintFeeRate.FASTEST
   );
   const [isProcessing, setIsProcessing] = useState(false);
+  const router = useRouter();
+  const { _isAuthentic, _tokenAddress, _tokenId } = router.query;
+
+  // const handleLoadFile = async (): Promise<void> => {
+  //   if (isAuthentic && tokenAddress && tokenId) {
+  //     const token  = await
+  //   }
+  // }
 
   const handleChangeFile = (file: File | null): void => {
     setFile(file);

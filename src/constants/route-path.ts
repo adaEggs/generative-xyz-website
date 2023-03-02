@@ -26,6 +26,8 @@ export const ROUTE_PATH = {
   WALLET: '/wallet',
   ARTISTS: '/artists',
   FREE: '/free',
+  AUTHENTIC: '/authentic',
+  AIRDROP: '/airdrop',
 };
 
 export const STANDALONE_PAGES = [

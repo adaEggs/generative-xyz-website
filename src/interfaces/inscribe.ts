@@ -29,3 +29,16 @@ export interface InscriptionItem {
   uuid: string;
   userUuid: string;
 }
+
+export interface MoralisNFT {
+  token_address: string;
+  token_id: string;
+  amount: number;
+  owner_of: string;
+  token_hash: string;
+  contract_type: string;
+  name: string;
+  symbol: string;
+  token_uri: string;
+  metadata: string;
+}
