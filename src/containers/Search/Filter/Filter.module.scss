@@ -1,0 +1,41 @@
+.filter {
+  color: $black-100;
+  &_totalResult {
+    margin-bottom: rem(24);
+    font-weight: 500;
+    font-size: rem(34);
+    line-height: rem(44);
+    span {
+      font-weight: 700;
+    }
+  }
+  &_tag {
+    display: flex;
+    align-items: center;
+    padding: rem(11) rem(20);
+    border: 1px solid #b6b6b6;
+    border-radius: rem(2);
+    font-weight: 400;
+    font-size: rem(16);
+    line-height: rem(26);
+    span {
+      margin-right: rem(6);
+    }
+    svg:hover {
+      cursor: pointer;
+    }
+  }
+  &_btnClear {
+    padding: rem(11) rem(20);
+    background: $black-100;
+    border-radius: rem(2);
+    font-weight: 500;
+    font-size: rem(16);
+    line-height: rem(26);
+    letter-spacing: 0.01em;
+    color: $white-100;
+    &:hover {
+      background-color: $primary-333;
+    }
+  }
+}

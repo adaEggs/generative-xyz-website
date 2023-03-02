@@ -9,3 +9,11 @@ export const prettyPrintBytes = (size: number): string => {
   }
   return s.toFixed(0) + 'GB';
 };
+
+export const prettyNumberWithCommas = (value: number): string => {
+  const valueRound: number = Math.round(value * 100) / 100;
+  const valueStrFormat: string = valueRound.toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+  });
+  return valueStrFormat.replace('.00', '');
+};
