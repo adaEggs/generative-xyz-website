@@ -1,11 +1,14 @@
+import Heading from '@components/Heading';
+import { Loading } from '@components/Loading';
+import Text from '@components/Text';
+import { CDN_URL } from '@constants/config';
+import { ROUTE_PATH } from '@constants/route-path';
+import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
+import Link from 'next/link';
+import React, { useContext, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import FormEditProfile from './FormEditProfile';
 import s from './styles.module.scss';
-import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
-import { Loading } from '@components/Loading';
-import React, { useContext, useState } from 'react';
-import Heading from '@components/Heading';
-import Text from '@components/Text';
 
 const EditProfile = (): JSX.Element => {
   const [tab, setTab] = useState<string>('account');
@@ -16,7 +19,16 @@ const EditProfile = (): JSX.Element => {
       <Container>
         <Row className={s.editProfile_row}>
           <Col xl={4}>
-            <Heading as={'h4'}>Edit Profile</Heading>
+            <div className={s.editProfile_titleContainer}>
+              <Link href={ROUTE_PATH.PROFILE}>
+                <img
+                  className={s.editProfile_titleContainer_icon}
+                  alt="back"
+                  src={`${CDN_URL}/icons/ic-back-profile.png`}
+                />
+              </Link>
+              <Heading as={'h4'}>Settings</Heading>
+            </div>
             <ul className={s.editProfile_tabs}>
               <li
                 className={`${tab === 'account' ? s.isActive : ''}`}
