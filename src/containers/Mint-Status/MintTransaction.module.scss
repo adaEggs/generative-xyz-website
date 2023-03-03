@@ -1,5 +1,5 @@
 .transaction {
-  margin-top: rem(40px);
+  margin-top: rem(28px);
   margin-bottom: rem(100px);
 
   .thumbnail {
@@ -85,8 +85,33 @@
   }
 
   &_tx {
-    padding-top: rem(14px);
+    padding-top: rem(16px);
     padding-bottom: rem(16px);
+
+    .wrapHistory {
+      padding: 18px 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      background-color: $primary-light;
+
+      &_center {
+        display: flex;
+        align-items: center;
+      }
+
+      &_copy {
+        cursor: pointer;
+        margin-left: 4px;
+
+        :hover {
+          opacity: 0.9;
+        }
+      }
+
+      &_marginTop {
+        margin-top: 12px;
+      }
+    }
   }
 
   .payment {
@@ -110,7 +135,7 @@
     }
 
     &_detail {
-      padding: rem(16px) rem(44px);
+      padding: rem(24px) rem(44px);
       margin-top: rem(16px);
       margin-bottom: rem(16px);
       background: #e5ecfe;
@@ -120,7 +145,7 @@
       align-items: center;
 
       @include mobile {
-        padding: rem(8px) rem(16px);
+        padding: rem(12px) rem(16px);
       }
 
       &_title {
@@ -141,7 +166,7 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        border: 1px solid $black-10;
+        // border: 1px solid $black-10;
         border-radius: rem(8px);
         width: fit-content;
 

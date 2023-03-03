@@ -9,6 +9,7 @@ import {
 import { ellipsisCenter, formatBTCPrice, formatEthPrice } from '@utils/format';
 import copy from 'copy-to-clipboard';
 import React, { useState } from 'react';
+import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from '../MintTransaction.module.scss';
 
@@ -54,12 +55,33 @@ const Step = (props: IStep): JSX.Element => {
   };
 
   const renderTx = (tx?: string) => {
-    if (!tx) {
+    if (!tx || !nft) {
       return <></>;
     }
+    const linkTxHash =
+      nft.payType === 'btc'
+        ? `https://www.blockchain.com/explorer/transactions/btc/${tx}`
+        : `https://etherscan.io/tx/${tx}`;
+
     return (
       <div className={s.transaction_tx}>
-        <Text>{`Tx: `}</Text>
+        <Stack direction="horizontal" gap={3}>
+          <Text size="16" fontWeight="medium" color="black-100">
+            TxHash: {ellipsisCenter({ str: tx, limit: 12 })}
+          </Text>
+          <SvgInset
+            size={18}
+            svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+            className={s.wrapHistory_copy}
+            onClick={() => onClickCopy(tx)}
+          />
+          <SvgInset
+            size={16}
+            svgUrl={`${CDN_URL}/icons/ic-share.svg`}
+            className={s.wrapHistory_copy}
+            onClick={() => window.open(linkTxHash)}
+          />
+        </Stack>
       </div>
     );
   };
