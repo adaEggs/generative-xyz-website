@@ -42,15 +42,15 @@ export const Items = (): JSX.Element => {
 
   const { data: resultByArtists } = useSWR(
     getApiKey(getSearchByKeyword, filterArtistParams),
-    getSearchByKeyword
+    () => getSearchByKeyword(filterArtistParams)
   );
   const { data: resultByTokens } = useSWR(
     getApiKey(getSearchByKeyword, filterTokenParams),
-    getSearchByKeyword
+    () => getSearchByKeyword(filterTokenParams)
   );
   const { data: resultByInscriptions } = useSWR(
     getApiKey(getSearchByKeyword, filterInscriptionParams),
-    getSearchByKeyword
+    () => getSearchByKeyword(filterInscriptionParams)
   );
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -66,7 +66,7 @@ export const Items = (): JSX.Element => {
       ...(resultByInscriptions?.result || []),
     ]);
     setIsLoaded(true);
-  }, []);
+  }, [keyword]);
 
   const fetchDataOrdinals = async () => {
     try {
