@@ -33,6 +33,11 @@ export interface IFeeRate {
 export enum TrackTxType {
   normal = 'normal',
   inscription = 'inscription',
+  buyInscription = 'buy-inscription',
+  buySplit = 'buy-split-inscription',
+  listSplit = 'list-split-inscription',
+  list = 'list-inscription',
+  cancel = 'cancel-list-inscription',
 }
 
 export interface ITrackTx {
@@ -49,6 +54,10 @@ export enum HistoryStatusType {
   pending = 'Pending',
   failed = 'Failed',
   success = 'Success',
+  cancelling = 'cancelling',
+  listing = 'listing',
+  matched = 'matched',
+  cancelled = 'cancelled',
 }
 
 export type HistoryStatusColor = '#ff7e21' | '#24c087' | '#ff4747';
@@ -57,9 +66,44 @@ export interface ITxHistory {
   txhash: string;
   status: HistoryStatusType;
   statusColor: HistoryStatusColor;
-  type: ITrackTx;
+  type: TrackTxType;
   inscription_id: string;
   inscription_number: number;
   send_amount: number;
   created_at: string;
+  isExpired: boolean;
+}
+
+export interface ITxHistory {
+  txhash: string;
+  status: HistoryStatusType;
+  statusColor: HistoryStatusColor;
+  type: TrackTxType;
+  inscription_id: string;
+  inscription_number: number;
+  send_amount: number;
+  created_at: string;
+  isExpired: boolean;
+}
+
+export interface IListHistoryReq {
+  order_id: string;
+  type: string;
+  timestamp: number;
+  inscription_id: string;
+  txhash: string;
+  amount: string;
+}
+
+export interface IListingPayload {
+  raw_psbt: string; // base64
+  inscription_id: string;
+}
+
+export interface IRetrieveOrderPayload {
+  orderID: string;
+}
+
+export interface IRetrieveOrderResp {
+  raw_psbt: string;
 }

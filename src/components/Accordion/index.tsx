@@ -25,21 +25,15 @@ const AccordionComponent = ({ header, content, className }: Props) => {
               setCollapsed(!collapsed);
             }}
           >
-            <Text size="14" fontWeight="bold" className="text-secondary-color">
+            <Text fontWeight="medium" className="black-100">
               {header}
             </Text>
             <div className={styles.accordion_icon}>
-              {collapsed ? (
-                <SvgInset
-                  size={12}
-                  svgUrl={`${CDN_URL}/icons/ic-plus.svg`}
-                ></SvgInset>
-              ) : (
-                <SvgInset
-                  size={12}
-                  svgUrl={`${CDN_URL}/icons/ic-minus.svg`}
-                ></SvgInset>
-              )}
+              <SvgInset
+                size={20}
+                className={collapsed ? '' : styles.icClose}
+                svgUrl={`${CDN_URL}/icons/arrow-up.svg`}
+              />
             </div>
           </Accordion.Header>
           <Accordion.Body className={styles.accordion_body}>

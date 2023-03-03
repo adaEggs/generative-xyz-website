@@ -9,9 +9,7 @@ const useFeeRate = () => {
     halfHourFee: 10,
     hourFee: 5,
   };
-  const [selectedRate, setRate] = useState<FeeRateName>(
-    FeeRateName.halfHourFee
-  );
+  const [selectedRate, setRate] = useState<FeeRateName>(FeeRateName.fastestFee);
 
   const handleChangeFee = (fee: FeeRateName): void => {
     setRate(fee);

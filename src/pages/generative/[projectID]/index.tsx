@@ -6,11 +6,14 @@ import GenerativeProjectDetailWrapper from '@containers/GenerativeProjectDetail'
 import MarketplaceLayout from '@layouts/Marketplace';
 import { getProjectDetail } from '@services/project';
 import { GetServerSidePropsContext, NextPage } from 'next';
+import { ProfileProvider } from '@contexts/profile-context';
 
 const GenerativeProjectDetailPage: NextPage = () => {
   return (
     <MarketplaceLayout isDrops={true}>
-      <GenerativeProjectDetailWrapper />
+      <ProfileProvider>
+        <GenerativeProjectDetailWrapper />
+      </ProfileProvider>
     </MarketplaceLayout>
   );
 };

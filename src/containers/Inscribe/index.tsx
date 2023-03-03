@@ -256,7 +256,7 @@ const Inscribe: React.FC = (): React.ReactElement => {
               <Formik
                 key="mintBTCGenerativeForm"
                 initialValues={{
-                  address: '',
+                  address: user?.walletAddressBtcTaproot || '',
                 }}
                 validate={validateForm}
                 onSubmit={handleSubmit}

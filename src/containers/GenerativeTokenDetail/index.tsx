@@ -1,5 +1,4 @@
 import ButtonIcon from '@components/ButtonIcon';
-import ModalBuyItem from '@components/Collection/ModalBuyItem';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
 import { Loading } from '@components/Loading';
@@ -17,17 +16,10 @@ import {
   GenerativeTokenDetailContext,
   GenerativeTokenDetailProvider,
 } from '@contexts/generative-token-detail-context';
-import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
-import {
-  formatAddress,
-  formatBTCPrice,
-  formatEthPrice,
-  formatLongAddress,
-  formatTokenId,
-} from '@utils/format';
+import { formatAddress, formatLongAddress, formatTokenId } from '@utils/format';
 import React, { useContext, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
@@ -43,12 +35,13 @@ import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
 import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
+import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import { ProfileProvider } from '@contexts/profile-context';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
   // const { projectID } = router.query;
   const { mobileScreen } = useWindowSize();
-  const { ordAddress, onButtonClick } = useBTCSignOrd();
   const {
     tokenData,
     projectData,
@@ -68,26 +61,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const mintedDate = dayjs(tokenData?.mintedTime).format('MMM DD, YYYY');
   const [isBuying, setIsBuying] = useState(false);
   // const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const isBTCListable =
-    (tokenData?.buyable || (!tokenData?.buyable && !tokenData?.isCompleted)) &&
-    !!tokenData?.priceBTC;
-  const isBTCDisable =
-    !tokenData?.buyable && !tokenData?.isCompleted && !!tokenData?.priceBTC;
-  const [payType, setPayType] = useState<'eth' | 'btc'>('btc');
-  const [showReportModal, setShowReportModal] = useState(false);
+  const isBuyable = React.useMemo(() => {
+    return tokenData?.buyable && !!tokenData?.priceBTC;
+  }, [tokenData?.buyable, tokenData?.priceBTC]);
 
-  const toggleModal = (_payType?: 'eth' | 'btc') => {
-    if (isBTCDisable) return;
-    return onButtonClick({
-      cbSigned: () => {
-        if (_payType) {
-          setPayType(_payType);
-        }
-        setShowModal(show => !show);
-      },
-    });
-  };
+  const [showReportModal, setShowReportModal] = useState(false);
 
   const tokenInfos = useMemo(() => {
     const info = [];
@@ -244,71 +222,21 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     setIsBuying(false);
   };
 
-  const refreshPage = () => {
-    window.location.reload();
-  };
-
   const renderBuyBTCView = () => {
-    if (!tokenData || !isBTCListable) return null;
+    if (!tokenData || !isBuyable) return null;
     return (
       <div className={s.buy_btc}>
-        {/* <div>
-          <Heading as="h4" fontWeight="medium">
-            {formatBTCPrice(tokenData.priceBTC)}{' '}
-            <Text as="span" size="18">
-              BTC
-            </Text>
-          </Heading>
-        </div> */}
-        {isBTCDisable ? (
-          <ButtonIcon
-            disabled={isBTCDisable}
-            className={s.buy_btc_button}
-            onClick={() => toggleModal()}
-          >
-            The inscription is being purchased{' '}
-          </ButtonIcon>
-        ) : (
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}
-          >
-            <ButtonIcon
-              className={s.buy_btc_button}
-              onClick={() => toggleModal('btc')}
-            >
-              {`Buy • ${formatBTCPrice(tokenData.priceBTC)} BTC`}
-            </ButtonIcon>
-            {tokenData.listingDetail &&
-              tokenData.listingDetail.paymentListingInfo.eth && (
-                <ButtonIcon
-                  className={s.buy_btc_button}
-                  onClick={() => toggleModal('eth')}
-                  variants="outline"
-                  style={{ marginLeft: 8 }}
-                >
-                  {`Buy • ${formatEthPrice(
-                    tokenData.listingDetail.paymentListingInfo.eth.price
-                  )} ETH`}
-                </ButtonIcon>
-              )}
-          </div>
+        {isBuyable && (
+          <ButtonBuyListed
+            inscriptionID={tokenData.tokenID}
+            price={tokenData.priceBTC}
+            inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+            orderID={tokenData.orderID}
+          />
         )}
       </div>
     );
   };
-
-  // useEffect(() => {
-  //   const exists = tokenDescription.includes('Interaction');
-  //   if (exists) {
-  //     setHasProjectInteraction(true);
-  //   } else {
-  //     setHasProjectInteraction(false);
-  //   }
-  // }, [tokenDescription]);
 
   return (
     <>
@@ -605,25 +533,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           <SwapTokenModal />
         </>
       )}
-      {!!tokenData?.buyable && !!ordAddress && showModal && (
-        <ModalBuyItem
-          showModal={showModal}
-          onClose={toggleModal}
-          onSuccess={refreshPage}
-          inscriptionID={tokenData.tokenID}
-          price={
-            payType === 'btc'
-              ? tokenData.priceBTC
-              : tokenData.listingDetail &&
-                tokenData.listingDetail.paymentListingInfo.eth
-              ? tokenData.listingDetail.paymentListingInfo.eth.price
-              : '0'
-          }
-          orderID={tokenData.orderID}
-          ordAddress={ordAddress}
-          payType={payType}
-        />
-      )}
       <ReportModal
         isShow={showReportModal}
         onHideModal={() => setShowReportModal(false)}
@@ -635,9 +544,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
 
 const GenerativeTokenDetailWrapper: React.FC = (): React.ReactElement => {
   return (
-    <GenerativeTokenDetailProvider>
-      <GenerativeTokenDetail />
-    </GenerativeTokenDetailProvider>
+    <ProfileProvider>
+      <GenerativeTokenDetailProvider>
+        <GenerativeTokenDetail />
+      </GenerativeTokenDetailProvider>
+    </ProfileProvider>
   );
 };
 

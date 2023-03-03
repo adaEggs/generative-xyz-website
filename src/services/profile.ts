@@ -133,6 +133,10 @@ export const getCollectedNFTs = async (
             isCancel: false,
             status: CollectedNFTStatus.Success,
             statusText: '',
+            buyable: data?.buyable,
+            priceBTC: data?.price_btc,
+            orderID: data?.order_id,
+            cancelling: data?.cancelling,
           } as ICollectedNFTItem;
         }
       );
@@ -167,6 +171,10 @@ export const getMintingCollectedNFTs = async (
           status: CollectedNFTStatus.Minting,
           statusText: item.status,
           receiveAddress: item.receiveAddress,
+          buyable: false,
+          cancelling: false,
+          priceBTC: '0',
+          orderID: '',
         };
       });
     }
@@ -195,6 +203,10 @@ export const getDetailMintingCollectedNFT = async (
       status: CollectedNFTStatus.Minting,
       statusText: res.status,
       receiveAddress: res.receiveAddress,
+      buyable: false,
+      cancelling: false,
+      priceBTC: '0',
+      orderID: '',
     };
   } catch (err: unknown) {
     log('failed to get detail collected NFT', LogLevel.ERROR, LOG_PREFIX);

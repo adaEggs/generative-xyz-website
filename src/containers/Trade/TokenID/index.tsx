@@ -1,5 +1,6 @@
 import ButtonIcon from '@components/ButtonIcon';
 import ModalBuyItem from '@components/Collection/ModalBuyItem';
+import ModalBuyItemViaPSBT from '@components/Collection/ModalBuyItemViaPSBT';
 import Heading from '@components/Heading';
 import { Loading } from '@components/Loading';
 import MarkdownPreview from '@components/MarkdownPreview';
@@ -271,23 +272,33 @@ const TokenID: React.FC = (): React.ReactElement => {
         !!tokenData?.price &&
         !!ordAddress &&
         showModal && (
-          <ModalBuyItem
-            showModal={showModal}
-            onClose={() => setShowModal(false)}
-            inscriptionID={tokenData.inscriptionID || ''}
-            price={
-              payType === 'btc'
-                ? new BigNumber(tokenData?.price || 0).toNumber()
-                : new BigNumber(
-                    tokenData.paymentListingInfo.eth
-                      ? tokenData.paymentListingInfo.eth.price
-                      : 0
-                  ).toNumber()
-            }
-            orderID={tokenData.orderID}
-            ordAddress={ordAddress}
-            payType={payType}
-          />
+          <>
+            {payType === 'eth' ? (
+              <ModalBuyItem
+                showModal={showModal}
+                onClose={() => setShowModal(false)}
+                inscriptionID={tokenData.inscriptionID || ''}
+                price={new BigNumber(
+                  tokenData.paymentListingInfo.eth
+                    ? tokenData.paymentListingInfo.eth.price
+                    : 0
+                ).toNumber()}
+                orderID={tokenData.orderID}
+                ordAddress={ordAddress}
+                payType="eth"
+              />
+            ) : (
+              <ModalBuyItemViaPSBT
+                showModal={showModal}
+                onClose={() => setShowModal(false)}
+                inscriptionID={tokenData.inscriptionID || ''}
+                price={new BigNumber(tokenData?.price || 0).toNumber()}
+                orderID={tokenData.orderID}
+                ordAddress={ordAddress}
+                payType="btc"
+              />
+            )}
+          </>
         )}
     </Container>
   );
