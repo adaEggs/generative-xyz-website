@@ -136,6 +136,22 @@ const Header: React.FC<IProp> = ({
         })}
       >
         <ul className={styles.freeToolList}>
+          <li className={cs(styles.freeToolItem, styles.disabled)}>
+            <a>
+              <Image
+                src={`${CDN_URL}/icons/ic-shield-star-34x34.svg`}
+                width={34}
+                height={34}
+                alt="ic-percent-circle"
+              />
+              <div className={styles.menuContent}>
+                <p className={styles.mainText}>{MENU_HEADER[9].name}</p>
+                <p className={styles.subText}>
+                  Inscribe your existing Ethereum NFTs onto Bitcoin.
+                </p>
+              </div>
+            </a>
+          </li>
           <li className={styles.freeToolItem}>
             <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
               <Image
@@ -167,22 +183,6 @@ const Header: React.FC<IProp> = ({
                 </p>
               </div>
             </Link>
-          </li>
-          <li className={cs(styles.freeToolItem, styles.disabled)}>
-            <a>
-              <Image
-                src={`${CDN_URL}/icons/ic-shield-star-34x34.svg`}
-                width={34}
-                height={34}
-                alt="ic-percent-circle"
-              />
-              <div className={styles.menuContent}>
-                <p className={styles.mainText}>{MENU_HEADER[9].name}</p>
-                <p className={styles.subText}>
-                  Inscribe your existing Ethereum NFTs on Bitcoin.
-                </p>
-              </div>
-            </a>
           </li>
         </ul>
       </div>
