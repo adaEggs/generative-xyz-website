@@ -22,6 +22,7 @@ import { v4 } from 'uuid';
 import s from './styles.module.scss';
 import { getTokenUriList } from '@services/token-uri';
 import { Token } from '@interfaces/token';
+import { useRouter } from 'next/router';
 
 const LOG_PREFIX = 'SearchCollection';
 
@@ -38,6 +39,8 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
   const inputSearchRef = useRef<HTMLInputElement>(null);
   const resultSearchRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const router = useRouter();
 
   const handleSearch = async () => {
     try {
@@ -83,6 +86,17 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
     setInputFocus(false);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleKeyDownSearch = (event: any): void => {
+    if (event?.key === 'Enter') {
+      router.push({
+        pathname: ROUTE_PATH.SEARCH,
+        query: { keyword: event?.target?.value?.trim() },
+      });
+      handleCloseSearchResult();
+    }
+  };
+
   useEffect(() => {
     if (searchText && searchText.length > 2) {
       handleSearch();
@@ -112,6 +126,7 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
             setInputFocus(true);
           }}
           ref={inputSearchRef}
+          onKeyDown={handleKeyDownSearch}
         />
         <div className={s.searchIcon}>
           <SvgInset size={16} svgUrl={`${CDN_URL}/icons/ic-search-14x14.svg`} />

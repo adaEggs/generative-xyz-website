@@ -1,0 +1,12 @@
+.items {
+  &_projectItem {
+    display: inline-block;
+  }
+
+  &_loader {
+    position: relative;
+    height: 80px;
+    width: 100%;
+    margin-top: rem(50px);
+  }
+}
