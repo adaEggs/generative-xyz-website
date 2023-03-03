@@ -29,7 +29,6 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   const user = useSelector(getUserSelector);
   const { collectedUTXOs } = useContext(ProfileContext);
   const [satoshiAmount, setAmount] = useState(0);
-
   const sendInscription = async ({
     receiverAddress,
     feeRate,
