@@ -121,7 +121,8 @@
       margin-top: 26px;
       margin-bottom: 26px;
       width: 100%;
-      border: 1px solid $black-outline;
+      height: 1px;
+      background-color: $black-outline;
     }
 
     &_feeRow {

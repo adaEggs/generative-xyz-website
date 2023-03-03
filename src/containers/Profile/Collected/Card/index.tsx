@@ -226,28 +226,29 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                 )}
               </div>
             )}
-            <div className={s.row}>
-              {project.status === CollectedNFTStatus.Success && (
-                <TwitterShareButton
-                  url={`${location.origin}${linkPath}?referral_code=${user?.id}`}
-                  title={''}
-                  hashtags={[]}
+            {project.status === CollectedNFTStatus.Success && (
+              <TwitterShareButton
+                className={s.twitter}
+                url={`${location.origin}${linkPath}?referral_code=${user?.id}`}
+                title={''}
+                hashtags={[]}
+              >
+                <ButtonIcon
+                  sizes="small"
+                  variants="ghost"
+                  className={s.twitter_btnShare}
+                  startIcon={
+                    <SvgInset
+                      size={16}
+                      svgUrl={`${CDN_URL}/icons/ic-twitter-white-20x20.svg`}
+                    />
+                  }
                 >
-                  <ButtonIcon
-                    sizes="small"
-                    variants="ghost"
-                    className={s.projectCard_info_btnShare}
-                    startIcon={
-                      <SvgInset
-                        size={16}
-                        svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
-                      />
-                    }
-                  >
-                    Share
-                  </ButtonIcon>
-                </TwitterShareButton>
-              )}
+                  Share
+                </ButtonIcon>
+              </TwitterShareButton>
+            )}
+            <div className={s.row}>
               {isListable && (
                 <Link
                   href=""

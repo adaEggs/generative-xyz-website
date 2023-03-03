@@ -85,6 +85,8 @@ const ModalListForSale = React.memo(
       const errors: Record<string, string> = {};
       if (!values.price || !new BigNumber(values.price || 0)) {
         errors.price = 'Required.';
+      } else if (values.price) {
+        // validate fee
       }
       if (!values.receiveBTCAddress) {
         errors.receiveBTCAddress = 'Address is required.';
@@ -99,29 +101,25 @@ const ModalListForSale = React.memo(
       if (!listingFee) return;
       try {
         setLoading(true);
-        const satoshiAmount = convertToSatoshiNumber(values.price);
-        let amountArtist = 0;
-        if (listingFee?.royaltyFee) {
-          amountArtist = new BigNumber(satoshiAmount)
-            .multipliedBy(listingFee?.royaltyFee)
-            .div(100)
-            .toNumber();
-          amountArtist = Math.floor(amountArtist);
-        }
-
-        let amountSeller = new BigNumber(satoshiAmount)
-          .minus(amountArtist)
-          .toNumber();
-        amountSeller = Math.floor(amountSeller);
+        const amountSeller = convertToSatoshiNumber(values.price);
+        const amountArtist = listingFee?.royaltyFee
+          ? Math.floor(
+              new BigNumber(amountSeller)
+                .multipliedBy(listingFee?.royaltyFee)
+                .div(100)
+                .toNumber()
+            )
+          : 0;
 
         await listInscription({
           amountPayToSeller: amountSeller,
-          creatorAddress: listingFee.royaltyAddress,
+          creatorAddress: amountArtist ? listingFee.royaltyAddress : '',
           feePayToCreator: amountArtist,
           feeRate: allRate[selectedRate],
           inscriptionNumber: inscriptionNumber,
           receiverBTCAddress: values.receiveBTCAddress,
         });
+
         setTimeout(() => {
           setLoading(false);
           debounceFetchCollectedUTXOs();
@@ -253,6 +251,23 @@ const ModalListForSale = React.memo(
                         charge: listingFee?.royaltyFee || 0,
                         isHideZero: true,
                       })}
+                      {!!values.price && (
+                        <>
+                          <div className={s.wrapFee_divider} />
+                          {renderFee({
+                            price: new BigNumber(values.price || 0)
+                              .plus(
+                                new BigNumber(values.price || 0)
+                                  .multipliedBy(listingFee?.royaltyFee || 0)
+                                  .div(100)
+                              )
+                              .toNumber(),
+                            label: 'Total',
+                            charge: 100,
+                            isHideZero: true,
+                          })}
+                        </>
+                      )}
                     </div>
                   </>
                 )}
