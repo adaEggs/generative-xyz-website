@@ -15,6 +15,8 @@ import { LoaderIcon, toast } from 'react-hot-toast';
 import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
+import Text from '@components/Text';
+import { estimateTxFee } from 'generative-sdk';
 
 interface IFormValues {
   price: string;
@@ -176,6 +178,25 @@ const ModalBuyListed = React.memo(
                         </div>
                       }
                     />
+                    <div className={s.wrapFee_feeRow} style={{ marginTop: 16 }}>
+                      <Text
+                        size="16"
+                        fontWeight="medium"
+                        className={s.wrapFee_leftLabel}
+                      >
+                        Network fees
+                      </Text>
+                      <Text
+                        size="16"
+                        fontWeight="medium"
+                        color="text-secondary-color"
+                      >
+                        {formatBTCPrice(
+                          estimateTxFee(2, 2, allRate?.fastestFee)
+                        )}{' '}
+                        BTC
+                      </Text>
+                    </div>
                     <ButtonIcon
                       className={s.btnSend}
                       disabled={isLoading}
