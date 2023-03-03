@@ -65,7 +65,7 @@ const InscriptionCard: React.FC<IProps> = ({
                 {metadata?.name || 'Unknown'}
               </Heading>
               <Button onClick={handleGotoInscribePage} className={s.mintBtn}>
-                Mint
+                Inscribe
               </Button>
             </div>
           </div>
