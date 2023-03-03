@@ -76,7 +76,7 @@
     padding-right: rem(16px);
 
     @include tablet {
-      padding-bottom: rem(34px);
+      padding-bottom: rem(24px);
       padding-left: rem(24px);
       padding-right: rem(24px);
     }
@@ -337,11 +337,6 @@
   margin-top: rem(24px);
 }
 
-.continuteBtn {
-  justify-content: center;
-  width: 100%;
-}
-
 .checkBtn {
   justify-content: center;
   width: 100%;
@@ -382,7 +377,7 @@
 
 .payment {
   margin-top: rem(24px);
-  margin-bottom: rem(34px);
+  margin-bottom: rem(24px);
 
   @include mobile {
     margin-top: rem(16px);

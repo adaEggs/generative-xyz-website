@@ -74,6 +74,7 @@
     "react-tagsinput": "^3.20.0",
     "reselect": "^4.1.7",
     "segwit": "https://github.com/generative-xyz/generative-segwit-sdk#0.0.3",
+    "generative-sdk": "https://github.com/generative-xyz/generative-sdk#v0.1.0",
     "split-type": "^0.3.3",
     "supports-webp": "^3.0.0",
     "swr": "^2.0.4",

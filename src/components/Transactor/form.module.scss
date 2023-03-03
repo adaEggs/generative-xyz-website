@@ -1,0 +1,134 @@
+.container {
+  .wrapItem {
+    margin-bottom: 16px;
+    width: 100%;
+
+    &_label {
+      font-weight: 500;
+      font-size: rem(12px);
+      line-height: rem(20px);
+      color: $black-60;
+      display: block;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .inputContainer {
+      position: relative;
+
+      &_input {
+        background-color: $white-100;
+        font-weight: 400;
+        font-size: rem(16px);
+        line-height: rem(26px);
+        color: $black-100;
+        padding: rem(11px) rem(14px);
+        border: 1px solid $black-10;
+        border-radius: 2px;
+        width: 100%;
+
+        &::placeholder {
+          /* Chrome, Firefox, Opera, Safari 10.1+ */
+          color: $black-40;
+          opacity: 1; /* Firefox */
+        }
+
+        &:input-placeholder {
+          /* Internet Explorer 10-11 */
+          color: $black-40;
+        }
+
+        &::input-placeholder {
+          /* Microsoft Edge */
+          color: $black-40;
+        }
+
+        &:disabled {
+          background-color: #f8f8f8;
+        }
+      }
+
+      &_requiredTag {
+        color: $secondary-red;
+      }
+
+      &_inputError {
+        font-size: rem(14px);
+        font-weight: 400;
+        color: $secondary-red;
+        line-height: rem(20px);
+        margin-top: rem(6px);
+      }
+
+      &_inputPostfix {
+        min-width: 54px;
+        text-align: center;
+        position: absolute;
+        right: 14px;
+        top: 12px;
+        font-weight: 500;
+        line-height: (26/16);
+
+        @include calcFontAuto(14px, 16px);
+
+        color: $black-100;
+        padding-left: 8px;
+        border-left: 1px solid $black-20;
+      }
+    }
+
+    .checkBoxContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      margin-top: rem(8px);
+      margin-bottom: rem(24px);
+
+      &_icon {
+        cursor: pointer;
+      }
+
+      &_label {
+        font-size: rem(14px);
+        line-height: rem(22px);
+        color: $black-60;
+        display: block;
+        margin-left: rem(8px);
+      }
+    }
+  }
+
+  .btnSend {
+    margin-top: rem(16px);
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .wrapLoader {
+    position: relative;
+    height: 80px;
+  }
+
+  .advancedContent {
+    margin-top: rem(12px);
+  }
+
+  .wrapFee {
+    margin-top: rem(24px);
+
+    &_divider {
+      margin-top: 26px;
+      margin-bottom: 26px;
+      width: 100%;
+      height: 1px;
+      background-color: $black-outline;
+    }
+
+    &_feeRow {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+  }
+}
