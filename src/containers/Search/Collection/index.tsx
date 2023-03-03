@@ -52,7 +52,7 @@ const Collection = ({ className }: CollectionProps): JSX.Element => {
 
   return (
     <div className={cn(s.collection, className)}>
-      <Row>
+      <Row className={s.collection_resetRowGap}>
         <h6 className={s.collection_title}>Collection results</h6>
         {collections.length <= 4 ? (
           <Row>
