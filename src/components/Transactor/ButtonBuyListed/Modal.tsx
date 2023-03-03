@@ -9,7 +9,7 @@ import BigNumber from 'bignumber.js';
 import ButtonIcon from '@components/ButtonIcon';
 import AccordionComponent from '@components/Accordion';
 import { formatBTCPrice } from '@utils/format';
-import { retrieveOrder, submitListForSale } from '@services/bitcoin';
+import { retrieveOrder } from '@services/bitcoin';
 import { IRetrieveOrderResp } from '@interfaces/api/bitcoin';
 import { LoaderIcon, toast } from 'react-hot-toast';
 import { Loading } from '@components/Loading';
@@ -71,10 +71,6 @@ const ModalBuyListed = React.memo(
           price: Number(price),
           receiverInscriptionAddress: values.receiveBTCAddress,
           sellerSignedPsbtB64: orderData.raw_psbt,
-        });
-        await submitListForSale({
-          inscription_id: inscriptionID,
-          raw_psbt: orderData.raw_psbt,
         });
         setLoading(true);
         setError('');

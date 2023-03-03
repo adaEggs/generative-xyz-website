@@ -34,8 +34,9 @@ export enum TrackTxType {
   normal = 'normal',
   inscription = 'inscription',
   buyInscription = 'buy-inscription',
-  listSplitInscription = 'list-split-inscription',
-  listInscription = 'list-inscription',
+  buySplit = 'buy-split-inscription',
+  listSplit = 'list-split-inscription',
+  list = 'list-inscription',
 }
 
 export interface ITrackTx {

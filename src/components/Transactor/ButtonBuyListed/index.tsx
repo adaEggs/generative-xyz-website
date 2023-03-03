@@ -57,7 +57,7 @@ const ButtonBuyListed = React.memo(
         >
           {label}
         </ButtonIcon>
-        {!!taprootAddress && (
+        {!!taprootAddress && isShow && (
           <ModalBuyListed
             inscriptionNumber={inscriptionNumber}
             orderID={orderID}

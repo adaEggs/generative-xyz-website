@@ -163,21 +163,27 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
         utxos: collectedUTXOs.txrefs,
       });
 
-    await Promise.all([
+    const tasks = [
       await submitListForSale({
         raw_psbt: base64Psbt,
         inscription_id: inscriptionID,
       }),
-      await trackTx({
-        txhash: splitTxID,
-        address: taprootAddress,
-        receiver: receiverBTCAddress,
-        inscription_id: inscriptionID,
-        inscription_number: inscriptionNumber,
-        send_amount: 0,
-        type: TrackTxType.listSplitInscription,
-      }),
-    ]);
+    ];
+
+    if (splitTxID) {
+      tasks.push(
+        await trackTx({
+          txhash: splitTxID,
+          address: taprootAddress,
+          receiver: receiverBTCAddress,
+          inscription_id: inscriptionID,
+          inscription_number: inscriptionNumber,
+          send_amount: 0,
+          type: TrackTxType.listSplit,
+        })
+      );
+    }
+    await Promise.all(tasks);
   };
 
   // GET BALANCE

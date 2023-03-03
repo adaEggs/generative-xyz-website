@@ -16,7 +16,7 @@ import { ErrorMessage } from '@enums/error-message';
 import { IListingFee } from '@interfaces/api/marketplace-btc';
 import Text from '@components/Text';
 import cs from 'classnames';
-import { formatBTCOriginalPrice, formatBTCPrice } from '@utils/format';
+import { convertToSatoshiNumber, formatBTCPrice } from '@utils/format';
 import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
@@ -96,7 +96,7 @@ const ModalListForSale = React.memo(
       if (!listingFee) return;
       try {
         setLoading(true);
-        const satoshiAmount = formatBTCOriginalPrice(values.price);
+        const satoshiAmount = convertToSatoshiNumber(values.price);
         let amountArtist = 0;
         if (listingFee?.royaltyFee) {
           amountArtist = new BigNumber(satoshiAmount)
@@ -120,6 +120,7 @@ const ModalListForSale = React.memo(
           receiverBTCAddress: values.receiveBTCAddress,
         });
       } catch (err: unknown) {
+        setLoading(false);
         onSetError(err);
       }
     };
@@ -190,11 +191,12 @@ const ModalListForSale = React.memo(
                         />
                         <div className={s.inputContainer_inputPostfix}>BTC</div>
                       </div>
-                      {!!errors.price && !!touched.price && (
-                        <p className={s.inputContainer_inputError}>
-                          {errors.price}
-                        </p>
-                      )}
+                      {(!!errors.price && !!touched.price) ||
+                        (error && (
+                          <p className={s.inputContainer_inputError}>
+                            {error || errors.price}
+                          </p>
+                        ))}
                     </div>
                     <AccordionComponent
                       header="Advanced"
@@ -243,16 +245,21 @@ const ModalListForSale = React.memo(
                         isHideZero: true,
                       })}
                     </div>
-                    <ButtonIcon
-                      disabled={isLoading}
-                      className={s.btnSend}
-                      sizes="medium"
-                      type="submit"
-                    >
-                      Listing now
-                    </ButtonIcon>
                   </>
                 )}
+                <ButtonIcon
+                  disabled={isLoading}
+                  className={s.btnSend}
+                  sizes="medium"
+                  type="submit"
+                  onClick={() => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    handleSubmit(values);
+                  }}
+                >
+                  Listing now
+                </ButtonIcon>
               </form>
             )}
           </Formik>
