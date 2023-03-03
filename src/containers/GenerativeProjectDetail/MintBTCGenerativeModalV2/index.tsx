@@ -21,7 +21,13 @@ import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
 import _debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
@@ -39,6 +45,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   const [isShowAdvance, setIsShowAdvance] = useState(false);
 
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
+  const [totalPrice, setTotalPrice] = React.useState('');
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -55,16 +62,21 @@ const MintBTCGenerativeModal: React.FC = () => {
   const [addressInput, setAddressInput] = useState<string>('');
 
   const priceFormat = formatBTCPrice(Number(projectData?.mintPrice), '0.0');
-  const feePriceFormat = formatBTCPrice(Number(projectData?.networkFee), '0.0');
-  const totalPriceFormat = formatBTCPrice(
-    Number(projectData?.networkFee) + Number(projectData?.mintPrice),
-    '0.0'
-  );
+  const feePriceFormat = totalPrice
+    ? formatBTCPrice(Number(totalPrice) - Number(projectData?.mintPrice), '0.0')
+    : '';
+  const totalPriceFormat = formatBTCPrice(Number(totalPrice), '0.0');
 
   const userBtcAddress = useMemo(
     () => user?.walletAddressBtcTaproot || '',
     [user]
   );
+
+  useEffect(() => {
+    if (userBtcAddress) {
+      debounceGetBTCAddress(userBtcAddress, userBtcAddress);
+    }
+  }, [userBtcAddress]);
 
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
@@ -111,6 +123,7 @@ const MintBTCGenerativeModal: React.FC = () => {
       //   walletAddress,
       //   projectID: projectData.tokenID,
       // });
+      setTotalPrice(price);
       sendAAEvent({
         eventName: BTC_PROJECT.MINT_NFT,
         data: {
