@@ -36,9 +36,11 @@ export const LiveWorks = (): JSX.Element => {
   };
 
   const router = useRouter();
+
   const goToInscriptionsPage = () => {
-    router.push(ROUTE_PATH.INSCRIBE);
+    router.push(ROUTE_PATH.FREE_INSCRIPTION);
   };
+
   const [dataOrd, setdataOrd] = useState<IGetMarketplaceBtcListItem[]>([]);
   const [fromOrd, setFromOrd] = useState(0);
   const fetchDataOrdinals = async () => {
