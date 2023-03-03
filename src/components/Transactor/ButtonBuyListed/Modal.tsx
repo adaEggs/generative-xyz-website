@@ -192,7 +192,7 @@ const ModalBuyListed = React.memo(
                         color="text-secondary-color"
                       >
                         {formatBTCPrice(
-                          estimateTxFee(2, 2, allRate?.fastestFee)
+                          estimateTxFee(5, 5, allRate?.fastestFee)
                         )}{' '}
                         BTC
                       </Text>
