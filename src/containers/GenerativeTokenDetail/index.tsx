@@ -36,6 +36,7 @@ import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
 import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
 import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import { ProfileProvider } from '@contexts/profile-context';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
@@ -543,9 +544,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
 
 const GenerativeTokenDetailWrapper: React.FC = (): React.ReactElement => {
   return (
-    <GenerativeTokenDetailProvider>
-      <GenerativeTokenDetail />
-    </GenerativeTokenDetailProvider>
+    <ProfileProvider>
+      <GenerativeTokenDetailProvider>
+        <GenerativeTokenDetail />
+      </GenerativeTokenDetailProvider>
+    </ProfileProvider>
   );
 };
 
