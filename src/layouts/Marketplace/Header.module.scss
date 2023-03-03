@@ -496,6 +496,12 @@
 .freeTools {
   position: relative;
 
+  &:hover {
+    .freeToolsDropdown {
+      display: block;
+    }
+  }
+
   .freeToolsDropdown {
     position: absolute;
     background-color: $white;
