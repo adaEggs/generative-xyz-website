@@ -15,7 +15,6 @@ import { Collected } from './Collected';
 import FreeInscriptions from './Free';
 import s from './Profile.module.scss';
 import ReferralTab from './Referral';
-import { isProduction } from '@utils/common';
 
 const Profile: React.FC = (): React.ReactElement => {
   const user = useAppSelector(getUserSelector);
@@ -58,7 +57,7 @@ const Profile: React.FC = (): React.ReactElement => {
                     <CreatedTab />
                   </Tab>
                   {/* Wait for design to implement. Do not remove */}
-                  {isProduction() && isOwner && (
+                  {isOwner && (
                     <Tab
                       tabClassName={s.tab}
                       eventKey="referralTab"
