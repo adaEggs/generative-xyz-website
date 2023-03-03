@@ -5,6 +5,7 @@ import s from './styles.module.scss';
 import { CDN_URL } from '@constants/config';
 import cs from 'classnames';
 import SvgInset from '@components/SvgInset';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const Topbar: React.FC = (): React.ReactElement => {
   return (
@@ -14,11 +15,7 @@ const Topbar: React.FC = (): React.ReactElement => {
           <div className={s.left}>
             <p className={s.text}>
               New artist?{' '}
-              <Link
-                className={s.startedLink}
-                target="_blank"
-                href={SOCIALS.docsForArtist}
-              >
+              <Link className={s.startedLink} href={ROUTE_PATH.ARTISTS}>
                 Start here.
               </Link>
             </p>
