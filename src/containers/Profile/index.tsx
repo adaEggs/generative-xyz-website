@@ -45,7 +45,7 @@ const Profile: React.FC = (): React.ReactElement => {
                   <Tab
                     tabClassName={s.tab}
                     eventKey="collectedTab"
-                    title={<>{collectedNFTs.length} Collected</>}
+                    title={<>{collectedNFTs.length} Inscriptions</>}
                   >
                     <Collected />
                   </Tab>
@@ -53,11 +53,10 @@ const Profile: React.FC = (): React.ReactElement => {
                   <Tab
                     tabClassName={s.tab}
                     eventKey="createdTab"
-                    title={<>{profileProjects?.total || 0} Created</>}
+                    title={<>{profileProjects?.total || 0} Projects</>}
                   >
                     <CreatedTab />
                   </Tab>
-                  {/* Wait for design to implement. Do not remove */}
                   {isProduction() && isOwner && (
                     <Tab
                       tabClassName={s.tab}
