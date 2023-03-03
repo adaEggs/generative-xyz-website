@@ -195,6 +195,12 @@ export const getDetailMintingCollectedNFT = async (
       status: CollectedNFTStatus.Minting,
       statusText: res.status,
       receiveAddress: res.receiveAddress,
+      progressStatus: res.progressStatus
+        ? Object.values(res.progressStatus)
+        : [],
+      amount: res.amount,
+      payType: res.payType,
+      projectImage: res.projectImage,
     };
   } catch (err: unknown) {
     log('failed to get detail collected NFT', LogLevel.ERROR, LOG_PREFIX);

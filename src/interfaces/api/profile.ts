@@ -42,12 +42,19 @@ export interface ICollectedNFTItem {
   status: CollectedNFTStatus;
   statusText: string;
   receiveAddress?: string;
+  amount?: string;
+  payType?: string;
+  projectImage?: string;
+}
+
+export interface IStatusTransactionMint {
+  message: string;
+  tx?: string;
+  status: boolean;
 }
 
 export interface ICollectedNFTItemDetail extends ICollectedNFTItem {
-  progressStatus?: {
-    [key: string]: { message: string; tx?: string; status: boolean };
-  };
+  progressStatus?: IStatusTransactionMint[];
 }
 
 export interface IGetMintingCollectedNFTResp {
@@ -60,6 +67,11 @@ export interface IGetMintingCollectedNFTResp {
   inscriptionID: string;
   id: string;
   receiveAddress: string;
+  progressStatus?: {
+    [key: string]: IStatusTransactionMint;
+  };
+  payType: string;
+  amount: string;
 }
 
 export interface IGetCollectedNFTInsciptionResp {

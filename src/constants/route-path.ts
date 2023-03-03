@@ -29,6 +29,7 @@ export const ROUTE_PATH = {
   FREE_INSCRIPTION: '/free',
   AUTHENTIC: '/authentic',
   AIRDROP: '/airdrop',
+  MINT_STATUS: '/mint-status',
 };
 
 export const STANDALONE_PAGES = [

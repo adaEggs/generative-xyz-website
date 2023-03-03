@@ -116,14 +116,16 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     return (
       <>
         {project.status !== CollectedNFTStatus.Success && (
-          <Text
-            className={s.projectCard_creator_status}
-            size={'16'}
-            fontWeight="medium"
-            color="black-40"
-          >
-            {`${project.statusText}...`}
-          </Text>
+          <Link href={`${ROUTE_PATH.MINT_STATUS}/${project.id}`}>
+            <Text
+              className={s.projectCard_creator_status_underline}
+              size={'16'}
+              fontWeight="medium"
+              color="black-40"
+            >
+              {`${project.statusText}...`}
+            </Text>
+          </Link>
         )}
       </>
     );
