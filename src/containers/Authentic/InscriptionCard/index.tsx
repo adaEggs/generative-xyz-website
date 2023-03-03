@@ -35,7 +35,7 @@ const InscriptionCard: React.FC<IProps> = ({
 
   const handleGotoInscribePage = (): void => {
     router.push(
-      `${ROUTE_PATH.FREE}?isAuthentic=true&tokenAddress=${inscription.token_address}&tokenId=${inscription.token_id}`
+      `${ROUTE_PATH.FREE_INSCRIPTION}?isAuthentic=true&tokenAddress=${inscription.token_address}&tokenId=${inscription.token_id}`
     );
   };
 

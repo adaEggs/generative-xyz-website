@@ -47,15 +47,21 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-8',
-    name: 'Free tools',
-    route: ROUTE_PATH.FREE,
-    activePath: 'free',
+    name: 'Free Inscription',
+    route: ROUTE_PATH.FREE_INSCRIPTION,
+    activePath: 'free-inscription',
   },
   {
     id: 'menu-9',
     name: 'Airdrop',
     route: ROUTE_PATH.AIRDROP,
     activePath: 'airdrop',
+  },
+  {
+    id: 'menu-10',
+    name: 'Authentic Inscription (coming soon)',
+    route: ROUTE_PATH.AUTHENTIC,
+    activePath: 'authentic',
   },
 ];
 

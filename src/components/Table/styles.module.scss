@@ -35,3 +35,12 @@
     }
   }
 }
+
+.empty {
+  height: rem(300);
+
+  tr > div {
+    position: absolute;
+    top: 80px;
+  }
+}

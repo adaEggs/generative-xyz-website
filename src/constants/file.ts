@@ -16,6 +16,24 @@ export const NAIVE_MIMES: Record<string, string> = {
 export const JS_EXTENSION = 'js';
 export const HTML_EXTENSION = 'html';
 export const CSS_EXTENSION = 'css';
+export const IMAGE_EXTENSIONS = [
+  'apng',
+  'avif',
+  'gif',
+  'jpg',
+  'jpeg',
+  'jfif',
+  'pjpeg',
+  'pjp',
+  'png',
+  'svg',
+  'webp',
+  'bmp',
+  'ico',
+  'cur',
+  'tif',
+  'tiff',
+];
 
 export const SUPPORTED_FILE_EXT: Array<{ mediaType: MediaType; ext: string }> =
   [

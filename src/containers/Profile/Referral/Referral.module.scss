@@ -19,10 +19,15 @@
     bottom: rem(48);
   }
 
+  &_wrapper {
+    gap: rem(6);
+  }
+
   .link {
     display: flex;
     align-items: center;
-    padding: rem(14) rem(11);
+    justify-content: space-between;
+    padding: rem(10) rem(14);
     gap: rem(20);
     border: 1px solid $black-10;
   }
@@ -31,6 +36,7 @@
 .referee {
   gap: rem(10);
   padding-left: rem(5);
+  max-width: rem(300);
 }
 
 .actions {
@@ -51,6 +57,10 @@
 }
 
 .Refferal_table {
+  :global(th:first-of-type) {
+    width: rem(400px);
+  }
+
   :global(tbody tr td) {
     padding: {
       top: rem(13) !important;

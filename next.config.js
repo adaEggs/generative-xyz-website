@@ -31,7 +31,7 @@ module.exports = withRemoveImports(
           headers: [
             {
               key: 'Content-Security-Policy',
-              value: `frame-ancestors 'self' http://localhost:3000 https://devnet.generative.xyz https://testnet.generative.xyz https://generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://ordinals-explorer.generative.xyz https://cdn.generative.xyz https://preview.generativeexplorer.com https://storage.googleapis.com; frame-src 'self' http://localhost:3000 https://devnet.generative.xyz https://testnet.generative.xyz https://generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://ordinals-explorer.generative.xyz/ https://cdn.generative.xyz https://preview.generativeexplorer.com https://storage.googleapis.com;`,
+              value: `frame-ancestors 'self' http://localhost:3000 https://devnet.generative.xyz https://testnet.generative.xyz https://generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://ordinals-explorer.generative.xyz https://cdn.generative.xyz https://preview.generativeexplorer.com https://preview-dev.generativeexplorer.com https://storage.googleapis.com; frame-src 'self' http://localhost:3000 https://devnet.generative.xyz https://testnet.generative.xyz https://generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://ordinals-explorer.generative.xyz/ https://cdn.generative.xyz https://preview.generativeexplorer.com https://preview-dev.generativeexplorer.com https://storage.googleapis.com;`,
             },
             ...baseSecurityHeaders,
           ],
@@ -59,7 +59,7 @@ module.exports = withRemoveImports(
           headers: [
             {
               key: 'Content-Security-Policy',
-              value: `frame-ancestors 'self' http://localhost:3000 https://devnet.generative.xyz https://testnet.generative.xyz https://generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://ordinals-explorer.generative.xyz https://cdn.generative.xyz https://preview.generativeexplorer.com https://storage.googleapis.com; frame-src 'self' http://localhost:3000 https://devnet.generative.xyz https://testnet.generative.xyz https://generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://ordinals-explorer.generative.xyz/ https://cdn.generative.xyz https://preview.generativeexplorer.com https://storage.googleapis.com;`,
+              value: `frame-ancestors 'self' http://localhost:3000 https://devnet.generative.xyz https://testnet.generative.xyz https://generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://ordinals-explorer.generative.xyz https://cdn.generative.xyz https://preview.generativeexplorer.com https://preview-dev.generativeexplorer.com https://storage.googleapis.com; frame-src 'self' http://localhost:3000 https://devnet.generative.xyz https://testnet.generative.xyz https://generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://ordinals-explorer.generative.xyz/ https://cdn.generative.xyz https://preview.generativeexplorer.com https://preview-dev.generativeexplorer.com https://storage.googleapis.com;`,
             },
             {
               key: 'Cross-Origin-Embedder-Policy',
@@ -102,11 +102,6 @@ module.exports = withRemoveImports(
         {
           source: '/create',
           destination: '/create/upload-project',
-          permanent: true,
-        },
-        {
-          source: '/airdrop',
-          destination: '/',
           permanent: true,
         },
       ];

@@ -18,11 +18,12 @@ import log from '@utils/logger';
 import cs from 'classnames';
 import copy from 'copy-to-clipboard';
 import { useRouter } from 'next/router';
-import { useContext } from 'react';
-import { OverlayTrigger, Stack, Tooltip } from 'react-bootstrap';
+import { useContext, useState } from 'react';
+import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import ArtistCollectionEarn from './ArtistCollectionEarn';
 import s from './Referral.module.scss';
+import WithdrawModal from './WithdrawModal';
 
 const LOG_PREFIX = 'ReferralTab';
 
@@ -31,7 +32,7 @@ const ReferralTab = () => {
   const router = useRouter();
   const { referralListing, currency, setCurrency } = useContext(ProfileContext);
 
-  // const [isETHCurrency, setIsETHCurrency] = useState(false);
+  const [showWithdrawSucessModal, setShowWithdrawSucessModal] = useState(false);
 
   const TABLE_REFERRALS_HEADING = [
     'Referee',
@@ -69,6 +70,7 @@ const ReferralTab = () => {
 
     try {
       await withdrawRewardEarned(payload);
+      setShowWithdrawSucessModal(true);
     } catch (err: unknown) {
       log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
       throw Error();
@@ -144,38 +146,24 @@ const ReferralTab = () => {
     <div className={s.wrapper}>
       {/* <Loading isLoaded={needLoading} className={s.loading} /> */}
       <div className={s.referral_link}>
-        <Stack direction="horizontal" gap={4}>
-          <Heading as="h4" fontWeight="semibold">
+        <Stack gap={2}>
+          <Heading as="h4" fontWeight="medium">
             Referral
           </Heading>
-          <OverlayTrigger
-            placement="bottom"
-            delay={{ show: 100, hide: 200 }}
-            overlay={
-              <Tooltip id="play-tooltip">
-                <div className={s.referral_tooltip}>
-                  <Text fontWeight="medium" color="primary-333">
-                    Refer an artist by sending your referral link to earn 1% of
-                    their sale volume.
-                  </Text>
-                </div>
-              </Tooltip>
-            }
-          >
-            <div>
-              <SvgInset
-                size={16}
-                svgUrl={`${CDN_URL}/icons/ic-question-circle.svg`}
-                className={s.iconQuestion}
-              />
-            </div>
-          </OverlayTrigger>
+          <Text size="18">
+            Refer an artist by sending your referral link to{' '}
+            <Text size="18" as="span" fontWeight="semibold">
+              earn 1%
+            </Text>{' '}
+            of their sale volume.
+          </Text>
         </Stack>
-        <Stack direction="horizontal" className="justify-between">
+        <Stack className={s.referral_link_wrapper}>
+          <Text size="12" fontWeight="medium" color="black-60">
+            REFFERAL LINK
+          </Text>
           <div className={s.link}>
-            <Text size="18" fontWeight="medium">
-              {referralLink}
-            </Text>
+            <Text>{referralLink}</Text>
             <SvgInset
               onClick={() => {
                 copy(referralLink || '');
@@ -216,7 +204,11 @@ const ReferralTab = () => {
           </ButtonIcon>
         </div>
       )} */}
-      <ArtistCollectionEarn />
+      <ArtistCollectionEarn setShowModal={setShowWithdrawSucessModal} />
+      <WithdrawModal
+        isShow={showWithdrawSucessModal}
+        onHideModal={() => setShowWithdrawSucessModal(false)}
+      />
     </div>
   );
 };

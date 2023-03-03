@@ -1,5 +1,6 @@
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
+import { Loading } from '@components/Loading';
 import Table, { TColumn } from '@components/Table';
 import Text from '@components/Text';
 import ToogleSwitch from '@components/Toggle';
@@ -23,13 +24,20 @@ import s from './ArtistCollectionEarn.module.scss';
 
 const LOG_PREFIX = 'ArtistCollectionEarn';
 
-const ArtistCollectionEarn = () => {
+const ArtistCollectionEarn = ({
+  setShowModal,
+}: {
+  setShowModal: (value: boolean) => void;
+}) => {
   const router = useRouter();
   const { profileProjects } = useContext(ProfileContext);
 
   const [currencyRecord, setCurrencyRecord] = useState<CurrencyType>(
     CurrencyType.BTC
   );
+  const [forceRerender, setForceRerender] = useState(0);
+
+  const [isLoading, setisLoading] = useState(false);
 
   const TABLE_ARTISTS_HEADING = [
     'Collection',
@@ -82,8 +90,10 @@ const ArtistCollectionEarn = () => {
     try {
       await withdrawRewardEarned(payload);
     } catch (err: unknown) {
-      log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
-      throw Error();
+      // log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
+      // throw Error();
+    } finally {
+      setShowModal(true);
     }
   };
 
@@ -140,10 +150,9 @@ const ArtistCollectionEarn = () => {
         ),
         volume: (
           <>
-            {totalVolume === '0' || !totalVolume
-              ? '-'
-              : currencyRecord === CurrencyType.ETH
-              ? `${formatEthPrice(totalVolume || '')} ETH`
+            {!totalVolume && '-'}
+            {currencyRecord === CurrencyType.ETH
+              ? `${formatBTCPrice(`${totalVolume}`)} ETH`
               : `${formatBTCPrice(totalVolume || '')} BTC`}
           </>
         ),
@@ -170,20 +179,24 @@ const ArtistCollectionEarn = () => {
     };
   });
 
+  // useMemo(() => first, [second])
+
   useAsyncEffect(async () => {
     if (profileProjects?.result && profileProjects?.result.length > 0) {
-      const list: ProjectVolume[] = [];
+      setTotalVolumeList([]);
       profileProjects?.result?.map(async item => {
         try {
+          setisLoading(true);
           const response = await handleFetchTotalVolume(item.tokenID);
           if (response) {
-            list.push(response);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            setTotalVolumeList((prev: any) => [...prev, response]);
           }
         } catch (err: unknown) {
           log('failed to fetch total volume', LogLevel.ERROR, LOG_PREFIX);
           throw Error();
         } finally {
-          setTotalVolumeList(list);
+          setisLoading(false);
         }
       });
     }
@@ -193,18 +206,30 @@ const ArtistCollectionEarn = () => {
     if (totalVolumeList && totalVolumeList.length > 0) {
       setTableData(recordsData);
     }
-  }, [totalVolumeList]);
+  }, [totalVolumeList, currencyRecord, forceRerender]);
+
+  setTimeout(() => {
+    setForceRerender(1);
+  }, 3000);
+
+  if (!profileProjects?.result || profileProjects?.result.length === 0) {
+    return null;
+  }
 
   return (
     <div className={s.wrapper}>
       <Heading as="h4" fontWeight="semibold">
         Records
       </Heading>
-      <Table
-        tableHead={TABLE_ARTISTS_HEADING}
-        data={tableData}
-        className={s.Records_table}
-      ></Table>
+      <div className={s.table_wrapper}>
+        <Loading isLoaded={!isLoading} className={s.loading}></Loading>
+        <Table
+          tableHead={TABLE_ARTISTS_HEADING}
+          data={tableData}
+          className={s.Records_table}
+        ></Table>
+      </div>
+
       {/* {!!calculateTotalWithdraw && allMyColelctions && (
         <div className={s.Withdraw_all}>
           <ButtonIcon

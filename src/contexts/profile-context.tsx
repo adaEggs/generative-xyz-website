@@ -31,7 +31,6 @@ import {
   getProfileProjectsByWallet,
   getProfileTokens,
 } from '@services/profile';
-import { getReferrals } from '@services/referrals';
 import log from '@utils/logger';
 import { debounce, isEmpty } from 'lodash';
 import { useRouter } from 'next/router';
@@ -53,9 +52,10 @@ import {
 } from '@interfaces/api/bitcoin';
 import { CurrencyType } from '@enums/currency';
 import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
-import { getInscriptionListByUser } from '@services/inscribe';
 import { InscriptionItem } from '@interfaces/inscribe';
 import _uniqBy from 'lodash/uniqBy';
+import { getInscriptionListByUser } from '@services/inscribe';
+import { getReferrals } from '@services/referrals';
 
 const LOG_PREFIX = 'ProfileContext';
 

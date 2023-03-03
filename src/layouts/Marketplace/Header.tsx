@@ -12,7 +12,7 @@ import { formatAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import { useRouter } from 'next/router';
-import React, { useContext, useRef, useState, useEffect, useMemo } from 'react';
+import React, { useContext, useRef, useState, useEffect } from 'react';
 import { Container } from 'react-bootstrap';
 import styles from './Header.module.scss';
 import { getFaucetLink, isTestnet } from '@utils/chain';
@@ -23,6 +23,8 @@ import { MENU_HEADER } from '@constants/header';
 import MenuMobile from '@layouts/Marketplace/MenuMobile';
 import { gsap } from 'gsap';
 import SearchCollection from './SearchCollection';
+import useOnClickOutside from '@hooks/useOnClickOutSide';
+import Image from 'next/image';
 
 const LOG_PREFIX = 'MarketplaceHeader';
 
@@ -45,11 +47,8 @@ const Header: React.FC<IProp> = ({
   const [isConnecting, setIsConnecting] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const refMenu = useRef<HTMLDivElement | null>(null);
-
-  const isGrailPage = useMemo(
-    () => router.pathname === ROUTE_PATH.DISPLAY,
-    [router.pathname]
-  );
+  const freeToolsRef = useRef<HTMLLIElement | null>(null);
+  const [isOpenFreetools, setIsOpenFreetools] = useState(false);
 
   const PROFILE_MENU = [
     {
@@ -86,6 +85,12 @@ const Header: React.FC<IProp> = ({
     return `${url}?${querystring.stringify(query)}`;
   };
 
+  const handleOpenFreetoolsDropdown = (): void => {
+    setIsOpenFreetools(true);
+  };
+
+  useOnClickOutside(freeToolsRef, () => setIsOpenFreetools(false));
+
   const handleConnectWallet = async (): Promise<void> => {
     try {
       setIsConnecting(true);
@@ -119,6 +124,67 @@ const Header: React.FC<IProp> = ({
             className={`${s.eth_icon} eth_icon`}
           />
         </div>
+      </div>
+    );
+  };
+
+  const renderFreeToolsDropDown = (): React.ReactElement => {
+    return (
+      <div
+        className={cs(styles.freeToolsDropdown, {
+          [`${styles.show}`]: isOpenFreetools,
+        })}
+      >
+        <ul className={styles.freeToolList}>
+          <li className={styles.freeToolItem}>
+            <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
+              <Image
+                src={`${CDN_URL}/icons/ic-percent-circle-34x34.svg`}
+                width={34}
+                height={34}
+                alt="ic-percent-circle"
+              />
+              <div className={styles.menuContent}>
+                <p className={styles.mainText}>{MENU_HEADER[7].name}</p>
+                <p className={styles.subText}>
+                  The easiest way to inscribe anything.
+                </p>
+              </div>
+            </Link>
+          </li>
+          <li className={styles.freeToolItem}>
+            <Link href={getUrlWithQueryParams(MENU_HEADER[5].route)}>
+              <Image
+                src={`${CDN_URL}/icons/ic-poll-vertical-square-34x34.svg`}
+                width={34}
+                height={34}
+                alt="ic-percent-circle"
+              />
+              <div className={styles.menuContent}>
+                <p className={styles.mainText}>Ordinals Live Feed</p>
+                <p className={styles.subText}>
+                  Watch the latest inscriptions live.
+                </p>
+              </div>
+            </Link>
+          </li>
+          <li className={cs(styles.freeToolItem, styles.disabled)}>
+            <a>
+              <Image
+                src={`${CDN_URL}/icons/ic-shield-star-34x34.svg`}
+                width={34}
+                height={34}
+                alt="ic-percent-circle"
+              />
+              <div className={styles.menuContent}>
+                <p className={styles.mainText}>{MENU_HEADER[9].name}</p>
+                <p className={styles.subText}>
+                  Inscribe your existing Ethereum NFTs on Bitcoin.
+                </p>
+              </div>
+            </a>
+          </li>
+        </ul>
       </div>
     );
   };
@@ -236,17 +302,36 @@ const Header: React.FC<IProp> = ({
                 </div>
 
                 <div className={styles.header_right}>
-                  {!isGrailPage && <SearchCollection theme={theme} />}
+                  <SearchCollection theme={theme} />
+
                   <ul className={`${styles.navBar} ${styles[theme]}`}>
                     <li
+                      ref={freeToolsRef}
+                      onClick={handleOpenFreetoolsDropdown}
+                      className={cs(styles.freeTools, {
+                        [`${styles.active}`]:
+                          activePath === MENU_HEADER[7].activePath,
+                      })}
+                    >
+                      <a>
+                        Free tools
+                        <SvgInset
+                          className={styles.arrowIcon}
+                          svgUrl={`${CDN_URL}/icons/ic-chevron-down-20x20.svg`}
+                          size={20}
+                        />
+                      </a>
+                      {renderFreeToolsDropDown()}
+                    </li>
+
+                    <li
                       className={cs(
-                        activePath === MENU_HEADER[7].activePath &&
+                        activePath === MENU_HEADER[8].activePath &&
                           styles.active
                       )}
-                      key={`header-${MENU_HEADER[7].id}`}
                     >
-                      <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
-                        {MENU_HEADER[7].name}
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[8].route)}>
+                        {MENU_HEADER[8].name}
                       </Link>
                     </li>
 

@@ -345,6 +345,7 @@
 
     @include mobile {
       gap: (6px);
+      flex-direction: column;
     }
 
     .mintFeeItem {

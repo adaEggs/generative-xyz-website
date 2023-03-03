@@ -1,0 +1,38 @@
+.topbar {
+  padding: {
+    top: rem(8px);
+    bottom: rem(8px);
+  }
+
+  background: #f6f8f9;
+
+  .text {
+    font-weight: 500;
+    font-size: rem(14px);
+    line-height: rem(22px);
+    color: $black-100;
+
+    .startedLink {
+      color: var(--bs-link-hover-color);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: rem(10px);
+
+    .socialLink {
+      &:hover {
+        :global(svg path) {
+          fill: var(--bs-link-hover-color);
+        }
+      }
+    }
+  }
+}

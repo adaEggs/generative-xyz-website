@@ -2,7 +2,7 @@ import React from 'react';
 import { Empty } from '@components/Collection/Empty';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { ICollectedNFTItem } from '@interfaces/api/profile';
-import { CollectedCard } from '../Card';
+import CollectedCard from '../Card';
 import s from './CollectedList.module.scss';
 
 export const CollectedList = ({
