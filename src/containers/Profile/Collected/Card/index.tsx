@@ -46,8 +46,19 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   };
   const isOwner = currentUser?.id === user?.id;
 
+  const linkPath =
+    project.status === CollectedNFTStatus.Success
+      ? project.projectID
+        ? `${ROUTE_PATH.GENERATIVE}/${project.projectID}/${project.inscriptionID}`
+        : `${ROUTE_PATH.LIVE}/${project.inscriptionID}`
+      : `${ROUTE_PATH.GENERATIVE}/${project.projectID}`;
+
   const isListable =
-    !project.orderID && !project.buyable && !project.cancelling && isOwner;
+    linkPath.includes(ROUTE_PATH.GENERATIVE) &&
+    !project.orderID &&
+    !project.buyable &&
+    !project.cancelling &&
+    isOwner;
 
   const isCancelListed = React.useMemo(() => {
     const isCancel =
@@ -121,13 +132,6 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     project.cancelling,
     isCancelListed,
   ]);
-
-  const linkPath =
-    project.status === CollectedNFTStatus.Success
-      ? project.projectID
-        ? `${ROUTE_PATH.GENERATIVE}/${project.projectID}/${project.inscriptionID}`
-        : `${ROUTE_PATH.LIVE}/${project.inscriptionID}`
-      : `${ROUTE_PATH.GENERATIVE}/${project.projectID}`;
 
   const projectName =
     project.status === CollectedNFTStatus.Success

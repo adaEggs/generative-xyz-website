@@ -2,15 +2,15 @@ import { LogLevel } from '@enums/log-level';
 import { get, post } from '@services/http-client';
 import log from '@utils/logger';
 import {
-  ITrackTx,
+  HistoryStatusColor,
+  HistoryStatusType,
   ICollectedUTXOResp,
   IFeeRate,
-  ITxHistory,
-  HistoryStatusType,
-  HistoryStatusColor,
   IListingPayload,
   IRetrieveOrderPayload,
   IRetrieveOrderResp,
+  ITrackTx,
+  ITxHistory,
 } from '@interfaces/api/bitcoin';
 import axios from 'axios';
 import { getPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
@@ -69,6 +69,10 @@ export const getHistory = async (address: string): Promise<ITxHistory[]> => {
     const txs = await get<ITxHistory[]>(
       `/wallet/txs?address=${address}&limit=100&offset=0`
     );
+    // const res = await get<ITxHistory[]>(`/dex/history`);
+    // const history = res.filter(
+    //   item => !(txs || []).some(_item => _item.txhash === item.txhash)
+    // );
     return (txs || []).map(history => {
       let statusColor: HistoryStatusColor = '#ff7e21';
       let status: HistoryStatusType = HistoryStatusType.pending;
@@ -80,9 +84,13 @@ export const getHistory = async (address: string): Promise<ITxHistory[]> => {
       if (isExpired) {
         status = history.status;
         switch (status) {
+          case HistoryStatusType.cancelled:
           case HistoryStatusType.pending:
+          case HistoryStatusType.cancelling:
+          case HistoryStatusType.listing:
             statusColor = '#ff7e21';
             break;
+          case HistoryStatusType.matched:
           case HistoryStatusType.success:
             statusColor = '#24c087';
             break;
