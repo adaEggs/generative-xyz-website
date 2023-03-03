@@ -28,6 +28,7 @@ export const ROUTE_PATH = {
   SEARCH: '/search',
   FREE_INSCRIPTION: '/free',
   AUTHENTIC: '/authentic',
+  AUTHENTIC_VERIFY: '/authentic-verify',
   AIRDROP: '/airdrop',
 };
 

@@ -23,7 +23,7 @@ const AuthenticLanding = () => {
     if (next) {
       router.replace(next as string);
     } else {
-      router.replace(`${ROUTE_PATH.PROFILE}/${ordAddress}`);
+      router.replace(`${ROUTE_PATH.AUTHENTIC}`);
     }
   }, [ordAddress]);
 
