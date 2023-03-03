@@ -50,7 +50,7 @@ const ArtistCollectionEarn = ({
     'Collection',
     'Outputs',
     'Mint price',
-    'Availabel volume',
+    'Available volume',
     <>
       <Stack direction="horizontal" gap={2} className={s.switch_currency}>
         <ToogleSwitch
