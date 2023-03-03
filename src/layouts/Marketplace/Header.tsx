@@ -136,8 +136,8 @@ const Header: React.FC<IProp> = ({
         })}
       >
         <ul className={styles.freeToolList}>
-          <li className={cs(styles.freeToolItem, styles.disabled)}>
-            <a>
+          <li className={cs(styles.freeToolItem)}>
+            <Link href={getUrlWithQueryParams(MENU_HEADER[9].route)}>
               <Image
                 src={`${CDN_URL}/icons/ic-shield-star-34x34.svg`}
                 width={34}
@@ -150,7 +150,7 @@ const Header: React.FC<IProp> = ({
                   Inscribe your existing Ethereum NFTs onto Bitcoin.
                 </p>
               </div>
-            </a>
+            </Link>
           </li>
           <li className={styles.freeToolItem}>
             <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
