@@ -8,7 +8,7 @@ import { LogLevel } from '@enums/log-level';
 import s from '@layouts/Default/HeaderFixed/Header.module.scss';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress } from '@utils/format';
+import { ellipsisCenter, formatAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import { useRouter } from 'next/router';
@@ -346,7 +346,14 @@ const Header: React.FC<IProp> = ({
                           className={styles.yourVault}
                           onClick={handleYourVault}
                         >
-                          WALLET
+                          <SvgInset
+                            size={24}
+                            svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
+                          />
+                          {ellipsisCenter({
+                            str: user.walletAddressBtcTaproot || '',
+                            limit: 4,
+                          })}
                         </a>
                       </li>
                     )}
