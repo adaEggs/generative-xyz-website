@@ -33,8 +33,7 @@ RUN yarn build
 FROM base AS runner
 WORKDIR /app
 
-ARG ENV
-ENV NODE_ENV $ENV
+ENV NODE_ENV=production
 
 COPY --from=builder /app/public ./public
 
