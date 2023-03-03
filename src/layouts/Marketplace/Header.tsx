@@ -85,9 +85,9 @@ const Header: React.FC<IProp> = ({
     return `${url}?${querystring.stringify(query)}`;
   };
 
-  const handleOpenFreetoolsDropdown = (): void => {
-    setIsOpenFreetools(true);
-  };
+  // const handleOpenFreetoolsDropdown = (): void => {
+  //   setIsOpenFreetools(true);
+  // };
 
   useOnClickOutside(freeToolsRef, () => setIsOpenFreetools(false));
 
@@ -307,7 +307,7 @@ const Header: React.FC<IProp> = ({
                   <ul className={`${styles.navBar} ${styles[theme]}`}>
                     <li
                       ref={freeToolsRef}
-                      onClick={handleOpenFreetoolsDropdown}
+                      // onClick={handleOpenFreetoolsDropdown}
                       className={cs(styles.freeTools, {
                         [`${styles.active}`]:
                           activePath === MENU_HEADER[7].activePath,
