@@ -45,12 +45,13 @@ const ButtonListForSale = React.memo(
         >
           {title}
         </ButtonIcon>
-        {!!user?.walletAddressBtcTaproot && (
+        {!!user?.walletAddressBtcTaproot && isShow && (
           <ModalListForSale
             inscriptionID={inscriptionID}
             title={title}
             isShow={isShow}
             onHide={hideModal}
+            inscriptionNumber={123}
           />
         )}
       </>
