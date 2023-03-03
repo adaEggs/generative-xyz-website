@@ -87,10 +87,11 @@ export const getListingFee = async (
 ): Promise<IListingFee> => {
   try {
     const res = await post<IListingFeePayload, IListingFee>(
-      `${API_PATH}/listing-fee`,
+      `/dex/listing-fee`,
       payload
     );
     return {
+      ...res,
       royaltyFee: Number(res.royaltyFee || 0),
       serviceFee: Number(res.serviceFee || 0),
     };

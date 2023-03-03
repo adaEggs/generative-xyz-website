@@ -17,9 +17,10 @@ import React, { useContext, useEffect, useState } from 'react';
 import s from './CollectedCard.module.scss';
 import ButtonIcon from '@components/ButtonIcon';
 import SendInscriptionModal from '@containers/Profile/Collected/Modal/SendInscription';
-import { HistoryStatusType } from '@interfaces/api/bitcoin';
+import { HistoryStatusType, TrackTxType } from '@interfaces/api/bitcoin';
 import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 import ButtonListForSale from '@components/Transactor/ButtonListForSale';
+import ButtonCancelListed from '@components/Transactor/ButtonCancelListed';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -45,6 +46,12 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   };
   const isOwner = currentUser?.id === user?.id;
 
+  const isListable =
+    !project.orderID && !project.buyable && !project.cancelling && isOwner;
+
+  const isCancelListed =
+    !!project.orderID && project.buyable && !project.cancelling && isOwner;
+
   const [thumb, setThumb] = useState<string>(project.image);
 
   useEffect(() => {
@@ -57,15 +64,38 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
 
-  const isSending = React.useMemo(() => {
+  const statusWithHistory = React.useMemo(() => {
     const findHistory = (history || []).find(
       tx =>
         !!project.inscriptionID &&
         !!tx.inscription_id &&
         tx.inscription_id === project.inscriptionID
     );
-    if (!findHistory) return false;
-    return findHistory.status === HistoryStatusType.pending;
+    if (!findHistory) {
+      return {
+        isPending: false,
+        status: '',
+      };
+    }
+    let isPending = findHistory.status === HistoryStatusType.pending;
+    let status = 'Pending...';
+    switch (findHistory.type) {
+      case TrackTxType.cancel:
+        status = 'Cancelling...';
+        break;
+      case TrackTxType.buyInscription:
+        status = 'Buying...';
+        break;
+      case TrackTxType.buySplit:
+      case TrackTxType.listSplit:
+        status = '';
+        isPending = false;
+        break;
+    }
+    return {
+      isPending,
+      status,
+    };
   }, [history, project.inscriptionID]);
 
   const showSendButton = React.useMemo(() => {
@@ -73,16 +103,20 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     if (!project?.inscriptionID || !!getStorageIns(project?.inscriptionID))
       return false;
     return (
-      !isSending &&
+      !statusWithHistory.isPending &&
       !isLoadingHistory &&
-      project?.status === CollectedNFTStatus.Success
+      project?.status === CollectedNFTStatus.Success &&
+      !isCancelListed &&
+      !project.cancelling
     );
   }, [
-    isSending,
+    statusWithHistory,
     isLoadingHistory,
     project?.status,
     isOwner,
     project?.inscriptionID,
+    project.cancelling,
+    isCancelListed,
   ]);
 
   const linkPath =
@@ -102,7 +136,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     project.statusText === 'Transferring';
 
   const renderStatusText = () => {
-    if (isSending) {
+    if (statusWithHistory.isPending) {
       return (
         <Text
           className={s.projectCard_creator_status}
@@ -110,7 +144,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
           fontWeight="medium"
           color="black-40"
         >
-          Pending...
+          {statusWithHistory.status}
         </Text>
       );
     }
@@ -214,7 +248,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   </ButtonIcon>
                 </TwitterShareButton>
               )}
-              {!!project?.inscriptionID && isOwner && (
+              {isListable && (
                 <Link
                   href=""
                   onClick={() => {
@@ -222,8 +256,23 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   }}
                 >
                   <ButtonListForSale
-                    inscriptionID={project.inscriptionID}
+                    inscriptionID={project.inscriptionID || ''}
                     inscriptionNumber={Number(project.inscriptionNumber)}
+                  />
+                </Link>
+              )}
+              {isCancelListed && (
+                <Link
+                  href=""
+                  className={s.projectCard_status_cancelBtnList}
+                  onClick={() => {
+                    // TODO
+                  }}
+                >
+                  <ButtonCancelListed
+                    inscriptionID={project.inscriptionID || ''}
+                    inscriptionNumber={Number(project.inscriptionNumber)}
+                    orderID={project.orderID}
                   />
                 </Link>
               )}
@@ -237,7 +286,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   </ButtonIcon>
                 </Link>
               )}
-              {project.isCancel && (
+              {project.isCancel && !isCancelListed && (
                 <Link
                   href=""
                   className={s.projectCard_status_cancelBtn}

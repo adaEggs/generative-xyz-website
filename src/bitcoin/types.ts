@@ -26,3 +26,10 @@ export interface IListInsProps {
   feeRate: number;
   inscriptionNumber: number;
 }
+
+export interface ICancelInsProps {
+  receiverAddress: string;
+  feeRate: number;
+  inscriptionNumber: number;
+  orderID: string;
+}

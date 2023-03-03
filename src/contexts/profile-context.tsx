@@ -576,16 +576,16 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     debounceFetchFeeRate();
   }, []);
 
-  useEffect(() => {
-    if (!currentUser) return;
-    const intervalID = setInterval(() => {
-      debounceFetchCollectedUTXOs();
-      debounceFetchHistory();
-    }, 60000);
-    return () => {
-      clearInterval(intervalID);
-    };
-  }, [currentUser?.walletAddressBtcTaproot]);
+  // useEffect(() => {
+  //   if (!currentUser) return;
+  //   const intervalID = setInterval(() => {
+  //     debounceFetchCollectedUTXOs();
+  //     debounceFetchHistory();
+  //   }, 60000);
+  //   return () => {
+  //     clearInterval(intervalID);
+  //   };
+  // }, [currentUser?.walletAddressBtcTaproot]);
 
   const contextValues = useMemo((): IProfileContext => {
     return {

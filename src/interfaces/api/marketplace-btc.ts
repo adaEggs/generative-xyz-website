@@ -93,8 +93,11 @@ export interface IListingFeePayload {
 }
 
 export interface IListingFee {
-  serviceFee: number;
-  royaltyFee: number;
+  serviceFee: number | string;
+  royaltyFee: number | string;
+  royaltyAddress: string;
+  serviceAddress: string;
+  projectID: string;
 }
 
 export interface IListingordinals {

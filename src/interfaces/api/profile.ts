@@ -42,6 +42,10 @@ export interface ICollectedNFTItem {
   status: CollectedNFTStatus;
   statusText: string;
   receiveAddress?: string;
+  buyable: boolean;
+  priceBTC: string;
+  orderID: string;
+  cancelling: boolean;
 }
 
 export interface ICollectedNFTItemDetail extends ICollectedNFTItem {

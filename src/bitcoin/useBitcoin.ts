@@ -4,10 +4,16 @@ import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { useContext, useState, useEffect } from 'react';
 import { ProfileContext } from '@contexts/profile-context';
-import { broadcastTx, submitListForSale, trackTx } from '@services/bitcoin';
+import {
+  broadcastTx,
+  submitCancel,
+  submitListForSale,
+  trackTx,
+} from '@services/bitcoin';
 import { ICollectedUTXOResp, TrackTxType } from '@interfaces/api/bitcoin';
 import {
   IBuyInsProps,
+  ICancelInsProps,
   IListInsProps,
   ISendBTCProps,
   ISendInsProps,
@@ -162,7 +168,6 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
         sellInscriptionID: inscriptionID,
         utxos: collectedUTXOs.txrefs,
       });
-
     const tasks = [
       await submitListForSale({
         raw_psbt: base64Psbt,
@@ -183,6 +188,51 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
         })
       );
     }
+    await Promise.all(tasks);
+  };
+
+  const cancelInscription = async ({
+    receiverAddress,
+    feeRate,
+    inscriptionNumber,
+    orderID,
+  }: ICancelInsProps) => {
+    if (!inscriptionID || !receiverAddress) return;
+    const evmAddress = user?.walletAddress;
+    const taprootAddress = user?.walletAddressBtcTaproot;
+
+    if (!evmAddress || !inscriptionID || !collectedUTXOs || !taprootAddress)
+      return;
+    const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
+    const privateKey = taprootChild.privateKey;
+    if (!privateKey) throw 'Sign error';
+    const { txID, txHex } = GENERATIVE_SDK.createTx(
+      privateKey,
+      collectedUTXOs.txrefs,
+      collectedUTXOs.inscriptions_by_outputs,
+      inscriptionID,
+      receiverAddress,
+      0,
+      feeRate
+    );
+    // broadcast tx
+    await broadcastTx(txHex);
+    const tasks = [
+      await trackTx({
+        txhash: txID,
+        address: taprootAddress,
+        receiver: receiverAddress,
+        inscription_id: inscriptionID,
+        inscription_number: inscriptionNumber,
+        send_amount: 0,
+        type: TrackTxType.cancel,
+      }),
+      await submitCancel({
+        inscription_id: inscriptionID,
+        order_id: orderID,
+        txhash: txID,
+      }),
+    ];
     await Promise.all(tasks);
   };
 
@@ -207,6 +257,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     sendBitcoin,
     buyInscription,
     listInscription,
+    cancelInscription,
 
     satoshiAmount,
   };

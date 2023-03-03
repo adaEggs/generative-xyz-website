@@ -60,7 +60,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const mintedDate = dayjs(tokenData?.mintedTime).format('MMM DD, YYYY');
   const [isBuying, setIsBuying] = useState(false);
   // const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
-  const isBuyable = tokenData?.buyable && !!tokenData?.priceBTC;
+  const isBuyable = tokenData?.buyable && !!tokenData?.orderID;
   const [showReportModal, setShowReportModal] = useState(false);
 
   const tokenInfos = useMemo(() => {
@@ -233,15 +233,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       </div>
     );
   };
-
-  // useEffect(() => {
-  //   const exists = tokenDescription.includes('Interaction');
-  //   if (exists) {
-  //     setHasProjectInteraction(true);
-  //   } else {
-  //     setHasProjectInteraction(false);
-  //   }
-  // }, [tokenDescription]);
 
   return (
     <>

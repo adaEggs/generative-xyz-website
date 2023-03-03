@@ -3,7 +3,7 @@ import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import { ProfileContext } from '@contexts/profile-context';
+// import { ProfileContext } from '@contexts/profile-context';
 import useWindowSize from '@hooks/useWindowSize';
 import { Token } from '@interfaces/token';
 import {
@@ -28,7 +28,7 @@ const CollectionItem = ({
   className?: string;
 }) => {
   const tokenID = data.tokenID;
-  const { currentUser } = useContext(ProfileContext);
+  // const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
   const { isBitcoinProject, isWhitelistProject } = useContext(
     GenerativeProjectDetailContext
@@ -142,14 +142,14 @@ const CollectionItem = ({
                       maxWidth: data.stats?.price ? '70%' : '100%',
                     }}
                   >
-                    {currentUser && (
-                      <span
-                        title={data?.project?.name}
-                        className={s.collectionCard_info_title_name}
-                      >
-                        {data?.project?.name}
-                      </span>
-                    )}
+                    {/*{currentUser && (*/}
+                    {/*  <span*/}
+                    {/*    title={data?.project?.name}*/}
+                    {/*    className={s.collectionCard_info_title_name}*/}
+                    {/*  >*/}
+                    {/*    {data?.project?.name}*/}
+                    {/*  </span>*/}
+                    {/*)}*/}
                     <span>
                       #
                       {data?.inscriptionIndex

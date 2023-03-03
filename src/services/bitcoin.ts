@@ -136,3 +136,17 @@ export const retrieveOrder = async (
     throw err;
   }
 };
+
+export const submitCancel = async (payload: {
+  txhash: string;
+  inscription_id: string;
+  order_id: string;
+}): Promise<never> => {
+  try {
+    const res = await post<unknown, never>(`/dex/cancel`, payload);
+    return res;
+  } catch (err: unknown) {
+    log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
+};

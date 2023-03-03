@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import BaseModal, { IBaseModalProps } from '@components/Transactor';
 import s from '@components/Transactor/form.module.scss';
 import { Formik } from 'formik';
@@ -12,10 +12,10 @@ import { formatBTCPrice } from '@utils/format';
 import { retrieveOrder } from '@services/bitcoin';
 import { IRetrieveOrderResp } from '@interfaces/api/bitcoin';
 import { LoaderIcon, toast } from 'react-hot-toast';
-import { Loading } from '@components/Loading';
 import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
+import { ProfileContext } from '@contexts/profile-context';
 
 interface IFormValues {
   price: string;
@@ -40,7 +40,8 @@ const ModalBuyListed = React.memo(
     const [isLoading, setLoading] = useState<boolean>(false);
     const { buyInscription } = useBitcoin({ inscriptionID });
     const [error, setError] = useState('');
-
+    const { debounceFetchCollectedUTXOs, debounceFetchHistory } =
+      useContext(ProfileContext);
     const onSetError = (err: unknown) => {
       const _err = getError(err);
       setError(_err.message);
@@ -65,6 +66,7 @@ const ModalBuyListed = React.memo(
     const handleSubmit = async (values: IFormValues) => {
       if (!orderData) return;
       try {
+        setLoading(true);
         await buyInscription({
           feeRate: allRate[selectedRate],
           inscriptionNumber: inscriptionNumber,
@@ -72,17 +74,20 @@ const ModalBuyListed = React.memo(
           receiverInscriptionAddress: values.receiveBTCAddress,
           sellerSignedPsbtB64: orderData.raw_psbt,
         });
-        setLoading(true);
-        setError('');
+        setTimeout(() => {
+          setLoading(false);
+          debounceFetchCollectedUTXOs();
+          debounceFetchHistory();
+          setError('');
+        }, 2000);
       } catch (err: unknown) {
-        setLoading(true);
+        setLoading(false);
         onSetError(err);
       }
     };
 
     const fetchRetrieve = async () => {
       try {
-        if (!rest.isShow) return setOrderData(undefined);
         const order = await retrieveOrder({ orderID });
         setOrderData(order);
       } catch (err) {
@@ -92,7 +97,7 @@ const ModalBuyListed = React.memo(
 
     React.useEffect(() => {
       fetchRetrieve().then().catch();
-    }, [rest.isShow]);
+    }, []);
 
     return (
       <BaseModal {...rest}>
@@ -100,7 +105,7 @@ const ModalBuyListed = React.memo(
           <Formik
             key="buyListedForm"
             initialValues={{
-              price: '',
+              price: `${price}` || '',
               receiveBTCAddress: user?.walletAddressBtcTaproot || '',
             }}
             validate={validateForm}
@@ -175,17 +180,20 @@ const ModalBuyListed = React.memo(
                         </div>
                       }
                     />
-                    {isLoading && (
-                      <div className={s.wrapLoader}>
-                        <Loading isLoaded={isLoading} />
-                      </div>
-                    )}
                     <ButtonIcon
                       className={s.btnSend}
                       disabled={isLoading}
                       sizes="medium"
                       type="submit"
                       startIcon={isLoading ? <LoaderIcon /> : null}
+                      onClick={() => {
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        validateForm(values);
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                        // @ts-ignore
+                        handleSubmit(values);
+                      }}
                     >
                       Buy now
                     </ButtonIcon>

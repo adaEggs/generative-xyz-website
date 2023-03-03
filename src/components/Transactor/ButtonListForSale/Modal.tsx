@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import BaseModal, { IBaseModalProps } from '@components/Transactor';
 import s from '@components/Transactor/form.module.scss';
 import { Formik } from 'formik';
@@ -16,10 +16,11 @@ import { ErrorMessage } from '@enums/error-message';
 import { IListingFee } from '@interfaces/api/marketplace-btc';
 import Text from '@components/Text';
 import cs from 'classnames';
-import { convertToSatoshiNumber, formatBTCPrice } from '@utils/format';
+import { convertToSatoshiNumber } from '@utils/format';
 import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
+import { ProfileContext } from '@contexts/profile-context';
 
 interface IFormValues {
   price: string;
@@ -42,7 +43,7 @@ interface IProps extends IBaseModalProps {
 
 const step = 'list';
 const ModalListForSale = React.memo(
-  ({ inscriptionID, inscriptionNumber, ...rest }: IProps) => {
+  ({ inscriptionID, inscriptionNumber, onHide, ...rest }: IProps) => {
     const user = useSelector(getUserSelector);
     // const [step, setStep] = useState<'list' | 'success'>('list');
     const { selectedRate, allRate } = useFeeRate();
@@ -52,6 +53,9 @@ const ModalListForSale = React.memo(
     );
     const { listInscription } = useBitcoin({ inscriptionID });
     const [error, setError] = useState('');
+
+    const { debounceFetchCollectedUTXOs, debounceFetchHistory } =
+      useContext(ProfileContext);
 
     const onSetError = (err: unknown) => {
       const _err = getError(err);
@@ -79,7 +83,6 @@ const ModalListForSale = React.memo(
 
     const validateForm = (values: IFormValues) => {
       const errors: Record<string, string> = {};
-
       if (!values.price || !new BigNumber(values.price || 0)) {
         errors.price = 'Required.';
       }
@@ -113,12 +116,19 @@ const ModalListForSale = React.memo(
 
         await listInscription({
           amountPayToSeller: amountSeller,
-          creatorAddress: '',
-          feePayToCreator: 0,
+          creatorAddress: listingFee.royaltyAddress,
+          feePayToCreator: amountArtist,
           feeRate: allRate[selectedRate],
           inscriptionNumber: inscriptionNumber,
           receiverBTCAddress: values.receiveBTCAddress,
         });
+        setTimeout(() => {
+          setLoading(false);
+          debounceFetchCollectedUTXOs();
+          debounceFetchHistory();
+          toast.success('Successfully');
+          onHide();
+        }, 1000);
       } catch (err: unknown) {
         setLoading(false);
         onSetError(err);
@@ -127,12 +137,11 @@ const ModalListForSale = React.memo(
 
     const renderFee = ({ price, label, charge, isHideZero }: IFeeCharge) => {
       if ((!price || !charge) && isHideZero) return null;
-      const satoshiFee = new BigNumber(price || 0).multipliedBy(
-        Number(charge || 0) / 100
-      );
-
-      const isZero = satoshiFee.lte(0);
-      const text = isZero ? 'FREE' : formatBTCPrice(satoshiFee.toString());
+      const fee = new BigNumber(price || 0)
+        .multipliedBy(Number(charge || 0))
+        .dividedBy(100);
+      const isZero = fee.lte(0);
+      const text = isZero ? 'FREE' : fee.toFixed() + ' BTC';
 
       return (
         <div className={cs(s.wrapFee_feeRow)}>
@@ -151,7 +160,7 @@ const ModalListForSale = React.memo(
     }, []);
 
     return (
-      <BaseModal {...rest}>
+      <BaseModal {...rest} onHide={onHide}>
         <div className={s.container}>
           <Formik
             key="mintBTCGenerativeForm"
@@ -191,10 +200,10 @@ const ModalListForSale = React.memo(
                         />
                         <div className={s.inputContainer_inputPostfix}>BTC</div>
                       </div>
-                      {(!!errors.price && !!touched.price) ||
-                        (error && (
+                      {!!error ||
+                        (!!errors.price && !!touched.price && (
                           <p className={s.inputContainer_inputError}>
-                            {error || errors.price}
+                            {error ? error : errors.price}
                           </p>
                         ))}
                     </div>
@@ -253,6 +262,9 @@ const ModalListForSale = React.memo(
                   sizes="medium"
                   type="submit"
                   onClick={() => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    validateForm(values);
                     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                     // @ts-ignore
                     handleSubmit(values);

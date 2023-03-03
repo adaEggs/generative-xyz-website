@@ -37,6 +37,7 @@ export enum TrackTxType {
   buySplit = 'buy-split-inscription',
   listSplit = 'list-split-inscription',
   list = 'list-inscription',
+  cancel = 'cancel-list-inscription',
 }
 
 export interface ITrackTx {
@@ -61,7 +62,7 @@ export interface ITxHistory {
   txhash: string;
   status: HistoryStatusType;
   statusColor: HistoryStatusColor;
-  type: ITrackTx;
+  type: TrackTxType;
   inscription_id: string;
   inscription_number: number;
   send_amount: number;
