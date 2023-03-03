@@ -6,11 +6,25 @@
   }
 }
 
+.modalTitle {
+  word-break: break-word;
+}
+
 .modalHeader {
   display: flex;
   justify-content: flex-end;
   border: none;
   padding: 0;
+}
+
+.arrowIcon {
+  display: inline-block;
+  margin-left: rem(4px);
+  vertical-align: sub;
+}
+
+.discordLink {
+  text-decoration: underline !important;
 }
 
 .closeBtn {

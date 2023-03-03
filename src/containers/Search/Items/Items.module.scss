@@ -1,6 +1,15 @@
 .items {
-  &_projectItem {
-    display: inline-block;
+  &_list {
+    row-gap: rem(48);
+  }
+  &_project {
+    [class*='projectCard_inner'] {
+      padding: 0;
+      border: none;
+    }
+    [class*='projectCard_thumb'] {
+      padding-bottom: 100% !important;
+    }
   }
 
   &_loader {
@@ -8,5 +17,16 @@
     height: 80px;
     width: 100%;
     margin-top: rem(50px);
+  }
+
+  &_artist {
+    [class*='_inner'] {
+      background-color: $white-100;
+    }
+    [class*='_info'] {
+      [class*='text-white'] {
+        color: $black-100 !important;
+      }
+    }
   }
 }

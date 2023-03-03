@@ -1,0 +1,33 @@
+.container {
+  position: relative;
+
+  .titleKey {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 20px;
+    color: #5b5b5b;
+    margin-bottom: rem(8px);
+  }
+
+  .apiKey {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 8px;
+    height: rem(48px);
+    border: 1px solid #5b5b5b;
+
+    .icCopy {
+      cursor: pointer;
+
+      :hover {
+        opacity: 0.8;
+      }
+    }
+  }
+
+  .loadingWrapper {
+    position: relative;
+  }
+}

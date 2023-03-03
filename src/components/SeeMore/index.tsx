@@ -10,7 +10,6 @@ export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
   const refBox = useRef<HTMLDivElement | null>(null);
   const refContent = useRef<HTMLDivElement | null>(null);
   const [contentOver, setContentOver] = useState<boolean>(false);
-
   const [isShowMore, setIsShowMore] = useState<boolean>(false);
 
   useLayoutEffect(() => {
@@ -36,7 +35,7 @@ export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
       obResize.unobserve(document.body);
       obResize.disconnect();
     };
-  }, [children, refBox, refContent, render]);
+  }, [children, render]);
 
   return (
     <div>

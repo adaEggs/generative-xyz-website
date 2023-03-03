@@ -24,6 +24,7 @@ import s from './styles.module.scss';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import { useRouter } from 'next/router';
+import { GLB_EXTENSION } from '@constants/file';
 
 const CollectionItem = ({
   data,
@@ -55,7 +56,7 @@ const CollectionItem = ({
 
   useEffect(() => {
     const fileExt = data.image.split('.').pop();
-    if (fileExt && fileExt === 'glb' && data.thumbnail) {
+    if (fileExt && fileExt === GLB_EXTENSION && data.thumbnail) {
       setThumb(data.thumbnail);
     }
   }, [data.image]);

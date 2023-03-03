@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useMemo, useState } from 'react';
-// import cn from 'classnames';
+import cn from 'classnames';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
 
@@ -8,7 +8,7 @@ import { getSearchByKeyword, getApiKey } from '@services/search';
 import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { ProjectCardOrd } from '@containers/Trade/ProjectCardOrd';
 import { ArtistCard } from '@components/ArtistCard';
-// import CollectionItem from '@components/Collection/Item';
+import CollectionItem from '@components/Collection/Item';
 
 import { Loading } from '@components/Loading';
 import debounce from 'lodash/debounce';
@@ -55,28 +55,59 @@ export const Items = (): JSX.Element => {
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [dataOrd, setdataOrd] = useState<any>([]);
-  // const [currentPage,
-  //   setCurrentPage] = useState < number > (1);
+  const [combineList, setCombineList] = useState<any>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
-    setdataOrd([
+    setCombineList([
       ...(resultByArtists?.result || []),
       ...(resultByTokens?.result || []),
       ...(resultByInscriptions?.result || []),
     ]);
     setIsLoaded(true);
+    setCurrentPage(1);
   }, [keyword]);
 
-  const fetchDataOrdinals = async () => {
+  const fetchCombineList = async () => {
     try {
-      // setIsLoaded(true);
-      // filterParams.page = currentPage;
-      // const {result} = getSearchByKeyword(filterParams);
-      // const newList = dataOrd
-      //   ?.concat(result);
-      // // setdataOrd(newList);
-      // setCurrentPage(currentPage + 1);
+      setIsLoading(true);
+      const nextPage = currentPage + 1;
+      let [isAllowGetArtists, isAllowGetTokens, isAllowGetInscriptions] = [
+        false,
+        false,
+        false,
+      ];
+      if (nextPage <= (resultByArtists?.totalPage || 1)) {
+        filterArtistParams.page = nextPage;
+        isAllowGetArtists = true;
+      }
+      if (nextPage <= (resultByTokens?.totalPage || 1)) {
+        filterTokenParams.page = nextPage;
+        isAllowGetTokens = true;
+      }
+      if (nextPage <= (resultByInscriptions?.totalPage || 1)) {
+        filterInscriptionParams.page = nextPage;
+        isAllowGetInscriptions = true;
+      }
+
+      const [
+        nextResultByArtists,
+        nextResultByTokens,
+        nextResultByInscriptions,
+      ] = await Promise.all([
+        isAllowGetArtists ? getSearchByKeyword(filterArtistParams) : null,
+        isAllowGetTokens ? getSearchByKeyword(filterTokenParams) : null,
+        isAllowGetInscriptions
+          ? getSearchByKeyword(filterInscriptionParams)
+          : null,
+      ]);
+      setCurrentPage(nextPage);
+      const newList = combineList.concat([
+        ...(nextResultByArtists?.result || []),
+        ...(nextResultByTokens?.result || []),
+        ...(nextResultByInscriptions?.result || []),
+      ]);
+      setCombineList(newList);
     } catch (error) {
       // handle fetch data error here
     } finally {
@@ -84,16 +115,17 @@ export const Items = (): JSX.Element => {
     }
   };
 
-  const debounceFetchDataOrdinals = debounce(fetchDataOrdinals, 300);
+  const debounceFetchCombineList = debounce(fetchCombineList, 300);
+
   const renderItemByType = useMemo(() => {
     const htmlList = [];
-    for (let index = 0; index < dataOrd.length; index++) {
-      const element = dataOrd[index];
+    for (let index = 0; index < combineList.length; index++) {
+      const element = combineList[index];
       if (element.objectType === OBJECT_TYPE.ARTIST) {
         htmlList.push(
           <ArtistCard
             profile={element.artist}
-            className="col-3"
+            className={cn('col-xs-6 col-md-3', s.items_artist)}
             key={`collection-item-${element?.artist?.objectId}`}
           />
         );
@@ -101,7 +133,7 @@ export const Items = (): JSX.Element => {
       if (element.objectType === OBJECT_TYPE.INSCRIPTION) {
         htmlList.push(
           <ProjectCardOrd
-            className="col-3"
+            className={cn('col-xs-6 col-md-3', s.items_project)}
             key={element?.inscription?.inscriptionId}
             project={{
               ...element?.inscription,
@@ -112,18 +144,18 @@ export const Items = (): JSX.Element => {
           />
         );
       }
-      // if (element.objectType === OBJECT_TYPE.TOKEN) {
-      //   htmlList.push(
-      //     <CollectionItem
-      //       className="col-3"
-      //       key={`collection-item-${element?.tokenUri?.tokenId}`}
-      //       data={element?.tokenUri}
-      //     />
-      //   );
-      // }
+      if (element.objectType === OBJECT_TYPE.TOKEN) {
+        htmlList.push(
+          <CollectionItem
+            className="col-xs-6 col-md-3"
+            key={`collection-item-${element?.tokenUri?.tokenID}`}
+            data={element?.tokenUri}
+          />
+        );
+      }
     }
     return htmlList;
-  }, [dataOrd.length]);
+  }, [combineList.length]);
 
   return (
     <div className={s.items}>
@@ -134,14 +166,14 @@ export const Items = (): JSX.Element => {
           </Col>
         ) : (
           <InfiniteScroll
-            dataLength={dataOrd.length}
-            next={debounceFetchDataOrdinals}
-            className="row"
-            hasMore={true}
+            dataLength={combineList.length}
+            next={debounceFetchCombineList}
+            className={cn('row', s.items_list)}
+            hasMore
             loader={
               isLoading ? (
-                <div className="">
-                  <Loading isLoaded={isLoading} />
+                <div className={s.items_loader}>
+                  <Loading isLoaded={!isLoading} />
                 </div>
               ) : null
             }

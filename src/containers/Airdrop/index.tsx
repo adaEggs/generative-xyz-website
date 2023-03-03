@@ -79,9 +79,8 @@ const Airdrop: React.FC = (): React.ReactElement => {
               <div className="col-lg-6 col-12">
                 <h2 className={s.sectionTitle}>Who will receive the keys?</h2>
                 <p className={s.sectionSubDescription}>
-                  As an artist, you need to launch a new collection on
-                  Generative. As a collector you need to mint an artwork on
-                  Generative.
+                  Launch well-executed collections or mint fine artwork for a
+                  better chance of getting the keys.
                 </p>
                 <p className={s.sectionDescription}>
                   There is no limit. Collect as many keys as you like.
