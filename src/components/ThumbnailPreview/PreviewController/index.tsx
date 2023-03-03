@@ -27,10 +27,14 @@ const PreviewController: React.FC<IProps> = (
     projectID: string;
     tokenID: string;
   };
-  const thumbnailUrl = useMemo(() => {
+  const previewUrl = useMemo(() => {
     return data?.image || '';
   }, [data]);
+  const thumbnailUrl = useMemo(() => {
+    return (data as Token)?.thumbnail || '';
+  }, [data]);
   const thumbnailExt = thumbnailUrl.split('.').pop() || '';
+  const previewExt = previewUrl.split('.').pop() || '';
 
   const renderPlaceholderThumbnail = useMemo(
     (): React.ReactElement => (
@@ -48,9 +52,9 @@ const PreviewController: React.FC<IProps> = (
 
   const renderPreviewByType = useMemo((): React.ReactElement => {
     // Check ordinal
-    const isOrdinalPreview = thumbnailUrl.includes('i0');
+    const isOrdinalPreview = previewUrl.includes('i0');
     if (isOrdinalPreview) {
-      return <IFramePreview url={thumbnailUrl} />;
+      return <IFramePreview url={previewUrl} />;
     }
 
     // Check hardcode glb collection
@@ -59,35 +63,37 @@ const PreviewController: React.FC<IProps> = (
         <Model3DPreview
           tokenID={data?.tokenID ?? ''}
           projectID={projectID}
+          previewExt={previewExt}
           thumbnailExt={thumbnailExt}
         />
       );
     }
 
-    const mediaType = getMediaTypeFromFileExt(thumbnailExt);
+    const mediaType = getMediaTypeFromFileExt(previewExt);
     switch (mediaType) {
       case MediaType.IMAGE:
-        return <ImagePreview url={thumbnailUrl} />;
+        return <ImagePreview url={previewUrl} />;
       case MediaType.MODEL_3D:
         return (
           <Model3DPreview
             tokenID={data?.tokenID ?? ''}
             projectID={projectID}
+            previewExt={previewExt}
             thumbnailExt={thumbnailExt}
           />
         );
       case MediaType.VIDEO:
-        return <VideoPreview url={thumbnailUrl} type={thumbnailExt} />;
+        return <VideoPreview url={previewUrl} type={previewExt} />;
       case MediaType.AUDIO:
-        return <AudioPreview url={thumbnailUrl} />;
+        return <AudioPreview url={previewUrl} />;
       case MediaType.IFRAME:
-        return <IFramePreview url={thumbnailUrl} />;
+        return <IFramePreview url={previewUrl} />;
       case MediaType.PDF:
-        return <PDFPreview url={thumbnailUrl} />;
+        return <PDFPreview url={previewUrl} />;
       default:
         return renderPlaceholderThumbnail;
     }
-  }, [thumbnailExt, thumbnailUrl, data, projectID, tokenID]);
+  }, [previewExt, previewUrl, data, projectID, tokenID]);
 
   if (!data) {
     return <></>;

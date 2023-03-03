@@ -5,10 +5,13 @@ import Table, { TColumn } from '@components/Table';
 import Text from '@components/Text';
 import ToogleSwitch from '@components/Toggle';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { WithdrawStatus } from '@constants/referral';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { CurrencyType } from '@enums/currency';
+import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
+import { IWithdrawRefereeRewardPayload } from '@interfaces/api/profile';
 import { ProjectVolume } from '@interfaces/project';
 import { withdrawRewardEarned } from '@services/profile';
 import { getProjectVolume } from '@services/project';
@@ -19,6 +22,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useContext, useEffect, useState } from 'react';
 import { Stack } from 'react-bootstrap';
+import { toast } from 'react-hot-toast';
 import useAsyncEffect from 'use-async-effect';
 import s from './ArtistCollectionEarn.module.scss';
 
@@ -27,11 +31,14 @@ const LOG_PREFIX = 'ArtistCollectionEarn';
 const ArtistCollectionEarn = ({
   setShowModal,
 }: {
-  setShowModal: (value: boolean) => void;
+  setShowModal: (_v: {
+    isShow: boolean;
+    data: IWithdrawRefereeRewardPayload | null;
+  }) => void;
 }) => {
   const router = useRouter();
   const { profileProjects } = useContext(ProfileContext);
-
+  const [isProcessing, setIsProcessing] = useState(false);
   const [currencyRecord, setCurrencyRecord] = useState<CurrencyType>(
     CurrencyType.BTC
   );
@@ -43,7 +50,7 @@ const ArtistCollectionEarn = ({
     'Collection',
     'Outputs',
     'Mint price',
-    'Total volume',
+    'Available volume',
     <>
       <Stack direction="horizontal" gap={2} className={s.switch_currency}>
         <ToogleSwitch
@@ -63,7 +70,7 @@ const ArtistCollectionEarn = ({
       </Stack>
     </>,
   ];
-  const [totalVolumeList, setTotalVolumeList] = useState<ProjectVolume[]>();
+  const [totalVolumeList, setTotalVolumeList] = useState<ProjectVolume[]>([]);
   const [tableData, setTableData] = useState<TColumn[]>();
 
   const handleFetchTotalVolume = async (projectID: string) => {
@@ -75,39 +82,76 @@ const ArtistCollectionEarn = ({
       return response;
     } catch (err: unknown) {
       log('failed to fetch volume', LogLevel.ERROR, LOG_PREFIX);
-      throw Error();
     }
   };
 
   const handleWithdraw = async (amount: string, projectID: string) => {
-    const payload = {
-      amount: amount,
-      paymentType: currencyRecord.toLowerCase(),
-      id: projectID,
-      type: 'project',
-    };
-
     try {
+      setIsProcessing(true);
+      const payload: IWithdrawRefereeRewardPayload = {
+        amount: amount,
+        paymentType: currencyRecord.toLowerCase(),
+        id: projectID,
+        type: 'project',
+      };
       await withdrawRewardEarned(payload);
+      setShowModal({
+        isShow: true,
+        data: payload,
+      });
+      const response = await handleFetchTotalVolume(projectID);
+      if (response) {
+        const newVolumeList = totalVolumeList.map(project => {
+          if (project.projectID === projectID) {
+            return { ...project, ...response };
+          }
+          return project;
+        });
+        setTotalVolumeList(newVolumeList);
+      }
     } catch (err: unknown) {
-      // log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
-      // throw Error();
+      log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      toast.error(ErrorMessage.DEFAULT);
     } finally {
-      setShowModal(true);
+      setIsProcessing(false);
     }
   };
 
-  // const calculateTotalWithdraw = profileProjects?.result.reduce(
-  //   (total, currentValue) => {
-  //     // TODO: Update this to use the correct value
-  //     return total + parseFloat(currentValue?.totalVolume || '');
-  //   },
-  //   0
-  // );
+  const renderStatus = (status: WithdrawStatus) => {
+    switch (status) {
+      case WithdrawStatus.Approve:
+        return (
+          <div className={cs(s.withdrawStatus, s.approved)}>
+            <div className={s.sonarCircle} />
+            <span>Approved</span>
+          </div>
+        );
+      case WithdrawStatus.Pending:
+        return (
+          <div className={cs(s.withdrawStatus, s.pending)}>
+            <div className={s.sonarCircle} />
+            <span>Checking</span>
+          </div>
+        );
+      case WithdrawStatus.Reject:
+        return (
+          <div className={cs(s.withdrawStatus, s.rejected)}>
+            <div className={s.sonarCircle} />
+            <span>Rejected</span>
+          </div>
+        );
+      default:
+        return <></>;
+    }
+  };
+
   const recordsData = profileProjects?.result?.map(item => {
-    const totalVolume = totalVolumeList?.find(
+    const project = totalVolumeList?.find(
       project => project.projectID === item.tokenID
-    )?.amount;
+    );
+    const totalVolume = project?.available;
+    const status = project?.status;
 
     const mintPriceEth =
       !item.mintPriceEth || item.mintPriceEth === '0'
@@ -156,24 +200,26 @@ const ArtistCollectionEarn = ({
               : `${formatBTCPrice(totalVolume || '')} BTC`}
           </>
         ),
-        // earning: (
-        //   <>
-        //     {totalVolume === '0'
-        //       ? '--'
-        //       : ` ${calculateWithdrawAmount} ${currencyRecord}`}
-        //   </>
-        // ),
         action: (
-          <div className={s.actions}>
-            <ButtonIcon
-              sizes="small"
-              variants="outline-small"
-              disabled={!Number(totalVolume)}
-              onClick={() => handleWithdraw(totalVolume || '', item.tokenID)}
-            >
-              Withdraw
-            </ButtonIcon>
-          </div>
+          <>
+            {status === WithdrawStatus.Available && (
+              <div className={s.actions}>
+                <ButtonIcon
+                  sizes="small"
+                  variants="outline-small"
+                  disabled={!Number(totalVolume) || isProcessing}
+                  onClick={() =>
+                    handleWithdraw(totalVolume || '', item.tokenID)
+                  }
+                >
+                  Withdraw
+                </ButtonIcon>
+              </div>
+            )}
+            {status !== undefined && status !== WithdrawStatus.Available && (
+              <>{renderStatus(status)}</>
+            )}
+          </>
         ),
       },
     };
@@ -189,12 +235,13 @@ const ArtistCollectionEarn = ({
           setisLoading(true);
           const response = await handleFetchTotalVolume(item.tokenID);
           if (response) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            setTotalVolumeList((prev: any) => [...prev, response]);
+            setTotalVolumeList((prev: Array<ProjectVolume>) => [
+              ...prev,
+              response,
+            ]);
           }
         } catch (err: unknown) {
           log('failed to fetch total volume', LogLevel.ERROR, LOG_PREFIX);
-          throw Error();
         } finally {
           setisLoading(false);
         }

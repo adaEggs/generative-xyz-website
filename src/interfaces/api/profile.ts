@@ -95,3 +95,23 @@ export interface IWithdrawRefereeRewardPayload {
   type: string;
   id: string;
 }
+
+export interface IApikey {
+  uuid: string;
+  apiKey: string;
+  apiName: string;
+  apiEmail: string;
+  apiCompany: string;
+  apiDescription: string;
+  status?: boolean;
+}
+
+export interface IApikeyResponse {
+  UserUuid: string;
+  ApiKey: string;
+  ApiName: string;
+  ApiEmail: string;
+  ApiCompany: string;
+  ApiDescription: string;
+  Status?: boolean;
+}

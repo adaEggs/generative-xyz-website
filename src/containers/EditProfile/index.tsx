@@ -42,6 +42,14 @@ const EditProfile = (): JSX.Element => {
                   Key
                 </Text>
               </li>
+              <li
+                className={`${tab === 'developer' ? s.isActive : ''}`}
+                onClick={() => setTab('developer')}
+              >
+                <Text as={'span'} size={'20'}>
+                  Developer
+                </Text>
+              </li>
             </ul>
             <div className={s.wrapper}>
               <FormEditProfile tab={tab} />

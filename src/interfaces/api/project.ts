@@ -1,3 +1,4 @@
+import { WithdrawStatus } from '@constants/referral';
 import { IPagingParams, IPagingResponse } from '@interfaces/api/paging';
 import { BTCProject, Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
@@ -115,6 +116,10 @@ export type IReportProjectResponse = Project;
 
 export interface IGetProjectVolumeResponse {
   amount: string;
+  available: string;
+  earning: string;
   payType: string;
   projectID: string;
+  withdraw: string;
+  status: WithdrawStatus;
 }

@@ -10,6 +10,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { CurrencyType } from '@enums/currency';
 import { LogLevel } from '@enums/log-level';
+import { IWithdrawRefereeRewardPayload } from '@interfaces/api/profile';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { withdrawRewardEarned } from '@services/profile';
@@ -31,8 +32,14 @@ const ReferralTab = () => {
   const user = useAppSelector(getUserSelector);
   const router = useRouter();
   const { referralListing, currency, setCurrency } = useContext(ProfileContext);
-
-  const [showWithdrawSucessModal, setShowWithdrawSucessModal] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [showWithdrawSucessModal, setShowWithdrawSucessModal] = useState<{
+    isShow: boolean;
+    data: IWithdrawRefereeRewardPayload | null;
+  }>({
+    isShow: false,
+    data: null,
+  });
 
   const TABLE_REFERRALS_HEADING = [
     'Referee',
@@ -61,19 +68,23 @@ const ReferralTab = () => {
   const referralLink = `${location.origin}${ROUTE_PATH.HOME}?referral_code=${user?.id}`;
 
   const handleWithdraw = async (amount: string, id: string) => {
-    const payload = {
-      amount,
-      paymentType: currency.toLowerCase(),
-      type: 'referal',
-      id,
-    };
-
     try {
+      setIsProcessing(true);
+      const payload: IWithdrawRefereeRewardPayload = {
+        amount,
+        paymentType: currency.toLowerCase(),
+        type: 'referal',
+        id,
+      };
       await withdrawRewardEarned(payload);
-      setShowWithdrawSucessModal(true);
+      setShowWithdrawSucessModal({
+        isShow: true,
+        data: payload,
+      });
     } catch (err: unknown) {
       log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
-      throw Error();
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -122,7 +133,7 @@ const ReferralTab = () => {
             <ButtonIcon
               sizes="small"
               variants="outline-small"
-              disabled={!Number(calculateWithdrawAmount)}
+              disabled={!Number(calculateWithdrawAmount) || isProcessing}
               onClick={() =>
                 handleWithdraw(item.referreeVolumn.earn || '', item.referreeID)
               }
@@ -206,8 +217,10 @@ const ReferralTab = () => {
       )} */}
       <ArtistCollectionEarn setShowModal={setShowWithdrawSucessModal} />
       <WithdrawModal
-        isShow={showWithdrawSucessModal}
-        onHideModal={() => setShowWithdrawSucessModal(false)}
+        data={showWithdrawSucessModal}
+        onHideModal={() =>
+          setShowWithdrawSucessModal({ isShow: false, data: null })
+        }
       />
     </div>
   );

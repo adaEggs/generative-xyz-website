@@ -1,15 +1,14 @@
 import React from 'react';
-import Image from 'next/image';
+
 import { Row, Col } from 'react-bootstrap';
 import cn from 'classnames';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
 
-import { IProjectItem } from '@interfaces/api/search';
+import { Project } from '@interfaces/project';
 import { getSearchByKeyword, getApiKey } from '@services/search';
-import { ROUTE_PATH } from '@constants/route-path';
 import Slider from '@components/Slider';
-import Link from '@components/Link';
+import { ProjectCard } from '@components/ProjectCard';
 
 import s from './Collection.module.scss';
 import { PAYLOAD_DEFAULT, OBJECT_TYPE } from '../constant';
@@ -18,33 +17,12 @@ interface CollectionProps {
   className?: string;
 }
 
-export const CollectionItem = ({
-  tokenId,
-  image,
-  name,
-  creatorAddr,
-  mintPrice,
-  index,
-  maxSupply,
-}: IProjectItem): JSX.Element => {
-  return (
-    <Link href={`${ROUTE_PATH.GENERATIVE}/${tokenId}`}>
-      <div className={s.collection_item}>
-        <div className={s.collection_img}>
-          <Image src={image} width={235} height={368} alt={name} />
-        </div>
-        <div className={s.collection_info}>
-          <div className={s.collection_info_name}>{creatorAddr}</div>
-          <div className={s.collection_info_aliasName}>{name}</div>
-          <div className={s.collection_info_payment}>
-            {mintPrice}&nbsp;BTC
-            <span className={s.collection_info_dot}>•</span>
-            {index}/{maxSupply}&nbsp;minted
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
+interface IProjectItem {
+  project: Project;
+}
+
+export const CollectionItem = ({ project }: IProjectItem): JSX.Element => {
+  return <ProjectCard className="col-xs-6 col-md-3" project={project} />;
 };
 
 const Collection = ({ className }: CollectionProps): JSX.Element => {
@@ -64,6 +42,7 @@ const Collection = ({ className }: CollectionProps): JSX.Element => {
   if (collections?.length < 1) return <></>;
 
   const SLIDER_SETTING = {
+    className: s.collection_slider,
     slidesToShow: 4,
     slidesToScroll: 4,
     infinite: collections.length > 4,
@@ -78,17 +57,18 @@ const Collection = ({ className }: CollectionProps): JSX.Element => {
         {collections.length <= 4 ? (
           <Row>
             {collections.map(collection => (
-              <Col key={collection?.project?.objectId} md={3}>
-                <CollectionItem {...collection?.project} />
-              </Col>
+              <CollectionItem
+                key={collection?.project?.tokenID}
+                project={collection?.project}
+              />
             ))}
           </Row>
         ) : (
           <Col md={12}>
             <Slider settings={SLIDER_SETTING}>
               {collections.map(collection => (
-                <div key={collection?.project?.objectId}>
-                  <CollectionItem {...collection?.project} />
+                <div key={collection?.project?.tokenID}>
+                  <CollectionItem project={collection?.project} />
                 </div>
               ))}
             </Slider>

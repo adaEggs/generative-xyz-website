@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import cn from 'classnames';
 import { useRouter } from 'next/router';
@@ -20,14 +20,44 @@ const Filter = ({ className }: FilterProps): JSX.Element => {
   const router = useRouter();
   const { keyword = '' } = router.query;
 
-  const filterParams = {
+  const filterBase = {
     ...PAYLOAD_DEFAULT,
     keyword,
+  };
+  const filterArtistParams = {
+    ...filterBase,
     type: OBJECT_TYPE.ARTIST,
   };
-  const { data: searchResults } = useSWR(
-    getApiKey(getSearchByKeyword, filterParams),
-    () => getSearchByKeyword(filterParams)
+  const filterTokenParams = {
+    ...filterBase,
+    type: OBJECT_TYPE.TOKEN,
+  };
+  const filterInscriptionParams = {
+    ...filterBase,
+    type: OBJECT_TYPE.INSCRIPTION,
+  };
+
+  const filterCollectionParams = {
+    ...PAYLOAD_DEFAULT,
+    keyword,
+    type: OBJECT_TYPE.PROJECT,
+  };
+  const { data: resultByCollection } = useSWR(
+    getApiKey(getSearchByKeyword, filterCollectionParams),
+    () => getSearchByKeyword(filterCollectionParams)
+  );
+
+  const { data: resultByArtists } = useSWR(
+    getApiKey(getSearchByKeyword, filterArtistParams),
+    () => getSearchByKeyword(filterArtistParams)
+  );
+  const { data: resultByTokens } = useSWR(
+    getApiKey(getSearchByKeyword, filterTokenParams),
+    () => getSearchByKeyword(filterTokenParams)
+  );
+  const { data: resultByInscriptions } = useSWR(
+    getApiKey(getSearchByKeyword, filterInscriptionParams),
+    () => getSearchByKeyword(filterInscriptionParams)
   );
 
   const onRemoveKeyword = () => {
@@ -36,12 +66,27 @@ const Filter = ({ className }: FilterProps): JSX.Element => {
     });
   };
 
+  const searchTotal = useMemo(() => {
+    return (
+      (resultByCollection?.total || 0) +
+      (resultByArtists?.total || 0) +
+      (resultByTokens?.total || 0) +
+      (resultByInscriptions?.total || 0)
+    );
+  }, [
+    keyword,
+    resultByCollection?.total,
+    resultByArtists?.total,
+    resultByTokens?.total,
+    resultByInscriptions?.total,
+  ]);
+
   return (
     <div className={cn(s.filter, className)}>
       <Row>
         <Col md={12}>
           <div className={s.filter_totalResult}>
-            <span>{prettyNumberWithCommas(searchResults?.total || 0)}</span>
+            <span>{prettyNumberWithCommas(searchTotal)}</span>
             &nbsp;items
           </div>
           {keyword && (

@@ -9,47 +9,10 @@
     color: $black-100;
   }
 
-  &_item {
-    margin: 0 rem(12);
-  }
-
-  &_img {
-    margin-bottom: rem(24);
-    padding: rem(32);
-    display: flex;
-    justify-content: center;
-    background-color: $primary-light;
-  }
-
-  &_info {
-    padding: 0 rem(16);
-    color: #1c1c1c;
-
-    &_name {
-      font-weight: 500;
-      font-size: 20px;
-      line-height: 30px;
-      letter-spacing: -0.01em;
-    }
-
-    &_aliasName {
-      margin-bottom: rem(12);
-      font-weight: 500;
-      font-size: 20px;
-      line-height: 30px;
-      letter-spacing: -0.01em;
-      color: #898989;
-    }
-
-    &_payment {
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 26px;
-      color: #898989;
-    }
-
-    &_dot {
-      padding: 0 rem(8);
+  &_slider {
+    [class*="slick-track"] {
+      display: flex;
+      gap: rem(24);
     }
   }
 }
