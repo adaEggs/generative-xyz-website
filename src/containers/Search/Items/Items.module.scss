@@ -2,12 +2,14 @@
   &_list {
     row-gap: rem(48);
   }
+
   &_project {
-    [class*='projectCard_inner'] {
+    [class*="projectCard_inner"] {
       padding: 0;
       border: none;
     }
-    [class*='projectCard_thumb'] {
+
+    [class*="projectCard_thumb"] {
       padding-bottom: 100% !important;
     }
   }
@@ -20,11 +22,12 @@
   }
 
   &_artist {
-    [class*='_inner'] {
+    [class*="_inner"] {
       background-color: $white-100;
     }
-    [class*='_info'] {
-      [class*='text-white'] {
+
+    [class*="_info"] {
+      [class*="text-white"] {
         color: $black-100 !important;
       }
     }

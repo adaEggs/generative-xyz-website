@@ -68,6 +68,18 @@ export const Items = (): JSX.Element => {
     setCurrentPage(1);
   }, [keyword]);
 
+  useEffect(() => {
+    setCombineList([
+      ...(resultByArtists?.result || []),
+      ...(resultByTokens?.result || []),
+      ...(resultByInscriptions?.result || []),
+    ]);
+  }, [
+    resultByArtists?.result,
+    resultByTokens?.result,
+    resultByInscriptions?.result,
+  ]);
+
   const fetchCombineList = async () => {
     try {
       setIsLoading(true);
