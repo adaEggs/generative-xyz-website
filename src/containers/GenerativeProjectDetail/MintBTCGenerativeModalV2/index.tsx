@@ -26,6 +26,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { Col, Row } from 'react-bootstrap';
@@ -46,6 +47,7 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
   const [totalPrice, setTotalPrice] = React.useState('');
+  const currentAddress = useRef('');
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -65,7 +67,9 @@ const MintBTCGenerativeModal: React.FC = () => {
   const feePriceFormat = totalPrice
     ? formatBTCPrice(Number(totalPrice) - Number(projectData?.mintPrice), '0.0')
     : '';
-  const totalPriceFormat = formatBTCPrice(Number(totalPrice), '0.0');
+  const totalPriceFormat = totalPrice
+    ? formatBTCPrice(Number(totalPrice), '0.0')
+    : '';
 
   const userBtcAddress = useMemo(
     () => user?.walletAddressBtcTaproot || '',
@@ -81,7 +85,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
-      if (step === 'showAddress' && userBtcAddress) {
+      if (userBtcAddress !== currentAddress.current) {
         debounceGetBTCAddress(userBtcAddress, userBtcAddress);
       }
     }
@@ -90,17 +94,15 @@ const MintBTCGenerativeModal: React.FC = () => {
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
-      if (step === 'showAddress' && addressInput) {
-        debounceGetBTCAddress(addressInput, addressInput);
+      if (addressInput && addressInput !== currentAddress.current) {
+        debounceGetBTCAddress(addressInput, userBtcAddress);
       }
     }
   };
 
   const onClickPay = () => {
     if (useWallet === 'default') {
-      if (userBtcAddress) {
-        debounceGetBTCAddress(userBtcAddress, userBtcAddress);
-      }
+      setsTep('showAddress');
     }
   };
 
@@ -138,7 +140,7 @@ const MintBTCGenerativeModal: React.FC = () => {
         },
       });
       setReceiverAddress(address);
-      setsTep('showAddress');
+      currentAddress.current = walletAddress;
     } catch (err: unknown) {
       setReceiverAddress(null);
     } finally {
@@ -162,20 +164,20 @@ const MintBTCGenerativeModal: React.FC = () => {
     } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
-      if (step === 'showAddress' && addressInput !== values.address) {
+      if (
+        addressInput !== values.address &&
+        values.address !== currentAddress.current
+      ) {
         setAddressInput(values.address);
-        debounceGetBTCAddress(values.address, values.address);
+        debounceGetBTCAddress(values.address, userBtcAddress);
       }
     }
 
     return errors;
   };
 
-  const handleSubmit = async (values: IFormValue): Promise<void> => {
-    if (addressInput !== values.address) {
-      debounceGetBTCAddress(values.address, values.address);
-      setAddressInput(values.address);
-    }
+  const handleSubmit = async (): Promise<void> => {
+    setsTep('showAddress');
   };
 
   const _onClose = () => {
