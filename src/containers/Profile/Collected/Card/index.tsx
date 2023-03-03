@@ -49,8 +49,11 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const isListable =
     !project.orderID && !project.buyable && !project.cancelling && isOwner;
 
-  const isCancelListed =
-    !!project.orderID && project.buyable && !project.cancelling && isOwner;
+  const isCancelListed = React.useMemo(() => {
+    const isCancel =
+      !!project.orderID && project.buyable && !project.cancelling && isOwner;
+    if (isCancel) return true;
+  }, [project.orderID, project.buyable, project.cancelling, isOwner]);
 
   const [thumb, setThumb] = useState<string>(project.image);
 

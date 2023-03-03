@@ -66,10 +66,10 @@ export const trackTx = async (payload: ITrackTx): Promise<never> => {
 
 export const getHistory = async (address: string): Promise<ITxHistory[]> => {
   try {
-    const res = await get<ITxHistory[]>(
+    const txs = await get<ITxHistory[]>(
       `/wallet/txs?address=${address}&limit=100&offset=0`
     );
-    return (res || []).map(history => {
+    return (txs || []).map(history => {
       let statusColor: HistoryStatusColor = '#ff7e21';
       let status: HistoryStatusType = HistoryStatusType.pending;
       const now = new Date().getTime();
@@ -95,6 +95,7 @@ export const getHistory = async (address: string): Promise<ITxHistory[]> => {
         ...history,
         statusColor,
         status,
+        isExpired,
       };
     });
   } catch (err: unknown) {

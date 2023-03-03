@@ -479,6 +479,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const fetchDataCollectedNFTs = async () => {
     try {
+      setCollectedNFTs([]);
       const [mintingNFTs, mintedNFTs] = await Promise.all([
         isOwner
           ? await getMintingCollectedNFTs(currentBtcAddressRef.current)

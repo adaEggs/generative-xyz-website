@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import BaseModal, { IBaseModalProps } from '@components/Transactor';
 import s from '@components/Transactor/form.module.scss';
 import { Formik } from 'formik';
@@ -15,7 +15,6 @@ import { LoaderIcon, toast } from 'react-hot-toast';
 import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
-import { ProfileContext } from '@contexts/profile-context';
 
 interface IFormValues {
   price: string;
@@ -40,8 +39,6 @@ const ModalBuyListed = React.memo(
     const [isLoading, setLoading] = useState<boolean>(false);
     const { buyInscription } = useBitcoin({ inscriptionID });
     const [error, setError] = useState('');
-    const { debounceFetchCollectedUTXOs, debounceFetchHistory } =
-      useContext(ProfileContext);
     const onSetError = (err: unknown) => {
       const _err = getError(err);
       setError(_err.message);
@@ -76,8 +73,7 @@ const ModalBuyListed = React.memo(
         });
         setTimeout(() => {
           setLoading(false);
-          debounceFetchCollectedUTXOs();
-          debounceFetchHistory();
+          window.location.reload();
           setError('');
         }, 2000);
       } catch (err: unknown) {

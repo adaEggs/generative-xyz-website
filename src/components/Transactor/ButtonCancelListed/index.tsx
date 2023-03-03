@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import ButtonIcon, { ButtonSizesType } from '@components/ButtonIcon';
 import cs from 'classnames';
 import { useSelector } from 'react-redux';
@@ -8,7 +8,6 @@ import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
 import { toast } from 'react-hot-toast';
-import { ProfileContext } from '@contexts/profile-context';
 
 interface IProps {
   className?: string;
@@ -30,8 +29,6 @@ const ButtonCancelListed = React.memo(
     const { selectedRate, allRate } = useFeeRate();
     const { cancelInscription } = useBitcoin({ inscriptionID });
     const [isLoading, setLoading] = React.useState(false);
-    const { debounceFetchHistory, debounceFetchDataCollectedNFTs } =
-      useContext(ProfileContext);
 
     const onCancel = async () => {
       try {
@@ -42,10 +39,9 @@ const ButtonCancelListed = React.memo(
           receiverAddress: user?.walletAddressBtcTaproot || '',
           orderID,
         });
+        toast.success('Successfully');
         setTimeout(() => {
-          debounceFetchHistory();
-          debounceFetchDataCollectedNFTs();
-          toast.success('Successfully');
+          window.location.reload();
           setLoading(false);
         }, 2000);
       } catch (e) {

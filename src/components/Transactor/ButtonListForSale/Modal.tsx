@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import BaseModal, { IBaseModalProps } from '@components/Transactor';
 import s from '@components/Transactor/form.module.scss';
 import { Formik } from 'formik';
@@ -20,7 +20,6 @@ import { convertToSatoshiNumber } from '@utils/format';
 import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
-import { ProfileContext } from '@contexts/profile-context';
 
 interface IFormValues {
   price: string;
@@ -53,9 +52,6 @@ const ModalListForSale = React.memo(
     );
     const { listInscription } = useBitcoin({ inscriptionID });
     const [error, setError] = useState('');
-
-    const { debounceFetchCollectedUTXOs, debounceFetchHistory } =
-      useContext(ProfileContext);
 
     const onSetError = (err: unknown) => {
       const _err = getError(err);
@@ -119,14 +115,12 @@ const ModalListForSale = React.memo(
           inscriptionNumber: inscriptionNumber,
           receiverBTCAddress: values.receiveBTCAddress,
         });
-
+        toast.success('Successfully');
         setTimeout(() => {
           setLoading(false);
-          debounceFetchCollectedUTXOs();
-          debounceFetchHistory();
-          toast.success('Successfully');
+          window.location.reload();
           onHide();
-        }, 1000);
+        }, 2000);
       } catch (err: unknown) {
         setLoading(false);
         onSetError(err);

@@ -67,6 +67,26 @@ export interface ITxHistory {
   inscription_number: number;
   send_amount: number;
   created_at: string;
+  isExpired: boolean;
+}
+
+export interface ITxHistory {
+  txhash: string;
+  status: HistoryStatusType;
+  statusColor: HistoryStatusColor;
+  type: TrackTxType;
+  inscription_id: string;
+  inscription_number: number;
+  send_amount: number;
+  created_at: string;
+  isExpired: boolean;
+
+  // order_id: '6401acf76d1254300140c056';
+  // type: 'cancelling';
+  // timestamp: 1677836116;
+  // inscription_id: '9a6a37681c0ad4326e8f30e75359bb4cb6627b4a515d8c317ffae5d42d5c39d1i0';
+  // txhash: '431630d7f5f1bdbf37eb82462ab65a30fd9f0226e5d94817511b3dee20acc601';
+  // amount: '10000';
 }
 
 export interface IListingPayload {
