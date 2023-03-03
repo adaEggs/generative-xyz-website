@@ -15,4 +15,7 @@
       gap: rem(24);
     }
   }
+  &_resetRowGap {
+    row-gap: 0;
+  }
 }

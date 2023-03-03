@@ -4,7 +4,7 @@ import { SWRConfig } from 'swr';
 import SearchWrapper from '@containers/Search';
 import { PAYLOAD_DEFAULT, OBJECT_TYPE } from '@containers/Search/constant';
 import MarketplaceLayout from '@layouts/Marketplace';
-import { SEO_DESCRIPTION, SEO_IMAGE } from '@constants/seo-default-info';
+import { CDN_URL } from '@constants/config';
 import { getSearchByKeyword, getApiKey, swrFetcher } from '@services/search';
 
 interface SearchPageProps {
@@ -76,8 +76,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       },
       seoInfo: {
         title: 'Generative | Search',
-        description: SEO_DESCRIPTION,
-        image: SEO_IMAGE,
+        description: 'The easiest search tool for every inscription out there.',
+        image: `${CDN_URL}/images/image.png`,
       },
     },
   };

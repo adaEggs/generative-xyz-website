@@ -4,7 +4,11 @@
   }
 
   &_project {
-    [class*="projectCard_inner"] {
+    &:hover {
+      box-shadow: 0 2px 10px rgb(0 0 0 / 15%);
+      border-color: rgba(#1c1c1c, 0.3);
+    }
+    [class*='projectCard_inner'] {
       padding: 0;
       border: none;
     }
@@ -22,7 +26,11 @@
   }
 
   &_artist {
-    [class*="_inner"] {
+    &:hover {
+      box-shadow: 0 2px 10px rgb(0 0 0 / 15%);
+      border-color: rgba(#1c1c1c, 0.3);
+    }
+    [class*='_inner'] {
       background-color: $white-100;
     }
 
