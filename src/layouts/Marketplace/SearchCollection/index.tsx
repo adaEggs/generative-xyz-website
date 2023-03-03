@@ -87,9 +87,9 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleKeyDownSearch = (event: any): void => {
+  const handleKeyDownSearch = async (event: any): Promise<void> => {
     if (event?.key === 'Enter') {
-      router.push({
+      await router.push({
         pathname: ROUTE_PATH.SEARCH,
         query: { keyword: event?.target?.value?.trim() },
       });
