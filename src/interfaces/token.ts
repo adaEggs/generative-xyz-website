@@ -51,7 +51,7 @@ export type Token = {
     sat: string;
     contentLength: string;
     contentType: string;
-    timeStamp: string;
+    timestamp: string;
     block: string;
   };
 };

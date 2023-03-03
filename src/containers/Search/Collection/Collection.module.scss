@@ -8,8 +8,9 @@
     line-height: rem(44);
     color: $black-100;
   }
+
   &_slider {
-    [class*='slick-track'] {
+    [class*="slick-track"] {
       display: flex;
       gap: rem(24);
     }

@@ -1,6 +1,8 @@
 import { LogLevel } from '@enums/log-level';
 import {
   CollectedNFTStatus,
+  IApikey,
+  IApikeyResponse,
   ICollectedNFTItem,
   ICollectedNFTItemDetail,
   IGetCollectedNFTInsciptionResp,
@@ -217,13 +219,54 @@ export const cancelMintingCollectedNFT = async (
 export const withdrawRewardEarned = async (
   payload: IWithdrawRefereeRewardPayload
 ): Promise<void> => {
+  // try {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const res = await post<IWithdrawRefereeRewardPayload, any>(
+    `${API_PATH}/withdraw`,
+    payload
+  );
+  return res;
+  // } catch (err: unknown) {
+  //   log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
+  //   throw Error();
+  // }
+};
+
+// Developer tab
+
+export const getApiKey = async (): Promise<IApikey> => {
+  try {
+    const res = await get<IApikeyResponse>(`/developer/api-key`);
+    return {
+      uuid: res.UserUuid,
+      apiKey: res.ApiKey,
+      apiName: res.ApiName,
+      apiEmail: res.ApiEmail,
+      apiCompany: res.ApiCompany,
+      apiDescription: res.ApiDescription,
+      status: res.Status,
+    };
+  } catch (err: unknown) {
+    log('failed to get api key', LogLevel.ERROR, LOG_PREFIX);
+    throw Error();
+  }
+};
+
+export const generateApiKey = async (token: string): Promise<IApikey> => {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = await post<IWithdrawRefereeRewardPayload, any>(
-      `${API_PATH}/withdraw`,
-      payload
-    );
-    return res;
+    const res = await post<any, IApikeyResponse>(`/developer/api-key`, {
+      'g-recaptcha-response': token,
+    });
+    return {
+      uuid: res.UserUuid,
+      apiKey: res.ApiKey,
+      apiName: res.ApiName,
+      apiEmail: res.ApiEmail,
+      apiCompany: res.ApiCompany,
+      apiDescription: res.ApiDescription,
+      status: res.Status,
+    };
   } catch (err: unknown) {
     log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
     throw Error();

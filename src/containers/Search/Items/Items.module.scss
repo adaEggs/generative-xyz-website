@@ -2,6 +2,7 @@
   &_list {
     row-gap: rem(48);
   }
+
   &_project {
     &:hover {
       box-shadow: 0 2px 10px rgb(0 0 0 / 15%);
@@ -11,7 +12,8 @@
       padding: 0;
       border: none;
     }
-    [class*='projectCard_thumb'] {
+
+    [class*="projectCard_thumb"] {
       padding-bottom: 100% !important;
     }
   }
@@ -31,8 +33,9 @@
     [class*='_inner'] {
       background-color: $white-100;
     }
-    [class*='_info'] {
-      [class*='text-white'] {
+
+    [class*="_info"] {
+      [class*="text-white"] {
         color: $black-100 !important;
       }
     }

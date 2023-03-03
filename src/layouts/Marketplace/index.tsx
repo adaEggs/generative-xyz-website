@@ -3,6 +3,7 @@ import Header from './Header';
 import Footer from './Footer';
 import styles from './styles.module.scss';
 import { BitcoinProjectProvider } from '@contexts/bitcoin-project-context';
+import Topbar from './Topbar';
 
 interface IProps {
   children: ReactNode;
@@ -21,6 +22,7 @@ const MarketplaceLayout: React.FC<IProps> = ({
 }): React.ReactElement => {
   return (
     <div className={`${styles.wrapper} ${styles[theme]}`}>
+      <Topbar />
       <Header
         theme={theme}
         isShowFaucet={!isHideFaucet}

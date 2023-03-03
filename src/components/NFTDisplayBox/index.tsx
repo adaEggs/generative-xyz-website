@@ -9,6 +9,7 @@ import Skeleton from '@components/Skeleton';
 import { ROUTE_PATH } from '@constants/route-path';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { getTokenUri } from '@services/token-uri';
+import { GLB_EXTENSION } from '@constants/file';
 
 const EXPLORER = 'https://dev-v5.generativeexplorer.com';
 // CDN_URL;
@@ -158,7 +159,7 @@ const NFTDisplayBox = ({
         .then(data => {
           const { image } = data;
           const fileExt = image?.split('.').pop();
-          if (fileExt && fileExt === 'glb') {
+          if (fileExt && fileExt === GLB_EXTENSION) {
             setHTMLContentRender(renderGLBIframe());
           } else {
             setHTMLContentRender(renderIframe());

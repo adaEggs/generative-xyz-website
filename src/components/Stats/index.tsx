@@ -19,7 +19,7 @@ type TStats = {
     | null;
 };
 
-const MAX_LINES = 5;
+const MAX_LINES = 7;
 
 const Stats = ({ data }: TStats) => {
   const [seeMore, setSeeMore] = useState(false);
