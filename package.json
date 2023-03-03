@@ -59,7 +59,6 @@
     "react-dom": "^18.2.0",
     "react-drag-drop-files": "^2.3.8",
     "react-dropdown-select": "^4.9.0",
-    "react-google-recaptcha-v3": "^1.10.1",
     "react-hot-toast": "^2.4.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-lazyload": "^3.2.0",
