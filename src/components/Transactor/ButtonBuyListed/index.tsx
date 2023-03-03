@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { formatBTCPrice } from '@utils/format';
 import { WalletContext } from '@contexts/wallet-context';
+import { ProfileContext } from '@contexts/profile-context';
 
 interface IProps {
   title?: string;
@@ -31,6 +32,7 @@ const ButtonBuyListed = React.memo(
     const user = useSelector(getUserSelector);
     const walletCtx = useContext(WalletContext);
     const taprootAddress = user?.walletAddressBtcTaproot;
+    const { isLoadingHistory } = useContext(ProfileContext);
 
     const openModal = async () => {
       if (!user || !user.walletAddressBtcTaproot) {
@@ -47,6 +49,8 @@ const ButtonBuyListed = React.memo(
       if (title) return title;
       return `Buy • ${formatBTCPrice(price)} BTC`;
     }, [title, price]);
+
+    if (isLoadingHistory) return null;
 
     return (
       <>
