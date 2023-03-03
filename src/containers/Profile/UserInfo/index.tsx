@@ -221,7 +221,7 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                   }
                 >
                   <Text fontWeight="medium" as="span">
-                    Edit Profile
+                    Settings
                   </Text>
                 </ButtonIcon>
               </div>
