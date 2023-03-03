@@ -44,7 +44,7 @@ const Profile: React.FC = (): React.ReactElement => {
                   <Tab
                     tabClassName={s.tab}
                     eventKey="collectedTab"
-                    title={<>{collectedNFTs.length} Collected</>}
+                    title={<>{collectedNFTs.length} Inscriptions</>}
                   >
                     <Collected />
                   </Tab>
@@ -52,7 +52,7 @@ const Profile: React.FC = (): React.ReactElement => {
                   <Tab
                     tabClassName={s.tab}
                     eventKey="createdTab"
-                    title={<>{profileProjects?.total || 0} Created</>}
+                    title={<>{profileProjects?.total || 0} Projects</>}
                   >
                     <CreatedTab />
                   </Tab>
@@ -72,7 +72,7 @@ const Profile: React.FC = (): React.ReactElement => {
                       eventKey="balanceTab"
                       title={
                         isLoadingUTXOs
-                          ? 'loading...'
+                          ? 'Loading...'
                           : `${formatBTCPrice(satoshiAmount.toString())} BTC`
                       }
                     >
@@ -82,7 +82,7 @@ const Profile: React.FC = (): React.ReactElement => {
                   <Tab
                     tabClassName={s.tab}
                     eventKey="freeTab"
-                    title={<>{totalFreeInscription} Free</>}
+                    title={<>{totalFreeInscription} Free inscriptions</>}
                   >
                     <FreeInscriptions />
                   </Tab>

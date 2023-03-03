@@ -99,6 +99,77 @@
   }
 }
 
+.selectInput {
+  :global(.select__control) {
+    background-color: $white-100;
+    cursor: pointer;
+    outline: none;
+    box-shadow: none;
+    border-radius: 2px;
+    min-height: rem(48);
+    border: 1px solid $black-10;
+    min-width: rem(250px);
+  }
+
+  :global(.select__menu) {
+    border-radius: 2px;
+    border: 2px solid #cecece;
+    box-shadow: 8px 7px 24px rgb(0 0 0 / 15%);
+  }
+
+  :global(.select__menu-list) {
+    padding: 0;
+  }
+
+  :global(.select__indicator-separator) {
+    display: none;
+  }
+
+  :global(.select__placeholder) {
+    color: $black-40;
+    font-weight: 500;
+    line-height: (26/16);
+
+    @include calcFontAuto(14px, 16px);
+  }
+
+  :global(.select__multi-value__label) {
+    font-size: 14px;
+    line-height: 14px;
+    font-weight: 400;
+  }
+
+  :global(.select__input-container) {
+    color: $black-100;
+  }
+
+  :global(.select__option) {
+    padding: rem(10) rem(16);
+    font-weight: 400;
+    line-height: (26/16);
+
+    @include calcFontAuto(14px, 16px);
+
+    &:hover {
+      background-color: $black-5;
+    }
+  }
+
+  :global(.select__option--is-focused) {
+    background-color: $white;
+  }
+
+  :global(.select__option--is-selected) {
+    background-color: $white;
+    color: $black-100;
+
+    &:hover {
+      background-color: $black-5;
+      color: $black-100;
+    }
+  }
+}
+
 @include mobile {
   .filter_wrapper {
     position: fixed;
