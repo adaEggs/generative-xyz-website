@@ -13,13 +13,13 @@ const Topbar: React.FC = (): React.ReactElement => {
         <div className="d-flex align-items-center justify-content-between">
           <div className={s.left}>
             <p className={s.text}>
-              You’re new Artist? -{' '}
+              New artist?{' '}
               <Link
                 className={s.startedLink}
                 target="_blank"
                 href={SOCIALS.docsForArtist}
               >
-                Started here
+                Start here.
               </Link>
             </p>
           </div>
@@ -29,17 +29,6 @@ const Topbar: React.FC = (): React.ReactElement => {
               'd-flex align-items-center justify-content-between'
             )}
           >
-            <Link
-              className={s.socialLink}
-              target="_blank"
-              href={SOCIALS.github}
-            >
-              <SvgInset
-                size={18}
-                svgUrl={`${CDN_URL}/icons/ic-github-18x18.svg`}
-              />
-            </Link>
-
             <Link
               className={s.socialLink}
               target="_blank"
