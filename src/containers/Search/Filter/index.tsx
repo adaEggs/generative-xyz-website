@@ -73,7 +73,13 @@ const Filter = ({ className }: FilterProps): JSX.Element => {
       (resultByTokens?.total || 0) +
       (resultByInscriptions?.total || 0)
     );
-  }, [keyword]);
+  }, [
+    keyword,
+    resultByCollection?.total,
+    resultByArtists?.total,
+    resultByTokens?.total,
+    resultByInscriptions?.total,
+  ]);
 
   return (
     <div className={cn(s.filter, className)}>
