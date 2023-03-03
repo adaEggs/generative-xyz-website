@@ -23,7 +23,7 @@ const ProjectPreview = () => {
     formValues,
     currentStep,
     thumbnailPreviewUrl,
-    // setAttributes,
+    setAttributes,
   } = useContext(MintGenerativeContext);
   const sandboxRef = useRef<ISandboxRef>(null);
   const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>(
@@ -40,10 +40,10 @@ const ProjectPreview = () => {
       const iframe = sandboxRef.current.getHtmlIframe();
       if (iframe) {
         // @ts-ignore: Allow read iframe's window object
-        // if (iframe.contentWindow?.$generativeTraits) {
-        //   // @ts-ignore: Allow read iframe's window object
-        //   setAttributes(iframe.contentWindow?.$generativeTraits);
-        // }
+        if (iframe.contentWindow?.$generativeTraits) {
+          // @ts-ignore: Allow read iframe's window object
+          setAttributes(iframe.contentWindow?.$generativeTraits);
+        }
       }
     }
   };
