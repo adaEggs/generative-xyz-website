@@ -6,24 +6,25 @@ import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
 import { WalletContext } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
-import { IUpdateProfilePayload } from '@interfaces/api/profile';
+import { IApikey, IUpdateProfilePayload } from '@interfaces/api/profile';
 import { useAppDispatch, useAppSelector } from '@redux';
 import { setUser } from '@redux/user/action';
 import { getUserSelector } from '@redux/user/selector';
 import { uploadFile } from '@services/file';
-import { updateProfile } from '@services/profile';
+import { generateApiKey, getApiKey, updateProfile } from '@services/profile';
 import log from '@utils/logger';
 import { validateBTCAddress, validateEVMAddress } from '@utils/validate';
 import { Formik } from 'formik';
 import _isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import ButtonExportKey from '@containers/Profile/ButtonExportKey';
+import DeveloperTab from './DeveloperTab';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -99,6 +100,42 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
       return;
     } catch (err: unknown) {
       log('Failed to update profile ', LogLevel.ERROR, LOG_PREFIX);
+    }
+  };
+
+  // Developer tab
+  const [apiKey, setApiKey] = useState<IApikey>();
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    handleGetApiKey();
+  }, []);
+
+  const handleGetApiKey = async () => {
+    try {
+      setLoading(true);
+      const res = await getApiKey();
+      if (res) {
+        setApiKey(res);
+      }
+    } catch (error) {
+      //TODO
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmitGenerateApiKey = async (token: string) => {
+    try {
+      setLoading(true);
+      const res = await generateApiKey(token);
+      if (res) {
+        setApiKey(res);
+      }
+    } catch (error) {
+      //TODO
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -279,6 +316,13 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
                 <ButtonExportKey />
               </div>
             </div>
+          )}
+          {tab === 'developer' && (
+            <DeveloperTab
+              loading={loading}
+              apiKey={apiKey}
+              handleSubmitGenerateApiKey={handleSubmitGenerateApiKey}
+            />
           )}
         </form>
       )}
