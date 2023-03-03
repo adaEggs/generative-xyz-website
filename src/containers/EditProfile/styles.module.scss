@@ -20,6 +20,16 @@
     margin-top: rem(60px);
   }
 
+  &_titleContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &_icon {
+      margin-right: rem(12px);
+    }
+  }
+
   &_row {
     justify-content: center;
   }
