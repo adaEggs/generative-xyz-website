@@ -217,15 +217,15 @@ export const cancelMintingCollectedNFT = async (
 export const withdrawRewardEarned = async (
   payload: IWithdrawRefereeRewardPayload
 ): Promise<void> => {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const res = await post<IWithdrawRefereeRewardPayload, any>(
-      `${API_PATH}/withdraw`,
-      payload
-    );
-    return res;
-  } catch (err: unknown) {
-    log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
-    throw Error();
-  }
+  // try {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const res = await post<IWithdrawRefereeRewardPayload, any>(
+    `${API_PATH}/withdraw`,
+    payload
+  );
+  return res;
+  // } catch (err: unknown) {
+  //   log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
+  //   throw Error();
+  // }
 };

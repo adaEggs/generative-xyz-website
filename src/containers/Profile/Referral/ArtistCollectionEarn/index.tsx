@@ -24,7 +24,11 @@ import s from './ArtistCollectionEarn.module.scss';
 
 const LOG_PREFIX = 'ArtistCollectionEarn';
 
-const ArtistCollectionEarn = () => {
+const ArtistCollectionEarn = ({
+  setShowModal,
+}: {
+  setShowModal: (value: boolean) => void;
+}) => {
   const router = useRouter();
   const { profileProjects } = useContext(ProfileContext);
 
@@ -86,8 +90,10 @@ const ArtistCollectionEarn = () => {
     try {
       await withdrawRewardEarned(payload);
     } catch (err: unknown) {
-      log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
-      throw Error();
+      // log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
+      // throw Error();
+    } finally {
+      setShowModal(true);
     }
   };
 

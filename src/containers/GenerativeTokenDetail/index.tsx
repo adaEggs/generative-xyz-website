@@ -137,11 +137,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           link: ``,
         });
       }
-      if (ordinalsData?.timeStamp) {
+      if (ordinalsData?.timestamp) {
         info.push({
-          id: 'timeStamp',
-          info: 'TimeStamp',
-          value: ordinalsData?.timeStamp,
+          id: 'timestamp',
+          info: 'Timestamp',
+          value: ordinalsData?.timestamp,
           link: ``,
         });
       }
