@@ -282,7 +282,9 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     {projectData?.name}{' '}
                   </Link>
                   #
-                  {tokenData?.inscriptionIndex
+                  {tokenData?.orderInscriptionIndex
+                    ? tokenData?.orderInscriptionIndex
+                    : tokenData?.inscriptionIndex
                     ? tokenData?.inscriptionIndex
                     : formatTokenId(tokenData?.tokenID || '')}
                 </span>
