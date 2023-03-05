@@ -126,6 +126,15 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 </Heading>
               </div>
               <div className={s.projectCard_info_price}>
+                {!!project.btcFloorPrice && (
+                  <Text
+                    fontWeight="medium"
+                    color="black-40-solid"
+                    className={s.projectCard_info_mintoutContainer_floorPrice}
+                  >
+                    {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
+                  </Text>
+                )}
                 {mintedOut ? (
                   <div className={s.projectCard_info_mintoutContainer}>
                     <SvgInset svgUrl={`${CDN_URL}/icons/ic_mintedout.svg`} />

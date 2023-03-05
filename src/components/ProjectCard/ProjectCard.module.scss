@@ -74,6 +74,11 @@
       bottom: rem(16px);
     }
 
+    &_price {
+      display: flex;
+      justify-content: space-between;
+    }
+
     &_mintoutContainer {
       display: flex;
       flex-direction: row;
@@ -86,6 +91,15 @@
         line-height: rem(26px);
         color: #ff7e21;
         margin-left: rem(4px);
+      }
+
+      &_floorPrice {
+        font-style: normal;
+        font-weight: 500;
+        font-size: rem(16px);
+        line-height: rem(26px);
+        margin-left: rem(4px);
+        margin-right: rem(6px);
       }
     }
 

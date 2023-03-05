@@ -121,7 +121,9 @@ const CollectionItem = ({
                   </span>{' '}
                   <span className={s.textOverflow}>
                     #
-                    {data?.inscriptionIndex
+                    {data?.orderInscriptionIndex
+                      ? data?.orderInscriptionIndex
+                      : data?.inscriptionIndex
                       ? data?.inscriptionIndex
                       : formatTokenId(tokenID)}
                   </span>
@@ -153,7 +155,9 @@ const CollectionItem = ({
                     {/*)}*/}
                     <span>
                       #
-                      {data?.inscriptionIndex
+                      {data?.orderInscriptionIndex
+                        ? data?.orderInscriptionIndex
+                        : data?.inscriptionIndex
                         ? data?.inscriptionIndex
                         : formatTokenId(tokenID)}
                     </span>
