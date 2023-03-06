@@ -2,7 +2,6 @@ import Button from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
-import { SOCIALS } from '@constants/common';
 import {
   CDN_URL,
   SANDBOX_BTC_IMAGE_SIZE_LIMIT,
@@ -20,7 +19,7 @@ import {
 import { postReferralCode } from '@services/referrals';
 import log from '@utils/logger';
 import { getReferral } from '@utils/referral';
-import { processHTMLFile, processCollectionZipFile } from '@utils/sandbox';
+import { processCollectionZipFile, processHTMLFile } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
 import cs from 'classnames';
 import Image from 'next/image';
@@ -29,6 +28,8 @@ import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
 import DropFile from '../DropFile';
 import s from './styles.module.scss';
 import { MediaType } from '@enums/file';
+import Link from 'next/link';
+import { SOCIALS } from '@constants/common';
 
 const LOG_PREFIX = 'UploadGenArt';
 
@@ -46,7 +47,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
     setImageCollectionFile,
   } = useContext(MintBTCGenerativeContext);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
-  let linkArtistDocs = SOCIALS.docsForArtist;
   const processGenerativeFile = async (file: File) => {
     try {
       const sandboxFiles = await processHTMLFile(file);
@@ -313,7 +313,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
       </>
     );
   };
-
   const renderUpload = useMemo(
     (): JSX.Element => (
       <>
@@ -327,7 +326,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
               <div
                 onClick={() => {
                   setCollectionType(CollectionType.GENERATIVE);
-                  linkArtistDocs = SOCIALS.docsForArtist;
                 }}
                 className={cs(s.choiceItem, {
                   [`${s.choiceItem__active}`]:
@@ -340,7 +338,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
               <div
                 onClick={() => {
                   setCollectionType(CollectionType.COLLECTION);
-                  linkArtistDocs = SOCIALS.docsForArtist2;
                 }}
                 className={cs(s.choiceItem, {
                   [`${s.choiceItem__active}`]:
@@ -354,9 +351,17 @@ const UploadGenArt: React.FC = (): ReactElement => {
             <div className={s.guideWrapper}>
               <p>
                 New artist?&nbsp;
-                <a href={linkArtistDocs} target={'_blank'} rel="noreferrer">
+                <Link
+                  href={
+                    collectionType === CollectionType.GENERATIVE
+                      ? SOCIALS.docsForArtist
+                      : SOCIALS.docsForArtist2
+                  }
+                  target={'_blank'}
+                  rel="noreferrer"
+                >
                   Start here.
-                </a>
+                </Link>
               </p>
             </div>
           </div>
