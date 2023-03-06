@@ -122,6 +122,7 @@ export const MintBTCGenerativeContextProvider = ({
     mintPrice: MIN_MINT_BTC_PROJECT_PRICE,
     creatorWalletAddress: user?.walletAddressBtc || '',
     royalty: 5,
+    captureImageTime: 20,
   });
   const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(
     null

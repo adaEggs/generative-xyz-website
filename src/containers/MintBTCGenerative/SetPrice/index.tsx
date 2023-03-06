@@ -229,6 +229,7 @@ const SetPrice = () => {
         tokenDescription,
         categories,
         tags,
+        captureImageTime,
       } = formValues;
 
       let thumbnailUrl = '';
@@ -262,6 +263,7 @@ const SetPrice = () => {
         zipLink: '',
         animationURL: '',
         isFullChain: true,
+        captureImageTime: captureImageTime ?? 20,
       };
 
       if (collectionType === CollectionType.COLLECTION) {
