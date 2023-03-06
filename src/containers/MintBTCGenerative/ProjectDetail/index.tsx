@@ -17,6 +17,7 @@ type IProductDetailFormValue = {
   name: string;
   description: string;
   categories: Array<SelectOption>;
+  captureImageTime: number;
 };
 
 const ProjectDetail: React.FC = (): React.ReactElement => {
@@ -52,6 +53,13 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
 
     if (!_formValues.description) {
       errors.description = 'Description is required';
+    }
+    if (!_formValues.captureImageTime) {
+      errors.captureImageTime = 'captureImageTime time is required';
+    }
+    if (_formValues.captureImageTime && _formValues.captureImageTime < 7) {
+      errors.captureImageTime =
+        'captureImageTime time must be greater than 7 seconds';
     }
 
     return errors;
@@ -89,6 +97,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
               return categoryOptions.find(op => cat === op.value)!;
             })
           : [],
+        captureImageTime: formValues.captureImageTime ?? 20,
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -181,6 +190,25 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
               <div className={s.uploadPreviewWrapper}>
                 {currentStep > 1 && currentStep < 3 && (
                   <UploadThumbnailButton />
+                )}
+              </div>
+              <div className={s.formItem}>
+                <label className={s.label} htmlFor="captureImageTime">
+                  Capture time (seconds)
+                  <sup className={s.requiredTag}>*</sup>
+                </label>
+                <input
+                  id="captureImageTime"
+                  type="number"
+                  name="captureImageTime"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.captureImageTime}
+                  className={s.input}
+                  placeholder="Please set the captureImageTime time."
+                />
+                {errors.captureImageTime && touched.captureImageTime && (
+                  <p className={s.error}>{errors.captureImageTime}</p>
                 )}
               </div>
             </div>

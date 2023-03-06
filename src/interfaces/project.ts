@@ -61,6 +61,7 @@ export type Project = {
   }[];
   animationHtml: string;
   totalVolume: string;
+  captureImageTime?: number;
 };
 
 export type BTCProject = Project & {
