@@ -51,7 +51,7 @@ const EditProfile = (): JSX.Element => {
                 onClick={() => setTab('export')}
               >
                 <Text as={'span'} size={'20'}>
-                  Key
+                  Wallet
                 </Text>
               </li>
               <li
