@@ -102,39 +102,6 @@
   input[type="readonly"] {
     color: #a5a5a5;
   }
-}
-
-.wrapExport {
-  &_wrapWarning {
-    background: rgb(255 126 33 / 6%);
-    border: 1px solid  $secondary-orange;
-    padding: 10px 18px;
-    border-radius: 2px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    &_iconBell {
-      margin-right: 14px;
-    }
-
-    &_title {
-      font-style: normal;
-      font-weight: 700;
-      font-size: 18px;
-      line-height: 28px;
-      color: $secondary-orange;
-    }
-
-    &_content {
-      font-weight: 500;
-      font-size: 14px;
-      line-height: 22px;
-      display: flex;
-      align-items: center;
-      color: $secondary-orange;
-    }
-  }
 
   &_row {
     margin-top: 24px;
