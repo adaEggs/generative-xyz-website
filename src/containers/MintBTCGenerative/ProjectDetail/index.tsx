@@ -194,7 +194,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
               </div>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="captureImageTime">
-                  captureImageTime time (seconds)
+                  Capture time (seconds)
                   <sup className={s.requiredTag}>*</sup>
                 </label>
                 <input

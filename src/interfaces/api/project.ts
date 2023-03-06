@@ -107,7 +107,13 @@ export interface IUploadBTCProjectFileResponse {
 
 export type IUpdateProjectPayload = Pick<
   ICreateBTCProjectPayload,
-  'name' | 'description' | 'thumbnail' | 'royalty' | 'mintPrice' | 'maxSupply'
+  | 'name'
+  | 'description'
+  | 'thumbnail'
+  | 'royalty'
+  | 'mintPrice'
+  | 'maxSupply'
+  | 'captureImageTime'
 > & { isHidden: boolean; categories: string[] };
 
 export interface IReportProjectPayload {
