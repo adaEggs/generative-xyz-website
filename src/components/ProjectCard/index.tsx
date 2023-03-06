@@ -75,7 +75,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
           color="black-40-solid"
           className={s.projectCard_info_mintoutContainer_floorPrice}
         >
-          {`Floor ${formatBTCPrice(project.btcFloorPrice)} BTC`}
+          {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
         </Text>
       );
     }
