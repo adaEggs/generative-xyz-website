@@ -33,6 +33,15 @@ const CollectionList = ({
   );
   // const hasTraitAtrribute = true;
 
+  const handleRemoveFilter = (trait: string) => {
+    const newFilterTraits = filterTraits
+      .split(',')
+      .filter(item => item !== trait)
+      .join(',');
+    // console.log('🚀 ~ handleRemoveFilter ~ newFilterTraits:', newFilterTraits);
+    setFilterTraits(newFilterTraits);
+  };
+
   return (
     <div
       className={`${s.listToken} grid  ${
@@ -54,7 +63,10 @@ const CollectionList = ({
                 <SvgInset
                   size={8}
                   svgUrl={`${CDN_URL}/icons/ic-close.svg`}
-                  className={s.removeIcon}
+                  className={cs(s.removeIcon, 'cursor-pointer')}
+                  onClick={() => {
+                    handleRemoveFilter(trait);
+                  }}
                 />
               </div>
             ))}
