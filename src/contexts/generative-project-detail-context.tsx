@@ -46,8 +46,6 @@ export interface IGenerativeProjectDetailContext {
   setShowFilter: Dispatch<SetStateAction<boolean>>;
   filterTraits: string;
   setFilterTraits: Dispatch<SetStateAction<string>>;
-  query: Map<string, string> | null;
-  setQuery: Dispatch<SetStateAction<Map<string, string> | null>>;
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
   filterPrice: {
@@ -106,10 +104,6 @@ const initialValue: IGenerativeProjectDetailContext = {
   setFilterTraits: _ => {
     return;
   },
-  query: null,
-  setQuery: _ => {
-    return;
-  },
   page: 1,
   setPage: _ => {
     return;
@@ -152,7 +146,6 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const [isNextPageLoaded, setIsNextPageLoaded] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const [filterTraits, setFilterTraits] = useState('');
-  const [query, setQuery] = useState<Map<string, string> | null>(null);
   const [filterPrice, setFilterPrice] = useState({
     from_price: '',
     to_price: '',
@@ -337,8 +330,6 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       setShowFilter,
       filterTraits,
       setFilterTraits,
-      query,
-      setQuery,
       page,
       setPage,
       filterPrice,
@@ -370,8 +361,6 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     setShowFilter,
     filterTraits,
     setFilterTraits,
-    query,
-    setQuery,
     page,
     setPage,
     filterPrice,
