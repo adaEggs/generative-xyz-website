@@ -53,7 +53,11 @@ const WithdrawModal = ({ data, onHideModal }: Props) => {
         </Modal.Header>
         <Modal.Body>
           <Heading className={s.modalTitle} as="h5">
-            You are withdrawing {amoutText} to {user?.walletAddressBtc}.
+            You are withdrawing {amoutText} to{' '}
+            {currency === CurrencyType.ETH
+              ? user?.walletAddressPayment
+              : user?.walletAddressBtc}
+            .
           </Heading>
           <br></br>
           <Text size="18">
