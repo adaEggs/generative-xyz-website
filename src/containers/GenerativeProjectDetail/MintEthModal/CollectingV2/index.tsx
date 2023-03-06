@@ -228,7 +228,9 @@ const MintEthModal: React.FC = () => {
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
                       <p className={s.paymentPrice_price}>{`${
-                        totalPrice
+                        projectData?.mintPriceEth === '0'
+                          ? '0.0'
+                          : totalPrice
                           ? formatEthPrice(
                               `${
                                 Number(totalPrice) -
