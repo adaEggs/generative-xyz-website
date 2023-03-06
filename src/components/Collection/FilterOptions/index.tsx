@@ -1,11 +1,11 @@
 import ButtonIcon from '@components/ButtonIcon';
-import Dropdown from '@components/Dropdown';
 import Heading from '@components/Heading';
 import Text from '@components/Text';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { TraitStats } from '@interfaces/project';
 import { useContext, useEffect, useState } from 'react';
 import { Stack } from 'react-bootstrap';
+import Select, { components } from 'react-select';
 import { v4 } from 'uuid';
 import styles from './styles.module.scss';
 
@@ -15,12 +15,8 @@ type Props = {
 
 const FilterOptions = ({ attributes }: Props) => {
   const {
-    // filterBuyNow,
-    // setFilterBuyNow,
     filterTraits,
     setFilterTraits,
-    query,
-    setQuery,
     setPage,
     showFilter,
     setShowFilter,
@@ -31,39 +27,11 @@ const FilterOptions = ({ attributes }: Props) => {
   const [sortedAttributes, setSortedAttributes] = useState<TraitStats[] | null>(
     null
   );
-
-  const initialAttributesMap = () => {
-    const attrMap = new Map();
-
-    attributes?.forEach(attr => {
-      filterTraits.split(',').forEach(trait => {
-        if (trait.split(':')[0] === attr.traitName) {
-          attrMap.set(attr.traitName, trait.split(':')[1]);
-        }
-      });
-    });
-    setQuery(attrMap);
-  };
-
-  const handleSelectFilter = (
-    values: { value: string; label: string }[],
-    attr: TraitStats
-  ) => {
-    const newQuery = query?.set(attr.traitName, values[0].label);
-    let str = '';
-    newQuery?.forEach((value: string, key: string) => {
-      if (value) {
-        str += `,${key}:${value}`;
-      }
-    });
-    setFilterTraits(str.substring(1));
-
-    setPage(1);
-  };
+  const [currentTraitOpen, setCurrentTraitOpen] = useState('');
 
   const handleResetAllFilter = () => {
     setFilterTraits('');
-    initialAttributesMap();
+    setCurrentTraitOpen('');
   };
 
   // const handleMinPriceChange = (value: string) => {
@@ -93,15 +61,70 @@ const FilterOptions = ({ attributes }: Props) => {
   //   }
   // };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const Option = (props: any) => {
+    const attrName = props.label.split(':')[0];
+    const rarity = props.label.split(':')[1];
+
+    const { value, selectProps } = props;
+
+    const handleSelectOption = () => {
+      setCurrentTraitOpen(selectProps.placeholder);
+
+      const str = `${selectProps.placeholder}:${value}`;
+      setFilterTraits(prev => {
+        if (!prev) {
+          return str;
+        }
+        if (prev.includes(str)) {
+          const list = prev.split(',');
+          const newList = list.filter(item => item !== str);
+
+          return newList.length > 1 ? newList.join(',') : newList[0];
+        } else {
+          return `${prev},${str}`;
+        }
+      });
+      setPage(1);
+    };
+
+    const defaultChecked = filterTraits
+      ?.split(',')
+      ?.includes(`${selectProps.placeholder}:${value}`);
+
+    return (
+      <div>
+        <components.Option {...props}>
+          <Stack
+            direction="horizontal"
+            className="justify-between cursor-pointer"
+            onClick={handleSelectOption}
+          >
+            <label htmlFor={`trait-${attrName}`}>{attrName}</label>
+            <Stack direction="horizontal" gap={3} className={styles.checkbox}>
+              <Text as="span" color="black-40">
+                {rarity}
+              </Text>
+              <input
+                type="checkbox"
+                id={`trait-${attrName}`}
+                checked={defaultChecked}
+              />
+            </Stack>
+          </Stack>
+        </components.Option>
+      </div>
+    );
+  };
+
   useEffect(() => {
     if (attributes) {
-      initialAttributesMap();
       const _attirbutes = [...attributes];
       setSortedAttributes(
         _attirbutes.sort((a, b) => a.traitName.localeCompare(b.traitName))
       );
     }
-  }, [attributes, filterTraits]);
+  }, [attributes]);
 
   return (
     <div className={styles.filter_wrapper}>
@@ -173,44 +196,29 @@ const FilterOptions = ({ attributes }: Props) => {
                       .map(item => {
                         return {
                           value: item.value,
-                          label: item.value,
-                          // (
-                          //   <Stack
-                          //     direction="horizontal"
-                          //     className="justify-between"
-                          //   >
-                          //     <Text size="14" fontWeight="medium">
-                          //       {item.value}
-                          //     </Text>
-                          //     <Text
-                          //       size="12"
-                          //       fontWeight="medium"
-                          //       color="black-40"
-                          //     >
-                          //       {item.rarity}%
-                          //     </Text>
-                          //   </Stack>
-                          // ),
+                          label: `${item.value}:${item.rarity}%`,
                         };
                       });
 
-                  const defaultValue = options.filter(
-                    option => option.value === query?.get(attr.traitName)
-                  );
-
                   return (
-                    <Dropdown
-                      values={defaultValue}
+                    <Select
+                      defaultMenuIsOpen={currentTraitOpen === attr.traitName}
+                      id={`attributes-${v4()}`}
+                      key={`attributes-${v4()}`}
+                      isMulti
+                      name={`attributes-${v4()}`}
                       options={options}
-                      multi={false}
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      onChange={(values: any) =>
-                        handleSelectFilter(values, attr)
-                      }
+                      className={styles.selectInput}
+                      components={{
+                        Option,
+                      }}
+                      onFocus={() => setCurrentTraitOpen(attr.traitName)}
+                      classNamePrefix="select"
+                      closeMenuOnSelect={false}
+                      hideSelectedOptions={false}
+                      controlShouldRenderValue={false}
+                      isClearable={false}
                       placeholder={attr.traitName}
-                      className={styles.filter_dropdown}
-                      key={`trait-${v4()}`}
-                      addPlaceholder={`${attr.traitName}: `}
                     />
                   );
                 })}
