@@ -63,6 +63,12 @@ export const MENU_HEADER = [
     route: ROUTE_PATH.AUTHENTIC_INSCRIPTIONS,
     activePath: 'authentic-inscriptions',
   },
+  {
+    id: 'menu-11',
+    name: 'Developers',
+    route: ROUTE_PATH.DEVELOPER,
+    activePath: 'developers',
+  },
 ];
 
 export const RIGHT_MENU = [
