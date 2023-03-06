@@ -145,6 +145,7 @@ export const getInscriptionDetail = async (
       description: '',
       image: '',
       contentLength: randomStr,
+      owner: dataRes?.address,
     };
   } catch (err: unknown) {
     log('failed to get ordinal detail', LogLevel.ERROR, LOG_PREFIX);
