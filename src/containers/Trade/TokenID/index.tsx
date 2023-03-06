@@ -134,7 +134,7 @@ const TokenID: React.FC = (): React.ReactElement => {
               onClick={onClickBuyBTC}
             >
               <Text as="span" size="14" fontWeight="medium">
-                {`Buy • ${formatBTCPrice(tokenData.price)} BTC`}
+                {`Buy   ${formatBTCPrice(tokenData.price)} BTC`}
               </Text>
             </ButtonIcon>
             {tokenData.paymentListingInfo.eth &&
@@ -147,7 +147,7 @@ const TokenID: React.FC = (): React.ReactElement => {
                   variants="outline"
                 >
                   <Text as="span" size="14" fontWeight="medium">
-                    {`Buy • ${formatEthPrice(
+                    {`Buy   ${formatEthPrice(
                       tokenData.paymentListingInfo.eth.price
                     )} ETH`}
                   </Text>

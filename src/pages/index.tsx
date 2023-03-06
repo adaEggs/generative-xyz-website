@@ -19,7 +19,7 @@ export async function getServerSideProps() {
       seoInfo: {
         title: 'Generative',
         description: 'Be the first to launch and collect art on Bitcoin',
-        image: `${CDN_URL}/images/image.png`,
+        image: `${CDN_URL}/images/Generative2%20(1).jpg`,
       },
     },
   };
