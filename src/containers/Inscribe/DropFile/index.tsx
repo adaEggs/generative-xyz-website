@@ -12,6 +12,29 @@ export interface IProps {
   onChange: (files: File | null) => void;
 }
 
+// apng asc flac gif glb html jpg json mp3 mp4 pdf png stl svg txt wav webm webp yaml
+const fileTypes = [
+  'APNG',
+  'ASC',
+  'FLAC',
+  'GIF',
+  'GLB',
+  'HTML',
+  'JPG',
+  'JSON',
+  'MP3',
+  'MP4',
+  'PDF',
+  'PNG',
+  'STL',
+  'SVG',
+  'TXT',
+  'WAV',
+  'WEBM',
+  'WEBP',
+  'YAML',
+];
+
 const DropFile: React.FC<IProps> = ({
   fileOrFiles,
   className,
@@ -30,7 +53,9 @@ const DropFile: React.FC<IProps> = ({
 
   const onSizeError = (): void => {
     setError(
-      `File size error, maximum file size is ${MINT_TOOL_MAX_FILE_SIZE}MB.`
+      `File size error, maximum file size is ${
+        MINT_TOOL_MAX_FILE_SIZE * 1000
+      }KB.`
     );
   };
 
@@ -57,6 +82,7 @@ const DropFile: React.FC<IProps> = ({
         onTypeError={onTypeError}
         fileOrFiles={fileOrFiles}
         classes={s.dropZone}
+        types={fileTypes}
       >
         <div>
           {file ? (

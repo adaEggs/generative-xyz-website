@@ -20,7 +20,9 @@ export const SOCIALS = {
   twitter: 'https://twitter.com/generative_xyz',
   whitepaper: 'https://docs.generative.xyz/',
   docsForArtist:
-    'https://docs.generative.xyz/how-to/launch-your-art/start-a-new-project',
+    'https://docs.generative.xyz/launch-your-generative-art-on-bitcoin/start-a-new-project',
+  docsForArtist2:
+    'https://docs.generative.xyz/launch-your-art-on-bitcoin/submit-your-collection',
   bookATour:
     'https://calendly.com/generative_xyz/welcome_to_generative_showroom',
 };
