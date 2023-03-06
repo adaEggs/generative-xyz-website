@@ -7,9 +7,9 @@ import { getUserSelector } from '@redux/user/selector';
 import { formatBTCPrice } from '@utils/format';
 import { WalletContext } from '@contexts/wallet-context';
 import { ProfileContext } from '@contexts/profile-context';
+import s from './styles.module.scss';
 
 interface IProps {
-  title?: string;
   className?: string;
   sizes?: ButtonSizesType;
   inscriptionID: string;
@@ -20,7 +20,6 @@ interface IProps {
 
 const ButtonBuyListed = React.memo(
   ({
-    title,
     className,
     orderID,
     inscriptionID,
@@ -45,21 +44,17 @@ const ButtonBuyListed = React.memo(
       setShow(false);
     };
 
-    const label = React.useMemo(() => {
-      if (title) return title;
-      return `Buy • ${formatBTCPrice(price)} BTC`;
-    }, [title, price]);
-
     if (isLoadingHistory) return null;
 
     return (
       <>
         <ButtonIcon
           sizes={sizes}
-          className={cs(`${className}`)}
+          className={cs(s.container, `${className}`)}
           onClick={openModal}
         >
-          {label}
+          Buy <span className={s[sizes]} />
+          {`${formatBTCPrice(price)} BTC`}
         </ButtonIcon>
         {!!taprootAddress && isShow && (
           <ModalBuyListed

@@ -8,6 +8,7 @@ import { clearAuthStorage } from '@utils/auth';
 import { resetUser } from '@redux/user/action';
 import store from '@redux';
 import { ROUTE_PATH } from '@constants/route-path';
+import { getError } from '@utils/text';
 
 bitcoin.initEccLib(ecc);
 const bip32 = BIP32Factory(ecc);
@@ -110,10 +111,8 @@ const isAuthMetamaskError = async (error: unknown, profileAddress: string) => {
     currentAccount = accounts[0];
     // force re-sign in
     if (!!error && !!currentAccount && currentAccount !== profileAddress) {
-      const values = Object.values(error || {});
-      if (!!values && !!values.length && values.some(value => value === 4100)) {
-        return true;
-      }
+      const _err = getError(error);
+      return _err.code === 4100;
     }
   }
   return false;
