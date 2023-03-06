@@ -46,7 +46,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
     setImageCollectionFile,
   } = useContext(MintBTCGenerativeContext);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
-
+  let linkArtistDocs = SOCIALS.docsForArtist;
   const processGenerativeFile = async (file: File) => {
     try {
       const sandboxFiles = await processHTMLFile(file);
@@ -325,7 +325,10 @@ const UploadGenArt: React.FC = (): ReactElement => {
             <p className={s.collectionTypeLabel}>Choose collection type:</p>
             <div className={s.choiceList}>
               <div
-                onClick={() => setCollectionType(CollectionType.GENERATIVE)}
+                onClick={() => {
+                  setCollectionType(CollectionType.GENERATIVE);
+                  linkArtistDocs = SOCIALS.docsForArtist;
+                }}
                 className={cs(s.choiceItem, {
                   [`${s.choiceItem__active}`]:
                     collectionType === CollectionType.GENERATIVE,
@@ -335,7 +338,10 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 <span className={s.checkmark}></span>
               </div>
               <div
-                onClick={() => setCollectionType(CollectionType.COLLECTION)}
+                onClick={() => {
+                  setCollectionType(CollectionType.COLLECTION);
+                  linkArtistDocs = SOCIALS.docsForArtist2;
+                }}
                 className={cs(s.choiceItem, {
                   [`${s.choiceItem__active}`]:
                     collectionType === CollectionType.COLLECTION,
@@ -348,11 +354,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
             <div className={s.guideWrapper}>
               <p>
                 New artist?&nbsp;
-                <a
-                  href={SOCIALS.docsForArtist}
-                  target={'_blank'}
-                  rel="noreferrer"
-                >
+                <a href={linkArtistDocs} target={'_blank'} rel="noreferrer">
                   Start here.
                 </a>
               </p>
