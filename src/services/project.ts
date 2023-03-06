@@ -91,9 +91,22 @@ export const getProjectItems = async (
     const res = await get<IGetProjectTokensResponse>(
       `${API_PATH}/${params.contractAddress}/tokens${qs}`
     );
+
+    const sortedList = orderBy(
+      res.result,
+      [
+        function (o) {
+          return o.buyable;
+        },
+        function (o) {
+          return Number(o.priceBTC);
+        },
+      ],
+      ['desc', 'asc']
+    );
     return {
       ...res,
-      result: orderBy(res.result, ['buyable'], 'desc'),
+      result: sortedList,
     };
   } catch (err: unknown) {
     log('failed to get project items', LogLevel.ERROR, LOG_PREFIX);
