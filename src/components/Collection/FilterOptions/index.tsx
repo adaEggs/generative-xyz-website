@@ -218,7 +218,9 @@ const FilterOptions = ({ attributes }: Props) => {
                       components={{
                         Option,
                       }}
-                      onFocus={() => setCurrentTraitOpen(attr.traitName)}
+                      // onFocus={() => setCurrentTraitOpen(attr.traitName)}
+                      // onInputChange={() => setCurrentTraitOpen('')}
+                      onMenuOpen={() => setCurrentTraitOpen(attr.traitName)}
                       onBlur={() => setCurrentTraitOpen('')}
                       classNamePrefix="select"
                       closeMenuOnSelect={false}
@@ -226,6 +228,7 @@ const FilterOptions = ({ attributes }: Props) => {
                       controlShouldRenderValue={false}
                       isClearable={false}
                       placeholder={attr.traitName}
+                      autoFocus={currentTraitOpen === attr.traitName}
                     />
                   );
                 })}
