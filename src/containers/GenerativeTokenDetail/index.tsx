@@ -289,7 +289,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     : formatTokenId(tokenData?.tokenID || '')}
                 </span>
               </Heading>
-              {tokenData?.owner && (
+              {tokenData?.owner ? (
                 <Text size="18" className={s.owner}>
                   Owned by{' '}
                   <Link
@@ -299,6 +299,10 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     {tokenData?.owner?.displayName ||
                       formatLongAddress(tokenData?.owner?.walletAddress || '')}
                   </Link>
+                </Text>
+              ) : (
+                <Text size="18" className={s.owner}>
+                  Owned by {formatLongAddress(tokenData?.ownerAddr || '')}
                 </Text>
               )}
 

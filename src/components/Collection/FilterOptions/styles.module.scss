@@ -15,7 +15,6 @@
   appearance: none;
   appearance: none;
   appearance: none;
-  appearance: none;
   border-radius: 2px;
   outline: none;
   transition-duration: 0.3s;
@@ -96,6 +95,14 @@
   :global(.react-dropdown-select-content) {
     flex-direction: row-reverse;
     justify-content: flex-end;
+  }
+}
+
+.reset_all {
+  display: none;
+
+  @include mobile {
+    display: block;
   }
 }
 

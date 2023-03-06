@@ -3,11 +3,12 @@ import Heading from '@components/Heading';
 import Text from '@components/Text';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { TraitStats } from '@interfaces/project';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import Select, { components } from 'react-select';
 import { v4 } from 'uuid';
 import styles from './styles.module.scss';
+import useOnClickOutside from '@hooks/useOnClickOutSide';
 
 type Props = {
   attributes?: TraitStats[];
@@ -23,6 +24,8 @@ const FilterOptions = ({ attributes }: Props) => {
     // filterPrice,
     // setFilterPrice,
   } = useContext(GenerativeProjectDetailContext);
+
+  const filterdropdownRef = useRef<HTMLDivElement>(null);
 
   const [sortedAttributes, setSortedAttributes] = useState<TraitStats[] | null>(
     null
@@ -126,6 +129,8 @@ const FilterOptions = ({ attributes }: Props) => {
     }
   }, [attributes]);
 
+  useOnClickOutside(filterdropdownRef, () => setCurrentTraitOpen(''));
+
   return (
     <div className={styles.filter_wrapper}>
       <Heading fontWeight="semibold" className={styles.filter_title}>
@@ -179,6 +184,7 @@ const FilterOptions = ({ attributes }: Props) => {
                 sizes="small"
                 variants="ghost"
                 onClick={handleResetAllFilter}
+                className={styles.reset_all}
               >
                 <Text size="14" fontWeight="medium">
                   Reset all
@@ -213,6 +219,7 @@ const FilterOptions = ({ attributes }: Props) => {
                         Option,
                       }}
                       onFocus={() => setCurrentTraitOpen(attr.traitName)}
+                      onBlur={() => setCurrentTraitOpen('')}
                       classNamePrefix="select"
                       closeMenuOnSelect={false}
                       hideSelectedOptions={false}
