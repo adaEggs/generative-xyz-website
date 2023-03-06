@@ -32,7 +32,7 @@ const AuthenticLanding = () => {
   return (
     <Container>
       <Row className={s.metamaskContainer}>
-        <Col md={'12'} xl={'5'} className={s.leftContainer}>
+        <Col md={'12'} xl={'6'} className={s.leftContainer}>
           <p className={s.title}>Certificate of Authenticity</p>
           <Text className={s.subTitle}>
             Create authentic Ordinal Inscriptions from your Ethereum NFTs.
@@ -91,7 +91,7 @@ const AuthenticLanding = () => {
             to prove NFT ownership.
           </Text>
         </Col>
-        <Col md={'12'} xl={'7'} className={s.poster}>
+        <Col md={'12'} xl={'6'} className={s.poster}>
           <img alt="banner" src={`${CDN_URL}/images/authentic-poster.png`} />
         </Col>
       </Row>
