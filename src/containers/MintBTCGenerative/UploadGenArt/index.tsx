@@ -2,34 +2,30 @@ import Button from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
-import {
-  CDN_URL,
-  SANDBOX_BTC_IMAGE_SIZE_LIMIT,
-  SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT,
-} from '@constants/config';
+import { SOCIALS } from '@constants/common';
+import { CDN_URL, SANDBOX_BTC_IMAGE_SIZE_LIMIT } from '@constants/config';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
+import { MediaType } from '@enums/file';
 import { LogLevel } from '@enums/log-level';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { ImageFileError, SandboxFileError } from '@enums/sandbox';
+import { postReferralCode } from '@services/referrals';
 import {
   getFileExtensionByFileName,
   getMediaTypeFromFileExt,
   getSupportedFileExtList,
 } from '@utils/file';
-import { postReferralCode } from '@services/referrals';
 import log from '@utils/logger';
 import { getReferral } from '@utils/referral';
 import { processCollectionZipFile, processHTMLFile } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
 import cs from 'classnames';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
 import DropFile from '../DropFile';
 import s from './styles.module.scss';
-import { MediaType } from '@enums/file';
-import Link from 'next/link';
-import { SOCIALS } from '@constants/common';
 
 const LOG_PREFIX = 'UploadGenArt';
 
@@ -188,9 +184,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
   const getFileError = (errorType: ImageFileError): string => {
     switch (errorType) {
       case ImageFileError.TOO_LARGE:
-        return `File size error, maximum file size is ${SANDBOX_BTC_IMAGE_SIZE_LIMIT}KB for images or ${
-          SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT / 1000
-        }MB for others.`;
+        return `File size error, maximum file size is ${SANDBOX_BTC_IMAGE_SIZE_LIMIT}KB.`;
       case ImageFileError.INVALID_EXTENSION:
         return `Invalid file format. Supported file extensions are ${getSupportedFileExtList().join(
           ', '

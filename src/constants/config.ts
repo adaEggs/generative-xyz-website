@@ -36,7 +36,7 @@ export const REPORT_COUNT_THRESHOLD = 3;
 // Mint tool
 export const MINT_TOOL_MAX_FILE_SIZE = 0.35;
 export const MINT_TRANSFER_FEE = 16000;
-export const SANDBOX_BTC_IMAGE_SIZE_LIMIT = 400; // kb
+export const SANDBOX_BTC_IMAGE_SIZE_LIMIT = 350; // kb
 export const SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT = 3000; // kb
 export const MIN_MINT_BTC_PROJECT_PRICE = 0;
 
