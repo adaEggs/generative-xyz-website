@@ -23,6 +23,7 @@ import {
 import useBitcoin from '@bitcoin/useBitcoin';
 import { MINIMUM_SATOSHI } from '@bitcoin/contants';
 import Text from '@components/Text';
+import { isNumeric } from '@utils/string';
 
 interface IFormValue {
   address: string;
@@ -43,8 +44,19 @@ const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
     debounceFetchCollectedUTXOs,
     debounceFetchHistory,
   } = useContext(ProfileContext);
-  const { selectedRate, handleChangeFee, allRate } = useFeeRate();
+  const {
+    selectedRate,
+    handleChangeFee,
+    allRate,
+    customRate,
+    handleChangeCustomRate,
+  } = useFeeRate();
   const { sendBitcoin, satoshiAmount } = useBitcoin();
+
+  const currentRate =
+    customRate && isNumeric(customRate)
+      ? Number(customRate)
+      : allRate[selectedRate];
 
   const validateForm = (values: IFormValue) => {
     const errors: Record<string, string> = {};
@@ -77,7 +89,7 @@ const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
             collectedUTXOs?.inscriptions_by_outputs || {},
             '',
             convertToSatoshiNumber(values.amount),
-            allRate[selectedRate],
+            currentRate,
             true
           );
         } catch (e) {
@@ -93,7 +105,7 @@ const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
       setIsLoading(true);
       await sendBitcoin({
         receiverAddress: _data.address,
-        feeRate: allRate[selectedRate],
+        feeRate: currentRate,
         amount: convertToSatoshiNumber(_data.amount),
       });
       toast.success('Transferred successfully');
@@ -201,6 +213,9 @@ const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
                 handleChangeFee={handleChangeFee}
                 selectedRate={selectedRate}
                 allRate={allRate}
+                useCustomRate={true}
+                handleChangeCustomRate={handleChangeCustomRate}
+                customRate={customRate}
               />
               {isLoading && (
                 <div className={s.loadingWrapper}>

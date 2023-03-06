@@ -10,15 +10,23 @@ const useFeeRate = () => {
     hourFee: 5,
   };
   const [selectedRate, setRate] = useState<FeeRateName>(FeeRateName.fastestFee);
+  const [customRate, setCustomRate] = useState<string>('');
 
   const handleChangeFee = (fee: FeeRateName): void => {
     setRate(fee);
+    setCustomRate('');
+  };
+
+  const handleChangeCustomRate = (rate: string): void => {
+    setCustomRate(rate);
   };
 
   return {
     selectedRate,
     allRate: FEE_RATE,
+    customRate,
     handleChangeFee,
+    handleChangeCustomRate,
   };
 };
 

@@ -29,7 +29,6 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const [creator, setCreator] = useState<User | null>(null);
   const { mobileScreen } = useWindowSize();
   const [thumb, setThumb] = useState<string>(project.image);
-  project.btcFloorPrice = Number('1000000');
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
