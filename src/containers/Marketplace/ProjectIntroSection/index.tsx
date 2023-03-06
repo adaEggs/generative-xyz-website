@@ -338,7 +338,6 @@ const ProjectIntroSection = ({
                       }
                       target="_blank"
                     >
-                      @
                       {project?.creatorProfile?.profileSocial?.twitter
                         .split('/')
                         .pop()}
