@@ -21,14 +21,7 @@ import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
 import _debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
@@ -44,10 +37,9 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [isShowAdvance, setIsShowAdvance] = useState(false);
+  const [totalPrice, setTotalPrice] = React.useState('');
 
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
-  const [totalPrice, setTotalPrice] = React.useState('');
-  const currentAddress = useRef('');
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -63,29 +55,28 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const [addressInput, setAddressInput] = useState<string>('');
 
-  const priceFormat = formatBTCPrice(Number(projectData?.mintPrice), '0.0');
-  const feePriceFormat = totalPrice
-    ? formatBTCPrice(Number(totalPrice) - Number(projectData?.mintPrice), '0.0')
-    : '';
-  const totalPriceFormat = totalPrice
-    ? formatBTCPrice(Number(totalPrice), '0.0')
-    : '';
+  // const priceFormat = formatBTCPrice(Number(projectData?.mintPrice), '0.0');
+  const feePriceFormat = formatBTCPrice(
+    totalPrice
+      ? Number(totalPrice) - Number(projectData?.mintPrice)
+      : Number(projectData?.networkFee),
+    '0.0'
+  );
+  const totalPriceFormat = formatBTCPrice(
+    totalPrice ||
+      `${Number(projectData?.networkFee) + Number(projectData?.mintPrice)}` ||
+      ''
+  );
 
   const userBtcAddress = useMemo(
     () => user?.walletAddressBtcTaproot || '',
     [user]
   );
 
-  useEffect(() => {
-    if (userBtcAddress) {
-      debounceGetBTCAddress(userBtcAddress, userBtcAddress);
-    }
-  }, [userBtcAddress]);
-
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
-      if (userBtcAddress !== currentAddress.current) {
+      if (step === 'showAddress' && userBtcAddress) {
         debounceGetBTCAddress(userBtcAddress, userBtcAddress);
       }
     }
@@ -94,7 +85,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
-      if (addressInput && addressInput !== currentAddress.current) {
+      if (step === 'showAddress' && addressInput) {
         debounceGetBTCAddress(addressInput, userBtcAddress);
       }
     }
@@ -102,7 +93,9 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const onClickPay = () => {
     if (useWallet === 'default') {
-      setsTep('showAddress');
+      if (userBtcAddress) {
+        debounceGetBTCAddress(userBtcAddress, userBtcAddress);
+      }
     }
   };
 
@@ -140,7 +133,7 @@ const MintBTCGenerativeModal: React.FC = () => {
         },
       });
       setReceiverAddress(address);
-      currentAddress.current = walletAddress;
+      setsTep('showAddress');
     } catch (err: unknown) {
       setReceiverAddress(null);
     } finally {
@@ -164,10 +157,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
-      if (
-        addressInput !== values.address &&
-        values.address !== currentAddress.current
-      ) {
+      if (step === 'showAddress' && addressInput !== values.address) {
         setAddressInput(values.address);
         debounceGetBTCAddress(values.address, userBtcAddress);
       }
@@ -176,8 +166,11 @@ const MintBTCGenerativeModal: React.FC = () => {
     return errors;
   };
 
-  const handleSubmit = async (): Promise<void> => {
-    setsTep('showAddress');
+  const handleSubmit = async (values: IFormValue): Promise<void> => {
+    if (addressInput !== values.address) {
+      debounceGetBTCAddress(values.address, userBtcAddress);
+      setAddressInput(values.address);
+    }
   };
 
   const _onClose = () => {
@@ -217,9 +210,10 @@ const MintBTCGenerativeModal: React.FC = () => {
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
-                      <p
-                        className={s.paymentPrice_price}
-                      >{`${priceFormat} BTC`}</p>
+                      <p className={s.paymentPrice_price}>{`${formatBTCPrice(
+                        projectData?.mintPrice || '',
+                        '0.0'
+                      )} BTC`}</p>
                     </div>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Inscription fee</p>

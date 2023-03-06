@@ -28,7 +28,6 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 import { Col, Row } from 'react-bootstrap';
@@ -62,12 +61,18 @@ const MintEthModal: React.FC = () => {
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [addressInput, setAddressInput] = useState<string>('');
 
-  const currentAddress = useRef('');
-
-  const totalFormatPrice = totalPrice ? formatEthPrice(totalPrice, '0.0') : '';
-  const feePriceFormat = totalPrice
-    ? formatEthPrice(projectData?.networkFeeEth || '', '0.0')
-    : '';
+  const totalFormatPrice = formatEthPrice(
+    totalPrice ||
+      `${
+        Number(projectData?.mintPriceEth) + Number(projectData?.networkFeeEth)
+      }` ||
+      '',
+    '0.0'
+  );
+  const feePriceFormat = formatEthPrice(
+    projectData?.networkFeeEth || '',
+    '0.0'
+  );
 
   const userAddress = React.useMemo(() => {
     return {
@@ -75,12 +80,6 @@ const MintEthModal: React.FC = () => {
       evm: user?.walletAddress || '',
     };
   }, [user]);
-
-  useEffect(() => {
-    if (userAddress && userAddress.evm && userAddress.taproot) {
-      debounceGetBTCAddress(userAddress.taproot, userAddress.evm);
-    }
-  }, [userAddress]);
 
   const handleTransfer = async (
     toAddress: string,
@@ -97,10 +96,10 @@ const MintEthModal: React.FC = () => {
   };
 
   useEffect(() => {
-    if (step === 'showAddress' && receiverAddress && totalPrice) {
+    if (receiverAddress) {
       handleTransfer(receiverAddress, formatEthPrice(totalPrice));
     }
-  }, [step, receiverAddress]);
+  }, [receiverAddress, totalPrice]);
 
   const debounceGetBTCAddress = useCallback(
     _debounce(async (ordAddress, refundAddress) => {
@@ -119,9 +118,9 @@ const MintEthModal: React.FC = () => {
           return;
         }
 
-        currentAddress.current = ordAddress;
         setTotalPrice(_price);
         setReceiverAddress(_address);
+        setsTep('showAddress');
       } catch (err: unknown) {
         setReceiverAddress(null);
       } finally {
@@ -141,10 +140,10 @@ const MintEthModal: React.FC = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
       if (
+        step === 'showAddress' &&
         userAddress &&
         userAddress.evm &&
-        userAddress.taproot &&
-        userAddress.taproot !== currentAddress.current
+        userAddress.taproot
       ) {
         debounceGetBTCAddress(userAddress.taproot, userAddress.evm);
       }
@@ -154,15 +153,14 @@ const MintEthModal: React.FC = () => {
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
-      if (addressInput && addressInput !== currentAddress.current) {
-        debounceGetBTCAddress(addressInput, userAddress.evm);
-      }
     }
   };
 
   const onClickPay = () => {
     if (useWallet === 'default') {
-      setsTep('showAddress');
+      if (userAddress && userAddress.evm && userAddress.taproot) {
+        debounceGetBTCAddress(userAddress.taproot, userAddress.evm);
+      }
     }
   };
 
@@ -174,10 +172,7 @@ const MintEthModal: React.FC = () => {
     } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
-      if (
-        addressInput !== values.address &&
-        values.address !== currentAddress.current
-      ) {
+      if (step === 'showAddress' && addressInput !== values.address) {
         setAddressInput(values.address);
         debounceGetBTCAddress(values.address, userAddress.evm);
       }
@@ -186,8 +181,11 @@ const MintEthModal: React.FC = () => {
     return errors;
   };
 
-  const handleSubmit = async (): Promise<void> => {
-    setsTep('showAddress');
+  const handleSubmit = async (values: IFormValue): Promise<void> => {
+    if (addressInput !== values.address) {
+      debounceGetBTCAddress(values.address, userAddress.evm);
+      setAddressInput(values.address);
+    }
   };
 
   const _onClose = () => {
@@ -227,27 +225,21 @@ const MintEthModal: React.FC = () => {
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
-                      <p className={s.paymentPrice_price}>{`${
-                        projectData?.mintPriceEth === '0'
-                          ? '0.0'
-                          : totalPrice
-                          ? formatEthPrice(
-                              `${
-                                Number(totalPrice) -
-                                Number(projectData.networkFeeEth)
-                              }`,
-                              '0.0'
-                            )
-                          : ''
-                      } ETH`}</p>
+                      <p className={s.paymentPrice_price}>{`${formatEthPrice(
+                        totalPrice
+                          ? `${
+                              Number(totalPrice) -
+                              Number(projectData.networkFeeEth)
+                            }`
+                          : projectData?.mintPriceEth || '',
+                        '0.0'
+                      )} ETH`}</p>
                     </div>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Inscription fee</p>
-                      <p className={s.paymentPrice_price}>{`${
-                        projectData?.mintPriceEth === '0'
-                          ? totalFormatPrice
-                          : feePriceFormat
-                      } ETH`}</p>
+                      <p
+                        className={s.paymentPrice_price}
+                      >{`${feePriceFormat} ETH`}</p>
                     </div>
                     <div className={s.indicator} />
 
@@ -388,7 +380,7 @@ const MintEthModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading || totalPrice === ''}
+                        disabled={isLoading}
                         onClick={onClickPay}
                       >
                         Pay
@@ -410,7 +402,7 @@ const MintEthModal: React.FC = () => {
                 {step === 'showAddress' && (
                   <Col md={'6'}>
                     <div className={s.paymentWrapper}>
-                      {!isSent && receiverAddress && !isLoading && (
+                      {receiverAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
                             Send{' '}
@@ -441,13 +433,6 @@ const MintEthModal: React.FC = () => {
                             value={receiverAddress || ''}
                           />
                         </div>
-                      )}
-                      {isSent && (
-                        <img
-                          alt=""
-                          className={s.thumbnail}
-                          src={projectData.image}
-                        />
                       )}
                       {isLoading && (
                         <div className={s.loadingWrapper}>
