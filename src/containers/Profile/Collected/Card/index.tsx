@@ -54,7 +54,6 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
       : `${ROUTE_PATH.GENERATIVE}/${project.projectID}`;
 
   const isListable =
-    linkPath.includes(ROUTE_PATH.GENERATIVE) &&
     project?.status !== CollectedNFTStatus.Minting &&
     !project.orderID &&
     !project.buyable &&
