@@ -226,7 +226,7 @@ const FormEditProject = () => {
         maxSupply: project?.maxSupply || 0,
         isHidden: !(project?.isHidden || false),
         categories: valuesCategories(null),
-        captureImageTime: project?.captureImageTime || 20,
+        captureImageTime: project?.captureThumbnailDelayTime || 20,
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
