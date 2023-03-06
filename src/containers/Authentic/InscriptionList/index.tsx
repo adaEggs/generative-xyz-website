@@ -22,7 +22,9 @@ const InscriptionList: React.FC<IProps> = (
           ))}
         </div>
       ) : (
-        <Empty content={'Abracadabra'} />
+        <Empty
+          content={'There are currently no ETH NFTs in your Generative wallet.'}
+        />
       )}
     </div>
   );
