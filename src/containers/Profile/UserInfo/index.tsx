@@ -163,7 +163,7 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                         href={currentUser?.profileSocial?.twitter || ''}
                         target="_blank"
                       >
-                        @{currentUser?.profileSocial?.twitter.split('/').pop()}
+                        {currentUser?.profileSocial?.twitter.split('/').pop()}
                       </Link>
                     </Text>
                   </div>
