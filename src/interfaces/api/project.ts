@@ -86,6 +86,7 @@ export interface ICreateBTCProjectPayload {
   royalty: number;
   animationURL: string;
   isFullChain: boolean;
+  captureImageTime: number;
 }
 
 export type ICreateBTCProjectResponse = BTCProject;
