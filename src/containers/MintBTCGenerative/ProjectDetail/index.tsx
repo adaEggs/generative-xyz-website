@@ -12,6 +12,7 @@ import { SelectOption } from '@interfaces/select-input';
 import { getCategoryList } from '@services/category';
 import Select, { MultiValue } from 'react-select';
 import MarkdownEditor from '@components/MarkdownEditor';
+import { CollectionType } from '@enums/mint-generative';
 
 type IProductDetailFormValue = {
   name: string;
@@ -28,6 +29,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
     thumbnailFile,
     setShowErrorAlert,
     currentStep,
+    collectionType,
   } = useContext(MintBTCGenerativeContext);
   const [categoryOptions, setCategoryOptions] = useState<Array<SelectOption>>(
     []
@@ -55,11 +57,10 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
       errors.description = 'Description is required';
     }
     if (!_formValues.captureImageTime) {
-      errors.captureImageTime = 'captureImageTime time is required';
+      errors.captureImageTime = 'Capture time is required';
     }
     if (_formValues.captureImageTime && _formValues.captureImageTime < 7) {
-      errors.captureImageTime =
-        'captureImageTime time must be greater than 7 seconds';
+      errors.captureImageTime = 'Capture time must be greater than 7 seconds';
     }
 
     return errors;
@@ -192,25 +193,27 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                   <UploadThumbnailButton />
                 )}
               </div>
-              <div className={s.formItem}>
-                <label className={s.label} htmlFor="captureImageTime">
-                  Capture time (seconds)
-                  <sup className={s.requiredTag}>*</sup>
-                </label>
-                <input
-                  id="captureImageTime"
-                  type="number"
-                  name="captureImageTime"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.captureImageTime}
-                  className={s.input}
-                  placeholder="Please set the captureImageTime time."
-                />
-                {errors.captureImageTime && touched.captureImageTime && (
-                  <p className={s.error}>{errors.captureImageTime}</p>
-                )}
-              </div>
+              {collectionType === CollectionType.GENERATIVE && (
+                <div className={s.formItem}>
+                  <label className={s.label} htmlFor="captureImageTime">
+                    Capture time (seconds)
+                    <sup className={s.requiredTag}>*</sup>
+                  </label>
+                  <input
+                    id="captureImageTime"
+                    type="number"
+                    name="captureImageTime"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.captureImageTime}
+                    className={s.input}
+                    placeholder="Please set the captureImageTime time."
+                  />
+                  {errors.captureImageTime && touched.captureImageTime && (
+                    <p className={s.error}>{errors.captureImageTime}</p>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className={s.container}>

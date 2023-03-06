@@ -152,8 +152,12 @@ const FormEditProject = () => {
       maxSupply: Number(values.maxSupply) || 0,
       isHidden: isHidden,
       categories: categories || [],
-      captureImageTime: values.captureImageTime || 20,
+      // captureImageTime: values.captureImageTime || 20,
     };
+
+    if (projectFiles === 0) {
+      payload.captureImageTime = values.captureImageTime || 20;
+    }
 
     const res = await updateProject(
       GENERATIVE_PROJECT_CONTRACT,
@@ -406,25 +410,27 @@ const FormEditProject = () => {
                       <p className={s.error}>{errors.royalty}</p>
                     )}
                   </div>
-                  <div className={s.formItem}>
-                    <label className={s.label} htmlFor="captureImageTime">
-                      Capture time (seconds)
-                      <sup className={s.requiredTag}>*</sup>
-                    </label>
-                    <input
-                      id="captureImageTime"
-                      type="number"
-                      name="captureImageTime"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.captureImageTime}
-                      className={s.input}
-                      placeholder="Please set the captureImageTime time."
-                    />
-                    {errors.captureImageTime && touched.captureImageTime && (
-                      <p className={s.error}>{errors.captureImageTime}</p>
-                    )}
-                  </div>
+                  {projectFiles === 0 && (
+                    <div className={s.formItem}>
+                      <label className={s.label} htmlFor="captureImageTime">
+                        Capture time (seconds)
+                        <sup className={s.requiredTag}>*</sup>
+                      </label>
+                      <input
+                        id="captureImageTime"
+                        type="number"
+                        name="captureImageTime"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.captureImageTime}
+                        className={s.input}
+                        placeholder="Please set the capture time."
+                      />
+                      {errors.captureImageTime && touched.captureImageTime && (
+                        <p className={s.error}>{errors.captureImageTime}</p>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 

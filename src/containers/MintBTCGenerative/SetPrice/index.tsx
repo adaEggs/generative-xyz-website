@@ -263,7 +263,6 @@ const SetPrice = () => {
         zipLink: '',
         animationURL: '',
         isFullChain: true,
-        captureImageTime: captureImageTime ?? 20,
       };
 
       if (collectionType === CollectionType.COLLECTION) {
@@ -290,6 +289,7 @@ const SetPrice = () => {
       if (collectionType === CollectionType.GENERATIVE) {
         const animationURL = await fileToBase64(rawFile);
         payload.animationURL = animationURL as string;
+        payload.captureImageTime = captureImageTime ?? 20;
         if (filesSandbox) {
           const libs = await detectUsedLibs(filesSandbox);
           payload.isFullChain = libs.length === 0;
