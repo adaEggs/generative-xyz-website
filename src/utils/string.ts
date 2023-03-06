@@ -13,3 +13,7 @@ export const isBase64String = (str: string): boolean => {
     return false;
   }
 };
+
+export const isNumeric = (str: never | string) => {
+  return /^\d+$/.test(str);
+};

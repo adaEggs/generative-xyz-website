@@ -29,7 +29,6 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const [creator, setCreator] = useState<User | null>(null);
   const { mobileScreen } = useWindowSize();
   const [thumb, setThumb] = useState<string>(project.image);
-  project.btcFloorPrice = Number('1000000');
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
@@ -76,7 +75,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
           color="black-40-solid"
           className={s.projectCard_info_mintoutContainer_floorPrice}
         >
-          {`Floor ${formatBTCPrice(project.btcFloorPrice)} BTC`}
+          {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
         </Text>
       );
     }

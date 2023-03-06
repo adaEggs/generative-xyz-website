@@ -14,11 +14,11 @@
     padding-top: 0;
 
     @include min-tablet {
-      width: rem(680px);
+      width: rem(860px);
     }
 
     @include min-pc-superWide {
-      width: rem(680px);
+      width: rem(860px);
     }
   }
 }
