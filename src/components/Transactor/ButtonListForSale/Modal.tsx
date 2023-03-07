@@ -163,7 +163,7 @@ const ModalListForSale = React.memo(
           inscriptionNumber: inscriptionNumber,
           receiverBTCAddress: values.receiveBTCAddress,
         });
-        toast.success('Successfully');
+        toast.success('List for sale successfully');
         setTimeout(() => {
           setLoading(false);
           window.location.reload();
