@@ -155,7 +155,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { splitTxID, base64Psbt } =
+    const { splitTxID, base64Psbt, splitTxRaw } =
       await GENERATIVE_SDK.reqListForSaleInscription({
         sellerPrivateKey: privateKey,
         amountPayToSeller: amountPayToSeller,
@@ -171,6 +171,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       await submitListForSale({
         raw_psbt: base64Psbt,
         inscription_id: inscriptionID,
+        split_tx: splitTxRaw || '',
       }),
     ];
 
