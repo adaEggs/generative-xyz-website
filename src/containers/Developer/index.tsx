@@ -109,27 +109,30 @@ const Developer = () => {
               browsing Bitcoin inscriptions.
             </Text>
           ))}
-          <div style={{ marginTop: 64 }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 64,
+            }}
+          >
             <ButtonIcon
-              variants="blue"
+              variants="blue-deep"
               className={s.login}
               onClick={onClickGenerate}
-            >
-              Generate API Key
-            </ButtonIcon>
-
-            <ButtonIcon
-              variants="primary"
-              className={s.generate}
-              onClick={onClickDocs}
               endIcon={
                 <SvgInset
                   svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
                 />
               }
             >
-              Read the docs
+              Generate API Key
             </ButtonIcon>
+
+            <div className={s.generate} onClick={onClickDocs}>
+              Read the docs
+            </div>
           </div>
         </Col>
         <Col md={'12'} xl={'6'}>
