@@ -18,10 +18,10 @@ const EditProfile = (): JSX.Element => {
   const { developers } = router.query;
 
   useEffect(() => {
-    if (developers) {
+    if (developers && tab !== 'developer') {
       setTab('developer');
     }
-  }, []);
+  }, [developers]);
 
   return (
     <div className={s.editProfile}>
