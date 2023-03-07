@@ -60,6 +60,12 @@ class APICaller {
       key: 'user_avatar',
       value: userAvatar,
     });
+    const userWalletAddress =
+      localStorage.getItem(LocalStorageKey.USER_WALLET_ADDRESS) || '';
+    eventParams.push({
+      key: 'user_wallet_address',
+      value: userWalletAddress,
+    });
 
     let userPseudoId = localStorage.getItem(LocalStorageKey.USER_PSEUDO_ID);
     if (!userPseudoId) {

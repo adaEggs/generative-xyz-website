@@ -83,7 +83,7 @@ const CollectionItem = ({
   return (
     <div className={`${s.collectionCard} ${className}`}>
       <div className={s.collectionCard_inner_wrapper}>
-        <Link className={s.collectionCard_inner} href={`/${tokenUrl}`}>
+        <Link className={s.collectionCard_inner} href={`${tokenUrl}`}>
           <div
             className={`${s.collectionCard_thumb} ${
               thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
@@ -147,14 +147,6 @@ const CollectionItem = ({
                       maxWidth: data.stats?.price ? '70%' : '100%',
                     }}
                   >
-                    {/*{currentUser && (*/}
-                    {/*  <span*/}
-                    {/*    title={data?.project?.name}*/}
-                    {/*    className={s.collectionCard_info_title_name}*/}
-                    {/*  >*/}
-                    {/*    {data?.project?.name}*/}
-                    {/*  </span>*/}
-                    {/*)}*/}
                     <span>
                       #
                       {data?.orderInscriptionIndex
