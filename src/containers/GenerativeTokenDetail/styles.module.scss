@@ -2,7 +2,7 @@
   color: $black-100;
   margin-bottom: rem(48px);
 
-  @include min-tablet {
+  @include min-pc {
     display: grid;
     grid-template-columns: 35% 1px calc(65% - 1px);
     margin-bottom: rem(90px);
@@ -38,7 +38,7 @@
     }
   }
 
-  @include min-tablet {
+  @include min-pc {
     overflow-y: scroll;
     padding-right: rem(60px);
     position: relative;

@@ -98,7 +98,7 @@ const MoreItemsSection = ({ genNFTAddr }: TMoreItemsSection) => {
             <div className={cs(s.collectionList, `row animate-grid`)}>
               {listItems?.map(item => (
                 <CollectionItem
-                  className={`${'col-xl-3 col-lg-4 col-12'} `}
+                  className={`${'col-xl-3 col-lg-4 col-sm-6 col-12'} `}
                   key={`collection-item-${item.tokenID}`}
                   data={item}
                 />
