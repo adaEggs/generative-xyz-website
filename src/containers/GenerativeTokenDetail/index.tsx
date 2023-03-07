@@ -259,7 +259,13 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           </Text>
         ) : (
           <Text size="18" className={s.owner}>
-            Owned by {formatLongAddress(tokenData?.ownerAddr || '')}
+            Owned by{' '}
+            <Link
+              href={`${ROUTE_PATH.PROFILE}/${tokenData?.ownerAddr}`}
+              className={s.projectName}
+            >
+              {formatLongAddress(tokenData?.ownerAddr || '')}
+            </Link>
           </Text>
         )}
       </>
