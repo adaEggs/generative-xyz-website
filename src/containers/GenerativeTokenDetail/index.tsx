@@ -438,7 +438,12 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 </div>
               </div>
               <div className="divider" />
-              {isFromAuthentic && <AuthenticCard project={projectData} />}
+              {isFromAuthentic && (
+                <AuthenticCard
+                  tokenID={projectData?.tokenId}
+                  project={projectData}
+                />
+              )}
             </div>
             <ul className={s.shares}>
               <li>

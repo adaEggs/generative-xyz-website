@@ -8,8 +8,10 @@ import { formatLongAddress } from '../../../utils/format';
 
 export const AuthenticCard = ({
   project,
+  tokenID,
 }: {
   project: Project | null;
+  tokenID: string | null;
 }): JSX.Element => {
   if (!project) return <></>;
   return (
@@ -45,15 +47,15 @@ export const AuthenticCard = ({
               </div>
             </div>
           )}
-          {project?.nftTokenId && (
+          {tokenID && (
             <div className={s.authenticCard_content_property}>
               <div className="label">Original Token ID</div>
               <div className="val">
                 <a
-                  href={`https://etherscan.io/token/${project.nftTokenId}?a=${project.nftTokenId}`}
+                  href={`https://etherscan.io/token/${project.nftTokenId}?a=${tokenID}`}
                   target="_blank"
                 >
-                  {project?.nftTokenId}
+                  {tokenID}
                 </a>
               </div>
             </div>
