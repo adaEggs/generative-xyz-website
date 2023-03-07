@@ -164,7 +164,6 @@ const ReferralTab = () => {
   return (
     <div className={s.wrapper}>
       {/* <Loading isLoaded={needLoading} className={s.loading} /> */}
-      <ArtistCollectionEarn setShowModal={setShowWithdrawSucessModal} />
 
       <div className={s.referral_link}>
         <Stack gap={2}>
@@ -231,6 +230,8 @@ const ReferralTab = () => {
           </ButtonIcon>
         </div>
       )} */}
+      <ArtistCollectionEarn setShowModal={setShowWithdrawSucessModal} />
+
       <WithdrawModal
         data={showWithdrawSucessModal}
         onHideModal={() =>
