@@ -16,7 +16,7 @@
       font-size: rem(24px);
       line-height: 140%;
       color: $secondary-purple-b;
-      margin-bottom: rem(16px);
+      margin-bottom: rem(8px);
     }
 
     .subTitle {
@@ -30,6 +30,15 @@
       @include mobile {
         font-size: rem(28px);
       }
+    }
+
+    .descTitle {
+      font-style: normal;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 30px;
+      color: #b6b6b6;
+      margin-bottom: rem(8px);
     }
 
     .descItem {
