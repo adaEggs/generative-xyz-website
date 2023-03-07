@@ -111,14 +111,14 @@ const ReferralTab = () => {
             className={cs(s.referee, 'cursor-pointer')}
             onClick={() =>
               router.push(
-                `${ROUTE_PATH.PROFILE}/${item.referree.walletAddress}`
+                `${ROUTE_PATH.PROFILE}/${item.referree.walletAddressBtcTaproot}`
               )
             }
           >
             <Avatar imgSrcs={item.referree?.avatar} width={48} height={48} />
             <Text size="14" fontWeight="medium">
               {item.referree?.displayName ||
-                formatLongAddress(item.referree?.walletAddress)}
+                formatLongAddress(item.referree?.walletAddressBtcTaproot)}
             </Text>
           </Stack>
         ),

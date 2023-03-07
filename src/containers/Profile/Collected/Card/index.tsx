@@ -238,7 +238,11 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
             {project.status === CollectedNFTStatus.Success && (
               <TwitterShareButton
                 className={s.twitter}
-                url={`${location.origin}${linkPath}?referral_code=${user?.id}`}
+                url={
+                  isOwner
+                    ? `${location.origin}${linkPath}?referral_code=${user?.id}`
+                    : `${location.origin}${linkPath}`
+                }
                 title={''}
                 hashtags={[]}
               >
