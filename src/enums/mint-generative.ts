@@ -13,6 +13,8 @@ export enum PreviewDisplayMode {
 export enum CollectionType {
   GENERATIVE = 'GENERATIVE',
   COLLECTION = 'COLLECTION',
+  EDITIONS = 'EDITIONS',
+  ONE = '1/1',
 }
 
 export enum PaymentMethod {

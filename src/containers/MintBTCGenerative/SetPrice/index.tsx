@@ -334,7 +334,10 @@ const SetPrice = () => {
     <Formik
       key="setPriceForm"
       initialValues={{
-        maxSupply: formValues.maxSupply || '',
+        maxSupply:
+          collectionType === CollectionType.ONE
+            ? 1
+            : formValues.maxSupply || '',
         mintPrice: formValues.mintPrice || '',
         royalty: formValues.royalty || '',
         // creatorWalletAddress: formValues.creatorWalletAddress ?? '',
@@ -374,6 +377,7 @@ const SetPrice = () => {
                     value={values.maxSupply}
                     className={s.input}
                     placeholder="Provide a number"
+                    disabled={collectionType === CollectionType.ONE}
                   />
                   <div className={s.inputPostfix}>Items</div>
                 </div>
