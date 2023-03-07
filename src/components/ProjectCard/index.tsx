@@ -20,6 +20,8 @@ import cs from 'classnames';
 import { CDN_URL } from '@constants/config';
 import SvgInset from '@components/SvgInset';
 import ButtonIcon from '@components/ButtonIcon';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 
 interface IPros {
   project: Project;
@@ -49,6 +51,17 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     if (naturalWidth < 100 && imgRef.current) {
       imgRef.current.style.imageRendering = 'pixelated';
     }
+  };
+
+  const handleTrackOnClick = (): void => {
+    sendAAEvent({
+      eventName: BTC_PROJECT.CLICK_PROJECT,
+      data: {
+        project_id: project.tokenID,
+        project_name: project.name,
+        project_thumbnail: project.image,
+      },
+    });
   };
 
   const creatorMemo = useMemo((): User | null => {
@@ -138,7 +151,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
       href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
       className={`${s.projectCard} ${className}`}
     >
-      <div className={s.projectCard_inner}>
+      <div className={s.projectCard_inner} onClick={handleTrackOnClick}>
         <div
           className={`${s.projectCard_thumb} ${
             thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''

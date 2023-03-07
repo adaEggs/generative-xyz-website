@@ -103,28 +103,29 @@ const Developer = () => {
     <Container>
       <Row className={s.metamaskContainer}>
         <Col md={'12'} xl={'6'} className={s.leftContainer}>
-          <p className={s.title}>Generative API</p>
-          <Text className={s.subTitle}>
-            Easily integrate Ordinal inscription services into your existing
-            workflows and systems, saving you engineering time and
-            infrastructure maintenance effort.
+          <p className={s.title}>Generative Ordinal Services</p>
+          <Text className={s.subTitle}>The Ordinal development platform.</Text>
+          <Text className={s.descTitle}>
+            The most powerful set of Ordinal development services to build and
+            scale your Ordinal use cases with ease.
           </Text>
           {renderDescItem(() => (
             <Text className={s.text}>
-              Works seamlessly with standard Ordinal operations.
+              Ordinal Inscription API for creating, tracking, and search
+              inscriptions
             </Text>
           ))}
           {renderDescItem(() => (
             <Text className={s.text}>
-              Full API set for inscribing, tracking inscribing status, and
-              browsing Bitcoin inscriptions.
+              Cost-effective, reliable and scalable Inscription-as-a-Service
+              infrastructure
             </Text>
+          ))}
+          {renderDescItem(() => (
+            <Text className={s.text}>User-friendly Ordinal wallet</Text>
           ))}
           <div
             style={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
               marginTop: 64,
             }}
           >
@@ -132,18 +133,21 @@ const Developer = () => {
               variants="blue-deep"
               className={s.login}
               onClick={onClickGenerate}
+            >
+              Get started for free
+            </ButtonIcon>
+            <ButtonIcon
+              className={s.generate}
+              onClick={onClickDocs}
               endIcon={
                 <SvgInset
                   svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
                 />
               }
             >
-              Generate API Key
-            </ButtonIcon>
-
-            <div className={s.generate} onClick={onClickDocs}>
               Read the docs
-            </div>
+            </ButtonIcon>
+            <div></div>
           </div>
         </Col>
         <Col md={'12'} xl={'6'}>
