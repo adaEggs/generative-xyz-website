@@ -4,22 +4,18 @@ import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 // import { ProfileContext } from '@contexts/profile-context';
-import useWindowSize from '@hooks/useWindowSize';
-import { Token } from '@interfaces/token';
-import {
-  formatAddress,
-  formatTokenId,
-  getProjectIdFromTokenId,
-} from '@utils/format';
-import cs from 'classnames';
-import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { Stack } from 'react-bootstrap';
-import Image from 'next/image';
-import s from './styles.module.scss';
-import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import Link from '@components/Link';
 import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
 import { GLB_EXTENSION } from '@constants/file';
+import { SATOSHIS_PROJECT_ID } from '@constants/generative';
+import useWindowSize from '@hooks/useWindowSize';
+import { Token } from '@interfaces/token';
+import { formatAddress, formatTokenId } from '@utils/format';
+import cs from 'classnames';
+import Image from 'next/image';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Stack } from 'react-bootstrap';
+import s from './styles.module.scss';
 
 const CollectionItem = ({
   data,
@@ -31,9 +27,7 @@ const CollectionItem = ({
   const tokenID = data.tokenID;
   // const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
-  const { isBitcoinProject, isWhitelistProject } = useContext(
-    GenerativeProjectDetailContext
-  );
+  const { isWhitelistProject } = useContext(GenerativeProjectDetailContext);
   const isBuyable = React.useMemo(() => {
     return data.buyable && !!data.priceBTC;
   }, [data.buyable, data.priceBTC]);
@@ -64,11 +58,7 @@ const CollectionItem = ({
   const tokenUrl = useMemo(() => {
     if (isWhitelistProject)
       return `${ROUTE_PATH.GENERATIVE}/${SATOSHIS_PROJECT_ID}/${tokenID}`;
-    return `${ROUTE_PATH.GENERATIVE}/${
-      isBitcoinProject
-        ? data.project.tokenID
-        : getProjectIdFromTokenId(parseInt(tokenID))
-    }/${tokenID}`;
+    return `${ROUTE_PATH.GENERATIVE}/${data.project.tokenID}/${tokenID}`;
   }, [isWhitelistProject, tokenID, data.project.tokenID]);
 
   const renderBuyButton = () => {

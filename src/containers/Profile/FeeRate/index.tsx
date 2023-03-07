@@ -3,7 +3,7 @@ import s from '@containers/Profile/FeeRate/styles.module.scss';
 import { FeeRateName, IFeeRate } from '@interfaces/api/bitcoin';
 import cs from 'classnames';
 import { formatBTCPrice } from '@utils/format';
-import React from 'react';
+import React, { useRef } from 'react';
 import * as SDK from 'generative-sdk';
 
 interface IProps {
@@ -25,6 +25,7 @@ const FeeRate = ({
   handleChangeCustomRate,
   customRate,
 }: IProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const onChangeCustomSats = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (typeof handleChangeCustomRate === 'function') {
       handleChangeCustomRate(e.target.value);
@@ -93,10 +94,24 @@ const FeeRate = ({
             className={cs(s.mintFeeItem, {
               [`${s.mintFeeItem__active}`]: !!customRate,
             })}
+            onClick={() => {
+              if (
+                !!handleChangeCustomRate &&
+                typeof handleChangeCustomRate === 'function' &&
+                !!inputRef &&
+                !!inputRef.current
+              ) {
+                handleChangeCustomRate(
+                  `${Number(allRate[FeeRateName.fastestFee]) + 1}`
+                );
+                inputRef.current.focus();
+              }
+            }}
           >
             <p className={s.feeTitle}>Customize Sats</p>
             <p className={s.feeDetail}>{`${customRate || 0} sats/vByte`}</p>
             <input
+              ref={inputRef}
               id="feeRate"
               type="number"
               name="feeRate"
