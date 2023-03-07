@@ -106,7 +106,9 @@ const CollectionItem = ({
               <Text size="11" fontWeight="medium">
                 {data?.owner?.displayName ||
                   formatAddress(
-                    data?.owner?.walletAddress || data?.ownerAddr || ''
+                    data?.owner?.walletAddressBtcTaproot ||
+                      data?.ownerAddr ||
+                      ''
                   )}
               </Text>
               <div className={s.collectionCard_info_title}>

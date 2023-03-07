@@ -173,7 +173,8 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             <div className={cs(s.projectCard_info, s.mobile)}>
               {creator && (
                 <Text size="11" fontWeight="medium">
-                  {creator.displayName || formatAddress(creator.walletAddress)}
+                  {creator.displayName ||
+                    formatAddress(creator.walletAddressBtcTaproot)}
                 </Text>
               )}
               <div className={s.projectCard_info_title}>
@@ -196,7 +197,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 <div className={s.projectCard_creator}>
                   <Text size={'20'} fontWeight="medium">
                     {creatorMemo?.displayName ||
-                      formatLongAddress(creatorMemo?.walletAddress)}
+                      formatLongAddress(creatorMemo?.walletAddressBtcTaproot)}
                   </Text>
                 </div>
               )}

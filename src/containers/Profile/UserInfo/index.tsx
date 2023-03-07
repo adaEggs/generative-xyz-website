@@ -60,13 +60,13 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                   as={'h4'}
                   title={
                     currentUser?.displayName ||
-                    formatAddress(currentUser?.walletAddress) ||
+                    formatAddress(currentUser?.walletAddressBtcTaproot) ||
                     formatAddress(walletAddress)
                   }
                   className={s.userInfo_content_wrapper_info_name}
                 >
                   {currentUser?.displayName ||
-                    formatAddress(currentUser?.walletAddress) ||
+                    formatAddress(currentUser?.walletAddressBtcTaproot) ||
                     formatAddress(walletAddress)}
                 </Heading>
                 <div className={s.userInfo_content_wrapper_info_icon}>

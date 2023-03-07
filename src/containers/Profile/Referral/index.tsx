@@ -25,6 +25,8 @@ import { toast } from 'react-hot-toast';
 import ArtistCollectionEarn from './ArtistCollectionEarn';
 import s from './Referral.module.scss';
 import WithdrawModal from './WithdrawModal';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 
 const LOG_PREFIX = 'ReferralTab';
 
@@ -77,6 +79,12 @@ const ReferralTab = () => {
         id,
       };
       await withdrawRewardEarned(payload);
+      sendAAEvent({
+        eventName: BTC_PROJECT.WITHDRAW,
+        data: {
+          ...payload,
+        },
+      });
       setShowWithdrawSucessModal({
         isShow: true,
         data: payload,
@@ -103,14 +111,14 @@ const ReferralTab = () => {
             className={cs(s.referee, 'cursor-pointer')}
             onClick={() =>
               router.push(
-                `${ROUTE_PATH.PROFILE}/${item.referree.walletAddress}`
+                `${ROUTE_PATH.PROFILE}/${item.referree.walletAddressBtcTaproot}`
               )
             }
           >
             <Avatar imgSrcs={item.referree?.avatar} width={48} height={48} />
             <Text size="14" fontWeight="medium">
               {item.referree?.displayName ||
-                formatLongAddress(item.referree?.walletAddress)}
+                formatLongAddress(item.referree?.walletAddressBtcTaproot)}
             </Text>
           </Stack>
         ),
@@ -180,6 +188,12 @@ const ReferralTab = () => {
                 copy(referralLink || '');
                 toast.remove();
                 toast.success('Copied');
+                sendAAEvent({
+                  eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
+                  data: {
+                    referrerId: user?.id,
+                  },
+                });
               }}
               className={s.iconCopy}
               size={20}

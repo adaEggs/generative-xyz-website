@@ -7,6 +7,7 @@ import ButtonCancelListed from '@components/Transactor/ButtonCancelListed';
 import ButtonListForSale from '@components/Transactor/ButtonListForSale';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 import SendInscriptionModal from '@containers/Profile/Collected/Modal/SendInscription';
 import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 import { ProfileContext } from '@contexts/profile-context';
@@ -15,6 +16,7 @@ import { HistoryStatusType, TrackTxType } from '@interfaces/api/bitcoin';
 import { CollectedNFTStatus, ICollectedNFTItem } from '@interfaces/api/profile';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
+import { sendAAEvent } from '@services/aa-tracking';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import React, { useContext } from 'react';
@@ -218,7 +220,11 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
             {project.status === CollectedNFTStatus.Success && (
               <TwitterShareButton
                 className={s.twitter}
-                url={`${location.origin}${linkPath}?referral_code=${user?.id}`}
+                url={
+                  isOwner
+                    ? `${location.origin}${linkPath}?referral_code=${user?.id}`
+                    : `${location.origin}${linkPath}`
+                }
                 title={''}
                 hashtags={[]}
               >
@@ -226,6 +232,15 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   sizes="small"
                   variants="ghost"
                   className={s.twitter_btnShare}
+                  onClick={() => {
+                    sendAAEvent({
+                      eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
+                      data: {
+                        projectId: project?.projectID,
+                        referrerId: user?.id,
+                      },
+                    });
+                  }}
                   startIcon={
                     <SvgInset
                       size={16}
