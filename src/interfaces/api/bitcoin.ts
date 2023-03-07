@@ -98,6 +98,7 @@ export interface IListHistoryReq {
 export interface IListingPayload {
   raw_psbt: string; // base64
   inscription_id: string;
+  split_tx: string;
 }
 
 export interface IRetrieveOrderPayload {
