@@ -17,12 +17,12 @@ const AuthenticLanding = () => {
   const user = useAppSelector(getUserSelector);
   const router = useRouter();
 
-  const onConnect = () => {
-    onButtonClick({});
-  };
-
   const goToAuthentic = (): void => {
     router.push(ROUTE_PATH.AUTHENTIC);
+  };
+
+  const onConnect = () => {
+    onButtonClick({ cbSigned: goToAuthentic });
   };
 
   const isUser = useMemo((): boolean => {
@@ -35,19 +35,15 @@ const AuthenticLanding = () => {
         <Col md={'12'} xl={'6'} className={s.leftContainer}>
           <p className={s.title}>Certificate of Authenticity</p>
           <Text className={s.subTitle}>
-            Create authentic Ordinal Inscriptions from your Ethereum NFTs.
+            Your Ethereum NFTs, your Bitcoin inscriptions.
           </Text>
           <Text className={s.text}>
-            Generative offers an easy way to inscribe your original Ethereum
-            NFTs onto Bitcoin using Ordinals.
+            It’s a free, easy and secure way to create authentic Ordinal
+            Inscriptions from your original Ethereum NFTs.
             <br />
             <br />
-            Securely sync your wallet via MetaMask & Delegate Cash, pick an
-            Ethereum NFT, then inscribe it — it’s that easy. You can even sell
-            it as authentic Ordinal Inscription on Bitcoin.
-            <br />
-            <br />
-            It’s free.
+            Login with MetaMask, pick an Ethereum NFT, then inscribe it — it’s
+            that easy. You can even sell it on the Generative marketplace.
           </Text>
           <br />
           <br />
@@ -56,6 +52,7 @@ const AuthenticLanding = () => {
             <ButtonIcon
               variants="blue-deep"
               className={s.login}
+              sizes={'large'}
               onClick={goToAuthentic}
               endIcon={
                 <SvgInset
@@ -66,7 +63,12 @@ const AuthenticLanding = () => {
               Check your Ethereum NFTs
             </ButtonIcon>
           ) : (
-            <ButtonIcon variants="blue" className={s.login} onClick={onConnect}>
+            <ButtonIcon
+              sizes={'large'}
+              variants="blue"
+              className={s.login}
+              onClick={onConnect}
+            >
               <img
                 src={`${CDN_URL}/icons/ic-metamask.png`}
                 className={s.icMetamask}
