@@ -38,6 +38,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [isShowAdvance, setIsShowAdvance] = useState(false);
   const [totalPrice, setTotalPrice] = React.useState('');
+  const [feePrice, setFeePrice] = React.useState('');
 
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
 
@@ -54,18 +55,22 @@ const MintBTCGenerativeModal: React.FC = () => {
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
 
   const [addressInput, setAddressInput] = useState<string>('');
+  const [errMessage, setErrMessage] = useState('');
 
-  // const priceFormat = formatBTCPrice(Number(projectData?.mintPrice), '0.0');
+  const [quantity, setQuantity] = useState(1);
+
+  const priceFormat = formatBTCPrice(projectData?.mintPrice || '', '0.0');
   const feePriceFormat = formatBTCPrice(
-    totalPrice
-      ? Number(totalPrice) - Number(projectData?.mintPrice)
-      : Number(projectData?.networkFee),
+    feePrice ? Number(feePrice) : Number(projectData?.networkFee),
     '0.0'
   );
   const totalPriceFormat = formatBTCPrice(
-    totalPrice ||
-      `${Number(projectData?.networkFee) + Number(projectData?.mintPrice)}` ||
-      ''
+    totalPrice
+      ? totalPrice
+      : `${
+          (Number(projectData?.networkFee) + Number(projectData?.mintPrice)) *
+          quantity
+        }` || ''
   );
 
   const userBtcAddress = useMemo(
@@ -77,7 +82,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
       if (step === 'showAddress' && userBtcAddress) {
-        debounceGetBTCAddress(userBtcAddress, userBtcAddress);
+        debounceGetBTCAddress(userBtcAddress, userBtcAddress, quantity);
       }
     }
   };
@@ -86,7 +91,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
       if (step === 'showAddress' && addressInput) {
-        debounceGetBTCAddress(addressInput, userBtcAddress);
+        debounceGetBTCAddress(addressInput, userBtcAddress, quantity);
       }
     }
   };
@@ -94,32 +99,49 @@ const MintBTCGenerativeModal: React.FC = () => {
   const onClickPay = () => {
     if (useWallet === 'default') {
       if (userBtcAddress) {
-        debounceGetBTCAddress(userBtcAddress, userBtcAddress);
+        debounceGetBTCAddress(userBtcAddress, userBtcAddress, quantity);
       }
     }
   };
 
+  const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuantity(Number(e.target.value));
+  };
+
+  const onClickMinus = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const onClickPlus = () => {
+    setQuantity(quantity + 1);
+  };
+
   const getBTCAddress = async (
     walletAddress: string,
-    refundAddress: string
+    refundAddress: string,
+    _quantity: number
   ): Promise<void> => {
     if (!projectData) return;
 
     try {
       setIsLoading(true);
       setReceiverAddress(null);
-      const { address, price } = await generateMintReceiverAddress({
-        walletAddress,
-        projectID: projectData.tokenID,
-        payType: 'btc',
-        refundUserAddress: refundAddress,
-        quantity: 1,
-      });
+      const { address, price, networkFeeByPayType } =
+        await generateMintReceiverAddress({
+          walletAddress,
+          projectID: projectData.tokenID,
+          payType: 'btc',
+          refundUserAddress: refundAddress,
+          quantity: _quantity,
+        });
       // const { address, Price: price } = await generateBTCReceiverAddress({
       //   walletAddress,
       //   projectID: projectData.tokenID,
       // });
       setTotalPrice(price);
+      setFeePrice(networkFeeByPayType);
       sendAAEvent({
         eventName: BTC_PROJECT.MINT_NFT,
         data: {
@@ -136,6 +158,13 @@ const MintBTCGenerativeModal: React.FC = () => {
       setReceiverAddress(address);
       setsTep('showAddress');
     } catch (err: unknown) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      if (err && err?.message) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        setErrMessage(err?.message);
+      }
       setReceiverAddress(null);
     } finally {
       setIsLoading(false);
@@ -144,7 +173,8 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const debounceGetBTCAddress = useCallback(
     _debounce(
-      (address, refundAddress) => getBTCAddress(address, refundAddress),
+      (address, refundAddress, quantity) =>
+        getBTCAddress(address, refundAddress, quantity),
       500
     ),
     [projectData]
@@ -160,7 +190,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     } else {
       if (step === 'showAddress' && addressInput !== values.address) {
         setAddressInput(values.address);
-        debounceGetBTCAddress(values.address, userBtcAddress);
+        debounceGetBTCAddress(values.address, userBtcAddress, quantity);
       }
     }
 
@@ -169,12 +199,13 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const handleSubmit = async (values: IFormValue): Promise<void> => {
     if (addressInput !== values.address) {
-      debounceGetBTCAddress(values.address, userBtcAddress);
+      debounceGetBTCAddress(values.address, userBtcAddress, quantity);
       setAddressInput(values.address);
     }
   };
 
   const _onClose = () => {
+    setErrMessage('');
     setIsPopupPayment(false);
   };
 
@@ -211,16 +242,44 @@ const MintBTCGenerativeModal: React.FC = () => {
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
-                      <p className={s.paymentPrice_price}>{`${formatBTCPrice(
-                        projectData?.mintPrice || '',
-                        '0.0'
-                      )} BTC`}</p>
+                      <p
+                        className={s.paymentPrice_price}
+                      >{`${priceFormat} BTC`}</p>
                     </div>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Inscription fee</p>
                       <p
                         className={s.paymentPrice_price}
                       >{`${feePriceFormat} BTC`}</p>
+                    </div>
+                    <div className={s.paymentPrice} style={{ marginTop: 4 }}>
+                      <p className={s.paymentPrice_title}>Quantity</p>
+                      {step === 'info' ? (
+                        <div className={s.paymentPrice_inputContainer}>
+                          <SvgInset
+                            className={s.paymentPrice_inputContainer_icon}
+                            size={18}
+                            svgUrl={`${CDN_URL}/icons/ic-minus.svg`}
+                            onClick={onClickMinus}
+                          />
+                          <input
+                            type="number"
+                            name="quantity"
+                            placeholder=""
+                            value={`${quantity}`}
+                            onChange={onChangeQuantity}
+                            className={s.paymentPrice_inputContainer_input}
+                          />
+                          <SvgInset
+                            className={s.paymentPrice_inputContainer_icon}
+                            size={18}
+                            svgUrl={`${CDN_URL}/icons/ic-plus.svg`}
+                            onClick={onClickPlus}
+                          />
+                        </div>
+                      ) : (
+                        <p className={s.paymentPrice_price}>{quantity}</p>
+                      )}
                     </div>
                     <div className={s.indicator} />
 
@@ -316,10 +375,6 @@ const MintBTCGenerativeModal: React.FC = () => {
 
                               {useWallet === 'another' && (
                                 <div className={s.formItem}>
-                                  {/* <label className={s.label} htmlFor="address">
-                                    {`Enter the Ordinals-compatible BTC address to
-                                receive your minting inscription`}
-                                  </label> */}
                                   <div className={s.inputContainer}>
                                     <input
                                       id="address"
@@ -347,7 +402,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                               type="submit"
                               sizes="large"
                               className={s.buyBtn}
-                              disabled={isLoading}
+                              disabled={isLoading || quantity === 0}
                             >
                               Pay
                             </ButtonIcon>
@@ -360,11 +415,15 @@ const MintBTCGenerativeModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading}
+                        disabled={isLoading || quantity === 0}
                         onClick={onClickPay}
                       >
                         Pay
                       </ButtonIcon>
+                    )}
+
+                    {!!errMessage && (
+                      <div className={s.error}>{errMessage}</div>
                     )}
 
                     {step === 'info' && isLoading && (
@@ -372,10 +431,6 @@ const MintBTCGenerativeModal: React.FC = () => {
                         <Loading isLoaded={false} />
                       </div>
                     )}
-
-                    {/* {!!errMessage && (
-                      <div className={s.error}>{errMessage}</div>
-                    )} */}
                   </div>
                 </Col>
 

@@ -147,14 +147,21 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     return (
       <>
         {project.status !== CollectedNFTStatus.Success && (
-          <Text
-            className={s.projectCard_creator_status}
-            size={'16'}
-            fontWeight="medium"
-            color="black-40"
-          >
-            {`${project.statusText}...`}
-          </Text>
+          <>
+            <Text
+              className={s.projectCard_creator_status}
+              size={'16'}
+              fontWeight="medium"
+              color="black-40"
+            >
+              {`${project.statusText}...`}
+            </Text>
+            {project.quantity && project.quantity > 1 && (
+              <Text size={'16'} fontWeight="medium" color="black-40">
+                {`Quantity: ${project.quantity}`}
+              </Text>
+            )}
+          </>
         )}
       </>
     );

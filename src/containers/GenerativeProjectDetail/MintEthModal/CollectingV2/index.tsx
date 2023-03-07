@@ -60,21 +60,16 @@ const MintEthModal: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [addressInput, setAddressInput] = useState<string>('');
-  const [errMessage, setErrMessage] = useState('');
 
-  const [quantity, setQuantity] = useState(1);
-
-  const priceFormat = formatEthPrice(projectData?.mintPriceEth || '', '0.0');
   const totalFormatPrice = formatEthPrice(
-    totalPrice
-      ? `${Number(totalPrice) * quantity}`
-      : `${
-          (Number(projectData?.mintPriceEth) +
-            Number(projectData?.networkFeeEth)) *
-          quantity
-        }` || '',
+    totalPrice ||
+      `${
+        Number(projectData?.mintPriceEth) + Number(projectData?.networkFeeEth)
+      }` ||
+      '',
     '0.0'
   );
+
   const feePriceFormat = formatEthPrice(
     `${
       totalPrice
@@ -83,20 +78,6 @@ const MintEthModal: React.FC = () => {
     }`,
     '0.0'
   );
-
-  const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuantity(Number(e.target.value));
-  };
-
-  const onClickMinus = () => {
-    if (quantity > 1) {
-      setQuantity(quantity - 1);
-    }
-  };
-
-  const onClickPlus = () => {
-    setQuantity(quantity + 1);
-  };
 
   const userAddress = React.useMemo(() => {
     return {
@@ -121,7 +102,7 @@ const MintEthModal: React.FC = () => {
 
   useEffect(() => {
     if (receiverAddress) {
-      handleTransfer(receiverAddress, totalFormatPrice);
+      handleTransfer(receiverAddress, formatEthPrice(totalPrice));
     }
   }, [receiverAddress, totalPrice]);
 
@@ -136,6 +117,7 @@ const MintEthModal: React.FC = () => {
           refundAddress: refundAddress,
           projectData,
           paymentMethod,
+          quantity: 1,
         });
         if (!_address || !_price) {
           toast.error(ErrorMessage.DEFAULT);
@@ -146,13 +128,6 @@ const MintEthModal: React.FC = () => {
         setReceiverAddress(_address);
         setsTep('showAddress');
       } catch (err: unknown) {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        if (err && err?.message) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          setErrMessage(err?.message);
-        }
         setReceiverAddress(null);
       } finally {
         setIsLoading(false);
@@ -220,7 +195,6 @@ const MintEthModal: React.FC = () => {
   };
 
   const _onClose = () => {
-    setErrMessage('');
     setIsPopupPayment(false);
   };
 
@@ -257,44 +231,16 @@ const MintEthModal: React.FC = () => {
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
-                      <p
-                        className={s.paymentPrice_price}
-                      >{`${priceFormat} ETH`}</p>
+                      <p className={s.paymentPrice_price}>{`${formatEthPrice(
+                        projectData?.mintPriceEth || '',
+                        '0.0'
+                      )} ETH`}</p>
                     </div>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Inscription fee</p>
                       <p
                         className={s.paymentPrice_price}
                       >{`${feePriceFormat} ETH`}</p>
-                    </div>
-                    <div className={s.paymentPrice} style={{ marginTop: 4 }}>
-                      <p className={s.paymentPrice_title}>Quantity</p>
-                      {step === 'info' ? (
-                        <div className={s.paymentPrice_inputContainer}>
-                          <SvgInset
-                            className={s.paymentPrice_inputContainer_icon}
-                            size={18}
-                            svgUrl={`${CDN_URL}/icons/ic-minus.svg`}
-                            onClick={onClickMinus}
-                          />
-                          <input
-                            type="number"
-                            name="quantity"
-                            placeholder=""
-                            value={`${quantity}`}
-                            onChange={onChangeQuantity}
-                            className={s.paymentPrice_inputContainer_input}
-                          />
-                          <SvgInset
-                            className={s.paymentPrice_inputContainer_icon}
-                            size={18}
-                            svgUrl={`${CDN_URL}/icons/ic-plus.svg`}
-                            onClick={onClickPlus}
-                          />
-                        </div>
-                      ) : (
-                        <p className={s.paymentPrice_price}>{quantity}</p>
-                      )}
                     </div>
                     <div className={s.indicator} />
 
@@ -391,6 +337,10 @@ const MintEthModal: React.FC = () => {
 
                               {useWallet === 'another' && (
                                 <div className={s.formItem}>
+                                  {/* <label className={s.label} htmlFor="address">
+                                    {`Enter the Ordinals-compatible address to
+                                receive your minting inscription`}
+                                  </label> */}
                                   <div className={s.inputContainer}>
                                     <input
                                       id="address"
@@ -418,7 +368,7 @@ const MintEthModal: React.FC = () => {
                               type="submit"
                               sizes="large"
                               className={s.buyBtn}
-                              disabled={isLoading || quantity === 0}
+                              disabled={isLoading}
                             >
                               Pay
                             </ButtonIcon>
@@ -431,7 +381,7 @@ const MintEthModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading || quantity === 0}
+                        disabled={isLoading}
                         onClick={onClickPay}
                       >
                         Pay
@@ -444,9 +394,9 @@ const MintEthModal: React.FC = () => {
                       </div>
                     )}
 
-                    {!!errMessage && (
+                    {/* {!!errMessage && (
                       <div className={s.error}>{errMessage}</div>
-                    )}
+                    )} */}
                   </div>
                 </Col>
 

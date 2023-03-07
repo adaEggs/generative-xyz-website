@@ -19,8 +19,8 @@ export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: 'Generative | Developers',
-        description: '',
+        title: 'Generative | Generative Ordinal Services',
+        description: 'The Ordinal development platform.',
         image: `${CDN_URL}/images/wallet-seo.jpg`,
       },
     },

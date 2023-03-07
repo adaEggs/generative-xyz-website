@@ -101,6 +101,7 @@ const MintEthModal: React.FC = () => {
         projectID: projectData.tokenID,
         payType: 'eth',
         refundUserAddress: refundAddress,
+        quantity: 1,
       });
 
       sendAAEvent({

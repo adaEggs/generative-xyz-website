@@ -101,6 +101,10 @@
     padding-top: rem(48px);
     padding-bottom: rem(40px);
     min-height: 344px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
     @include mobile {
       padding-top: rem(16px);
@@ -417,6 +421,25 @@
       color: #333;
     }
 
+    &_inputContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      border: 1px solid #cecece;
+      padding: 8px;
+
+      &_input {
+        max-width: 52px;
+        text-align: center;
+        font-size: rem(18px);
+        font-weight: 400;
+      }
+
+      &_icon {
+        cursor: pointer;
+      }
+    }
+
     &_copyContainer {
       display: flex;
       flex-direction: row;
@@ -518,4 +541,9 @@
   .close {
     transform: rotate(-180deg);
   }
+}
+
+.thumbnail {
+  width: rem(200px);
+  height: rem(200px);
 }

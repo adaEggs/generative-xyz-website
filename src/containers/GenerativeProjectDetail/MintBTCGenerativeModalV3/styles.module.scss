@@ -417,6 +417,26 @@
       color: #333;
     }
 
+    &_inputContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      border: 1px solid #cecece;
+      padding: 8px;
+
+      &_input {
+        // padding: 0px 12px;
+        max-width: 52px;
+        text-align: center;
+        font-size: rem(18px);
+        font-weight: 400;
+      }
+
+      &_icon {
+        cursor: pointer;
+      }
+    }
+
     &_copyContainer {
       display: flex;
       flex-direction: row;
