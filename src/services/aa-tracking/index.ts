@@ -51,10 +51,6 @@ const sendAAEvent = ({
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const eventParams: any = [];
-    eventParams.push({
-      key: LocalStorageKey.USER_WALLET_ADDRESS,
-      value: localStorage.getItem(LocalStorageKey.USER_WALLET_ADDRESS) || '',
-    });
 
     data &&
       Object.keys(data || {}).map(key => {
