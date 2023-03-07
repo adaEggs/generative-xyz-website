@@ -2,7 +2,7 @@ import { NextPage, GetServerSidePropsContext } from 'next';
 import { SWRConfig } from 'swr';
 
 import SearchWrapper from '@containers/Search';
-import { PAYLOAD_DEFAULT, OBJECT_TYPE } from '@containers/Search/constant';
+// import { PAYLOAD_DEFAULT, OBJECT_TYPE } from '@containers/Search/constant';
 import MarketplaceLayout from '@layouts/Marketplace';
 import { CDN_URL } from '@constants/config';
 import { getSearchByKeyword, getApiKey, swrFetcher } from '@services/search';
@@ -16,9 +16,10 @@ const SearchPage: NextPage = ({ fallback }: SearchPageProps) => {
     <MarketplaceLayout>
       <SWRConfig
         value={{
+          keepPreviousData: true,
           revalidateOnFocus: false,
           revalidateIfStale: false,
-          fetcher: swrFetcher,
+          fetcher: getSearchByKeyword,
           fallback: fallback || {},
         }}
       >
@@ -31,48 +32,48 @@ const SearchPage: NextPage = ({ fallback }: SearchPageProps) => {
 export default SearchPage;
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  const { keyword = '' } = context.query;
-  const filterBase = {
-    ...PAYLOAD_DEFAULT,
-    keyword,
-  };
-  const filterProjectParams = {
-    ...filterBase,
-    type: OBJECT_TYPE.PROJECT,
-  };
-  const filterArtistParams = {
-    ...filterBase,
-    type: OBJECT_TYPE.ARTIST,
-  };
-  const filterTokenParams = {
-    ...filterBase,
-    type: OBJECT_TYPE.TOKEN,
-  };
-  const filterInscriptionParams = {
-    ...filterBase,
-    type: OBJECT_TYPE.INSCRIPTION,
-  };
+  // const { keyword = '' } = context.query;
+  // const filterBase = {
+  //   ...PAYLOAD_DEFAULT,
+  //   keyword,
+  // };
+  // const filterProjectParams = {
+  //   ...filterBase,
+  //   type: OBJECT_TYPE.PROJECT,
+  // };
+  // const filterArtistParams = {
+  //   ...filterBase,
+  //   type: OBJECT_TYPE.ARTIST,
+  // };
+  // const filterTokenParams = {
+  //   ...filterBase,
+  //   type: OBJECT_TYPE.TOKEN,
+  // };
+  // const filterInscriptionParams = {
+  //   ...filterBase,
+  //   type: OBJECT_TYPE.INSCRIPTION,
+  // };
 
-  const [
-    resultByProjects,
-    resultByArtists,
-    resultByTokens,
-    resultByInscriptions,
-  ] = await Promise.all([
-    getSearchByKeyword(filterProjectParams),
-    getSearchByKeyword(filterArtistParams),
-    getSearchByKeyword(filterTokenParams),
-    getSearchByKeyword(filterInscriptionParams),
-  ]);
+  // const [
+  //   resultByProjects,
+  //   resultByArtists,
+  //   resultByTokens,
+  //   resultByInscriptions,
+  // ] = await Promise.all([
+  //   getSearchByKeyword(filterProjectParams),
+  //   getSearchByKeyword(filterArtistParams),
+  //   getSearchByKeyword(filterTokenParams),
+  //   getSearchByKeyword(filterInscriptionParams),
+  // ]);
 
   return {
     props: {
       fallback: {
-        [getApiKey(getSearchByKeyword, filterProjectParams)]: resultByProjects,
-        [getApiKey(getSearchByKeyword, filterArtistParams)]: resultByArtists,
-        [getApiKey(getSearchByKeyword, filterTokenParams)]: resultByTokens,
-        [getApiKey(getSearchByKeyword, filterInscriptionParams)]:
-          resultByInscriptions,
+        // [getApiKey(getSearchByKeyword, filterProjectParams)]: resultByProjects,
+        // [getApiKey(getSearchByKeyword, filterArtistParams)]: resultByArtists,
+        // [getApiKey(getSearchByKeyword, filterTokenParams)]: resultByTokens,
+        // [getApiKey(getSearchByKeyword, filterInscriptionParams)]:
+        //   resultByInscriptions,
       },
       seoInfo: {
         title: 'Generative | Search',

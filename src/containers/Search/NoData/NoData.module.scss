@@ -1,0 +1,13 @@
+.noData {
+  display: flex;
+  align-items: center;
+  font-size: rem(16);
+  font-weight: 400;
+  color: $black-100;
+  &_mr14 {
+    margin-right: rem(14.4);
+  }
+  &_keyword {
+    font-weight: 600;
+  }
+}

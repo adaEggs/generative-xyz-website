@@ -15,7 +15,7 @@ import { getUsers } from '@services/user';
 import { formatLongAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
-import { debounce } from 'lodash';
+// import { debounce } from 'lodash';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { v4 } from 'uuid';
@@ -116,15 +116,15 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
         <input
           className={s.input}
           placeholder="Collection, artist, address…"
-          onChange={debounce(e => {
-            setSearchText(e.target.value);
-            setShowResult(true);
-          }, 300)}
-          onFocus={e => {
-            setSearchText(e.target.value);
-            setShowResult(true);
-            setInputFocus(true);
-          }}
+          // onChange={debounce(e => {
+          //   setSearchText(e.target.value);
+          //   setShowResult(true);
+          // }, 300)}
+          // onFocus={e => {
+          //   setSearchText(e.target.value);
+          //   setShowResult(true);
+          //   setInputFocus(true);
+          // }}
           ref={inputSearchRef}
           onKeyDown={handleKeyDownSearch}
         />

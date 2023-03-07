@@ -1,16 +1,15 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Row, Col } from 'react-bootstrap';
 import cn from 'classnames';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
 
-import { getSearchByKeyword, getApiKey } from '@services/search';
-import { CDN_URL } from '@constants/config';
-import SvgInset from '@components/SvgInset';
-import { prettyNumberWithCommas } from '@utils/units';
+// import { CDN_URL } from '@constants/config';
+// import SvgInset from '@components/SvgInset';
+// import { prettyNumberWithCommas } from '@utils/units';
+import Heading from '@components/Heading';
 
 import s from './Filter.module.scss';
-import { PAYLOAD_DEFAULT, OBJECT_TYPE } from '../constant';
+// import useSearchApi from '../useApi';
 
 interface FilterProps {
   className?: string;
@@ -20,87 +19,36 @@ const Filter = ({ className }: FilterProps): JSX.Element => {
   const router = useRouter();
   const { keyword = '' } = router.query;
 
-  const filterBase = {
-    ...PAYLOAD_DEFAULT,
-    keyword,
-  };
-  const filterArtistParams = {
-    ...filterBase,
-    type: OBJECT_TYPE.ARTIST,
-  };
-  const filterTokenParams = {
-    ...filterBase,
-    type: OBJECT_TYPE.TOKEN,
-  };
-  const filterInscriptionParams = {
-    ...filterBase,
-    type: OBJECT_TYPE.INSCRIPTION,
-  };
+  // const { searchTotal } = useSearchApi({ keyword });
 
-  const filterCollectionParams = {
-    ...PAYLOAD_DEFAULT,
-    keyword,
-    type: OBJECT_TYPE.PROJECT,
-  };
-  const { data: resultByCollection } = useSWR(
-    getApiKey(getSearchByKeyword, filterCollectionParams),
-    () => getSearchByKeyword(filterCollectionParams)
-  );
+  // const onRemoveKeyword = () => {
+  //   router.replace({
+  //     query: { ...router.query, keyword: '' },
+  //   });
+  // };
 
-  const { data: resultByArtists } = useSWR(
-    getApiKey(getSearchByKeyword, filterArtistParams),
-    () => getSearchByKeyword(filterArtistParams)
-  );
-  const { data: resultByTokens } = useSWR(
-    getApiKey(getSearchByKeyword, filterTokenParams),
-    () => getSearchByKeyword(filterTokenParams)
-  );
-  const { data: resultByInscriptions } = useSWR(
-    getApiKey(getSearchByKeyword, filterInscriptionParams),
-    () => getSearchByKeyword(filterInscriptionParams)
-  );
-
-  const onRemoveKeyword = () => {
-    router.replace({
-      query: { ...router.query, keyword: '' },
-    });
-  };
-
-  const searchTotal = useMemo(() => {
-    return (
-      (resultByCollection?.total || 0) +
-      (resultByArtists?.total || 0) +
-      (resultByTokens?.total || 0) +
-      (resultByInscriptions?.total || 0)
-    );
-  }, [
-    keyword,
-    resultByCollection?.total,
-    resultByArtists?.total,
-    resultByTokens?.total,
-    resultByInscriptions?.total,
-  ]);
+  if (!keyword) return <></>;
 
   return (
     <div className={cn(s.filter, className)}>
       <Row>
         <Col md={12}>
-          <div className={s.filter_totalResult}>
+          <Heading as="h4" fontWeight="medium" className={s.filter_title}>
+            {keyword}
+          </Heading>
+          {/* <div className={s.filter_totalResult}>
             <span>{prettyNumberWithCommas(searchTotal)}</span>
             &nbsp;items
-          </div>
-          {keyword && (
-            <div className="horizontalStack">
-              <div className={s.filter_tag}>
-                <span>{keyword}</span>
-                <SvgInset
-                  svgUrl={`${CDN_URL}/icons/close.svg`}
-                  onClick={onRemoveKeyword}
-                />
-              </div>
-              {/* <button className={s.filter_btnClear}>Clear all</button> */}
+          </div> */}
+          {/* <div className="horizontalStack">
+            <div className={s.filter_tag}>
+              <span>{keyword}</span>
+              <SvgInset
+                svgUrl={`${CDN_URL}/icons/close.svg`}
+                onClick={onRemoveKeyword}
+              />
             </div>
-          )}
+          </div> */}
         </Col>
       </Row>
     </div>
