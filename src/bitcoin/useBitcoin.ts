@@ -115,7 +115,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex } = await GENERATIVE_SDK.reqBuyInscription({
+    const { txID, txHex, splitTxRaw } = await GENERATIVE_SDK.reqBuyInscription({
       buyerPrivateKey: privateKey,
       feeRatePerByte: feeRate,
       inscriptions: collectedUTXOs.inscriptions_by_outputs,
@@ -124,7 +124,6 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       sellerSignedPsbtB64: sellerSignedPsbtB64,
       utxos: collectedUTXOs.txrefs,
     });
-
     await trackTx({
       txhash: txID,
       address: taprootAddress,
@@ -134,8 +133,12 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       send_amount: price,
       type: TrackTxType.buyInscription,
     });
+
     // broadcast tx
-    await broadcastTx(txHex);
+    await Promise.all([
+      await broadcastTx(splitTxRaw),
+      await broadcastTx(txHex),
+    ]);
   };
 
   const listInscription = async ({

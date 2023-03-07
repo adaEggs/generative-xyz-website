@@ -19,6 +19,7 @@ import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import { CDN_URL } from '@constants/config';
 import SvgInset from '@components/SvgInset';
+import ButtonIcon from '@components/ButtonIcon';
 
 interface IPros {
   project: Project;
@@ -81,13 +82,16 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const renderFooter = () => {
     if (project.btcFloorPrice && mintedOut) {
       return (
-        <Text
-          fontWeight="medium"
-          color="black-40-solid"
-          className={s.projectCard_info_mintoutContainer_floorPrice}
-        >
-          {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
-        </Text>
+        <div className={s.row}>
+          <span
+            className={`${s.projectCard_info_price_price_minted} ${s.isOnlyMintedShow}`}
+          >
+            {minted}
+          </span>
+          <ButtonIcon sizes="xsmall">
+            {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
+          </ButtonIcon>
+        </div>
       );
     }
     if (mintedOut) {
