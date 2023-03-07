@@ -33,6 +33,9 @@ const MIN_PRICE = 0.005;
 const INITIAL_LISTING_FEE: IListingFee = {
   serviceFee: 0,
   royaltyFee: 0,
+  royaltyAddress: '',
+  serviceAddress: '',
+  projectID: '',
 };
 
 interface IProps {
@@ -438,7 +441,7 @@ const ListForSaleModal = ({
                               {listingFee.serviceFee
                                 ? convertFee(
                                     Number(values.price || 0),
-                                    listingFee.serviceFee
+                                    Number(listingFee.serviceFee)
                                   )
                                 : 'FREE'}
                             </Text>
@@ -465,7 +468,7 @@ const ListForSaleModal = ({
                                 >
                                   {convertFee(
                                     Number(values.price || 0),
-                                    listingFee.royaltyFee
+                                    Number(listingFee.royaltyFee)
                                   )}
                                   &nbsp;BTC
                                 </Text>

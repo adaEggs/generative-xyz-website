@@ -28,8 +28,10 @@ export const ROUTE_PATH = {
   SEARCH: '/search',
   FREE_INSCRIPTION: '/free',
   AUTHENTIC: '/authentic',
+  AUTHENTIC_INSCRIPTIONS: '/authentic-inscriptions',
   AIRDROP: '/airdrop',
   MINT_STATUS: '/mint-status',
+  DEVELOPER: '/developers',
 };
 
 export const STANDALONE_PAGES = [

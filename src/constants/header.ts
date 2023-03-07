@@ -59,9 +59,15 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-10',
-    name: 'Authentic Inscription (coming soon)',
-    route: ROUTE_PATH.AUTHENTIC,
-    activePath: 'authentic',
+    name: 'Authentic Inscription',
+    route: ROUTE_PATH.AUTHENTIC_INSCRIPTIONS,
+    activePath: 'authentic-inscriptions',
+  },
+  {
+    id: 'menu-11',
+    name: 'Developers',
+    route: ROUTE_PATH.DEVELOPER,
+    activePath: 'developers',
   },
 ];
 

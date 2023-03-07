@@ -229,6 +229,7 @@ const SetPrice = () => {
         tokenDescription,
         categories,
         tags,
+        captureImageTime,
       } = formValues;
 
       let thumbnailUrl = '';
@@ -288,6 +289,7 @@ const SetPrice = () => {
       if (collectionType === CollectionType.GENERATIVE) {
         const animationURL = await fileToBase64(rawFile);
         payload.animationURL = animationURL as string;
+        payload.captureImageTime = captureImageTime ?? 20;
         if (filesSandbox) {
           const libs = await detectUsedLibs(filesSandbox);
           payload.isFullChain = libs.length === 0;
@@ -332,7 +334,10 @@ const SetPrice = () => {
     <Formik
       key="setPriceForm"
       initialValues={{
-        maxSupply: formValues.maxSupply || '',
+        maxSupply:
+          collectionType === CollectionType.ONE
+            ? 1
+            : formValues.maxSupply || '',
         mintPrice: formValues.mintPrice || '',
         royalty: formValues.royalty || '',
         // creatorWalletAddress: formValues.creatorWalletAddress ?? '',
@@ -372,6 +377,7 @@ const SetPrice = () => {
                     value={values.maxSupply}
                     className={s.input}
                     placeholder="Provide a number"
+                    disabled={collectionType === CollectionType.ONE}
                   />
                   <div className={s.inputPostfix}>Items</div>
                 </div>

@@ -6,6 +6,10 @@
   min-height: 100vh;
 
   .leftContainer {
+    @include mobile {
+      margin-top: rem(34px) !important;
+    }
+
     .title {
       font-weight: 500;
       font-size: rem(24px);
@@ -23,7 +27,6 @@
 
       @include mobile {
         font-size: rem(28px);
-        text-align: center;
       }
     }
 

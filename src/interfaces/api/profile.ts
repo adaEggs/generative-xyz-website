@@ -45,6 +45,10 @@ export interface ICollectedNFTItem {
   amount?: string;
   payType?: string;
   projectImage?: string;
+  buyable: boolean;
+  priceBTC: string;
+  orderID: string;
+  cancelling: boolean;
 }
 
 export interface IStatusTransactionMint {
@@ -72,6 +76,10 @@ export interface IGetMintingCollectedNFTResp {
   };
   payType: string;
   amount: string;
+  buyable: boolean;
+  priceBTC: string;
+  orderID: string;
+  cancelling: boolean;
 }
 
 export interface IGetCollectedNFTInsciptionResp {
@@ -83,6 +91,10 @@ export interface IGetCollectedNFTInsciptionResp {
   project_id: string;
   project_name: string;
   thumbnail: string;
+  buyable: boolean;
+  price_btc: string;
+  order_id: string;
+  cancelling: boolean;
 }
 
 export interface IGetCollectedNFTsResp {

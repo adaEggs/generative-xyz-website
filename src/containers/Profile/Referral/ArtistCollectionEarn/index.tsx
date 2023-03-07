@@ -15,7 +15,7 @@ import { IWithdrawRefereeRewardPayload } from '@interfaces/api/profile';
 import { ProjectVolume } from '@interfaces/project';
 import { withdrawRewardEarned } from '@services/profile';
 import { getProjectVolume } from '@services/project';
-import { formatBTCPrice, formatEthPrice } from '@utils/format';
+import { formatBTCPrice } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import Image from 'next/image';
@@ -49,8 +49,8 @@ const ArtistCollectionEarn = ({
   const TABLE_ARTISTS_HEADING = [
     'Collection',
     'Outputs',
-    'Mint price',
-    'Availabel volume',
+    // 'Mint price',
+    'Available volume',
     <>
       <Stack direction="horizontal" gap={2} className={s.switch_currency}>
         <ToogleSwitch
@@ -153,15 +153,15 @@ const ArtistCollectionEarn = ({
     const totalVolume = project?.available;
     const status = project?.status;
 
-    const mintPriceEth =
-      !item.mintPriceEth || item.mintPriceEth === '0'
-        ? '-'
-        : `${formatEthPrice(item.mintPriceEth)} ETH`;
+    // const mintPriceEth =
+    //   !item.mintPriceEth || item.mintPriceEth === '0'
+    //     ? '-'
+    //     : `${formatEthPrice(item.mintPriceEth)} ETH`;
 
-    const mintPriceBtc =
-      !item.mintPrice || item.mintPrice === '0'
-        ? '-'
-        : `${formatBTCPrice(item.mintPrice)} BTC`;
+    // const mintPriceBtc =
+    //   !item.mintPrice || item.mintPrice === '0'
+    //     ? '-'
+    //     : `${formatBTCPrice(item.mintPrice)} BTC`;
 
     return {
       id: `${item.id}-record`,
@@ -187,11 +187,11 @@ const ArtistCollectionEarn = ({
             {item.mintingInfo.index}/{item.maxSupply}
           </>
         ),
-        mintPrice: (
-          <>
-            {currencyRecord === CurrencyType.ETH ? mintPriceEth : mintPriceBtc}
-          </>
-        ),
+        // mintPrice: (
+        //   <>
+        //     {currencyRecord === CurrencyType.ETH ? mintPriceEth : mintPriceBtc}
+        //   </>
+        // ),
         volume: (
           <>
             {!totalVolume && '-'}

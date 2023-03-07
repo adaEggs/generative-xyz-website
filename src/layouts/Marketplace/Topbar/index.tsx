@@ -5,6 +5,7 @@ import s from './styles.module.scss';
 import { CDN_URL } from '@constants/config';
 import cs from 'classnames';
 import SvgInset from '@components/SvgInset';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const Topbar: React.FC = (): React.ReactElement => {
   return (
@@ -13,13 +14,9 @@ const Topbar: React.FC = (): React.ReactElement => {
         <div className="d-flex align-items-center justify-content-between">
           <div className={s.left}>
             <p className={s.text}>
-              You’re new Artist? -{' '}
-              <Link
-                className={s.startedLink}
-                target="_blank"
-                href={SOCIALS.docsForArtist}
-              >
-                Started here
+              New artist?{' '}
+              <Link className={s.startedLink} href={ROUTE_PATH.ARTISTS}>
+                Start here.
               </Link>
             </p>
           </div>
@@ -29,17 +26,6 @@ const Topbar: React.FC = (): React.ReactElement => {
               'd-flex align-items-center justify-content-between'
             )}
           >
-            <Link
-              className={s.socialLink}
-              target="_blank"
-              href={SOCIALS.github}
-            >
-              <SvgInset
-                size={18}
-                svgUrl={`${CDN_URL}/icons/ic-github-18x18.svg`}
-              />
-            </Link>
-
             <Link
               className={s.socialLink}
               target="_blank"

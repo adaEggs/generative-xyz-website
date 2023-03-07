@@ -3,8 +3,6 @@ import ButtonIcon from '@components/ButtonIcon';
 import Input from '@components/Formik/Input';
 import ImagePreviewInput from '@components/ImagePreviewInput';
 import Text from '@components/Text';
-import { ROUTE_PATH } from '@constants/route-path';
-import { WalletContext } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
 import { IApikey, IUpdateProfilePayload } from '@interfaces/api/profile';
 import { useAppDispatch, useAppSelector } from '@redux';
@@ -16,24 +14,21 @@ import log from '@utils/logger';
 import { validateBTCAddress, validateEVMAddress } from '@utils/validate';
 import { Formik } from 'formik';
 import _isEmpty from 'lodash/isEmpty';
-import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
-import ButtonExportKey from '@containers/Profile/ButtonExportKey';
 import DeveloperTab from './DeveloperTab';
+import WalletTab from './WalletTab';
 
 const LOG_PREFIX = 'FormEditProfile';
 
 const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
   const user = useAppSelector(getUserSelector);
   const [uploadError, setUploadError] = useState<boolean>(false);
-  const route = useRouter();
   const dispatch = useAppDispatch();
-  const walletCtx = useContext(WalletContext);
 
   const [newFile, setNewFile] = useState<File | null | undefined>();
 
@@ -285,38 +280,7 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
               </div>
             </div>
           )}
-          {tab === 'export' && (
-            <div className={s.wrapExport}>
-              <div className={s.wrapExport_wrapWarning}>
-                <SvgInset
-                  size={18}
-                  className={s.wrapExport_wrapWarning_iconBell}
-                  svgUrl={`${CDN_URL}/icons/ic-bell.svg`}
-                />
-                <div>
-                  <Text className={s.wrapExport_wrapWarning_title}>
-                    Warning
-                  </Text>
-                  <Text className={s.wrapExport_wrapWarning_content}>
-                    Never disclose this key. Anyone with your private keys can
-                    steal any assets held in your account.
-                  </Text>
-                </div>
-              </div>
-              <div className={s.wrapExport_row}>
-                <ButtonIcon
-                  variants="secondary"
-                  onClick={() => {
-                    walletCtx.disconnect();
-                    route.replace(ROUTE_PATH.WALLET);
-                  }}
-                >
-                  Disconnect wallet
-                </ButtonIcon>
-                <ButtonExportKey />
-              </div>
-            </div>
-          )}
+          {tab === 'export' && <WalletTab />}
           {tab === 'developer' && (
             <DeveloperTab
               loading={loading}

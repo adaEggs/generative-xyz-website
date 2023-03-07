@@ -32,7 +32,7 @@ const ReferralTab = () => {
   const user = useAppSelector(getUserSelector);
   const router = useRouter();
   const { referralListing, currency, setCurrency } = useContext(ProfileContext);
-
+  const [isProcessing, setIsProcessing] = useState(false);
   const [showWithdrawSucessModal, setShowWithdrawSucessModal] = useState<{
     isShow: boolean;
     data: IWithdrawRefereeRewardPayload | null;
@@ -68,14 +68,14 @@ const ReferralTab = () => {
   const referralLink = `${location.origin}${ROUTE_PATH.HOME}?referral_code=${user?.id}`;
 
   const handleWithdraw = async (amount: string, id: string) => {
-    const payload: IWithdrawRefereeRewardPayload = {
-      amount,
-      paymentType: currency.toLowerCase(),
-      type: 'referal',
-      id,
-    };
-
     try {
+      setIsProcessing(true);
+      const payload: IWithdrawRefereeRewardPayload = {
+        amount,
+        paymentType: currency.toLowerCase(),
+        type: 'referal',
+        id,
+      };
       await withdrawRewardEarned(payload);
       setShowWithdrawSucessModal({
         isShow: true,
@@ -83,7 +83,8 @@ const ReferralTab = () => {
       });
     } catch (err: unknown) {
       log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
-      throw Error();
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -132,7 +133,7 @@ const ReferralTab = () => {
             <ButtonIcon
               sizes="small"
               variants="outline-small"
-              disabled={!Number(calculateWithdrawAmount)}
+              disabled={!Number(calculateWithdrawAmount) || isProcessing}
               onClick={() =>
                 handleWithdraw(item.referreeVolumn.earn || '', item.referreeID)
               }

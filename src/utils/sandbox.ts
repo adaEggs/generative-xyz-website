@@ -1,40 +1,35 @@
-import FileType from 'file-type/browser';
+import { SANDBOX_BTC_IMAGE_SIZE_LIMIT } from '@constants/config';
 import {
   HTML_EXTENSION,
   JS_EXTENSION,
   NAIVE_MIMES,
   ZIP_MIMES,
 } from '@constants/file';
+import { THIRD_PARTY_SCRIPTS } from '@constants/mint-generative';
+import {
+  SNIPPET_CONTRACT_CODE_SELECTOR,
+  SNIPPET_RANDOM_CODE_SELECTOR,
+} from '@constants/sandbox';
+import {
+  SNIPPET_CONTRACT_HTML,
+  SNIPPET_RANDOM_HTML,
+} from '@constants/snippet-html';
+import { LogLevel } from '@enums/log-level';
 import { ImageFileError, SandboxFileError } from '@enums/sandbox';
 import {
   ImageCollectionFiles,
   SandboxFileContent,
   SandboxFiles,
 } from '@interfaces/sandbox';
+import { minifyFile } from '@services/file';
 import {
   getFileExtensionByFileName,
-  getMediaTypeFromFileExt,
   getSupportedFileExtList,
   unzipFile,
 } from '@utils/file';
-import {
-  SNIPPET_CONTRACT_HTML,
-  SNIPPET_RANDOM_HTML,
-} from '@constants/snippet-html';
-import {
-  SNIPPET_CONTRACT_CODE_SELECTOR,
-  SNIPPET_RANDOM_CODE_SELECTOR,
-} from '@constants/sandbox';
-import { minifyFile } from '@services/file';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
 import { utf8ToBase64 } from '@utils/format';
-import { THIRD_PARTY_SCRIPTS } from '@constants/mint-generative';
-import {
-  SANDBOX_BTC_IMAGE_SIZE_LIMIT,
-  SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT,
-} from '@constants/config';
-import { MediaType } from '@enums/file';
+import log from '@utils/logger';
+import FileType from 'file-type/browser';
 
 const LOG_PREFIX = 'SandboxUtil';
 
@@ -182,7 +177,8 @@ export const detectUsedLibs = async (
 };
 
 export const processCollectionZipFile = async (
-  file: File
+  file: File,
+  maxFiles?: number
 ): Promise<ImageCollectionFiles> => {
   const fileType = await FileType.fromBlob(file);
 
@@ -200,13 +196,17 @@ export const processCollectionZipFile = async (
   const record: ImageCollectionFiles = {};
   const fileExtList = new Set();
 
+  if (maxFiles && Object.keys(files).length > maxFiles) {
+    throw Error(ImageFileError.ONLY_ONE_FILE_ALLOWED);
+  }
+
   for (const fileName in files) {
     const file = files[fileName];
     let error = null;
 
     // Check file extension
     const fileExt = getFileExtensionByFileName(fileName) ?? '';
-    const fileMediaType = getMediaTypeFromFileExt(fileExt);
+    // const fileMediaType = getMediaTypeFromFileExt(fileExt);
 
     fileExtList.add(fileExt);
     if (fileExtList.size > 1) {
@@ -223,16 +223,17 @@ export const processCollectionZipFile = async (
     // Check file size is smaller than SANDBOX_BTC_IMAGE_SIZE_LIMIT
     const fileSizeInKb = file.size / 1024;
     if (
-      fileMediaType === MediaType.IMAGE &&
+      // fileMediaType === MediaType.IMAGE &&
       fileSizeInKb > SANDBOX_BTC_IMAGE_SIZE_LIMIT
     ) {
       error = ImageFileError.TOO_LARGE;
-    } else if (
-      fileMediaType !== MediaType.IMAGE &&
-      fileSizeInKb > SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT
-    ) {
-      error = ImageFileError.TOO_LARGE;
     }
+    // else if (
+    //   fileMediaType !== MediaType.IMAGE &&
+    //   fileSizeInKb > SANDBOX_BTC_IMAGE_SIZE_LIMIT
+    // ) {
+    //   error = ImageFileError.TOO_LARGE;
+    // }
 
     record[fileName] = {
       blob: file,

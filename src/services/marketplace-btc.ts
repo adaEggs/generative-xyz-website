@@ -87,10 +87,11 @@ export const getListingFee = async (
 ): Promise<IListingFee> => {
   try {
     const res = await post<IListingFeePayload, IListingFee>(
-      `${API_PATH}/listing-fee`,
+      `/dex/listing-fee`,
       payload
     );
     return {
+      ...res,
       royaltyFee: Number(res.royaltyFee || 0),
       serviceFee: Number(res.serviceFee || 0),
     };
@@ -144,6 +145,7 @@ export const getInscriptionDetail = async (
       description: '',
       image: '',
       contentLength: randomStr,
+      owner: dataRes?.address,
     };
   } catch (err: unknown) {
     log('failed to get ordinal detail', LogLevel.ERROR, LOG_PREFIX);

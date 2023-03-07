@@ -338,7 +338,6 @@ const ProjectIntroSection = ({
                       }
                       target="_blank"
                     >
-                      @
                       {project?.creatorProfile?.profileSocial?.twitter
                         .split('/')
                         .pop()}
@@ -453,7 +452,7 @@ const ProjectIntroSection = ({
                 !project?.isHidden && (
                   <>
                     <ButtonIcon
-                      sizes="large"
+                      sizes="medium"
                       className={`${s.mint_btn}`}
                       onClick={() => {
                         const element = document.getElementById('PROJECT_LIST');
@@ -464,11 +463,10 @@ const ProjectIntroSection = ({
                       }}
                     >
                       <Text as="span" size="14" fontWeight="medium">
-                        <>
-                          <span>{`Buy now • ${formatBTCPrice(
-                            project.btcFloorPrice
-                          )} BTC`}</span>
-                        </>
+                        Buy
+                        <span style={{ marginLeft: 24 }}>{`${formatBTCPrice(
+                          project.btcFloorPrice
+                        )} BTC`}</span>
                       </Text>
                     </ButtonIcon>
                   </>

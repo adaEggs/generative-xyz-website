@@ -60,7 +60,9 @@ const Authentic: React.FC = (): React.ReactElement => {
   return (
     <div className={s.authentic}>
       <div className="container">
-        <h2 className={s.sectionTitle}>Your NFTs Artwork</h2>
+        <h2 className={s.sectionTitle}>
+          Choose an Ethereum NFT to inscribe onto Bitcoin
+        </h2>
 
         <div className={s.inscriptionListWrapper}>
           <InfiniteScroll
