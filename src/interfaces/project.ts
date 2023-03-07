@@ -67,6 +67,7 @@ export type Project = {
   nftTokenId?: string;
   captureImageTime?: number;
   captureThumbnailDelayTime?: number;
+  tokenId?: string;
 };
 
 export type BTCProject = Project & {

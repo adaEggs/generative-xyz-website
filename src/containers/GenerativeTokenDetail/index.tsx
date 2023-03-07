@@ -256,7 +256,9 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             >
               {tokenData?.owner?.displayName ||
                 formatLongAddress(
-                  tokenData?.owner?.walletAddressBtcTaproot || ''
+                  tokenData?.owner?.walletAddressBtcTaproot ||
+                    tokenData?.owner?.walletAddress ||
+                    ''
                 )}
             </Link>
           </Text>
@@ -284,10 +286,15 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               <Loading isLoaded={!!tokenData} className={s.loading_token} />
               <div className={`${s.projectHeader}`}>
                 <Link
-                  href={`${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddressBtcTaproot}`}
+                  href={
+                    projectData?.creatorProfile?.walletAddressBtcTaproot
+                      ? `${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddressBtcTaproot}`
+                      : `${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddress}`
+                  }
                   className={cs(
                     s.creator_info,
                     !projectData?.creatorProfile?.walletAddressBtcTaproot &&
+                      !projectData?.creatorProfile?.walletAddress &&
                       'pointer-none'
                   )}
                 >
@@ -299,6 +306,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     {projectData?.creatorProfile?.displayName ||
                       formatAddress(
                         projectData?.creatorProfile?.walletAddressBtcTaproot ||
+                          projectData?.creatorProfile?.walletAddress ||
                           ''
                       )}
                   </Heading>
@@ -308,6 +316,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   link={SOCIALS.twitter}
                 />
               </div>
+
               <Heading
                 as="h4"
                 className={s.itemInfo_heading}
@@ -429,7 +438,12 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 </div>
               </div>
               <div className="divider" />
-              {isFromAuthentic && <AuthenticCard project={projectData} />}
+              {isFromAuthentic && (
+                <AuthenticCard
+                  tokenID={projectData?.tokenId}
+                  project={projectData}
+                />
+              )}
             </div>
             <ul className={s.shares}>
               <li>
