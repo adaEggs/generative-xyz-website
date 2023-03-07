@@ -56,6 +56,7 @@ import React, {
 } from 'react';
 import toast from 'react-hot-toast';
 import useAsyncEffect from 'use-async-effect';
+import { getError } from '@utils/text';
 
 const LOG_PREFIX = 'ProfileContext';
 
@@ -503,6 +504,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       setCollectedNFTs(filterNTFs);
     } catch (error) {
       // handle fetch data error here
+      toast.error(getError(error).message);
     } finally {
       setIsLoadingProfileCollected(false);
       setIsLoadedProfileCollected(true);
@@ -569,9 +571,6 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       debounceFetchHistory();
     } else {
       setCollectedUTXOs(undefined);
-      setTimeout(() => {
-        setIsLoadedProfileCollected(true);
-      }, 30000);
     }
   }, [currentUser]);
 
