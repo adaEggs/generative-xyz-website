@@ -11,7 +11,7 @@ import AccordionComponent from '@components/Accordion';
 import { formatBTCPrice } from '@utils/format';
 import { retrieveOrder } from '@services/bitcoin';
 import { IRetrieveOrderResp } from '@interfaces/api/bitcoin';
-import { LoaderIcon } from 'react-hot-toast';
+import toast, { LoaderIcon } from 'react-hot-toast';
 import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
@@ -73,6 +73,7 @@ const ModalBuyListed = React.memo(
           receiverInscriptionAddress: values.receiveBTCAddress,
           sellerSignedPsbtB64: orderData.raw_psbt,
         });
+        toast.success('Successfully');
         setTimeout(() => {
           setLoading(false);
           window.location.reload();
