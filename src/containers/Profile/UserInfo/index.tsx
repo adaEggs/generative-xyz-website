@@ -31,6 +31,8 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
   const { currentUser, isLoadingHistory, history } = useContext(ProfileContext);
   const router = useRouter();
 
+  const { walletAddress } = router.query as { walletAddress: string };
+
   const isOwner = currentUser?.id === user?.id;
   const showHistory =
     !isLoadingHistory && !!history && !!history.length && isOwner;
@@ -58,12 +60,14 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                   as={'h4'}
                   title={
                     currentUser?.displayName ||
-                    formatAddress(currentUser?.walletAddress)
+                    formatAddress(currentUser?.walletAddress) ||
+                    formatAddress(walletAddress)
                   }
                   className={s.userInfo_content_wrapper_info_name}
                 >
                   {currentUser?.displayName ||
-                    formatAddress(currentUser?.walletAddress)}
+                    formatAddress(currentUser?.walletAddress) ||
+                    formatAddress(walletAddress)}
                 </Heading>
                 <div className={s.userInfo_content_wrapper_info_icon}>
                   <SocialVerify
