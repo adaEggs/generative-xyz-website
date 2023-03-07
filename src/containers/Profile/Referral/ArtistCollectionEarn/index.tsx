@@ -67,7 +67,7 @@ const ArtistCollectionEarn = ({
           }}
         />
         <Text fontWeight="medium" color="primary-color">
-          ETH
+          {currencyRecord}
         </Text>
       </Stack>
     </>,

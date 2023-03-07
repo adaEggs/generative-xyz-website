@@ -61,7 +61,7 @@ const ReferralTab = () => {
           }}
         />
         <Text fontWeight="medium" color="primary-color">
-          ETH
+          {currency}
         </Text>
       </Stack>
     </>,
@@ -164,6 +164,8 @@ const ReferralTab = () => {
   return (
     <div className={s.wrapper}>
       {/* <Loading isLoaded={needLoading} className={s.loading} /> */}
+      <ArtistCollectionEarn setShowModal={setShowWithdrawSucessModal} />
+
       <div className={s.referral_link}>
         <Stack gap={2}>
           <Heading as="h4" fontWeight="medium">
@@ -229,7 +231,6 @@ const ReferralTab = () => {
           </ButtonIcon>
         </div>
       )} */}
-      <ArtistCollectionEarn setShowModal={setShowWithdrawSucessModal} />
       <WithdrawModal
         data={showWithdrawSucessModal}
         onHideModal={() =>
