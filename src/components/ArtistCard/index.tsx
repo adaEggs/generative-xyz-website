@@ -5,7 +5,7 @@ import { User } from '@interfaces/user';
 import Image from 'next/image';
 import Text from '@components/Text';
 import { formatAddress } from '@utils/format';
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 
 interface IPros {
@@ -14,6 +14,18 @@ interface IPros {
 }
 
 export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  const handleOnImgLoaded = (
+    evt: React.SyntheticEvent<HTMLImageElement>
+  ): void => {
+    const img = evt.target as HTMLImageElement;
+    const naturalWidth = img.naturalWidth;
+    if (naturalWidth < 100 && imgRef.current) {
+      imgRef.current.style.imageRendering = 'pixelated';
+    }
+  };
+
   const arts = useMemo((): string => {
     let artNames = '';
     profile?.projects?.forEach((project, key) => {
@@ -26,6 +38,7 @@ export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
 
     return artNames.trim();
   }, [profile]);
+
   return (
     <Link
       href={`${ROUTE_PATH.PROFILE}/${profile.walletAddress}`}
@@ -39,6 +52,8 @@ export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
               alt={'avatar'}
               width={'432'}
               height={'432'}
+              ref={imgRef}
+              onLoad={handleOnImgLoaded}
             />
           </div>
         </div>
