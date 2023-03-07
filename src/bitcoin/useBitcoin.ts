@@ -115,7 +115,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex } = await GENERATIVE_SDK.reqBuyInscription({
+    const { txID, txHex, splitTxRaw } = await GENERATIVE_SDK.reqBuyInscription({
       buyerPrivateKey: privateKey,
       feeRatePerByte: feeRate,
       inscriptions: collectedUTXOs.inscriptions_by_outputs,
@@ -124,7 +124,6 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       sellerSignedPsbtB64: sellerSignedPsbtB64,
       utxos: collectedUTXOs.txrefs,
     });
-
     await trackTx({
       txhash: txID,
       address: taprootAddress,
@@ -134,8 +133,13 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       send_amount: price,
       type: TrackTxType.buyInscription,
     });
+
     // broadcast tx
-    await broadcastTx(txHex);
+    const tasks = [await broadcastTx(txHex)];
+    if (splitTxRaw) {
+      tasks.push(await broadcastTx(splitTxRaw));
+    }
+    await Promise.all(tasks);
   };
 
   const listInscription = async ({
@@ -155,7 +159,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { splitTxID, base64Psbt } =
+    const { splitTxID, base64Psbt, splitTxRaw } =
       await GENERATIVE_SDK.reqListForSaleInscription({
         sellerPrivateKey: privateKey,
         amountPayToSeller: amountPayToSeller,
@@ -171,6 +175,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       await submitListForSale({
         raw_psbt: base64Psbt,
         inscription_id: inscriptionID,
+        split_tx: splitTxRaw || '',
       }),
     ];
 

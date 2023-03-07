@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DropFile from './DropFile';
 import s from './styles.module.scss';
 import { Formik } from 'formik';
@@ -24,8 +24,6 @@ import { ErrorMessage } from '@enums/error-message';
 import BigNumber from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
-import { WalletContext } from '@contexts/wallet-context';
-import RequestConnectWallet from '@containers/RequestConnectWallet';
 import { useRouter } from 'next/router';
 import { getNFTDetailFromMoralis } from '@services/token-moralis';
 import { IGenerateReceiverAddressPayload } from '@interfaces/api/inscribe';
@@ -41,9 +39,13 @@ interface IFormValue {
   address: string;
 }
 
-const Inscribe: React.FC = (): React.ReactElement => {
+interface IProps {
+  isModal?: boolean;
+}
+
+const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
+  const { isModal = false } = props;
   const user = useSelector(getUserSelector);
-  const walletCtx = useContext(WalletContext);
   const [file, setFile] = useState<File | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
   const [show, setShow] = useState<boolean>(false);
@@ -54,7 +56,6 @@ const Inscribe: React.FC = (): React.ReactElement => {
   const [feeRate, setFeeRate] = useState<InscribeMintFeeRate>(
     InscribeMintFeeRate.FASTEST
   );
-  const [isProcessing, setIsProcessing] = useState(false);
   const router = useRouter();
   const { isAuthentic, tokenAddress, tokenId } = router.query;
 
@@ -209,17 +210,6 @@ const Inscribe: React.FC = (): React.ReactElement => {
     toast.success('Copied');
   };
 
-  const handleConnectWallet = async (): Promise<void> => {
-    try {
-      setIsProcessing(true);
-      await walletCtx.connect();
-    } catch (err: unknown) {
-      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
   useAsyncEffect(async () => {
     if (!file) {
       return;
@@ -238,18 +228,13 @@ const Inscribe: React.FC = (): React.ReactElement => {
     }
   }, [router]);
 
-  if (!user) {
-    return (
-      <RequestConnectWallet
-        isProcessing={isProcessing}
-        handleConnectWallet={handleConnectWallet}
-      />
-    );
-  }
-
   return (
     <ClientOnly>
-      <div className={s.mintTool}>
+      <div
+        className={cs(s.mintTool, {
+          [`${s.modal}`]: isModal,
+        })}
+      >
         <div className={s.container}>
           <div className={s.wrapper}>
             <div className={s.formWrapper}>

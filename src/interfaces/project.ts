@@ -61,6 +61,12 @@ export type Project = {
   }[];
   animationHtml: string;
   totalVolume: string;
+  fromAuthentic?: boolean;
+  ordinalsTx?: string;
+  tokenAddress?: string;
+  nftTokenId?: string;
+  captureImageTime?: number;
+  captureThumbnailDelayTime?: number;
 };
 
 export type BTCProject = Project & {

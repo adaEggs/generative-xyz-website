@@ -18,7 +18,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import NextNprogress from 'nextjs-progressbar';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import DatadogService from '@services/datadog';
 
@@ -34,7 +34,6 @@ export default function App({ Component, pageProps }: MyAppProps) {
   const router = useRouter();
   const { seoInfo = {} } = pageProps;
   const { title, description, image } = seoInfo;
-  const isFirstRender = useRef(true);
   const { pathname } = useRouter();
 
   useEffect(() => {
@@ -53,10 +52,7 @@ export default function App({ Component, pageProps }: MyAppProps) {
   }, []);
 
   useEffect(() => {
-    if (router.isReady && !isFirstRender.current) {
-      sendAAPageView({ page: window.location.pathname });
-    }
-    isFirstRender.current = false;
+    sendAAPageView({ page: window.location.pathname });
   }, [router.asPath]);
 
   useEffect(() => {

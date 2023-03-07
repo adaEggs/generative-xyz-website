@@ -5,7 +5,8 @@ import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
 import Link from 'next/link';
-import React, { useContext, useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useContext, useEffect, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import FormEditProfile from './FormEditProfile';
 import s from './styles.module.scss';
@@ -13,6 +14,14 @@ import s from './styles.module.scss';
 const EditProfile = (): JSX.Element => {
   const [tab, setTab] = useState<string>('account');
   const { isLoaded } = useContext(ProfileContext);
+  const router = useRouter();
+  const { developers } = router.query;
+
+  useEffect(() => {
+    if (developers && tab !== 'developer') {
+      setTab('developer');
+    }
+  }, [developers]);
 
   return (
     <div className={s.editProfile}>
@@ -51,7 +60,7 @@ const EditProfile = (): JSX.Element => {
                 onClick={() => setTab('export')}
               >
                 <Text as={'span'} size={'20'}>
-                  Key
+                  Wallet
                 </Text>
               </li>
               <li
@@ -59,7 +68,7 @@ const EditProfile = (): JSX.Element => {
                 onClick={() => setTab('developer')}
               >
                 <Text as={'span'} size={'20'}>
-                  Developer
+                  Developers
                 </Text>
               </li>
             </ul>

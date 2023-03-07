@@ -14,6 +14,7 @@ import { useContext, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import s from './styles.module.scss';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
+import Text from '@components/Text';
 
 const ProjectPreview = () => {
   const user = useSelector(getUserSelector);
@@ -153,6 +154,9 @@ const ProjectPreview = () => {
             </Button>
           </div>
         </div>
+        <Text className={s.projectSeed} fontWeight="semibold">
+          Seed: <Text as="span">{hash}</Text>
+        </Text>
         {currentStep >= 2 && (
           <div className={s.projectInfoWrapper}>
             <div className={s.ownerInfo}>

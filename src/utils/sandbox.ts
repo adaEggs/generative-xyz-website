@@ -177,7 +177,8 @@ export const detectUsedLibs = async (
 };
 
 export const processCollectionZipFile = async (
-  file: File
+  file: File,
+  maxFiles?: number
 ): Promise<ImageCollectionFiles> => {
   const fileType = await FileType.fromBlob(file);
 
@@ -194,6 +195,10 @@ export const processCollectionZipFile = async (
 
   const record: ImageCollectionFiles = {};
   const fileExtList = new Set();
+
+  if (maxFiles && Object.keys(files).length > maxFiles) {
+    throw Error(ImageFileError.ONLY_ONE_FILE_ALLOWED);
+  }
 
   for (const fileName in files) {
     const file = files[fileName];

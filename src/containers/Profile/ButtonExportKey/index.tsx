@@ -49,6 +49,8 @@ const ButtonExportKey = () => {
     <>
       <ButtonIcon
         type="button"
+        sizes="medium"
+        variants="outline"
         onClick={handleExport}
         startIcon={
           <SvgInset

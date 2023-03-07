@@ -1,10 +1,17 @@
 import { SimpleLoading } from '@components/SimpleLoading';
 import { NETWORK_CHAIN_ID } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
+import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
+import { CurrencyType } from '@enums/currency';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
 import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import useContractOperation from '@hooks/useContractOperation';
+import {
+  ICollectedUTXOResp,
+  IFeeRate,
+  ITxHistory,
+} from '@interfaces/api/bitcoin';
 import {
   IListingTokensResponse,
   ITokenOfferListResponse,
@@ -13,12 +20,15 @@ import { ICollectedNFTItem } from '@interfaces/api/profile';
 import { IGetProjectItemsResponse } from '@interfaces/api/project';
 import { IGetReferralsResponse } from '@interfaces/api/referrals';
 import { IGetProfileTokensResponse } from '@interfaces/api/token-uri';
+import { InscriptionItem } from '@interfaces/inscribe';
 import { TokenOffer } from '@interfaces/token';
 import { User } from '@interfaces/user';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
+import { getCollectedUTXO, getFeeRate, getHistory } from '@services/bitcoin';
 import AcceptTokenOffer from '@services/contract-operations/generative-marketplace/accept-token-offer';
 import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
+import { getInscriptionListByUser } from '@services/inscribe';
 import {
   getListingTokensByWallet,
   getMakeOffersByWallet,
@@ -31,8 +41,10 @@ import {
   getProfileProjectsByWallet,
   getProfileTokens,
 } from '@services/profile';
+import { getReferrals } from '@services/referrals';
 import log from '@utils/logger';
-import { debounce, isEmpty } from 'lodash';
+import { debounce } from 'lodash';
+import _uniqBy from 'lodash/uniqBy';
 import { useRouter } from 'next/router';
 import React, {
   PropsWithChildren,
@@ -44,18 +56,6 @@ import React, {
 } from 'react';
 import toast from 'react-hot-toast';
 import useAsyncEffect from 'use-async-effect';
-import { getCollectedUTXO, getFeeRate, getHistory } from '@services/bitcoin';
-import {
-  ICollectedUTXOResp,
-  IFeeRate,
-  ITxHistory,
-} from '@interfaces/api/bitcoin';
-import { CurrencyType } from '@enums/currency';
-import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
-import { InscriptionItem } from '@interfaces/inscribe';
-import _uniqBy from 'lodash/uniqBy';
-import { getInscriptionListByUser } from '@services/inscribe';
-import { getReferrals } from '@services/referrals';
 
 const LOG_PREFIX = 'ProfileContext';
 
@@ -215,13 +215,13 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const handleFetchProjects = useCallback(async () => {
     try {
-      if (currentUser?.walletAddress) {
+      if (currentUser?.walletAddress || walletAddress) {
         let page = (profileProjects && profileProjects?.page) || 0;
         page += 1;
 
         setIsLoadedProfileProjects(false);
         const projects = await getProfileProjectsByWallet({
-          walletAddress: currentUser.walletAddress,
+          walletAddress: currentUser?.walletAddress || walletAddress,
           page,
           limit: 12,
         });
@@ -243,9 +243,9 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const handleFetchListingTokens = useCallback(async () => {
     try {
-      if (currentUser?.walletAddress) {
+      if (currentUser?.walletAddress || walletAddress) {
         const listingTokens = await getListingTokensByWallet({
-          walletAddress: currentUser.walletAddress,
+          walletAddress: currentUser?.walletAddress || walletAddress,
           closed: false,
         });
         if (listingTokens && listingTokens) {
@@ -294,13 +294,13 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const handleFetchTokens = useCallback(async () => {
     try {
-      if (currentUser?.walletAddress) {
+      if (currentUser?.walletAddress || walletAddress) {
         let page = (profileTokens && profileTokens?.page) || 0;
         page += 1;
 
         setIsLoadedProfileTokens(false);
         const tokens = await getProfileTokens({
-          walletAddress: currentUser.walletAddress,
+          walletAddress: currentUser?.walletAddress || walletAddress,
           limit: 12,
           page,
         });
@@ -325,7 +325,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         const getUser = await getProfileByWallet({
           walletAddress: walletAddress.toLowerCase(),
         });
-        if (getUser && getUser.id) {
+        if (getUser) {
           setCurrentUser(getUser);
         } else {
           router.push(ROUTE_PATH.DROPS);
@@ -337,7 +337,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   }, [walletAddress]);
 
   const handleFetchFreeInscriptions = async () => {
-    if (!user) return;
+    // if (!user) return;
     try {
       setIsLoadingFree(true);
       const nextPage = freePage + 1;
@@ -556,12 +556,14 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   useEffect(() => {
     if (
-      currentUser &&
-      currentUser.walletAddressBtcTaproot &&
-      !isEmpty(currentUser.walletAddressBtcTaproot) &&
-      currentBtcAddressRef.current !== currentUser.walletAddressBtcTaproot
+      currentUser
+      // &&
+      // currentUser.walletAddressBtcTaproot &&
+      // !isEmpty(currentUser.walletAddressBtcTaproot) &&
+      // currentBtcAddressRef.current !== currentUser.walletAddressBtcTaproot
     ) {
-      currentBtcAddressRef.current = currentUser.walletAddressBtcTaproot;
+      currentBtcAddressRef.current =
+        currentUser.walletAddressBtcTaproot || walletAddress;
       debounceFetchDataCollectedNFTs();
       debounceFetchCollectedUTXOs();
       debounceFetchHistory();

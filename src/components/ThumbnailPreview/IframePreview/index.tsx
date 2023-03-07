@@ -42,7 +42,7 @@ const IFramePreview = React.forwardRef<IRef, IProps>(
             src={url}
             onLoad={onLoaded}
             style={{ overflow: 'hidden' }}
-          />
+          ></iframe>
         </div>
       </ClientOnly>
     );

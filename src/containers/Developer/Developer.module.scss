@@ -1,0 +1,168 @@
+.metamaskContainer {
+  background: $primary-brand;
+  align-items: center;
+  justify-content: center;
+  min-height: 90vh;
+
+  // padding-top: rem(80px);
+
+  .leftContainer {
+    @include tablet {
+      margin-top: rem(34px) !important;
+    }
+
+    .title {
+      font-weight: 500;
+      font-size: rem(24px);
+      line-height: 140%;
+      color: $secondary-purple-b;
+      margin-bottom: rem(16px);
+    }
+
+    .subTitle {
+      font-weight: 600;
+      font-size: rem(48px);
+      color: $white-100;
+      line-height: 140%;
+      margin-bottom: rem(24px);
+      width: 90%;
+
+      @include mobile {
+        font-size: rem(28px);
+      }
+    }
+
+    .descItem {
+      display: flex;
+      align-items: center;
+      margin-bottom: rem(8px);
+
+      .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: rem(16px);
+      }
+
+      .text {
+        font-weight: 400;
+        font-size: rem(20px);
+        line-height: 140%;
+        color: #b6b6b6;
+
+        @include mobile {
+          font-size: rem(16px);
+        }
+      }
+
+      .link {
+        color: #4185ec;
+      }
+    }
+
+    .login {
+      padding: 16px 24px;
+    }
+
+    .generate {
+      padding: 14px 24px;
+      color: white;
+      margin-left: rem(16px);
+      border: none;
+      cursor: pointer;
+      text-decoration-line: underline;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 26px;
+      text-align: center;
+
+      @include mobile {
+        margin-left: rem(8px);
+      }
+    }
+
+    .icMetamask {
+      width: 26px;
+      height: 26px;
+    }
+
+    .buttonContainer {
+      margin-top: rem(64px);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      text-transform: uppercase;
+      padding: 16px 24px;
+
+      .learnMoreButton {
+        margin-left: rem(40px);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        cursor: pointer;
+
+        .learnMoreText {
+          font-weight: 500;
+          font-size: rem(16px);
+          line-height: rem(26px);
+          color: $white-100;
+        }
+
+        .learnMoreIcon {
+          width: rem(20px);
+          height: rem(20px);
+          margin-left: rem(6px);
+        }
+      }
+    }
+  }
+}
+
+.apiContainer {
+  padding-bottom: rem(16px);
+
+  .code {
+    margin-bottom: rem(80px);
+
+    // width: 80%;
+
+    @include tablet {
+      width: 100%;
+    }
+
+    .title {
+      font-weight: 500;
+      font-size: rem(24px);
+      line-height: rem(26px);
+      color: $white-100;
+    }
+
+    .subTitle {
+      margin-top: rem(16px);
+      font-weight: 500;
+      font-size: rem(18px);
+      line-height: rem(26px);
+      color: #b6b6b6;
+    }
+
+    .exampleContainer {
+      position: relative;
+
+      .icCopy {
+        display: flex;
+        position: absolute;
+        right: rem(16px);
+        top: rem(12px);
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      .example {
+        margin-top: rem(16px);
+        background: #1d2223;
+        padding: 32px 24px;
+        color: #e6db74;
+      }
+    }
+  }
+}

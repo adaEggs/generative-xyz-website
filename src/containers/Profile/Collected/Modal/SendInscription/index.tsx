@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import Text from '@components/Text';
 import * as SDK from 'generative-sdk';
+import { getError } from '@utils/text';
 
 interface IFormValue {
   address: string;
@@ -70,7 +71,8 @@ const SendInscriptionModal = ({
       !!user?.walletAddressBtcTaproot &&
       values.address === user?.walletAddressBtcTaproot
     ) {
-      errors.address = "Invalid wallet address, please don't send to yourself.";
+      errors.address =
+        'Invalid wallet address. Please send the inscription to another wallet address.';
     }
     try {
       GENERATIVE_SDK.selectUTXOs(
@@ -81,8 +83,9 @@ const SendInscriptionModal = ({
         FEE_RATE[feeRate],
         true
       );
-    } catch (e) {
-      errors.address = 'Your BTC balance is insufficient.';
+    } catch (err) {
+      errors.address =
+        getError(err)?.message || 'Your BTC balance is insufficient.';
     }
     return errors;
   };

@@ -1,0 +1,74 @@
+.authenticCard {
+  background: #f7f9fb;
+  border-radius: 2px;
+  padding: rem(16px);
+  margin-top: rem(16px);
+
+  @include min-pc {
+    padding: rem(24px) rem(34px);
+    margin-top: rem(32px);
+  }
+
+  &_inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: rem(32px);
+  }
+
+  &_thumb {
+    flex: 0 0 100%;
+    display: none;
+    justify-content: center;
+
+    @include min-tablet {
+      flex: 0 0 auto;
+      display: block;
+    }
+  }
+
+  &_content {
+    max-width: 100%;
+    flex: 0 0 100%;
+
+    @include min-tablet {
+      flex: 0 0 calc(100% - #{rem(120px)});
+    }
+
+    &_heading {
+      margin-bottom: rem(8px);
+    }
+
+    &_property {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 400;
+      line-height: 1;
+
+      @include calcFontAuto(12px, 14px);
+
+      line-height: (22/14);
+      margin-bottom: rem(4px);
+
+      :global(.label) {
+        flex: 0 0 50%;
+      }
+
+      :global(.val) {
+        flex: 0 0 50%;
+        text-align: left;
+
+        a {
+          color: #4f43e2;
+          text-decoration: none;
+          display: block;
+          line-break: anywhere;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+      }
+    }
+  }
+}

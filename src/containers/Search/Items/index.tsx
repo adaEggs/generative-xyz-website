@@ -48,6 +48,7 @@ export const Items = (): JSX.Element => {
     getApiKey(getSearchByKeyword, filterTokenParams),
     () => getSearchByKeyword(filterTokenParams)
   );
+
   const { data: resultByInscriptions } = useSWR(
     getApiKey(getSearchByKeyword, filterInscriptionParams),
     () => getSearchByKeyword(filterInscriptionParams)
@@ -113,6 +114,7 @@ export const Items = (): JSX.Element => {
           ? getSearchByKeyword(filterInscriptionParams)
           : null,
       ]);
+
       setCurrentPage(nextPage);
       const newList = combineList.concat([
         ...(nextResultByArtists?.result || []),
