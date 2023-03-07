@@ -8,38 +8,167 @@ import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
-import { BTC_PROJECT } from '@constants/tracking-event-name';
+import { getBTCAddress } from '@containers/GenerativeProjectDetail/MintEthModal/Collecting/utils';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import { WalletContext } from '@contexts/wallet-context';
+import { ErrorMessage } from '@enums/error-message';
+import { LogLevel } from '@enums/log-level';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { sendAAEvent } from '@services/aa-tracking';
-import { generateMintReceiverAddress } from '@services/mint';
-import { ellipsisCenter, formatBTCPrice } from '@utils/format';
+import {
+  ellipsisCenter,
+  formatEthPrice,
+  formatEthPriceInput,
+} from '@utils/format';
+import log from '@utils/logger';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
 import _debounce from 'lodash/debounce';
 import { useRouter } from 'next/router';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import {
+  default as React,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
 
+const LOG_PREFIX = 'MintEthModal';
+
 interface IFormValue {
   address: string;
 }
-
-const MintBTCGenerativeModal: React.FC = () => {
+const MintEthModal: React.FC = () => {
   const router = useRouter();
+
   const { projectData } = useContext(GenerativeProjectDetailContext);
+  const { transfer } = useContext(WalletContext);
+  const { setIsPopupPayment, paymentMethod } = useContext(
+    BitcoinProjectContext
+  );
+
   const user = useAppSelector(getUserSelector);
+
+  const [isSent, setIsSent] = React.useState(false);
+  const [totalPrice, setTotalPrice] = React.useState('');
+  const [feePrice, setFeePrice] = React.useState('');
+  const [mintPrice, setMintPrice] = React.useState('');
 
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [isShowAdvance, setIsShowAdvance] = useState(false);
-  const [totalPrice, setTotalPrice] = React.useState('');
-
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
+  const [addressInput, setAddressInput] = useState<string>('');
+  const [errMessage, setErrMessage] = useState('');
+
+  const [quantity, setQuantity] = useState(1);
+
+  const priceFormat = formatEthPrice(
+    mintPrice ? mintPrice : projectData?.mintPriceEth || '',
+    '0.0'
+  );
+  const totalFormatPrice = formatEthPriceInput(
+    totalPrice
+      ? totalPrice
+      : `${
+          (Number(projectData?.mintPriceEth) +
+            Number(projectData?.networkFeeEth)) *
+          quantity
+        }` || '',
+    '0.0'
+  );
+  const feePriceFormat = formatEthPrice(
+    `${feePrice ? Number(feePrice) : Number(projectData?.networkFeeEth)}`,
+    '0.0'
+  );
+
+  const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuantity(Number(e.target.value));
+  };
+
+  const onClickMinus = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const onClickPlus = () => {
+    setQuantity(quantity + 1);
+  };
+
+  const userAddress = React.useMemo(() => {
+    return {
+      taproot: user?.walletAddressBtcTaproot || '',
+      evm: user?.walletAddress || '',
+    };
+  }, [user]);
+
+  const handleTransfer = async (
+    toAddress: string,
+    val: string
+  ): Promise<void> => {
+    try {
+      setIsSent(false);
+      await transfer(toAddress, val);
+      setIsSent(true);
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+      _onClose();
+    }
+  };
+
+  useEffect(() => {
+    if (receiverAddress) {
+      handleTransfer(receiverAddress, totalFormatPrice);
+    }
+  }, [receiverAddress, totalPrice]);
+
+  const debounceGetBTCAddress = useCallback(
+    _debounce(async (ordAddress, refundAddress, _quantity) => {
+      if (!projectData) return;
+      try {
+        setIsLoading(true);
+
+        const {
+          price: _price,
+          address: _address,
+          networkFeeByPayType: _networkFeeByPayType,
+          mintPriceByPayType: _mintPriceByPayType,
+        } = await getBTCAddress({
+          walletAddress: ordAddress,
+          refundAddress: refundAddress,
+          projectData,
+          paymentMethod,
+          quantity: _quantity,
+        });
+        if (!_address || !_price) {
+          toast.error(ErrorMessage.DEFAULT);
+          return;
+        }
+
+        setTotalPrice(_price);
+        setFeePrice(_networkFeeByPayType);
+        setMintPrice(_mintPriceByPayType);
+        setReceiverAddress(_address);
+        setsTep('showAddress');
+      } catch (err: unknown) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        setErrMessage('Failed to generate receiver address');
+        setReceiverAddress(null);
+      } finally {
+        setIsLoading(false);
+      }
+    }, 500),
+    [projectData]
+  );
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -47,37 +176,16 @@ const MintBTCGenerativeModal: React.FC = () => {
     toast.success('Copied');
   };
 
-  const { setIsPopupPayment, paymentMethod } = useContext(
-    BitcoinProjectContext
-  );
-  const [isLoading, setIsLoading] = useState(false);
-  const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
-
-  const [addressInput, setAddressInput] = useState<string>('');
-
-  // const priceFormat = formatBTCPrice(Number(projectData?.mintPrice), '0.0');
-  const feePriceFormat = formatBTCPrice(
-    totalPrice
-      ? Number(totalPrice) - Number(projectData?.mintPrice)
-      : Number(projectData?.networkFee),
-    '0.0'
-  );
-  const totalPriceFormat = formatBTCPrice(
-    totalPrice ||
-      `${Number(projectData?.networkFee) + Number(projectData?.mintPrice)}` ||
-      ''
-  );
-
-  const userBtcAddress = useMemo(
-    () => user?.walletAddressBtcTaproot || '',
-    [user]
-  );
-
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
-      if (step === 'showAddress' && userBtcAddress) {
-        debounceGetBTCAddress(userBtcAddress, userBtcAddress);
+      if (
+        step === 'showAddress' &&
+        userAddress &&
+        userAddress.evm &&
+        userAddress.taproot
+      ) {
+        debounceGetBTCAddress(userAddress.taproot, userAddress.evm, quantity);
       }
     }
   };
@@ -85,70 +193,16 @@ const MintBTCGenerativeModal: React.FC = () => {
   const onClickUseAnother = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
-      if (step === 'showAddress' && addressInput) {
-        debounceGetBTCAddress(addressInput, userBtcAddress);
-      }
     }
   };
 
   const onClickPay = () => {
     if (useWallet === 'default') {
-      if (userBtcAddress) {
-        debounceGetBTCAddress(userBtcAddress, userBtcAddress);
+      if (userAddress && userAddress.evm && userAddress.taproot) {
+        debounceGetBTCAddress(userAddress.taproot, userAddress.evm, quantity);
       }
     }
   };
-
-  const getBTCAddress = async (
-    walletAddress: string,
-    refundAddress: string
-  ): Promise<void> => {
-    if (!projectData) return;
-
-    try {
-      setIsLoading(true);
-      setReceiverAddress(null);
-      const { address, price } = await generateMintReceiverAddress({
-        walletAddress,
-        projectID: projectData.tokenID,
-        payType: 'btc',
-        refundUserAddress: refundAddress,
-        quantity: 1,
-      });
-      // const { address, Price: price } = await generateBTCReceiverAddress({
-      //   walletAddress,
-      //   projectID: projectData.tokenID,
-      // });
-      setTotalPrice(price);
-      sendAAEvent({
-        eventName: BTC_PROJECT.MINT_NFT,
-        data: {
-          projectId: projectData.id,
-          projectName: projectData.name,
-          projectThumbnail: projectData.image,
-          mintPrice: formatBTCPrice(Number(projectData?.mintPrice)),
-          mintType: paymentMethod,
-          networkFee: formatBTCPrice(Number(projectData?.networkFee)),
-          masterAddress: address,
-          totalPrice: formatBTCPrice(Number(price)),
-        },
-      });
-      setReceiverAddress(address);
-      setsTep('showAddress');
-    } catch (err: unknown) {
-      setReceiverAddress(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const debounceGetBTCAddress = useCallback(
-    _debounce(
-      (address, refundAddress) => getBTCAddress(address, refundAddress),
-      500
-    ),
-    [projectData]
-  );
 
   const validateForm = (values: IFormValue): Record<string, string> => {
     const errors: Record<string, string> = {};
@@ -160,7 +214,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     } else {
       if (step === 'showAddress' && addressInput !== values.address) {
         setAddressInput(values.address);
-        debounceGetBTCAddress(values.address, userBtcAddress);
+        debounceGetBTCAddress(values.address, userAddress.evm, quantity);
       }
     }
 
@@ -169,12 +223,13 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const handleSubmit = async (values: IFormValue): Promise<void> => {
     if (addressInput !== values.address) {
-      debounceGetBTCAddress(values.address, userBtcAddress);
+      debounceGetBTCAddress(values.address, userAddress.evm, quantity);
       setAddressInput(values.address);
     }
   };
 
   const _onClose = () => {
+    setErrMessage('');
     setIsPopupPayment(false);
   };
 
@@ -211,35 +266,65 @@ const MintBTCGenerativeModal: React.FC = () => {
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
-                      <p className={s.paymentPrice_price}>{`${formatBTCPrice(
-                        projectData?.mintPrice || '',
-                        '0.0'
-                      )} BTC`}</p>
+                      <p
+                        className={s.paymentPrice_price}
+                      >{`${priceFormat} ETH`}</p>
                     </div>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Inscription fee</p>
                       <p
                         className={s.paymentPrice_price}
-                      >{`${feePriceFormat} BTC`}</p>
+                      >{`${feePriceFormat} ETH`}</p>
+                    </div>
+                    <div className={s.paymentPrice} style={{ marginTop: 4 }}>
+                      <p className={s.paymentPrice_title}>Quantity</p>
+                      {step === 'info' ? (
+                        <div className={s.paymentPrice_inputContainer}>
+                          <SvgInset
+                            className={s.paymentPrice_inputContainer_icon}
+                            size={18}
+                            svgUrl={`${CDN_URL}/icons/ic-minus.svg`}
+                            onClick={onClickMinus}
+                          />
+                          <input
+                            type="number"
+                            name="quantity"
+                            placeholder=""
+                            value={`${quantity}`}
+                            onChange={onChangeQuantity}
+                            className={s.paymentPrice_inputContainer_input}
+                          />
+                          <SvgInset
+                            className={s.paymentPrice_inputContainer_icon}
+                            size={18}
+                            svgUrl={`${CDN_URL}/icons/ic-plus.svg`}
+                            onClick={onClickPlus}
+                          />
+                        </div>
+                      ) : (
+                        <p className={s.paymentPrice_price}>{quantity}</p>
+                      )}
                     </div>
                     <div className={s.indicator} />
 
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_total}>Total</p>
-                      <div className={s.paymentPrice_copyContainer}>
+                      <div
+                        className={s.paymentPrice_copyContainer}
+                        onClick={() => onClickCopy(`${totalFormatPrice}`)}
+                      >
                         <SvgInset
                           className={s.ic}
                           size={18}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-                          onClick={() => onClickCopy(`${totalPriceFormat}`)}
                         />
-                        <p className={s.text}>{`${totalPriceFormat} BTC`}</p>
+                        <p className={s.text}>{`${totalFormatPrice} ETH`}</p>
                       </div>
                     </div>
                   </div>
                   <div className={s.formWrapper}>
                     <div className={s.advancedContainer}>
-                      <h3 className={s.modalTitleAdvance}>Advanced</h3>
+                      <h3 className={s.modalTitleAdvanced}>Advanced</h3>
                       <SvgInset
                         className={`${s.icArrow} ${
                           isShowAdvance ? s.close : ''
@@ -249,7 +334,6 @@ const MintBTCGenerativeModal: React.FC = () => {
                         onClick={() => setIsShowAdvance(!isShowAdvance)}
                       />
                     </div>
-
                     <Formik
                       key="mintBTCGenerativeForm"
                       initialValues={{
@@ -316,10 +400,6 @@ const MintBTCGenerativeModal: React.FC = () => {
 
                               {useWallet === 'another' && (
                                 <div className={s.formItem}>
-                                  {/* <label className={s.label} htmlFor="address">
-                                    {`Enter the Ordinals-compatible BTC address to
-                                receive your minting inscription`}
-                                  </label> */}
                                   <div className={s.inputContainer}>
                                     <input
                                       id="address"
@@ -329,7 +409,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                                       onBlur={handleBlur}
                                       value={values.address}
                                       className={s.input}
-                                      placeholder={`Paste your BTC Ordinal wallet address here`}
+                                      placeholder={`Paste your Ordinals-compatible BTC address here`}
                                     />
                                   </div>
                                   {errors.address && touched.address && (
@@ -347,7 +427,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                               type="submit"
                               sizes="large"
                               className={s.buyBtn}
-                              disabled={isLoading}
+                              disabled={isLoading || quantity === 0}
                             >
                               Pay
                             </ButtonIcon>
@@ -360,7 +440,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading}
+                        disabled={isLoading || quantity === 0}
                         onClick={onClickPay}
                       >
                         Pay
@@ -373,9 +453,9 @@ const MintBTCGenerativeModal: React.FC = () => {
                       </div>
                     )}
 
-                    {/* {!!errMessage && (
+                    {!!errMessage && (
                       <div className={s.error}>{errMessage}</div>
-                    )} */}
+                    )}
                   </div>
                 </Col>
 
@@ -387,7 +467,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                           <p className={s.qrTitle}>
                             Send{' '}
                             <span style={{ fontWeight: 'bold' }}>
-                              {totalPriceFormat} BTC
+                              {totalFormatPrice} ETH
                             </span>{' '}
                             to this address
                           </p>
@@ -422,26 +502,30 @@ const MintBTCGenerativeModal: React.FC = () => {
                     </div>
 
                     <div className={s.btnContainer}>
-                      <ButtonIcon
-                        sizes="large"
-                        className={s.buyBtn}
-                        onClick={() => router.push(ROUTE_PATH.PROFILE)}
-                        variants="outline"
-                      >
-                        <Text as="span" size="16" fontWeight="medium">
-                          Check order status
-                        </Text>
-                      </ButtonIcon>
-                      <div style={{ width: 16 }} />
-                      <ButtonIcon
-                        sizes="large"
-                        className={s.buyBtn}
-                        onClick={_onClose}
-                      >
-                        <Text as="span" size="16" fontWeight="medium">
-                          Continue collecting
-                        </Text>
-                      </ButtonIcon>
+                      {isSent && (
+                        <>
+                          <ButtonIcon
+                            sizes="large"
+                            className={s.buyBtn}
+                            onClick={() => router.push(ROUTE_PATH.PROFILE)}
+                            variants="outline"
+                          >
+                            <Text as="span" size="16" fontWeight="medium">
+                              Check order status
+                            </Text>
+                          </ButtonIcon>
+                          <div style={{ width: 16 }} />
+                          <ButtonIcon
+                            sizes="large"
+                            className={s.buyBtn}
+                            onClick={_onClose}
+                          >
+                            <Text as="span" size="16" fontWeight="medium">
+                              Continue collecting
+                            </Text>
+                          </ButtonIcon>
+                        </>
+                      )}
                     </div>
                   </Col>
                 )}
@@ -454,4 +538,4 @@ const MintBTCGenerativeModal: React.FC = () => {
   );
 };
 
-export default MintBTCGenerativeModal;
+export default MintEthModal;

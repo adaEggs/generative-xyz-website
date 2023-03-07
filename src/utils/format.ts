@@ -149,6 +149,15 @@ export const formatEthPrice = (
     .replace(',', '.');
 };
 
+export const formatEthPriceInput = (
+  price: string | null,
+  emptyStr?: string
+): string => {
+  if (!price) return emptyStr || '-';
+  const priceNumb = new BigNumber(price).dividedBy(1e18).toNumber();
+  return ceilPrecised(priceNumb, 6).toString().replace(',', '.');
+};
+
 export const ceilPrecised = (number: number, precision = 6) => {
   const power = Math.pow(10, precision);
   return Math.ceil(Number(number) * power) / power;

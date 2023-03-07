@@ -5,12 +5,15 @@ export interface IGetMintReceiverAddressPayload {
   projectID: string;
   payType: IPaymentType;
   refundUserAddress?: string;
+  quantity: number;
 }
 
 export interface IGetMintReceiverAddressResp {
   address: string;
   price: string;
   payType: IPaymentType;
+  networkFeeByPayType: string;
+  mintPriceByPayType: string;
 }
 
 export interface IMintGenerativePayload {

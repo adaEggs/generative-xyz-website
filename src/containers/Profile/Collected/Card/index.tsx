@@ -147,14 +147,16 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     return (
       <>
         {project.status !== CollectedNFTStatus.Success && (
-          <Text
-            className={s.projectCard_creator_status}
-            size={'16'}
-            fontWeight="medium"
-            color="black-40"
-          >
-            {`${project.statusText}...`}
-          </Text>
+          <>
+            <Text
+              className={s.projectCard_creator_status}
+              size={'16'}
+              fontWeight="medium"
+              color="black-40"
+            >
+              {`${project.statusText}...`}
+            </Text>
+          </>
         )}
       </>
     );
@@ -204,6 +206,13 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                     {projectName}
                   </Text>
                 )}
+                {project.status !== CollectedNFTStatus.Success &&
+                  project.quantity &&
+                  project.quantity > 1 && (
+                    <Text size={'16'} fontWeight="medium">
+                      {`Quantity: (${project.quantity})`}
+                    </Text>
+                  )}
               </div>
             ) : (
               <div className={cs(s.projectCard_info, s.desktop)}>
@@ -215,6 +224,13 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                     </Text>
                   </div>
                 )}
+                {project.status !== CollectedNFTStatus.Success &&
+                  project.quantity &&
+                  project.quantity > 1 && (
+                    <Text size={'16'} fontWeight="medium">
+                      {`Quantity: ${project.quantity}`}
+                    </Text>
+                  )}
               </div>
             )}
             {project.status === CollectedNFTStatus.Success && (
