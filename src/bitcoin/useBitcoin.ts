@@ -135,10 +135,11 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     });
 
     // broadcast tx
-    await Promise.all([
-      await broadcastTx(splitTxRaw),
-      await broadcastTx(txHex),
-    ]);
+    const tasks = [await broadcastTx(txHex)];
+    if (splitTxRaw) {
+      tasks.push(await broadcastTx(splitTxRaw));
+    }
+    await Promise.all(tasks);
   };
 
   const listInscription = async ({
