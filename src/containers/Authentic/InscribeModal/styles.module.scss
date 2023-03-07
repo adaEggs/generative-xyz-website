@@ -1,0 +1,72 @@
+.inscribeModal {
+  .backdrop {
+    background: $black-40;
+    backdrop-filter: blur(5px);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow-y: auto;
+  }
+
+  :global(.container) {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+
+    @include min-pc {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .modalWrapper {
+    background: #fff;
+    box-shadow: -10px 0 40px $black-20;
+    transition: all 0.2s ease-in;
+    z-index: 20;
+    border-radius: 2px;
+    overflow: auto;
+    height: 100%;
+
+    @include min-pc {
+      width: 90%;
+      max-height: 90%;
+      max-width: rem(1980px);
+      height: auto;
+    }
+  }
+
+  .modalHeader {
+    padding-top: rem(20px);
+    padding-left: rem(20px);
+    padding-right: rem(20px);
+    padding-bottom: rem(8px);
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .closeBtn {
+    padding: 0;
+    background-color: transparent !important;
+
+    &:hover {
+      .closeIcon {
+        transform: rotate(90deg);
+        transition: all 0.3s;
+
+        :global(svg path) {
+          fill: $black-100;
+          fill-opacity: 1;
+        }
+      }
+    }
+  }
+}
