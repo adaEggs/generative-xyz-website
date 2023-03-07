@@ -29,7 +29,6 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const [creator, setCreator] = useState<User | null>(null);
   const { mobileScreen } = useWindowSize();
   const [thumb, setThumb] = useState<string>(project.image);
-
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
@@ -67,6 +66,57 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     }
     return false;
   }, [project?.maxSupply, project?.mintingInfo.index]);
+
+  const renderFooter = () => {
+    if (project.btcFloorPrice && mintedOut) {
+      return (
+        <Text
+          fontWeight="medium"
+          color="black-40-solid"
+          className={s.projectCard_info_mintoutContainer_floorPrice}
+        >
+          {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
+        </Text>
+      );
+    }
+    if (mintedOut) {
+      return (
+        <div className={s.projectCard_info_mintoutContainer}>
+          <SvgInset svgUrl={`${CDN_URL}/icons/ic_mintedout.svg`} />
+          <Text className={s.projectCard_info_mintoutContainer_text}>
+            {`${project?.mintingInfo.index} Minted out`}
+          </Text>
+        </div>
+      );
+    }
+    return (
+      <div className={`${s.projectCard_info_price_price}`}>
+        <Text
+          className={s.projectCard_info_price_price_wrap}
+          size={'16'}
+          fontWeight="medium"
+          color="black-40-solid"
+        >
+          <span className={s.projectCard_info_price_price_el}>
+            {project.btcFloorPrice
+              ? `${formatBTCPrice(project.btcFloorPrice)} BTC`
+              : !isMinted
+              ? Number(project.mintPrice)
+                ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
+                : 'Free'
+              : ''}
+          </span>
+          <span
+            className={`${s.projectCard_info_price_price_minted} ${
+              isOnlyMintedShow ? s.isOnlyMintedShow : ''
+            }`}
+          >
+            {minted}
+          </span>
+        </Text>
+      </div>
+    );
+  };
 
   return (
     <Link
@@ -125,42 +175,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                   <span title={project.name}>{project.name}</span>
                 </Heading>
               </div>
-              <div className={s.projectCard_info_price}>
-                {mintedOut ? (
-                  <div className={s.projectCard_info_mintoutContainer}>
-                    <SvgInset svgUrl={`${CDN_URL}/icons/ic_mintedout.svg`} />
-                    <Text className={s.projectCard_info_mintoutContainer_text}>
-                      {`${project?.mintingInfo.index} Minted out`}
-                    </Text>
-                  </div>
-                ) : (
-                  <div className={`${s.projectCard_info_price_price}`}>
-                    <Text
-                      className={s.projectCard_info_price_price_wrap}
-                      size={'16'}
-                      fontWeight="medium"
-                      color="black-40-solid"
-                    >
-                      <span className={s.projectCard_info_price_price_el}>
-                        {project.btcFloorPrice
-                          ? `${formatBTCPrice(project.btcFloorPrice)} BTC`
-                          : !isMinted
-                          ? Number(project.mintPrice)
-                            ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
-                            : 'Free'
-                          : ''}
-                      </span>
-                      <span
-                        className={`${s.projectCard_info_price_price_minted} ${
-                          isOnlyMintedShow ? s.isOnlyMintedShow : ''
-                        }`}
-                      >
-                        {minted}
-                      </span>
-                    </Text>
-                  </div>
-                )}
-              </div>
+              <div className={s.projectCard_info_price}>{renderFooter()}</div>
             </div>
           )}
         </div>

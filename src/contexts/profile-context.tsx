@@ -479,6 +479,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const fetchDataCollectedNFTs = async () => {
     try {
+      setCollectedNFTs([]);
       const [mintingNFTs, mintedNFTs] = await Promise.all([
         isOwner
           ? await getMintingCollectedNFTs(currentBtcAddressRef.current)
@@ -575,6 +576,17 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   useEffect(() => {
     debounceFetchFeeRate();
   }, []);
+
+  // useEffect(() => {
+  //   if (!currentUser) return;
+  //   const intervalID = setInterval(() => {
+  //     debounceFetchCollectedUTXOs();
+  //     debounceFetchHistory();
+  //   }, 60000);
+  //   return () => {
+  //     clearInterval(intervalID);
+  //   };
+  // }, [currentUser?.walletAddressBtcTaproot]);
 
   const contextValues = useMemo((): IProfileContext => {
     return {

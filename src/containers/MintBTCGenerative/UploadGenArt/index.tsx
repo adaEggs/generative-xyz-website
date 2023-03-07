@@ -3,32 +3,29 @@ import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { SOCIALS } from '@constants/common';
-import {
-  CDN_URL,
-  SANDBOX_BTC_IMAGE_SIZE_LIMIT,
-  SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT,
-} from '@constants/config';
+import { CDN_URL, SANDBOX_BTC_IMAGE_SIZE_LIMIT } from '@constants/config';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
+import { MediaType } from '@enums/file';
 import { LogLevel } from '@enums/log-level';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { ImageFileError, SandboxFileError } from '@enums/sandbox';
+import { postReferralCode } from '@services/referrals';
 import {
   getFileExtensionByFileName,
   getMediaTypeFromFileExt,
   getSupportedFileExtList,
 } from '@utils/file';
-import { postReferralCode } from '@services/referrals';
 import log from '@utils/logger';
 import { getReferral } from '@utils/referral';
-import { processHTMLFile, processCollectionZipFile } from '@utils/sandbox';
+import { processCollectionZipFile, processHTMLFile } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
 import cs from 'classnames';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
 import DropFile from '../DropFile';
 import s from './styles.module.scss';
-import { MediaType } from '@enums/file';
 
 const LOG_PREFIX = 'UploadGenArt';
 
@@ -46,7 +43,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
     setImageCollectionFile,
   } = useContext(MintBTCGenerativeContext);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
-
   const processGenerativeFile = async (file: File) => {
     try {
       const sandboxFiles = await processHTMLFile(file);
@@ -188,9 +184,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
   const getFileError = (errorType: ImageFileError): string => {
     switch (errorType) {
       case ImageFileError.TOO_LARGE:
-        return `File size error, maximum file size is ${SANDBOX_BTC_IMAGE_SIZE_LIMIT}KB for images or ${
-          SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT / 1000
-        }MB for others.`;
+        return `File size error, maximum file size is ${SANDBOX_BTC_IMAGE_SIZE_LIMIT}KB.`;
       case ImageFileError.INVALID_EXTENSION:
         return `Invalid file format. Supported file extensions are ${getSupportedFileExtList().join(
           ', '
@@ -313,7 +307,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
       </>
     );
   };
-
   const renderUpload = useMemo(
     (): JSX.Element => (
       <>
@@ -325,7 +318,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
             <p className={s.collectionTypeLabel}>Choose collection type:</p>
             <div className={s.choiceList}>
               <div
-                onClick={() => setCollectionType(CollectionType.GENERATIVE)}
+                onClick={() => {
+                  setCollectionType(CollectionType.GENERATIVE);
+                }}
                 className={cs(s.choiceItem, {
                   [`${s.choiceItem__active}`]:
                     collectionType === CollectionType.GENERATIVE,
@@ -335,7 +330,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 <span className={s.checkmark}></span>
               </div>
               <div
-                onClick={() => setCollectionType(CollectionType.COLLECTION)}
+                onClick={() => {
+                  setCollectionType(CollectionType.COLLECTION);
+                }}
                 className={cs(s.choiceItem, {
                   [`${s.choiceItem__active}`]:
                     collectionType === CollectionType.COLLECTION,
@@ -348,13 +345,17 @@ const UploadGenArt: React.FC = (): ReactElement => {
             <div className={s.guideWrapper}>
               <p>
                 New artist?&nbsp;
-                <a
-                  href={SOCIALS.docsForArtist}
+                <Link
+                  href={
+                    collectionType === CollectionType.GENERATIVE
+                      ? SOCIALS.docsForArtist
+                      : SOCIALS.docsForArtist2
+                  }
                   target={'_blank'}
                   rel="noreferrer"
                 >
                   Start here.
-                </a>
+                </Link>
               </p>
             </div>
           </div>

@@ -8,10 +8,9 @@
   }
 
   .accordion_header {
-    color: $black-60;
-
     p {
-      text-transform: uppercase;
+      color: $black-100;
+      font-size: rem(16px);
     }
 
     button {
@@ -37,10 +36,13 @@
   .accordion_icon {
     width: rem(28px);
     height: rem(28px);
-    background-color: $black-5;
     display: grid;
     place-items: center;
     border-radius: 50%;
+  }
+
+  .icClose {
+    transform: rotate(-180deg);
   }
 
   .accordion_body {

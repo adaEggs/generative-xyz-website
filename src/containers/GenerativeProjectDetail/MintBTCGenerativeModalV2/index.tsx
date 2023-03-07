@@ -37,6 +37,7 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [isShowAdvance, setIsShowAdvance] = useState(false);
+  const [totalPrice, setTotalPrice] = React.useState('');
 
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
 
@@ -54,11 +55,17 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const [addressInput, setAddressInput] = useState<string>('');
 
-  const priceFormat = formatBTCPrice(Number(projectData?.mintPrice), '0.0');
-  const feePriceFormat = formatBTCPrice(Number(projectData?.networkFee), '0.0');
-  const totalPriceFormat = formatBTCPrice(
-    Number(projectData?.networkFee) + Number(projectData?.mintPrice),
+  // const priceFormat = formatBTCPrice(Number(projectData?.mintPrice), '0.0');
+  const feePriceFormat = formatBTCPrice(
+    totalPrice
+      ? Number(totalPrice) - Number(projectData?.mintPrice)
+      : Number(projectData?.networkFee),
     '0.0'
+  );
+  const totalPriceFormat = formatBTCPrice(
+    totalPrice ||
+      `${Number(projectData?.networkFee) + Number(projectData?.mintPrice)}` ||
+      ''
   );
 
   const userBtcAddress = useMemo(
@@ -79,7 +86,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
       if (step === 'showAddress' && addressInput) {
-        debounceGetBTCAddress(addressInput, addressInput);
+        debounceGetBTCAddress(addressInput, userBtcAddress);
       }
     }
   };
@@ -111,6 +118,7 @@ const MintBTCGenerativeModal: React.FC = () => {
       //   walletAddress,
       //   projectID: projectData.tokenID,
       // });
+      setTotalPrice(price);
       sendAAEvent({
         eventName: BTC_PROJECT.MINT_NFT,
         data: {
@@ -151,7 +159,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     } else {
       if (step === 'showAddress' && addressInput !== values.address) {
         setAddressInput(values.address);
-        debounceGetBTCAddress(values.address, values.address);
+        debounceGetBTCAddress(values.address, userBtcAddress);
       }
     }
 
@@ -160,7 +168,7 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const handleSubmit = async (values: IFormValue): Promise<void> => {
     if (addressInput !== values.address) {
-      debounceGetBTCAddress(values.address, values.address);
+      debounceGetBTCAddress(values.address, userBtcAddress);
       setAddressInput(values.address);
     }
   };
@@ -202,9 +210,10 @@ const MintBTCGenerativeModal: React.FC = () => {
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
-                      <p
-                        className={s.paymentPrice_price}
-                      >{`${priceFormat} BTC`}</p>
+                      <p className={s.paymentPrice_price}>{`${formatBTCPrice(
+                        projectData?.mintPrice || '',
+                        '0.0'
+                      )} BTC`}</p>
                     </div>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Inscription fee</p>

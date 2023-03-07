@@ -124,7 +124,6 @@
 
   .formItem {
     margin-top: rem(16px);
-    margin-bottom: rem(24px);
     width: 100%;
   }
 
@@ -335,6 +334,12 @@
 .buyBtn {
   justify-content: center;
   width: 100%;
+  margin-top: rem(24px);
+}
+
+.continuteBtn {
+  justify-content: center;
+  width: 100%;
 }
 
 .checkBtn {
@@ -486,7 +491,6 @@
   line-height: 22px;
   color: #4185ec;
   margin-top: rem(16px);
-  margin-bottom: rem(24px);
 }
 
 .checkBtn {
@@ -500,15 +504,65 @@
   justify-content: center;
 }
 
+.accordion_item {
+  border: none;
+}
+
+.accordion_icon {
+  width: rem(28px);
+  height: rem(28px);
+  background-color: $black-5;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+
+.accordion_body {
+  padding: 0;
+  padding-top: rem(16px);
+  color: $black-100;
+}
+
 .advancedContainer {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: rem(24px);
 
-  @include mobile {
-    margin-bottom: rem(16px);
+  p {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 26px;
+  }
+
+  button {
+    padding: 0;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: transparent;
+    box-shadow: none;
+
+    &:focus {
+      box-shadow: none;
+      border-color: rgb(0 0 0 / 12.5%);
+    }
+
+    &:not(.collapsed) {
+      box-shadow: none;
+      color: #1c1c1c;
+      background-color: transparent;
+    }
+
+    &::after {
+      display: none;
+    }
+  }
+
+  &:focus {
+    background-color: transparent;
   }
 
   .icArrow {

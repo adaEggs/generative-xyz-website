@@ -8,6 +8,10 @@
 
   &_inner {
     width: rem(325px);
+
+    @include min-tablet {
+      width: rem(420px);
+    }
   }
 
   &_thumb {

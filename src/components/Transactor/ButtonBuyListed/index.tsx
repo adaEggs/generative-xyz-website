@@ -1,0 +1,79 @@
+import React, { useContext } from 'react';
+import ButtonIcon, { ButtonSizesType } from '@components/ButtonIcon';
+import ModalBuyListed from '@components/Transactor/ButtonBuyListed/Modal';
+import cs from 'classnames';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
+import { formatBTCPrice } from '@utils/format';
+import { WalletContext } from '@contexts/wallet-context';
+import { ProfileContext } from '@contexts/profile-context';
+import s from './styles.module.scss';
+
+interface IProps {
+  className?: string;
+  sizes?: ButtonSizesType;
+  inscriptionID: string;
+  price: number | string;
+  inscriptionNumber: number;
+  orderID: string;
+}
+
+const ButtonBuyListed = React.memo(
+  ({
+    className,
+    orderID,
+    inscriptionID,
+    inscriptionNumber,
+    price,
+    sizes = 'xsmall',
+  }: IProps) => {
+    const [isShow, setShow] = React.useState(false);
+    const user = useSelector(getUserSelector);
+    const walletCtx = useContext(WalletContext);
+    const taprootAddress = user?.walletAddressBtcTaproot;
+    const { isLoadingHistory } = useContext(ProfileContext);
+
+    const openModal = async () => {
+      if (!user || !user.walletAddressBtcTaproot) {
+        await walletCtx.connect();
+      }
+      setShow(true);
+    };
+
+    const hideModal = () => {
+      setShow(false);
+    };
+
+    if (isLoadingHistory) return null;
+
+    return (
+      <>
+        <ButtonIcon
+          sizes={sizes}
+          className={cs(s.container, `${className}`)}
+          onClick={openModal}
+        >
+          Buy <span className={s[sizes]} />
+          {`${formatBTCPrice(price)} BTC`}
+        </ButtonIcon>
+        {!!taprootAddress && isShow && (
+          <ModalBuyListed
+            inscriptionNumber={inscriptionNumber}
+            orderID={orderID}
+            inscriptionID={inscriptionID}
+            title={`Payment ${
+              inscriptionNumber ? `#${inscriptionNumber}` : ''
+            }`}
+            isShow={isShow}
+            price={price}
+            onHide={hideModal}
+          />
+        )}
+      </>
+    );
+  }
+);
+
+ButtonBuyListed.displayName = 'ButtonBuyListed';
+
+export default ButtonBuyListed;

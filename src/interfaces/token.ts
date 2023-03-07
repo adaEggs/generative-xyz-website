@@ -27,6 +27,7 @@ export type Token = {
   buyable: boolean;
   isCompleted: boolean;
   priceBTC: string;
+  orderInscriptionIndex: string;
   orderID: string;
   projectID?: string;
   projectName?: string;

@@ -477,6 +477,7 @@
 
 .yourVault {
   position: relative;
+  text-transform: unset !important;
 
   :global(.dropdown) {
     opacity: 0;

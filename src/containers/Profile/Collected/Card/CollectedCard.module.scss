@@ -5,6 +5,37 @@
   text-decoration: none;
   position: relative;
 
+  .twitter {
+    position: absolute;
+    top: rem(16px);
+    right: rem(16px);
+    opacity: 0;
+    transition: opacity 0.4s $easeOutCubic;
+
+    &_btnShare {
+      display: flex;
+      align-items: center;
+      background-color: #3cf;
+      border-color: #3cf;
+      color: white;
+      text-decoration: unset;
+      font-size: 14px;
+      border-radius: 2px;
+
+      svg {
+        path {
+          color: white;
+        }
+      }
+    }
+  }
+
+  :hover {
+    .twitter {
+      opacity: 1;
+    }
+  }
+
   &_inner {
     background: #fff;
     min-height: 100%;
@@ -22,11 +53,26 @@
       align-self: center;
       margin-right: rem(16px);
       padding: 5px 14px;
-      width: 72px;
       height: 34px;
       background: $black-5;
       border-radius: 2px;
       cursor: pointer;
+      width: fit-content;
+
+      :hover {
+        color: $black-60-solid;
+      }
+    }
+
+    &_cancelBtnList {
+      display: flex;
+      justify-content: center;
+      align-self: center;
+      margin-right: rem(16px);
+      background: $black-5;
+      border-radius: 2px;
+      cursor: pointer;
+      width: fit-content;
 
       :hover {
         color: $black-60-solid;
@@ -150,11 +196,6 @@
       left: rem(6px);
       right: rem(6px);
       bottom: rem(6px);
-    }
-
-    &_btnShare {
-      display: flex;
-      align-items: center;
     }
 
     &.desktop {

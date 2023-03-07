@@ -8,7 +8,7 @@ import { LogLevel } from '@enums/log-level';
 import s from '@layouts/Default/HeaderFixed/Header.module.scss';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress } from '@utils/format';
+import { ellipsisCenter, formatAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import { useRouter } from 'next/router';
@@ -136,8 +136,8 @@ const Header: React.FC<IProp> = ({
         })}
       >
         <ul className={styles.freeToolList}>
-          <li className={cs(styles.freeToolItem, styles.disabled)}>
-            <a>
+          <li className={cs(styles.freeToolItem)}>
+            <Link href={getUrlWithQueryParams(MENU_HEADER[9].route)}>
               <Image
                 src={`${CDN_URL}/icons/ic-shield-star-34x34.svg`}
                 width={34}
@@ -150,7 +150,7 @@ const Header: React.FC<IProp> = ({
                   Inscribe your existing Ethereum NFTs onto Bitcoin.
                 </p>
               </div>
-            </a>
+            </Link>
           </li>
           <li className={styles.freeToolItem}>
             <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
@@ -335,6 +335,17 @@ const Header: React.FC<IProp> = ({
                       </Link>
                     </li>
 
+                    {/* <li
+                      className={cs(
+                        activePath === MENU_HEADER[10].activePath &&
+                          styles.active
+                      )}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[10].route)}>
+                        {MENU_HEADER[10].name}
+                      </Link>
+                    </li> */}
+
                     {!!user && (
                       <li
                         className={cs(
@@ -346,7 +357,14 @@ const Header: React.FC<IProp> = ({
                           className={styles.yourVault}
                           onClick={handleYourVault}
                         >
-                          WALLET
+                          <SvgInset
+                            size={24}
+                            svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
+                          />
+                          {ellipsisCenter({
+                            str: user.walletAddressBtcTaproot || '',
+                            limit: 4,
+                          })}
                         </a>
                       </li>
                     )}

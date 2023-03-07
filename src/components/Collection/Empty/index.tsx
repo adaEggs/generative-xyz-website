@@ -7,7 +7,7 @@ import useContractOperation from '@hooks/useContractOperation';
 import { IMintGenerativeNFTParams } from '@interfaces/contract-operations/mint-generative-nft';
 import { TransactionReceipt } from 'web3-eth';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import toast from 'react-hot-toast';
@@ -30,7 +30,7 @@ export const Empty = ({
 }: {
   projectInfo?: Project | null;
   className?: string;
-  content?: string;
+  content?: ReactNode;
 }): JSX.Element => {
   const { getWalletBalance } = useContext(WalletContext);
   const router = useRouter();

@@ -18,7 +18,7 @@ import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
 import React, { useContext, useEffect, useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import { Accordion, Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
 
@@ -266,123 +266,132 @@ const ModalBuyItem = ({
                     </div>
                   </div>
                   <div className={s.formWrapper}>
-                    <div className={s.advancedContainer}>
-                      <h3 className={s.modalTitleAdvanced}>Advanced</h3>
-                      <SvgInset
-                        className={`${s.icArrow} ${
-                          isShowAdvance ? s.close : ''
-                        }`}
-                        size={20}
-                        svgUrl={`${CDN_URL}/icons/arrow-up.svg`}
-                        onClick={() => setIsShowAdvance(!isShowAdvance)}
-                      />
-                    </div>
-                    <Formik
-                      key="mintBTCGenerativeForm"
-                      initialValues={{
-                        address: '',
-                      }}
-                      validate={validateForm}
-                      onSubmit={handleSubmit}
-                    >
-                      {({
-                        values,
-                        errors,
-                        touched,
-                        handleChange,
-                        handleBlur,
-                        handleSubmit,
-                      }) => (
-                        <form onSubmit={handleSubmit}>
-                          {isShowAdvance && (
-                            <>
-                              <div className={s.checkboxContainer}>
-                                <div className={s.checkbox}>
-                                  <SvgInset
-                                    className={s.checkbox_ic}
-                                    size={18}
-                                    svgUrl={`${CDN_URL}/icons/${
-                                      useWallet === 'default'
-                                        ? 'ic_checkboxed'
-                                        : 'ic_checkbox'
-                                    }.svg`}
-                                    onClick={onClickUseDefault}
-                                  />
-                                  <p className={s.checkbox_text}>
-                                    Your Generative Wallet
-                                  </p>
-                                </div>
-                                <div
-                                  className={s.checkbox}
-                                  style={{ marginLeft: 24 }}
-                                >
-                                  <SvgInset
-                                    className={s.checkbox_ic}
-                                    size={18}
-                                    svgUrl={`${CDN_URL}/icons/${
-                                      useWallet === 'another'
-                                        ? 'ic_checkboxed'
-                                        : 'ic_checkbox'
-                                    }.svg`}
-                                    onClick={onClickUseAnother}
-                                  />
-                                  <p className={s.checkbox_text}>
-                                    Send to another wallet
-                                  </p>
-                                </div>
-                              </div>
-                              {useWallet === 'default' && (
-                                <div className={s.noteContainer}>
-                                  Your Ordinal inscription will be stored
-                                  securely in your Generative Wallet. We
-                                  recommend Generative Wallet for ease-of-use,
-                                  security, and the best experience on
-                                  Generative.
-                                </div>
-                              )}
+                    <Accordion>
+                      <Formik
+                        key="mintBTCGenerativeForm"
+                        initialValues={{
+                          address: '',
+                        }}
+                        validate={validateForm}
+                        onSubmit={handleSubmit}
+                      >
+                        {({
+                          values,
+                          errors,
+                          touched,
+                          handleChange,
+                          handleBlur,
+                          handleSubmit,
+                        }) => (
+                          <form onSubmit={handleSubmit}>
+                            <Accordion.Item
+                              eventKey="0"
+                              className={s.accordion_item}
+                            >
+                              <Accordion.Header
+                                className={s.advancedContainer}
+                                onClick={() => setIsShowAdvance(!isShowAdvance)}
+                              >
+                                <p className={s.modalTitleAdvanced}>Advanced</p>
+                                <SvgInset
+                                  className={`${s.icArrow} ${
+                                    isShowAdvance ? s.close : ''
+                                  }`}
+                                  size={20}
+                                  svgUrl={`${CDN_URL}/icons/arrow-up.svg`}
+                                />
+                              </Accordion.Header>
 
-                              {useWallet === 'another' && (
-                                <div className={s.formItem}>
-                                  {/* <label className={s.label} htmlFor="address">
+                              <Accordion.Body className={s.accordion_body}>
+                                <div>
+                                  <div className={s.checkboxContainer}>
+                                    <div className={s.checkbox}>
+                                      <SvgInset
+                                        className={s.checkbox_ic}
+                                        size={18}
+                                        svgUrl={`${CDN_URL}/icons/${
+                                          useWallet === 'default'
+                                            ? 'ic_checkboxed'
+                                            : 'ic_checkbox'
+                                        }.svg`}
+                                        onClick={onClickUseDefault}
+                                      />
+                                      <p className={s.checkbox_text}>
+                                        Your Generative Wallet
+                                      </p>
+                                    </div>
+                                    <div
+                                      className={s.checkbox}
+                                      style={{ marginLeft: 24 }}
+                                    >
+                                      <SvgInset
+                                        className={s.checkbox_ic}
+                                        size={18}
+                                        svgUrl={`${CDN_URL}/icons/${
+                                          useWallet === 'another'
+                                            ? 'ic_checkboxed'
+                                            : 'ic_checkbox'
+                                        }.svg`}
+                                        onClick={onClickUseAnother}
+                                      />
+                                      <p className={s.checkbox_text}>
+                                        Send to another wallet
+                                      </p>
+                                    </div>
+                                  </div>
+                                  {useWallet === 'default' && (
+                                    <div className={s.noteContainer}>
+                                      Your Ordinal inscription will be stored
+                                      securely in your Generative Wallet. We
+                                      recommend Generative Wallet for
+                                      ease-of-use, security, and the best
+                                      experience on Generative.
+                                    </div>
+                                  )}
+
+                                  {useWallet === 'another' && (
+                                    <div className={s.formItem}>
+                                      {/* <label className={s.label} htmlFor="address">
                                     {`Enter the Ordinals-compatible BTC address to
                                 receive your buying inscription`}
                                   </label> */}
-                                  <div className={s.inputContainer}>
-                                    <input
-                                      id="address"
-                                      type="text"
-                                      name="address"
-                                      onChange={handleChange}
-                                      onBlur={handleBlur}
-                                      value={values.address}
-                                      className={s.input}
-                                      placeholder={`Paste your Ordinals-compatible BTC address here`}
-                                    />
-                                  </div>
-                                  {errors.address && touched.address && (
-                                    <p className={s.inputError}>
-                                      {errors.address}
-                                    </p>
+                                      <div className={s.inputContainer}>
+                                        <input
+                                          id="address"
+                                          type="text"
+                                          name="address"
+                                          onChange={handleChange}
+                                          onBlur={handleBlur}
+                                          value={values.address}
+                                          className={s.input}
+                                          placeholder={`Paste your Ordinals-compatible BTC address here`}
+                                        />
+                                      </div>
+                                      {errors.address && touched.address && (
+                                        <p className={s.inputError}>
+                                          {errors.address}
+                                        </p>
+                                      )}
+                                    </div>
                                   )}
                                 </div>
+                              </Accordion.Body>
+
+                              {step === 'info' && useWallet === 'another' && (
+                                <ButtonIcon
+                                  type="submit"
+                                  sizes="large"
+                                  className={s.buyBtn}
+                                  disabled={isLoading}
+                                >
+                                  Pay
+                                </ButtonIcon>
                               )}
-                            </>
-                          )}
-
-                          {step === 'info' && useWallet === 'another' && (
-                            <ButtonIcon
-                              type="submit"
-                              sizes="large"
-                              className={s.buyBtn}
-                              disabled={isLoading}
-                            >
-                              Pay
-                            </ButtonIcon>
-                          )}
-                        </form>
-                      )}
-                    </Formik>
-
+                            </Accordion.Item>
+                          </form>
+                        )}
+                      </Formik>
+                    </Accordion>
                     {step === 'info' && useWallet === 'default' && (
                       <ButtonIcon
                         sizes="large"
@@ -472,7 +481,7 @@ const ModalBuyItem = ({
                       {(payType === 'btc' || (payType === 'eth' && isSent)) && (
                         <ButtonIcon
                           sizes="large"
-                          className={s.buyBtn}
+                          className={s.continuteBtn}
                           onClick={handleClose}
                         >
                           <Text as="span" size="16" fontWeight="medium">

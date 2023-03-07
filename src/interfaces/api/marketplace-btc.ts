@@ -17,6 +17,7 @@ export interface IGetMarketplaceBtcListItem {
   inscriptionNumber: string;
   contentType: IMAGE_TYPE;
   contentLength: string;
+  owner: string;
   paymentListingInfo?: {
     btc: {
       paymentAddress: string;
@@ -93,8 +94,11 @@ export interface IListingFeePayload {
 }
 
 export interface IListingFee {
-  serviceFee: number;
-  royaltyFee: number;
+  serviceFee: number | string;
+  royaltyFee: number | string;
+  royaltyAddress: string;
+  serviceAddress: string;
+  projectID: string;
 }
 
 export interface IListingordinals {
@@ -108,6 +112,7 @@ export interface IInscriptionDetailResp {
   content_type: IMAGE_TYPE;
   inscription_id: string;
   number: number;
+  address: string;
 }
 
 export interface ICollectionFloorPricePayload {

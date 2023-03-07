@@ -7,30 +7,32 @@ import { useRouter } from 'next/router';
 import { Container } from 'react-bootstrap';
 import ButtonIcon from '@components/ButtonIcon';
 import { ROUTE_PATH } from '@constants/route-path';
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import SvgInset from '@components/SvgInset';
 
 const AuthenticLanding = () => {
-  const { ordAddress, onButtonClick } = useBTCSignOrd();
+  const { onButtonClick } = useBTCSignOrd();
+  const user = useAppSelector(getUserSelector);
   const router = useRouter();
-  const { next } = router.query;
 
   const onConnect = () => {
     onButtonClick({});
   };
 
-  React.useEffect(() => {
-    if (!ordAddress) return;
-    if (next) {
-      router.replace(next as string);
-    } else {
-      router.replace(`${ROUTE_PATH.PROFILE}/${ordAddress}`);
-    }
-  }, [ordAddress]);
+  const goToAuthentic = (): void => {
+    router.push(ROUTE_PATH.AUTHENTIC);
+  };
+
+  const isUser = useMemo((): boolean => {
+    return Boolean(user);
+  }, [user]);
 
   return (
     <Container>
       <Row className={s.metamaskContainer}>
-        <Col md={'12'} xl={'5'} className={s.leftContainer}>
+        <Col md={'12'} xl={'6'} className={s.leftContainer}>
           <p className={s.title}>Certificate of Authenticity</p>
           <Text className={s.subTitle}>
             Create authentic Ordinal Inscriptions from your Ethereum NFTs.
@@ -50,14 +52,29 @@ const AuthenticLanding = () => {
           <br />
           <br />
           <br />
-          <ButtonIcon variants="blue" className={s.login} onClick={onConnect}>
-            <img
-              src={`${CDN_URL}/icons/ic-metamask.png`}
-              className={s.icMetamask}
-              alt="ic-metamask"
-            />
-            Login via MetaMask
-          </ButtonIcon>
+          {isUser ? (
+            <ButtonIcon
+              variants="blue-deep"
+              className={s.login}
+              onClick={goToAuthentic}
+              endIcon={
+                <SvgInset
+                  svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+                />
+              }
+            >
+              Check your Ethereum NFTs
+            </ButtonIcon>
+          ) : (
+            <ButtonIcon variants="blue" className={s.login} onClick={onConnect}>
+              <img
+                src={`${CDN_URL}/icons/ic-metamask.png`}
+                className={s.icMetamask}
+                alt="ic-metamask"
+              />
+              Login via MetaMask
+            </ButtonIcon>
+          )}
           <br />
           <br />
           <br />
@@ -74,7 +91,7 @@ const AuthenticLanding = () => {
             to prove NFT ownership.
           </Text>
         </Col>
-        <Col md={'12'} xl={'7'} className={s.poster}>
+        <Col md={'12'} xl={'6'} className={s.poster}>
           <img alt="banner" src={`${CDN_URL}/images/authentic-poster.png`} />
         </Col>
       </Row>

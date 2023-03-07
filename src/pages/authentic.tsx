@@ -1,27 +1,25 @@
 import MarketplaceLayout from '@layouts/Marketplace';
 import { NextPage } from 'next';
+import Authentic from '@containers/Authentic';
 import { CDN_URL } from '@constants/config';
-import AuthenticLanding from '@containers/AuthenticLanding';
 
-const MetamaskXOrdinalsPage: NextPage = () => {
+const AuthenticPage: NextPage = () => {
   return (
-    <MarketplaceLayout theme={'dark'} isHideFaucet={true}>
-      <div style={{ width: '100%', backgroundColor: '#1c1c1c' }}>
-        <AuthenticLanding />
-      </div>
+    <MarketplaceLayout>
+      <Authentic />
     </MarketplaceLayout>
   );
 };
 
-export default MetamaskXOrdinalsPage;
+export default AuthenticPage;
 
 export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
         title: 'Generative | Authentic',
-        description: 'Inscribe your original Ethereum NFTs onto Bitcoin',
-        image: `${CDN_URL}/images/authentic-poster.png`,
+        description: 'Inscribe NFTs on Bitcoin. For free.',
+        image: `${CDN_URL}/images/marketplace.jpg`,
       },
     },
   };
