@@ -265,7 +265,13 @@ const SetPrice = () => {
         isFullChain: true,
       };
 
-      if (collectionType === CollectionType.COLLECTION) {
+      if (
+        [
+          CollectionType.COLLECTION,
+          CollectionType.EDITIONS,
+          CollectionType.ONE,
+        ].includes(collectionType)
+      ) {
         try {
           const initUploadRes = await initiateMultipartUpload({
             fileName: rawFile.name,

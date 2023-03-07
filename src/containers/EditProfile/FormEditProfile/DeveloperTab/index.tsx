@@ -2,10 +2,8 @@ import ButtonIcon from '@components/ButtonIcon';
 import { Loading } from '@components/Loading';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
-// import { ROUTE_PATH } from '@constants/route-path';
 import { IApikey } from '@interfaces/api/profile';
 import copy from 'copy-to-clipboard';
-// import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import s from './styles.module.scss';
@@ -21,8 +19,6 @@ const DeveloperTab = ({
   apiKey?: IApikey;
   handleSubmitGenerateApiKey: (token: string) => void;
 }) => {
-  // const router = useRouter();
-
   const [token, setToken] = useState('');
 
   const onVerify = useCallback((token: string) => {
@@ -41,11 +37,11 @@ const DeveloperTab = ({
     }
   };
 
-  // const onClickDocs = () => {
-  //   router.push(
-  //     'https://github.com/generative-xyz/generative-xyz-website/actions'
-  //   );
-  // };
+  const onClickDocs = () => {
+    window.open(
+      'https://docs.generative.xyz/issa-api-docs/step-by-step-instructions'
+    );
+  };
 
   const handleLoaded = () => {
     window.grecaptcha.ready(() => {
@@ -96,7 +92,7 @@ const DeveloperTab = ({
                   onClick={() => onClickCopy(apiKey.apiKey)}
                 />
               </div>
-              {/* <div className={s.btnContainer}>
+              <div className={s.btnContainer}>
                 <ButtonIcon
                   variants="outline-small"
                   onClick={onClickDocs}
@@ -109,7 +105,7 @@ const DeveloperTab = ({
                 >
                   Read the docs
                 </ButtonIcon>
-              </div> */}
+              </div>
             </div>
           ) : (
             <div className={s.generateContainer}>
@@ -129,8 +125,7 @@ const DeveloperTab = ({
                 </p>
               </div>
               <div className={s.btnContainer}>
-                <div />
-                {/* <ButtonIcon
+                <ButtonIcon
                   variants="outline-small"
                   startIcon={
                     <SvgInset
@@ -140,7 +135,7 @@ const DeveloperTab = ({
                   onClick={onClickDocs}
                 >
                   Read the docs
-                </ButtonIcon> */}
+                </ButtonIcon>
                 <ButtonIcon
                   variants="primary"
                   onClick={onClickGenerate}

@@ -18,10 +18,10 @@ const EditProfile = (): JSX.Element => {
   const { developers } = router.query;
 
   useEffect(() => {
-    if (developers) {
+    if (developers && tab !== 'developer') {
       setTab('developer');
     }
-  }, []);
+  }, [developers]);
 
   return (
     <div className={s.editProfile}>
@@ -63,14 +63,14 @@ const EditProfile = (): JSX.Element => {
                   Wallet
                 </Text>
               </li>
-              {/* <li
+              <li
                 className={`${tab === 'developer' ? s.isActive : ''}`}
                 onClick={() => setTab('developer')}
               >
                 <Text as={'span'} size={'20'}>
                   Developers
                 </Text>
-              </li> */}
+              </li>
             </ul>
             <div className={s.wrapper}>
               <FormEditProfile tab={tab} />

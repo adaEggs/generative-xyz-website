@@ -7,8 +7,11 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { useContext } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
+import { WalletContext } from '@contexts/wallet-context';
 import s from './Developer.module.scss';
+
 // import copy from 'copy-to-clipboard';
 // import { toast } from 'react-hot-toast';
 
@@ -16,20 +19,28 @@ const Developer = () => {
   const router = useRouter();
 
   const user = useAppSelector(getUserSelector);
+  const walletCtx = useContext(WalletContext);
 
-  const onClickGenerate = () => {
+  const onClickGenerate = async () => {
     if (user && user.id) {
       router.push(`${ROUTE_PATH.EDIT_PROFILE}?developers=true`);
     } else {
-      router.push(ROUTE_PATH.WALLET);
+      try {
+        await walletCtx.connect();
+        setTimeout(() => {
+          router.push(`${ROUTE_PATH.EDIT_PROFILE}?developers=true`);
+        }, 1000);
+      } catch (error) {
+        // TODO
+      }
     }
   };
 
-  // const onClickDocs = () => {
-  //   router.push(
-  //     'https://github.com/generative-xyz/generative-xyz-website/actions'
-  //   );
-  // };
+  const onClickDocs = () => {
+    window.open(
+      'https://docs.generative.xyz/issa-api-docs/step-by-step-instructions'
+    );
+  };
 
   // const onClickCopy = (text: string) => {
   //   copy(text);
@@ -109,25 +120,17 @@ const Developer = () => {
               browsing Bitcoin inscriptions.
             </Text>
           ))}
-          <div style={{ marginTop: 64 }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: 64,
+            }}
+          >
             <ButtonIcon
-              variants="blue"
+              variants="blue-deep"
               className={s.login}
-              onClick={onClickGenerate}
-            >
-              Generate API Key
-            </ButtonIcon>
-            {/* <ButtonIcon
-              variants="blue"
-              className={s.login}
-              onClick={onClickDocs}
-            >
-              Read the docs
-            </ButtonIcon>
-
-            <ButtonIcon
-              variants="primary"
-              className={s.generate}
               onClick={onClickGenerate}
               endIcon={
                 <SvgInset
@@ -136,7 +139,11 @@ const Developer = () => {
               }
             >
               Generate API Key
-            </ButtonIcon> */}
+            </ButtonIcon>
+
+            <div className={s.generate} onClick={onClickDocs}>
+              Read the docs
+            </div>
           </div>
         </Col>
         <Col md={'12'} xl={'6'}>
