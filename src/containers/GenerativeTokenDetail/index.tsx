@@ -20,7 +20,7 @@ import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
 import { formatAddress, formatLongAddress, formatTokenId } from '@utils/format';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -238,6 +238,32 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     );
   };
 
+  const renderOwner = useCallback(() => {
+    if (!tokenData?.owner && !tokenData?.ownerAddr) return null;
+    return (
+      <>
+        {tokenData?.owner ? (
+          <Text size="18" className={s.owner}>
+            Owned by{' '}
+            <Link
+              href={`${ROUTE_PATH.PROFILE}/${tokenData?.owner?.walletAddressBtcTaproot}`}
+              className={s.projectName}
+            >
+              {tokenData?.owner?.displayName ||
+                formatLongAddress(
+                  tokenData?.owner?.walletAddressBtcTaproot || ''
+                )}
+            </Link>
+          </Text>
+        ) : (
+          <Text size="18" className={s.owner}>
+            Owned by {formatLongAddress(tokenData?.ownerAddr || '')}
+          </Text>
+        )}
+      </>
+    );
+  }, [tokenData?.owner, tokenData?.ownerAddr]);
+
   return (
     <>
       <Container>
@@ -289,22 +315,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     : formatTokenId(tokenData?.tokenID || '')}
                 </span>
               </Heading>
-              {tokenData?.owner ? (
-                <Text size="18" className={s.owner}>
-                  Owned by{' '}
-                  <Link
-                    href={`${ROUTE_PATH.PROFILE}/${tokenData?.owner?.walletAddress}`}
-                    className={s.projectName}
-                  >
-                    {tokenData?.owner?.displayName ||
-                      formatLongAddress(tokenData?.owner?.walletAddress || '')}
-                  </Link>
-                </Text>
-              ) : (
-                <Text size="18" className={s.owner}>
-                  Owned by {formatLongAddress(tokenData?.ownerAddr || '')}
-                </Text>
-              )}
+              {renderOwner()}
 
               {/* <Text
               size={'18'}

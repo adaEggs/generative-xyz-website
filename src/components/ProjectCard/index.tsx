@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import s from './ProjectCard.module.scss';
 import Heading from '@components/Heading';
@@ -32,12 +32,23 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (project.creatorProfile) {
       setCreator(project.creatorProfile);
     }
   }, [project]);
+
+  const handleOnImgLoaded = (
+    evt: React.SyntheticEvent<HTMLImageElement>
+  ): void => {
+    const img = evt.target as HTMLImageElement;
+    const naturalWidth = img.naturalWidth;
+    if (naturalWidth < 100 && imgRef.current) {
+      imgRef.current.style.imageRendering = 'pixelated';
+    }
+  };
 
   const creatorMemo = useMemo((): User | null => {
     return creator;
@@ -135,6 +146,8 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               src={convertIpfsToHttp(thumb)}
               alt={project.name}
               loading={'lazy'}
+              ref={imgRef}
+              onLoad={handleOnImgLoaded}
             />
           </div>
         </div>

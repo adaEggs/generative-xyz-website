@@ -12,7 +12,7 @@ import {
   getProjectIdFromTokenId,
 } from '@utils/format';
 import cs from 'classnames';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import Image from 'next/image';
 import s from './styles.module.scss';
@@ -37,7 +37,7 @@ const CollectionItem = ({
   const isBuyable = React.useMemo(() => {
     return data.buyable && !!data.priceBTC;
   }, [data.buyable, data.priceBTC]);
-
+  const imgRef = useRef<HTMLImageElement>(null);
   const [thumb, setThumb] = useState<string>(data.image);
 
   const onThumbError = () => {
@@ -50,6 +50,16 @@ const CollectionItem = ({
       setThumb(data.thumbnail);
     }
   }, [data.image]);
+
+  const handleOnImgLoaded = (
+    evt: React.SyntheticEvent<HTMLImageElement>
+  ): void => {
+    const img = evt.target as HTMLImageElement;
+    const naturalWidth = img.naturalWidth;
+    if (naturalWidth < 100 && imgRef.current) {
+      imgRef.current.style.imageRendering = 'pixelated';
+    }
+  };
 
   const tokenUrl = useMemo(() => {
     if (isWhitelistProject)
@@ -96,6 +106,8 @@ const CollectionItem = ({
                 src={thumb}
                 alt={data.name}
                 loading={'lazy'}
+                ref={imgRef}
+                onLoad={handleOnImgLoaded}
               />
             </div>
           </div>

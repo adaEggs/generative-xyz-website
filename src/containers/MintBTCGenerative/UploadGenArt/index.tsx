@@ -62,7 +62,10 @@ const UploadGenArt: React.FC = (): ReactElement => {
 
   const processCollectionFile = async (file: File) => {
     try {
-      const imageFiles = await processCollectionZipFile(file);
+      const imageFiles =
+        collectionType === CollectionType.COLLECTION
+          ? await processCollectionZipFile(file)
+          : await processCollectionZipFile(file, 1);
       setImageCollectionFile(imageFiles);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -71,6 +74,10 @@ const UploadGenArt: React.FC = (): ReactElement => {
       if ((err as Error).message === ImageFileError.TOO_MANY_EXT) {
         errorMessage +=
           'Your file contain many different file extensions. Please note that one zip file can only include one file extension.';
+      }
+      if ((err as Error).message === ImageFileError.ONLY_ONE_FILE_ALLOWED) {
+        errorMessage +=
+          'Your zip file contain too many files. Please note that one zip file can only include one file.';
       }
       setShowErrorAlert({ open: true, message: errorMessage });
     }
@@ -83,7 +90,13 @@ const UploadGenArt: React.FC = (): ReactElement => {
       await processGenerativeFile(rawFile);
     }
 
-    if (collectionType == CollectionType.COLLECTION) {
+    if (
+      [
+        CollectionType.COLLECTION,
+        CollectionType.EDITIONS,
+        CollectionType.ONE,
+      ].includes(collectionType)
+    ) {
       setIsProcessingFile(true);
       await processCollectionFile(rawFile);
       setIsProcessingFile(false);
@@ -185,6 +198,8 @@ const UploadGenArt: React.FC = (): ReactElement => {
     switch (errorType) {
       case ImageFileError.TOO_LARGE:
         return `File size error, maximum file size is ${SANDBOX_BTC_IMAGE_SIZE_LIMIT}KB.`;
+      case ImageFileError.ONLY_ONE_FILE_ALLOWED:
+        return `File size error, only one file is allowed.`;
       case ImageFileError.INVALID_EXTENSION:
         return `Invalid file format. Supported file extensions are ${getSupportedFileExtList().join(
           ', '
@@ -341,6 +356,30 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 File collection
                 <span className={s.checkmark}></span>
               </div>
+              <div
+                onClick={() => {
+                  setCollectionType(CollectionType.EDITIONS);
+                }}
+                className={cs(s.choiceItem, {
+                  [`${s.choiceItem__active}`]:
+                    collectionType === CollectionType.EDITIONS,
+                })}
+              >
+                Editions
+                <span className={s.checkmark}></span>
+              </div>
+              <div
+                onClick={() => {
+                  setCollectionType(CollectionType.ONE);
+                }}
+                className={cs(s.choiceItem, {
+                  [`${s.choiceItem__active}`]:
+                    collectionType === CollectionType.ONE,
+                })}
+              >
+                1/1
+                <span className={s.checkmark}></span>
+              </div>
             </div>
             <div className={s.guideWrapper}>
               <p>
@@ -417,8 +456,11 @@ const UploadGenArt: React.FC = (): ReactElement => {
         <>
           {collectionType === CollectionType.GENERATIVE &&
             renderUploadGenerativeSuccess()}
-          {collectionType === CollectionType.COLLECTION &&
-            renderUploadImageCollectionSuccess()}
+          {[
+            CollectionType.COLLECTION,
+            CollectionType.EDITIONS,
+            CollectionType.ONE,
+          ].includes(collectionType) && renderUploadImageCollectionSuccess()}
         </>
       )}
     </section>
