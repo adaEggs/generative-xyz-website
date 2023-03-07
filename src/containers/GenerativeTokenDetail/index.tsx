@@ -58,7 +58,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     isTokenOwner,
     isBitcoinProject,
   } = useContext(GenerativeTokenDetailContext);
-  // const scanURL = getScanUrl();
   const user = useSelector(getUserSelector);
   // const mintedDate = dayjs(tokenData?.mintedTime).format('MMM DD, YYYY');
   const [isBuying, setIsBuying] = useState(false);
