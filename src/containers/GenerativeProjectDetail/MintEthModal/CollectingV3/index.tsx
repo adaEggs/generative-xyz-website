@@ -53,6 +53,7 @@ const MintEthModal: React.FC = () => {
   const [isSent, setIsSent] = React.useState(false);
   const [totalPrice, setTotalPrice] = React.useState('');
   const [feePrice, setFeePrice] = React.useState('');
+  const [mintPrice, setMintPrice] = React.useState('');
 
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [isShowAdvance, setIsShowAdvance] = useState(false);
@@ -65,7 +66,10 @@ const MintEthModal: React.FC = () => {
 
   const [quantity, setQuantity] = useState(1);
 
-  const priceFormat = formatEthPrice(projectData?.mintPriceEth || '', '0.0');
+  const priceFormat = formatEthPrice(
+    mintPrice ? mintPrice : projectData?.mintPriceEth || '',
+    '0.0'
+  );
   const totalFormatPrice = formatEthPrice(
     totalPrice
       ? totalPrice
@@ -132,6 +136,7 @@ const MintEthModal: React.FC = () => {
           price: _price,
           address: _address,
           networkFeeByPayType: _networkFeeByPayType,
+          mintPriceByPayType: _mintPriceByPayType,
         } = await getBTCAddress({
           walletAddress: ordAddress,
           refundAddress: refundAddress,
@@ -146,6 +151,7 @@ const MintEthModal: React.FC = () => {
 
         setTotalPrice(_price);
         setFeePrice(_networkFeeByPayType);
+        setMintPrice(_mintPriceByPayType);
         setReceiverAddress(_address);
         setsTep('showAddress');
       } catch (err: unknown) {

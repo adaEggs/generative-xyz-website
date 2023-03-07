@@ -9,6 +9,7 @@ interface IResponse {
   address: string;
   price: string;
   networkFeeByPayType: string;
+  mintPriceByPayType: string;
 }
 
 export const getBTCAddress = async ({
@@ -26,9 +27,11 @@ export const getBTCAddress = async ({
 }): Promise<IResponse> => {
   let _address = '';
   let _price: string = projectData.mintPrice;
-  let _networkFeeByPayType: string = projectData?.networkFeeEth || '';
+  let _networkFeeByPayType = '';
+  let _mintPriceByPayType = '';
+
   try {
-    const { address, price, networkFeeByPayType } =
+    const { address, price, networkFeeByPayType, mintPriceByPayType } =
       await generateMintReceiverAddress({
         walletAddress,
         projectID: projectData.tokenID,
@@ -53,8 +56,8 @@ export const getBTCAddress = async ({
 
     _address = address;
     _price = price || projectData?.mintPrice;
-    _networkFeeByPayType =
-      networkFeeByPayType || projectData?.networkFeeEth || '';
+    _networkFeeByPayType = networkFeeByPayType || '';
+    _mintPriceByPayType = mintPriceByPayType || '';
     // setReceiverAddress(address);
     // setPrice(price || projectData?.mintPrice);
   } catch (err: unknown) {
@@ -64,5 +67,6 @@ export const getBTCAddress = async ({
     address: _address,
     price: _price,
     networkFeeByPayType: _networkFeeByPayType,
+    mintPriceByPayType: _mintPriceByPayType,
   };
 };

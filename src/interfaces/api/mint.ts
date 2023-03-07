@@ -14,6 +14,7 @@ export interface IGetMintReceiverAddressResp {
   payType: IPaymentType;
   quantity: number;
   networkFeeByPayType: string;
+  mintPriceByPayType: string;
 }
 
 export interface IMintGenerativePayload {

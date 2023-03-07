@@ -39,6 +39,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   const [isShowAdvance, setIsShowAdvance] = useState(false);
   const [totalPrice, setTotalPrice] = React.useState('');
   const [feePrice, setFeePrice] = React.useState('');
+  const [mintPrice, setMintPrice] = React.useState('');
 
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
 
@@ -59,7 +60,10 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const [quantity, setQuantity] = useState(1);
 
-  const priceFormat = formatBTCPrice(projectData?.mintPrice || '', '0.0');
+  const priceFormat = formatBTCPrice(
+    mintPrice ? mintPrice : projectData?.mintPrice || '',
+    '0.0'
+  );
   const feePriceFormat = formatBTCPrice(
     feePrice ? Number(feePrice) : Number(projectData?.networkFee),
     '0.0'
@@ -128,7 +132,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     try {
       setIsLoading(true);
       setReceiverAddress(null);
-      const { address, price, networkFeeByPayType } =
+      const { address, price, networkFeeByPayType, mintPriceByPayType } =
         await generateMintReceiverAddress({
           walletAddress,
           projectID: projectData.tokenID,
@@ -142,6 +146,7 @@ const MintBTCGenerativeModal: React.FC = () => {
       // });
       setTotalPrice(price);
       setFeePrice(networkFeeByPayType);
+      setMintPrice(mintPriceByPayType);
       sendAAEvent({
         eventName: BTC_PROJECT.MINT_NFT,
         data: {
