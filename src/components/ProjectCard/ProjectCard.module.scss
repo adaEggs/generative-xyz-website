@@ -186,6 +186,13 @@
     width: 100%;
     height: rem(32);
   }
+
+  .row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 .countDown {
