@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { prettyPrintBytes } from '@utils/units';
 import { CDN_URL, MINT_TOOL_MAX_FILE_SIZE } from '@constants/config';
 import SvgInset from '@components/SvgInset';
+import { isImageFile } from '@utils/file';
+import Image from 'next/image';
 
 export interface IProps {
   className: string;
@@ -44,6 +46,7 @@ const DropFile: React.FC<IProps> = ({
     fileOrFiles?.length ? fileOrFiles[0] : null
   );
   const [error, setError] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
 
   const onChangeFile = (file: File): void => {
     setFile(file);
@@ -57,11 +60,19 @@ const DropFile: React.FC<IProps> = ({
         MINT_TOOL_MAX_FILE_SIZE * 1000
       }KB.`
     );
+    setPreview(null);
   };
 
   const onTypeError = (): void => {
     setError('Invalid file extension. Please check and try again.');
+    setPreview(null);
   };
+
+  useEffect(() => {
+    if (file && isImageFile(file)) {
+      setPreview(URL.createObjectURL(file));
+    }
+  }, [file]);
 
   useEffect(() => {
     setFile(fileOrFiles?.length ? fileOrFiles[0] : null);
@@ -84,11 +95,19 @@ const DropFile: React.FC<IProps> = ({
         classes={s.dropZone}
         types={fileTypes}
       >
-        <div>
+        <>
           {file ? (
-            <p className={s.dropZoneSize}>
-              {`${file.name} (${prettyPrintBytes(file.size)})`}
-            </p>
+            <>
+              {preview ? (
+                <div className={s.thumbnailWrapper}>
+                  <Image fill src={preview} alt="preview" />
+                </div>
+              ) : (
+                <p className={s.dropZoneSize}>
+                  {`${file.name} (${prettyPrintBytes(file.size)})`}
+                </p>
+              )}
+            </>
           ) : (
             <div className={s.wrap_loader}>
               <SvgInset
@@ -107,7 +126,7 @@ const DropFile: React.FC<IProps> = ({
           {error && (
             <p className={cs(s.dropZoneDescription, s.errorText)}>{error}</p>
           )}
-        </div>
+        </>
       </FileUploader>
     </div>
   );
