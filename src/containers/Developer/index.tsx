@@ -113,22 +113,22 @@ const Developer = () => {
             <ButtonIcon
               variants="blue"
               className={s.login}
-              onClick={onClickDocs}
+              onClick={onClickGenerate}
             >
-              Read the docs
+              Generate API Key
             </ButtonIcon>
 
             <ButtonIcon
               variants="primary"
               className={s.generate}
-              onClick={onClickGenerate}
+              onClick={onClickDocs}
               endIcon={
                 <SvgInset
                   svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
                 />
               }
             >
-              Generate API Key
+              Read the docs
             </ButtonIcon>
           </div>
         </Col>
