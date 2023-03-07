@@ -117,6 +117,7 @@ const MintEthModal: React.FC = () => {
           refundAddress: refundAddress,
           projectData,
           paymentMethod,
+          quantity: 1,
         });
         if (!_address || !_price) {
           toast.error(ErrorMessage.DEFAULT);

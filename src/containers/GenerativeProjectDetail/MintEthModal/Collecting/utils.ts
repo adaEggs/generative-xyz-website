@@ -8,6 +8,8 @@ import { PaymentMethod } from '@enums/mint-generative';
 interface IResponse {
   address: string;
   price: string;
+  networkFeeByPayType: string;
+  mintPriceByPayType: string;
 }
 
 export const getBTCAddress = async ({
@@ -15,21 +17,28 @@ export const getBTCAddress = async ({
   refundAddress,
   projectData,
   paymentMethod,
+  quantity,
 }: {
   walletAddress: string;
   refundAddress: string;
   projectData: Project;
   paymentMethod: PaymentMethod;
+  quantity: number;
 }): Promise<IResponse> => {
   let _address = '';
   let _price: string = projectData.mintPrice;
+  let _networkFeeByPayType = '';
+  let _mintPriceByPayType = '';
+
   try {
-    const { address, price } = await generateMintReceiverAddress({
-      walletAddress,
-      projectID: projectData.tokenID,
-      payType: 'eth',
-      refundUserAddress: refundAddress,
-    });
+    const { address, price, networkFeeByPayType, mintPriceByPayType } =
+      await generateMintReceiverAddress({
+        walletAddress,
+        projectID: projectData.tokenID,
+        payType: 'eth',
+        refundUserAddress: refundAddress,
+        quantity,
+      });
 
     sendAAEvent({
       eventName: BTC_PROJECT.MINT_NFT,
@@ -47,6 +56,8 @@ export const getBTCAddress = async ({
 
     _address = address;
     _price = price || projectData?.mintPrice;
+    _networkFeeByPayType = networkFeeByPayType || '';
+    _mintPriceByPayType = mintPriceByPayType || '';
     // setReceiverAddress(address);
     // setPrice(price || projectData?.mintPrice);
   } catch (err: unknown) {
@@ -55,5 +66,7 @@ export const getBTCAddress = async ({
   return {
     address: _address,
     price: _price,
+    networkFeeByPayType: _networkFeeByPayType,
+    mintPriceByPayType: _mintPriceByPayType,
   };
 };

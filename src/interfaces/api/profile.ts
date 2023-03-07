@@ -46,6 +46,7 @@ export interface ICollectedNFTItem {
   priceBTC: string;
   orderID: string;
   cancelling: boolean;
+  quantity?: number;
 }
 
 export interface ICollectedNFTItemDetail extends ICollectedNFTItem {
@@ -68,6 +69,7 @@ export interface IGetMintingCollectedNFTResp {
   priceBTC: string;
   orderID: string;
   cancelling: boolean;
+  quantity?: number;
 }
 
 export interface IGetCollectedNFTInsciptionResp {
