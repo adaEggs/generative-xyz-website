@@ -35,6 +35,7 @@ import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
+import cs from 'classnames';
 import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
 import { ProfileProvider } from '@contexts/profile-context';
 import { AuthenticCard } from './AuthenticCard';
@@ -284,8 +285,12 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               <Loading isLoaded={!!tokenData} className={s.loading_token} />
               <div className={`${s.projectHeader}`}>
                 <Link
-                  href={`${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddress}`}
-                  className={s.creator_info}
+                  href={`${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddressBtcTaproot}`}
+                  className={cs(
+                    s.creator_info,
+                    !projectData?.creatorProfile?.walletAddressBtcTaproot &&
+                      'pointer-none'
+                  )}
                 >
                   <Heading
                     className={s.projectHeader_creator}
@@ -294,7 +299,8 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   >
                     {projectData?.creatorProfile?.displayName ||
                       formatAddress(
-                        projectData?.creatorProfile?.walletAddress || ''
+                        projectData?.creatorProfile?.walletAddressBtcTaproot ||
+                          ''
                       )}
                   </Heading>
                 </Link>

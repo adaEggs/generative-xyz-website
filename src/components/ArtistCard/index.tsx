@@ -41,7 +41,7 @@ export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
 
   return (
     <Link
-      href={`${ROUTE_PATH.PROFILE}/${profile.walletAddress}`}
+      href={`${ROUTE_PATH.PROFILE}/${profile.walletAddressBtcTaproot}`}
       className={`${s.artistCard} ${className}`}
     >
       <div className={s.artistCard_inner}>
@@ -59,7 +59,8 @@ export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
         </div>
         <div className={s.artistCard_info}>
           <Text size="20" fontWeight="medium" color="white">
-            {profile.displayName || formatAddress(profile.walletAddress)}
+            {profile.displayName ||
+              formatAddress(profile.walletAddressBtcTaproot)}
           </Text>
           <Text
             className={s.artistCard_info_arts}
