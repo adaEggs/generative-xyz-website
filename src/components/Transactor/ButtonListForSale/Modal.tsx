@@ -97,15 +97,21 @@ const ModalListForSale = React.memo(
       if (!listingFee) return;
       try {
         setLoading(true);
-        const amountSeller = convertToSatoshiNumber(values.price);
-        const amountArtist = listingFee?.royaltyFee
-          ? Math.floor(
-              new BigNumber(amountSeller)
-                .multipliedBy(listingFee?.royaltyFee)
-                .div(100)
-                .toNumber()
-            )
-          : 0;
+        const inputAmount = convertToSatoshiNumber(values.price);
+
+        // calc percent
+        const artistPercent = new BigNumber(
+          listingFee?.royaltyFee || 0
+        ).dividedBy(100);
+        const sellerPercent = new BigNumber(1).minus(artistPercent);
+
+        // calc amount
+        const amountArtist = new BigNumber(inputAmount)
+          .multipliedBy(artistPercent)
+          .toNumber();
+        const amountSeller = new BigNumber(inputAmount)
+          .multipliedBy(sellerPercent)
+          .toNumber();
 
         await listInscription({
           amountPayToSeller: amountSeller,
@@ -245,23 +251,19 @@ const ModalListForSale = React.memo(
                         charge: listingFee?.royaltyFee || 0,
                         isHideZero: true,
                       })}
-                      {!!values.price && (
-                        <>
-                          <div className={s.wrapFee_divider} />
-                          {renderFee({
-                            price: new BigNumber(values.price || 0)
-                              .plus(
-                                new BigNumber(values.price || 0)
-                                  .multipliedBy(listingFee?.royaltyFee || 0)
-                                  .div(100)
-                              )
-                              .toNumber(),
-                            label: 'Total',
-                            charge: 100,
-                            isHideZero: true,
-                          })}
-                        </>
-                      )}
+                      {!!values.price &&
+                        renderFee({
+                          price: new BigNumber(values.price || 0)
+                            .minus(
+                              new BigNumber(values.price || 0)
+                                .multipliedBy(listingFee?.royaltyFee || 0)
+                                .div(100)
+                            )
+                            .toNumber(),
+                          label: 'Receive amount',
+                          charge: 100,
+                          isHideZero: true,
+                        })}
                     </div>
                   </>
                 )}

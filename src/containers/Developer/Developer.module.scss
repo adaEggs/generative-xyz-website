@@ -64,10 +64,16 @@
     }
 
     .generate {
-      padding: 16px 24px;
+      padding: 14px 24px;
       color: white;
       margin-left: rem(16px);
       border: none;
+      cursor: pointer;
+      text-decoration-line: underline;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 26px;
+      text-align: center;
 
       @include mobile {
         margin-left: rem(8px);

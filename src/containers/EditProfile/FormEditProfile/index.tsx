@@ -108,15 +108,12 @@ const FormEditProfile = ({ tab = 'account' }: { tab: string }) => {
 
   const handleGetApiKey = async () => {
     try {
-      setLoading(true);
       const res = await getApiKey();
       if (res) {
         setApiKey(res);
       }
     } catch (error) {
       //TODO
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -4,7 +4,6 @@ import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { IApikey } from '@interfaces/api/profile';
 import copy from 'copy-to-clipboard';
-import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import s from './styles.module.scss';
@@ -20,8 +19,6 @@ const DeveloperTab = ({
   apiKey?: IApikey;
   handleSubmitGenerateApiKey: (token: string) => void;
 }) => {
-  const router = useRouter();
-
   const [token, setToken] = useState('');
 
   const onVerify = useCallback((token: string) => {
@@ -41,7 +38,7 @@ const DeveloperTab = ({
   };
 
   const onClickDocs = () => {
-    router.push(
+    window.open(
       'https://docs.generative.xyz/issa-api-docs/step-by-step-instructions'
     );
   };
