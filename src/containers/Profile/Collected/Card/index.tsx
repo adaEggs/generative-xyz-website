@@ -21,6 +21,8 @@ import { HistoryStatusType, TrackTxType } from '@interfaces/api/bitcoin';
 import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 import ButtonListForSale from '@components/Transactor/ButtonListForSale';
 import ButtonCancelListed from '@components/Transactor/ButtonCancelListed';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -244,6 +246,15 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   sizes="small"
                   variants="ghost"
                   className={s.twitter_btnShare}
+                  onClick={() => {
+                    sendAAEvent({
+                      eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
+                      data: {
+                        projectId: project?.projectID,
+                        referrerId: user?.id,
+                      },
+                    });
+                  }}
                   startIcon={
                     <SvgInset
                       size={16}
