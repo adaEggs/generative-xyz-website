@@ -16,7 +16,11 @@ import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { ellipsisCenter, formatEthPrice } from '@utils/format';
+import {
+  ellipsisCenter,
+  formatEthPrice,
+  formatEthPriceInput,
+} from '@utils/format';
 import log from '@utils/logger';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
@@ -70,7 +74,7 @@ const MintEthModal: React.FC = () => {
     mintPrice ? mintPrice : projectData?.mintPriceEth || '',
     '0.0'
   );
-  const totalFormatPrice = formatEthPrice(
+  const totalFormatPrice = formatEthPriceInput(
     totalPrice
       ? totalPrice
       : `${
@@ -157,11 +161,7 @@ const MintEthModal: React.FC = () => {
       } catch (err: unknown) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        if (err && err?.message) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          setErrMessage(err?.message);
-        }
+        setErrMessage('Failed to generate receiver address');
         setReceiverAddress(null);
       } finally {
         setIsLoading(false);

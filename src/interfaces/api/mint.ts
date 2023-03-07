@@ -12,7 +12,6 @@ export interface IGetMintReceiverAddressResp {
   address: string;
   price: string;
   payType: IPaymentType;
-  quantity: number;
   networkFeeByPayType: string;
   mintPriceByPayType: string;
 }
