@@ -22,6 +22,19 @@ const ProjectDescription = ({
   const [projectDescription, setProjectDescription] = useState('');
   const [projectInteraction, setProjectInteraction] = useState('');
   const [render, setRender] = useState(false);
+  const [defaultActiveKey, setDefaultActiveKey] = useState('description');
+
+  const handleSetDefaultActiveKey = () => {
+    if (desc) return 'description';
+    if (profileBio) return 'profile';
+    if (attributes) return 'features';
+    return 'token';
+  };
+
+  const handleSelectTab = (tab: string) => {
+    setDefaultActiveKey(tab);
+    setRender(!render);
+  };
 
   useEffect(() => {
     if (hasInteraction && desc) {
@@ -30,6 +43,10 @@ const ProjectDescription = ({
       setProjectInteraction(splitDesc[1]);
     }
   }, [desc, hasInteraction]);
+
+  useEffect(() => {
+    setDefaultActiveKey(handleSetDefaultActiveKey());
+  }, [desc, profileBio, attributes, tokenDetail]);
 
   // if (!hasInteraction) {
   //   return (
@@ -50,14 +67,17 @@ const ProjectDescription = ({
   return (
     <Tabs
       className={s.tabs}
-      defaultActiveKey="description"
-      onSelect={() => setRender(!render)}
+      activeKey={defaultActiveKey}
+      onSelect={tab => handleSelectTab(tab || 'description')}
     >
-      <Tab tabClassName={s.tab} eventKey="description" title={`Description`}>
-        <div className={s.project_desc}>
-          <SeeMore>{hasInteraction ? projectDescription : desc}</SeeMore>
-        </div>
-      </Tab>
+      {!!desc && (
+        <Tab tabClassName={s.tab} eventKey="description" title={`Description`}>
+          <div className={s.project_desc}>
+            <SeeMore>{hasInteraction ? projectDescription : desc}</SeeMore>
+          </div>
+        </Tab>
+      )}
+
       {!!projectInteraction && (
         <Tab tabClassName={s.tab} eventKey="interaction" title={`Interaction`}>
           <div className={s.project_desc}>
@@ -82,11 +102,7 @@ const ProjectDescription = ({
       )}
 
       {!!tokenDetail && (
-        <Tab
-          tabClassName={cs(s.tab, 'test')}
-          eventKey="token"
-          title={`ORDINAL THEORY`}
-        >
+        <Tab tabClassName={cs(s.tab)} eventKey="token" title={`ORDINAL THEORY`}>
           <div className={s.project_desc}>
             {tokenDetail}
             {/* <SeeMore render={render}>{tokenDetail || ''}</SeeMore> */}

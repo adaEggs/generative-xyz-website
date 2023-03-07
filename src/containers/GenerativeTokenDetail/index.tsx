@@ -8,14 +8,17 @@ import Stats from '@components/Stats';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
+import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
 import { SOCIALS } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { EXTERNAL_LINK } from '@constants/external-link';
 import { ROUTE_PATH } from '@constants/route-path';
+import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
 import {
   GenerativeTokenDetailContext,
   GenerativeTokenDetailProvider,
 } from '@contexts/generative-token-detail-context';
+import { ProfileProvider } from '@contexts/profile-context';
 import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
@@ -34,13 +37,8 @@ import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
-import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
-import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
-import { ProfileProvider } from '@contexts/profile-context';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
-  // const router = useRouter();
-  // const { projectID } = router.query;
   const { mobileScreen } = useWindowSize();
   const {
     tokenData,
@@ -136,7 +134,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   }, [tokenData]);
 
   const isTwVerified = useMemo(() => {
-    return projectData?.creatorProfile?.profileSocial?.twitterVerified || false;
+    return (
+      projectData?.creatorProfile?.profileSocial?.twitterVerified ||
+      tokenData?.creator?.profileSocial?.twitterVerified ||
+      false
+    );
   }, [projectData?.creatorProfile?.profileSocial]);
 
   const origin =
@@ -206,7 +208,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     return null;
   };
 
-  const tokenDescription = projectData?.desc || '';
+  const tokenDescription = tokenData?.description || projectData?.desc || '';
 
   // const handleLinkProfile = (walletAddress?: string) => {
   //   if (user?.walletAddress === walletAddress) {
