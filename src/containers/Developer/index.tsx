@@ -26,7 +26,7 @@ const Developer = () => {
   };
 
   const onClickDocs = () => {
-    router.push(
+    window.open(
       'https://docs.generative.xyz/issa-api-docs/step-by-step-instructions'
     );
   };
