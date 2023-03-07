@@ -11,7 +11,7 @@ export const AuthenticCard = ({
   tokenID,
 }: {
   project: Project | null;
-  tokenID: string | undefined;
+  tokenID?: string;
 }): JSX.Element => {
   if (!project) return <></>;
   return (
