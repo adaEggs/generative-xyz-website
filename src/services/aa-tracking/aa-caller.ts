@@ -48,15 +48,14 @@ class APICaller {
       userId = '0';
     }
 
-    const userDisplayName = localStorage.getItem(
-      LocalStorageKey.USER_DISPLAYNAME
-    );
+    const userDisplayName =
+      localStorage.getItem(LocalStorageKey.USER_DISPLAYNAME) || '';
     eventParams.push({
       key: 'user_name',
       value: userDisplayName,
     });
 
-    const userAvatar = localStorage.getItem(LocalStorageKey.USER_AVATAR);
+    const userAvatar = localStorage.getItem(LocalStorageKey.USER_AVATAR) || '';
     eventParams.push({
       key: 'user_avatar',
       value: userAvatar,
