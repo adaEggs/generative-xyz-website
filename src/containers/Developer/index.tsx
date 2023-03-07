@@ -25,11 +25,11 @@ const Developer = () => {
     }
   };
 
-  // const onClickDocs = () => {
-  //   router.push(
-  //     'https://github.com/generative-xyz/generative-xyz-website/actions'
-  //   );
-  // };
+  const onClickDocs = () => {
+    router.push(
+      'https://docs.generative.xyz/issa-api-docs/step-by-step-instructions'
+    );
+  };
 
   // const onClickCopy = (text: string) => {
   //   copy(text);
@@ -113,13 +113,6 @@ const Developer = () => {
             <ButtonIcon
               variants="blue"
               className={s.login}
-              onClick={onClickGenerate}
-            >
-              Generate API Key
-            </ButtonIcon>
-            {/* <ButtonIcon
-              variants="blue"
-              className={s.login}
               onClick={onClickDocs}
             >
               Read the docs
@@ -136,7 +129,7 @@ const Developer = () => {
               }
             >
               Generate API Key
-            </ButtonIcon> */}
+            </ButtonIcon>
           </div>
         </Col>
         <Col md={'12'} xl={'6'}>

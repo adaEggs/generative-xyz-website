@@ -368,7 +368,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 Editions
                 <span className={s.checkmark}></span>
               </div>
-              <div
+              {/* <div
                 onClick={() => {
                   setCollectionType(CollectionType.ONE);
                 }}
@@ -379,7 +379,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
               >
                 1/1
                 <span className={s.checkmark}></span>
-              </div>
+              </div> */}
             </div>
             <div className={s.guideWrapper}>
               <p>
