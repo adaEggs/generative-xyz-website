@@ -10,7 +10,7 @@ import { GLB_EXTENSION } from '@constants/file';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import useWindowSize from '@hooks/useWindowSize';
 import { Token } from '@interfaces/token';
-import { formatAddress, formatTokenId } from '@utils/format';
+import { ellipsisCenter, formatAddress } from '@utils/format';
 import cs from 'classnames';
 import Image from 'next/image';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
@@ -129,7 +129,10 @@ const CollectionItem = ({
                       ? data?.orderInscriptionIndex
                       : data?.inscriptionIndex
                       ? data?.inscriptionIndex
-                      : formatTokenId(tokenID)}
+                      : ellipsisCenter({
+                          str: tokenID,
+                          limit: 3,
+                        })}
                   </span>
                 </Text>
                 {renderBuyButton()}
@@ -155,7 +158,10 @@ const CollectionItem = ({
                         ? data?.orderInscriptionIndex
                         : data?.inscriptionIndex
                         ? data?.inscriptionIndex
-                        : formatTokenId(tokenID)}
+                        : ellipsisCenter({
+                            str: tokenID,
+                            limit: 3,
+                          })}
                     </span>
                   </Heading>
                   {renderBuyButton()}
