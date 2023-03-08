@@ -19,7 +19,8 @@
     color: $white;
 
     .startedLink {
-      color: var(--bs-link-hover-color);
+      // color: var(--bs-link-hover-color);
+      color: $white;
       text-decoration: none;
 
       &:hover {

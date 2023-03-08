@@ -10,6 +10,7 @@ import { WalletProvider } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
 import store from '@redux';
 import { sendAAPageView } from '@services/aa-tracking';
+import DatadogService from '@services/datadog';
 import '@styles/index.scss';
 import log from '@utils/logger';
 import { getReferralCodeURLParameter, setReferral } from '@utils/referral';
@@ -20,7 +21,6 @@ import { useRouter } from 'next/router';
 import NextNprogress from 'nextjs-progressbar';
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
-import DatadogService from '@services/datadog';
 
 interface MyAppProps extends AppProps {
   Component: {

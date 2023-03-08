@@ -22,6 +22,7 @@ import Select, { SingleValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
 import { LocalStorageKey } from '@enums/local-storage';
+import { useRouter } from 'next/router';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -41,6 +42,10 @@ const SORT_OPTIONS: Array<{ value: string; label: string }> = [
 const LOG_PREFIX = 'RecentWorks';
 
 export const RecentWorks = (): JSX.Element => {
+  const router = useRouter();
+
+  const { category: categoryNameParams } = router.query;
+
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoadedMore, setIsLoadMore] = useState<boolean>(false);
   const [projects, setProjects] = useState<IGetProjectListResponse>();
@@ -108,6 +113,7 @@ export const RecentWorks = (): JSX.Element => {
     try {
       setCategoriesLoading(true);
       const { result } = await getCategoryList();
+
       let historyCategoryID = sessionStorage.getItem(
         LocalStorageKey.CATEGORY_ID
       );
@@ -115,6 +121,10 @@ export const RecentWorks = (): JSX.Element => {
         historyCategoryID = 'All';
       }
       if (result && result.length > 0) {
+        historyCategoryID =
+          result?.find(category => category.name === categoryNameParams)?.id ||
+          'All';
+
         setCategoriesList(result);
         setCategoriesLoading(false);
         const projectRes = await getProjectAll({
@@ -137,11 +147,14 @@ export const RecentWorks = (): JSX.Element => {
     }
   };
 
-  const handleClickCategory = (categoryID: string) => {
+  const handleClickCategory = (categoryID: string, categoryName: string) => {
     setFilterCategory(categoryID);
     setActiveCategory(categoryID);
     sessionStorage.setItem(LocalStorageKey.CATEGORY_ID, categoryID);
     setProjects(undefined);
+    router.replace({
+      query: { ...router.query, category: categoryName },
+    });
   };
 
   useAsyncEffect(async () => {
@@ -177,7 +190,7 @@ export const RecentWorks = (): JSX.Element => {
               text="All"
               onClick={() => {
                 setPageNum(0);
-                handleClickCategory('All');
+                handleClickCategory('All', 'All');
               }}
               active={activeCategory === 'All'}
               loading={categoriesLoading}
@@ -190,7 +203,7 @@ export const RecentWorks = (): JSX.Element => {
                   key={`category-${category.id}`}
                   onClick={() => {
                     setPageNum(0);
-                    handleClickCategory(category.id);
+                    handleClickCategory(category.id, category.name);
                   }}
                   active={activeCategory === category.id}
                   loading={categoriesLoading}
