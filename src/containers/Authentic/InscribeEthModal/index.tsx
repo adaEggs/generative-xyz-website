@@ -71,6 +71,7 @@ const InscribeEthModal: React.FC<IProps> = (
   const [addressInput, setAddressInput] = useState<string>('');
   const [errMessage, setErrMessage] = useState('');
   const [isMinting, setIsMinting] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [quantity] = useState(1);
   const [exchangeRate, setExchangeRate] = useState(0);
 
@@ -168,6 +169,7 @@ const InscribeEthModal: React.FC<IProps> = (
 
   const handleLoadFile = async (): Promise<void> => {
     try {
+      setIsFetching(true);
       if (isAuthentic && tokenAddress && tokenId) {
         const res = await getNFTDetailFromMoralis({
           tokenAddress: tokenAddress as string,
@@ -206,6 +208,8 @@ const InscribeEthModal: React.FC<IProps> = (
       }
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+    } finally {
+      setIsFetching(false);
     }
   };
 
@@ -489,12 +493,12 @@ const InscribeEthModal: React.FC<IProps> = (
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading || quantity === 0}
+                        disabled={isLoading || quantity === 0 || isFetching}
                         onClick={() =>
                           handleSubmit({ address: userAddress.taproot })
                         }
                       >
-                        Inscribe
+                        {isFetching ? 'Loading...' : 'Inscribe'}
                       </ButtonIcon>
                     )}
 
