@@ -48,7 +48,6 @@ const SearchPage = (): JSX.Element => {
     useSearchApi({
       keyword,
     });
-  const [isCategoriesLoading, setIsCategoriesLoading] = useState<boolean>(true);
   const [currentTabActive, setCurrentTabActive] = useState<{
     id: number;
     name: string;
@@ -56,10 +55,18 @@ const SearchPage = (): JSX.Element => {
   }>(ITEMS_TYPE[0]);
 
   useEffect(() => {
-    setIsCategoriesLoading(false);
-  }, []);
+    if (totalCollection > 0) {
+      setCurrentTabActive(ITEMS_TYPE[0]);
+    } else if (totalToken > 0) {
+      setCurrentTabActive(ITEMS_TYPE[1]);
+    } else if (totalArtist > 0) {
+      setCurrentTabActive(ITEMS_TYPE[2]);
+    } else if (totalInscription > 0) {
+      setCurrentTabActive(ITEMS_TYPE[3]);
+    }
+  }, [keyword, totalCollection, totalToken, totalArtist, totalInscription]);
 
-  const getTotalItems = (name: string, type: string): string => {
+  const getTotalEachItem = (name: string, type: string): string => {
     if (type === OBJECT_TYPE.PROJECT) {
       return `${name} (${prettyNumberWithCommas(totalCollection)})`;
     }
@@ -101,18 +108,18 @@ const SearchPage = (): JSX.Element => {
               <CategoryTab
                 className={s.search_tabs}
                 type="3"
-                text={getTotalItems(item.name, item.type)}
+                text={getTotalEachItem(item.name, item.type)}
                 key={item.id}
                 onClick={() => {
                   setCurrentTabActive(item);
                 }}
                 active={currentTabActive.id === item.id}
-                loading={isCategoriesLoading}
+                loading={false}
               />
             ))}
           </Col>
         </Row>
-        {renderItemList}
+        <div className={s.search_results}>{renderItemList}</div>
       </Container>
     </div>
   );

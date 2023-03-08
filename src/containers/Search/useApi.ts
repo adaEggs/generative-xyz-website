@@ -25,7 +25,6 @@ const useSearchApi = ({ keyword }: SearchApi) => {
     ...filterBase,
     type: OBJECT_TYPE.INSCRIPTION,
   };
-
   const filterCollectionParams = {
     ...PAYLOAD_DEFAULT,
     keyword,

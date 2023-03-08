@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LogLevel } from '@enums/log-level';
 import { BareFetcher, unstable_serialize } from 'swr';
+import qs from 'query-string';
 
 import { IGetSearchPayload, IGetSearchResponse } from '@interfaces/api/search';
 import { get } from '@services/http-client';
@@ -9,16 +10,12 @@ import log from '@utils/logger';
 const LOG_PREFIX = 'SearchService';
 const API_PATH = '/search';
 
-export const getSearchByKeyword = async ({
-  page,
-  limit,
-  keyword,
-  type,
-}: IGetSearchPayload): Promise<IGetSearchResponse> => {
+export const getSearchByKeyword = async (
+  params: IGetSearchPayload
+): Promise<IGetSearchResponse> => {
   try {
-    return await get<IGetSearchResponse>(
-      `${API_PATH}?page=${page}&limit=${limit}&search=${keyword}&type=${type}`
-    );
+    const queryString = qs.stringify(params);
+    return await get<IGetSearchResponse>(`${API_PATH}?${queryString}`);
   } catch (err: unknown) {
     log('failed to get search', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get search');
