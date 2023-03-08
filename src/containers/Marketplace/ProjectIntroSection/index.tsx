@@ -32,7 +32,7 @@ import { getUserSelector } from '@redux/user/selector';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
-import { isWalletWhiteList } from '@utils/common';
+import { isWalletWhiteList, wordCase } from '@utils/common';
 import { convertToETH } from '@utils/currency';
 import {
   base64ToUtf8,
@@ -260,6 +260,12 @@ const ProjectIntroSection = ({
     }/${project?.maxSupply || project?.limit}`;
   }, [project]);
 
+  const projectName = useMemo((): string => {
+    return project?.fromAuthentic || false
+      ? wordCase(`Ordinal ${project?.name} `)
+      : `${project?.name} `;
+  }, [project]);
+
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -307,7 +313,7 @@ const ProjectIntroSection = ({
               as="h4"
               fontWeight="medium"
             >
-              {project?.name}
+              {projectName}
             </Heading>
             {isEdit && (
               <div className={s.projectHeader_btn}>

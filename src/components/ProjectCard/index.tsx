@@ -19,6 +19,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import { sendAAEvent } from '@services/aa-tracking';
 import { BTC_PROJECT } from '@constants/tracking-event-name';
 import { filterCreatorName } from '@utils/generative';
+import { wordCase } from '@utils/common';
 
 interface IPros {
   project: Project;
@@ -113,7 +114,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
       );
     }
     if (mintedOut) {
-      return !isFromAuthentic || isAuthenticIn24h ? (
+      return !isFromAuthentic ? (
         <div className={s.projectCard_info_mintoutContainer}>
           <SvgInset svgUrl={`${CDN_URL}/icons/ic_mintedout.svg`} />
           <Text className={s.projectCard_info_mintoutContainer_text}>
@@ -127,7 +128,9 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             fontWeight={'medium'}
             className={s.projectCard_info_edition_text}
           >
-            {`Edition of ${project?.mintingInfo.index}`}
+            {isAuthenticIn24h
+              ? ` ${project?.mintingInfo.index} inscribed`
+              : `Edition of ${project?.mintingInfo.index}`}
           </Text>
         </div>
       );
@@ -161,6 +164,14 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     );
   };
 
+  const projectName = useMemo((): string => {
+    return project.fromAuthentic || false
+      ? project.name.indexOf('Ordinal') === -1
+        ? wordCase(`Ordinal ${project.name}`)
+        : project.name
+      : project.name;
+  }, [project]);
+
   return (
     <Link
       href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
@@ -193,7 +204,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               )}
               <div className={s.projectCard_info_title}>
                 <Text size="14" fontWeight="semibold">
-                  {project.name}
+                  {projectName}
                 </Text>
               </div>
 
@@ -216,7 +227,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               )}
               <div className={s.projectCard_info_title}>
                 <Heading as={'h6'} fontWeight="medium">
-                  <span title={project.name}>{project.name}</span>
+                  <span title={projectName}>{projectName}</span>
                 </Heading>
               </div>
               <div className={s.projectCard_info_price}>{renderFooter()}</div>

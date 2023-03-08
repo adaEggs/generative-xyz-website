@@ -11,12 +11,14 @@ import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import ButtonIcon from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import dayjs from 'dayjs';
+import { wordCase } from '@utils/common';
 
 export const AuthenticCard = ({
   project,
+  nftTokenId,
 }: {
   project: Project | null;
-  tokenID?: string;
+  nftTokenId?: string;
 }): JSX.Element => {
   const dateMinted = useMemo((): string => {
     return project && project.mintedTime
@@ -52,20 +54,20 @@ export const AuthenticCard = ({
                   href={`https://etherscan.io/address/${project?.tokenAddress}`}
                   target="_blank"
                 >
-                  {project.name}
+                  {wordCase(project.name)}
                 </a>
               </div>
             </div>
           )}
-          {project.nftTokenId && (
+          {nftTokenId && (
             <div className={s.authenticCard_content_property}>
               <div className="label">Original Token ID</div>
               <div className="val">
                 <a
-                  href={`https://etherscan.io/token/${project.tokenAddress}?a=${project.nftTokenId}`}
+                  href={`https://etherscan.io/token/${project.tokenAddress}?a=${nftTokenId}`}
                   target="_blank"
                 >
-                  {project.nftTokenId}
+                  {nftTokenId}
                 </a>
               </div>
             </div>
