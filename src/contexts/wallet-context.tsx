@@ -157,7 +157,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
         address: walletAddress,
       });
 
-      const { segwit, taproot } = await generateBitcoinKey({
+      const { segwit, taproot, signatureMetamask } = await generateBitcoinKey({
         address: walletAddress,
         message: nonceMessage,
       });
@@ -166,7 +166,8 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
         !taproot.sendAddress ||
         !segwit.sendAddress ||
         !segwit.signature ||
-        !segwit.messagePrefix
+        !segwit.messagePrefix ||
+        !signatureMetamask
       ) {
         throw Error(WalletError.FAILED_LINK_WALLET);
       }
@@ -179,6 +180,8 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
         addressBtcSegwit: segwit.sendAddress,
 
         addressBtc: taproot.sendAddress,
+
+        ethSignature: signatureMetamask,
       });
 
       setAccessToken(accessToken, refreshToken);
