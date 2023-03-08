@@ -260,6 +260,20 @@ const ProjectIntroSection = ({
     }/${project?.maxSupply || project?.limit}`;
   }, [project]);
 
+  const isHasBtcWallet = useMemo(() => {
+    return Boolean(
+      project?.creatorProfile?.walletAddressBtcTaproot ||
+        project?.creatorProfile?.walletAddress
+    );
+  }, [project]);
+
+  const creatorAddress = useMemo((): string => {
+    return String(
+      project?.creatorProfile?.walletAddressBtcTaproot ||
+        project?.creatorProfile?.walletAddress
+    );
+  }, [project]);
+
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -278,22 +292,41 @@ const ProjectIntroSection = ({
             <div className={`${s.projectInfo_left} col-3`}>
               <div className={s.info}>
                 <div className={`${s.projectHeader}`}>
-                  <Link
-                    href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddressBtcTaproot}`}
-                    className={cs(
-                      s.creator_info,
-                      !project?.creatorProfile?.walletAddressBtcTaproot &&
-                        'pointer-none'
-                    )}
-                  >
-                    <Heading
-                      className={s.projectHeader_creator}
-                      as="h4"
-                      fontWeight="medium"
+                  {isHasBtcWallet ? (
+                    <Link
+                      href={`${ROUTE_PATH.PROFILE}/${creatorAddress}`}
+                      className={cs(
+                        s.creator_info,
+                        !project?.creatorProfile?.walletAddressBtcTaproot &&
+                          'pointer-none'
+                      )}
                     >
-                      {project && filterCreatorName(project)}
-                    </Heading>
-                  </Link>
+                      <Heading
+                        className={s.projectHeader_creator}
+                        as="h4"
+                        fontWeight="medium"
+                      >
+                        {project && filterCreatorName(project)}
+                      </Heading>
+                    </Link>
+                  ) : (
+                    <div
+                      className={cs(
+                        s.creator_info,
+                        !project?.creatorProfile?.walletAddressBtcTaproot &&
+                          'pointer-none'
+                      )}
+                    >
+                      <Heading
+                        className={s.projectHeader_creator}
+                        as="h4"
+                        fontWeight="medium"
+                      >
+                        {project && filterCreatorName(project)}
+                      </Heading>
+                    </div>
+                  )}
+
                   <SocialVerify
                     isTwVerified={isTwVerified}
                     link={SOCIALS.twitter}
@@ -358,7 +391,7 @@ const ProjectIntroSection = ({
                   )}
                   {project?.creatorProfile?.profileSocial?.web && (
                     <>
-                      <span className={s.creator_divider}></span>
+                      <span className={s.creator_divider} />
                       <div className={`${s.creator_social_item}`}>
                         <div className={s.creator_social_item_inner}>
                           <SvgInset
