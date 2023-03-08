@@ -17,7 +17,7 @@ export const setReferral = (code: string) => {
       sendAAEvent({
         eventName: BTC_PROJECT.REFERRED_USER,
         data: {
-          referrerID: code,
+          referrer_id: code,
         },
       });
     }

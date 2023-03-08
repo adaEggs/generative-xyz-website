@@ -197,6 +197,7 @@ const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
       setInscriptionInfo(res);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      toast.remove();
       toast.error(ErrorMessage.DEFAULT);
     } finally {
       setIsMinting(false);

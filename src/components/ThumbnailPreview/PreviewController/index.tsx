@@ -33,6 +33,9 @@ const PreviewController: React.FC<IProps> = (
   const previewUrl = useMemo(() => {
     return data?.image || '';
   }, [data]);
+  const htmlFile = useMemo(() => {
+    return (data as Project)?.htmlFile || '';
+  }, [data]);
   const thumbnailUrl = useMemo(() => {
     return (data as Token)?.thumbnail || '';
   }, [data]);
@@ -87,6 +90,11 @@ const PreviewController: React.FC<IProps> = (
           thumbnailExt={thumbnailExt}
         />
       );
+    }
+
+    // Check html collection
+    if (htmlFile) {
+      return <IFramePreview url={htmlFile} />;
     }
 
     const mediaType = getMediaTypeFromFileExt(previewExt);

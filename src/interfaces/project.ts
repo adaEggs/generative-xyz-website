@@ -68,6 +68,8 @@ export type Project = {
   captureImageTime?: number;
   captureThumbnailDelayTime?: number;
   tokenId?: string;
+  inscribedBy?: string;
+  htmlFile: string;
 };
 
 export type BTCProject = Project & {

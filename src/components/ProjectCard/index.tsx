@@ -92,6 +92,29 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     return false;
   }, [project?.maxSupply, project?.mintingInfo.index]);
 
+  const filterNameAuthenticEth = useMemo((): string => {
+    const creatorName =
+      project?.creatorProfile?.displayName ||
+      formatAddress(
+        project?.creatorProfile?.walletAddressBtcTaproot ||
+          project?.creatorProfile?.walletAddress ||
+          ''
+      );
+
+    const isFromAuthentic = project?.fromAuthentic || false;
+    if (isFromAuthentic && creatorName.toLowerCase() === 'authentic user') {
+      return (
+        project?.name ||
+        formatAddress(
+          project?.creatorProfile?.walletAddressBtcTaproot ||
+            project?.creatorProfile?.walletAddress ||
+            ''
+        )
+      );
+    }
+    return creatorName;
+  }, [project]);
+
   const renderFooter = () => {
     if (project.btcFloorPrice && mintedOut) {
       return (
@@ -99,11 +122,9 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
           <span
             className={`${s.projectCard_info_price_price_minted} ${s.isOnlyMintedShow}`}
           >
-            {minted}
-          </span>
-          <ButtonIcon sizes="xsmall">
             {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
-          </ButtonIcon>
+          </span>
+          <ButtonIcon sizes="xsmall">Buy</ButtonIcon>
         </div>
       );
     }
@@ -173,8 +194,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             <div className={cs(s.projectCard_info, s.mobile)}>
               {creator && (
                 <Text size="11" fontWeight="medium">
-                  {creator.displayName ||
-                    formatAddress(creator.walletAddressBtcTaproot)}
+                  {filterNameAuthenticEth}
                 </Text>
               )}
               <div className={s.projectCard_info_title}>
