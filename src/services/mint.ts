@@ -21,6 +21,6 @@ export const generateMintReceiverAddress = async (
     return res;
   } catch (err: unknown) {
     log('failed to generate receiver address', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to generate receiver address');
+    throw err;
   }
 };
