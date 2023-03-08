@@ -47,3 +47,17 @@ export const isTabletOrPhone = (): boolean => {
 export const isWalletWhiteList = (walletAddress: string) => {
   return WALLET_WHITELIST.indexOf(walletAddress) !== -1;
 };
+
+export const wordCase = (name: string): string => {
+  const words = name.split(' ');
+  return words.length
+    ? words
+        .map(word => {
+          return word.length
+            ? word.toLowerCase()[0].toUpperCase() +
+                word.toLowerCase().substring(1)
+            : '';
+        })
+        .join(' ')
+    : '';
+};
