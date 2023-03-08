@@ -154,7 +154,7 @@ const ModalBuyListed = React.memo(
                               htmlFor="receiveBTCAddress"
                             >
                               Enter your Ordinals-compatible BTC address to
-                              receive payment
+                              receive inscription
                             </label>
                             <div className={s.inputContainer}>
                               <input
