@@ -122,11 +122,9 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
           <span
             className={`${s.projectCard_info_price_price_minted} ${s.isOnlyMintedShow}`}
           >
-            {minted}
-          </span>
-          <ButtonIcon sizes="xsmall">
             {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
-          </ButtonIcon>
+          </span>
+          <ButtonIcon sizes="xsmall">Buy</ButtonIcon>
         </div>
       );
     }
