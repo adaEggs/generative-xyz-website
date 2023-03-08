@@ -5,14 +5,11 @@ import { LogLevel } from '@enums/log-level';
 import { Token } from '@interfaces/token';
 import { getTokenUri } from '@services/token-uri';
 import log from '@utils/logger';
-import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import React, { useRef, useState } from 'react';
 import useAsyncEffect from 'use-async-effect';
+import ModelViewer from '@components/ModelViewer';
 import s from './styles.module.scss';
-const ModelViewer = dynamic(() => import('@components/ModelViewer'), {
-  ssr: false,
-});
 
 const LOG_PREFIX = 'ModelCapture';
 
@@ -40,12 +37,11 @@ const ModelCapture: React.FC = (): React.ReactElement => {
     }
   }, [projectID, tokenID]);
 
-  // const handleOnModelLoaded = (): void => {
-  //   if (viewerRef.current) {
-  //     const base64 = viewerRef.current.toDataURL();
-  //     console.log(base64)
-  //   }
-  // }
+  // useEffect(()=>{
+  //   viewerRef?.current?.addEventListener('load', ()=>{
+  //     console.log('-______!11')
+  //   })
+  // })
 
   if (!tokenData || !router.isReady) {
     return (
