@@ -12,6 +12,7 @@ export interface IVerifyNonceMessagePayload {
   address: string;
   addressBtc: string; // taproot
   addressBtcSegwit: string;
+  ethSignature: string;
 }
 
 export interface IVerifyNonceMessageResponse {
