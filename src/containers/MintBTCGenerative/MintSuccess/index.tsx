@@ -37,8 +37,8 @@ const MintSuccess = () => {
     sendAAEvent({
       eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
       data: {
-        projectId: mintedProjectID,
-        referrerId: user?.id,
+        project_id: mintedProjectID,
+        referrer_id: user?.id,
       },
     });
   };
@@ -63,8 +63,8 @@ const MintSuccess = () => {
                 sendAAEvent({
                   eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
                   data: {
-                    projectId: mintedProjectID,
-                    referrerId: user?.id,
+                    project_id: mintedProjectID,
+                    referrer_id: user?.id,
                   },
                 });
               }}

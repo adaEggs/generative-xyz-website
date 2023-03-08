@@ -2,6 +2,7 @@
   padding: rem(60px) 0 rem(88px) 0;
 
   &_category {
+    padding-bottom: rem(10px);
     display: flex;
     align-items: center;
     gap: rem(24px);
@@ -15,6 +16,6 @@
   }
 
   &_results {
-    margin-top: 50px;
+    margin-top: rem(50px);
   }
 }

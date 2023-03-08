@@ -277,6 +277,29 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     );
   }, [tokenData?.owner, tokenData?.ownerAddr]);
 
+  const filterNameAuthenticEth = useMemo((): string => {
+    const creatorName =
+      projectData?.creatorProfile?.displayName ||
+      formatAddress(
+        projectData?.creatorProfile?.walletAddressBtcTaproot ||
+          projectData?.creatorProfile?.walletAddress ||
+          ''
+      );
+
+    const isFromAuthentic = projectData?.fromAuthentic || false;
+    if (isFromAuthentic && creatorName.toLowerCase() === 'authentic user') {
+      return (
+        projectData?.name ||
+        formatAddress(
+          projectData?.creatorProfile?.walletAddressBtcTaproot ||
+            projectData?.creatorProfile?.walletAddress ||
+            ''
+        )
+      );
+    }
+    return creatorName;
+  }, [projectData]);
+
   return (
     <>
       <Container>
@@ -303,12 +326,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     as="h4"
                     fontWeight="medium"
                   >
-                    {projectData?.creatorProfile?.displayName ||
-                      formatAddress(
-                        projectData?.creatorProfile?.walletAddressBtcTaproot ||
-                          projectData?.creatorProfile?.walletAddress ||
-                          ''
-                      )}
+                    {filterNameAuthenticEth}
                   </Heading>
                 </Link>
                 <SocialVerify
