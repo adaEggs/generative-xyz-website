@@ -261,6 +261,29 @@ const ProjectIntroSection = ({
     }/${project?.maxSupply || project?.limit}`;
   }, [project]);
 
+  const filterNameAuthenticEth = useMemo((): string => {
+    const creatorName =
+      project?.creatorProfile?.displayName ||
+      formatAddress(
+        project?.creatorProfile?.walletAddressBtcTaproot ||
+          project?.creatorProfile?.walletAddress ||
+          ''
+      );
+
+    const isFromAuthentic = project?.fromAuthentic || false;
+    if (isFromAuthentic && creatorName.toLowerCase() === 'authentic user') {
+      return (
+        project?.name ||
+        formatAddress(
+          project?.creatorProfile?.walletAddressBtcTaproot ||
+            project?.creatorProfile?.walletAddress ||
+            ''
+        )
+      );
+    }
+    return creatorName;
+  }, [project]);
+
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -289,10 +312,7 @@ const ProjectIntroSection = ({
                 as="h4"
                 fontWeight="medium"
               >
-                {project?.creatorProfile?.displayName ||
-                  formatAddress(
-                    project?.creatorProfile?.walletAddressBtcTaproot || ''
-                  )}
+                {filterNameAuthenticEth}
               </Heading>
             </Link>
             <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
