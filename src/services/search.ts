@@ -15,7 +15,12 @@ export const getSearchByKeyword = async (
   params: IGetSearchPayload
 ): Promise<IGetSearchResponse> => {
   try {
-    const queryString = qs.stringify(params);
+    const queryString = qs.stringify({
+      limit: params.limit,
+      page: params.page,
+      search: params.keyword,
+      type: params.type,
+    });
     const res = await get<IGetSearchResponse>(`${API_PATH}?${queryString}`);
 
     const tasks = res.result.map(async item => {
