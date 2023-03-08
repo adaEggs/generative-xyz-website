@@ -381,17 +381,21 @@
 
 .payment {
   margin-top: rem(24px);
-  margin-bottom: rem(34px);
+  margin-bottom: rem(24px);
 
   @include mobile {
     margin-top: rem(16px);
-    margin-bottom: rem(20px);
+    margin-bottom: rem(16px);
   }
 
   .paymentPrice {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    &:not(:last-child) {
+      margin-bottom: rem(8px);
+    }
 
     @include max-tablet {
       flex-direction: column;
