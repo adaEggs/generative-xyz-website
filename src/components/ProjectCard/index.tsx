@@ -10,11 +10,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import useWindowSize from '@hooks/useWindowSize';
 import { Project } from '@interfaces/project';
 import { User } from '@interfaces/user';
-import {
-  formatAddress,
-  formatBTCPrice,
-  formatLongAddress,
-} from '@utils/format';
+import { formatBTCPrice } from '@utils/format';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import { CDN_URL } from '@constants/config';
@@ -22,6 +18,7 @@ import SvgInset from '@components/SvgInset';
 import ButtonIcon from '@components/ButtonIcon';
 import { sendAAEvent } from '@services/aa-tracking';
 import { BTC_PROJECT } from '@constants/tracking-event-name';
+import { filterCreatorName } from '@utils/generative';
 
 interface IPros {
   project: Project;
@@ -64,10 +61,6 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     });
   };
 
-  const creatorMemo = useMemo((): User | null => {
-    return creator;
-  }, [creator]);
-
   const isMinted = useMemo((): boolean => {
     return (
       project.mintingInfo.index + project.mintingInfo.indexReserve >=
@@ -99,11 +92,9 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
           <span
             className={`${s.projectCard_info_price_price_minted} ${s.isOnlyMintedShow}`}
           >
-            {minted}
-          </span>
-          <ButtonIcon sizes="xsmall">
             {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
-          </ButtonIcon>
+          </span>
+          <ButtonIcon sizes="xsmall">Buy</ButtonIcon>
         </div>
       );
     }
@@ -173,8 +164,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             <div className={cs(s.projectCard_info, s.mobile)}>
               {creator && (
                 <Text size="11" fontWeight="medium">
-                  {creator.displayName ||
-                    formatAddress(creator.walletAddressBtcTaproot)}
+                  {filterCreatorName(project)}
                 </Text>
               )}
               <div className={s.projectCard_info_title}>
@@ -196,8 +186,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               {creator && (
                 <div className={s.projectCard_creator}>
                   <Text size={'20'} fontWeight="medium">
-                    {creatorMemo?.displayName ||
-                      formatLongAddress(creatorMemo?.walletAddressBtcTaproot)}
+                    {filterCreatorName(project)}
                   </Text>
                 </div>
               )}

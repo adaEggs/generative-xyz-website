@@ -148,12 +148,12 @@ const ModalListForSale = React.memo(
         const sellerPercent = new BigNumber(1).minus(artistPercent);
 
         // calc amount
-        const amountArtist = new BigNumber(inputAmount)
-          .multipliedBy(artistPercent)
-          .toNumber();
-        const amountSeller = new BigNumber(inputAmount)
-          .multipliedBy(sellerPercent)
-          .toNumber();
+        const amountArtist = Math.floor(
+          new BigNumber(inputAmount).multipliedBy(artistPercent).toNumber()
+        );
+        const amountSeller = Math.floor(
+          new BigNumber(inputAmount).multipliedBy(sellerPercent).toNumber()
+        );
 
         await listInscription({
           amountPayToSeller: amountSeller,
@@ -179,9 +179,12 @@ const ModalListForSale = React.memo(
       if ((!price || !charge) && isHideZero) return null;
       const fee = new BigNumber(price || 0)
         .multipliedBy(Number(charge || 0))
-        .dividedBy(100);
+        .dividedBy(100)
+        .multipliedBy(1e8);
       const isZero = fee.lte(0);
-      const text = isZero ? 'FREE' : fee.toFixed() + ' BTC';
+      const text = isZero
+        ? 'FREE'
+        : formatBTCPrice(Math.floor(fee.toNumber())) + ' BTC';
 
       return (
         <div className={cs(s.wrapFee_feeRow)}>

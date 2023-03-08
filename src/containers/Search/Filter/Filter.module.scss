@@ -1,5 +1,4 @@
 .filter {
-  margin-bottom: rem(24);
   color: $black-100;
 
   &_totalResult {
@@ -32,18 +31,11 @@
     }
   }
 
-  &_btnClear {
-    padding: rem(11) rem(20);
-    background: $black-100;
-    border-radius: rem(2);
-    font-weight: 500;
-    font-size: rem(16);
-    line-height: rem(26);
-    letter-spacing: 0.01em;
-    color: $white-100;
-
-    &:hover {
-      background-color: $primary-333;
-    }
+  &_title {
+    margin-bottom: rem(29px);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    white-space: nowrap;
   }
 }

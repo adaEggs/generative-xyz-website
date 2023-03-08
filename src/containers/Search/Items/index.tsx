@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useEffect, useMemo, useState } from 'react';
 import cn from 'classnames';
-import useSWR from 'swr';
 import { useRouter } from 'next/router';
 
-import { getSearchByKeyword, getApiKey } from '@services/search';
+import { getSearchByKeyword } from '@services/search';
 import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { ProjectCardOrd } from '@containers/Trade/ProjectCardOrd';
 import { ArtistCard } from '@components/ArtistCard';
@@ -16,8 +15,10 @@ import debounce from 'lodash/debounce';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import InfiniteScroll from 'react-infinite-scroll-component';
+
 import s from './Items.module.scss';
 import { PAYLOAD_DEFAULT, OBJECT_TYPE } from '../constant';
+import useSearchApi from '../useApi';
 
 export const Items = (): JSX.Element => {
   const router = useRouter();
@@ -39,20 +40,8 @@ export const Items = (): JSX.Element => {
     ...filterBase,
     type: OBJECT_TYPE.INSCRIPTION,
   };
-
-  const { data: resultByArtists } = useSWR(
-    getApiKey(getSearchByKeyword, filterArtistParams),
-    () => getSearchByKeyword(filterArtistParams)
-  );
-  const { data: resultByTokens } = useSWR(
-    getApiKey(getSearchByKeyword, filterTokenParams),
-    () => getSearchByKeyword(filterTokenParams)
-  );
-
-  const { data: resultByInscriptions } = useSWR(
-    getApiKey(getSearchByKeyword, filterInscriptionParams),
-    () => getSearchByKeyword(filterInscriptionParams)
-  );
+  const { resultByArtists, resultByTokens, resultByInscriptions } =
+    useSearchApi({ keyword });
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -138,17 +127,17 @@ export const Items = (): JSX.Element => {
       if (element.objectType === OBJECT_TYPE.ARTIST) {
         htmlList.push(
           <ArtistCard
-            profile={element.artist}
+            key={`collection-item-${element?.artist?.id}`}
             className={cn('col-xs-6 col-md-3', s.items_artist)}
-            key={`collection-item-${element?.artist?.objectId}`}
+            profile={element.artist}
           />
         );
       }
       if (element.objectType === OBJECT_TYPE.INSCRIPTION) {
         htmlList.push(
           <ProjectCardOrd
-            className={cn('col-xs-6 col-md-3', s.items_project)}
             key={element?.inscription?.inscriptionId}
+            className={cn('col-xs-6 col-md-3', s.items_project)}
             project={{
               ...element?.inscription,
               inscriptionID: element?.inscription?.inscriptionId,
@@ -161,15 +150,15 @@ export const Items = (): JSX.Element => {
       if (element.objectType === OBJECT_TYPE.TOKEN) {
         htmlList.push(
           <CollectionItem
-            className="col-xs-6 col-md-3"
             key={`collection-item-${element?.tokenUri?.tokenID}`}
+            className="col-xs-6 col-md-3"
             data={element?.tokenUri}
           />
         );
       }
     }
     return htmlList;
-  }, [combineList.length]);
+  }, [combineList]);
 
   return (
     <div className={s.items}>

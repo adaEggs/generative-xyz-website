@@ -37,12 +37,11 @@ import { convertToETH } from '@utils/currency';
 import {
   base64ToUtf8,
   escapeSpecialChars,
-  formatAddress,
   formatBTCPrice,
   formatEthPrice,
   formatWebDomain,
 } from '@utils/format';
-import { checkIsBitcoinProject } from '@utils/generative';
+import { checkIsBitcoinProject, filterCreatorName } from '@utils/generative';
 import log from '@utils/logger';
 import dayjs from 'dayjs';
 import _get from 'lodash/get';
@@ -289,10 +288,7 @@ const ProjectIntroSection = ({
                 as="h4"
                 fontWeight="medium"
               >
-                {project?.creatorProfile?.displayName ||
-                  formatAddress(
-                    project?.creatorProfile?.walletAddressBtcTaproot || ''
-                  )}
+                {project && filterCreatorName(project)}
               </Heading>
             </Link>
             <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
@@ -392,8 +388,9 @@ const ProjectIntroSection = ({
                 data={
                   {
                     ...projectDetail,
-                    animationHtml: project?.animationHtml ?? '',
-                  } as Token
+                    htmlFile: project?.htmlFile || '',
+                    animationHtml: project?.animationHtml || '',
+                  } as unknown as Project
                 }
                 allowVariantion
               />
@@ -811,8 +808,9 @@ const ProjectIntroSection = ({
             data={
               {
                 ...projectDetail,
+                htmlFile: project?.htmlFile || '',
                 animationHtml: project?.animationHtml ?? '',
-              } as Token
+              } as unknown as Project
             }
             allowVariantion
           />

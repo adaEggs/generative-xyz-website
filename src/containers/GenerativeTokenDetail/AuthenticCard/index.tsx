@@ -65,10 +65,10 @@ export const AuthenticCard = ({
             <div className="label">Inscribed by</div>
             <div className="val">
               <a
-                href={`https://etherscan.io/address/${project.creatorAddr}`}
+                href={`https://etherscan.io/address/${project.inscribedBy}`}
                 target="_blank"
               >
-                {formatLongAddress(project.creatorAddr || '')}
+                {formatLongAddress(project.inscribedBy || '')}
               </a>
             </div>
           </div>

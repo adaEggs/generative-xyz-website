@@ -22,7 +22,7 @@ export async function getServerSideProps() {
         title: 'Generative | Artists',
         description:
           'Be the first to launch art on Bitcoin. Join the over 200 artists. Fully on-chain, decentralized, and immutable.',
-        image: `${CDN_URL}/images/artists.png`,
+        image: `${CDN_URL}/images/artist-3.jpg`,
       },
     },
   };

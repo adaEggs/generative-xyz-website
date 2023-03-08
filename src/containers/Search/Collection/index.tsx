@@ -2,16 +2,14 @@ import React from 'react';
 
 import { Row, Col } from 'react-bootstrap';
 import cn from 'classnames';
-import useSWR from 'swr';
 import { useRouter } from 'next/router';
 
 import { Project } from '@interfaces/project';
-import { getSearchByKeyword, getApiKey } from '@services/search';
 import Slider from '@components/Slider';
 import { ProjectCard } from '@components/ProjectCard';
 
 import s from './Collection.module.scss';
-import { PAYLOAD_DEFAULT, OBJECT_TYPE } from '../constant';
+import useSearchApi from '../useApi';
 
 interface CollectionProps {
   className?: string;
@@ -27,17 +25,10 @@ export const CollectionItem = ({ project }: IProjectItem): JSX.Element => {
 
 const Collection = ({ className }: CollectionProps): JSX.Element => {
   const router = useRouter();
-
   const { keyword = '' } = router.query;
-  const filterParams = {
-    ...PAYLOAD_DEFAULT,
-    keyword,
-    type: OBJECT_TYPE.PROJECT,
-  };
-  const { data } = useSWR(getApiKey(getSearchByKeyword, filterParams), () =>
-    getSearchByKeyword(filterParams)
-  );
-  const collections = data?.result || [];
+  const { resultByCollection } = useSearchApi({ keyword });
+
+  const collections = resultByCollection?.result || [];
 
   if (collections?.length < 1) return <></>;
 
@@ -52,7 +43,7 @@ const Collection = ({ className }: CollectionProps): JSX.Element => {
 
   return (
     <div className={cn(s.collection, className)}>
-      <Row>
+      <Row className={s.collection_resetRowGap}>
         <h6 className={s.collection_title}>Collection results</h6>
         {collections.length <= 4 ? (
           <Row>

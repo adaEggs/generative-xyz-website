@@ -100,7 +100,10 @@ const ArtistCollectionEarn = ({
       sendAAEvent({
         eventName: BTC_PROJECT.WITHDRAW,
         data: {
-          ...payload,
+          amount: amount,
+          payment_type: currencyRecord.toLowerCase(),
+          type: 'project',
+          project_id: projectID,
         },
       });
       setShowModal({

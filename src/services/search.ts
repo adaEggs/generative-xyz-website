@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { LogLevel } from '@enums/log-level';
 import { BareFetcher, unstable_serialize } from 'swr';
+import qs from 'query-string';
 
 import { IGetSearchPayload, IGetSearchResponse } from '@interfaces/api/search';
 import { get } from '@services/http-client';
@@ -10,16 +11,17 @@ import { getCollectionFloorPrice } from '@services/marketplace-btc';
 const LOG_PREFIX = 'SearchService';
 const API_PATH = '/search';
 
-export const getSearchByKeyword = async ({
-  page,
-  limit,
-  keyword,
-  type,
-}: IGetSearchPayload): Promise<IGetSearchResponse> => {
+export const getSearchByKeyword = async (
+  params: IGetSearchPayload
+): Promise<IGetSearchResponse> => {
   try {
-    const res = await get<IGetSearchResponse>(
-      `${API_PATH}?page=${page}&limit=${limit}&search=${keyword}&type=${type}`
-    );
+    const queryString = qs.stringify({
+      limit: params.limit,
+      page: params.page,
+      search: params.keyword,
+      type: params.type,
+    });
+    const res = await get<IGetSearchResponse>(`${API_PATH}?${queryString}`);
 
     const tasks = res.result.map(async item => {
       if (!item.project) return item;

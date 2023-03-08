@@ -21,6 +21,12 @@
     display: none;
     justify-content: center;
 
+    img {
+      max-width: 88px;
+      width: rem(88px);
+      height: auto;
+    }
+
     @include min-tablet {
       flex: 0 0 auto;
       display: block;
