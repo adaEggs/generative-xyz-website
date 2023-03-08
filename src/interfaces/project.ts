@@ -68,6 +68,7 @@ export type Project = {
   captureImageTime?: number;
   captureThumbnailDelayTime?: number;
   tokenId?: string;
+  limitMintPerProcess?: number;
   inscribedBy?: string;
   htmlFile: string;
 };
