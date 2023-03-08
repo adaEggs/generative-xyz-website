@@ -20,9 +20,11 @@ import s from './styles.module.scss';
 const CollectionItem = ({
   data,
   className,
+  showCollectionName,
 }: {
   data: Token;
   className?: string;
+  showCollectionName?: boolean;
 }) => {
   const tokenID = data.tokenID;
   // const { currentUser } = useContext(ProfileContext);
@@ -142,10 +144,10 @@ const CollectionItem = ({
             <div className={cs(s.collectionCard_info, s.desktop)}>
               <div className={s.collectionCard_info_title}>
                 <Stack
-                  className={cs(
-                    s.collectionCard_info_stack,
-                    data?.creator?.displayName && s.collectionCard_info_wrapper
-                  )}
+                  className={cs(s.collectionCard_info_stack, {
+                    [s.collectionCard_info_wrapper]:
+                      showCollectionName && data?.creator?.displayName,
+                  })}
                   direction="horizontal"
                 >
                   <Heading
@@ -167,7 +169,7 @@ const CollectionItem = ({
                           })}
                     </span>
                   </Heading>
-                  {data?.creator?.displayName && (
+                  {showCollectionName && data?.creator?.displayName && (
                     <Heading
                       as={'h6'}
                       fontWeight="medium"
