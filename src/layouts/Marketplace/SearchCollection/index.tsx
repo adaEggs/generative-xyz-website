@@ -117,10 +117,9 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
           onKeyDown={handleKeyDownSearch}
         />
         <div className={s.searchIcon}>
-          {inputFocus ? (
+          {inputFocus && searchText ? (
             <SvgInset
               onClick={() => {
-                goToSearchPage('');
                 setSearchText('');
                 if (inputSearchRef?.current) {
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
