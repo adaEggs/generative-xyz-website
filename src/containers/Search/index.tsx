@@ -104,19 +104,20 @@ const SearchPage = (): JSX.Element => {
         <Filter />
         <Row>
           <Col md={12}>
-            {ITEMS_TYPE.map(item => (
-              <CategoryTab
-                className={s.search_tabs}
-                type="3"
-                text={getTotalEachItem(item.name, item.type)}
-                key={item.id}
-                onClick={() => {
-                  setCurrentTabActive(item);
-                }}
-                active={currentTabActive.id === item.id}
-                loading={false}
-              />
-            ))}
+            <div className={s.search_category}>
+              {ITEMS_TYPE.map(item => (
+                <CategoryTab
+                  type="3"
+                  text={getTotalEachItem(item.name, item.type)}
+                  key={item.id}
+                  onClick={() => {
+                    setCurrentTabActive(item);
+                  }}
+                  active={currentTabActive.id === item.id}
+                  loading={false}
+                />
+              ))}
+            </div>
           </Col>
         </Row>
         <div className={s.search_results}>{renderItemList}</div>

@@ -31,7 +31,12 @@
       cursor: pointer;
     }
   }
+
   &_title {
-    margin: 5.8rem 0 3rem 0;
+    margin: 5.8rem 0 3rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    white-space: nowrap;
   }
 }

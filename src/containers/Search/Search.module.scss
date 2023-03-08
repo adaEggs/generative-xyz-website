@@ -1,12 +1,19 @@
 .search {
   padding: rem(60px) 0 rem(88px) 0;
-  &_tabs {
-    margin-right: rem(24);
-    display: inline-block;
-    &:last-of-type {
-      margin-right: 0;
+
+  &_category {
+    display: flex;
+    align-items: center;
+    gap: rem(24px);
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
+
   &_results {
     margin-top: 50px;
   }

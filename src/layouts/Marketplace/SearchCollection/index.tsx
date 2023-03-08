@@ -28,7 +28,7 @@ const LOG_PREFIX = 'SearchCollection';
 
 const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
   const [foundCollections, setFoundCollections] = useState<Project[]>();
-  const [searchText, setSearchText] = useState<string>('');
+  const [searchText, _] = useState<string>(''); //setSearchText
   const [showResult, setShowResult] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [inputFocus, setInputFocus] = useState(false);
