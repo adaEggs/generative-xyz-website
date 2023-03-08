@@ -133,6 +133,8 @@ const MintBTCGenerativeModal: React.FC = () => {
     try {
       setIsLoading(true);
       setReceiverAddress(null);
+      setErrMessage('');
+
       const { address, price, networkFeeByPayType, mintPriceByPayType } =
         await generateMintReceiverAddress({
           walletAddress,
