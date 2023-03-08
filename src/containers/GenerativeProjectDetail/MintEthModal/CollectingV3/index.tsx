@@ -136,6 +136,7 @@ const MintEthModal: React.FC = () => {
       if (!projectData) return;
       try {
         setIsLoading(true);
+        setErrMessage('');
 
         const {
           price: _price,
