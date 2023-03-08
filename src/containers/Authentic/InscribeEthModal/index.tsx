@@ -15,10 +15,10 @@ import { InscriptionInfo } from '@interfaces/inscribe';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { resizeImage } from '@services/file';
-import { generateReceiverAddress } from '@services/inscribe';
+import { generateAuthReceiverAddress } from '@services/inscribe';
 import { getNFTDetailFromMoralis } from '@services/token-moralis';
 import { blobToBase64, blobToFile, fileToBase64 } from '@utils/file';
-import { ellipsisCenter, formatBTCPrice } from '@utils/format';
+import { ellipsisCenter, formatBTCPrice, formatEthPrice } from '@utils/format';
 import { convertIpfsToHttp, isValidImage } from '@utils/image';
 import { calculateMintFee } from '@utils/inscribe';
 import log from '@utils/logger';
@@ -36,6 +36,7 @@ import { v4 as uuidv4 } from 'uuid';
 import s from './styles.module.scss';
 import { isBrowser } from '@utils/common';
 import { getAccessToken } from '@utils/auth';
+import { getExchangeRate } from '@services/binance';
 
 interface IProps {
   handleClose: () => void;
@@ -55,13 +56,9 @@ const InscribeEthModal: React.FC<IProps> = (
 
   const { isAuthentic, tokenAddress, tokenId } = router.query;
   const { handleClose } = props;
-
   const { transfer } = useContext(WalletContext);
-
   const user = useAppSelector(getUserSelector);
-
   const [isSent, setIsSent] = useState(false);
-
   const [inscriptionInfo, setInscriptionInfo] =
     useState<InscriptionInfo | null>();
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
@@ -69,36 +66,28 @@ const InscribeEthModal: React.FC<IProps> = (
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
   const [file, setFile] = useState<File | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
-
-  const [isLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
   const [addressInput, setAddressInput] = useState<string>('');
   const [errMessage, setErrMessage] = useState('');
   const [isMinting, setIsMinting] = useState(false);
-
   const [quantity] = useState(1);
+  const [exchangeRate, setExchangeRate] = useState(0);
 
-  //   const inscribeFee = inscribeFee || 0;
-  //   const inscribeFee = '12345678900000000';
+  const estimatePrice =
+    new BigNumber(
+      calculateMintFee(
+        InscribeMintFeeRate.FASTER,
+        file?.size || 0,
+        !!isAuthentic
+      )
+    )
+      .dividedBy(1e8)
+      .toNumber() * exchangeRate;
 
-  //   const priceFormat = formatEthPrice(
-  //     mintPrice ? mintPrice : inscribeFee || '',
-  //     '0.0'
-  //   );
-  //   const totalFormatPrice = formatEthPriceInput(
-  //     totalPrice ? totalPrice : inscribeFee || ''
-  //   );
-
-  // TODO: Update ETH price (convert from BTC price)
   const totalFormatPrice = inscriptionInfo?.amount
-    ? formatBTCPrice(new BigNumber(inscriptionInfo?.amount || 0).toNumber())
-    : formatBTCPrice(
-        calculateMintFee(
-          InscribeMintFeeRate.FASTER,
-          file?.size || 0,
-          !!isAuthentic
-        )
-      );
+    ? formatEthPrice(inscriptionInfo?.amount || '0')
+    : estimatePrice.toFixed(6);
 
   const userAddress = React.useMemo(() => {
     return {
@@ -118,6 +107,17 @@ const InscribeEthModal: React.FC<IProps> = (
     } catch (err: unknown) {
       log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
       _onClose();
+    }
+  };
+
+  const handleFetchExchangeRate = async (): Promise<void> => {
+    try {
+      const { price: btc2usdt } = await getExchangeRate('BTCUSDT');
+      const { price: eth2usdt } = await getExchangeRate('ETHUSDT');
+      const rate = Number(btc2usdt) / Number(eth2usdt);
+      setExchangeRate(rate);
+    } catch (error: unknown) {
+      log('can not get exchange rate', LogLevel.ERROR, LOG_PREFIX);
     }
   };
 
@@ -217,6 +217,7 @@ const InscribeEthModal: React.FC<IProps> = (
 
   useEffect(() => {
     if (router.isReady) {
+      handleFetchExchangeRate();
       handleLoadFile();
     }
   }, [router]);
@@ -231,46 +232,6 @@ const InscribeEthModal: React.FC<IProps> = (
       setFileBase64(base64 as string);
     }
   }, [file]);
-
-  //   const debounceGetBTCAddress = useCallback(
-  //     _debounce(async (ordAddress, refundAddress, _quantity) => {
-  //       if (!projectData) return;
-  //       try {
-  //         setIsLoading(true);
-
-  //         const {
-  //           price: _price,
-  //           address: _address,
-  //           networkFeeByPayType: _networkFeeByPayType,
-  //           mintPriceByPayType: _mintPriceByPayType,
-  //         } = await getBTCAddress({
-  //           walletAddress: ordAddress,
-  //           refundAddress: refundAddress,
-  //           projectData,
-  //           paymentMethod: PaymentMethod.ETH,
-  //           quantity: _quantity,
-  //         });
-  //         if (!_address || !_price) {
-  //           toast.error(ErrorMessage.DEFAULT);
-  //           return;
-  //         }
-
-  //         setTotalPrice(_price);
-  //         setFeePrice(_networkFeeByPayType);
-  //         setMintPrice(_mintPriceByPayType);
-  //         setReceiverAddress(_address);
-  //         setsTep('showAddress');
-  //       } catch (err: unknown) {
-  //         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //         // @ts-ignore
-  //         setErrMessage('Failed to generate receiver address');
-  //         setReceiverAddress(null);
-  //       } finally {
-  //         setIsLoading(false);
-  //       }
-  //     }, 500),
-  //     [projectData]
-  //   );
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -287,8 +248,7 @@ const InscribeEthModal: React.FC<IProps> = (
         userAddress.evm &&
         userAddress.taproot
       ) {
-        // setReceiverAddress(userAddress.evm);
-        // debounceGetBTCAddress(userAddress.taproot, userAddress.evm, quantity);
+        setReceiverAddress(userAddress.evm);
       }
     }
   };
@@ -298,16 +258,6 @@ const InscribeEthModal: React.FC<IProps> = (
       setUseWallet('another');
     }
   };
-
-  // const onClickPay = () => {
-  //   if (useWallet === 'default') {
-  //     if (userAddress && userAddress.evm && userAddress.taproot) {
-  //       // setReceiverAddress(userAddress.evm);
-  //       setsTep('showAddress');
-  //       // debounceGetBTCAddress(userAddress.taproot, userAddress.evm, quantity);
-  //     }
-  //   }
-  // };
 
   const validateForm = (values: IFormValue): Record<string, string> => {
     const errors: Record<string, string> = {};
@@ -319,22 +269,11 @@ const InscribeEthModal: React.FC<IProps> = (
     } else {
       if (step === 'showAddress' && addressInput !== values.address) {
         setAddressInput(values.address);
-
-        // debounceGetBTCAddress(values.address, userAddress.evm, quantity);
       }
     }
 
     return errors;
   };
-
-  //   const handleSubmit = async (values: IFormValue): Promise<void> => {
-  //     if (addressInput !== values.address) {
-  //       setReceiverAddress(userAddress.evm);
-
-  //       //   debounceGetBTCAddress(values.address, userAddress.evm, quantity);
-  //       setAddressInput(values.address);
-  //     }
-  //   };
 
   const handleSubmit = async (values: IFormValue): Promise<void> => {
     if (!fileBase64) {
@@ -351,12 +290,14 @@ const InscribeEthModal: React.FC<IProps> = (
     try {
       const { address } = values;
       setIsMinting(true);
+      setIsLoading(true);
       setInscriptionInfo(null);
       const payload: IGenerateReceiverAddressPayload = {
         walletAddress: address || user?.walletAddressBtcTaproot || '',
         fileName: file?.name || '',
         file: fileBase64,
         fee_rate: InscribeMintFeeRate.FASTER,
+        payType: 'eth',
       };
       if (tokenAddress) {
         payload.tokenAddress = tokenAddress as string;
@@ -364,7 +305,7 @@ const InscribeEthModal: React.FC<IProps> = (
       if (tokenId) {
         payload.tokenId = tokenId as string;
       }
-      const res = await generateReceiverAddress(payload);
+      const res = await generateAuthReceiverAddress(payload);
       setInscriptionInfo(res);
       setReceiverAddress(res?.segwitAddress);
       setsTep('showAddress');
@@ -374,12 +315,12 @@ const InscribeEthModal: React.FC<IProps> = (
       toast.error(ErrorMessage.DEFAULT);
     } finally {
       setIsMinting(false);
+      setIsLoading(false);
     }
   };
 
   const _onClose = () => {
     setErrMessage('');
-    // setIsPopupPayment(false);
     handleClose();
   };
 
@@ -415,11 +356,9 @@ const InscribeEthModal: React.FC<IProps> = (
                         {' '}
                         Estimate inscription fee
                       </p>
-                      <div
-                        className={s.paymentPrice_copyContainer}
-                        onClick={() => onClickCopy(`${totalFormatPrice}`)}
-                      >
+                      <div className={s.paymentPrice_copyContainer}>
                         <SvgInset
+                          onClick={() => onClickCopy(`${totalFormatPrice}`)}
                           className={s.ic}
                           size={18}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
@@ -475,10 +414,7 @@ const InscribeEthModal: React.FC<IProps> = (
                                     Your Generative Wallet
                                   </p>
                                 </div>
-                                <div
-                                  className={s.checkbox}
-                                  style={{ marginLeft: 24 }}
-                                >
+                                <div className={s.checkbox}>
                                   <SvgInset
                                     className={s.checkbox_ic}
                                     size={18}

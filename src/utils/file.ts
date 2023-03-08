@@ -62,7 +62,9 @@ export const fileToBase64 = (
   });
 
 export const blobToFile = (fileName: string, fileBlob: Blob): File => {
-  return new File([fileBlob], fileName);
+  return new File([fileBlob], fileName, {
+    type: fileBlob.type,
+  });
 };
 
 export const blobToBase64 = (

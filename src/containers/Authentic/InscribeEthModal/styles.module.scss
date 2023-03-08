@@ -241,7 +241,8 @@
 
   .loadingWrapper {
     position: relative;
-    // padding: rem(px);
+    height: rem(60px);
+    margin-top: rem(48px);
   }
 }
 
@@ -389,9 +390,13 @@
 
   .paymentPrice {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
+
+    @include max-tablet {
+      flex-direction: column;
+      align-items: flex-start;
+    }
 
     &_title {
       font-weight: 400;
@@ -477,6 +482,13 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: rem(24px);
+
+  @include max-tablet {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: rem(16px);
+  }
 
   .checkbox {
     display: flex;
