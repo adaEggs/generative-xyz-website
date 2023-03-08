@@ -1,16 +1,22 @@
 .topbar {
+  background-color: $secondary-purple-c;
   padding: {
     top: rem(8px);
     bottom: rem(8px);
   }
 
-  background: #f6f8f9;
+  .wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
 
   .text {
     font-weight: 500;
     font-size: rem(14px);
     line-height: rem(22px);
-    color: $black-100;
+    color: $white;
 
     .startedLink {
       color: var(--bs-link-hover-color);
@@ -27,11 +33,31 @@
     align-items: center;
     gap: rem(10px);
 
-    .socialLink {
-      &:hover {
-        :global(svg path) {
-          fill: var(--bs-link-hover-color);
-        }
+    :global(svg path) {
+      fill: $white;
+    }
+  }
+
+  .center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: rem(8);
+
+    @include max-tablet {
+      order: 2;
+    }
+
+    .centerText {
+      font-weight: 400;
+      font-size: rem(14px);
+      line-height: rem(22px);
+      color: $white;
+      text-align: center;
+
+      a {
+        color: $white;
+        font-weight: 500;
       }
     }
   }

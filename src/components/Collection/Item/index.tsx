@@ -12,7 +12,6 @@ import useWindowSize from '@hooks/useWindowSize';
 import { Token } from '@interfaces/token';
 import { ellipsisCenter, formatAddress } from '@utils/format';
 import cs from 'classnames';
-import Image from 'next/image';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
@@ -92,8 +91,7 @@ const CollectionItem = ({
             }`}
           >
             <div className={s.collectionCard_thumb_inner}>
-              <Image
-                fill
+              <img
                 onError={onThumbError}
                 src={thumb}
                 alt={data.name}

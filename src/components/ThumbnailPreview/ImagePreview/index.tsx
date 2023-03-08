@@ -1,5 +1,4 @@
 import React, { useRef } from 'react';
-import Image from 'next/image';
 import { convertIpfsToHttp } from '@utils/image';
 import s from './styles.module.scss';
 
@@ -23,12 +22,12 @@ const ImagePreview: React.FC<IProps> = (props: IProps): React.ReactElement => {
 
   return (
     <div className={s.imagePreview}>
-      <Image
+      <img
         ref={imgRef}
         onLoad={handleOnImgLoaded}
-        fill
         src={convertIpfsToHttp(url)}
         alt="thumbnail"
+        className={s.image}
       />
     </div>
   );

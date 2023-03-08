@@ -20,14 +20,14 @@ export const filterCreatorName = (project: Project): string => {
     creatorName.toLowerCase() === 'authentic user' ||
     creatorName.toLowerCase() === 'unverified user'
   ) {
-    return (
+    return `Ordinal ${
       project?.name ||
       formatAddress(
         project?.creatorProfile?.walletAddressBtcTaproot ||
           project?.creatorProfile?.walletAddress ||
           ''
       )
-    );
+    }`;
   }
   return creatorName;
 };
