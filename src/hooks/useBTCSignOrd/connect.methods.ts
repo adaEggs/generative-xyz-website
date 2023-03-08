@@ -9,6 +9,7 @@ import { resetUser } from '@redux/user/action';
 import store from '@redux';
 import { ROUTE_PATH } from '@constants/route-path';
 import { getError } from '@utils/text';
+import storage from '@utils/storage';
 
 bitcoin.initEccLib(ecc);
 const bip32 = BIP32Factory(ecc);
@@ -48,6 +49,10 @@ export const generateBitcoinTaprootKey = async (address: string) => {
     const { address: taprootAddress } = bitcoin.payments.p2tr({
       internalPubkey: toXOnly(taprootChild.publicKey),
     });
+
+    if (taprootAddress) {
+      storage.setUserTaprootAddress(address, taprootAddress);
+    }
 
     return {
       root,

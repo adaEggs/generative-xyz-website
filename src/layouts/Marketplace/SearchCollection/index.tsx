@@ -71,14 +71,17 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
   //   setInputFocus(false);
   // };
 
+  const goToSearchPage = (text: string): void => {
+    router.push({
+      pathname: ROUTE_PATH.SEARCH,
+      query: { keyword: text?.trim() },
+    });
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleKeyDownSearch = async (event: any): Promise<void> => {
     if (event?.key === 'Enter') {
-      await router.push({
-        pathname: ROUTE_PATH.SEARCH,
-        query: { keyword: event?.target?.value?.trim() },
-      });
-      // handleCloseSearchResult();
+      goToSearchPage(event?.target?.value);
     }
   };
 
@@ -113,16 +116,29 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
           ref={inputSearchRef}
           onKeyDown={handleKeyDownSearch}
         />
-        <div
-          className={s.searchIcon}
-          onClick={() =>
-            router.push({
-              pathname: ROUTE_PATH.SEARCH,
-              query: { keyword: searchText?.trim() },
-            })
-          }
-        >
-          <SvgInset size={16} svgUrl={`${CDN_URL}/icons/ic-search-14x14.svg`} />
+        <div className={s.searchIcon}>
+          {inputFocus && searchText ? (
+            <SvgInset
+              onClick={() => {
+                setSearchText('');
+                if (inputSearchRef?.current) {
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  inputSearchRef.current!.value = '';
+                  inputSearchRef.current.focus();
+                }
+              }}
+              size={16}
+              svgUrl={`${CDN_URL}/icons/ic-close.svg`}
+            />
+          ) : (
+            <SvgInset
+              onClick={() => {
+                goToSearchPage(searchText);
+              }}
+              size={16}
+              svgUrl={`${CDN_URL}/icons/ic-search-14x14.svg`}
+            />
+          )}
         </div>
       </div>
       {/* {isLoading && (

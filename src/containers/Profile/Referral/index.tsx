@@ -196,6 +196,9 @@ const ReferralTab = () => {
                   eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
                   data: {
                     referrer_id: user?.id,
+                    referrer_name: user?.displayName,
+                    referrer_address: user?.walletAddress,
+                    referrer_taproot_address: user?.walletAddressBtcTaproot,
                   },
                 });
               }}

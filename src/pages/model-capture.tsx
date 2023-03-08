@@ -1,13 +1,8 @@
 import { NextPage } from 'next';
-import MarketplaceLayout from '@layouts/Marketplace';
-import Leaderboard from '@containers/Leaderboard';
+import ModelCapture from '@containers/ModelCapture';
 
 const ModelCapturePage: NextPage = () => {
-  return (
-    <MarketplaceLayout isHideFaucet={true}>
-      <Leaderboard />
-    </MarketplaceLayout>
-  );
+  return <ModelCapture />;
 };
 
 export default ModelCapturePage;
