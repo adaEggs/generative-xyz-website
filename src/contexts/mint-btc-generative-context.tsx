@@ -1,6 +1,7 @@
 import { MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { IBTCFormValue } from '@interfaces/mint-generative';
+import { Project } from '@interfaces/project';
 import {
   ImageCollectionFiles,
   ISandboxRef,
@@ -40,8 +41,8 @@ export type TMintBTCGenerativeContext = {
   setFormValues: Dispatch<SetStateAction<Partial<IBTCFormValue>>>;
   thumbnailPreviewUrl: string | null;
   setThumbnailPreviewUrl: Dispatch<SetStateAction<string | null>>;
-  mintedProjectID: string | null;
-  setMintedProjectID: Dispatch<SetStateAction<string | null>>;
+  mintedProject: Project | null;
+  setMintedProject: Dispatch<SetStateAction<Project | null>>;
   showErrorAlert: { open: boolean; message: string | null };
   setShowErrorAlert: Dispatch<
     SetStateAction<{ open: boolean; message: string | null }>
@@ -83,8 +84,8 @@ const initialValues: TMintBTCGenerativeContext = {
   setThumbnailPreviewUrl: _ => {
     return;
   },
-  mintedProjectID: null,
-  setMintedProjectID: _ => {
+  mintedProject: null,
+  setMintedProject: _ => {
     return;
   },
   showErrorAlert: { open: false, message: null },
@@ -127,7 +128,7 @@ export const MintBTCGenerativeContextProvider = ({
   const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(
     null
   );
-  const [mintedProjectID, setMintedProjectID] = useState<string | null>(null);
+  const [mintedProject, setMintedProject] = useState<Project | null>(null);
   const [collectionType, setCollectionType] = useState(
     CollectionType.GENERATIVE
   );
@@ -186,8 +187,8 @@ export const MintBTCGenerativeContextProvider = ({
         setFormValues,
         thumbnailPreviewUrl,
         setThumbnailPreviewUrl,
-        mintedProjectID,
-        setMintedProjectID,
+        mintedProject,
+        setMintedProject,
         showErrorAlert,
         setShowErrorAlert,
         collectionType,

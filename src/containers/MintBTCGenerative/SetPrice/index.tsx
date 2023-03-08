@@ -54,7 +54,7 @@ const SetPrice = () => {
     setShowErrorAlert,
     rawFile,
     collectionType,
-    setMintedProjectID,
+    setMintedProject,
     imageCollectionFile,
     filesSandbox,
   } = useContext(MintBTCGenerativeContext);
@@ -190,7 +190,7 @@ const SetPrice = () => {
           projectID,
         });
         if (projectRes && !projectRes.isHidden && projectRes.status) {
-          setMintedProjectID(projectRes.tokenID);
+          setMintedProject(projectRes);
           setIsMinting(false);
           intervalID.current && clearInterval(intervalID.current);
           intervalID.current = null;

@@ -12,7 +12,6 @@ import useWindowSize from '@hooks/useWindowSize';
 import { Token } from '@interfaces/token';
 import { ellipsisCenter, formatAddress } from '@utils/format';
 import cs from 'classnames';
-import Image from 'next/image';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
@@ -20,9 +19,11 @@ import s from './styles.module.scss';
 const CollectionItem = ({
   data,
   className,
+  showCollectionName,
 }: {
   data: Token;
   className?: string;
+  showCollectionName?: boolean;
 }) => {
   const tokenID = data.tokenID;
   // const { currentUser } = useContext(ProfileContext);
@@ -90,8 +91,7 @@ const CollectionItem = ({
             }`}
           >
             <div className={s.collectionCard_thumb_inner}>
-              <Image
-                fill
+              <img
                 onError={onThumbError}
                 src={thumb}
                 alt={data.name}
@@ -142,10 +142,10 @@ const CollectionItem = ({
             <div className={cs(s.collectionCard_info, s.desktop)}>
               <div className={s.collectionCard_info_title}>
                 <Stack
-                  className={cs(
-                    s.collectionCard_info_stack,
-                    data?.creator?.displayName && s.collectionCard_info_wrapper
-                  )}
+                  className={cs(s.collectionCard_info_stack, {
+                    [s.collectionCard_info_wrapper]:
+                      showCollectionName && data?.creator?.displayName,
+                  })}
                   direction="horizontal"
                 >
                   <Heading
@@ -167,7 +167,7 @@ const CollectionItem = ({
                           })}
                     </span>
                   </Heading>
-                  {data?.creator?.displayName && (
+                  {showCollectionName && data?.creator?.displayName && (
                     <Heading
                       as={'h6'}
                       fontWeight="medium"
