@@ -18,6 +18,15 @@
   &_right {
     //background: green;
     //flex: 1;
+    display: flex;
+
+    &_art {
+      flex: 0 0 50%;
+    }
+
+    &_ctas {
+      flex: 0 0 50%;
+    }
   }
 }
 
@@ -33,13 +42,9 @@
 }
 
 .info {
-  padding-top: rem(64px);
-
   @include min-tablet {
     overflow-y: scroll;
-    padding-right: rem(60px);
     position: relative;
-    padding-top: rem(40px);
 
     @include fullViewScreen;
   }
