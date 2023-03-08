@@ -75,16 +75,18 @@ export const signMetamaskWithMessage = async ({
   address, // metamask address
   taprootAddress,
   segwitAddress,
+  nonceMessage,
 }: {
   address: string;
   segwitAddress: string;
   taprootAddress: string;
+  nonceMessage: string;
 }) => {
   const provider = new ethers.providers.Web3Provider(
     window.ethereum as ethers.providers.ExternalProvider
   );
 
-  const SIGN_MESSAGE = `Welcome to Generative.xyz!\n\nTaproot address:\n${taprootAddress}\n\nSegwit address:\n${segwitAddress}`;
+  const SIGN_MESSAGE = `Welcome to Generative.xyz!\n\nTaproot address:\n${taprootAddress}\n\nSegwit address:\n${segwitAddress}\n\nNonce:\n${nonceMessage}`;
 
   const toSign = '0x' + getBitcoinKeySignContent(SIGN_MESSAGE).toString('hex');
   const signature = await provider.send('personal_sign', [
@@ -120,6 +122,7 @@ const generateBitcoinKey = async ({
       address,
       taprootAddress: sendTaprootAddress,
       segwitAddress: signSegwit.address,
+      nonceMessage: nonceMessage,
     });
   }
 
