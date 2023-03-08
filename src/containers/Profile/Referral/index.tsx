@@ -82,7 +82,10 @@ const ReferralTab = () => {
       sendAAEvent({
         eventName: BTC_PROJECT.WITHDRAW,
         data: {
-          ...payload,
+          amount: amount,
+          payment_type: currency.toLowerCase(),
+          type: 'referal',
+          referree_id: id,
         },
       });
       setShowWithdrawSucessModal({
@@ -192,7 +195,7 @@ const ReferralTab = () => {
                 sendAAEvent({
                   eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
                   data: {
-                    referrerId: user?.id,
+                    referrer_id: user?.id,
                   },
                 });
               }}
