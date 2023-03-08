@@ -28,6 +28,7 @@ export interface IGetMarketplaceBtcListItem {
       price: string;
     };
   };
+  holder?: Record<string, string> | null;
 }
 
 export interface IPostMarketplaceBtcListNFTForms {

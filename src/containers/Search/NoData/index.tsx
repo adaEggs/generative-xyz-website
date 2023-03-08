@@ -17,15 +17,14 @@ export const NoData = ({ className }: NoDataProps): JSX.Element => {
 
   return (
     <div className={cn(s.noData, className)}>
-      <SvgInset
-        svgUrl={`${CDN_URL}/icons/sad-face.svg`}
-        className={s.noData_mr14}
-      />
-      <span>
+      <div className={s.noData_icon}>
+        <SvgInset svgUrl={`${CDN_URL}/icons/sad-face.svg`} />
+      </div>
+      <div className={s.noData_text}>
         No results for &quot;
-        <span className={s.noData_keyword}>{keyword}</span>&quot;.Try another
-        search?
-      </span>
+        <span className={s.noData_keyword}>{keyword}</span>
+        &quot;.Try another search?
+      </div>
     </div>
   );
 };

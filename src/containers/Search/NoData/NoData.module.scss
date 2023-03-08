@@ -5,8 +5,15 @@
   font-weight: 400;
   color: $black-100;
 
-  &_mr14 {
+  &_icon {
+    min-width: rem(22);
     margin-right: rem(14.4);
+  }
+
+  &_text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 
   &_keyword {

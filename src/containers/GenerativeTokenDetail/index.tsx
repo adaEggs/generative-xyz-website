@@ -20,7 +20,7 @@ import {
 import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress, formatLongAddress, formatTokenId } from '@utils/format';
+import { formatLongAddress, formatTokenId } from '@utils/format';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
@@ -39,6 +39,7 @@ import cs from 'classnames';
 import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
 import { ProfileProvider } from '@contexts/profile-context';
 import { AuthenticCard } from './AuthenticCard';
+import { filterCreatorName } from '@utils/generative';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
@@ -286,11 +287,10 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               <Loading isLoaded={!!tokenData} className={s.loading_token} />
               <div className={`${s.projectHeader}`}>
                 <Link
-                  href={
-                    projectData?.creatorProfile?.walletAddressBtcTaproot
-                      ? `${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddressBtcTaproot}`
-                      : `${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddress}`
-                  }
+                  href={`${ROUTE_PATH.PROFILE}/${
+                    projectData?.creatorProfile?.walletAddressBtcTaproot ||
+                    projectData?.creatorProfile?.walletAddress
+                  }`}
                   className={cs(
                     s.creator_info,
                     !projectData?.creatorProfile?.walletAddressBtcTaproot &&
@@ -303,12 +303,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     as="h4"
                     fontWeight="medium"
                   >
-                    {projectData?.creatorProfile?.displayName ||
-                      formatAddress(
-                        projectData?.creatorProfile?.walletAddressBtcTaproot ||
-                          projectData?.creatorProfile?.walletAddress ||
-                          ''
-                      )}
+                    {projectData && filterCreatorName(projectData)}
                   </Heading>
                 </Link>
                 <SocialVerify
@@ -438,12 +433,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 </div>
               </div>
               <div className="divider" />
-              {isFromAuthentic && (
-                <AuthenticCard
-                  tokenID={projectData?.tokenId}
-                  project={projectData}
-                />
-              )}
+              {isFromAuthentic && <AuthenticCard project={projectData} />}
             </div>
             <ul className={s.shares}>
               <li>

@@ -92,6 +92,14 @@
       :global(.useInfo) {
         margin-bottom: rem(10px);
       }
+
+      .projectCard_info_wrapper {
+        flex-wrap: wrap;
+
+        &_displayName {
+          width: 100%;
+        }
+      }
     }
 
     &.mobile {
