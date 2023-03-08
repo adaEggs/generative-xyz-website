@@ -11,7 +11,6 @@ import { getSearchByKeyword } from '@services/search';
 import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import CollectionItem from '@components/Collection/Item';
 import { Loading } from '@components/Loading';
-import { Token } from '@interfaces/token';
 
 import s from './TokenItems.module.scss';
 import { PAYLOAD_DEFAULT, OBJECT_TYPE } from '../constant';
@@ -98,7 +97,7 @@ export const TokenItems = ({ className }: TokenItemsProps): JSX.Element => {
                 }
                 endMessage={<></>}
               >
-                {combineList?.map((item: Token) => (
+                {combineList?.map((item: any) => (
                   <CollectionItem
                     key={`collection-item-${item?.tokenUri?.tokenID}`}
                     className="col-xs-6 col-md-3"
