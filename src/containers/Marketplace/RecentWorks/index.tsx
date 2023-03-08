@@ -108,9 +108,12 @@ export const RecentWorks = (): JSX.Element => {
     try {
       setCategoriesLoading(true);
       const { result } = await getCategoryList();
-      const historyCategoryID = sessionStorage.getItem(
+      let historyCategoryID = sessionStorage.getItem(
         LocalStorageKey.CATEGORY_ID
       );
+      if (!historyCategoryID) {
+        historyCategoryID = 'All';
+      }
       if (result && result.length > 0) {
         setCategoriesList(result);
         setCategoriesLoading(false);
@@ -169,6 +172,16 @@ export const RecentWorks = (): JSX.Element => {
             md={'auto'}
             xs={'12'}
           >
+            <CategoryTab
+              type="3"
+              text="All"
+              onClick={() => {
+                setPageNum(0);
+                handleClickCategory('All');
+              }}
+              active={activeCategory === 'All'}
+              loading={categoriesLoading}
+            />
             {categoriesList &&
               categoriesList?.map(category => (
                 <CategoryTab
@@ -183,16 +196,6 @@ export const RecentWorks = (): JSX.Element => {
                   loading={categoriesLoading}
                 />
               ))}
-            <CategoryTab
-              type="3"
-              text="All"
-              onClick={() => {
-                setPageNum(0);
-                handleClickCategory('All');
-              }}
-              active={activeCategory === 'All'}
-              loading={categoriesLoading}
-            />
           </Col>
           <Col
             className={cs(s.recentWorks_heading_col, s.sort_dropdown)}

@@ -11,6 +11,8 @@ import { useContext } from 'react';
 import { toast } from 'react-hot-toast';
 import { TwitterShareButton } from 'react-share';
 import s from './styles.module.scss';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 
 const MintSuccess = () => {
   const router = useRouter();
@@ -32,6 +34,13 @@ const MintSuccess = () => {
     navigator.clipboard.writeText(url);
     toast.remove();
     toast.success('Copied');
+    sendAAEvent({
+      eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
+      data: {
+        projectId: mintedProjectID,
+        referrerId: user?.id,
+      },
+    });
   };
 
   return (
@@ -50,6 +59,15 @@ const MintSuccess = () => {
               sizes="large"
               variants="outline-small"
               className={s.twitter_btn}
+              onClick={() => {
+                sendAAEvent({
+                  eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
+                  data: {
+                    projectId: mintedProjectID,
+                    referrerId: user?.id,
+                  },
+                });
+              }}
               startIcon={
                 <SvgInset
                   size={20}

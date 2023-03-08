@@ -24,6 +24,7 @@ import useBitcoin from '@bitcoin/useBitcoin';
 import { MINIMUM_SATOSHI } from '@bitcoin/contants';
 import Text from '@components/Text';
 import { isNumeric } from '@utils/string';
+import { getError } from '@utils/text';
 
 interface IFormValue {
   address: string;
@@ -69,7 +70,8 @@ const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
       !!currentUser?.walletAddressBtcTaproot &&
       values.address === currentUser?.walletAddressBtcTaproot
     ) {
-      errors.address = "Invalid wallet address, please don't send to yourself.";
+      errors.address =
+        'Invalid wallet address. Please send the inscription to another wallet address.';
     }
 
     if (!values.amount) {
@@ -92,8 +94,9 @@ const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
             currentRate,
             true
           );
-        } catch (e) {
-          errors.amount = 'Your BTC balance is insufficient.';
+        } catch (err) {
+          errors.amount =
+            getError(err)?.message || 'Your BTC balance is insufficient.';
         }
       }
     }

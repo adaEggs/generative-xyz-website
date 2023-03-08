@@ -5,7 +5,7 @@ import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 import { getMediaTypeFromFileExt } from '@utils/file';
 import { useRouter } from 'next/router';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import ImagePreview from '../ImagePreview';
 import Model3DPreview from '../Model3DPreview';
 import VideoPreview from '../VideoPreview';
@@ -13,6 +13,9 @@ import Image from 'next/image';
 import AudioPreview from '../AudioPreview';
 import IFramePreview from '../IframePreview';
 import PDFPreview from '../PDFPreview';
+import { isValidImage } from '@utils/image';
+import useAsyncEffect from 'use-async-effect';
+import { Loading } from '@components/Loading';
 
 interface IProps {
   data: Token | Project | null;
@@ -35,6 +38,9 @@ const PreviewController: React.FC<IProps> = (
   }, [data]);
   const thumbnailExt = thumbnailUrl.split('.').pop() || '';
   const previewExt = previewUrl.split('.').pop() || '';
+  const isOrdinalPreview = previewUrl.includes('i0');
+  const [isImage, setIsImage] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const renderPlaceholderThumbnail = useMemo(
     (): React.ReactElement => (
@@ -50,10 +56,24 @@ const PreviewController: React.FC<IProps> = (
     []
   );
 
+  useAsyncEffect(async () => {
+    if (!isOrdinalPreview) {
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(true);
+    const isValidImg = await isValidImage(previewUrl);
+    setIsImage(isValidImg);
+    setIsLoading(false);
+  }, [previewUrl, isOrdinalPreview]);
+
   const renderPreviewByType = useMemo((): React.ReactElement => {
     // Check ordinal
-    const isOrdinalPreview = previewUrl.includes('i0');
     if (isOrdinalPreview) {
+      if (isImage) {
+        return <ImagePreview url={previewUrl} />;
+      }
       return <IFramePreview url={previewUrl} />;
     }
 
@@ -93,10 +113,14 @@ const PreviewController: React.FC<IProps> = (
       default:
         return renderPlaceholderThumbnail;
     }
-  }, [previewExt, previewUrl, data, projectID, tokenID]);
+  }, [previewExt, previewUrl, data, projectID, tokenID, isImage]);
 
   if (!data) {
     return <></>;
+  }
+
+  if (isLoading) {
+    return <Loading isLoaded={false} />;
   }
 
   return renderPreviewByType;

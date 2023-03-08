@@ -1,16 +1,31 @@
 import { Loading } from '@components/Loading';
 import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { ProfileContext } from '@contexts/profile-context';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import s from './Collected.module.scss';
 import { CollectedList } from './List';
+import { debounce } from 'lodash';
 
 export const Collected = (): JSX.Element => {
   const { isLoadingProfileCollected, collectedNFTs, isLoadedProfileCollected } =
     useContext(ProfileContext);
+
+  const [page, setPage] = React.useState(1);
+
+  const _collectedNFTs = React.useMemo(() => {
+    if (!collectedNFTs || !collectedNFTs.length) return [];
+    return collectedNFTs.slice(0, page * 20);
+  }, [page, collectedNFTs]);
+
+  const debounceSetPage = React.useCallback(
+    debounce((page: number) => {
+      setPage(page + 1);
+    }, 1000),
+    []
+  );
 
   return (
     <div className={s.recentWorks}>
@@ -20,9 +35,9 @@ export const Collected = (): JSX.Element => {
             <ProjectListLoading numOfItems={12} />
           ) : (
             <InfiniteScroll
-              dataLength={collectedNFTs.length}
+              dataLength={_collectedNFTs.length}
               next={() => {
-                //TODO
+                debounceSetPage(page);
               }}
               className={s.recentWorks_projects_list}
               hasMore={true}
@@ -44,7 +59,7 @@ export const Collected = (): JSX.Element => {
                   2500: 4,
                   3000: 4,
                 }}
-                listData={collectedNFTs}
+                listData={_collectedNFTs}
               />
             </InfiniteScroll>
           )}

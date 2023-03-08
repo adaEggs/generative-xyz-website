@@ -1,4 +1,4 @@
-import { MOBILE_SCREEN } from '@constants/breakpoint';
+import { MOBILE_SCREEN, TABLET_SCREEN } from '@constants/breakpoint';
 import { useEffect, useState } from 'react';
 
 interface Size {
@@ -8,6 +8,7 @@ interface Size {
 
 interface CheckMobile {
   mobileScreen: boolean;
+  tabletScreen: boolean;
 }
 
 function useWindowSize(): Size & CheckMobile {
@@ -16,6 +17,7 @@ function useWindowSize(): Size & CheckMobile {
     heightWidth: 0,
   });
   const [mobileScreen, setMobileScreen] = useState(true);
+  const [tabletScreen, setTabletScreen] = useState(true);
 
   useEffect(() => {
     function handleResize() {
@@ -35,12 +37,19 @@ function useWindowSize(): Size & CheckMobile {
     } else {
       setMobileScreen(false);
     }
+
+    if (windowSize?.sreenWidth && windowSize.sreenWidth <= TABLET_SCREEN) {
+      setTabletScreen(true);
+    } else {
+      setTabletScreen(false);
+    }
   }, [windowSize.sreenWidth]);
 
   return {
     sreenWidth: windowSize.sreenWidth,
     heightWidth: windowSize.heightWidth,
     mobileScreen,
+    tabletScreen,
   };
 }
 

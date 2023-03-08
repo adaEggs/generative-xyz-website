@@ -25,6 +25,8 @@ import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import useAsyncEffect from 'use-async-effect';
 import s from './ArtistCollectionEarn.module.scss';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 
 const LOG_PREFIX = 'ArtistCollectionEarn';
 
@@ -65,7 +67,7 @@ const ArtistCollectionEarn = ({
           }}
         />
         <Text fontWeight="medium" color="primary-color">
-          ETH
+          {currencyRecord}
         </Text>
       </Stack>
     </>,
@@ -95,6 +97,12 @@ const ArtistCollectionEarn = ({
         type: 'project',
       };
       await withdrawRewardEarned(payload);
+      sendAAEvent({
+        eventName: BTC_PROJECT.WITHDRAW,
+        data: {
+          ...payload,
+        },
+      });
       setShowModal({
         isShow: true,
         data: payload,

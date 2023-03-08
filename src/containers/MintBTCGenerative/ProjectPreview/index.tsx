@@ -168,7 +168,8 @@ const ProjectPreview = () => {
                 height={48}
               ></Image>
               <span className={s.ownerName}>
-                {user?.displayName || formatAddress(user?.walletAddress)}
+                {user?.displayName ||
+                  formatAddress(user?.walletAddressBtcTaproot)}
               </span>
             </div>
             <div className={s.projectInfo}>

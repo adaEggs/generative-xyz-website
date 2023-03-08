@@ -16,10 +16,11 @@ import { ErrorMessage } from '@enums/error-message';
 import { IListingFee } from '@interfaces/api/marketplace-btc';
 import Text from '@components/Text';
 import cs from 'classnames';
-import { convertToSatoshiNumber } from '@utils/format';
+import { convertToSatoshiNumber, formatBTCPrice } from '@utils/format';
 import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
+import { MinSats } from 'generative-sdk';
 
 interface IFormValues {
   price: string;
@@ -56,7 +57,7 @@ const ModalListForSale = React.memo(
     const onSetError = (err: unknown) => {
       const _err = getError(err);
       setError(_err.message);
-      toast.error(_err.message);
+      // toast.error(_err.message);
     };
 
     const onGetListingFee = async () => {
@@ -77,12 +78,53 @@ const ModalListForSale = React.memo(
       }
     };
 
+    const calcAmount = (values: IFormValues) => {
+      const inputAmount = convertToSatoshiNumber(values.price);
+
+      // calc percent
+      const artistPercent = new BigNumber(
+        listingFee?.royaltyFee || 0
+      ).dividedBy(100);
+      const sellerPercent = new BigNumber(1).minus(artistPercent);
+
+      // calc amount
+      const amountArtist = new BigNumber(inputAmount)
+        .multipliedBy(artistPercent)
+        .toNumber();
+      const amountSeller = new BigNumber(inputAmount)
+        .multipliedBy(sellerPercent)
+        .toNumber();
+
+      return {
+        amountArtist,
+        amountSeller,
+      };
+    };
+
     const validateForm = (values: IFormValues) => {
       const errors: Record<string, string> = {};
       if (!values.price || !new BigNumber(values.price || 0)) {
         errors.price = 'Required.';
       } else if (values.price) {
         // validate fee
+        const { amountArtist, amountSeller } = calcAmount(values);
+        if (
+          amountArtist > 0 &&
+          amountArtist < MinSats &&
+          !!listingFee?.royaltyFee
+        ) {
+          const minAmount = new BigNumber(100)
+            .multipliedBy(MinSats)
+            .dividedBy(listingFee?.royaltyFee)
+            .toNumber();
+          errors.price = `The minimum amount required is ${formatBTCPrice(
+            minAmount
+          )} BTC.`;
+        } else if (amountSeller < MinSats) {
+          errors.price = `The minimum amount required is ${formatBTCPrice(
+            MinSats
+          )} BTC.`;
+        }
       }
       if (!values.receiveBTCAddress) {
         errors.receiveBTCAddress = 'Address is required.';
@@ -106,12 +148,12 @@ const ModalListForSale = React.memo(
         const sellerPercent = new BigNumber(1).minus(artistPercent);
 
         // calc amount
-        const amountArtist = new BigNumber(inputAmount)
-          .multipliedBy(artistPercent)
-          .toNumber();
-        const amountSeller = new BigNumber(inputAmount)
-          .multipliedBy(sellerPercent)
-          .toNumber();
+        const amountArtist = Math.floor(
+          new BigNumber(inputAmount).multipliedBy(artistPercent).toNumber()
+        );
+        const amountSeller = Math.floor(
+          new BigNumber(inputAmount).multipliedBy(sellerPercent).toNumber()
+        );
 
         await listInscription({
           amountPayToSeller: amountSeller,
@@ -121,7 +163,7 @@ const ModalListForSale = React.memo(
           inscriptionNumber: inscriptionNumber,
           receiverBTCAddress: values.receiveBTCAddress,
         });
-        toast.success('Successfully');
+        toast.success('List for sale successfully');
         setTimeout(() => {
           setLoading(false);
           window.location.reload();
@@ -137,9 +179,12 @@ const ModalListForSale = React.memo(
       if ((!price || !charge) && isHideZero) return null;
       const fee = new BigNumber(price || 0)
         .multipliedBy(Number(charge || 0))
-        .dividedBy(100);
+        .dividedBy(100)
+        .multipliedBy(1e8);
       const isZero = fee.lte(0);
-      const text = isZero ? 'FREE' : fee.toFixed() + ' BTC';
+      const text = isZero
+        ? 'FREE'
+        : formatBTCPrice(Math.floor(fee.toNumber())) + ' BTC';
 
       return (
         <div className={cs(s.wrapFee_feeRow)}>
@@ -227,12 +272,13 @@ const ModalListForSale = React.memo(
                                 className={s.inputContainer_input}
                                 placeholder="Paste your BTC address here"
                               />
-                              {errors.receiveBTCAddress &&
-                                touched.receiveBTCAddress && (
-                                  <p className={s.inputContainer_inputError}>
-                                    {errors.receiveBTCAddress || error}
-                                  </p>
-                                )}
+                              {((errors.receiveBTCAddress &&
+                                touched.receiveBTCAddress) ||
+                                !!error) && (
+                                <p className={s.inputContainer_inputError}>
+                                  {error || errors.receiveBTCAddress}
+                                </p>
+                              )}
                             </div>
                           </div>
                         </div>

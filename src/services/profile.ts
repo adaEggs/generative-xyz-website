@@ -175,6 +175,7 @@ export const getMintingCollectedNFTs = async (
           cancelling: false,
           priceBTC: '0',
           orderID: '',
+          quantity: item.quantity,
         };
       });
     }

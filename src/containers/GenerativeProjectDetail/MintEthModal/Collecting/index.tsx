@@ -73,6 +73,7 @@ const MintEthModal: React.FC = () => {
           refundAddress: refundAddress,
           projectData,
           paymentMethod,
+          quantity: 1,
         });
         setIsLoad(true);
         if (!_address || !_price) {
