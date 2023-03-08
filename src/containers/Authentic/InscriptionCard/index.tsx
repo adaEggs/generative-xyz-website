@@ -1,14 +1,14 @@
-import { useMemo, useState } from 'react';
-import s from './styles.module.scss';
+import Button from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
+import { ROUTE_PATH } from '@constants/route-path';
+import { MoralisNFT } from '@interfaces/inscribe';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
-import { MoralisNFT } from '@interfaces/inscribe';
-import Button from '@components/ButtonIcon';
 import { useRouter } from 'next/router';
-import { ROUTE_PATH } from '@constants/route-path';
-import InscribeModal from '../InscribeModal';
+import { useMemo, useState } from 'react';
+import InscribeEthModal from '../InscribeEthModal';
+import s from './styles.module.scss';
 
 interface IProps {
   inscription: MoralisNFT;
@@ -85,7 +85,7 @@ const InscriptionCard: React.FC<IProps> = ({
           </div>
         </div>
       </div>
-      {showModal && <InscribeModal handleClose={handleClose} />}
+      {showModal && <InscribeEthModal handleClose={handleClose} />}
     </div>
   );
 };

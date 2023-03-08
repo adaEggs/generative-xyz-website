@@ -186,6 +186,7 @@ const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
         fileName: file?.name || '',
         file: fileBase64,
         fee_rate: feeRate,
+        payType: 'btc',
       };
       if (tokenAddress) {
         payload.tokenAddress = tokenAddress as string;
