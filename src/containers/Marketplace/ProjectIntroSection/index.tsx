@@ -392,8 +392,9 @@ const ProjectIntroSection = ({
                 data={
                   {
                     ...projectDetail,
-                    animationHtml: project?.animationHtml ?? '',
-                  } as Token
+                    htmlFile: project?.htmlFile || '',
+                    animationHtml: project?.animationHtml || '',
+                  } as unknown as Project
                 }
                 allowVariantion
               />
@@ -811,8 +812,9 @@ const ProjectIntroSection = ({
             data={
               {
                 ...projectDetail,
+                htmlFile: project?.htmlFile || '',
                 animationHtml: project?.animationHtml ?? '',
-              } as Token
+              } as unknown as Project
             }
             allowVariantion
           />
