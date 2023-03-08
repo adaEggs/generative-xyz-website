@@ -41,7 +41,9 @@ export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
 
   return (
     <Link
-      href={`${ROUTE_PATH.PROFILE}/${profile.walletAddressBtcTaproot}`}
+      href={`${ROUTE_PATH.PROFILE}/${
+        profile?.walletAddressBtcTaproot || profile?.walletAddress
+      }`}
       className={`${s.artistCard} ${className}`}
     >
       <div className={s.artistCard_inner}>

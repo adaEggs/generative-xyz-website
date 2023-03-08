@@ -1,6 +1,6 @@
 import { CDN_URL } from '@constants/config';
 import Image from 'next/image';
-import React from 'react';
+import React, { useMemo } from 'react';
 import Text from '@components/Text';
 import s from './styles.module.scss';
 import { Project } from '../../../interfaces/project';
@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import ButtonIcon from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
+import dayjs from 'dayjs';
 
 export const AuthenticCard = ({
   project,
@@ -17,6 +18,11 @@ export const AuthenticCard = ({
   project: Project | null;
   tokenID?: string;
 }): JSX.Element => {
+  const dateMinted = useMemo((): string => {
+    return project && project.mintedTime
+      ? dayjs(project.mintedTime).format('MMM DD, YYYY')
+      : '';
+  }, [project]);
   if (!project) return <></>;
   return (
     <div className={s.authenticCard}>
@@ -88,7 +94,7 @@ export const AuthenticCard = ({
               </div>
               <div className="val">
                 <a
-                  href={`https://etherscan.io/address/${project.inscribedBy}`}
+                  href={`https://opensea.io/${project.inscribedBy}`}
                   target="_blank"
                 >
                   {formatLongAddress(project.inscribedBy || '')}
@@ -130,7 +136,7 @@ export const AuthenticCard = ({
 
           <div className={s.authenticCard_content_property}>
             <div className="label">Date</div>
-            <div className="val">March 3, 2023</div>
+            <div className="val">{dateMinted}</div>
           </div>
           <p className={s.more}>
             <Link href={ROUTE_PATH.AUTHENTIC_INSCRIPTIONS}>
@@ -142,7 +148,7 @@ export const AuthenticCard = ({
                   />
                 }
               >
-                Learn more
+                Inscribe your Ethereum NFTs now
               </ButtonIcon>
             </Link>
           </p>

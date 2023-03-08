@@ -42,6 +42,7 @@ export const MIN_MINT_BTC_PROJECT_PRICE = 0;
 
 // Mempool
 export const MEMPOOL_API_URL = 'https://mempool.space/api/v1';
+export const BINANCE_API_URL = 'https://api.binance.com/api/v3';
 
 // AA tracking config
 export const AA_BASE_URL =

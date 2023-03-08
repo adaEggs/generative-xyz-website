@@ -64,7 +64,7 @@ export interface IProfileContext {
   currentUser: User | null;
   userWalletAddress?: string;
   profileTokens?: IGetProfileTokensResponse;
-  profileProjects?: IGetProjectItemsResponse;
+  profileProjects?: IGetProjectItemsResponse | null;
   profileMakeOffer?: ITokenOfferListResponse;
   profileListing?: IListingTokensResponse;
   collectedNFTs: ICollectedNFTItem[];
@@ -181,9 +181,8 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   >();
   const [isLoadedProfileTokens, setIsLoadedProfileTokens] =
     useState<boolean>(false);
-  const [profileProjects, setProfileProjects] = useState<
-    IGetProjectItemsResponse | undefined
-  >();
+  const [profileProjects, setProfileProjects] =
+    useState<IGetProjectItemsResponse | null>();
   const [isLoadedProfileProjects, setIsLoadedProfileProjects] =
     useState<boolean>(false);
   const [isLoadedProfileReferral, setIsLoadedProfileReferral] =
@@ -328,6 +327,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
         });
         if (getUser) {
           setCurrentUser(getUser);
+          setProfileProjects(null);
         } else {
           router.push(ROUTE_PATH.DROPS);
         }

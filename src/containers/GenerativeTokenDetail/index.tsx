@@ -287,11 +287,10 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               <Loading isLoaded={!!tokenData} className={s.loading_token} />
               <div className={`${s.projectHeader}`}>
                 <Link
-                  href={
-                    projectData?.creatorProfile?.walletAddressBtcTaproot
-                      ? `${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddressBtcTaproot}`
-                      : `${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddress}`
-                  }
+                  href={`${ROUTE_PATH.PROFILE}/${
+                    projectData?.creatorProfile?.walletAddressBtcTaproot ||
+                    projectData?.creatorProfile?.walletAddress
+                  }`}
                   className={cs(
                     s.creator_info,
                     !projectData?.creatorProfile?.walletAddressBtcTaproot &&

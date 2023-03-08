@@ -8,6 +8,7 @@ export interface IGenerateReceiverAddressPayload {
   fee_rate: number;
   tokenAddress?: string;
   tokenId?: string;
+  payType: 'eth' | 'btc';
 }
 
 export type IGenerateReceiverAddressResponse = InscriptionInfo;

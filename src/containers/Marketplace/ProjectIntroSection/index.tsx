@@ -276,10 +276,14 @@ const ProjectIntroSection = ({
         <div className={s.info}>
           <div className={`${s.projectHeader}`}>
             <Link
-              href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddressBtcTaproot}`}
+              href={`${ROUTE_PATH.PROFILE}/${
+                project?.creatorProfile?.walletAddressBtcTaproot ||
+                project?.creatorProfile?.walletAddress
+              }`}
               className={cs(
                 s.creator_info,
                 !project?.creatorProfile?.walletAddressBtcTaproot &&
+                  !project?.creatorProfile?.walletAddress &&
                   'pointer-none'
               )}
             >
