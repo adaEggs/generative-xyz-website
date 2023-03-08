@@ -110,7 +110,12 @@ const MintBTCGenerativeModal: React.FC = () => {
   };
 
   const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuantity(Number(e.target.value));
+    if (
+      projectData?.limitMintPerProcess &&
+      projectData.limitMintPerProcess >= Number(e.target.value)
+    ) {
+      setQuantity(Number(e.target.value));
+    }
   };
 
   const onClickMinus = () => {
@@ -120,7 +125,12 @@ const MintBTCGenerativeModal: React.FC = () => {
   };
 
   const onClickPlus = () => {
-    setQuantity(quantity + 1);
+    if (
+      projectData?.limitMintPerProcess &&
+      projectData.limitMintPerProcess >= quantity + 1
+    ) {
+      setQuantity(quantity + 1);
+    }
   };
 
   const getBTCAddress = async (
@@ -265,7 +275,11 @@ const MintBTCGenerativeModal: React.FC = () => {
                       {step === 'info' ? (
                         <div className={s.paymentPrice_inputContainer}>
                           <SvgInset
-                            className={s.paymentPrice_inputContainer_icon}
+                            className={`${
+                              quantity <= 1
+                                ? s.paymentPrice_inputContainer_icon_disable
+                                : s.paymentPrice_inputContainer_icon
+                            }`}
                             size={18}
                             svgUrl={`${CDN_URL}/icons/ic-minus.svg`}
                             onClick={onClickMinus}
@@ -279,7 +293,12 @@ const MintBTCGenerativeModal: React.FC = () => {
                             className={s.paymentPrice_inputContainer_input}
                           />
                           <SvgInset
-                            className={s.paymentPrice_inputContainer_icon}
+                            className={`${
+                              projectData?.limitMintPerProcess &&
+                              quantity >= projectData.limitMintPerProcess
+                                ? s.paymentPrice_inputContainer_icon_disable
+                                : s.paymentPrice_inputContainer_icon
+                            }`}
                             size={18}
                             svgUrl={`${CDN_URL}/icons/ic-plus.svg`}
                             onClick={onClickPlus}
