@@ -37,12 +37,11 @@ import { convertToETH } from '@utils/currency';
 import {
   base64ToUtf8,
   escapeSpecialChars,
-  formatAddress,
   formatBTCPrice,
   formatEthPrice,
   formatWebDomain,
 } from '@utils/format';
-import { checkIsBitcoinProject } from '@utils/generative';
+import { checkIsBitcoinProject, filterCreatorName } from '@utils/generative';
 import log from '@utils/logger';
 import dayjs from 'dayjs';
 import _get from 'lodash/get';
@@ -261,29 +260,6 @@ const ProjectIntroSection = ({
     }/${project?.maxSupply || project?.limit}`;
   }, [project]);
 
-  const filterNameAuthenticEth = useMemo((): string => {
-    const creatorName =
-      project?.creatorProfile?.displayName ||
-      formatAddress(
-        project?.creatorProfile?.walletAddressBtcTaproot ||
-          project?.creatorProfile?.walletAddress ||
-          ''
-      );
-
-    const isFromAuthentic = project?.fromAuthentic || false;
-    if (isFromAuthentic && creatorName.toLowerCase() === 'authentic user') {
-      return (
-        project?.name ||
-        formatAddress(
-          project?.creatorProfile?.walletAddressBtcTaproot ||
-            project?.creatorProfile?.walletAddress ||
-            ''
-        )
-      );
-    }
-    return creatorName;
-  }, [project]);
-
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -312,7 +288,7 @@ const ProjectIntroSection = ({
                 as="h4"
                 fontWeight="medium"
               >
-                {filterNameAuthenticEth}
+                {project && filterCreatorName(project)}
               </Heading>
             </Link>
             <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
