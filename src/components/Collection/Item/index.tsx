@@ -26,6 +26,7 @@ const CollectionItem = ({
   showCollectionName?: boolean;
 }) => {
   const tokenID = data.tokenID;
+  const showInscriptionID = data.genNFTAddr === '1000012';
   // const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
   const { isWhitelistProject } = useContext(GenerativeProjectDetailContext);
@@ -135,6 +136,20 @@ const CollectionItem = ({
                         })}
                   </span>
                 </Text>
+                {showInscriptionID && (
+                  <Heading
+                    as={'h6'}
+                    fontWeight="medium"
+                    className={s.collectionCard_info_wrapper_ownerName}
+                    style={{ marginBottom: 4 }}
+                  >
+                    Inscription:{' '}
+                    {ellipsisCenter({
+                      str: tokenID,
+                      limit: 6,
+                    })}
+                  </Heading>
+                )}
                 {renderBuyButton()}
               </div>
             </div>
@@ -178,6 +193,19 @@ const CollectionItem = ({
                   )}
                   {renderBuyButton()}
                 </Stack>
+                {showInscriptionID && (
+                  <Heading
+                    as={'h6'}
+                    fontWeight="medium"
+                    className={s.collectionCard_info_wrapper_ownerName}
+                  >
+                    Inscription:{' '}
+                    {ellipsisCenter({
+                      str: tokenID,
+                      limit: 6,
+                    })}
+                  </Heading>
+                )}
               </div>
             </div>
           )}
