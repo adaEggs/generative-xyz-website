@@ -6,7 +6,7 @@ import qs from 'query-string';
 import { IGetSearchPayload, IGetSearchResponse } from '@interfaces/api/search';
 import { get } from '@services/http-client';
 import log from '@utils/logger';
-import { getCollectionFloorPrice } from '@services/marketplace-btc';
+// import { getCollectionFloorPrice } from '@services/marketplace-btc';
 
 const LOG_PREFIX = 'SearchService';
 const API_PATH = '/search';
@@ -21,35 +21,36 @@ export const getSearchByKeyword = async (
       search: params.keyword,
       type: params.type,
     });
-    const res = await get<IGetSearchResponse>(`${API_PATH}?${queryString}`);
+    return await get<IGetSearchResponse>(`${API_PATH}?${queryString}`);
+    // get btcFloorPrice from api
 
-    const tasks = res.result.map(async item => {
-      if (!item.project) return item;
-      const project = item.project;
-      const { tokenID: projectID, maxSupply, mintingInfo } = project;
-      if (
-        !!projectID &&
-        mintingInfo &&
-        mintingInfo.index &&
-        mintingInfo.index >= maxSupply
-      ) {
-        const resp = await getCollectionFloorPrice({ projectID });
-        return {
-          ...item,
-          project: {
-            ...item.project,
-            btcFloorPrice: resp.floor_price,
-          },
-        };
-      }
-      return item;
-    });
+    // const tasks = res.result.map(async item => {
+    //   if (!item.project) return item;
+    //   const project = item.project;
+    //   const { tokenID: projectID, maxSupply, mintingInfo } = project;
+    //   if (
+    //     !!projectID &&
+    //     mintingInfo &&
+    //     mintingInfo.index &&
+    //     mintingInfo.index >= maxSupply
+    //   ) {
+    //     const resp = await getCollectionFloorPrice({ projectID });
+    //     return {
+    //       ...item,
+    //       project: {
+    //         ...item.project,
+    //         btcFloorPrice: resp.floor_price,
+    //       },
+    //     };
+    //   }
+    //   return item;
+    // });
 
-    const result = await Promise.all(tasks);
-    return {
-      ...res,
-      result,
-    };
+    // const result = await Promise.all(tasks);
+    // return {
+    //   ...res,
+    //   result,
+    // };
   } catch (err: unknown) {
     log('failed to get search', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get search');

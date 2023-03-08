@@ -85,6 +85,20 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     return false;
   }, [project?.maxSupply, project?.mintingInfo.index]);
 
+  const isFromAuthentic = useMemo((): boolean => {
+    return project.fromAuthentic || false;
+  }, [project]);
+
+  const isAuthenticIn24h = useMemo((): boolean => {
+    const providedDate = new Date(project.mintedTime);
+    const currentDate = new Date();
+
+    const delta = currentDate.getTime() - providedDate.getTime();
+    const secondsAgo = delta / 1000;
+
+    return Boolean(secondsAgo < 24 * 60 * 60);
+  }, [project]);
+
   const renderFooter = () => {
     if (project.btcFloorPrice && mintedOut) {
       return (
@@ -99,11 +113,21 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
       );
     }
     if (mintedOut) {
-      return (
+      return !isFromAuthentic || isAuthenticIn24h ? (
         <div className={s.projectCard_info_mintoutContainer}>
           <SvgInset svgUrl={`${CDN_URL}/icons/ic_mintedout.svg`} />
           <Text className={s.projectCard_info_mintoutContainer_text}>
             {`${project?.mintingInfo.index} Minted out`}
+          </Text>
+        </div>
+      ) : (
+        <div className={s.projectCard_info_edition}>
+          <Text
+            color="black-40-solid"
+            fontWeight={'medium'}
+            className={s.projectCard_info_edition_text}
+          >
+            {`Edition of ${project?.mintingInfo.index}`}
           </Text>
         </div>
       );
