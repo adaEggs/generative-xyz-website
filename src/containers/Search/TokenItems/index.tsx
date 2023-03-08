@@ -102,6 +102,7 @@ export const TokenItems = ({ className }: TokenItemsProps): JSX.Element => {
                     key={`collection-item-${item?.tokenUri?.tokenID}`}
                     className="col-xs-6 col-md-3"
                     data={item?.tokenUri}
+                    showCollectionName
                   />
                 ))}
               </InfiniteScroll>

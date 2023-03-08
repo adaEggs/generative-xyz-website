@@ -13,6 +13,16 @@ export const getAccessToken = (): string | null => {
 export const clearAuthStorage = (): void => {
   if (isBrowser()) {
     localStorage.removeItem(LocalStorageKey.ACCESS_TOKEN);
+    const keys = Object.keys(localStorage);
+
+    // remove storage BTC taproot address
+    if (!!keys && !!keys.length) {
+      keys.forEach(key => {
+        if (key.includes(LocalStorageKey.WALLET_ADDRESS_TAPROOT)) {
+          localStorage.removeItem(key);
+        }
+      });
+    }
   }
 };
 
