@@ -34,6 +34,8 @@ import { toast } from 'react-hot-toast';
 import useAsyncEffect from 'use-async-effect';
 import { v4 as uuidv4 } from 'uuid';
 import s from './styles.module.scss';
+import { isBrowser } from '@utils/common';
+import { getAccessToken } from '@utils/auth';
 
 interface IProps {
   handleClose: () => void;
@@ -49,19 +51,16 @@ const InscribeEthModal: React.FC<IProps> = (
   props: IProps
 ): React.ReactElement => {
   const router = useRouter();
+  const isAuth = getAccessToken();
+
   const { isAuthentic, tokenAddress, tokenId } = router.query;
   const { handleClose } = props;
 
-  // const { projectData } = useContext(GenerativeProjectDetailContext);
-  //   const projectData = {};
   const { transfer } = useContext(WalletContext);
 
   const user = useAppSelector(getUserSelector);
 
   const [isSent, setIsSent] = useState(false);
-  const [totalPrice] = useState('');
-  //   const [feePrice, setFeePrice] = useState('');
-  //   const [mintPrice, setMintPrice] = useState('');
 
   const [inscriptionInfo, setInscriptionInfo] =
     useState<InscriptionInfo | null>();
@@ -70,7 +69,6 @@ const InscribeEthModal: React.FC<IProps> = (
   const [step, setsTep] = useState<'info' | 'showAddress'>('info');
   const [file, setFile] = useState<File | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
-  //   const [fileError, setFileError] = useState<string | null>(null);
 
   const [isLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
@@ -91,33 +89,16 @@ const InscribeEthModal: React.FC<IProps> = (
   //     totalPrice ? totalPrice : inscribeFee || ''
   //   );
 
-  // TODO: Update ETH price
-  const totalFormatPrice = formatBTCPrice(
-    calculateMintFee(
-      InscribeMintFeeRate.ECONOMY,
-      file?.size || 0,
-      !!isAuthentic
-    )
-  );
-
-  //   const feePriceFormat = formatEthPrice(
-  //     `${feePrice ? Number(feePrice) : Number(inscribeFee)}`,
-  //     '0.0'
-  //   );
-
-  //   const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //     setQuantity(Number(e.target.value));
-  //   };
-
-  //   const onClickMinus = () => {
-  //     if (quantity > 1) {
-  //       setQuantity(quantity - 1);
-  //     }
-  //   };
-
-  //   const onClickPlus = () => {
-  //     setQuantity(quantity + 1);
-  //   };
+  // TODO: Update ETH price (convert from BTC price)
+  const totalFormatPrice = inscriptionInfo?.amount
+    ? formatBTCPrice(new BigNumber(inscriptionInfo?.amount || 0).toNumber())
+    : formatBTCPrice(
+        calculateMintFee(
+          InscribeMintFeeRate.FASTER,
+          file?.size || 0,
+          !!isAuthentic
+        )
+      );
 
   const userAddress = React.useMemo(() => {
     return {
@@ -232,7 +213,7 @@ const InscribeEthModal: React.FC<IProps> = (
     if (receiverAddress) {
       handleTransfer(receiverAddress, totalFormatPrice);
     }
-  }, [receiverAddress, totalPrice]);
+  }, [receiverAddress, totalFormatPrice]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -245,7 +226,6 @@ const InscribeEthModal: React.FC<IProps> = (
       return;
     }
 
-    // setFileError(null);
     const base64 = await fileToBase64(file);
     if (base64) {
       setFileBase64(base64 as string);
@@ -319,15 +299,15 @@ const InscribeEthModal: React.FC<IProps> = (
     }
   };
 
-  const onClickPay = () => {
-    if (useWallet === 'default') {
-      if (userAddress && userAddress.evm && userAddress.taproot) {
-        // setReceiverAddress(userAddress.evm);
-        setsTep('showAddress');
-        // debounceGetBTCAddress(userAddress.taproot, userAddress.evm, quantity);
-      }
-    }
-  };
+  // const onClickPay = () => {
+  //   if (useWallet === 'default') {
+  //     if (userAddress && userAddress.evm && userAddress.taproot) {
+  //       // setReceiverAddress(userAddress.evm);
+  //       setsTep('showAddress');
+  //       // debounceGetBTCAddress(userAddress.taproot, userAddress.evm, quantity);
+  //     }
+  //   }
+  // };
 
   const validateForm = (values: IFormValue): Record<string, string> => {
     const errors: Record<string, string> = {};
@@ -339,7 +319,6 @@ const InscribeEthModal: React.FC<IProps> = (
     } else {
       if (step === 'showAddress' && addressInput !== values.address) {
         setAddressInput(values.address);
-        setReceiverAddress(userAddress.evm);
 
         // debounceGetBTCAddress(values.address, userAddress.evm, quantity);
       }
@@ -362,6 +341,13 @@ const InscribeEthModal: React.FC<IProps> = (
       return;
     }
 
+    if (!isAuth && isBrowser()) {
+      router.push(
+        `${ROUTE_PATH.AUTHENTIC_INSCRIPTIONS}?next=${ROUTE_PATH.AUTHENTIC}`
+      );
+      return;
+    }
+
     try {
       const { address } = values;
       setIsMinting(true);
@@ -370,7 +356,7 @@ const InscribeEthModal: React.FC<IProps> = (
         walletAddress: address || user?.walletAddressBtcTaproot || '',
         fileName: file?.name || '',
         file: fileBase64,
-        fee_rate: InscribeMintFeeRate.ECONOMY,
+        fee_rate: InscribeMintFeeRate.FASTER,
       };
       if (tokenAddress) {
         payload.tokenAddress = tokenAddress as string;
@@ -381,6 +367,7 @@ const InscribeEthModal: React.FC<IProps> = (
       const res = await generateReceiverAddress(payload);
       setInscriptionInfo(res);
       setReceiverAddress(res?.segwitAddress);
+      setsTep('showAddress');
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       toast.remove();
@@ -401,7 +388,7 @@ const InscribeEthModal: React.FC<IProps> = (
       <div className={s.backdrop}>
         <div
           className={`${s.modalWrapper}  ${
-            step === 'info' ? s.showInfo : s.showAddress
+            step === 'info' || isAuth ? s.showInfo : s.showAddress
           }`}
         >
           <div className={s.modalContainer}>
@@ -420,25 +407,9 @@ const InscribeEthModal: React.FC<IProps> = (
             </div>
             <Col className={s.modalBody}>
               <Row className={s.row}>
-                <Col md={step === 'info' ? '12' : '6'}>
+                <Col md={step === 'info' || isAuth ? '12' : '6'}>
                   <h3 className={s.modalTitle}>Payment</h3>
                   <div className={s.payment}>
-                    {/* <div className={s.paymentPrice}>
-                      <p className={s.paymentPrice_title}>
-                        Estimate inscription fee
-                      </p>
-                      <p className={s.paymentPrice_price}>
-                        {`${formatBTCPrice(
-                          calculateMintFee(
-                            InscribeMintFeeRate.ECONOMY,
-                            file?.size || 0,
-                            !!isAuthentic
-                          )
-                        )} ETH`}
-                      </p>
-                    </div> */}
-                    {/* <div className={s.indicator} /> */}
-
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_total}>
                         {' '}
@@ -576,7 +547,9 @@ const InscribeEthModal: React.FC<IProps> = (
                         sizes="large"
                         className={s.buyBtn}
                         disabled={isLoading || quantity === 0}
-                        onClick={onClickPay}
+                        onClick={() =>
+                          handleSubmit({ address: userAddress.taproot })
+                        }
                       >
                         Inscribe
                       </ButtonIcon>
@@ -594,81 +567,86 @@ const InscribeEthModal: React.FC<IProps> = (
                   </div>
                 </Col>
 
-                {step === 'showAddress' && inscriptionInfo && !isMinting && (
-                  <Col md={'6'}>
-                    <div className={s.paymentWrapper}>
-                      {receiverAddress && !isLoading && (
-                        <div className={s.qrCodeWrapper}>
-                          <p className={s.qrTitle}>
-                            Send{' '}
-                            <span style={{ fontWeight: 'bold' }}>
-                              {formatBTCPrice(
-                                new BigNumber(
-                                  inscriptionInfo?.amount || 0
-                                ).toNumber()
-                              )}{' '}
-                              ETH
-                            </span>{' '}
-                            to this address
-                          </p>
-
-                          <div className={s.btcAddressContainer}>
-                            <p className={s.btcAddress}>
-                              {ellipsisCenter({
-                                str: inscriptionInfo.segwitAddress || '',
-                                limit: 16,
-                              })}
+                {step === 'showAddress' &&
+                  inscriptionInfo &&
+                  !isMinting &&
+                  !isAuth && (
+                    <Col md={'6'}>
+                      <div className={s.paymentWrapper}>
+                        {receiverAddress && !isLoading && (
+                          <div className={s.qrCodeWrapper}>
+                            <p className={s.qrTitle}>
+                              Send{' '}
+                              <span style={{ fontWeight: 'bold' }}>
+                                {formatBTCPrice(
+                                  new BigNumber(
+                                    inscriptionInfo?.amount || 0
+                                  ).toNumber()
+                                )}{' '}
+                                ETH
+                              </span>{' '}
+                              to this address
                             </p>
-                            <SvgInset
-                              className={s.icCopy}
-                              size={18}
-                              svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-                              onClick={() => onClickCopy(receiverAddress || '')}
+
+                            <div className={s.btcAddressContainer}>
+                              <p className={s.btcAddress}>
+                                {ellipsisCenter({
+                                  str: inscriptionInfo.segwitAddress || '',
+                                  limit: 16,
+                                })}
+                              </p>
+                              <SvgInset
+                                className={s.icCopy}
+                                size={18}
+                                svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                                onClick={() =>
+                                  onClickCopy(receiverAddress || '')
+                                }
+                              />
+                            </div>
+
+                            <QRCodeGenerator
+                              className={s.qrCodeGenerator}
+                              size={128}
+                              value={receiverAddress || ''}
                             />
                           </div>
+                        )}
+                        {isLoading && (
+                          <div className={s.loadingWrapper}>
+                            <Loading isLoaded={false} />
+                          </div>
+                        )}
+                      </div>
 
-                          <QRCodeGenerator
-                            className={s.qrCodeGenerator}
-                            size={128}
-                            value={receiverAddress || ''}
-                          />
-                        </div>
-                      )}
-                      {isLoading && (
-                        <div className={s.loadingWrapper}>
-                          <Loading isLoaded={false} />
-                        </div>
-                      )}
-                    </div>
-
-                    <div className={s.btnContainer}>
-                      {isSent && (
-                        <>
-                          <ButtonIcon
-                            sizes="large"
-                            className={s.buyBtn}
-                            onClick={() => router.push(ROUTE_PATH.PROFILE)}
-                            variants="outline"
-                          >
-                            <Text as="span" size="16" fontWeight="medium">
-                              Check order status
-                            </Text>
-                          </ButtonIcon>
-                          <div style={{ width: 16 }} />
-                          <ButtonIcon
-                            sizes="large"
-                            className={s.buyBtn}
-                            onClick={_onClose}
-                          >
-                            <Text as="span" size="16" fontWeight="medium">
-                              Continue collecting
-                            </Text>
-                          </ButtonIcon>
-                        </>
-                      )}
-                    </div>
-                  </Col>
-                )}
+                      <div className={s.btnContainer}>
+                        {isSent && (
+                          <>
+                            <ButtonIcon
+                              sizes="large"
+                              className={s.buyBtn}
+                              onClick={() => router.push(ROUTE_PATH.PROFILE)}
+                              variants="outline"
+                            >
+                              <Text as="span" size="16" fontWeight="medium">
+                                Check order status
+                              </Text>
+                            </ButtonIcon>
+                            <div style={{ width: 16 }} />
+                            <ButtonIcon
+                              sizes="large"
+                              className={s.buyBtn}
+                              onClick={_onClose}
+                            >
+                              <Text as="span" size="16" fontWeight="medium">
+                                Continue collecting
+                              </Text>
+                            </ButtonIcon>
+                          </>
+                        )}
+                      </div>
+                    </Col>
+                  )}
               </Row>
             </Col>
           </div>
