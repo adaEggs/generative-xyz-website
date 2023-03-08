@@ -189,7 +189,13 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       projectData?.traitStat && projectData?.traitStat?.length > 0;
 
     if (tokenData?.attributes && tokenData.attributes?.length > 0) {
-      return tokenData.attributes.map(attr => {
+      const _attirbutes = [...tokenData.attributes];
+
+      const list = _attirbutes.sort((a, b) =>
+        a.trait_type.localeCompare(b.trait_type)
+      );
+
+      return list.map(attr => {
         let rarityValue = 0;
         if (isTraitState) {
           const foundTrait = projectData?.traitStat.find(
@@ -432,7 +438,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   <ProjectDescription
                     desc={tokenDescription || ''}
                     attributes={
-                      featuresList() ? <Stats data={featuresList()} /> : ''
+                      featuresList() ? (
+                        <Stats data={featuresList() || []} />
+                      ) : (
+                        ''
+                      )
                     }
                     tokenDetail={
                       tokenInfos && tokenInfos.length > 0 ? (
