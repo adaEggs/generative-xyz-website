@@ -26,9 +26,6 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const workerReg = useRef<ServiceWorker | null>(null);
     const allowSandbox = 'allow-scripts allow-pointer-lock allow-same-origin';
-    // if (window.location.pathname.indexOf('create/upload-project') > -1) {
-    //   allowSandbox += ' allow-same-origin';
-    // }
     const {
       sandboxFiles,
       rawHtml,

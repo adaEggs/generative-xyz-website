@@ -1,5 +1,9 @@
 import FileType from 'file-type/browser';
-import { NAIVE_MIMES, SUPPORTED_FILE_EXT } from '@constants/file';
+import {
+  IMAGE_EXTENSIONS,
+  NAIVE_MIMES,
+  SUPPORTED_FILE_EXT,
+} from '@constants/file';
 import { unzip } from 'unzipit';
 import { MASOX_SYSTEM_PREFIX } from '@constants/sandbox';
 import { MediaType } from '@enums/file';
@@ -87,4 +91,13 @@ export const getMediaTypeFromFileExt = (ext: string): MediaType | null => {
 
 export const getFileNameFromUrl = (url: string): string => {
   return url.substring(url.lastIndexOf('/') + 1, url.length);
+};
+
+export const isImageFile = (file: File): boolean => {
+  const fileName = file.name;
+  const fileExt = getFileExtensionByFileName(fileName);
+  if (!fileExt) {
+    return false;
+  }
+  return IMAGE_EXTENSIONS.includes(fileExt);
 };

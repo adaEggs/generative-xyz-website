@@ -1,11 +1,13 @@
 .wrapper {
   color: $black-100;
   margin-bottom: rem(48px);
+  padding-top: rem(64px);
 
-  @include min-tablet {
+  @include min-pc {
     display: grid;
     grid-template-columns: 35% 1px calc(65% - 1px);
     margin-bottom: rem(90px);
+    padding-top: rem(40px);
   }
 
   a:hover {
@@ -23,7 +25,6 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
-  padding-top: rem(64px);
 
   &_heading {
     width: 100%;
@@ -38,11 +39,10 @@
     }
   }
 
-  @include min-tablet {
+  @include min-pc {
     overflow-y: scroll;
     padding-right: rem(60px);
     position: relative;
-    padding-top: rem(40px);
 
     @include fullViewScreen;
   }

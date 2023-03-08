@@ -1,3 +1,5 @@
+import { BTC_PROJECT } from '@constants/tracking-event-name';
+import { sendAAEvent } from '@services/aa-tracking';
 import { isBrowser } from '@utils/common';
 
 const REFERRAL_KEY = 'referral_code';
@@ -12,6 +14,12 @@ export const setReferral = (code: string) => {
     const check = !getReferral(); // apply first click
     if (check) {
       localStorage.setItem(REFERRAL_KEY, code);
+      sendAAEvent({
+        eventName: BTC_PROJECT.REFERRED_USER,
+        data: {
+          referrerID: code,
+        },
+      });
     }
   }
 };

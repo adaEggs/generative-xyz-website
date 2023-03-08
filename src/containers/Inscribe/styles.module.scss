@@ -3,7 +3,7 @@
   display: flex;
   width: 100%;
 
-  @include mobile {
+  @include max-tablet {
     display: block;
     margin-top: 0;
   }
@@ -12,7 +12,7 @@
     width: rem(432px);
     min-height: rem(432px);
 
-    @include mobile {
+    @include max-tablet {
       width: 100%;
       min-height: auto;
       margin-bottom: rem(32);
@@ -40,6 +40,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        flex-direction: column;
+        position: relative;
       }
     }
   }
@@ -48,7 +50,7 @@
     width: calc(100% - 432px);
     padding-left: rem(48px);
 
-    @include mobile {
+    @include max-tablet {
       width: 100%;
       padding-left: 0;
     }
@@ -66,7 +68,7 @@
     bottom: rem(60px);
   };
 
-  @include mobile {
+  @include max-tablet {
     min-height: auto;
     align-items: flex-start;
     padding: rem(0);
@@ -80,7 +82,7 @@
     background: #fff;
     box-shadow: 35px 15px 120px rgb(0 0 0 / 15%);
 
-    @include mobile {
+    @include max-tablet {
       width: 100%;
       padding: rem(16px);
       box-shadow: none;
@@ -230,7 +232,7 @@
   }
 
   .qrCodeContainer {
-    @include mobile {
+    @include max-tablet {
       flex-direction: column;
     }
   }
@@ -242,7 +244,7 @@
     margin-bottom: rem(24px);
     color: $black-100;
 
-    @include mobile {
+    @include max-tablet {
       text-align: center;
     }
   }
@@ -251,7 +253,7 @@
     display: flex;
     flex-direction: row;
 
-    @include mobile {
+    @include max-tablet {
       flex-direction: column;
       align-items: center;
     }
@@ -267,7 +269,7 @@
       flex-direction: column;
       justify-content: space-between;
 
-      @include mobile {
+      @include max-tablet {
         width: 100%;
         min-height: rem(130px);
         margin-top: rem(24px);
@@ -279,7 +281,7 @@
         line-height: rem(28px);
         color: $black-100;
 
-        @include mobile {
+        @include max-tablet {
           text-align: center;
         }
 
@@ -343,7 +345,7 @@
     display: flex;
     gap: rem(12px);
 
-    @include mobile {
+    @include max-tablet {
       gap: (6px);
       flex-direction: column;
     }
@@ -358,7 +360,7 @@
       align-items: center;
       cursor: pointer;
 
-      @include mobile {
+      @include max-tablet {
         padding: rem(10px) rem(8px);
       }
 
@@ -398,9 +400,19 @@
       line-height: rem(26px);
       text-align: center;
 
-      @include mobile {
+      @include max-tablet {
         text-align: center;
       }
+    }
+  }
+
+  &.modal {
+    min-height: fit-content;
+    padding: 0;
+
+    .container {
+      width: 100%;
+      box-shadow: none;
     }
   }
 }

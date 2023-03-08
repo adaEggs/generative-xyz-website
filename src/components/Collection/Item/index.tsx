@@ -4,22 +4,18 @@ import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 // import { ProfileContext } from '@contexts/profile-context';
-import useWindowSize from '@hooks/useWindowSize';
-import { Token } from '@interfaces/token';
-import {
-  formatAddress,
-  formatTokenId,
-  getProjectIdFromTokenId,
-} from '@utils/format';
-import cs from 'classnames';
-import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { Stack } from 'react-bootstrap';
-import Image from 'next/image';
-import s from './styles.module.scss';
-import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import Link from '@components/Link';
 import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
 import { GLB_EXTENSION } from '@constants/file';
+import { SATOSHIS_PROJECT_ID } from '@constants/generative';
+import useWindowSize from '@hooks/useWindowSize';
+import { Token } from '@interfaces/token';
+import { formatAddress, formatTokenId } from '@utils/format';
+import cs from 'classnames';
+import Image from 'next/image';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { Stack } from 'react-bootstrap';
+import s from './styles.module.scss';
 
 const CollectionItem = ({
   data,
@@ -31,13 +27,11 @@ const CollectionItem = ({
   const tokenID = data.tokenID;
   // const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
-  const { isBitcoinProject, isWhitelistProject } = useContext(
-    GenerativeProjectDetailContext
-  );
+  const { isWhitelistProject } = useContext(GenerativeProjectDetailContext);
   const isBuyable = React.useMemo(() => {
     return data.buyable && !!data.priceBTC;
   }, [data.buyable, data.priceBTC]);
-
+  const imgRef = useRef<HTMLImageElement>(null);
   const [thumb, setThumb] = useState<string>(data.image);
 
   const onThumbError = () => {
@@ -51,14 +45,20 @@ const CollectionItem = ({
     }
   }, [data.image]);
 
+  const handleOnImgLoaded = (
+    evt: React.SyntheticEvent<HTMLImageElement>
+  ): void => {
+    const img = evt.target as HTMLImageElement;
+    const naturalWidth = img.naturalWidth;
+    if (naturalWidth < 100 && imgRef.current) {
+      imgRef.current.style.imageRendering = 'pixelated';
+    }
+  };
+
   const tokenUrl = useMemo(() => {
     if (isWhitelistProject)
       return `${ROUTE_PATH.GENERATIVE}/${SATOSHIS_PROJECT_ID}/${tokenID}`;
-    return `${ROUTE_PATH.GENERATIVE}/${
-      isBitcoinProject
-        ? data.project.tokenID
-        : getProjectIdFromTokenId(parseInt(tokenID))
-    }/${tokenID}`;
+    return `${ROUTE_PATH.GENERATIVE}/${data.project.tokenID}/${tokenID}`;
   }, [isWhitelistProject, tokenID, data.project.tokenID]);
 
   const renderBuyButton = () => {
@@ -83,7 +83,7 @@ const CollectionItem = ({
   return (
     <div className={`${s.collectionCard} ${className}`}>
       <div className={s.collectionCard_inner_wrapper}>
-        <Link className={s.collectionCard_inner} href={`/${tokenUrl}`}>
+        <Link className={s.collectionCard_inner} href={`${tokenUrl}`}>
           <div
             className={`${s.collectionCard_thumb} ${
               thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
@@ -96,6 +96,8 @@ const CollectionItem = ({
                 src={thumb}
                 alt={data.name}
                 loading={'lazy'}
+                ref={imgRef}
+                onLoad={handleOnImgLoaded}
               />
             </div>
           </div>
@@ -104,7 +106,9 @@ const CollectionItem = ({
               <Text size="11" fontWeight="medium">
                 {data?.owner?.displayName ||
                   formatAddress(
-                    data?.owner?.walletAddress || data?.ownerAddr || ''
+                    data?.owner?.walletAddressBtcTaproot ||
+                      data?.ownerAddr ||
+                      ''
                   )}
               </Text>
               <div className={s.collectionCard_info_title}>
@@ -145,14 +149,6 @@ const CollectionItem = ({
                       maxWidth: data.stats?.price ? '70%' : '100%',
                     }}
                   >
-                    {/*{currentUser && (*/}
-                    {/*  <span*/}
-                    {/*    title={data?.project?.name}*/}
-                    {/*    className={s.collectionCard_info_title_name}*/}
-                    {/*  >*/}
-                    {/*    {data?.project?.name}*/}
-                    {/*  </span>*/}
-                    {/*)}*/}
                     <span>
                       #
                       {data?.orderInscriptionIndex

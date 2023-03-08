@@ -7,8 +7,11 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { useContext } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
+import { WalletContext } from '@contexts/wallet-context';
 import s from './Developer.module.scss';
+
 // import copy from 'copy-to-clipboard';
 // import { toast } from 'react-hot-toast';
 
@@ -16,20 +19,28 @@ const Developer = () => {
   const router = useRouter();
 
   const user = useAppSelector(getUserSelector);
+  const walletCtx = useContext(WalletContext);
 
-  const onClickGenerate = () => {
+  const onClickGenerate = async () => {
     if (user && user.id) {
       router.push(`${ROUTE_PATH.EDIT_PROFILE}?developers=true`);
     } else {
-      router.push(ROUTE_PATH.WALLET);
+      try {
+        await walletCtx.connect();
+        setTimeout(() => {
+          router.push(`${ROUTE_PATH.EDIT_PROFILE}?developers=true`);
+        }, 1000);
+      } catch (error) {
+        // TODO
+      }
     }
   };
 
-  // const onClickDocs = () => {
-  //   router.push(
-  //     'https://github.com/generative-xyz/generative-xyz-website/actions'
-  //   );
-  // };
+  const onClickDocs = () => {
+    window.open(
+      'https://docs.generative.xyz/issa-api-docs/step-by-step-instructions'
+    );
+  };
 
   // const onClickCopy = (text: string) => {
   //   copy(text);
@@ -92,51 +103,51 @@ const Developer = () => {
     <Container>
       <Row className={s.metamaskContainer}>
         <Col md={'12'} xl={'6'} className={s.leftContainer}>
-          <p className={s.title}>Generative API</p>
-          <Text className={s.subTitle}>
-            Easily integrate Ordinal inscription services into your existing
-            workflows and systems, saving you engineering time and
-            infrastructure maintenance effort.
+          <p className={s.title}>Generative Ordinal Services</p>
+          <Text className={s.subTitle}>The Ordinal development platform.</Text>
+          <Text className={s.descTitle}>
+            The most powerful set of Ordinal development services to build and
+            scale your Ordinal use cases with ease.
           </Text>
           {renderDescItem(() => (
             <Text className={s.text}>
-              Works seamlessly with standard Ordinal operations.
+              Ordinal Inscription API for creating, tracking, and search
+              inscriptions
             </Text>
           ))}
           {renderDescItem(() => (
             <Text className={s.text}>
-              Full API set for inscribing, tracking inscribing status, and
-              browsing Bitcoin inscriptions.
+              Cost-effective, reliable and scalable Inscription-as-a-Service
+              infrastructure
             </Text>
           ))}
-          <div style={{ marginTop: 64 }}>
+          {renderDescItem(() => (
+            <Text className={s.text}>User-friendly Ordinal wallet</Text>
+          ))}
+          <div
+            style={{
+              marginTop: 64,
+            }}
+          >
             <ButtonIcon
-              variants="blue"
+              variants="blue-deep"
               className={s.login}
               onClick={onClickGenerate}
             >
-              Generate API Key
+              Get started for free
             </ButtonIcon>
-            {/* <ButtonIcon
-              variants="blue"
-              className={s.login}
-              onClick={onClickDocs}
-            >
-              Read the docs
-            </ButtonIcon>
-
             <ButtonIcon
-              variants="primary"
               className={s.generate}
-              onClick={onClickGenerate}
+              onClick={onClickDocs}
               endIcon={
                 <SvgInset
                   svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
                 />
               }
             >
-              Generate API Key
-            </ButtonIcon> */}
+              Read the docs
+            </ButtonIcon>
+            <div></div>
           </div>
         </Col>
         <Col md={'12'} xl={'6'}>

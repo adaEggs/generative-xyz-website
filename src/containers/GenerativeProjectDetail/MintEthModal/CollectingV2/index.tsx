@@ -69,8 +69,13 @@ const MintEthModal: React.FC = () => {
       '',
     '0.0'
   );
+
   const feePriceFormat = formatEthPrice(
-    projectData?.networkFeeEth || '',
+    `${
+      totalPrice
+        ? Number(totalPrice) - Number(projectData?.mintPriceEth)
+        : Number(projectData?.networkFeeEth)
+    }`,
     '0.0'
   );
 
@@ -112,6 +117,7 @@ const MintEthModal: React.FC = () => {
           refundAddress: refundAddress,
           projectData,
           paymentMethod,
+          quantity: 1,
         });
         if (!_address || !_price) {
           toast.error(ErrorMessage.DEFAULT);
@@ -226,12 +232,7 @@ const MintEthModal: React.FC = () => {
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_title}>Item price</p>
                       <p className={s.paymentPrice_price}>{`${formatEthPrice(
-                        totalPrice
-                          ? `${
-                              Number(totalPrice) -
-                              Number(projectData.networkFeeEth)
-                            }`
-                          : projectData?.mintPriceEth || '',
+                        projectData?.mintPriceEth || '',
                         '0.0'
                       )} ETH`}</p>
                     </div>

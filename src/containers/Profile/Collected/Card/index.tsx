@@ -1,26 +1,27 @@
+import ButtonIcon from '@components/ButtonIcon';
 import Link from '@components/Link';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
-import { LOGO_MARKETPLACE_URL } from '@constants/common';
+import ButtonCancelListed from '@components/Transactor/ButtonCancelListed';
+import ButtonListForSale from '@components/Transactor/ButtonListForSale';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
+import SendInscriptionModal from '@containers/Profile/Collected/Modal/SendInscription';
+import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 import { ProfileContext } from '@contexts/profile-context';
 import useWindowSize from '@hooks/useWindowSize';
+import { HistoryStatusType, TrackTxType } from '@interfaces/api/bitcoin';
 import { CollectedNFTStatus, ICollectedNFTItem } from '@interfaces/api/profile';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
+import { sendAAEvent } from '@services/aa-tracking';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
+import React, { useContext } from 'react';
 import { TwitterShareButton } from 'react-share';
-import React, { useContext, useEffect, useState } from 'react';
 import s from './CollectedCard.module.scss';
-import ButtonIcon from '@components/ButtonIcon';
-import SendInscriptionModal from '@containers/Profile/Collected/Modal/SendInscription';
-import { HistoryStatusType, TrackTxType } from '@interfaces/api/bitcoin';
-import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
-import ButtonListForSale from '@components/Transactor/ButtonListForSale';
-import ButtonCancelListed from '@components/Transactor/ButtonCancelListed';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -65,18 +66,6 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
       !!project.orderID && project.buyable && !project.cancelling && isOwner;
     if (isCancel) return true;
   }, [project.orderID, project.buyable, project.cancelling, isOwner]);
-
-  const [thumb, setThumb] = useState<string>(project.image);
-
-  useEffect(() => {
-    if (thumb !== project.image) {
-      setThumb(project.image);
-    }
-  }, [project.image]);
-
-  const onThumbError = () => {
-    setThumb(LOGO_MARKETPLACE_URL);
-  };
 
   const statusWithHistory = React.useMemo(() => {
     const findHistory = (history || []).find(
@@ -158,14 +147,16 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     return (
       <>
         {project.status !== CollectedNFTStatus.Success && (
-          <Text
-            className={s.projectCard_creator_status}
-            size={'16'}
-            fontWeight="medium"
-            color="black-40"
-          >
-            {`${project.statusText}...`}
-          </Text>
+          <>
+            <Text
+              className={s.projectCard_creator_status}
+              size={'16'}
+              fontWeight="medium"
+              color="black-40"
+            >
+              {`${project.statusText}...`}
+            </Text>
+          </>
         )}
       </>
     );
@@ -176,16 +167,11 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
       <Link href={linkPath} className={`${s.projectCard} ${className}`}>
         <div className={s.projectCard_inner}>
           {project.image ? (
-            <div
-              className={`${s.projectCard_thumb} ${
-                thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
-              }`}
-            >
+            <div className={`${s.projectCard_thumb}`}>
               <div className={s.projectCard_thumb_inner}>
                 <img
-                  onError={onThumbError}
-                  src={convertIpfsToHttp(thumb)}
-                  alt={project.name}
+                  src={convertIpfsToHttp(project.image)}
+                  alt={project.image}
                   loading={'lazy'}
                 />
               </div>
@@ -220,6 +206,13 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                     {projectName}
                   </Text>
                 )}
+                {project.status !== CollectedNFTStatus.Success &&
+                  project.quantity &&
+                  project.quantity > 1 && (
+                    <Text size={'16'} fontWeight="medium">
+                      {`Quantity: (${project.quantity})`}
+                    </Text>
+                  )}
               </div>
             ) : (
               <div className={cs(s.projectCard_info, s.desktop)}>
@@ -231,12 +224,23 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                     </Text>
                   </div>
                 )}
+                {project.status !== CollectedNFTStatus.Success &&
+                  project.quantity &&
+                  project.quantity > 1 && (
+                    <Text size={'16'} fontWeight="medium">
+                      {`Quantity: ${project.quantity}`}
+                    </Text>
+                  )}
               </div>
             )}
             {project.status === CollectedNFTStatus.Success && (
               <TwitterShareButton
                 className={s.twitter}
-                url={`${location.origin}${linkPath}?referral_code=${user?.id}`}
+                url={
+                  isOwner
+                    ? `${location.origin}${linkPath}?referral_code=${user?.id}`
+                    : `${location.origin}${linkPath}`
+                }
                 title={''}
                 hashtags={[]}
               >
@@ -244,6 +248,15 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   sizes="small"
                   variants="ghost"
                   className={s.twitter_btnShare}
+                  onClick={() => {
+                    sendAAEvent({
+                      eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
+                      data: {
+                        projectId: project?.projectID,
+                        referrerId: user?.id,
+                      },
+                    });
+                  }}
                   startIcon={
                     <SvgInset
                       size={16}

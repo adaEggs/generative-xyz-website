@@ -25,7 +25,7 @@ export const CreatorInfo = ({ creator }: IProps): JSX.Element => {
         />
       </div>
       <div className={s.userInfo_displayName}>
-        {creator.displayName || formatAddress(creator.walletAddress)}
+        {creator.displayName || formatAddress(creator.walletAddressBtcTaproot)}
       </div>
     </div>
   );

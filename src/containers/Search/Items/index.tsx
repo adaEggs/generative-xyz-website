@@ -103,6 +103,7 @@ export const Items = (): JSX.Element => {
           ? getSearchByKeyword(filterInscriptionParams)
           : null,
       ]);
+
       setCurrentPage(nextPage);
       const newList = combineList.concat([
         ...(nextResultByArtists?.result || []),

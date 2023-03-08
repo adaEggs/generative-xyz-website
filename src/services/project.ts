@@ -101,8 +101,11 @@ export const getProjectItems = async (
         function (o) {
           return Number(o.priceBTC);
         },
+        function (o) {
+          return Number(o.orderInscriptionIndex || o.inscriptionIndex || 0);
+        },
       ],
-      ['desc', 'asc']
+      ['desc', 'asc', 'asc']
     );
     return {
       ...res,

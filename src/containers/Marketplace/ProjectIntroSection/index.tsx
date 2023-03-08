@@ -56,6 +56,7 @@ import { TransactionReceipt } from 'web3-eth';
 import ReportModal from './ReportModal';
 import s from './styles.module.scss';
 import { checkForHttpRegex } from '@utils/string';
+import cs from 'classnames';
 
 const LOG_PREFIX = 'ProjectIntroSection';
 
@@ -276,8 +277,12 @@ const ProjectIntroSection = ({
         <div className={s.info}>
           <div className={`${s.projectHeader}`}>
             <Link
-              href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddress}`}
-              className={s.creator_info}
+              href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddressBtcTaproot}`}
+              className={cs(
+                s.creator_info,
+                !project?.creatorProfile?.walletAddressBtcTaproot &&
+                  'pointer-none'
+              )}
             >
               <Heading
                 className={s.projectHeader_creator}
@@ -285,7 +290,9 @@ const ProjectIntroSection = ({
                 fontWeight="medium"
               >
                 {project?.creatorProfile?.displayName ||
-                  formatAddress(project?.creatorProfile?.walletAddress || '')}
+                  formatAddress(
+                    project?.creatorProfile?.walletAddressBtcTaproot || ''
+                  )}
               </Heading>
             </Link>
             <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />

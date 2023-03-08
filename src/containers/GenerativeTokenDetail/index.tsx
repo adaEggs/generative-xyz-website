@@ -8,6 +8,7 @@ import Stats from '@components/Stats';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
+import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
 import { SOCIALS } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { EXTERNAL_LINK } from '@constants/external-link';
@@ -20,7 +21,7 @@ import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
 import { formatAddress, formatLongAddress, formatTokenId } from '@utils/format';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -34,14 +35,15 @@ import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
+import cs from 'classnames';
 import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
-import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
 import { ProfileProvider } from '@contexts/profile-context';
+import { AuthenticCard } from './AuthenticCard';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
   // const { projectID } = router.query;
-  const { mobileScreen } = useWindowSize();
+  const { tabletScreen } = useWindowSize();
   const {
     tokenData,
     projectData,
@@ -56,7 +58,6 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     isTokenOwner,
     isBitcoinProject,
   } = useContext(GenerativeTokenDetailContext);
-  // const scanURL = getScanUrl();
   const user = useSelector(getUserSelector);
   // const mintedDate = dayjs(tokenData?.mintedTime).format('MMM DD, YYYY');
   const [isBuying, setIsBuying] = useState(false);
@@ -136,7 +137,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   }, [tokenData]);
 
   const isTwVerified = useMemo(() => {
-    return projectData?.creatorProfile?.profileSocial?.twitterVerified || false;
+    return (
+      projectData?.creatorProfile?.profileSocial?.twitterVerified ||
+      tokenData?.creator?.profileSocial?.twitterVerified ||
+      false
+    );
   }, [projectData?.creatorProfile?.profileSocial]);
 
   const origin =
@@ -206,21 +211,21 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     return null;
   };
 
-  const tokenDescription = projectData?.desc || '';
-
-  // const handleLinkProfile = (walletAddress?: string) => {
-  //   if (user?.walletAddress === walletAddress) {
-  //     return `${ROUTE_PATH.PROFILE}`;
-  //   } else {
-  //     return `${ROUTE_PATH.PROFILE}/${walletAddress}`;
-  //   }
-  // };
+  const tokenDescription = tokenData?.description || projectData?.desc || '';
 
   const handleBuyToken = async (): Promise<void> => {
     setIsBuying(true);
     await handlePurchaseToken(listingOffers[0]);
     setIsBuying(false);
   };
+
+  const isFromAuthentic = useMemo(() => {
+    return projectData?.fromAuthentic || false;
+  }, [projectData]);
+
+  const isLayoutSmall = useMemo(() => {
+    return tabletScreen;
+  }, [tabletScreen]);
 
   const renderBuyBTCView = () => {
     if (!tokenData || !isBuyable) return null;
@@ -238,6 +243,40 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     );
   };
 
+  const renderOwner = useCallback(() => {
+    if (!tokenData?.owner && !tokenData?.ownerAddr) return null;
+    return (
+      <>
+        {tokenData?.owner ? (
+          <Text size="18" className={s.owner}>
+            Owned by{' '}
+            <Link
+              href={`${ROUTE_PATH.PROFILE}/${tokenData?.owner?.walletAddressBtcTaproot}`}
+              className={s.projectName}
+            >
+              {tokenData?.owner?.displayName ||
+                formatLongAddress(
+                  tokenData?.owner?.walletAddressBtcTaproot ||
+                    tokenData?.owner?.walletAddress ||
+                    ''
+                )}
+            </Link>
+          </Text>
+        ) : (
+          <Text size="18" className={s.owner}>
+            Owned by{' '}
+            <Link
+              href={`${ROUTE_PATH.PROFILE}/${tokenData?.ownerAddr}`}
+              className={s.projectName}
+            >
+              {formatLongAddress(tokenData?.ownerAddr || '')}
+            </Link>
+          </Text>
+        )}
+      </>
+    );
+  }, [tokenData?.owner, tokenData?.ownerAddr]);
+
   return (
     <>
       <Container>
@@ -247,8 +286,17 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               <Loading isLoaded={!!tokenData} className={s.loading_token} />
               <div className={`${s.projectHeader}`}>
                 <Link
-                  href={`${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddress}`}
-                  className={s.creator_info}
+                  href={
+                    projectData?.creatorProfile?.walletAddressBtcTaproot
+                      ? `${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddressBtcTaproot}`
+                      : `${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddress}`
+                  }
+                  className={cs(
+                    s.creator_info,
+                    !projectData?.creatorProfile?.walletAddressBtcTaproot &&
+                      !projectData?.creatorProfile?.walletAddress &&
+                      'pointer-none'
+                  )}
                 >
                   <Heading
                     className={s.projectHeader_creator}
@@ -257,7 +305,9 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   >
                     {projectData?.creatorProfile?.displayName ||
                       formatAddress(
-                        projectData?.creatorProfile?.walletAddress || ''
+                        projectData?.creatorProfile?.walletAddressBtcTaproot ||
+                          projectData?.creatorProfile?.walletAddress ||
+                          ''
                       )}
                   </Heading>
                 </Link>
@@ -266,6 +316,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   link={SOCIALS.twitter}
                 />
               </div>
+
               <Heading
                 as="h4"
                 className={s.itemInfo_heading}
@@ -289,49 +340,9 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     : formatTokenId(tokenData?.tokenID || '')}
                 </span>
               </Heading>
-              {tokenData?.owner ? (
-                <Text size="18" className={s.owner}>
-                  Owned by{' '}
-                  <Link
-                    href={`${ROUTE_PATH.PROFILE}/${tokenData?.owner?.walletAddress}`}
-                    className={s.projectName}
-                  >
-                    {tokenData?.owner?.displayName ||
-                      formatLongAddress(tokenData?.owner?.walletAddress || '')}
-                  </Link>
-                </Text>
-              ) : (
-                <Text size="18" className={s.owner}>
-                  Owned by {formatLongAddress(tokenData?.ownerAddr || '')}
-                </Text>
-              )}
-
-              {/* <Text
-              size={'18'}
-              color={'black-60'}
-              style={{ marginBottom: '16px' }}
-            >
-              <div
-              // className={s.info_creatorLink}
-              // href={handleLinkProfile(tokenData?.project?.creatorAddr)}
-              >
-                {tokenData?.project?.creatorProfile?.displayName ||
-                  formatAddress(
-                    tokenData?.project?.creatorProfile?.walletAddress || ''
-                  )}
-              </div>
-            </Text> */}
-              {/* {isBitcoinProject && (
-              <Link
-                target="_blank"
-                href={`https://ordinals.com/inscription/${tokenData?.tokenID}`}
-                rel="noreferrer"
-              >
-                Explorer
-              </Link>
-            )} */}
+              {renderOwner()}
               {renderBuyBTCView()}
-              {mobileScreen && (
+              {isLayoutSmall && (
                 <div className={s.reviewOnMobile}>
                   <ThumbnailPreview data={tokenData} previewToken />
                 </div>
@@ -386,6 +397,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                         Transfer
                       </ButtonIcon>
                     )}
+
                     {!isTokenOwner && isTokenListing && (
                       <>
                         <ButtonIcon
@@ -408,12 +420,10 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   </div>
                 </>
               )}
-
               <div className={s.accordions}>
                 <div className={s.accordions_item}>
                   <ProjectDescription
                     desc={tokenDescription || ''}
-                    // hasInteraction={hasProjectInteraction}
                     attributes={
                       featuresList() ? <Stats data={featuresList()} /> : ''
                     }
@@ -426,51 +436,18 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     }
                   />
                 </div>
-
-                {/* {tokenData?.attributes && tokenData?.attributes?.length > 0 && (
-                <div className={s.accordions_item}>
-                  <Text
-                    size="14"
-                    color="black-40"
-                    fontWeight="medium"
-                    className="text-uppercase"
-                  >
-                    features
-                  </Text>
-                  <Stats data={featuresList()} />
-                </div>
-              )}
-
-              <div className={s.accordions_item}>
-                <Stats data={tokenInfos} />
-              </div> */}
               </div>
-              <div className="divider"></div>
-
-              {/* <Text size="14" color="black-40">
-              Minted on: {mintedDate}
-            </Text> */}
-              {/* {tokenData?.owner && (
-              <Text size="14" color="black-40" className={s.owner}>
-                Owner:{' '}
-                <Link href={handleLinkProfile(tokenData?.owner?.walletAddress)}>
-                  {tokenData?.owner?.displayName ||
-                    formatAddress(
-                      tokenData?.ownerAddr ||
-                        tokenData?.owner?.walletAddress ||
-                        ''
-                    )}
-                </Link>
-                {isTokenOwner && ' (by you)'}
-              </Text>
-            )} */}
+              <div className="divider" />
+              {isFromAuthentic && (
+                <AuthenticCard
+                  tokenID={projectData?.tokenId}
+                  project={projectData}
+                />
+              )}
             </div>
             <ul className={s.shares}>
               <li>
                 <div>
-                  {/* <LinkShare
-                url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
-              /> */}
                   <TwitterShareButton
                     url={`${origin}${ROUTE_PATH.GENERATIVE}/${projectData?.tokenID}`}
                     title={''}
@@ -507,7 +484,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           </div>
 
           <div></div>
-          {!mobileScreen && (
+          {!isLayoutSmall && (
             <div className={s.thumbnailBg}>
               <ThumbnailPreview
                 data={tokenData}
@@ -521,11 +498,8 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
         <MoreItemsSection genNFTAddr={projectData?.genNFTAddr || ''} />
 
         {!isBitcoinProject ? (
-          <>
-            <TokenActivities></TokenActivities>
-          </>
+          <TokenActivities />
         ) : (
-          // <></>
           <div style={{ height: '20px' }} />
         )}
       </Container>

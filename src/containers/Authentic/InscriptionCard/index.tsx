@@ -8,6 +8,7 @@ import { MoralisNFT } from '@interfaces/inscribe';
 import Button from '@components/ButtonIcon';
 import { useRouter } from 'next/router';
 import { ROUTE_PATH } from '@constants/route-path';
+import InscribeModal from '../InscribeModal';
 
 interface IProps {
   inscription: MoralisNFT;
@@ -28,15 +29,28 @@ const InscriptionCard: React.FC<IProps> = ({
   const [thumb, setThumb] = useState<string>(
     metadata?.image || LOGO_MARKETPLACE_URL
   );
+  const [showModal, setShowModal] = useState(false);
+
+  const handleClose = (): void => {
+    setShowModal(false);
+    router.replace(`${ROUTE_PATH.AUTHENTIC}`, undefined, {
+      shallow: true,
+    });
+  };
 
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
 
   const handleGotoInscribePage = (): void => {
-    router.push(
-      `${ROUTE_PATH.FREE_INSCRIPTION}?isAuthentic=true&tokenAddress=${inscription.token_address}&tokenId=${inscription.token_id}`
+    router.replace(
+      `${ROUTE_PATH.AUTHENTIC}?isAuthentic=true&tokenAddress=${inscription.token_address}&tokenId=${inscription.token_id}`,
+      undefined,
+      {
+        shallow: true,
+      }
     );
+    setShowModal(true);
   };
 
   return (
@@ -71,6 +85,7 @@ const InscriptionCard: React.FC<IProps> = ({
           </div>
         </div>
       </div>
+      {showModal && <InscribeModal handleClose={handleClose} />}
     </div>
   );
 };

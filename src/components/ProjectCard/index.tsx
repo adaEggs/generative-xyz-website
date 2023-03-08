@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import s from './ProjectCard.module.scss';
 import Heading from '@components/Heading';
@@ -19,6 +19,9 @@ import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import { CDN_URL } from '@constants/config';
 import SvgInset from '@components/SvgInset';
+import ButtonIcon from '@components/ButtonIcon';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 
 interface IPros {
   project: Project;
@@ -32,12 +35,34 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (project.creatorProfile) {
       setCreator(project.creatorProfile);
     }
   }, [project]);
+
+  const handleOnImgLoaded = (
+    evt: React.SyntheticEvent<HTMLImageElement>
+  ): void => {
+    const img = evt.target as HTMLImageElement;
+    const naturalWidth = img.naturalWidth;
+    if (naturalWidth < 100 && imgRef.current) {
+      imgRef.current.style.imageRendering = 'pixelated';
+    }
+  };
+
+  const handleTrackOnClick = (): void => {
+    sendAAEvent({
+      eventName: BTC_PROJECT.CLICK_PROJECT,
+      data: {
+        project_id: project.tokenID,
+        project_name: project.name,
+        project_thumbnail: project.image,
+      },
+    });
+  };
 
   const creatorMemo = useMemo((): User | null => {
     return creator;
@@ -70,13 +95,16 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const renderFooter = () => {
     if (project.btcFloorPrice && mintedOut) {
       return (
-        <Text
-          fontWeight="medium"
-          color="black-40-solid"
-          className={s.projectCard_info_mintoutContainer_floorPrice}
-        >
-          {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
-        </Text>
+        <div className={s.row}>
+          <span
+            className={`${s.projectCard_info_price_price_minted} ${s.isOnlyMintedShow}`}
+          >
+            {minted}
+          </span>
+          <ButtonIcon sizes="xsmall">
+            {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
+          </ButtonIcon>
+        </div>
       );
     }
     if (mintedOut) {
@@ -123,7 +151,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
       href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
       className={`${s.projectCard} ${className}`}
     >
-      <div className={s.projectCard_inner}>
+      <div className={s.projectCard_inner} onClick={handleTrackOnClick}>
         <div
           className={`${s.projectCard_thumb} ${
             thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
@@ -135,6 +163,8 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               src={convertIpfsToHttp(thumb)}
               alt={project.name}
               loading={'lazy'}
+              ref={imgRef}
+              onLoad={handleOnImgLoaded}
             />
           </div>
         </div>
@@ -143,7 +173,8 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             <div className={cs(s.projectCard_info, s.mobile)}>
               {creator && (
                 <Text size="11" fontWeight="medium">
-                  {creator.displayName || formatAddress(creator.walletAddress)}
+                  {creator.displayName ||
+                    formatAddress(creator.walletAddressBtcTaproot)}
                 </Text>
               )}
               <div className={s.projectCard_info_title}>
@@ -166,7 +197,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
                 <div className={s.projectCard_creator}>
                   <Text size={'20'} fontWeight="medium">
                     {creatorMemo?.displayName ||
-                      formatLongAddress(creatorMemo?.walletAddress)}
+                      formatLongAddress(creatorMemo?.walletAddressBtcTaproot)}
                   </Text>
                 </div>
               )}

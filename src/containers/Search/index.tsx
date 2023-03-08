@@ -54,17 +54,21 @@ const SearchPage = (): JSX.Element => {
     type: string;
   }>(ITEMS_TYPE[0]);
 
+  // useEffect(() => {
+  //   if (totalCollection > 0) {
+  //     setCurrentTabActive(ITEMS_TYPE[0]);
+  //   } else if (totalToken > 0) {
+  //     setCurrentTabActive(ITEMS_TYPE[1]);
+  //   } else if (totalArtist > 0) {
+  //     setCurrentTabActive(ITEMS_TYPE[2]);
+  //   } else if (totalInscription > 0) {
+  //     setCurrentTabActive(ITEMS_TYPE[3]);
+  //   }
+  // }, [keyword, totalCollection, totalToken, totalArtist, totalInscription]);
+
   useEffect(() => {
-    if (totalCollection > 0) {
-      setCurrentTabActive(ITEMS_TYPE[0]);
-    } else if (totalToken > 0) {
-      setCurrentTabActive(ITEMS_TYPE[1]);
-    } else if (totalArtist > 0) {
-      setCurrentTabActive(ITEMS_TYPE[2]);
-    } else if (totalInscription > 0) {
-      setCurrentTabActive(ITEMS_TYPE[3]);
-    }
-  }, [keyword, totalCollection, totalToken, totalArtist, totalInscription]);
+    setCurrentTabActive(ITEMS_TYPE[0]);
+  }, [keyword]);
 
   const getTotalEachItem = (name: string, type: string): string => {
     if (type === OBJECT_TYPE.PROJECT) {
