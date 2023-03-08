@@ -120,7 +120,6 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
           {inputFocus ? (
             <SvgInset
               onClick={() => {
-                goToSearchPage('');
                 setSearchText('');
                 if (inputSearchRef?.current) {
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

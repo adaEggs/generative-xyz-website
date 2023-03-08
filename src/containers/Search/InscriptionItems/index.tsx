@@ -107,6 +107,7 @@ export const InscriptionItems = ({
                       ...item?.inscription,
                       inscriptionID: item?.inscription?.inscriptionId,
                       inscriptionNumber: item?.inscription?.number,
+                      holder: item?.inscription?.owner,
                     }}
                     index={index}
                   />
