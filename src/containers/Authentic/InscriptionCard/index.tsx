@@ -78,9 +78,11 @@ const InscriptionCard: React.FC<IProps> = ({
               <Heading className={s.title} as={'h6'} fontWeight="medium">
                 {metadata?.name || 'Unknown'}
               </Heading>
-              <Button onClick={handleGotoInscribePage} className={s.mintBtn}>
-                Inscribe
-              </Button>
+              {!inscription.is_minted && (
+                <Button onClick={handleGotoInscribePage} className={s.mintBtn}>
+                  Inscribe
+                </Button>
+              )}
             </div>
           </div>
         </div>
