@@ -353,8 +353,15 @@ const InscribeEthModal: React.FC<IProps> = (
                   <div className={s.payment}>
                     <div className={s.paymentPrice}>
                       <p className={s.paymentPrice_total}>
-                        {' '}
-                        Estimate inscription fee
+                        Generative service fee
+                      </p>
+                      <div className={s.paymentPrice_copyContainer}>
+                        <p className={s.text}>FREE</p>
+                      </div>
+                    </div>
+                    <div className={s.paymentPrice}>
+                      <p className={s.paymentPrice_total}>
+                        Estimated inscription fee
                       </p>
                       <div className={s.paymentPrice_copyContainer}>
                         <SvgInset
@@ -363,7 +370,7 @@ const InscribeEthModal: React.FC<IProps> = (
                           size={18}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
-                        <p className={s.text}>{`${totalFormatPrice} ETH`}</p>
+                        <p className={s.text}>{`≈${totalFormatPrice} ETH`}</p>
                       </div>
                     </div>
                   </div>

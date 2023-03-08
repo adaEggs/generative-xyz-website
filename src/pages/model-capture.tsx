@@ -1,5 +1,8 @@
 import { NextPage } from 'next';
-import ModelCapture from '@containers/ModelCapture';
+import dynamic from 'next/dynamic';
+const ModelCapture = dynamic(() => import('@containers/ModelCapture'), {
+  ssr: false,
+});
 
 const ModelCapturePage: NextPage = () => {
   return <ModelCapture />;

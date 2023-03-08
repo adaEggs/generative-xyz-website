@@ -39,6 +39,7 @@ const AuthWrapper: React.FC<PropsWithChildren> = ({
         log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
         clearAuthStorage();
         dispatch(resetUser());
+        router.push(ROUTE_PATH.DROPS);
       }
     } else {
       checkUserRedirect(null);

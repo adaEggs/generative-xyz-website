@@ -41,4 +41,5 @@ export interface MoralisNFT {
   symbol: string;
   token_uri: string;
   metadata: string;
+  is_minted: boolean;
 }
