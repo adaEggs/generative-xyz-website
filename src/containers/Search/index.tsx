@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
 import CategoryTab from '@components/CategoryTab';
+import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { prettyNumberWithCommas } from '@utils/units';
 
 import Filter from './Filter';
@@ -44,31 +45,59 @@ const ITEMS_TYPE = [
 const SearchPage = (): JSX.Element => {
   const router = useRouter();
   const { keyword = '' } = router.query;
-  const { totalCollection, totalArtist, totalToken, totalInscription } =
-    useSearchApi({
-      keyword,
-    });
+  const {
+    totalCollection,
+    totalArtist,
+    totalToken,
+    totalInscription,
+    isLoadingCollection,
+    isLoadingArtists,
+    isLoadingTokens,
+    isLoadingInscriptions,
+  } = useSearchApi({
+    keyword,
+  });
   const [currentTabActive, setCurrentTabActive] = useState<{
     id: number;
     name: string;
     type: string;
   }>(ITEMS_TYPE[0]);
-
-  // useEffect(() => {
-  //   if (totalCollection > 0) {
-  //     setCurrentTabActive(ITEMS_TYPE[0]);
-  //   } else if (totalToken > 0) {
-  //     setCurrentTabActive(ITEMS_TYPE[1]);
-  //   } else if (totalArtist > 0) {
-  //     setCurrentTabActive(ITEMS_TYPE[2]);
-  //   } else if (totalInscription > 0) {
-  //     setCurrentTabActive(ITEMS_TYPE[3]);
-  //   }
-  // }, [keyword, totalCollection, totalToken, totalArtist, totalInscription]);
+  const [isCategoriesLoading, setIsCategoriesLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    setCurrentTabActive(ITEMS_TYPE[0]);
+    setIsCategoriesLoading(true);
   }, [keyword]);
+
+  useEffect(() => {
+    if (
+      [
+        isLoadingCollection,
+        isLoadingArtists,
+        isLoadingTokens,
+        isLoadingInscriptions,
+      ].every(element => element === false)
+    ) {
+      if (totalCollection > 0) {
+        setCurrentTabActive(ITEMS_TYPE[0]);
+      } else if (totalToken > 0) {
+        setCurrentTabActive(ITEMS_TYPE[1]);
+      } else if (totalArtist > 0) {
+        setCurrentTabActive(ITEMS_TYPE[2]);
+      } else if (totalInscription > 0) {
+        setCurrentTabActive(ITEMS_TYPE[3]);
+      }
+      setIsCategoriesLoading(false);
+    }
+  }, [
+    totalCollection,
+    totalToken,
+    totalArtist,
+    totalInscription,
+    isLoadingCollection,
+    isLoadingArtists,
+    isLoadingTokens,
+    isLoadingInscriptions,
+  ]);
 
   const getTotalEachItem = (name: string, type: string): string => {
     if (type === OBJECT_TYPE.PROJECT) {
@@ -87,6 +116,13 @@ const SearchPage = (): JSX.Element => {
   };
 
   const renderItemList = useMemo(() => {
+    if (isCategoriesLoading) {
+      return (
+        <Col xs={12}>
+          <ProjectListLoading numOfItems={12} />
+        </Col>
+      );
+    }
     if (currentTabActive.type === OBJECT_TYPE.PROJECT) {
       return <CollectionItems />;
     }
@@ -100,7 +136,7 @@ const SearchPage = (): JSX.Element => {
       return <ArtistItems />;
     }
     return null;
-  }, [currentTabActive.type]);
+  }, [currentTabActive.type, isCategoriesLoading]);
 
   return (
     <div className={s.search}>
@@ -118,7 +154,7 @@ const SearchPage = (): JSX.Element => {
                     setCurrentTabActive(item);
                   }}
                   active={currentTabActive.id === item.id}
-                  loading={false}
+                  loading={isCategoriesLoading}
                 />
               ))}
             </div>

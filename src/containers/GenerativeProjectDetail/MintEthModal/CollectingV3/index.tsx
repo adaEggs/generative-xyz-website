@@ -22,6 +22,7 @@ import {
   formatEthPriceInput,
 } from '@utils/format';
 import log from '@utils/logger';
+import { capitalizeFirstLetter } from '@utils/string';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
@@ -120,7 +121,7 @@ const MintEthModal: React.FC = () => {
       setIsSent(true);
     } catch (err: unknown) {
       log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-      _onClose();
+      // _onClose();
     }
   };
 
@@ -135,6 +136,7 @@ const MintEthModal: React.FC = () => {
       if (!projectData) return;
       try {
         setIsLoading(true);
+        setErrMessage('');
 
         const {
           price: _price,
@@ -161,7 +163,11 @@ const MintEthModal: React.FC = () => {
       } catch (err: unknown) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        setErrMessage('Failed to generate receiver address');
+        if (typeof err === 'string') {
+          setErrMessage(`${err}`);
+        } else {
+          setErrMessage('failed to generate receiver address');
+        }
         setReceiverAddress(null);
       } finally {
         setIsLoading(false);
@@ -454,7 +460,9 @@ const MintEthModal: React.FC = () => {
                     )}
 
                     {!!errMessage && (
-                      <div className={s.error}>{errMessage}</div>
+                      <div className={s.error}>
+                        {capitalizeFirstLetter(errMessage)}
+                      </div>
                     )}
                   </div>
                 </Col>

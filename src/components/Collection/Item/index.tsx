@@ -142,7 +142,10 @@ const CollectionItem = ({
             <div className={cs(s.collectionCard_info, s.desktop)}>
               <div className={s.collectionCard_info_title}>
                 <Stack
-                  className={s.collectionCard_info_stack}
+                  className={cs(
+                    s.collectionCard_info_stack,
+                    data?.creator?.displayName && s.collectionCard_info_wrapper
+                  )}
                   direction="horizontal"
                 >
                   <Heading
@@ -164,6 +167,15 @@ const CollectionItem = ({
                           })}
                     </span>
                   </Heading>
+                  {data?.creator?.displayName && (
+                    <Heading
+                      as={'h6'}
+                      fontWeight="medium"
+                      className={s.collectionCard_info_wrapper_ownerName}
+                    >
+                      {data?.creator?.displayName}
+                    </Heading>
+                  )}
                   {renderBuyButton()}
                 </Stack>
               </div>
