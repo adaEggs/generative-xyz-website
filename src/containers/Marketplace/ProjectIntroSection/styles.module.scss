@@ -1,15 +1,29 @@
 @import "src/styles/_themes/mixins";
 
+.projectInfo {
+  &_inner {
+    display: flex;
+  }
+
+  &_left {
+    //background: blue;
+    flex: 1;
+  }
+
+  &_center {
+    //background: red;
+    flex: 1;
+  }
+
+  &_right {
+    //background: green;
+    flex: 1;
+  }
+}
+
 .wrapper {
   color: $black-100;
   // padding-top: rem(32px);
-
-  @include min-tablet {
-    display: grid;
-    grid-template-columns: 35% 1px calc(65% - 1px);
-    // padding-top: rem(40px);
-    margin-bottom: rem(40px);
-  }
 }
 
 .info_wrapper {
