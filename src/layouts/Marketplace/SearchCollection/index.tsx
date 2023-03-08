@@ -117,7 +117,7 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
           onKeyDown={handleKeyDownSearch}
         />
         <div className={s.searchIcon}>
-          {inputFocus ? (
+          {inputFocus && searchText ? (
             <SvgInset
               onClick={() => {
                 setSearchText('');
