@@ -8,7 +8,8 @@ import { ProjectProperty } from '@containers/Marketplace/ProjectIntroSection/Pro
 import { ProjectName } from '@containers/Marketplace/ProjectIntroSection/ProjectName';
 
 const LayoutForMintout = () => {
-  const { project, hasProjectInteraction } = useContext(ProjectLayoutContext);
+  const { project, hasProjectInteraction, isLimitMinted } =
+    useContext(ProjectLayoutContext);
 
   const { desktopScreen } = useWindowSize();
 
@@ -16,7 +17,7 @@ const LayoutForMintout = () => {
     <div className={s.projectInfo}>
       <div className={`${s.projectInfo_inner} row`}>
         <div className={`${s.projectInfo_left} col-xl-3 col-sm-6 col-12`}>
-          <div className={s.info}>
+          <div className={`${s.info} ${!isLimitMinted ? s.isSmall : ''}`}>
             <div className={s.info_inner}>
               <ProjectName />
               {desktopScreen && RenderMetaContent()}

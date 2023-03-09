@@ -21,7 +21,7 @@ const ProjectIntroSection = () => {
     useContext(ProjectLayoutContext);
 
   return (
-    <div className={`${s.wrapper} ${!isLimitMinted ? s.hasMint : ''}`}>
+    <div className={`${s.wrapper} ${!isLimitMinted ? s.minted : ''}`}>
       {!isLimitMinted ? <LayoutForMintout /> : <LayoutForMinting />}
       <ReportModal
         isShow={showReportModal}

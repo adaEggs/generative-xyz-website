@@ -36,7 +36,7 @@ const ThumbnailPreview = (props: Props) => {
   const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>();
   const [hash, setHash] = useState<string>(generateHash());
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
-  const { hasMint } = useContext(ProjectLayoutContext);
+  const { isLimitMinted } = useContext(ProjectLayoutContext);
 
   const handleIframeLoaded = (): void => {
     if (sandboxRef.current) {
@@ -94,7 +94,7 @@ const ThumbnailPreview = (props: Props) => {
   return (
     <div
       className={`${s.ThumbnailPreview} ${props.className} ${
-        hasMint ? s.smallReview : ''
+        !isLimitMinted ? s.smallReview : ''
       }`}
     >
       <div className={s.wrapper}>

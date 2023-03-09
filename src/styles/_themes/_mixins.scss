@@ -363,7 +363,8 @@
 }
 
 @mixin fullViewScreen {
-  height: calc(70vh - #{rem(260px)});
+  height: calc(75vh - #{rem(260px)});
+  min-height: 520px;
 }
 
 @function vhMathDiv($px, $base) {

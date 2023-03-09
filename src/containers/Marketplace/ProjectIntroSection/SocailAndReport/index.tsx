@@ -9,7 +9,7 @@ import { useContext } from 'react';
 import { ProjectLayoutContext } from '@contexts/project-layout-context';
 
 export const SocialAndReport = (): JSX.Element => {
-  const { project, showReportMsg, setShowReportModal } =
+  const { project, showReportMsg, setShowReportModal, origin } =
     useContext(ProjectLayoutContext);
   return (
     <div className={s.shares_wrapper}>

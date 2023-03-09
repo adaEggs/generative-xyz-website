@@ -369,6 +369,7 @@
 .project_info {
   margin-bottom: rem(24px);
   margin-top: rem(24px);
+  max-width: rem(520px);
 }
 
 .shares {
@@ -456,7 +457,7 @@
   padding-right: rem(60);
 }
 
-.wrapper.hasMint {
+.wrapper.minted {
   margin-bottom: rem(24px);
 
   .info,
@@ -497,9 +498,15 @@
 
   .info {
     height: unset !important;
+    min-height: unset !important;
   }
 }
 
 .layoutMinting {
-  display: flex;
+  margin-top: rem(32px);
+  margin-bottom: rem(40px);
+
+  .shares {
+    padding-top: rem(10px);
+  }
 }
