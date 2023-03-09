@@ -87,6 +87,9 @@ export interface ICreateBTCProjectPayload {
   animationURL: string;
   isFullChain: boolean;
   captureImageTime?: number;
+  reserveMintPrice?: string;
+  reserveMintLimit?: number;
+  reservers?: Array<string>;
 }
 
 export type ICreateBTCProjectResponse = BTCProject;

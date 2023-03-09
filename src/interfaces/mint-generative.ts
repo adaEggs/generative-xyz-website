@@ -42,4 +42,7 @@ export interface IBTCFormValue {
   categories: Array<string>;
   creatorWalletAddress: string;
   captureImageTime: number;
+  reserveMintPrice?: number;
+  reserveMintLimit?: number;
+  reservers?: Array<string>;
 }
