@@ -4,7 +4,10 @@ import { BTC_PROJECT } from '@constants/tracking-event-name';
 import { formatEthPrice } from '@utils/format';
 import { Project } from '@interfaces/project';
 import { PaymentMethod } from '@enums/mint-generative';
+import { LogLevel } from '@enums/log-level';
+import log from '@utils/logger';
 
+const LOG_PREFIX = 'MintService';
 interface IResponse {
   address: string;
   price: string;
@@ -61,7 +64,10 @@ export const getBTCAddress = async ({
     // setReceiverAddress(address);
     // setPrice(price || projectData?.mintPrice);
   } catch (err: unknown) {
-    // TODO HANDLE ERROR
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    log('failed to generate receiver address', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
   }
   return {
     address: _address,

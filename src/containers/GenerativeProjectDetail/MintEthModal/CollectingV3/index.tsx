@@ -22,6 +22,7 @@ import {
   formatEthPriceInput,
 } from '@utils/format';
 import log from '@utils/logger';
+import { capitalizeFirstLetter } from '@utils/string';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
@@ -90,7 +91,12 @@ const MintEthModal: React.FC = () => {
   );
 
   const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setQuantity(Number(e.target.value));
+    if (
+      projectData?.limitMintPerProcess &&
+      projectData.limitMintPerProcess >= Number(e.target.value)
+    ) {
+      setQuantity(Number(e.target.value));
+    }
   };
 
   const onClickMinus = () => {
@@ -100,7 +106,12 @@ const MintEthModal: React.FC = () => {
   };
 
   const onClickPlus = () => {
-    setQuantity(quantity + 1);
+    if (
+      projectData?.limitMintPerProcess &&
+      projectData.limitMintPerProcess >= quantity + 1
+    ) {
+      setQuantity(quantity + 1);
+    }
   };
 
   const userAddress = React.useMemo(() => {
@@ -120,7 +131,7 @@ const MintEthModal: React.FC = () => {
       setIsSent(true);
     } catch (err: unknown) {
       log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-      _onClose();
+      // _onClose();
     }
   };
 
@@ -135,6 +146,7 @@ const MintEthModal: React.FC = () => {
       if (!projectData) return;
       try {
         setIsLoading(true);
+        setErrMessage('');
 
         const {
           price: _price,
@@ -161,7 +173,11 @@ const MintEthModal: React.FC = () => {
       } catch (err: unknown) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        setErrMessage('Failed to generate receiver address');
+        if (typeof err === 'string') {
+          setErrMessage(`${err}`);
+        } else {
+          setErrMessage('failed to generate receiver address');
+        }
         setReceiverAddress(null);
       } finally {
         setIsLoading(false);
@@ -281,7 +297,11 @@ const MintEthModal: React.FC = () => {
                       {step === 'info' ? (
                         <div className={s.paymentPrice_inputContainer}>
                           <SvgInset
-                            className={s.paymentPrice_inputContainer_icon}
+                            className={`${
+                              quantity <= 1
+                                ? s.paymentPrice_inputContainer_icon_disable
+                                : s.paymentPrice_inputContainer_icon
+                            }`}
                             size={18}
                             svgUrl={`${CDN_URL}/icons/ic-minus.svg`}
                             onClick={onClickMinus}
@@ -295,7 +315,12 @@ const MintEthModal: React.FC = () => {
                             className={s.paymentPrice_inputContainer_input}
                           />
                           <SvgInset
-                            className={s.paymentPrice_inputContainer_icon}
+                            className={`${
+                              projectData?.limitMintPerProcess &&
+                              quantity >= projectData.limitMintPerProcess
+                                ? s.paymentPrice_inputContainer_icon_disable
+                                : s.paymentPrice_inputContainer_icon
+                            }`}
                             size={18}
                             svgUrl={`${CDN_URL}/icons/ic-plus.svg`}
                             onClick={onClickPlus}
@@ -454,7 +479,9 @@ const MintEthModal: React.FC = () => {
                     )}
 
                     {!!errMessage && (
-                      <div className={s.error}>{errMessage}</div>
+                      <div className={s.error}>
+                        {capitalizeFirstLetter(errMessage)}
+                      </div>
                     )}
                   </div>
                 </Col>
@@ -462,7 +489,7 @@ const MintEthModal: React.FC = () => {
                 {step === 'showAddress' && (
                   <Col md={'6'}>
                     <div className={s.paymentWrapper}>
-                      {receiverAddress && !isLoading && (
+                      {!isSent && receiverAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
                             Send{' '}
@@ -493,6 +520,13 @@ const MintEthModal: React.FC = () => {
                             value={receiverAddress || ''}
                           />
                         </div>
+                      )}
+                      {isSent && (
+                        <img
+                          alt="project"
+                          className={s.projectImg}
+                          src={projectData.image}
+                        />
                       )}
                       {isLoading && (
                         <div className={s.loadingWrapper}>

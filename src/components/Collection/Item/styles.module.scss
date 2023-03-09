@@ -141,6 +141,14 @@
         gap: rem(3px);
       }
 
+      .collectionCard_info_wrapper {
+        flex-wrap: wrap;
+
+        &_ownerName {
+          width: 100%;
+        }
+      }
+
       .collectionCard_info_listing {
         justify-content: space-between;
 

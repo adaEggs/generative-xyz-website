@@ -28,6 +28,10 @@ export interface IGetMarketplaceBtcListItem {
       price: string;
     };
   };
+  holder?: Record<string, string> | null;
+  sat?: string | null;
+  timestamp: string | null;
+  block: string | null;
 }
 
 export interface IPostMarketplaceBtcListNFTForms {
@@ -113,6 +117,9 @@ export interface IInscriptionDetailResp {
   inscription_id: string;
   number: number;
   address: string;
+  sat: string | null;
+  timestamp: string | null;
+  genesis_height: string | null;
 }
 
 export interface ICollectionFloorPricePayload {

@@ -16,18 +16,31 @@ import { BTC_PROJECT } from '@constants/tracking-event-name';
 
 const MintSuccess = () => {
   const router = useRouter();
-  const { mintedProjectID } = useContext(MintBTCGenerativeContext);
+  const { mintedProject } = useContext(MintBTCGenerativeContext);
   const user = useAppSelector(getUserSelector);
-  const mintedProjectUrl = `/generative/${mintedProjectID}`;
+  const mintedProjectUrl = `/generative/${mintedProject?.tokenID}`;
 
   const handleGoToProjectDetailPage = (): void => {
-    if (mintedProjectID) {
+    if (mintedProject?.tokenID) {
       router.push(mintedProjectUrl);
     }
   };
 
   const handleOpenLink = (): void => {
     window.open(SOCIALS.discord);
+    sendAAEvent({
+      eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
+      data: {
+        project_id: mintedProject?.tokenID,
+        project_name: mintedProject?.name,
+        project_image: mintedProject?.image,
+        referrer_id: user?.id,
+        referrer_name: user?.displayName,
+        referrer_address: user?.walletAddress,
+        referrer_taproot_address: user?.walletAddressBtcTaproot,
+        type: 'discord_share',
+      },
+    });
   };
 
   const handleCopyLink = (url: string): void => {
@@ -37,8 +50,14 @@ const MintSuccess = () => {
     sendAAEvent({
       eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
       data: {
-        projectId: mintedProjectID,
-        referrerId: user?.id,
+        project_id: mintedProject?.tokenID,
+        project_name: mintedProject?.name,
+        project_image: mintedProject?.image,
+        referrer_id: user?.id,
+        referrer_name: user?.displayName,
+        referrer_address: user?.walletAddress,
+        referrer_taproot_address: user?.walletAddressBtcTaproot,
+        type: 'refer_share',
       },
     });
   };
@@ -63,8 +82,14 @@ const MintSuccess = () => {
                 sendAAEvent({
                   eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
                   data: {
-                    projectId: mintedProjectID,
-                    referrerId: user?.id,
+                    project_id: mintedProject?.tokenID,
+                    project_name: mintedProject?.name,
+                    project_image: mintedProject?.image,
+                    referrer_id: user?.id,
+                    referrer_name: user?.displayName,
+                    referrer_address: user?.walletAddress,
+                    referrer_taproot_address: user?.walletAddressBtcTaproot,
+                    type: 'twitter_share',
                   },
                 });
               }}
@@ -110,7 +135,7 @@ const MintSuccess = () => {
         <Button
           sizes="large"
           variants="outline-small"
-          disabled={!mintedProjectID}
+          disabled={!mintedProject?.tokenID}
           onClick={handleGoToProjectDetailPage}
         >
           Go to project page

@@ -8,6 +8,7 @@ import s from './Created.module.scss';
 export const CreatedTab = (): JSX.Element => {
   const { isLoadedProfileProjects, profileProjects, handleFetchProjects } =
     useContext(ProfileContext);
+  // console.log('🚀 ~ CreatedTab ~ profileProjects:', profileProjects);
 
   return (
     <>

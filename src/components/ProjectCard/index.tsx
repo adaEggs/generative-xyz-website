@@ -10,11 +10,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import useWindowSize from '@hooks/useWindowSize';
 import { Project } from '@interfaces/project';
 import { User } from '@interfaces/user';
-import {
-  formatAddress,
-  formatBTCPrice,
-  formatLongAddress,
-} from '@utils/format';
+import { formatBTCPrice } from '@utils/format';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import { CDN_URL } from '@constants/config';
@@ -22,6 +18,8 @@ import SvgInset from '@components/SvgInset';
 import ButtonIcon from '@components/ButtonIcon';
 import { sendAAEvent } from '@services/aa-tracking';
 import { BTC_PROJECT } from '@constants/tracking-event-name';
+import { filterCreatorName } from '@utils/generative';
+import { wordCase } from '@utils/common';
 
 interface IPros {
   project: Project;
@@ -64,10 +62,6 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     });
   };
 
-  const creatorMemo = useMemo((): User | null => {
-    return creator;
-  }, [creator]);
-
   const isMinted = useMemo((): boolean => {
     return (
       project.mintingInfo.index + project.mintingInfo.indexReserve >=
@@ -92,6 +86,20 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     return false;
   }, [project?.maxSupply, project?.mintingInfo.index]);
 
+  const isFromAuthentic = useMemo((): boolean => {
+    return project.fromAuthentic || false;
+  }, [project]);
+
+  const isAuthenticIn24h = useMemo((): boolean => {
+    const providedDate = new Date(project.mintedTime);
+    const currentDate = new Date();
+
+    const delta = currentDate.getTime() - providedDate.getTime();
+    const secondsAgo = delta / 1000;
+
+    return Boolean(secondsAgo < 24 * 60 * 60);
+  }, [project]);
+
   const renderFooter = () => {
     if (project.btcFloorPrice && mintedOut) {
       return (
@@ -99,20 +107,30 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
           <span
             className={`${s.projectCard_info_price_price_minted} ${s.isOnlyMintedShow}`}
           >
-            {minted}
-          </span>
-          <ButtonIcon sizes="xsmall">
             {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
-          </ButtonIcon>
+          </span>
+          <ButtonIcon sizes="xsmall">Buy</ButtonIcon>
         </div>
       );
     }
     if (mintedOut) {
-      return (
+      return !isFromAuthentic ? (
         <div className={s.projectCard_info_mintoutContainer}>
           <SvgInset svgUrl={`${CDN_URL}/icons/ic_mintedout.svg`} />
           <Text className={s.projectCard_info_mintoutContainer_text}>
             {`${project?.mintingInfo.index} Minted out`}
+          </Text>
+        </div>
+      ) : (
+        <div className={s.projectCard_info_edition}>
+          <Text
+            color="black-40-solid"
+            fontWeight={'medium'}
+            className={s.projectCard_info_edition_text}
+          >
+            {isAuthenticIn24h
+              ? ` ${project?.mintingInfo.index} inscribed`
+              : `Edition of ${project?.mintingInfo.index}`}
           </Text>
         </div>
       );
@@ -146,6 +164,14 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     );
   };
 
+  const projectName = useMemo((): string => {
+    return project.fromAuthentic || false
+      ? project.name.indexOf('Ordinal') === -1
+        ? wordCase(`Ordinal ${project.name}`)
+        : project.name
+      : project.name;
+  }, [project]);
+
   return (
     <Link
       href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
@@ -173,13 +199,12 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             <div className={cs(s.projectCard_info, s.mobile)}>
               {creator && (
                 <Text size="11" fontWeight="medium">
-                  {creator.displayName ||
-                    formatAddress(creator.walletAddressBtcTaproot)}
+                  {filterCreatorName(project)}
                 </Text>
               )}
               <div className={s.projectCard_info_title}>
                 <Text size="14" fontWeight="semibold">
-                  {project.name}
+                  {projectName}
                 </Text>
               </div>
 
@@ -196,14 +221,13 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               {creator && (
                 <div className={s.projectCard_creator}>
                   <Text size={'20'} fontWeight="medium">
-                    {creatorMemo?.displayName ||
-                      formatLongAddress(creatorMemo?.walletAddressBtcTaproot)}
+                    {filterCreatorName(project)}
                   </Text>
                 </div>
               )}
               <div className={s.projectCard_info_title}>
                 <Heading as={'h6'} fontWeight="medium">
-                  <span title={project.name}>{project.name}</span>
+                  <span title={projectName}>{projectName}</span>
                 </Heading>
               </div>
               <div className={s.projectCard_info_price}>{renderFooter()}</div>

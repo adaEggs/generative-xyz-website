@@ -252,8 +252,14 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                     sendAAEvent({
                       eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
                       data: {
-                        projectId: project?.projectID,
-                        referrerId: user?.id,
+                        nft_id: project?.id,
+                        project_id: project?.projectID,
+                        nft_name: project?.name,
+                        nft_image: project?.image,
+                        referrer_id: user?.id,
+                        referrer_name: user?.displayName,
+                        referrer_address: user?.walletAddress,
+                        referrer_taproot_address: user?.walletAddressBtcTaproot,
                       },
                     });
                   }}

@@ -32,17 +32,16 @@ import { getUserSelector } from '@redux/user/selector';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
-import { isWalletWhiteList } from '@utils/common';
+import { isWalletWhiteList, wordCase } from '@utils/common';
 import { convertToETH } from '@utils/currency';
 import {
   base64ToUtf8,
   escapeSpecialChars,
-  formatAddress,
   formatBTCPrice,
   formatEthPrice,
   formatWebDomain,
 } from '@utils/format';
-import { checkIsBitcoinProject } from '@utils/generative';
+import { checkIsBitcoinProject, filterCreatorName } from '@utils/generative';
 import log from '@utils/logger';
 import dayjs from 'dayjs';
 import _get from 'lodash/get';
@@ -261,6 +260,12 @@ const ProjectIntroSection = ({
     }/${project?.maxSupply || project?.limit}`;
   }, [project]);
 
+  const projectName = useMemo((): string => {
+    return project?.fromAuthentic || false
+      ? wordCase(`Ordinal ${project?.name} `)
+      : `${project?.name} `;
+  }, [project]);
+
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -277,10 +282,14 @@ const ProjectIntroSection = ({
         <div className={s.info}>
           <div className={`${s.projectHeader}`}>
             <Link
-              href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddressBtcTaproot}`}
+              href={`${ROUTE_PATH.PROFILE}/${
+                project?.creatorProfile?.walletAddressBtcTaproot ||
+                project?.creatorProfile?.walletAddress
+              }`}
               className={cs(
                 s.creator_info,
                 !project?.creatorProfile?.walletAddressBtcTaproot &&
+                  !project?.creatorProfile?.walletAddress &&
                   'pointer-none'
               )}
             >
@@ -289,10 +298,7 @@ const ProjectIntroSection = ({
                 as="h4"
                 fontWeight="medium"
               >
-                {project?.creatorProfile?.displayName ||
-                  formatAddress(
-                    project?.creatorProfile?.walletAddressBtcTaproot || ''
-                  )}
+                {project && filterCreatorName(project)}
               </Heading>
             </Link>
             <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
@@ -307,7 +313,7 @@ const ProjectIntroSection = ({
               as="h4"
               fontWeight="medium"
             >
-              {project?.name}
+              {projectName}
             </Heading>
             {isEdit && (
               <div className={s.projectHeader_btn}>
@@ -392,8 +398,9 @@ const ProjectIntroSection = ({
                 data={
                   {
                     ...projectDetail,
-                    animationHtml: project?.animationHtml ?? '',
-                  } as Token
+                    htmlFile: project?.htmlFile || '',
+                    animationHtml: project?.animationHtml || '',
+                  } as unknown as Project
                 }
                 allowVariantion
               />
@@ -811,8 +818,9 @@ const ProjectIntroSection = ({
             data={
               {
                 ...projectDetail,
+                htmlFile: project?.htmlFile || '',
                 animationHtml: project?.animationHtml ?? '',
-              } as Token
+              } as unknown as Project
             }
             allowVariantion
           />

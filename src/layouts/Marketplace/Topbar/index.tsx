@@ -11,7 +11,7 @@ const Topbar: React.FC = (): React.ReactElement => {
   return (
     <div className={s.topbar}>
       <div className="container">
-        <div className="d-flex align-items-center justify-content-between">
+        <div className={s.wrapper}>
           <div className={s.left}>
             <p className={s.text}>
               New artist?{' '}
@@ -20,6 +20,18 @@ const Topbar: React.FC = (): React.ReactElement => {
               </Link>
             </p>
           </div>
+
+          <div className={s.center}>
+            <SvgInset
+              size={18}
+              svgUrl={`${CDN_URL}/icons/ic-shield-star-24x24.svg`}
+            />
+            <p className={s.centerText}>
+              Inscribe your existing Ethereum NFTs onto Bitcoin.{' '}
+              <Link href={ROUTE_PATH.AUTHENTIC_INSCRIPTIONS}>It’s free</Link>
+            </p>
+          </div>
+
           <div
             className={cs(
               s.right,

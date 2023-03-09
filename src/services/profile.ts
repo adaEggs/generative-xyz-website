@@ -17,6 +17,7 @@ import { IGetProjectItemsResponse } from '@interfaces/api/project';
 import { IGetProfileTokensResponse } from '@interfaces/api/token-uri';
 import { get, put, del, post } from '@services/http-client';
 import log from '@utils/logger';
+import storage from '@utils/storage';
 
 const LOG_PREFIX = 'ProfileService';
 
@@ -24,7 +25,17 @@ const API_PATH = '/profile';
 
 export const getProfile = async (): Promise<IGetProfileResponse> => {
   try {
-    return await get<IGetProfileResponse>(`${API_PATH}`);
+    let userRes = await get<IGetProfileResponse>(`${API_PATH}`);
+    const storedTaprootAddress = storage.getUserTaprootAddress(
+      userRes.walletAddress
+    );
+    if (storedTaprootAddress && typeof storedTaprootAddress === 'string') {
+      userRes = {
+        ...userRes,
+        walletAddressBtcTaproot: storedTaprootAddress,
+      };
+    }
+    return userRes;
   } catch (err: unknown) {
     log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get profile');

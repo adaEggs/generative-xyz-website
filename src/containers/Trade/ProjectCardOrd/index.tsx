@@ -48,14 +48,37 @@ export const ProjectCardOrd = ({
                     {formatBTCPrice(project.price || 0)}&nbsp;BTC
                   </Text>
                 )}
+                {project?.holder?.displayName && (
+                  <Text
+                    size="14"
+                    fontWeight="medium"
+                    className={s.projectCard_info_wrapper_displayName}
+                  >
+                    {project?.holder?.displayName}
+                  </Text>
+                )}
               </div>
             </div>
           ) : (
             <div className={cs(s.projectCard_info, s.desktop)}>
-              <div className={s.projectCard_info_title}>
+              <div
+                className={cs(
+                  s.projectCard_info_title,
+                  project?.holder?.displayName && s.projectCard_info_wrapper
+                )}
+              >
                 <Heading as={'h4'}>
                   <span title={project.name}>#{project.inscriptionNumber}</span>
                 </Heading>
+                {project?.holder?.displayName && (
+                  <Text
+                    size="24"
+                    fontWeight="medium"
+                    className={s.projectCard_info_wrapper_displayName}
+                  >
+                    {project?.holder?.displayName}
+                  </Text>
+                )}
                 {(Number(project?.price) || 0) > 0 && (
                   <Heading as={'h4'} className={s.projectCard_info_price}>
                     {formatBTCPrice(project.price || 0)}&nbsp;BTC

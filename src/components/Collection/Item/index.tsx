@@ -10,9 +10,8 @@ import { GLB_EXTENSION } from '@constants/file';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import useWindowSize from '@hooks/useWindowSize';
 import { Token } from '@interfaces/token';
-import { formatAddress, formatTokenId } from '@utils/format';
+import { ellipsisCenter, formatAddress } from '@utils/format';
 import cs from 'classnames';
-import Image from 'next/image';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
@@ -20,11 +19,15 @@ import s from './styles.module.scss';
 const CollectionItem = ({
   data,
   className,
+  showCollectionName,
 }: {
   data: Token;
   className?: string;
+  showCollectionName?: boolean;
 }) => {
   const tokenID = data.tokenID;
+  const showInscriptionID =
+    data.genNFTAddr === '1000012' && !!data.inscriptionIndex;
   // const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
   const { isWhitelistProject } = useContext(GenerativeProjectDetailContext);
@@ -90,8 +93,7 @@ const CollectionItem = ({
             }`}
           >
             <div className={s.collectionCard_thumb_inner}>
-              <Image
-                fill
+              <img
                 onError={onThumbError}
                 src={thumb}
                 alt={data.name}
@@ -129,9 +131,22 @@ const CollectionItem = ({
                       ? data?.orderInscriptionIndex
                       : data?.inscriptionIndex
                       ? data?.inscriptionIndex
-                      : formatTokenId(tokenID)}
+                      : ellipsisCenter({
+                          str: tokenID,
+                          limit: 3,
+                        })}
                   </span>
                 </Text>
+                {showInscriptionID && (
+                  <Text
+                    className={s.textOverflow}
+                    fontWeight="semibold"
+                    size="14"
+                    style={{ marginBottom: 4 }}
+                  >
+                    #{data?.inscriptionIndex}
+                  </Text>
+                )}
                 {renderBuyButton()}
               </div>
             </div>
@@ -139,7 +154,10 @@ const CollectionItem = ({
             <div className={cs(s.collectionCard_info, s.desktop)}>
               <div className={s.collectionCard_info_title}>
                 <Stack
-                  className={s.collectionCard_info_stack}
+                  className={cs(s.collectionCard_info_stack, {
+                    [s.collectionCard_info_wrapper]:
+                      showCollectionName && data?.creator?.displayName,
+                  })}
                   direction="horizontal"
                 >
                   <Heading
@@ -155,11 +173,31 @@ const CollectionItem = ({
                         ? data?.orderInscriptionIndex
                         : data?.inscriptionIndex
                         ? data?.inscriptionIndex
-                        : formatTokenId(tokenID)}
+                        : ellipsisCenter({
+                            str: tokenID,
+                            limit: 3,
+                          })}
                     </span>
                   </Heading>
+                  {showCollectionName && data?.creator?.displayName && (
+                    <Heading
+                      as={'h6'}
+                      fontWeight="medium"
+                      className={s.collectionCard_info_wrapper_ownerName}
+                    >
+                      {data?.creator?.displayName}
+                    </Heading>
+                  )}
                   {renderBuyButton()}
                 </Stack>
+                {showInscriptionID && (
+                  <Heading
+                    as={'h4'}
+                    className={`token_id ml-auto ${s.textOverflow}}`}
+                  >
+                    #{data?.inscriptionIndex}
+                  </Heading>
+                )}
               </div>
             </div>
           )}

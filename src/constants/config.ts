@@ -35,13 +35,14 @@ export const REPORT_COUNT_THRESHOLD = 3;
 
 // Mint tool
 export const MINT_TOOL_MAX_FILE_SIZE = 0.38;
-export const MINT_TRANSFER_FEE = 16000;
+export const MINT_TRANSFER_FEE = 18000;
 export const SANDBOX_BTC_IMAGE_SIZE_LIMIT = 380; // kb
 export const SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT = 3000; // kb
 export const MIN_MINT_BTC_PROJECT_PRICE = 0;
 
 // Mempool
 export const MEMPOOL_API_URL = 'https://mempool.space/api/v1';
+export const BINANCE_API_URL = 'https://api.binance.com/api/v3';
 
 // AA tracking config
 export const AA_BASE_URL =

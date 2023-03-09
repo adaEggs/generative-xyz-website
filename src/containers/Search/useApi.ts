@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
+import { getSearchByKeyword } from '@services/search';
+import { getApiKey } from '@utils/swr';
+
 import { PAYLOAD_DEFAULT, OBJECT_TYPE } from './constant';
-import { getSearchByKeyword, getApiKey } from '@services/search';
 
 export interface SearchApi {
   keyword: string | string[];
@@ -31,7 +33,7 @@ const useSearchApi = ({ keyword }: SearchApi) => {
     type: OBJECT_TYPE.PROJECT,
   };
 
-  const { data: resultByCollection } = useSWR(
+  const { data: resultByCollection, isLoading: isLoadingCollection } = useSWR(
     getApiKey(getSearchByKeyword, filterCollectionParams),
     () => getSearchByKeyword(filterCollectionParams),
     {
@@ -39,27 +41,28 @@ const useSearchApi = ({ keyword }: SearchApi) => {
     }
   );
 
-  const { data: resultByArtists } = useSWR(
+  const { data: resultByArtists, isLoading: isLoadingArtists } = useSWR(
     getApiKey(getSearchByKeyword, filterArtistParams),
     () => getSearchByKeyword(filterArtistParams),
     {
       keepPreviousData: true,
     }
   );
-  const { data: resultByTokens } = useSWR(
+  const { data: resultByTokens, isLoading: isLoadingTokens } = useSWR(
     getApiKey(getSearchByKeyword, filterTokenParams),
     () => getSearchByKeyword(filterTokenParams),
     {
       keepPreviousData: true,
     }
   );
-  const { data: resultByInscriptions } = useSWR(
-    getApiKey(getSearchByKeyword, filterInscriptionParams),
-    () => getSearchByKeyword(filterInscriptionParams),
-    {
-      keepPreviousData: true,
-    }
-  );
+  const { data: resultByInscriptions, isLoading: isLoadingInscriptions } =
+    useSWR(
+      getApiKey(getSearchByKeyword, filterInscriptionParams),
+      () => getSearchByKeyword(filterInscriptionParams),
+      {
+        keepPreviousData: true,
+      }
+    );
 
   const searchTotal = useMemo(() => {
     return (
@@ -93,6 +96,10 @@ const useSearchApi = ({ keyword }: SearchApi) => {
   }, [keyword, resultByInscriptions?.total]);
 
   return {
+    isLoadingCollection,
+    isLoadingArtists,
+    isLoadingTokens,
+    isLoadingInscriptions,
     searchTotal,
     totalCollection,
     totalArtist,

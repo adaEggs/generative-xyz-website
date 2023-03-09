@@ -227,11 +227,6 @@
     }
   }
 
-  .projectImg {
-    width: rem(200px);
-    height: rem(200px);
-  }
-
   .actionWrapper {
     display: flex;
     align-items: center;
@@ -246,7 +241,8 @@
 
   .loadingWrapper {
     position: relative;
-    // padding: rem(px);
+    height: rem(60px);
+    margin-top: rem(48px);
   }
 }
 
@@ -385,18 +381,26 @@
 
 .payment {
   margin-top: rem(24px);
-  margin-bottom: rem(34px);
+  margin-bottom: rem(24px);
 
   @include mobile {
     margin-top: rem(16px);
-    margin-bottom: rem(20px);
+    margin-bottom: rem(16px);
   }
 
   .paymentPrice {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     align-items: center;
+
+    &:not(:last-child) {
+      margin-bottom: rem(8px);
+    }
+
+    @include max-tablet {
+      flex-direction: column;
+      align-items: flex-start;
+    }
 
     &_title {
       font-weight: 400;
@@ -442,12 +446,6 @@
 
       &_icon {
         cursor: pointer;
-        opacity: 1;
-
-        &_disable {
-          cursor: not-allowed;
-          opacity: 0.3;
-        }
       }
     }
 
@@ -488,6 +486,13 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  gap: rem(24px);
+
+  @include max-tablet {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: rem(16px);
+  }
 
   .checkbox {
     display: flex;

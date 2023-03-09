@@ -17,3 +17,7 @@ export const isBase64String = (str: string): boolean => {
 export const isNumeric = (str: never | string) => {
   return /^\d+$/.test(str);
 };
+
+export const capitalizeFirstLetter = (string: string) => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
