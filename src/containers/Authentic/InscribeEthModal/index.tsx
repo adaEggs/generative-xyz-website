@@ -53,7 +53,6 @@ const InscribeEthModal: React.FC<IProps> = (
 ): React.ReactElement => {
   const router = useRouter();
   const isAuth = getAccessToken();
-
   const { isAuthentic, tokenAddress, tokenId } = router.query;
   const { handleClose } = props;
   const { transfer } = useContext(WalletContext);
@@ -107,7 +106,8 @@ const InscribeEthModal: React.FC<IProps> = (
       setIsSent(true);
     } catch (err: unknown) {
       log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-      _onClose();
+      toast.remove();
+      toast.error(ErrorMessage.DEFAULT);
     }
   };
 
@@ -323,9 +323,10 @@ const InscribeEthModal: React.FC<IProps> = (
     }
   };
 
-  const _onClose = () => {
+  const onClose = () => {
     setErrMessage('');
     handleClose();
+    resetAuthenticQueryParams();
   };
 
   return (
@@ -339,7 +340,7 @@ const InscribeEthModal: React.FC<IProps> = (
           <div className={s.modalContainer}>
             <div className={s.modalHeader}>
               <ButtonIcon
-                onClick={_onClose}
+                onClick={onClose}
                 className={s.closeBtn}
                 variants="ghost"
                 type="button"
@@ -583,7 +584,7 @@ const InscribeEthModal: React.FC<IProps> = (
                             <ButtonIcon
                               sizes="large"
                               className={s.buyBtn}
-                              onClick={_onClose}
+                              onClick={onClose}
                             >
                               <Text as="span" size="16" fontWeight="medium">
                                 Continue collecting
