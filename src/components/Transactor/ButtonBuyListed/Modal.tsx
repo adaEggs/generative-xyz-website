@@ -76,7 +76,7 @@ const ModalBuyListed = React.memo(
           receiverInscriptionAddress: values.receiveBTCAddress,
           sellerSignedPsbtB64: orderData.raw_psbt,
         });
-        toast.success('Buy inscription successfully');
+        toast.success('Bought inscription successfully');
         setTimeout(() => {
           setIsSubmitting(false);
           window.location.reload();

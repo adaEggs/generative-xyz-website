@@ -525,7 +525,10 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
-  const debounceFetchCollectedUTXOs = debounce(fetchCollectedUTXOs, 300);
+  const debounceFetchCollectedUTXOs = React.useCallback(
+    debounce(fetchCollectedUTXOs, 300),
+    []
+  );
 
   const fetchFeeRate = async () => {
     try {
@@ -567,8 +570,8 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       currentBtcAddressRef.current =
         currentUser.walletAddressBtcTaproot || walletAddress;
       debounceFetchDataCollectedNFTs();
-      debounceFetchCollectedUTXOs();
       debounceFetchHistory();
+      debounceFetchCollectedUTXOs();
     } else {
       setCollectedUTXOs(undefined);
     }
