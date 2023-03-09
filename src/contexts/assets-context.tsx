@@ -8,7 +8,7 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { getCollectedUTXO, getFeeRate, getHistory } from '@services/bitcoin';
 import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import { getError } from '@utils/text';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';

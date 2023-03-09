@@ -262,9 +262,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       0,
       feeRate
     );
-    // broadcast tx
-    await broadcastTx(txHex);
-    await sleep(1);
+
     const tasks = [
       await trackTx({
         txhash: txID,
@@ -282,6 +280,11 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       }),
     ];
     await Promise.all(tasks);
+
+    await sleep(1);
+
+    // broadcast tx
+    await broadcastTx(txHex);
   };
 
   // GET BALANCE
