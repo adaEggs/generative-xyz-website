@@ -21,7 +21,6 @@ import {
   ISendInsProps,
 } from '@bitcoin/types';
 import { debounce } from 'lodash';
-import { setPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
 import { sleep } from '@utils/sleep';
 
 interface IProps {
@@ -89,7 +88,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex, selectedUTXOs } = GENERATIVE_SDK.createTx(
+    const { txID, txHex } = GENERATIVE_SDK.createTx(
       privateKey,
       _collectedUTXOs.txrefs,
       _collectedUTXOs.inscriptions_by_outputs,
@@ -109,7 +108,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     });
     // broadcast tx
     await broadcastTx(txHex);
-    setPendingUTXOs(selectedUTXOs);
+    // setPendingUTXOs(selectedUTXOs);
   };
 
   const buyInscription = async ({
