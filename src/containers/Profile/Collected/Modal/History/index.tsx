@@ -84,9 +84,7 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
                     svgUrl={`${CDN_URL}/icons/ic-share.svg`}
                     className={s.wrapHistory_copy}
                     onClick={() =>
-                      window.open(
-                        `https://www.blockchain.com/explorer/transactions/btc/${item.txhash}`
-                      )
+                      window.open(`https://mempool.space/tx/${item.txhash}`)
                     }
                   />
                 </Stack>

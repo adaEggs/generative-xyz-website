@@ -56,7 +56,7 @@ export const RAPI_HOST = 'telize-v1.p.rapidapi.com';
 export const RAPID_CLIENT_TOKEN = process.env.NEXT_PUBLIC_RAPID_CLIENT_TOKEN!;
 
 // Ordinals
-export const HOST_ORDINALS_EXPLORER = 'https://dev-v5.generativeexplorer.com';
+export const HOST_ORDINALS_EXPLORER = 'https://dev.generativeexplorer.com';
 
 export const GLB_COLLECTION_ID = process.env.NEXT_PUBLIC_GLB_COLLECTION_ID!;
 

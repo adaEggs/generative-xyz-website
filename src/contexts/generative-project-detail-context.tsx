@@ -23,8 +23,7 @@ import { useDispatch } from 'react-redux';
 
 const LOG_PREFIX = 'GenerativeProjectDetailContext';
 
-// const FETCH_NUM = 20;
-const FETCH_NUM = 2000; // TODO: HOT FIX LIMIT
+const FETCH_NUM = 20;
 
 export interface IGenerativeProjectDetailContext {
   projectData: Project | null;
@@ -138,7 +137,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const [listItems, setListItems] = useState<Token[] | null>(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState('newest');
+  const [sort, setSort] = useState('price-asc');
   const [filterBuyNow, setFilterBuyNow] = useState(false);
   const [searchToken, setSearchToken] = useState('');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);

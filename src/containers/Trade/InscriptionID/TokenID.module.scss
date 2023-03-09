@@ -12,6 +12,13 @@
   }
 }
 
+.ntfBlock {
+  position: relative;
+  width: 100%;
+  height: 50vh;
+  margin-bottom: rem(20px);
+}
+
 .info {
   @include min-tablet {
     overflow-y: scroll;
@@ -142,7 +149,7 @@
 }
 
 .owner {
-  margin-top: rem(34px);
+  margin-bottom: rem(24px);
 
   > a {
     text-decoration: none;
@@ -150,6 +157,16 @@
     &:hover {
       text-decoration: underline;
     }
+  }
+}
+
+.projectName {
+  text-decoration: none;
+  color: $secondary-purple-c;
+
+  &:hover {
+    color: $secondary-purple-c;
+    text-decoration: underline;
   }
 }
 
