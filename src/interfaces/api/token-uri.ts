@@ -38,3 +38,8 @@ export interface IGetGenerativeTokenUriListParams extends IPagingParams {
 }
 
 export type IGetGenerativeTokenUriListResponse = IGetProfileTokensResponse;
+
+export interface ICreateTokenThumbnailPayload {
+  tokenID: string;
+  thumbnail: string; // Base 64 Image
+}

@@ -41,6 +41,7 @@ const getHeader = (configHeader?: HeadersInit): HeadersInit => {
   const headers: Record<string, string> = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
+    'Accept-Encoding': 'gzip',
     ...Object(defaultHeader),
   };
 
