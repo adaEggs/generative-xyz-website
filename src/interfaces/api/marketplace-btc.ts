@@ -32,6 +32,7 @@ export interface IGetMarketplaceBtcListItem {
   sat?: string | null;
   timestamp: string | null;
   block: string | null;
+  address?: string | null;
 }
 
 export interface IPostMarketplaceBtcListNFTForms {

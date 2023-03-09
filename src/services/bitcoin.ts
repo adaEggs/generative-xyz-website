@@ -16,6 +16,7 @@ import axios from 'axios';
 import { getPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
 import { getUTXOKey } from '@containers/Profile/ButtonSendBTC/utils';
 import { isExpiredTime } from '@utils/time';
+import { getError } from '@utils/text';
 
 const LOG_PREFIX = 'COLLECTED_NFT';
 
@@ -112,12 +113,17 @@ export const getHistory = async (address: string): Promise<ITxHistory[]> => {
   }
 };
 
-export const broadcastTx = async (txHex: string): Promise<never> => {
+export const broadcastTx = async (
+  txHex: string,
+  isSplit = false
+): Promise<never> => {
   try {
     return axios.post(`https://blockstream.info/api/tx`, txHex);
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
-    throw err;
+    const error = getError(err);
+    const subMess = isSplit ? ' split ' : ' ';
+    throw new Error(`Broadcast the${subMess}tx error ${error.message}`);
   }
 };
 
