@@ -1,6 +1,10 @@
 import { User } from '@interfaces/user';
+
+import {
+  IGetProjectItemsTraitsListResponse,
+  IGetProjectVolumeResponse,
+} from './api/project';
 import { MarketplaceStats } from './marketplace';
-import { IGetProjectVolumeResponse } from './api/project';
 
 export type ProjectSocial = {
   web: string;
@@ -87,3 +91,5 @@ export type TraitStats = {
 };
 
 export type ProjectVolume = IGetProjectVolumeResponse;
+
+export type ProjectItemsTraitList = IGetProjectItemsTraitsListResponse[];

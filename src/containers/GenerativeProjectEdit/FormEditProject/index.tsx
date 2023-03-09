@@ -7,7 +7,11 @@ import { toast } from 'react-hot-toast';
 import { IUpdateProjectPayload } from '@interfaces/api/project';
 import { MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
-import { deleteProject, updateProject } from '@services/project';
+import {
+  deleteProject,
+  updateProject,
+  uploadUpdatedTraitList,
+} from '@services/project';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import ImagePreviewInput from '@components/ImagePreviewInput';
 import s from './styles.module.scss';
@@ -21,6 +25,8 @@ import Select, { MultiValue } from 'react-select';
 import MarkdownEditor from '@components/MarkdownEditor';
 import { ROUTE_PATH } from '@constants/route-path';
 import { useRouter } from 'next/router';
+import DropFile from '@containers/MintBTCGenerative/DropFile';
+import Text from '@components/Text';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -36,17 +42,58 @@ type IUpdateProjectFormValue = {
   captureImageTime: number;
 };
 
+// const MOCK_TRAITS = [
+//   {
+//     id: '9a7be21490f8d256d47afcf2ce936c98ed11ee8645cc281b7393b82b9d82b706i0',
+//     attributes: [
+//       {
+//         trait_type: 'Background',
+//         value: 'M1 Yellow',
+//       },
+//       {
+//         trait_type: 'Fur',
+//         value: 'M1 Golden Brown',
+//       },
+//       {
+//         trait_type: 'Eyes',
+//         value: 'M1 Closed',
+//       },
+//       {
+//         trait_type: 'Clothes',
+//         value: 'M1 Wool Turtleneck',
+//       },
+//       {
+//         trait_type: 'Hat',
+//         value: 'M1 Spinner Hat',
+//       },
+//       {
+//         trait_type: 'Mouth',
+//         value: 'M1 Bored Unshaven',
+//       },
+//     ],
+//   },
+//   {
+//     id: '9a7be21490f8d256d47afcf2ce936c98ed11ee8645cc281b7393b82b9d82b706i0',
+//     attributes: [],
+//   },
+// ];
+
 const FormEditProject = () => {
   const router = useRouter();
-  const { setProjectData, projectData: project } = useContext(
-    GenerativeProjectDetailContext
-  );
+  const {
+    setProjectData,
+    projectData: project,
+    projectItemsTraitList,
+  } = useContext(GenerativeProjectDetailContext);
   const [newFile, setNewFile] = useState<File | null>();
   const [uploadError, setUploadError] = useState<boolean>(false);
   const [categoryOptions, setCategoryOptions] = useState<Array<SelectOption>>(
     []
   );
+  const [file, setFile] = useState<File | null>(null);
+
   const [isDelete, setIsDelete] = useState<boolean>(false);
+  // const [isProcessingFile, setIsProcessingFile] = useState(false);
 
   const nftMinted = useMemo((): number => {
     return project?.mintingInfo?.index || 0;
@@ -159,13 +206,29 @@ const FormEditProject = () => {
       payload.captureImageTime = values.captureImageTime || 20;
     }
 
-    const res = await updateProject(
-      GENERATIVE_PROJECT_CONTRACT,
-      projectTokenId,
-      payload
-    );
-    if (res) {
-      setProjectData(res);
+    const [updateTraitRes, updateProjectRes] = await Promise.allSettled([
+      file
+        ? uploadUpdatedTraitList({
+            file: file,
+            contractAddress: GENERATIVE_PROJECT_CONTRACT,
+            projectID: projectTokenId,
+          })
+        : [],
+      updateProject(GENERATIVE_PROJECT_CONTRACT, projectTokenId, payload),
+    ]);
+    if (updateTraitRes.status === 'rejected') {
+      toast.error('Failed to update. Please review your updated traits file');
+      return;
+    }
+    if (updateProjectRes.status === 'rejected') {
+      toast.error('Failed to update project');
+      return;
+    }
+    if (
+      updateTraitRes.status === 'fulfilled' &&
+      updateTraitRes.status === 'fulfilled'
+    ) {
+      setProjectData(updateProjectRes.value);
       toast.success('Update successfully');
     }
 
@@ -203,6 +266,23 @@ const FormEditProject = () => {
       setIsDelete(false);
       router.push(ROUTE_PATH.PROFILE);
     }
+  };
+
+  const handleChangeFile = (file: File | null) => {
+    setFile(file);
+  };
+
+  const handleDownloadFile = () => {
+    const dataStr = JSON.stringify(projectItemsTraitList, null, 2);
+    const dataUri =
+      'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+
+    const downloadLink = document.createElement('a');
+    downloadLink.setAttribute('href', dataUri);
+    downloadLink.setAttribute('download', `${project?.name}_traits.json`);
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   };
 
   useAsyncEffect(async () => {
@@ -347,6 +427,36 @@ const FormEditProject = () => {
                   </div>
                 </div>
               </div>
+              {project &&
+                projectFiles !== 0 &&
+                project?.mintingInfo?.index > 0 && (
+                  <div className={s.updateTraits}>
+                    <label className={s.label} htmlFor="name">
+                      Update Traits
+                    </label>
+                    <Text className="mb-4">
+                      Download this{' '}
+                      <Text
+                        as="span"
+                        color="purple-c"
+                        className="hover-underline cursor-pointer"
+                        onClick={handleDownloadFile}
+                      >
+                        file
+                      </Text>{' '}
+                      to update traits for every collection items.
+                    </Text>
+                    <DropFile
+                      labelText={'Upload your updated file here.'}
+                      className={s.dropZoneContainer}
+                      acceptedFileType={['json']}
+                      maxSize={9999999}
+                      onChange={handleChangeFile}
+                      // fileOrFiles={rawFile ? [rawFile] : null}
+                      isProcessing={false}
+                    />
+                  </div>
+                )}
 
               <div className={s.setPrice}>
                 <div className={s.formWrapper}>
