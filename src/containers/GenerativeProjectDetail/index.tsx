@@ -20,6 +20,7 @@ import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import MintWalletModal from './MintWalletModal';
 import TokenTopFilter from './TokenTopFilter';
 import styles from './styles.module.scss';
+import { GridDebug } from '@components/Grid/grid';
 
 const GenerativeProjectDetail: React.FC<{
   isWhitelist?: boolean;
@@ -120,6 +121,7 @@ const GenerativeProjectDetail: React.FC<{
           )}
         </>
       )}
+      <GridDebug />
     </>
   );
 };

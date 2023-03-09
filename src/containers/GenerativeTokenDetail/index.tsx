@@ -21,7 +21,13 @@ import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
 import { formatLongAddress, formatTokenId } from '@utils/format';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Container } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -67,6 +73,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const isBuyable = React.useMemo(() => {
     return tokenData?.buyable && !!tokenData?.priceBTC;
   }, [tokenData?.buyable, tokenData?.priceBTC]);
+  const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
 
   const [showReportModal, setShowReportModal] = useState(false);
 
@@ -219,7 +226,9 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     return null;
   };
 
-  const tokenDescription = tokenData?.description || projectData?.desc || '';
+  const tokenDescription = useMemo((): string => {
+    return tokenData?.description || projectData?.desc || '';
+  }, [tokenData, projectData]);
 
   const handleBuyToken = async (): Promise<void> => {
     setIsBuying(true);
@@ -290,6 +299,15 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       ? wordCase(`Ordinal ${projectData?.name} `)
       : `${projectData?.name} `;
   }, [projectData]);
+
+  useEffect(() => {
+    const exists = projectData?.desc.includes('Interaction');
+    if (exists) {
+      setHasProjectInteraction(true);
+    } else {
+      setHasProjectInteraction(false);
+    }
+  }, [projectData?.desc]);
 
   return (
     <>
@@ -436,7 +454,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               <div className={s.accordions}>
                 <div className={s.accordions_item}>
                   <ProjectDescription
-                    desc={tokenDescription || ''}
+                    desc={tokenDescription}
                     attributes={
                       featuresList() ? (
                         <Stats data={featuresList() || []} />
@@ -444,6 +462,8 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                         ''
                       )
                     }
+                    hasInteraction={hasProjectInteraction}
+                    descInteraction={projectData?.desc || ''}
                     tokenDetail={
                       tokenInfos && tokenInfos.length > 0 ? (
                         <Stats data={tokenInfos} />

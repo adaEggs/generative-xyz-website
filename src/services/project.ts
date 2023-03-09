@@ -1,4 +1,5 @@
 import { LogLevel } from '@enums/log-level';
+import { IUploadFilePayload } from '@interfaces/api/files';
 import {
   ICreateBTCProjectPayload,
   ICreateBTCProjectResponse,
@@ -8,22 +9,23 @@ import {
   IGetProjectDetailResponse,
   IGetProjectItemsParams,
   IGetProjectItemsQuery,
+  IGetProjectItemsTraitsListResponse,
   IGetProjectListParams,
   IGetProjectListResponse,
   IGetProjectTokensResponse,
+  IGetProjectVolumeResponse,
+  IReportProjectPayload,
+  IReportProjectResponse,
   IUpdateProjectPayload,
   IUploadBTCProjectFilePayload,
   IUploadBTCProjectFileResponse,
-  IReportProjectPayload,
-  IReportProjectResponse,
-  IGetProjectVolumeResponse,
 } from '@interfaces/api/project';
-import { deleteMethod, get, post, postFile, put } from '@services/http-client';
-import log from '@utils/logger';
-import querystring from 'query-string';
-import { orderBy } from 'lodash';
 import { Project } from '@interfaces/project';
+import { deleteMethod, get, post, postFile, put } from '@services/http-client';
 import { getCollectionFloorPrice } from '@services/marketplace-btc';
+import log from '@utils/logger';
+import { orderBy } from 'lodash';
+import querystring from 'query-string';
 
 const LOG_PREFIX = 'ProjectService';
 
@@ -162,6 +164,39 @@ export const getProjectList = async (
   } catch (err: unknown) {
     log('failed to get project list', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get project list');
+  }
+};
+
+export const getProjectItemsTraitsList = async ({
+  contractAddress,
+  projectID,
+}: IGetProjectDetailParams): Promise<IGetProjectItemsTraitsListResponse[]> => {
+  try {
+    // const qs = '?' + querystring.stringify(params);
+    const res = await get<IGetProjectItemsTraitsListResponse[]>(
+      `${API_PATH}/${contractAddress}/tokens/${projectID}/token-traits`
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get project items trait list', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get project items trait list');
+  }
+};
+
+export const uploadUpdatedTraitList = async (
+  payload: IUploadFilePayload & IGetProjectDetailParams
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+): Promise<any> => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const res = await postFile<IUploadFilePayload, any>(
+      `${API_PATH}/${payload.contractAddress}/tokens/${payload.projectID}/token-traits`,
+      payload
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to upload file', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to upload file');
   }
 };
 
