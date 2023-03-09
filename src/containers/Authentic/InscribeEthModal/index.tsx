@@ -193,7 +193,7 @@ const InscribeEthModal: React.FC<IProps> = (
           tokenId: tokenId as string,
         });
 
-        const metadata = JSON.parse(res.metadata);
+        const metadata = res.metadata_obj;
 
         // Handle link
         if (checkForHttpRegex(metadata.image)) {

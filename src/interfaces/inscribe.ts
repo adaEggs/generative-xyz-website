@@ -42,4 +42,11 @@ export interface MoralisNFT {
   token_uri: string;
   metadata: string;
   is_minted: boolean;
+  metadata_obj: {
+    animation_url: string;
+    description: string;
+    external_link: string;
+    image: string;
+    name: string;
+  };
 }
