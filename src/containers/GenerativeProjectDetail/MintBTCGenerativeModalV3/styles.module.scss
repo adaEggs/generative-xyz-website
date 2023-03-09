@@ -26,11 +26,15 @@
 
   .showInfo {
     @include min-tablet {
-      width: 520px;
+      width: 808px;
+    }
+
+    @include min-pc {
+      width: 908px;
     }
 
     @include min-pc-superWide {
-      width: rem(520px);
+      width: rem(908px);
     }
   }
 

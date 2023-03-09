@@ -5,9 +5,22 @@
 
   .mintFeeWrapper {
     display: flex;
-    gap: rem(24px);
+    // gap: rem(24px);
     margin-bottom: rem(24px);
     margin-top: rem(16px);
+
+    .row {
+      display: -webkit-box;
+      display: flex;
+      display: flexbox;
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .row > [class*="col-"] {
+      display: flex;
+      flex-direction: column;
+    }
 
     @include mobile {
       gap: (6px);

@@ -26,6 +26,10 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
+import FeeRate from '@containers/Profile/FeeRate';
+import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
+import { isNumeric } from '@utils/string';
+import * as SDK from 'generative-sdk';
 
 interface IFormValue {
   address: string;
@@ -35,6 +39,19 @@ const MintBTCGenerativeModal: React.FC = () => {
   const router = useRouter();
   const { projectData } = useContext(GenerativeProjectDetailContext);
   const user = useAppSelector(getUserSelector);
+
+  const {
+    selectedRate,
+    handleChangeFee,
+    allRate,
+    customRate,
+    handleChangeCustomRate,
+  } = useFeeRate();
+
+  const currentRate =
+    customRate && isNumeric(customRate)
+      ? Number(customRate)
+      : allRate[selectedRate];
 
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [isShowAdvance, setIsShowAdvance] = useState(false);
@@ -66,14 +83,15 @@ const MintBTCGenerativeModal: React.FC = () => {
     '0.0'
   );
   const feePriceFormat = formatBTCPrice(
-    feePrice ? Number(feePrice) : Number(projectData?.networkFee),
+    feePrice ? Number(feePrice) : SDK.estimateTxFee(2, 2, currentRate),
     '0.0'
   );
   const totalPriceFormat = formatBTCPrice(
     totalPrice
       ? totalPrice
       : `${
-          (Number(projectData?.networkFee) + Number(projectData?.mintPrice)) *
+          (SDK.estimateTxFee(2, 2, currentRate) +
+            Number(projectData?.mintPrice)) *
           quantity
         }` || ''
   );
@@ -264,13 +282,18 @@ const MintBTCGenerativeModal: React.FC = () => {
                         className={s.paymentPrice_price}
                       >{`${priceFormat} BTC`}</p>
                     </div>
-                    <div className={s.paymentPrice}>
-                      <p className={s.paymentPrice_title}>Inscription fee</p>
-                      <p
-                        className={s.paymentPrice_price}
-                      >{`${feePriceFormat} BTC`}</p>
-                    </div>
-                    <div className={s.paymentPrice} style={{ marginTop: 4 }}>
+                    {step === 'showAddress' && (
+                      <div className={s.paymentPrice}>
+                        <p className={s.paymentPrice_title}>Inscription fee</p>
+                        <p
+                          className={s.paymentPrice_price}
+                        >{`${feePriceFormat} BTC`}</p>
+                      </div>
+                    )}
+                    <div
+                      className={s.paymentPrice}
+                      style={{ marginTop: 4, marginBottom: 8 }}
+                    >
                       <p className={s.paymentPrice_title}>Quantity</p>
                       {step === 'info' ? (
                         <div className={s.paymentPrice_inputContainer}>
@@ -308,6 +331,18 @@ const MintBTCGenerativeModal: React.FC = () => {
                         <p className={s.paymentPrice_price}>{quantity}</p>
                       )}
                     </div>
+
+                    {step === 'info' && (
+                      <FeeRate
+                        handleChangeFee={handleChangeFee}
+                        selectedRate={selectedRate}
+                        allRate={allRate}
+                        useCustomRate={true}
+                        handleChangeCustomRate={handleChangeCustomRate}
+                        customRate={customRate}
+                      />
+                    )}
+
                     <div className={s.indicator} />
 
                     <div className={s.paymentPrice}>
@@ -319,7 +354,9 @@ const MintBTCGenerativeModal: React.FC = () => {
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                           onClick={() => onClickCopy(`${totalPriceFormat}`)}
                         />
-                        <p className={s.text}>{`${totalPriceFormat} BTC`}</p>
+                        <p className={s.text}>{`${
+                          step === 'info' ? '~ ' : ''
+                        }${totalPriceFormat} BTC`}</p>
                       </div>
                     </div>
                   </div>

@@ -1,9 +1,14 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { FeeRateName } from '@interfaces/api/bitcoin';
 import { ProfileContext } from '@contexts/profile-context';
 
 const useFeeRate = () => {
-  const { feeRate: RATE } = useContext(ProfileContext);
+  const { feeRate: RATE, debounceFetchFeeRate } = useContext(ProfileContext);
+
+  useEffect(() => {
+    debounceFetchFeeRate();
+  }, []);
+
   const FEE_RATE = RATE || {
     fastestFee: 15,
     halfHourFee: 10,
