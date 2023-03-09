@@ -1,32 +1,33 @@
 import ButtonIcon from '@components/ButtonIcon';
-import { LogLevel } from '@enums/log-level';
-import log from '@utils/logger';
-import { Formik } from 'formik';
-import { toast } from 'react-hot-toast';
-
-import { IUpdateProjectPayload } from '@interfaces/api/project';
+import ImagePreviewInput from '@components/ImagePreviewInput';
+import MarkdownEditor from '@components/MarkdownEditor';
+import Text from '@components/Text';
 import { MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { ROUTE_PATH } from '@constants/route-path';
+import DropFile from '@containers/MintBTCGenerative/DropFile';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import { LogLevel } from '@enums/log-level';
+import { IUpdateProjectPayload } from '@interfaces/api/project';
+import { SelectOption } from '@interfaces/select-input';
+import { getCategoryList } from '@services/category';
+import { uploadFile } from '@services/file';
 import {
   deleteProject,
   updateProject,
   uploadUpdatedTraitList,
 } from '@services/project';
-import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import ImagePreviewInput from '@components/ImagePreviewInput';
-import s from './styles.module.scss';
+import { isProduction } from '@utils/common';
 import { formatBTCPrice } from '@utils/format';
-import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
-import { uploadFile } from '@services/file';
-import { SelectOption } from '@interfaces/select-input';
-import useAsyncEffect from 'use-async-effect';
-import { getCategoryList } from '@services/category';
-import Select, { MultiValue } from 'react-select';
-import MarkdownEditor from '@components/MarkdownEditor';
-import { ROUTE_PATH } from '@constants/route-path';
+import log from '@utils/logger';
+import { Formik } from 'formik';
 import { useRouter } from 'next/router';
-import DropFile from '@containers/MintBTCGenerative/DropFile';
-import Text from '@components/Text';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import Select, { MultiValue } from 'react-select';
+import useAsyncEffect from 'use-async-effect';
+
+import s from './styles.module.scss';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -427,7 +428,8 @@ const FormEditProject = () => {
                   </div>
                 </div>
               </div>
-              {project &&
+              {!isProduction() &&
+                project &&
                 projectFiles !== 0 &&
                 project?.mintingInfo?.index > 0 && (
                   <div className={s.updateTraits}>
