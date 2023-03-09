@@ -70,7 +70,7 @@ export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
             fontWeight="medium"
             color="black-40-solid"
           >
-            {arts || formatAddress(profile.walletAddress)}
+            {arts}
           </Text>
         </div>
       </div>
