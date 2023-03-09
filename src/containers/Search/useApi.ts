@@ -1,8 +1,10 @@
 import { useMemo } from 'react';
 import useSWR from 'swr';
 
+import { getSearchByKeyword } from '@services/search';
+import { getApiKey } from '@utils/swr';
+
 import { PAYLOAD_DEFAULT, OBJECT_TYPE } from './constant';
-import { getSearchByKeyword, getApiKey } from '@services/search';
 
 export interface SearchApi {
   keyword: string | string[];
