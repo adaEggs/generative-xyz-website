@@ -33,7 +33,7 @@ const Authentic: React.FC = (): React.ReactElement => {
     try {
       const params: IGetNFTListFromMoralisParams = {
         walletAddress: user.walletAddress,
-        limit: 12,
+        limit: 24,
       };
       if (cursor) {
         params.cursor = cursor;
