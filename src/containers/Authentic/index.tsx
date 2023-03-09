@@ -13,6 +13,7 @@ import React, { useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useSelector } from 'react-redux';
 import InscriptionList from './InscriptionList';
+import _uniqBy from 'lodash/uniqBy';
 import s from './styles.module.scss';
 
 const LOG_PREFIX = 'Authentic';
@@ -32,7 +33,7 @@ const Authentic: React.FC = (): React.ReactElement => {
     try {
       const params: IGetNFTListFromMoralisParams = {
         walletAddress: user.walletAddress,
-        limit: 12,
+        limit: 24,
       };
       if (cursor) {
         params.cursor = cursor;
@@ -40,7 +41,11 @@ const Authentic: React.FC = (): React.ReactElement => {
       const res = await getNFTListFromMoralis(params);
       const data = res[user.walletAddress];
       if (data.result && Array.isArray(data.result)) {
-        setNftList(prev => [...prev, ...data.result]);
+        const newList = _uniqBy(
+          [...nftList, ...data.result],
+          nft => nft.token_address + nft.token_id
+        );
+        setNftList(newList);
       }
       setCursor(data.cursor);
     } catch (err: unknown) {

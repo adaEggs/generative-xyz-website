@@ -489,7 +489,7 @@ const MintEthModal: React.FC = () => {
                 {step === 'showAddress' && (
                   <Col md={'6'}>
                     <div className={s.paymentWrapper}>
-                      {receiverAddress && !isLoading && (
+                      {!isSent && receiverAddress && !isLoading && (
                         <div className={s.qrCodeWrapper}>
                           <p className={s.qrTitle}>
                             Send{' '}
@@ -520,6 +520,13 @@ const MintEthModal: React.FC = () => {
                             value={receiverAddress || ''}
                           />
                         </div>
+                      )}
+                      {isSent && (
+                        <img
+                          alt="project"
+                          className={s.projectImg}
+                          src={projectData.image}
+                        />
                       )}
                       {isLoading && (
                         <div className={s.loadingWrapper}>

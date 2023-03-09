@@ -19,7 +19,7 @@ import { generateAuthReceiverAddress } from '@services/inscribe';
 import { getNFTDetailFromMoralis } from '@services/token-moralis';
 import { blobToBase64, blobToFile, fileToBase64 } from '@utils/file';
 import { ellipsisCenter, formatBTCPrice, formatEthPrice } from '@utils/format';
-import { convertIpfsToHttp, isValidImage } from '@utils/image';
+import { isValidImage } from '@utils/image';
 import { calculateMintFee } from '@utils/inscribe';
 import log from '@utils/logger';
 import { checkForHttpRegex } from '@utils/string';
@@ -28,7 +28,7 @@ import BigNumber from 'bignumber.js';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import useAsyncEffect from 'use-async-effect';
@@ -53,7 +53,6 @@ const InscribeEthModal: React.FC<IProps> = (
 ): React.ReactElement => {
   const router = useRouter();
   const isAuth = getAccessToken();
-
   const { isAuthentic, tokenAddress, tokenId } = router.query;
   const { handleClose } = props;
   const { transfer } = useContext(WalletContext);
@@ -63,7 +62,7 @@ const InscribeEthModal: React.FC<IProps> = (
     useState<InscriptionInfo | null>();
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [isShowAdvance, setIsShowAdvance] = useState(false);
-  const [step, setsTep] = useState<'info' | 'showAddress'>('info');
+  const [step, setStep] = useState<'info' | 'showAddress'>('info');
   const [file, setFile] = useState<File | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -97,6 +96,22 @@ const InscribeEthModal: React.FC<IProps> = (
     };
   }, [user]);
 
+  const buttonText = useMemo(() => {
+    if (isFetching) {
+      return 'Loading...';
+    }
+    if (isMinting) {
+      return 'Processing...';
+    }
+    return 'Inscribe';
+  }, [isFetching, isMinting]);
+
+  const handleError = () => {
+    toast.remove();
+    toast.error('Can not inscribe this token');
+    onClose();
+  };
+
   const handleTransfer = async (
     toAddress: string,
     val: string
@@ -107,7 +122,9 @@ const InscribeEthModal: React.FC<IProps> = (
       setIsSent(true);
     } catch (err: unknown) {
       log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-      _onClose();
+      toast.remove();
+      toast.error(ErrorMessage.DEFAULT);
+      setStep('info');
     }
   };
 
@@ -135,8 +152,8 @@ const InscribeEthModal: React.FC<IProps> = (
   };
 
   const handleResizeImage = async (imageBlob: Blob): Promise<File | null> => {
-    // Check if image larger than 1MB
-    if (imageBlob.size > 1024 * 1024) {
+    // Check if image larger than 400kb
+    if (imageBlob.size > 400 * 1024) {
       // Call API to get resized base64 string
       try {
         const fileBase64 = await blobToBase64(imageBlob);
@@ -175,11 +192,8 @@ const InscribeEthModal: React.FC<IProps> = (
           tokenAddress: tokenAddress as string,
           tokenId: tokenId as string,
         });
-        const metadata = JSON.parse(res.metadata);
 
-        if ((metadata.image as string).includes('ipfs')) {
-          metadata.image = convertIpfsToHttp(metadata.image);
-        }
+        const metadata = res.metadata_obj;
 
         // Handle link
         if (checkForHttpRegex(metadata.image)) {
@@ -191,7 +205,7 @@ const InscribeEthModal: React.FC<IProps> = (
             const resizedImage = await handleResizeImage(imageBlob);
             setFile(resizedImage);
           } else {
-            resetAuthenticQueryParams();
+            handleError();
           }
         }
         // Handle base64
@@ -202,7 +216,7 @@ const InscribeEthModal: React.FC<IProps> = (
             const resizedImage = await handleResizeImage(imageBlob);
             setFile(resizedImage);
           } else {
-            resetAuthenticQueryParams();
+            handleError();
           }
         }
       }
@@ -212,12 +226,6 @@ const InscribeEthModal: React.FC<IProps> = (
       setIsFetching(false);
     }
   };
-
-  useEffect(() => {
-    if (receiverAddress) {
-      handleTransfer(receiverAddress, totalFormatPrice);
-    }
-  }, [receiverAddress, totalFormatPrice]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -311,8 +319,11 @@ const InscribeEthModal: React.FC<IProps> = (
       }
       const res = await generateAuthReceiverAddress(payload);
       setInscriptionInfo(res);
+      setStep('showAddress');
       setReceiverAddress(res?.segwitAddress);
-      setsTep('showAddress');
+      if (res.segwitAddress && res.amount) {
+        handleTransfer(res?.segwitAddress, formatEthPrice(res.amount));
+      }
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
       toast.remove();
@@ -323,9 +334,10 @@ const InscribeEthModal: React.FC<IProps> = (
     }
   };
 
-  const _onClose = () => {
+  const onClose = () => {
     setErrMessage('');
     handleClose();
+    resetAuthenticQueryParams();
   };
 
   return (
@@ -339,7 +351,7 @@ const InscribeEthModal: React.FC<IProps> = (
           <div className={s.modalContainer}>
             <div className={s.modalHeader}>
               <ButtonIcon
-                onClick={_onClose}
+                onClick={onClose}
                 className={s.closeBtn}
                 variants="ghost"
                 type="button"
@@ -374,7 +386,9 @@ const InscribeEthModal: React.FC<IProps> = (
                           size={18}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
-                        <p className={s.text}>{`≈${totalFormatPrice} ETH`}</p>
+                        <p className={s.text}>
+                          {isFetching ? '--' : `≈${totalFormatPrice} ETH`}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -498,14 +512,8 @@ const InscribeEthModal: React.FC<IProps> = (
                           handleSubmit({ address: userAddress.taproot })
                         }
                       >
-                        {isFetching ? 'Loading...' : 'Inscribe'}
+                        {buttonText}
                       </ButtonIcon>
-                    )}
-
-                    {step === 'info' && isLoading && (
-                      <div className={s.loadingWrapper}>
-                        <Loading isLoaded={false} />
-                      </div>
                     )}
 
                     {!!errMessage && (
@@ -559,6 +567,7 @@ const InscribeEthModal: React.FC<IProps> = (
                             />
                           </div>
                         )}
+
                         {isLoading && (
                           <div className={s.loadingWrapper}>
                             <Loading isLoaded={false} />
@@ -583,7 +592,7 @@ const InscribeEthModal: React.FC<IProps> = (
                             <ButtonIcon
                               sizes="large"
                               className={s.buyBtn}
-                              onClick={_onClose}
+                              onClick={onClose}
                             >
                               <Text as="span" size="16" fontWeight="medium">
                                 Continue collecting
