@@ -32,7 +32,7 @@ import { getUserSelector } from '@redux/user/selector';
 import MintGenerativeNFTOperation from '@services/contract-operations/generative-nft/mint-generative-nft';
 import { getMarketplaceStats } from '@services/marketplace';
 import { isTestnet } from '@utils/chain';
-import { isWalletWhiteList } from '@utils/common';
+import { isWalletWhiteList, wordCase } from '@utils/common';
 import { convertToETH } from '@utils/currency';
 import {
   base64ToUtf8,
@@ -274,6 +274,12 @@ const ProjectIntroSection = ({
     );
   }, [project]);
 
+  const projectName = useMemo((): string => {
+    return project?.fromAuthentic || false
+      ? wordCase(`Ordinal ${project?.name} `)
+      : `${project?.name} `;
+  }, [project]);
+
   const renderLeftContent = () => {
     if (!project && !marketplaceStats)
       return (
@@ -298,6 +304,7 @@ const ProjectIntroSection = ({
                       className={cs(
                         s.creator_info,
                         !project?.creatorProfile?.walletAddressBtcTaproot &&
+                          !project?.creatorProfile?.walletAddress &&
                           'pointer-none'
                       )}
                     >
@@ -342,7 +349,7 @@ const ProjectIntroSection = ({
                     as="h4"
                     fontWeight="medium"
                   >
-                    {project?.name}
+                    {projectName}
                   </Heading>
                   {isEdit && (
                     <div className={s.projectHeader_btn}>
@@ -756,26 +763,44 @@ const ProjectIntroSection = ({
             </div>
           </div>
         </div>
-
         <div className={s.info_wrapper}>
           <div className={s.info}>
             <div className={`${s.projectHeader}`}>
-              <Link
-                href={`${ROUTE_PATH.PROFILE}/${project?.creatorProfile?.walletAddressBtcTaproot}`}
-                className={cs(
-                  s.creator_info,
-                  !project?.creatorProfile?.walletAddressBtcTaproot &&
-                    'pointer-none'
-                )}
-              >
-                <Heading
-                  className={s.projectHeader_creator}
-                  as="h4"
-                  fontWeight="medium"
+              {isHasBtcWallet ? (
+                <Link
+                  href={`${ROUTE_PATH.PROFILE}/${creatorAddress}`}
+                  className={cs(
+                    s.creator_info,
+                    !project?.creatorProfile?.walletAddressBtcTaproot &&
+                      !project?.creatorProfile?.walletAddress &&
+                      'pointer-none'
+                  )}
                 >
-                  {project && filterCreatorName(project)}
-                </Heading>
-              </Link>
+                  <Heading
+                    className={s.projectHeader_creator}
+                    as="h4"
+                    fontWeight="medium"
+                  >
+                    {project && filterCreatorName(project)}
+                  </Heading>
+                </Link>
+              ) : (
+                <div
+                  className={cs(
+                    s.creator_info,
+                    !project?.creatorProfile?.walletAddressBtcTaproot &&
+                      'pointer-none'
+                  )}
+                >
+                  <Heading
+                    className={s.projectHeader_creator}
+                    as="h4"
+                    fontWeight="medium"
+                  >
+                    {project && filterCreatorName(project)}
+                  </Heading>
+                </div>
+              )}
               <SocialVerify
                 isTwVerified={isTwVerified}
                 link={SOCIALS.twitter}
@@ -791,7 +816,7 @@ const ProjectIntroSection = ({
                 as="h4"
                 fontWeight="medium"
               >
-                {project?.name}
+                {projectName}
               </Heading>
               {isEdit && (
                 <div className={s.projectHeader_btn}>
@@ -839,7 +864,7 @@ const ProjectIntroSection = ({
               )}
               {project?.creatorProfile?.profileSocial?.web && (
                 <>
-                  <span className={s.creator_divider}></span>
+                  <span className={s.creator_divider} />
                   <div className={`${s.creator_social_item}`}>
                     <div className={s.creator_social_item_inner}>
                       <SvgInset
@@ -1184,6 +1209,59 @@ const ProjectIntroSection = ({
               </div>
             )}
           </div>
+          <div className={s.shares_wrapper}>
+            <ul className={s.shares}>
+              <li>
+                <div>
+                  {/* <LinkShare
+               url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+             /> */}
+                  <TwitterShareButton
+                    url={`${origin}${ROUTE_PATH.GENERATIVE}/${project?.tokenID}`}
+                    title={''}
+                    hashtags={[]}
+                  >
+                    <ButtonIcon
+                      sizes="small"
+                      variants="outline-small"
+                      className={s.projectBtn}
+                      startIcon={
+                        <SvgInset
+                          size={14}
+                          svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                        />
+                      }
+                    >
+                      Share
+                    </ButtonIcon>
+                  </TwitterShareButton>
+                </div>
+              </li>
+              <li>
+                <div
+                  className={s.reportBtn}
+                  onClick={() => setShowReportModal(true)}
+                >
+                  <SvgInset size={14} svgUrl={`${CDN_URL}/icons/ic-flag.svg`} />
+                  <Text as="span" size="14" fontWeight="medium">
+                    Report
+                  </Text>
+                </div>
+              </li>
+            </ul>
+
+            {showReportMsg && (
+              <div className={s.reportMsg}>
+                <SvgInset
+                  size={18}
+                  svgUrl={`${CDN_URL}/icons/ic-bell-ringing.svg`}
+                />
+                <Text size={'14'} fontWeight="bold">
+                  This collection is currently under review.
+                </Text>
+              </div>
+            )}
+          </div>
         </div>
       </>
     );
@@ -1239,9 +1317,20 @@ const ProjectIntroSection = ({
     <div className={s.wrapper}>
       {renderLeftContent()}
       <div />
-      {/* {!mobileScreen && (
-
-      )} */}
+      {!mobileScreen && (
+        <div className={s.thumbnailBg}>
+          <ThumbnailPreview
+            data={
+              {
+                ...projectDetail,
+                htmlFile: project?.htmlFile || '',
+                animationHtml: project?.animationHtml ?? '',
+              } as unknown as Project
+            }
+            allowVariantion
+          />
+        </div>
+      )}
       <ReportModal
         isShow={showReportModal}
         onHideModal={() => setShowReportModal(false)}

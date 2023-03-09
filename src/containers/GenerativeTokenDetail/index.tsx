@@ -40,6 +40,7 @@ import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal
 import { ProfileProvider } from '@contexts/profile-context';
 import { AuthenticCard } from './AuthenticCard';
 import { filterCreatorName } from '@utils/generative';
+import { wordCase } from '@utils/common';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
@@ -188,7 +189,13 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
       projectData?.traitStat && projectData?.traitStat?.length > 0;
 
     if (tokenData?.attributes && tokenData.attributes?.length > 0) {
-      return tokenData.attributes.map(attr => {
+      const _attirbutes = [...tokenData.attributes];
+
+      const list = _attirbutes.sort((a, b) =>
+        a.trait_type.localeCompare(b.trait_type)
+      );
+
+      return list.map(attr => {
         let rarityValue = 0;
         if (isTraitState) {
           const foundTrait = projectData?.traitStat.find(
@@ -278,6 +285,12 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     );
   }, [tokenData?.owner, tokenData?.ownerAddr]);
 
+  const projectName = useMemo((): string => {
+    return projectData?.fromAuthentic || false
+      ? wordCase(`Ordinal ${projectData?.name} `)
+      : `${projectData?.name} `;
+  }, [projectData]);
+
   return (
     <>
       <Container>
@@ -287,11 +300,10 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               <Loading isLoaded={!!tokenData} className={s.loading_token} />
               <div className={`${s.projectHeader}`}>
                 <Link
-                  href={
-                    projectData?.creatorProfile?.walletAddressBtcTaproot
-                      ? `${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddressBtcTaproot}`
-                      : `${ROUTE_PATH.PROFILE}/${projectData?.creatorProfile?.walletAddress}`
-                  }
+                  href={`${ROUTE_PATH.PROFILE}/${
+                    projectData?.creatorProfile?.walletAddressBtcTaproot ||
+                    projectData?.creatorProfile?.walletAddress
+                  }`}
                   className={cs(
                     s.creator_info,
                     !projectData?.creatorProfile?.walletAddressBtcTaproot &&
@@ -320,16 +332,21 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               >
                 <span
                   title={`${projectData?.name} #${formatTokenId(
-                    tokenData?.tokenID || ''
+                    isFromAuthentic
+                      ? projectData?.nftTokenId || ''
+                      : tokenData?.tokenID || ''
                   )}`}
+                  className={isFromAuthentic ? s.isAuthentic : ''}
                 >
                   <Link
                     href={`${ROUTE_PATH.GENERATIVE}/${projectData?.tokenID}`}
                   >
-                    {projectData?.name}{' '}
+                    {projectName}
                   </Link>
                   #
-                  {tokenData?.orderInscriptionIndex
+                  {isFromAuthentic
+                    ? projectData?.nftTokenId || ''
+                    : tokenData?.orderInscriptionIndex
                     ? tokenData?.orderInscriptionIndex
                     : tokenData?.inscriptionIndex
                     ? tokenData?.inscriptionIndex
@@ -421,7 +438,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                   <ProjectDescription
                     desc={tokenDescription || ''}
                     attributes={
-                      featuresList() ? <Stats data={featuresList()} /> : ''
+                      featuresList() ? (
+                        <Stats data={featuresList() || []} />
+                      ) : (
+                        ''
+                      )
                     }
                     tokenDetail={
                       tokenInfos && tokenInfos.length > 0 ? (
@@ -434,7 +455,12 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 </div>
               </div>
               <div className="divider" />
-              {isFromAuthentic && <AuthenticCard project={projectData} />}
+              {isFromAuthentic && (
+                <AuthenticCard
+                  nftTokenId={tokenData?.nftTokenId || ''}
+                  project={projectData}
+                />
+              )}
             </div>
             <ul className={s.shares}>
               <li>

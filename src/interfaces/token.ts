@@ -55,6 +55,7 @@ export type Token = {
     timestamp: string;
     block: string;
   };
+  nftTokenId?: string;
 };
 
 export type TokenOffer = {

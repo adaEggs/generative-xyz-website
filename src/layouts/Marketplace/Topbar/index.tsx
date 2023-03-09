@@ -27,10 +27,8 @@ const Topbar: React.FC = (): React.ReactElement => {
               svgUrl={`${CDN_URL}/icons/ic-shield-star-24x24.svg`}
             />
             <p className={s.centerText}>
-              Inscribe your existing Ethereum NFTs onto Bitcoin -{' '}
-              <Link href={ROUTE_PATH.AUTHENTIC_INSCRIPTIONS}>
-                Authentic Inscription
-              </Link>
+              Inscribe your existing Ethereum NFTs onto Bitcoin.{' '}
+              <Link href={ROUTE_PATH.AUTHENTIC_INSCRIPTIONS}>It’s free</Link>
             </p>
           </div>
 
