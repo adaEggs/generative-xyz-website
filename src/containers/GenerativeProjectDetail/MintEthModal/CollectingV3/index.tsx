@@ -71,16 +71,32 @@ const MintEthModal: React.FC = () => {
 
   const [quantity, setQuantity] = useState(1);
 
+  const isReserveUser =
+    projectData?.reservers &&
+    projectData?.reservers.length > 0 &&
+    user &&
+    user.walletAddressBtcTaproot &&
+    projectData?.reservers.includes(user.walletAddressBtcTaproot);
+
+  const projectMintPriceEth =
+    isReserveUser && projectData?.reserveMintPriceEth
+      ? projectData?.reserveMintPriceEth
+      : projectData?.mintPriceEth;
+
+  const limitMint =
+    isReserveUser && projectData?.reserveMintLimit
+      ? projectData?.reserveMintLimit
+      : projectData?.limitMintPerProcess;
+
   const priceFormat = formatEthPrice(
-    mintPrice ? mintPrice : projectData?.mintPriceEth || '',
+    mintPrice ? mintPrice : projectMintPriceEth || '',
     '0.0'
   );
   const totalFormatPrice = formatEthPriceInput(
     totalPrice
       ? totalPrice
       : `${
-          (Number(projectData?.mintPriceEth) +
-            Number(projectData?.networkFeeEth)) *
+          (Number(projectMintPriceEth) + Number(projectData?.networkFeeEth)) *
           quantity
         }` || '',
     '0.0'
@@ -91,10 +107,7 @@ const MintEthModal: React.FC = () => {
   );
 
   const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (
-      projectData?.limitMintPerProcess &&
-      projectData.limitMintPerProcess >= Number(e.target.value)
-    ) {
+    if (limitMint && limitMint >= Number(e.target.value)) {
       setQuantity(Number(e.target.value));
     }
   };
@@ -106,10 +119,7 @@ const MintEthModal: React.FC = () => {
   };
 
   const onClickPlus = () => {
-    if (
-      projectData?.limitMintPerProcess &&
-      projectData.limitMintPerProcess >= quantity + 1
-    ) {
+    if (limitMint && limitMint >= quantity + 1) {
       setQuantity(quantity + 1);
     }
   };
@@ -316,8 +326,7 @@ const MintEthModal: React.FC = () => {
                           />
                           <SvgInset
                             className={`${
-                              projectData?.limitMintPerProcess &&
-                              quantity >= projectData.limitMintPerProcess
+                              limitMint && quantity >= limitMint
                                 ? s.paymentPrice_inputContainer_icon_disable
                                 : s.paymentPrice_inputContainer_icon
                             }`}

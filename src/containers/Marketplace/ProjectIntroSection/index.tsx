@@ -95,6 +95,23 @@ const ProjectIntroSection = ({
   const [marketplaceStats, setMarketplaceStats] =
     useState<MarketplaceStats | null>(null);
 
+  const isReserveUser =
+    project?.reservers &&
+    project?.reservers.length > 0 &&
+    user &&
+    user.walletAddressBtcTaproot &&
+    project?.reservers.includes(user.walletAddressBtcTaproot);
+
+  const projectMintPrice =
+    isReserveUser && project?.reserveMintPrice
+      ? project?.reserveMintPrice
+      : project?.mintPrice;
+
+  const projectMintPriceEth =
+    isReserveUser && project?.reserveMintPriceEth
+      ? project?.reserveMintPriceEth
+      : project?.mintPriceEth;
+
   const mintedTime = project?.mintedTime;
   let mintDate = dayjs();
   if (mintedTime) {
@@ -122,7 +139,7 @@ const ProjectIntroSection = ({
   }, [project]);
 
   const textMint = useMemo((): string => {
-    return Number(project?.mintPrice) ? 'Mint' : 'Free mint';
+    return Number(projectMintPrice) ? 'Mint' : 'Free mint';
   }, [project]);
 
   const handleFetchMarketplaceStats = async () => {
@@ -150,7 +167,7 @@ const ProjectIntroSection = ({
 
       if (
         walletBalance <
-        parseFloat(Web3.utils.fromWei(project.mintPriceEth.toString()))
+        parseFloat(Web3.utils.fromWei(projectMintPriceEth!.toString()))
       ) {
         if (isTestnet()) {
           toast.error(
@@ -164,7 +181,7 @@ const ProjectIntroSection = ({
 
       const mintTx = await mintToken({
         projectAddress: project.genNFTAddr,
-        mintFee: project.mintPriceEth.toString(),
+        mintFee: projectMintPriceEth!.toString(),
         chainID: NETWORK_CHAIN_ID,
       });
 
@@ -189,12 +206,12 @@ const ProjectIntroSection = ({
   };
 
   const priceMemo = useMemo(
-    () => formatBTCPrice(Number(project?.mintPrice)),
+    () => formatBTCPrice(Number(projectMintPrice)),
     [project?.mintPrice]
   );
 
   const priceEthMemo = useMemo(
-    () => formatEthPrice(project?.mintPriceEth || null),
+    () => formatEthPrice(projectMintPriceEth || null),
     [project?.mintPriceEth]
   );
 
@@ -449,10 +466,10 @@ const ProjectIntroSection = ({
                 >
                   <Text as="span" size="14" fontWeight="medium">
                     {isMinting && 'Minting...'}
-                    {!isMinting && project?.mintPrice && (
+                    {!isMinting && projectMintPrice && (
                       <>
                         {`Mint now Ξ${Web3.utils.fromWei(
-                          project?.mintPrice,
+                          projectMintPrice,
                           'ether'
                         )}`}
                       </>
@@ -526,7 +543,7 @@ const ProjectIntroSection = ({
                               <>
                                 <span>{textMint}</span>
 
-                                {Number(project?.mintPrice) ? (
+                                {Number(projectMintPrice) ? (
                                   <span>{priceMemo}</span>
                                 ) : (
                                   ' with'
@@ -573,7 +590,7 @@ const ProjectIntroSection = ({
                             {!isMinting && (
                               <>
                                 <span>{textMint}</span>
-                                {Number(project?.mintPriceEth) ? (
+                                {Number(projectMintPriceEth) ? (
                                   <span>{priceEthMemo}</span>
                                 ) : (
                                   ' with'

@@ -34,35 +34,51 @@ interface IFormValue {
 const MintBTCGenerativeModal: React.FC = () => {
   const router = useRouter();
   const { projectData } = useContext(GenerativeProjectDetailContext);
-  const user = useAppSelector(getUserSelector);
+  const { setIsPopupPayment, paymentMethod } = useContext(
+    BitcoinProjectContext
+  );
 
+  const user = useAppSelector(getUserSelector);
+  const userBtcAddress = useMemo(
+    () => user?.walletAddressBtcTaproot || '',
+    [user]
+  );
+
+  const [step, setsTep] = useState<'info' | 'showAddress'>('info');
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [isShowAdvance, setIsShowAdvance] = useState(false);
+
   const [totalPrice, setTotalPrice] = React.useState('');
   const [feePrice, setFeePrice] = React.useState('');
   const [mintPrice, setMintPrice] = React.useState('');
 
-  const [step, setsTep] = useState<'info' | 'showAddress'>('info');
-
-  const onClickCopy = (text: string) => {
-    copy(text);
-    toast.remove();
-    toast.success('Copied');
-  };
-
-  const { setIsPopupPayment, paymentMethod } = useContext(
-    BitcoinProjectContext
-  );
-  const [isLoading, setIsLoading] = useState(false);
-  const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
-
-  const [addressInput, setAddressInput] = useState<string>('');
-  const [errMessage, setErrMessage] = useState('');
-
   const [quantity, setQuantity] = useState(1);
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [errMessage, setErrMessage] = useState('');
+
+  const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
+  const [addressInput, setAddressInput] = useState<string>('');
+
+  const isReserveUser =
+    projectData?.reservers &&
+    projectData?.reservers.length > 0 &&
+    user &&
+    user.walletAddressBtcTaproot &&
+    projectData?.reservers.includes(user.walletAddressBtcTaproot);
+
+  const projectMintPrice =
+    isReserveUser && projectData?.reserveMintPrice
+      ? projectData?.reserveMintPrice
+      : projectData?.mintPrice;
+
+  const limitMint =
+    isReserveUser && projectData?.reserveMintLimit
+      ? projectData?.reserveMintLimit
+      : projectData?.limitMintPerProcess;
+
   const priceFormat = formatBTCPrice(
-    mintPrice ? mintPrice : projectData?.mintPrice || '',
+    mintPrice ? mintPrice : projectMintPrice || '',
     '0.0'
   );
   const feePriceFormat = formatBTCPrice(
@@ -73,15 +89,16 @@ const MintBTCGenerativeModal: React.FC = () => {
     totalPrice
       ? totalPrice
       : `${
-          (Number(projectData?.networkFee) + Number(projectData?.mintPrice)) *
+          (Number(projectData?.networkFee) + Number(projectMintPrice)) *
           quantity
         }` || ''
   );
 
-  const userBtcAddress = useMemo(
-    () => user?.walletAddressBtcTaproot || '',
-    [user]
-  );
+  const onClickCopy = (text: string) => {
+    copy(text);
+    toast.remove();
+    toast.success('Copied');
+  };
 
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
@@ -110,10 +127,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   };
 
   const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (
-      projectData?.limitMintPerProcess &&
-      projectData.limitMintPerProcess >= Number(e.target.value)
-    ) {
+    if (limitMint && limitMint >= Number(e.target.value)) {
       setQuantity(Number(e.target.value));
     }
   };
@@ -125,10 +139,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   };
 
   const onClickPlus = () => {
-    if (
-      projectData?.limitMintPerProcess &&
-      projectData.limitMintPerProcess >= quantity + 1
-    ) {
+    if (limitMint && limitMint >= quantity + 1) {
       setQuantity(quantity + 1);
     }
   };
@@ -294,8 +305,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                           />
                           <SvgInset
                             className={`${
-                              projectData?.limitMintPerProcess &&
-                              quantity >= projectData.limitMintPerProcess
+                              limitMint && quantity >= limitMint
                                 ? s.paymentPrice_inputContainer_icon_disable
                                 : s.paymentPrice_inputContainer_icon
                             }`}
