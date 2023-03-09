@@ -8,7 +8,7 @@ import {
 } from '@bitcoin/utils/storage/types';
 import { getUTXOKey } from '@containers/Profile/ButtonSendBTC/utils';
 import uniqBy from 'lodash/uniqBy';
-import { isExpiredTime } from '@utils/time';
+import { isExpiredTimeClone } from '@utils/time';
 import { HistoryStatusType } from '@interfaces/api/bitcoin';
 import { UTXO } from 'generative-sdk';
 
@@ -58,12 +58,11 @@ class BitcoinStorage extends StorageService {
 
     const _key = this._pendingKey(trAddress);
     let storedUTXOs = this.getPendingUTXOs({ trAddress });
-
     storedUTXOs =
       [...storedUTXOs].filter(({ txHash, createdTime }) => {
-        const isExpired = isExpiredTime({
+        const isExpired = isExpiredTimeClone({
           time: Number(createdTime || 0) / 1000, // UNIX time
-          expiredMin: 10,
+          expiredMin: 5,
         });
 
         // not expired, keep UTXO in storage
@@ -91,7 +90,7 @@ class BitcoinStorage extends StorageService {
       return !isPending;
     });
 
-    this.set(_key, availableUTXOs);
+    this.set(_key, storedUTXOs);
     return availableUTXOs;
   };
 }

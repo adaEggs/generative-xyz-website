@@ -253,7 +253,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex } = GENERATIVE_SDK.createTx(
+    const { txID, txHex, selectedUTXOs } = GENERATIVE_SDK.createTx(
       privateKey,
       currentAssets.txrefs,
       currentAssets.inscriptions_by_outputs,
@@ -263,7 +263,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       feeRate
     );
 
-    const tasks = [
+    await Promise.all([
       await trackTx({
         txhash: txID,
         address: taprootAddress,
@@ -278,13 +278,18 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
         order_id: orderID,
         txhash: txID,
       }),
-    ];
-    await Promise.all(tasks);
+    ]);
 
     await sleep(1);
 
     // broadcast tx
     await broadcastTx(txHex);
+
+    bitcoinStorage.setPendingUTXOs({
+      trAddress: taprootAddress,
+      txHash: txID,
+      utxos: selectedUTXOs,
+    });
   };
 
   // GET BALANCE
