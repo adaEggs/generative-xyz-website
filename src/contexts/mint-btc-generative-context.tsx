@@ -124,6 +124,7 @@ export const MintBTCGenerativeContextProvider = ({
     creatorWalletAddress: user?.walletAddressBtc || '',
     royalty: 5,
     captureImageTime: 20,
+    reservers: [''],
   });
   const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(
     null
