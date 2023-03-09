@@ -315,3 +315,17 @@
     justify-content: center;
   }
 }
+
+.label {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 20px;
+  color: $black-60-solid;
+  display: block;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+.updateTraits {
+  margin-top: rem(24);
+}
