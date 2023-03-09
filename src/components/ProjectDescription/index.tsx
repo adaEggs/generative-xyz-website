@@ -8,6 +8,7 @@ type Props = {
   desc: string;
   hasInteraction?: boolean;
   profileBio?: string;
+  descInteraction?: string;
   tokenDetail?: ReactNode | null;
   attributes?: ReactNode | null;
 };
@@ -18,6 +19,7 @@ const ProjectDescription = ({
   profileBio,
   tokenDetail,
   attributes,
+  descInteraction = '',
 }: Props) => {
   const [projectDescription, setProjectDescription] = useState('');
   const [projectInteraction, setProjectInteraction] = useState('');
@@ -37,12 +39,12 @@ const ProjectDescription = ({
   };
 
   useEffect(() => {
-    if (hasInteraction && desc) {
-      const splitDesc = desc.split('Interaction');
+    if (hasInteraction && (desc || descInteraction)) {
+      const splitDesc = (descInteraction || desc).split('Interaction');
       setProjectDescription(splitDesc[0]);
       setProjectInteraction(splitDesc[1]);
     }
-  }, [desc, hasInteraction]);
+  }, [desc, hasInteraction, descInteraction]);
 
   useEffect(() => {
     setDefaultActiveKey(handleSetDefaultActiveKey());
