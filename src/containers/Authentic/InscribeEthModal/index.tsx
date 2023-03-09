@@ -37,6 +37,7 @@ import s from './styles.module.scss';
 import { isBrowser } from '@utils/common';
 import { getAccessToken } from '@utils/auth';
 import { getExchangeRate } from '@services/binance';
+import { getMempoolFeeRate } from '@services/mempool';
 
 interface IProps {
   handleClose: () => void;
@@ -73,15 +74,10 @@ const InscribeEthModal: React.FC<IProps> = (
   const [isFetching, setIsFetching] = useState(false);
   const [quantity] = useState(1);
   const [exchangeRate, setExchangeRate] = useState(0);
+  const [feeRate, setFeeRate] = useState(InscribeMintFeeRate.FASTEST);
 
   const estimatePrice =
-    new BigNumber(
-      calculateMintFee(
-        InscribeMintFeeRate.FASTER,
-        file?.size || 0,
-        !!isAuthentic
-      )
-    )
+    new BigNumber(calculateMintFee(feeRate, file?.size || 0, !!isAuthentic))
       .dividedBy(1e8)
       .toNumber() * exchangeRate;
 
@@ -193,7 +189,7 @@ const InscribeEthModal: React.FC<IProps> = (
           tokenId: tokenId as string,
         });
 
-        const metadata = JSON.parse(res.metadata);
+        const metadata = res.metadata_obj;
 
         // Handle link
         if (checkForHttpRegex(metadata.image)) {
@@ -244,6 +240,15 @@ const InscribeEthModal: React.FC<IProps> = (
       setFileBase64(base64 as string);
     }
   }, [file]);
+
+  useAsyncEffect(async () => {
+    try {
+      const res = await getMempoolFeeRate();
+      setFeeRate(res.fastestFee);
+    } catch (err: unknown) {
+      log('can not get fee rate', LogLevel.ERROR, LOG_PREFIX);
+    }
+  }, []);
 
   const onClickCopy = (text: string) => {
     copy(text);
@@ -308,7 +313,7 @@ const InscribeEthModal: React.FC<IProps> = (
         walletAddress: address || user?.walletAddressBtcTaproot || '',
         fileName: file?.name || '',
         file: fileBase64,
-        fee_rate: InscribeMintFeeRate.FASTER,
+        fee_rate: feeRate,
         payType: 'eth',
       };
       if (tokenAddress) {

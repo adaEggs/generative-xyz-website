@@ -9,6 +9,7 @@ interface Size {
 interface CheckMobile {
   mobileScreen: boolean;
   tabletScreen: boolean;
+  desktopScreen: boolean;
 }
 
 function useWindowSize(): Size & CheckMobile {
@@ -18,6 +19,7 @@ function useWindowSize(): Size & CheckMobile {
   });
   const [mobileScreen, setMobileScreen] = useState(true);
   const [tabletScreen, setTabletScreen] = useState(true);
+  const [desktopScreen, setDesktopScreen] = useState(true);
 
   useEffect(() => {
     function handleResize() {
@@ -45,11 +47,16 @@ function useWindowSize(): Size & CheckMobile {
     }
   }, [windowSize.sreenWidth]);
 
+  useEffect(() => {
+    setDesktopScreen(!mobileScreen && !tabletScreen);
+  }, [tabletScreen, mobileScreen]);
+
   return {
     sreenWidth: windowSize.sreenWidth,
     heightWidth: windowSize.heightWidth,
     mobileScreen,
     tabletScreen,
+    desktopScreen,
   };
 }
 

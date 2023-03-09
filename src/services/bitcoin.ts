@@ -16,7 +16,7 @@ import axios from 'axios';
 import { getPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
 import { getUTXOKey } from '@containers/Profile/ButtonSendBTC/utils';
 import { isExpiredTime } from '@utils/time';
-import { getError } from '@utils/text';
+import { orderBy } from 'lodash';
 
 const LOG_PREFIX = 'COLLECTED_NFT';
 
@@ -74,39 +74,43 @@ export const getHistory = async (address: string): Promise<ITxHistory[]> => {
     // const history = res.filter(
     //   item => !(txs || []).some(_item => _item.txhash === item.txhash)
     // );
-    return (txs || []).map(history => {
-      let statusColor: HistoryStatusColor = '#ff7e21';
-      let status: HistoryStatusType = HistoryStatusType.pending;
-      const now = new Date().getTime();
-      const isExpired = isExpiredTime({
-        time: history.created_at || now,
-        expiredMin: 4,
-      });
-      if (isExpired) {
-        status = history.status;
-        switch (status) {
-          case HistoryStatusType.cancelled:
-          case HistoryStatusType.pending:
-          case HistoryStatusType.cancelling:
-          case HistoryStatusType.listing:
-            statusColor = '#ff7e21';
-            break;
-          case HistoryStatusType.matched:
-          case HistoryStatusType.success:
-            statusColor = '#24c087';
-            break;
-          case HistoryStatusType.failed:
-            statusColor = '#ff4747';
-            break;
+    return orderBy(
+      (txs || []).map(history => {
+        let statusColor: HistoryStatusColor = '#ff7e21';
+        let status: HistoryStatusType = HistoryStatusType.pending;
+        const now = new Date().getTime();
+        const isExpired = isExpiredTime({
+          time: history.created_at || now,
+          expiredMin: 4,
+        });
+        if (isExpired) {
+          status = history.status;
+          switch (status) {
+            case HistoryStatusType.cancelled:
+            case HistoryStatusType.pending:
+            case HistoryStatusType.cancelling:
+            case HistoryStatusType.listing:
+              statusColor = '#ff7e21';
+              break;
+            case HistoryStatusType.matched:
+            case HistoryStatusType.success:
+              statusColor = '#24c087';
+              break;
+            case HistoryStatusType.failed:
+              statusColor = '#ff4747';
+              break;
+          }
         }
-      }
-      return {
-        ...history,
-        statusColor,
-        status,
-        isExpired,
-      };
-    });
+        return {
+          ...history,
+          statusColor,
+          status,
+          isExpired,
+        };
+      }),
+      item => item.created_at,
+      'desc'
+    );
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw err;
@@ -121,9 +125,8 @@ export const broadcastTx = async (
     return axios.post(`https://blockstream.info/api/tx`, txHex);
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
-    const error = getError(err);
     const subMess = isSplit ? ' split ' : ' ';
-    throw new Error(`Broadcast the${subMess}tx error ${error.message}`);
+    throw new Error(`Broadcast the${subMess}tx error`);
   }
 };
 

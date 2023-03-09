@@ -1,4 +1,5 @@
 .wrapper {
+  margin-bottom: rem(30px);
   position: relative;
 
   @include min-tablet {
@@ -86,10 +87,33 @@
 .actionWrapper {
   position: absolute;
   bottom: rem(-32px);
-  right: rem(-32px);
+  right: 0;
 
   @include mobile {
     bottom: rem(-32px);
     right: 0;
+  }
+}
+
+.ThumbnailPreview.smallReview {
+  .sandboxWrapper {
+    height: auto !important;
+  }
+
+  .sandboxContent {
+    padding-bottom: (198/352) * 100% !important;
+    background-color: #f2f2f2;
+  }
+
+  .thumbnailIframe {
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+
+  .actionWrapper {
+    position: relative;
+    right: unset;
+    bottom: unset;
+    margin-top: rem(18px);
   }
 }
