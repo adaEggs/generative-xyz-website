@@ -48,22 +48,6 @@ const ProjectDescription = ({
     setDefaultActiveKey(handleSetDefaultActiveKey());
   }, [desc, profileBio, attributes, tokenDetail]);
 
-  // if (!hasInteraction) {
-  //   return (
-  //     <div className={s.project_desc}>
-  //       <Text
-  //         size="14"
-  //         color="black-40"
-  //         fontWeight="medium"
-  //         className="text-uppercase"
-  //       >
-  //         description
-  //       </Text>
-  //       <SeeMore>{desc || ''}</SeeMore>
-  //     </div>
-  //   );
-  // }
-
   return (
     <Tabs
       className={s.tabs}
@@ -94,19 +78,13 @@ const ProjectDescription = ({
       )}
       {!!attributes && (
         <Tab tabClassName={s.tab} eventKey="features" title={`Features`}>
-          <div className={s.project_desc}>
-            {/* <SeeMore render={render}>{attributes || ''}</SeeMore> */}
-            {attributes}
-          </div>
+          <div className={s.project_desc}>{attributes}</div>
         </Tab>
       )}
 
       {!!tokenDetail && (
         <Tab tabClassName={cs(s.tab)} eventKey="token" title={`ORDINAL THEORY`}>
-          <div className={s.project_desc}>
-            {tokenDetail}
-            {/* <SeeMore render={render}>{tokenDetail || ''}</SeeMore> */}
-          </div>
+          <div className={s.project_desc}>{tokenDetail}</div>
         </Tab>
       )}
     </Tabs>
