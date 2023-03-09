@@ -37,7 +37,6 @@ import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
 import cs from 'classnames';
 import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
-import { ProfileProvider } from '@contexts/profile-context';
 import { AuthenticCard } from './AuthenticCard';
 import { filterCreatorName } from '@utils/generative';
 import { wordCase } from '@utils/common';
@@ -245,6 +244,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             price={tokenData.priceBTC}
             inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
             orderID={tokenData.orderID}
+            isDetail={true}
           />
         )}
       </div>
@@ -541,11 +541,9 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
 
 const GenerativeTokenDetailWrapper: React.FC = (): React.ReactElement => {
   return (
-    <ProfileProvider>
-      <GenerativeTokenDetailProvider>
-        <GenerativeTokenDetail />
-      </GenerativeTokenDetailProvider>
-    </ProfileProvider>
+    <GenerativeTokenDetailProvider>
+      <GenerativeTokenDetail />
+    </GenerativeTokenDetailProvider>
   );
 };
 

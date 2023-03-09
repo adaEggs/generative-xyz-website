@@ -1,9 +1,9 @@
 import { useContext, useState } from 'react';
 import { FeeRateName } from '@interfaces/api/bitcoin';
-import { ProfileContext } from '@contexts/profile-context';
+import { AssetsContext } from '@contexts/assets-context';
 
 const useFeeRate = () => {
-  const { feeRate: RATE } = useContext(ProfileContext);
+  const { feeRate: RATE } = useContext(AssetsContext);
   const FEE_RATE = RATE || {
     fastestFee: 15,
     halfHourFee: 10,

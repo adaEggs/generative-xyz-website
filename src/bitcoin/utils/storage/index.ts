@@ -27,7 +27,7 @@ class BitcoinStorage extends StorageService {
     const _key = this._pendingKey(trAddress);
     return this.get(_key) || [];
   };
-  setPendingUTXOs = ({ trAddress, utxos }: ISetPendingUTXOsPayload) => {
+  setPendingUTXOs = ({ trAddress, utxos, txHash }: ISetPendingUTXOsPayload) => {
     const _key = this._pendingKey(trAddress);
     const storedUTXOs = this.getPendingUTXOs({ trAddress });
 
@@ -41,6 +41,7 @@ class BitcoinStorage extends StorageService {
           ...utxo,
           txIDKey,
           createdTime,
+          txHash,
         };
       })
       .concat(storedUTXOs);
@@ -53,13 +54,13 @@ class BitcoinStorage extends StorageService {
     payload: IFilterPendingUTXOsPayload
   ): UTXO[] => {
     const { trAddress, utxos, history } = payload;
-    if (!utxos || !history || !history.length) return [];
+    if (!utxos || !history || !history.length || !utxos.length) return [];
 
     const _key = this._pendingKey(trAddress);
     let storedUTXOs = this.getPendingUTXOs({ trAddress });
 
     storedUTXOs =
-      [...storedUTXOs].filter(({ tx_hash, createdTime }) => {
+      [...storedUTXOs].filter(({ txHash, createdTime }) => {
         const isExpired = isExpiredTime({
           time: Number(createdTime || 0) / 1000, // UNIX time
           expiredMin: 10,
@@ -68,7 +69,7 @@ class BitcoinStorage extends StorageService {
         // not expired, keep UTXO in storage
         if (!isExpired) return true;
 
-        const _history = history.find(history => history.txhash === tx_hash);
+        const _history = history.find(history => history.txhash === txHash);
 
         // can't find from history, free this UTXO
         if (!_history) return false;
@@ -76,8 +77,9 @@ class BitcoinStorage extends StorageService {
         // remove with status
         const removes = [
           HistoryStatusType.failed,
-          HistoryStatusType.matched,
           HistoryStatusType.cancelled,
+          HistoryStatusType.success,
+          HistoryStatusType.matched,
         ];
         const isRemove = removes.some(status => status === _history.status);
         return !isRemove;

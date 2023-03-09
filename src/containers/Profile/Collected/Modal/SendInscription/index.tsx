@@ -9,7 +9,6 @@ import { Loading } from '@components/Loading';
 import { validateBTCAddress } from '@utils/validate';
 import useBitcoin from '@bitcoin/useBitcoin';
 import * as GENERATIVE_SDK from 'generative-sdk';
-import { ProfileContext } from '@contexts/profile-context';
 import cs from 'classnames';
 import { formatBTCPrice } from '@utils/format';
 import { FeeRateName } from '@interfaces/api/bitcoin';
@@ -21,6 +20,7 @@ import { getUserSelector } from '@redux/user/selector';
 import Text from '@components/Text';
 import * as SDK from 'generative-sdk';
 import { getError } from '@utils/text';
+import { AssetsContext } from '@contexts/assets-context';
 
 interface IFormValue {
   address: string;
@@ -40,11 +40,10 @@ const SendInscriptionModal = ({
 }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const {
-    collectedUTXOs,
+    currentAssets,
+    debounceFetchData,
     feeRate: _FEE_RATE,
-    debounceFetchHistory,
-    debounceFetchDataCollectedNFTs,
-  } = useContext(ProfileContext);
+  } = useContext(AssetsContext);
   const FEE_RATE = _FEE_RATE || {
     fastestFee: 15,
     halfHourFee: 10,
@@ -76,8 +75,8 @@ const SendInscriptionModal = ({
     }
     try {
       GENERATIVE_SDK.selectUTXOs(
-        collectedUTXOs?.txrefs || [],
-        collectedUTXOs?.inscriptions_by_outputs || {},
+        currentAssets?.txrefs || [],
+        currentAssets?.inscriptions_by_outputs || {},
         inscriptionID,
         0,
         FEE_RATE[feeRate],
@@ -108,8 +107,7 @@ const SendInscriptionModal = ({
     } finally {
       // setIsLoading(false);
       setIsLoading(false);
-      debounceFetchHistory();
-      debounceFetchDataCollectedNFTs();
+      debounceFetchData();
     }
   };
 
@@ -118,7 +116,7 @@ const SendInscriptionModal = ({
     onClose();
   };
 
-  if (!showModal || !collectedUTXOs) {
+  if (!showModal || !currentAssets) {
     return <></>;
   }
 

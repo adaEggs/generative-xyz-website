@@ -29,10 +29,18 @@ interface IProps extends IBaseModalProps {
   price: number | string;
   orderID: string;
   inscriptionNumber: number;
+  isDetail: boolean;
 }
 
 const ModalBuyListed = React.memo(
-  ({ price, orderID, inscriptionID, inscriptionNumber, ...rest }: IProps) => {
+  ({
+    price,
+    orderID,
+    inscriptionID,
+    inscriptionNumber,
+    isDetail,
+    ...rest
+  }: IProps) => {
     const user = useSelector(getUserSelector);
     const [step, _] = useState<'buy' | 'success'>('buy');
     const [orderData, setOrderData] = useState<IRetrieveOrderResp | undefined>(
@@ -174,13 +182,12 @@ const ModalBuyListed = React.memo(
                                 placeholder="Paste your Ordinals-compatible BTC address here"
                                 disabled={isLoading}
                               />
-                              {((errors.receiveBTCAddress &&
-                                touched.receiveBTCAddress) ||
-                                !!error) && (
-                                <p className={s.inputContainer_inputError}>
-                                  {error || errors.receiveBTCAddress}
-                                </p>
-                              )}
+                              {errors.receiveBTCAddress &&
+                                touched.receiveBTCAddress && (
+                                  <p className={s.inputContainer_inputError}>
+                                    {errors.receiveBTCAddress}
+                                  </p>
+                                )}
                             </div>
                           </div>
                         </div>
@@ -208,23 +215,35 @@ const ModalBuyListed = React.memo(
                     <div>
                       <Loading isLoaded={!isSubmitting} />
                     </div>
-                    <ButtonIcon
-                      className={s.btnSend}
-                      disabled={isLoading}
-                      sizes="medium"
-                      type="submit"
-                      startIcon={isLoading ? <LoaderIcon /> : null}
-                      onClick={() => {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        validateForm(values);
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        handleSubmit(values);
-                      }}
-                    >
-                      Buy now
-                    </ButtonIcon>
+                    {isDetail ? (
+                      <ButtonIcon
+                        className={s.btnSend}
+                        disabled={isLoading}
+                        sizes="medium"
+                        type="submit"
+                        startIcon={isLoading ? <LoaderIcon /> : null}
+                      >
+                        Buy now
+                      </ButtonIcon>
+                    ) : (
+                      <ButtonIcon
+                        className={s.btnSend}
+                        disabled={isLoading}
+                        sizes="medium"
+                        type="submit"
+                        startIcon={isLoading ? <LoaderIcon /> : null}
+                        onClick={() => {
+                          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                          // @ts-ignore
+                          validateForm(values);
+                          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                          // @ts-ignore
+                          handleSubmit(values);
+                        }}
+                      >
+                        Buy now
+                      </ButtonIcon>
+                    )}
                   </>
                 )}
               </form>
