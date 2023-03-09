@@ -33,7 +33,7 @@ const Step = (props: IStep): JSX.Element => {
       ? formatBTCPrice(nft.amount || 0, '0.0')
       : formatEthPrice(`${nft.amount || 0}`, '0.0');
 
-  const isActiveStep = status || currentActiveStep.current >= index;
+  const isActiveStep = currentActiveStep.current >= index;
   if (status) {
     currentActiveStep.current = index + 1;
   }
@@ -49,6 +49,9 @@ const Step = (props: IStep): JSX.Element => {
   };
 
   const onClick = () => {
+    if (index === 0 && status) {
+      return;
+    }
     if (isActiveStep) {
       setIsShowStep(!isShowStep);
     }
@@ -66,9 +69,7 @@ const Step = (props: IStep): JSX.Element => {
     return (
       <div className={s.transaction_tx}>
         <Stack direction="horizontal" gap={3}>
-          <Text size="16" fontWeight="medium" color="black-100">
-            TxHash: {ellipsisCenter({ str: tx, limit: 12 })}
-          </Text>
+          <Text size="16">{ellipsisCenter({ str: tx, limit: 12 })}</Text>
           <SvgInset
             size={18}
             svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
@@ -76,7 +77,7 @@ const Step = (props: IStep): JSX.Element => {
             onClick={() => onClickCopy(tx)}
           />
           <SvgInset
-            size={16}
+            size={18}
             svgUrl={`${CDN_URL}/icons/ic-share.svg`}
             className={s.wrapHistory_copy}
             onClick={() => window.open(linkTxHash)}
@@ -87,6 +88,9 @@ const Step = (props: IStep): JSX.Element => {
   };
 
   const renderPendingPayment = () => {
+    if (status) {
+      return <></>;
+    }
     return (
       <div className={s.payment_detail}>
         <p className={s.payment_detail_desc}>
@@ -136,10 +140,12 @@ const Step = (props: IStep): JSX.Element => {
         </Text>
       </div>
       <div className={s.content}>
-        {!isHideIndicator && (
+        {!isHideIndicator ? (
           <div
             className={`${s.content_indicator} ${isActiveStep ? s.active : ''}`}
           />
+        ) : (
+          <div className={s.content_empty} />
         )}
         {isShowStep && (
           <div>{index === 0 ? renderPendingPayment() : renderTx(tx)}</div>

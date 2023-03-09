@@ -48,14 +48,14 @@ const Transaction = (): JSX.Element => {
         </div>
         <div className={s.stepContainer}>
           <Row>
-            <Col lg="3" xl="3">
+            <Col md="3" xl="3">
               <img
                 className={s.thumbnail}
                 src={nft?.projectImage || LOGO_MARKETPLACE_URL}
                 alt={project.name}
               />
             </Col>
-            <Col lg="9" xl="8">
+            <Col md="9" xl="8">
               {nft &&
                 nft.progressStatus &&
                 nft.progressStatus.map((step, index) => (

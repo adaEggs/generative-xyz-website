@@ -4,7 +4,7 @@
 
   .thumbnail {
     aspect-ratio: 1/1;
-    width: 90%;
+    width: 93%;
     object-fit: cover;
   }
 
@@ -80,6 +80,11 @@
         &.active {
           background: $neutral-07;
         }
+      }
+
+      &_empty {
+        margin-right: rem(39px);
+        background: transparent;
       }
     }
   }
@@ -166,7 +171,7 @@
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        // border: 1px solid $black-10;
+        border: 1px solid $black-10;
         border-radius: rem(8px);
         width: fit-content;
 
