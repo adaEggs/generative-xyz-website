@@ -199,7 +199,7 @@ const Header: React.FC<IProp> = ({
                 <li
                   className="dropdown-item"
                   onClick={() => {
-                    if (item.id !== 'view-profile') {
+                    if (item.id === 'view-profile') {
                       item.onClick(user?.walletAddressBtcTaproot || '');
                     } else {
                       item.onClick();

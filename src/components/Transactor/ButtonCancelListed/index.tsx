@@ -39,7 +39,7 @@ const ButtonCancelListed = React.memo(
           receiverAddress: user?.walletAddressBtcTaproot || '',
           orderID,
         });
-        toast.success('Cancel listing successfully');
+        toast.success('Canceled listing successfully');
         setTimeout(() => {
           window.location.reload();
           setLoading(false);
