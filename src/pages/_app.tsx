@@ -7,6 +7,8 @@ import {
   SEO_TITLE,
 } from '@constants/seo-default-info';
 import { WalletProvider } from '@contexts/wallet-context';
+import { UTXOProvider } from '@contexts/utxo-context';
+
 import { LogLevel } from '@enums/log-level';
 import store from '@redux';
 import { sendAAPageView } from '@services/aa-tracking';
@@ -80,8 +82,10 @@ export default function App({ Component, pageProps }: MyAppProps) {
       <Provider store={store}>
         <WalletProvider>
           <AuthWrapper>
-            <Component {...pageProps} />
-            <ToastOverlay />
+            <UTXOProvider>
+              <Component {...pageProps} />
+              <ToastOverlay />
+            </UTXOProvider>
           </AuthWrapper>
         </WalletProvider>
       </Provider>

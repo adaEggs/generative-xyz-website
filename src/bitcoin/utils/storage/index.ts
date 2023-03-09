@@ -53,6 +53,8 @@ class BitcoinStorage extends StorageService {
     payload: IFilterPendingUTXOsPayload
   ): UTXO[] => {
     const { trAddress, utxos, history } = payload;
+    if (!utxos || !history || !history.length) return [];
+
     const _key = this._pendingKey(trAddress);
     let storedUTXOs = this.getPendingUTXOs({ trAddress });
 

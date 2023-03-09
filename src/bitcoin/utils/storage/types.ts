@@ -12,8 +12,8 @@ export interface IGetPendingUTXOsPayload {
 
 export interface IFilterPendingUTXOsPayload {
   trAddress: string;
-  history: ITxHistory[];
-  utxos: UTXO[];
+  history: ITxHistory[] | undefined;
+  utxos: UTXO[] | undefined;
 }
 
 export interface IPendingUTXO extends UTXO {

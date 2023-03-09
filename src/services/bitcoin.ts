@@ -67,7 +67,7 @@ export const trackTx = async (payload: ITrackTx): Promise<never> => {
 export const getHistory = async (address: string): Promise<ITxHistory[]> => {
   try {
     const txs = await get<ITxHistory[]>(
-      `/wallet/txs?address=${address}&limit=100&offset=0`
+      `/wallet/txs?address=${address}&limit=30&offset=0`
     );
     // const res = await get<ITxHistory[]>(`/dex/history`);
     // const history = res.filter(
