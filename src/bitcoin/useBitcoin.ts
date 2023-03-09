@@ -19,7 +19,7 @@ import {
   ISendInsProps,
 } from '@bitcoin/types';
 import { debounce } from 'lodash';
-import { setPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
+import bitcoinStorage from '@bitcoin/utils/storage';
 
 interface IProps {
   inscriptionID?: string;
@@ -96,7 +96,12 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     });
     // broadcast tx
     await broadcastTx(txHex);
-    setPendingUTXOs(selectedUTXOs);
+
+    // storage pending UTXOS
+    bitcoinStorage.setPendingUTXOs({
+      trAddress: taprootAddress,
+      utxos: selectedUTXOs,
+    });
   };
 
   const buyInscription = async ({
@@ -115,15 +120,16 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex, splitTxRaw } = await GENERATIVE_SDK.reqBuyInscription({
-      buyerPrivateKey: privateKey,
-      feeRatePerByte: feeRate,
-      inscriptions: collectedUTXOs.inscriptions_by_outputs,
-      price: price,
-      receiverInscriptionAddress: receiverInscriptionAddress,
-      sellerSignedPsbtB64: sellerSignedPsbtB64,
-      utxos: collectedUTXOs.txrefs,
-    });
+    const { txID, txHex, splitTxRaw, splitUTXOs } =
+      await GENERATIVE_SDK.reqBuyInscription({
+        buyerPrivateKey: privateKey,
+        feeRatePerByte: feeRate,
+        inscriptions: collectedUTXOs.inscriptions_by_outputs,
+        price: price,
+        receiverInscriptionAddress: receiverInscriptionAddress,
+        sellerSignedPsbtB64: sellerSignedPsbtB64,
+        utxos: collectedUTXOs.txrefs,
+      });
     await trackTx({
       txhash: txID,
       address: taprootAddress,
@@ -140,6 +146,11 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       tasks.push(await broadcastTx(splitTxRaw));
     }
     await Promise.all(tasks);
+
+    bitcoinStorage.setPendingUTXOs({
+      trAddress: taprootAddress,
+      utxos: splitUTXOs,
+    });
   };
 
   const listInscription = async ({
@@ -159,7 +170,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { splitTxID, base64Psbt, splitTxRaw } =
+    const { splitTxID, base64Psbt, splitTxRaw, splitUTXOs } =
       await GENERATIVE_SDK.reqListForSaleInscription({
         sellerPrivateKey: privateKey,
         amountPayToSeller: amountPayToSeller,
@@ -193,6 +204,13 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       );
     }
     await Promise.all(tasks);
+
+    if (splitTxID) {
+      bitcoinStorage.setPendingUTXOs({
+        trAddress: taprootAddress,
+        utxos: splitUTXOs,
+      });
+    }
   };
 
   const cancelInscription = async ({
