@@ -292,7 +292,7 @@ const SetPrice = () => {
       if (reserveMintLimit) payload.reserveMintLimit = reserveMintLimit;
       if (reserveMintPrice)
         payload.reserveMintPrice = reserveMintPrice.toString();
-      if (reservers) payload.reservers = reservers;
+      if (reservers) payload.reservers = reservers.filter(Boolean);
 
       if (
         [
@@ -579,12 +579,10 @@ const SetPrice = () => {
                                             id={`reservers.${index}`}
                                             type="text"
                                             name={`reservers.${index}`}
+                                            defaultValue={''}
                                             validate={(value: string) => {
-                                              if (!value) {
-                                                return true;
-                                              }
-                                              if (value && value.length === 0) {
-                                                return true;
+                                              if (value === '') {
+                                                return '';
                                               }
                                               if (
                                                 !validateBTCAddressTaproot(

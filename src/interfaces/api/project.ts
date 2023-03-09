@@ -1,7 +1,7 @@
 import { WithdrawStatus } from '@constants/referral';
 import { IPagingParams, IPagingResponse } from '@interfaces/api/paging';
 import { BTCProject, Project } from '@interfaces/project';
-import { Token } from '@interfaces/token';
+import { Token, TokenAttribute } from '@interfaces/token';
 
 export interface IGetProjectDetailParams {
   contractAddress: string;
@@ -132,4 +132,13 @@ export interface IGetProjectVolumeResponse {
   projectID: string;
   withdraw: string;
   status: WithdrawStatus;
+}
+
+export interface IGetProjectItemsTraitsListParams {
+  emptyTrait: boolean;
+}
+
+export interface IGetProjectItemsTraitsListResponse {
+  id: string;
+  attributes: TokenAttribute[];
 }
