@@ -26,9 +26,7 @@ const InscriptionCard: React.FC<IProps> = ({
       return {};
     }
   }, [inscription]);
-  const [thumb, setThumb] = useState<string>(
-    metadata?.image || LOGO_MARKETPLACE_URL
-  );
+  const [thumb, setThumb] = useState<string>(metadata?.image || '');
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = (): void => {
@@ -78,7 +76,7 @@ const InscriptionCard: React.FC<IProps> = ({
               <Heading className={s.title} as={'h6'} fontWeight="medium">
                 {metadata?.name || 'Unknown'}
               </Heading>
-              {!inscription.is_minted && (
+              {!inscription.is_minted && metadata?.image && (
                 <Button onClick={handleGotoInscribePage} className={s.mintBtn}>
                   Inscribe
                 </Button>
