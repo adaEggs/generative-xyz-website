@@ -20,6 +20,7 @@ import {
 } from '@bitcoin/types';
 import { debounce } from 'lodash';
 import { setPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
+import { sleep } from '@utils/sleep';
 
 interface IProps {
   inscriptionID?: string;
@@ -134,12 +135,13 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       type: TrackTxType.buyInscription,
     });
 
-    // broadcast tx
-    const tasks = [await broadcastTx(txHex)];
     if (splitTxRaw) {
-      tasks.push(await broadcastTx(splitTxRaw));
+      await broadcastTx(splitTxRaw, true);
+      await sleep(1);
     }
-    await Promise.all(tasks);
+
+    // broadcast tx
+    await broadcastTx(txHex);
   };
 
   const listInscription = async ({
@@ -221,6 +223,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     );
     // broadcast tx
     await broadcastTx(txHex);
+    await sleep(1);
     const tasks = [
       await trackTx({
         txhash: txID,
