@@ -72,19 +72,11 @@ const PreviewController: React.FC<IProps> = (
   }, [previewUrl, isOrdinalPreview]);
 
   const renderPreviewByType = useMemo((): React.ReactElement => {
-    // Check ordinal
-    if (isOrdinalPreview) {
-      if (isImage) {
-        return <ImagePreview url={previewUrl} />;
-      }
-      return <IFramePreview url={previewUrl} />;
-    }
-
     // Check hardcode glb collection
-    if (!tokenID && projectID === GLB_COLLECTION_ID) {
+    if (projectID === GLB_COLLECTION_ID) {
       return (
         <Model3DPreview
-          tokenID={data?.tokenID ?? ''}
+          tokenID={data?.tokenID || ''}
           projectID={projectID}
           previewExt={previewExt}
           thumbnailExt={thumbnailExt}
@@ -95,6 +87,14 @@ const PreviewController: React.FC<IProps> = (
     // Check html collection
     if (htmlFile) {
       return <IFramePreview url={htmlFile} />;
+    }
+
+    // Check ordinal
+    if (isOrdinalPreview) {
+      if (isImage) {
+        return <ImagePreview url={previewUrl} />;
+      }
+      return <IFramePreview url={previewUrl} />;
     }
 
     const mediaType = getMediaTypeFromFileExt(previewExt);

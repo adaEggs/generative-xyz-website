@@ -1,15 +1,13 @@
-import { Loading } from '@components/Loading';
 import ClientOnly from '@components/Utils/ClientOnly';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { LogLevel } from '@enums/log-level';
 import { Token } from '@interfaces/token';
-import { getTokenUri } from '@services/token-uri';
+import { createTokenThumbnail, getTokenUri } from '@services/token-uri';
 import log from '@utils/logger';
 import { useRouter } from 'next/router';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import useAsyncEffect from 'use-async-effect';
 import ModelViewer from '@components/ModelViewer';
-import s from './styles.module.scss';
 
 const LOG_PREFIX = 'ModelCapture';
 
@@ -19,9 +17,9 @@ const ModelCapture: React.FC = (): React.ReactElement => {
     projectID: string;
     tokenID: string;
   };
-  const [tokenData, setTokenData] = useState<Token | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const viewerRef = useRef<any>(null);
+  const [tokenData, setTokenData] = useState<Token | null>(null);
 
   useAsyncEffect(async () => {
     try {
@@ -37,19 +35,25 @@ const ModelCapture: React.FC = (): React.ReactElement => {
     }
   }, [projectID, tokenID]);
 
-  // useEffect(()=>{
-  //   viewerRef?.current?.addEventListener('load', ()=>{
-  //     console.log('-______!11')
-  //   })
-  // })
+  const handleScreenshotModel = (): void => {
+    const base64Image = viewerRef.current.toDataURL();
+    createTokenThumbnail({
+      tokenID: tokenID,
+      thumbnail: base64Image,
+    });
+  };
 
-  if (!tokenData || !router.isReady) {
-    return (
-      <div className={s.loadingWrapper}>
-        <Loading isLoaded={false}></Loading>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (viewerRef.current) {
+      viewerRef.current.addEventListener('load', handleScreenshotModel);
+    }
+
+    return () => {
+      if (viewerRef.current) {
+        viewerRef.current.removeEventListener('load', handleScreenshotModel);
+      }
+    };
+  }, [tokenData]);
 
   return (
     <ClientOnly>
@@ -57,8 +61,9 @@ const ModelCapture: React.FC = (): React.ReactElement => {
         id={'modelViewer'}
         ref={viewerRef}
         style={{
-          width: '100vw',
-          height: '100vh',
+          width: '512px',
+          height: '512px',
+          background: '#ffffff',
         }}
         src={tokenData?.thumbnail as string}
         shadow-intensity="1"
