@@ -17,6 +17,7 @@ import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
 import Text from '@components/Text';
 import { estimateTxFee } from 'generative-sdk';
+import { Loading } from '@components/Loading';
 
 interface IFormValues {
   price: string;
@@ -39,6 +40,8 @@ const ModalBuyListed = React.memo(
     );
     const { selectedRate, allRate } = useFeeRate();
     const [isLoading, setLoading] = useState<boolean>(false);
+    const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
     const { buyInscription } = useBitcoin({ inscriptionID });
     const [error, setError] = useState('');
     const onSetError = (err: unknown) => {
@@ -65,7 +68,7 @@ const ModalBuyListed = React.memo(
     const handleSubmit = async (values: IFormValues) => {
       if (!orderData) return;
       try {
-        setLoading(true);
+        setIsSubmitting(true);
         await buyInscription({
           feeRate: allRate[selectedRate],
           inscriptionNumber: inscriptionNumber,
@@ -75,22 +78,25 @@ const ModalBuyListed = React.memo(
         });
         toast.success('Buy inscription successfully');
         setTimeout(() => {
-          setLoading(false);
+          setIsSubmitting(false);
           window.location.reload();
           setError('');
         }, 2000);
       } catch (err: unknown) {
-        setLoading(false);
+        setIsSubmitting(false);
         onSetError(err);
       }
     };
 
     const fetchRetrieve = async () => {
       try {
+        setLoading(true);
         const order = await retrieveOrder({ orderID });
         setOrderData(order);
       } catch (err) {
         onSetError(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -198,6 +204,9 @@ const ModalBuyListed = React.memo(
                         )}{' '}
                         BTC
                       </Text>
+                    </div>
+                    <div>
+                      <Loading isLoaded={!isSubmitting} />
                     </div>
                     <ButtonIcon
                       className={s.btnSend}
