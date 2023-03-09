@@ -383,18 +383,36 @@ const UploadGenArt: React.FC = (): ReactElement => {
             </div>
             <div className={s.guideWrapper}>
               <p>
-                New artist?&nbsp;
-                <Link
-                  href={
-                    collectionType === CollectionType.GENERATIVE
-                      ? SOCIALS.docsForArtist
-                      : SOCIALS.docsForArtist2
-                  }
-                  target={'_blank'}
-                  rel="noreferrer"
-                >
-                  Start here.
-                </Link>
+                {collectionType === CollectionType.GENERATIVE && (
+                  <>
+                    New artist?&nbsp;
+                    <Link
+                      href={SOCIALS.docsForArtist}
+                      target={'_blank'}
+                      rel="noreferrer"
+                    >
+                      Start here.
+                    </Link>
+                  </>
+                )}
+                {collectionType === CollectionType.COLLECTION && (
+                  <>
+                    First time? Check the step-by-step instructions&nbsp;
+                    <Link
+                      href={SOCIALS.docsForArtist2}
+                      target={'_blank'}
+                      rel="noreferrer"
+                    >
+                      here.
+                    </Link>
+                  </>
+                )}
+                {collectionType === CollectionType.EDITIONS && (
+                  <>Same artwork with numerous copies.</>
+                )}
+                {collectionType === CollectionType.ONE && (
+                  <>An unique artwork. No copy.</>
+                )}
               </p>
             </div>
           </div>
