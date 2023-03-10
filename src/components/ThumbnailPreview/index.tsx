@@ -9,14 +9,13 @@ import { Token } from '@interfaces/token';
 import { generateHash } from '@utils/generate-data';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Project } from '@interfaces/project';
 import PreviewController from './PreviewController';
 import IFramePreview from './IframePreview';
 import { useRouter } from 'next/router';
 import cs from 'classnames';
-import { ProjectLayoutContext } from '@contexts/project-layout-context';
 
 type Props = {
   data: Token | Project | null;
@@ -36,7 +35,6 @@ const ThumbnailPreview = (props: Props) => {
   const [displayMode, setDisplayMode] = useState<PreviewDisplayMode>();
   const [hash, setHash] = useState<string>(generateHash());
   const [previewSrc, setPreviewSrc] = useState<string | null>(null);
-  const { isLimitMinted } = useContext(ProjectLayoutContext);
 
   const handleIframeLoaded = (): void => {
     if (sandboxRef.current) {
@@ -92,11 +90,7 @@ const ThumbnailPreview = (props: Props) => {
   }, [animationUrl]);
 
   return (
-    <div
-      className={`${s.ThumbnailPreview} ${props.className} ${
-        !isLimitMinted ? s.smallReview : ''
-      }`}
-    >
+    <div className={`${s.ThumbnailPreview} ${props.className}`}>
       <div className={s.wrapper}>
         <div
           className={cs(
