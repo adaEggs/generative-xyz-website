@@ -36,6 +36,30 @@
   }
 
   /* Button sizes */
+  &.xlarge {
+    padding: rem(19px) rem(24px);
+    gap: rem(6px);
+
+    &:has(.leftIcon) {
+      padding-left: rem(20px);
+    }
+
+    &:has(.rightIcon) {
+      padding-right: rem(20px);
+    }
+
+    &.iconOnly {
+      width: rem(64px);
+      height: rem(64px);
+      padding: 0;
+    }
+
+    .icon {
+      width: rem(22px);
+      height: rem(22px);
+    }
+  }
+
   &.large {
     padding: rem(11px) rem(12px);
     gap: rem(10px);

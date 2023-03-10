@@ -3,6 +3,7 @@ import {
   IMAGE_EXTENSIONS,
   NAIVE_MIMES,
   SUPPORTED_FILE_EXT,
+  SUPPORT_INSCRIBE_IMAGE,
 } from '@constants/file';
 import { unzip } from 'unzipit';
 import { MASOX_SYSTEM_PREFIX } from '@constants/sandbox';
@@ -102,4 +103,13 @@ export const isImageFile = (file: File): boolean => {
     return false;
   }
   return IMAGE_EXTENSIONS.includes(fileExt);
+};
+
+export const isInscribeImageFile = (file: File): boolean => {
+  const fileName = file.name;
+  const fileExt = getFileExtensionByFileName(fileName);
+  if (!fileExt) {
+    return false;
+  }
+  return SUPPORT_INSCRIBE_IMAGE.includes(fileExt);
 };
