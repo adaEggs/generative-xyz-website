@@ -14,6 +14,7 @@ import {
   IGetProjectListResponse,
   IGetProjectTokensResponse,
   IGetProjectVolumeResponse,
+  IProjectMarketplaceData,
   IReportProjectPayload,
   IReportProjectResponse,
   IUpdateProjectPayload,
@@ -284,6 +285,25 @@ export const reportProject = async (
       `${API_PATH}/${projectID}/report`,
       payload
     );
+  } catch (err: unknown) {
+    log('failed to report project', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to report project');
+  }
+};
+
+export const projectMarketplaceData = async ({
+  projectId,
+  contractAddress,
+}: {
+  projectId: string;
+  contractAddress: string;
+}): Promise<IProjectMarketplaceData> => {
+  try {
+    const res = await get<IProjectMarketplaceData>(
+      `${API_PATH}/${contractAddress}/tokens/${projectId}/marketplace-data`
+    );
+
+    return res;
   } catch (err: unknown) {
     log('failed to report project', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to report project');

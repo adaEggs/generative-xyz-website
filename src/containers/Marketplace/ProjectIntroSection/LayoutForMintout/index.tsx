@@ -28,6 +28,7 @@ const LayoutForMintout = () => {
           className={`${s.projectInfo_center} col-xl-5 col-12  order-xl-2 order-3`}
         >
           <ProjectDescription
+            onlyDesc={true}
             desc={project?.desc || ''}
             hasInteraction={hasProjectInteraction}
             profileBio={project?.creatorProfile?.bio || ''}

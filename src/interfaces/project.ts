@@ -46,6 +46,7 @@ export type Project = {
     indexReserve: number;
   };
   creatorProfile?: User;
+  contractAddress?: string;
   mintedTime: number;
   stats: MarketplaceStats;
   traitStat: TraitStats[];

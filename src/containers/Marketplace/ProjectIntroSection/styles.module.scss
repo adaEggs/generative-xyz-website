@@ -332,9 +332,18 @@
   }
 
   &_item {
+    margin-bottom: rem(24px);
+
     > p:first-of-type {
       color: $black-40;
       text-transform: uppercase;
+    }
+
+    &__icon {
+      .stats_item_text {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 }
