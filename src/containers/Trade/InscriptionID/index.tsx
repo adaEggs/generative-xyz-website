@@ -21,6 +21,7 @@ import {
 import { getApiKey } from '@utils/swr';
 
 import s from './TokenID.module.scss';
+import MarkdownPreview from '@components/MarkdownPreview';
 
 const InscriptionID: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -143,8 +144,8 @@ const InscriptionID: React.FC = (): React.ReactElement => {
                   className={s.token_description}
                   style={{ WebkitLineClamp: showMore ? 'unset' : '4' }}
                 >
-                  {/* <MarkdownPreview source={tokenData?.description} /> */}
-                  {tokenData?.description}
+                  <MarkdownPreview source={tokenData?.description} />
+                  {/* {tokenData?.description} */}
                 </div>
                 {tokenData?.description &&
                   tokenData?.description.length > 300 && (
