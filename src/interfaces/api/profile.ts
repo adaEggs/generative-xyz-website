@@ -42,17 +42,26 @@ export interface ICollectedNFTItem {
   status: CollectedNFTStatus;
   statusText: string;
   receiveAddress?: string;
+  amount?: string;
+  payType?: string;
+  projectImage?: string;
   buyable: boolean;
   priceBTC: string;
   orderID: string;
   cancelling: boolean;
   quantity?: number;
+  artistName?: string;
+}
+
+export interface IStatusTransactionMint {
+  title: string;
+  message?: string;
+  tx?: string;
+  status: boolean;
 }
 
 export interface ICollectedNFTItemDetail extends ICollectedNFTItem {
-  progressStatus?: {
-    [key: string]: { message: string; tx?: string; status: boolean };
-  };
+  progressStatus?: IStatusTransactionMint[];
 }
 
 export interface IGetMintingCollectedNFTResp {
@@ -65,6 +74,11 @@ export interface IGetMintingCollectedNFTResp {
   inscriptionID: string;
   id: string;
   receiveAddress: string;
+  progressStatus?: {
+    [key: string]: IStatusTransactionMint;
+  };
+  payType: string;
+  amount: string;
   buyable: boolean;
   priceBTC: string;
   orderID: string;
@@ -85,6 +99,7 @@ export interface IGetCollectedNFTInsciptionResp {
   price_btc: string;
   order_id: string;
   cancelling: boolean;
+  artist_name: string;
 }
 
 export interface IGetCollectedNFTsResp {

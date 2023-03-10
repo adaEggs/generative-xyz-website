@@ -23,7 +23,7 @@ const ButtonCancelListed = React.memo(
     orderID,
     inscriptionID,
     inscriptionNumber,
-    sizes = 'xsmall',
+    sizes = 'small',
   }: IProps) => {
     const user = useSelector(getUserSelector);
     const { selectedRate, allRate } = useFeeRate();
@@ -56,6 +56,7 @@ const ButtonCancelListed = React.memo(
         <ButtonIcon
           variants="secondary"
           sizes={sizes}
+          style={{ height: 34 }}
           className={cs(`${className}`)}
           onClick={onCancel}
         >
