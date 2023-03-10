@@ -148,7 +148,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     });
 
     if (splitTxRaw) {
-      await broadcastTx(splitTxRaw, true);
+      await broadcastTx(splitTxRaw);
       await sleep(1);
     }
 

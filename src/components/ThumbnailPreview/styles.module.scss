@@ -86,11 +86,11 @@
 
 .actionWrapper {
   position: absolute;
-  bottom: rem(-32px);
+  bottom: rem(-43px);
   right: 0;
 
   @include mobile {
-    bottom: rem(-32px);
+    bottom: rem(-46px);
     right: 0;
   }
 }

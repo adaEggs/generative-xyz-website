@@ -3,7 +3,6 @@ import ModalBuyItem from '@components/Collection/ModalBuyItem';
 import ModalBuyItemViaPSBT from '@components/Collection/ModalBuyItemViaPSBT';
 import Heading from '@components/Heading';
 import { Loading } from '@components/Loading';
-import MarkdownPreview from '@components/MarkdownPreview';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
@@ -191,7 +190,8 @@ const TokenID: React.FC = (): React.ReactElement => {
             className={s.token_description}
             style={{ WebkitLineClamp: showMore ? 'unset' : '4' }}
           >
-            <MarkdownPreview source={tokenData.description} />
+            {/* <MarkdownPreview source={tokenData.description} /> */}
+            {tokenData.description}
           </div>
           {tokenData.description && tokenData.description.length > 300 && (
             <>
