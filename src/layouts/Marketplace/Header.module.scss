@@ -270,8 +270,13 @@
     transition: all 0.4s $easeOutCubic;
   }
 
-  &.isMenuOpen {
+  &:not(.isDisplay) {
     position: sticky;
+    top: 0;
+  }
+
+  &.isMenuOpen {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
@@ -285,11 +290,6 @@
       opacity: 0;
       visibility: hidden;
     }
-  }
-
-  &:not(.isDisplay) {
-    position: sticky;
-    top: 0;
   }
 }
 
