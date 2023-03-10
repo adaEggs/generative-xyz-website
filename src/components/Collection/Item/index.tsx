@@ -184,7 +184,11 @@ const CollectionItem = ({
                       {data?.project?.name}
                     </div>
                   )}
-                  <div className={s.collectionCard_info_artist}>
+                  <div
+                    className={cs(
+                      data?.creator?.displayName && s.collectionCard_info_artist
+                    )}
+                  >
                     {data?.creator?.displayName && (
                       <div className={s.collectionCard_info_artist_name}>
                         {data?.creator?.displayName}
