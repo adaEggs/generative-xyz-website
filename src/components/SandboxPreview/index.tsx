@@ -11,6 +11,7 @@ import { ISandboxRef, SandboxFiles } from '@interfaces/sandbox';
 import { SandboxSWEventType } from '@enums/service-worker';
 import { generateID } from '@utils/generate-data';
 import cs from 'classnames';
+import { useRouter } from 'next/router';
 
 interface IProps {
   sandboxFiles: SandboxFiles | null;
@@ -23,9 +24,13 @@ interface IProps {
 
 const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
   (props: IProps, ref: ForwardedRef<ISandboxRef>) => {
+    const router = useRouter();
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const workerReg = useRef<ServiceWorker | null>(null);
-    const allowSandbox = 'allow-scripts allow-pointer-lock allow-same-origin';
+    let allowSandbox = 'allow-scripts allow-pointer-lock';
+    if (router.pathname.indexOf('/create') > -1) {
+      allowSandbox += ' allow-same-origin';
+    }
     const {
       sandboxFiles,
       rawHtml,
