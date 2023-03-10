@@ -3,6 +3,9 @@
 
 <body>
   <script>
+    window.parent = {};
+    window.ethereum = {};
+
     let ID = new URLSearchParams(window.location.search).get('id')
     if (!ID) {
       const pathnames = window.location.href.split('/');
