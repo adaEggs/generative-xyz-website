@@ -363,8 +363,8 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
         )}
       {project.isCancel && !isCancelListed && showConfirmCancelModal && (
         <ModalConfirm
-          title="Confirm"
-          desc="Are you sure?"
+          title="Are you sure you want to cancel this
+          transaction?"
           showModal={showConfirmCancelModal}
           onClose={toggleConfirmCancelModal}
           onConfirm={() => {

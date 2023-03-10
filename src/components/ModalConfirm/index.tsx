@@ -10,7 +10,7 @@ interface IProps {
   onClose: () => void;
 
   title: string;
-  desc: string;
+  desc?: string;
   onConfirm: () => void;
 }
 
@@ -49,14 +49,14 @@ const ModalConfirm = ({
             </div>
             <div className={s.modalBody}>
               <p className={s.modalTitle}>{title}</p>
-              <p className={s.modalDesc}>{desc}</p>
+              {desc && <p className={s.modalDesc}>{desc}</p>}
               <div className={s.btnContainer}>
                 <ButtonIcon
-                  variants="outline-small"
+                  variants="secondary"
                   onClick={handleClose}
                   className={s.btn}
                 >
-                  Cancel
+                  Back
                 </ButtonIcon>
                 <div style={{ width: 24 }} />
                 <ButtonIcon
