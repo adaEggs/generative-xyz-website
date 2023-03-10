@@ -15,6 +15,7 @@ import { Collected } from './Collected';
 import FreeInscriptions from './Free';
 import s from './Profile.module.scss';
 import ReferralTab from './Referral';
+import { AssetsContext } from '@contexts/assets-context';
 
 const Profile: React.FC = (): React.ReactElement => {
   const user = useAppSelector(getUserSelector);
@@ -23,9 +24,9 @@ const Profile: React.FC = (): React.ReactElement => {
     profileProjects,
     collectedNFTs,
     totalFreeInscription,
-    isLoadingUTXOs,
     currentUser,
   } = useContext(ProfileContext);
+  const { isLoadedAssets, comingAmount } = useContext(AssetsContext);
   const [showModal, setShowModal] = React.useState(false);
   const { satoshiAmount } = useBitcoin();
   const isOwner = currentUser?.id === user?.id;
@@ -71,9 +72,18 @@ const Profile: React.FC = (): React.ReactElement => {
                       tabClassName={s.tab}
                       eventKey="balanceTab"
                       title={
-                        isLoadingUTXOs
-                          ? 'Loading...'
-                          : `${formatBTCPrice(satoshiAmount.toString())} BTC`
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          {!isLoadedAssets
+                            ? 'Loading...'
+                            : `${formatBTCPrice(satoshiAmount.toString())} BTC`}
+                          {isLoadedAssets && !!comingAmount && (
+                            <span
+                              className={s.profile_pendingBox}
+                            >{`+${formatBTCPrice(
+                              comingAmount
+                            )} BTC Pending`}</span>
+                          )}
+                        </div>
                       }
                     >
                       <BalanceTab />

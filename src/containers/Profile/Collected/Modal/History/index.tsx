@@ -3,7 +3,6 @@ import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import React, { useContext } from 'react';
 import s from './styles.module.scss';
-import { ProfileContext } from '@contexts/profile-context';
 import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import { toast } from 'react-hot-toast';
 import Table from '@components/Table';
@@ -11,6 +10,7 @@ import Text from '@components/Text';
 import { formatUnixDateTime } from '@utils/time';
 import { Stack } from 'react-bootstrap';
 import { TrackTxType } from '@interfaces/api/bitcoin';
+import { AssetsContext } from '@contexts/assets-context';
 
 interface IProps {
   showModal: boolean;
@@ -18,7 +18,7 @@ interface IProps {
 }
 
 const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
-  const { history } = useContext(ProfileContext);
+  const { history } = useContext(AssetsContext);
 
   const handleClose = () => {
     onClose();

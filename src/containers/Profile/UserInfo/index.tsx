@@ -21,6 +21,7 @@ import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 import ButtonReceiver from '@containers/Profile/ButtonReceiver';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { AssetsContext } from '@contexts/assets-context';
 import { SeeMore } from '@components/SeeMore';
 
 interface IProps {
@@ -29,7 +30,8 @@ interface IProps {
 
 export const UserInfo = ({ toggle }: IProps): JSX.Element => {
   const user = useAppSelector(getUserSelector);
-  const { currentUser, isLoadingHistory, history } = useContext(ProfileContext);
+  const { isLoadingHistory, history } = useContext(AssetsContext);
+  const { currentUser } = useContext(ProfileContext);
   const router = useRouter();
 
   const { walletAddress } = router.query as { walletAddress: string };
