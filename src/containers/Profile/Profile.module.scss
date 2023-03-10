@@ -75,4 +75,15 @@
     padding-top: 0 !important;
     padding-bottom: 0 !important;
   }
+
+  &_pendingBox {
+    color: $secondary-purple-a;
+    border: 1px solid $secondary-purple-a;
+    font-weight: 400;
+    font-size: rem(12px);
+    line-height: rem(20px);
+    border-radius: 2px;
+    padding: 4px 6px;
+    margin-left: 6px;
+  }
 }

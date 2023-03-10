@@ -199,12 +199,12 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             <div className={cs(s.projectCard_info, s.mobile)}>
               {creator && (
                 <Text size="11" fontWeight="medium">
-                  {filterCreatorName(project)}
+                  {projectName}
                 </Text>
               )}
               <div className={s.projectCard_info_title}>
                 <Text size="14" fontWeight="semibold">
-                  {projectName}
+                  {filterCreatorName(project)}
                 </Text>
               </div>
 
@@ -221,13 +221,13 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               {creator && (
                 <div className={s.projectCard_creator}>
                   <Text size={'20'} fontWeight="medium">
-                    {filterCreatorName(project)}
+                    {projectName}
                   </Text>
                 </div>
               )}
               <div className={s.projectCard_info_title}>
                 <Heading as={'h6'} fontWeight="medium">
-                  <span title={projectName}>{projectName}</span>
+                  <span title={projectName}>{filterCreatorName(project)}</span>
                 </Heading>
               </div>
               <div className={s.projectCard_info_price}>{renderFooter()}</div>

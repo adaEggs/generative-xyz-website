@@ -8,11 +8,6 @@ import { LogLevel } from '@enums/log-level';
 import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import useContractOperation from '@hooks/useContractOperation';
 import {
-  ICollectedUTXOResp,
-  IFeeRate,
-  ITxHistory,
-} from '@interfaces/api/bitcoin';
-import {
   IListingTokensResponse,
   ITokenOfferListResponse,
 } from '@interfaces/api/marketplace';
@@ -25,7 +20,6 @@ import { TokenOffer } from '@interfaces/token';
 import { User } from '@interfaces/user';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { getCollectedUTXO, getFeeRate, getHistory } from '@services/bitcoin';
 import AcceptTokenOffer from '@services/contract-operations/generative-marketplace/accept-token-offer';
 import CancelTokenOfferOperation from '@services/contract-operations/generative-marketplace/cancel-token-offer';
 import { getInscriptionListByUser } from '@services/inscribe';
@@ -69,13 +63,8 @@ export interface IProfileContext {
   profileListing?: IListingTokensResponse;
   collectedNFTs: ICollectedNFTItem[];
   referralListing?: IGetReferralsResponse;
-  collectedUTXOs?: ICollectedUTXOResp;
-  feeRate: IFeeRate | undefined;
-  history: ITxHistory[];
-  isLoadingHistory: boolean;
   currency: CurrencyType;
 
-  isLoadingUTXOs: boolean;
   isLoaded: boolean;
 
   isLoadedProfileTokens: boolean;
@@ -95,9 +84,6 @@ export interface IProfileContext {
   handleAcceptOfferReceived: (offer: TokenOffer) => void;
   handelcancelMintingNFT: (mintID?: string) => void;
   debounceFetchDataCollectedNFTs: () => void;
-  debounceFetchCollectedUTXOs: () => void;
-  debounceFetchFeeRate: () => void;
-  debounceFetchHistory: () => void;
   isOfferReceived: boolean;
   setIsOfferReceived: React.Dispatch<React.SetStateAction<boolean>>;
   setCurrency: React.Dispatch<React.SetStateAction<CurrencyType>>;
@@ -118,13 +104,8 @@ const initialValue: IProfileContext = {
   isLoadedProfileCollected: false,
   isLoadedProfileReferral: false,
   isLoadingProfileCollected: false,
-  isLoadingUTXOs: false,
   collectedNFTs: [],
   referralListing: undefined,
-  collectedUTXOs: undefined,
-  feeRate: undefined,
-  history: [],
-  isLoadingHistory: false,
   currency: CurrencyType.BTC,
 
   handleFetchTokens: () => new Promise<void>(r => r()),
@@ -137,9 +118,6 @@ const initialValue: IProfileContext = {
   debounceFetchDataCollectedNFTs: () => new Promise<void>(r => r()),
   handleFetchListingReferrals: () => new Promise<void>(r => r()),
 
-  debounceFetchCollectedUTXOs: () => new Promise<void>(r => r()),
-  debounceFetchFeeRate: () => new Promise<void>(r => r()),
-  debounceFetchHistory: () => new Promise<void>(r => r()),
   isOfferReceived: false,
   setIsOfferReceived: _ => {
     return;
@@ -455,14 +433,6 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
   const { ordAddress } = useBTCSignOrd();
 
   const [collectedNFTs, setCollectedNFTs] = useState<ICollectedNFTItem[]>([]);
-  const [collectedUTXOs, setCollectedUTXOs] = useState<
-    ICollectedUTXOResp | undefined
-  >();
-  const [feeRate, setFeeRate] = useState<IFeeRate | undefined>();
-  const [history, setHistory] = useState<ITxHistory[]>([]);
-  const [isLoadingHistory, setIsLoadingHistory] = useState<boolean>(false);
-  const [isLoadingUTXOs, setIsLoadingUTXOs] = useState<boolean>(false);
-
   const currentBtcAddressRef = useRef(ordAddress);
 
   const handelcancelMintingNFT = async (mintID?: string) => {
@@ -513,52 +483,6 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
 
   const debounceFetchDataCollectedNFTs = debounce(fetchDataCollectedNFTs, 300);
 
-  const fetchCollectedUTXOs = async () => {
-    try {
-      setIsLoadingUTXOs(true);
-      const resp = await getCollectedUTXO(currentBtcAddressRef.current);
-      setCollectedUTXOs(resp);
-    } catch (error) {
-      // handle fetch data error here
-    } finally {
-      setIsLoadingUTXOs(false);
-    }
-  };
-
-  const debounceFetchCollectedUTXOs = React.useCallback(
-    debounce(fetchCollectedUTXOs, 300),
-    []
-  );
-
-  const fetchFeeRate = async () => {
-    try {
-      const feeRate = await getFeeRate();
-      setFeeRate(feeRate);
-    } catch (error) {
-      setFeeRate({
-        fastestFee: 15,
-        halfHourFee: 10,
-        hourFee: 5,
-      });
-    }
-  };
-
-  const debounceFetchFeeRate = debounce(fetchFeeRate, 300);
-
-  const fetchHistory = async () => {
-    try {
-      setIsLoadingHistory(true);
-      const history = await getHistory(currentBtcAddressRef.current);
-      setHistory(history);
-    } catch (error) {
-      setHistory([]);
-    } finally {
-      setIsLoadingHistory(false);
-    }
-  };
-
-  const debounceFetchHistory = debounce(fetchHistory, 300);
-
   useEffect(() => {
     if (
       currentUser
@@ -570,16 +494,8 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       currentBtcAddressRef.current =
         currentUser.walletAddressBtcTaproot || walletAddress;
       debounceFetchDataCollectedNFTs();
-      debounceFetchHistory();
-      debounceFetchCollectedUTXOs();
-    } else {
-      setCollectedUTXOs(undefined);
     }
   }, [currentUser]);
-
-  useEffect(() => {
-    debounceFetchFeeRate();
-  }, []);
 
   // useEffect(() => {
   //   if (!currentUser) return;
@@ -602,12 +518,7 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       profileListing,
       collectedNFTs,
       referralListing,
-      collectedUTXOs,
-      feeRate,
-      history,
-      isLoadingHistory,
       currency,
-      isLoadingUTXOs,
 
       isLoaded,
       isLoadedProfileTokens,
@@ -629,9 +540,6 @@ export const ProfileProvider: React.FC<PropsWithChildren> = ({
       handelcancelMintingNFT,
       handleFetchListingReferrals,
       debounceFetchDataCollectedNFTs,
-      debounceFetchCollectedUTXOs,
-      debounceFetchFeeRate,
-      debounceFetchHistory,
       setCurrency,
       freeInscriptions,
       freePage,

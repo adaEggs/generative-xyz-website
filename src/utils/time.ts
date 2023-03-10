@@ -29,4 +29,16 @@ const isExpiredTime = ({ time, expiredMin = 1 }: IExpired) => {
   return now - Number(time) > expiredMin;
 };
 
-export { formatUnixDateTime, formatDateTime, isExpiredTime };
+const isExpiredTimeClone = ({ time, expiredMin = 1 }: IExpired) => {
+  if (!time || !isNumber(time)) return false;
+  const now = Math.floor(new Date().getTime() / 1000);
+  expiredMin = expiredMin * 60;
+  return now - Number(time) > expiredMin;
+};
+
+export {
+  formatUnixDateTime,
+  formatDateTime,
+  isExpiredTime,
+  isExpiredTimeClone,
+};

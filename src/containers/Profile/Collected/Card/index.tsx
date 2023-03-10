@@ -1,5 +1,6 @@
 import ButtonIcon from '@components/ButtonIcon';
 import Link from '@components/Link';
+import ModalConfirm from '@components/ModalConfirm';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
@@ -22,6 +23,8 @@ import cs from 'classnames';
 import React, { useContext } from 'react';
 import { TwitterShareButton } from 'react-share';
 import s from './CollectedCard.module.scss';
+import { AssetsContext } from '@contexts/assets-context';
+import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -33,18 +36,21 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
   const user = useAppSelector(getUserSelector);
   const [showSendModal, setShowSendModal] = React.useState(false);
+  const [showConfirmCancelModal, setShowConfirmCancelModal] =
+    React.useState(false);
 
-  const {
-    handelcancelMintingNFT,
-    feeRate,
-    isLoadingHistory,
-    history,
-    currentUser,
-  } = useContext(ProfileContext);
+  const { handelcancelMintingNFT, currentUser } = useContext(ProfileContext);
+
+  const { isLoadingHistory, history } = useContext(AssetsContext);
 
   const toggleModal = () => {
     setShowSendModal(value => !value);
   };
+
+  const toggleConfirmCancelModal = () => {
+    setShowConfirmCancelModal(value => !value);
+  };
+
   const isOwner = currentUser?.id === user?.id;
 
   const linkPath =
@@ -122,10 +128,13 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     isCancelListed,
   ]);
 
-  const projectName =
+  const tokenIdName =
     project.status === CollectedNFTStatus.Success
       ? `#${project.inscriptionNumber}`
       : project.projectName || '';
+
+  const projectName =
+    project.status === CollectedNFTStatus.Success ? project.projectName : '';
 
   const isNotShowBlur =
     project.status === CollectedNFTStatus.Success ||
@@ -159,6 +168,88 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
           </>
         )}
       </>
+    );
+  };
+
+  const renderButton = () => {
+    if (
+      !isOwner &&
+      project.buyable &&
+      project.priceBTC &&
+      project.buyable &&
+      project.priceBTC &&
+      project.inscriptionID &&
+      project.inscriptionNumber &&
+      !project.cancelling
+    ) {
+      return (
+        <Link
+          href=""
+          onClick={() => ''}
+          className={s.projectCard_status_buyBtn}
+        >
+          <ButtonBuyListed
+            inscriptionID={project.inscriptionID}
+            price={project.priceBTC}
+            inscriptionNumber={Number(project.inscriptionNumber)}
+            orderID={project.orderID}
+          />
+        </Link>
+      );
+    }
+    return (
+      <div className={s.row}>
+        {showSendButton && (
+          <Link href="" onClick={toggleModal}>
+            <ButtonIcon
+              variants="outline"
+              className={s.projectCard_status_sendBtn}
+            >
+              Send
+            </ButtonIcon>
+          </Link>
+        )}
+        {isListable && (
+          <Link
+            href=""
+            onClick={() => {
+              // TODO
+            }}
+          >
+            <ButtonListForSale
+              inscriptionID={project.inscriptionID || ''}
+              inscriptionNumber={Number(project.inscriptionNumber)}
+            />
+          </Link>
+        )}
+        {isCancelListed && (
+          <Link
+            href=""
+            className={s.projectCard_status_cancelBtnList}
+            onClick={() => {
+              // TODO
+            }}
+          >
+            <ButtonCancelListed
+              inscriptionID={project.inscriptionID || ''}
+              inscriptionNumber={Number(project.inscriptionNumber)}
+              orderID={project.orderID}
+            />
+          </Link>
+        )}
+
+        {project.isCancel && !isCancelListed && (
+          <Link
+            href=""
+            className={s.projectCard_status_cancelBtn}
+            onClick={toggleConfirmCancelModal}
+          >
+            <Text as="span" size="14" fontWeight="medium">
+              Cancel
+            </Text>
+          </Link>
+        )}
+      </div>
     );
   };
 
@@ -201,8 +292,13 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
             {mobileScreen ? (
               <div className={cs(s.projectCard_info, s.mobile)}>
                 {renderStatusText()}
-                {projectName && (
+                {tokenIdName && (
                   <Text size="11" fontWeight="medium">
+                    {tokenIdName}
+                  </Text>
+                )}
+                {projectName && (
+                  <Text size="11" fontWeight="medium" color="black-40-solid">
                     {projectName}
                   </Text>
                 )}
@@ -217,12 +313,17 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
             ) : (
               <div className={cs(s.projectCard_info, s.desktop)}>
                 {renderStatusText()}
-                {projectName && (
+                {tokenIdName && (
                   <div className={s.projectCard_creator}>
                     <Text size={'20'} fontWeight="medium">
-                      {projectName}
+                      {tokenIdName}
                     </Text>
                   </div>
+                )}
+                {projectName && (
+                  <Text size="20" fontWeight="medium" color="black-40-solid">
+                    {projectName}
+                  </Text>
                 )}
                 {project.status !== CollectedNFTStatus.Success &&
                   project.quantity &&
@@ -274,71 +375,30 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                 </ButtonIcon>
               </TwitterShareButton>
             )}
-            <div className={s.row}>
-              {isListable && (
-                <Link
-                  href=""
-                  onClick={() => {
-                    // TODO
-                  }}
-                >
-                  <ButtonListForSale
-                    inscriptionID={project.inscriptionID || ''}
-                    inscriptionNumber={Number(project.inscriptionNumber)}
-                  />
-                </Link>
-              )}
-              {isCancelListed && (
-                <Link
-                  href=""
-                  className={s.projectCard_status_cancelBtnList}
-                  onClick={() => {
-                    // TODO
-                  }}
-                >
-                  <ButtonCancelListed
-                    inscriptionID={project.inscriptionID || ''}
-                    inscriptionNumber={Number(project.inscriptionNumber)}
-                    orderID={project.orderID}
-                  />
-                </Link>
-              )}
-              {showSendButton && (
-                <Link href="" onClick={toggleModal}>
-                  <ButtonIcon
-                    variants="outline"
-                    className={s.projectCard_status_sendBtn}
-                  >
-                    Send
-                  </ButtonIcon>
-                </Link>
-              )}
-              {project.isCancel && !isCancelListed && (
-                <Link
-                  href=""
-                  className={s.projectCard_status_cancelBtn}
-                  onClick={() => handelcancelMintingNFT(project.id)}
-                >
-                  <Text as="span" size="14" fontWeight="medium">
-                    Cancel
-                  </Text>
-                </Link>
-              )}
-            </div>
+            {renderButton()}
           </div>
         </div>
       </Link>
-      {!!project.inscriptionID &&
-        !!feeRate &&
-        showSendModal &&
-        showSendButton && (
-          <SendInscriptionModal
-            showModal={showSendModal}
-            inscriptionID={project.inscriptionID}
-            onClose={toggleModal}
-            inscriptionNumber={Number(project.inscriptionNumber || 0)}
-          />
-        )}
+      {!!project.inscriptionID && showSendModal && showSendButton && (
+        <SendInscriptionModal
+          showModal={showSendModal}
+          inscriptionID={project.inscriptionID}
+          onClose={toggleModal}
+          inscriptionNumber={Number(project.inscriptionNumber || 0)}
+        />
+      )}
+      {project.isCancel && !isCancelListed && showConfirmCancelModal && (
+        <ModalConfirm
+          title="Are you sure you want to cancel this
+          transaction?"
+          showModal={showConfirmCancelModal}
+          onClose={toggleConfirmCancelModal}
+          onConfirm={() => {
+            handelcancelMintingNFT(project.id);
+            toggleConfirmCancelModal();
+          }}
+        />
+      )}
     </>
   );
 };

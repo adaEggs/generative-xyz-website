@@ -51,7 +51,7 @@
       display: flex;
       justify-content: center;
       align-self: center;
-      margin-right: rem(16px);
+      // margin-right: rem(16px);
       padding: 5px 14px;
       height: 34px;
       background: $black-5;
@@ -64,11 +64,15 @@
       }
     }
 
+    &_buyBtn {
+      margin-right: rem(16px);
+    }
+
     &_cancelBtnList {
       display: flex;
       justify-content: center;
       align-self: center;
-      margin-right: rem(16px);
+      // margin-right: rem(16px);
       background: $black-5;
       border-radius: 2px;
       cursor: pointer;
@@ -82,7 +86,7 @@
     &_sendBtn {
       display: flex;
       justify-content: center;
-      margin-right: rem(16px);
+      // margin-right: rem(16px);
       padding: 5px 14px;
       border-radius: 2px;
       cursor: pointer;
@@ -301,8 +305,9 @@
   flex-direction: row;
   width: fit-content;
   align-items: center;
-  gap: rem(4px);
+  gap: rem(6px);
   flex-wrap: wrap;
+  margin-right: rem(16px);
 
   button {
     font-size: 14px !important;

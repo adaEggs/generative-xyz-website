@@ -31,6 +31,8 @@ export const ROUTE_PATH = {
   AUTHENTIC_INSCRIPTIONS: '/authentic-inscriptions',
   AIRDROP: '/airdrop',
   DEVELOPER: '/developers',
+  PRESERVE: '/preserve',
+  PRESERVE_LANDING: '/preserve-cryptoart',
 };
 
 export const STANDALONE_PAGES = [
