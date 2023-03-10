@@ -70,7 +70,7 @@ export const ProjectProperty = (): JSX.Element => {
           </Heading>
         </div>
       )}
-      {marketplaceData?.volume && (
+      {!!marketplaceData?.volume && (
         <div className={`${s.stats_item} ${s.stats_item__icon}`}>
           <Text size="12" fontWeight="medium">
             Volume

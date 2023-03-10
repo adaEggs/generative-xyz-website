@@ -17,12 +17,12 @@ const PreserveLanding = (): JSX.Element => {
   const user = useAppSelector(getUserSelector);
   const router = useRouter();
 
-  const goToAuthentic = (): void => {
-    router.push(ROUTE_PATH.AUTHENTIC);
+  const goToPreserve = (): void => {
+    router.push(ROUTE_PATH.PRESERVE);
   };
 
   const onConnect = () => {
-    onButtonClick({ cbSigned: goToAuthentic });
+    onButtonClick({ cbSigned: goToPreserve });
   };
 
   const isUser = useMemo((): boolean => {
@@ -58,7 +58,7 @@ const PreserveLanding = (): JSX.Element => {
               variants="blue-deep"
               className={s.login}
               sizes={'large'}
-              onClick={goToAuthentic}
+              onClick={goToPreserve}
               endIcon={
                 <SvgInset
                   svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
