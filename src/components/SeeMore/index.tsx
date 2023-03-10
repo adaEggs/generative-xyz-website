@@ -7,6 +7,9 @@ export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
   children,
   render,
 }) => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const refOptions = useRef<{ timeOut: null }>({ timeOut: null });
   const refBox = useRef<HTMLDivElement | null>(null);
   const refContent = useRef<HTMLDivElement | null>(null);
   const [contentOver, setContentOver] = useState<boolean>(false);
@@ -23,12 +26,19 @@ export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
       )
         return;
 
-      const { height } = refBox.current.getBoundingClientRect();
-      if (refContent?.current?.scrollHeight - height > 20) {
-        setContentOver(true);
-      } else {
-        setContentOver(false);
-      }
+      if (refOptions.current.timeOut) clearTimeout(refOptions.current.timeOut);
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      refOptions.current.timeOut = setTimeout(() => {
+        if (refBox.current && refContent?.current) {
+          const { height } = refBox.current.getBoundingClientRect();
+          if (refContent?.current?.scrollHeight - height > 20) {
+            setContentOver(true);
+          } else {
+            setContentOver(false);
+          }
+        }
+      }, 1000);
     });
     obResize.observe(document.body);
     return () => {

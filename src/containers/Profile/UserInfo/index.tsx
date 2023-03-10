@@ -21,6 +21,7 @@ import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 import ButtonReceiver from '@containers/Profile/ButtonReceiver';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { SeeMore } from '@components/SeeMore';
 
 interface IProps {
   toggle: () => void;
@@ -200,14 +201,16 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                   className={`${s.creator_social_item_inner} ${s.creator_bio}`}
                 >
                   <SvgInset
-                    // className={`${s.creator_social_twitter}`}
                     size={16}
                     svgUrl={`${CDN_URL}/icons/ic-info.svg`}
                     className={s.info_icon}
                   />
-                  <Text size={'18'} fontWeight="regular" className={s.bio}>
+                  <SeeMore render={Boolean(currentUser.bio)}>
                     {currentUser?.bio}
-                  </Text>
+                  </SeeMore>
+                  {/*<Text size={'18'} fontWeight="regular" className={s.bio}>*/}
+
+                  {/*</Text>*/}
                 </div>
               </div>
             )}
