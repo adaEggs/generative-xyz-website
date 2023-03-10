@@ -32,6 +32,7 @@ export const ROUTE_PATH = {
   AIRDROP: '/airdrop',
   DEVELOPER: '/developers',
   PRESERVE: '/preserve',
+  PRESERVE_LANDING: '/preserve-cryptoart',
 };
 
 export const STANDALONE_PAGES = [

@@ -12,7 +12,7 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import SvgInset from '@components/SvgInset';
 
-const AuthenticLanding = () => {
+const PreserveLanding = (): JSX.Element => {
   const { onButtonClick } = useBTCSignOrd();
   const user = useAppSelector(getUserSelector);
   const router = useRouter();
@@ -33,17 +33,22 @@ const AuthenticLanding = () => {
     <Container>
       <Row className={s.metamaskContainer}>
         <Col md={'12'} xl={'6'} className={s.leftContainer}>
-          <p className={s.title}>Certificate of Authenticity</p>
+          <p className={s.title}>CryptoArt & NFT Preservation</p>
           <Text className={s.subTitle}>
-            Your Ethereum NFTs, your Bitcoin inscriptions.
+            Preserve your valuable Ethereum CryptoArt and NFTs on Bitcoin.
           </Text>
           <Text className={s.text}>
-            It’s a free, easy and secure way to create authentic Ordinal
-            Inscriptions from your original Ethereum NFTs.
+            When you collect an Ethereum NFT, your ownership information is
+            on-chain, but the content of the NFT is not. It is often stored on
+            centralized servers.
             <br />
             <br />
-            Login with MetaMask, pick an Ethereum NFT, then inscribe it — it’s
-            that easy. You can even sell it on the Generative marketplace.
+            The Bitcoin network is the perfect place for preserving that
+            valuable content with its large on-chain storage in perpetuity.
+            <br />
+            <br />
+            Login with MetaMask, pick an Ethereum NFT, then preserve it — it’s
+            that easy.
           </Text>
           <br />
           <br />
@@ -101,4 +106,4 @@ const AuthenticLanding = () => {
   );
 };
 
-export default AuthenticLanding;
+export default PreserveLanding;

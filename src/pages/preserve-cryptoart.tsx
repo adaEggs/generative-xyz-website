@@ -1,27 +1,26 @@
 import MarketplaceLayout from '@layouts/Marketplace';
 import { NextPage } from 'next';
 import { CDN_URL } from '@constants/config';
-import AuthenticLanding from '@containers/AuthenticLanding';
+import PreserveLanding from '@containers/PreserveLanding';
 
-const AuthenticInscriptions: NextPage = () => {
+const PreserveCryptoart: NextPage = () => {
   return (
     <MarketplaceLayout theme={'dark'} isHideFaucet={true}>
       <div style={{ width: '100%', backgroundColor: '#1c1c1c' }}>
-        <AuthenticLanding />
+        <PreserveLanding />
       </div>
     </MarketplaceLayout>
   );
 };
 
-export default AuthenticInscriptions;
-
+export default PreserveCryptoart;
 export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
-        title: 'Generative | Authentic',
-        description: 'Inscribe your original Ethereum NFTs onto Bitcoin',
-        image: `${CDN_URL}/images/authentic-poster.png`,
+        title: 'Generative | CryptoArt and NFT Preservation',
+        description: 'Preserve your Ethereum CryptoArt and NFTs on Bitcoin.',
+        image: `${CDN_URL}/images/preserve.png`,
       },
     },
   };
