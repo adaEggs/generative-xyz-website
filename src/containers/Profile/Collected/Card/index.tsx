@@ -22,6 +22,7 @@ import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import React, { useContext } from 'react';
 import { TwitterShareButton } from 'react-share';
+import MintStatusModal from '../Modal/MintStatus';
 import s from './CollectedCard.module.scss';
 import { AssetsContext } from '@contexts/assets-context';
 import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
@@ -36,6 +37,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
   const user = useAppSelector(getUserSelector);
   const [showSendModal, setShowSendModal] = React.useState(false);
+  const [showMintStatusModal, setShowMintStatusModal] = React.useState(false);
   const [showConfirmCancelModal, setShowConfirmCancelModal] =
     React.useState(false);
 
@@ -45,6 +47,10 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
 
   const toggleModal = () => {
     setShowSendModal(value => !value);
+  };
+
+  const toggleMintStatusModal = () => {
+    setShowMintStatusModal(value => !value);
   };
 
   const toggleConfirmCancelModal = () => {
@@ -156,16 +162,16 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     return (
       <>
         {project.status !== CollectedNFTStatus.Success && (
-          <>
+          <Link href="" onClick={toggleMintStatusModal}>
             <Text
-              className={s.projectCard_creator_status}
+              className={s.projectCard_creator_status_underline}
               size={'16'}
               fontWeight="medium"
               color="black-40"
             >
               {`${project.statusText}...`}
             </Text>
-          </>
+          </Link>
         )}
       </>
     );
@@ -305,7 +311,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                 {project.status !== CollectedNFTStatus.Success &&
                   project.quantity &&
                   project.quantity > 1 && (
-                    <Text size={'16'} fontWeight="medium">
+                    <Text size={'11'} fontWeight="medium">
                       {`Quantity: (${project.quantity})`}
                     </Text>
                   )}
@@ -379,6 +385,14 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
           </div>
         </div>
       </Link>
+      {project.id && showMintStatusModal && (
+        <MintStatusModal
+          showModal={showMintStatusModal}
+          onClose={toggleMintStatusModal}
+          mintID={project.id}
+          projectName={project.projectName || 'Mint NFT'}
+        />
+      )}
       {!!project.inscriptionID && showSendModal && showSendButton && (
         <SendInscriptionModal
           showModal={showSendModal}

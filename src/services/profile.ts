@@ -148,6 +148,7 @@ export const getCollectedNFTs = async (
             priceBTC: data?.price_btc,
             orderID: data?.order_id,
             cancelling: data?.cancelling,
+            artistName: data?.artist_name,
           } as ICollectedNFTItem;
         }
       );
@@ -215,6 +216,12 @@ export const getDetailMintingCollectedNFT = async (
       status: CollectedNFTStatus.Minting,
       statusText: res.status,
       receiveAddress: res.receiveAddress,
+      progressStatus: res.progressStatus
+        ? Object.values(res.progressStatus)
+        : [],
+      amount: res.amount,
+      payType: res.payType,
+      projectImage: res.projectImage,
       buyable: false,
       cancelling: false,
       priceBTC: '0',
