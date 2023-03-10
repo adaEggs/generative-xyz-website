@@ -166,7 +166,7 @@ const CollectionItem = ({
                 <Stack
                   className={cs(s.collectionCard_info_stack, {
                     [s.collectionCard_info_wrapper]:
-                      showCollectionName && data?.creator?.displayName,
+                      showCollectionName && data?.project?.name,
                   })}
                   direction="horizontal"
                 >
@@ -179,16 +179,19 @@ const CollectionItem = ({
                   >
                     {renderHeadDesc()}
                   </Heading>
-                  {showCollectionName && data?.creator?.displayName && (
-                    <Heading
-                      as={'h6'}
-                      fontWeight="medium"
-                      className={s.collectionCard_info_wrapper_ownerName}
-                    >
-                      {data?.creator?.displayName}
-                    </Heading>
+                  {showCollectionName && data?.project?.name && (
+                    <div className={s.collectionCard_info_wrapper_ownerName}>
+                      {data?.project?.name}
+                    </div>
                   )}
-                  {renderBuyButton()}
+                  <div className={s.collectionCard_info_artist}>
+                    {data?.creator?.displayName && (
+                      <div className={s.collectionCard_info_artist_name}>
+                        {data?.creator?.displayName}
+                      </div>
+                    )}
+                    {renderBuyButton()}
+                  </div>
                 </Stack>
                 {showInscriptionID && (
                   <Heading
