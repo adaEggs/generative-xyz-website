@@ -44,7 +44,7 @@ export const getPendingUTXOsViaBlockStream = async (
   if (!btcAddress) return [];
   try {
     const res = await axios.get(
-      `https://blockstream.info/api/address/${btcAddress}/txs`
+      `https://mempool.space/api/address/${btcAddress}/txs/mempool`
     );
     pendingUTXOs = (res.data || []).filter(
       (item: IPendingUTXO) => !item.status.confirmed
@@ -146,13 +146,14 @@ export const getHistory = async (address: string): Promise<ITxHistory[]> => {
   }
 };
 
-export const broadcastTx = async (txHex: string, isSplit = false) => {
+export const broadcastTx = async (txHex: string) => {
   try {
-    await axios.post(`https://blockstream.info/api/tx`, txHex);
+    await axios.post(`https://mempool.space/api/tx`, txHex);
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
-    const subMess = isSplit ? ' split ' : ' ';
-    throw new Error(`Broadcast the${subMess}tx error`);
+    throw new Error(
+      'There was an issue when broadcasting the transaction to the BTC network.'
+    );
   }
 };
 

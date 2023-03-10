@@ -1,7 +1,6 @@
 import { default as Accordion } from '@components/Accordion';
 import ButtonIcon from '@components/ButtonIcon';
 import ImagePreviewInput from '@components/ImagePreviewInput';
-import MarkdownEditor from '@components/MarkdownEditor';
 import Text from '@components/Text';
 import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
@@ -18,20 +17,20 @@ import {
   updateProject,
   uploadUpdatedTraitList,
 } from '@services/project';
-import { isProduction } from '@utils/common';
 import { formatBTCPrice } from '@utils/format';
 import log from '@utils/logger';
 import { ErrorMessage, Field, FieldArray, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import Select, { MultiValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 
-import s from './styles.module.scss';
-import { Stack } from 'react-bootstrap';
+import Input from '@components/Formik/Input';
 import SvgInset from '@components/SvgInset';
 import { validateBTCAddressTaproot } from '@utils/validate';
+import { Stack } from 'react-bootstrap';
+import s from './styles.module.scss';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -374,8 +373,21 @@ const FormEditProject = () => {
                       Description of your collection{' '}
                       <sup className={s.requiredTag}>*</sup>
                     </label>
+                    <Input
+                      id="description"
+                      as="textarea"
+                      name="description"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.description}
+                      className={s.descriptionInput}
+                      useFormik
+                    />
+                    {errors.description && touched.description && (
+                      <p className={s.error}>{errors.description}</p>
+                    )}
 
-                    <MarkdownEditor
+                    {/* <MarkdownEditor
                       id="description"
                       className={s.mdEditor}
                       value={values.description}
@@ -390,7 +402,7 @@ const FormEditProject = () => {
                     />
                     {errors.description && touched.description && (
                       <p className={s.error}>{errors.description}</p>
-                    )}
+                    )} */}
                   </div>
                 </div>
                 <div className={s.uploadPreviewWrapper}>
@@ -411,8 +423,7 @@ const FormEditProject = () => {
                   </div>
                 </div>
               </div>
-              {!isProduction() &&
-                project &&
+              {project &&
                 projectFiles !== 0 &&
                 project?.mintingInfo?.index > 0 && (
                   <div className={s.updateTraits}>
