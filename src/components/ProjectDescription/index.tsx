@@ -11,6 +11,7 @@ type Props = {
   descInteraction?: string;
   tokenDetail?: ReactNode | null;
   attributes?: ReactNode | null;
+  onlyDesc?: boolean;
 };
 
 const ProjectDescription = ({
@@ -20,6 +21,7 @@ const ProjectDescription = ({
   tokenDetail,
   attributes,
   descInteraction = '',
+  onlyDesc,
 }: Props) => {
   const [projectDescription, setProjectDescription] = useState('');
   const [projectInteraction, setProjectInteraction] = useState('');
@@ -50,7 +52,11 @@ const ProjectDescription = ({
     setDefaultActiveKey(handleSetDefaultActiveKey());
   }, [desc, profileBio, attributes, tokenDetail]);
 
-  return (
+  return onlyDesc ? (
+    <div className={s.project_desc}>
+      <SeeMore>{hasInteraction ? projectDescription : desc}</SeeMore>
+    </div>
+  ) : (
     <Tabs
       className={s.tabs}
       activeKey={defaultActiveKey}

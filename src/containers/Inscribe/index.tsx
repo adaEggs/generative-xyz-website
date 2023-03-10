@@ -1,37 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import DropFile from './DropFile';
-import s from './styles.module.scss';
-import { Formik } from 'formik';
-import { validateBTCAddressTaproot } from '@utils/validate';
+import Button from '@components/ButtonIcon';
 import { Loading } from '@components/Loading';
 import QRCodeGenerator from '@components/QRCodeGenerator';
-import Button from '@components/ButtonIcon';
-import { formatBTCPrice } from '@utils/format';
-import { generateReceiverAddress } from '@services/inscribe';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
-import useAsyncEffect from 'use-async-effect';
-import { blobToBase64, blobToFile, fileToBase64 } from '@utils/file';
-import { InscribeMintFeeRate } from '@enums/inscribe';
-import { calculateMintFee } from '@utils/inscribe';
-import cs from 'classnames';
-import { InscriptionInfo } from '@interfaces/inscribe';
-import { formatUnixDateTime } from '@utils/time';
-import ThankModal from '@containers/Inscribe/Modal';
+import SvgInset from '@components/SvgInset';
+import Text from '@components/Text';
 import ClientOnly from '@components/Utils/ClientOnly';
-import { toast } from 'react-hot-toast';
-import { ErrorMessage } from '@enums/error-message';
-import BigNumber from 'bignumber.js';
-import { useSelector } from 'react-redux';
-import { getUserSelector } from '@redux/user/selector';
-import { useRouter } from 'next/router';
-import { getNFTDetailFromMoralis } from '@services/token-moralis';
-import { IGenerateReceiverAddressPayload } from '@interfaces/api/inscribe';
-import { checkForHttpRegex } from '@utils/string';
-import { convertIpfsToHttp, isValidImage } from '@utils/image';
+import { CDN_URL } from '@constants/config';
+import ThankModal from '@containers/Inscribe/Modal';
 import { dataURItoBlob } from '@containers/ObjectPreview/GltfPreview/helpers';
-import { v4 as uuidv4 } from 'uuid';
+import { ErrorMessage } from '@enums/error-message';
+import { InscribeMintFeeRate } from '@enums/inscribe';
+import { LogLevel } from '@enums/log-level';
+import { IGenerateReceiverAddressPayload } from '@interfaces/api/inscribe';
+import { InscriptionInfo } from '@interfaces/inscribe';
+import { getUserSelector } from '@redux/user/selector';
 import { resizeImage } from '@services/file';
+import { generateReceiverAddress } from '@services/inscribe';
+import { getNFTDetailFromMoralis } from '@services/token-moralis';
+import { blobToBase64, blobToFile, fileToBase64 } from '@utils/file';
+import { formatBTCPrice, formatLongAddress } from '@utils/format';
+import { convertIpfsToHttp, isValidImage } from '@utils/image';
+import { calculateMintFee } from '@utils/inscribe';
+import log from '@utils/logger';
+import { checkForHttpRegex } from '@utils/string';
+import { formatUnixDateTime } from '@utils/time';
+import { validateBTCAddressTaproot } from '@utils/validate';
+import BigNumber from 'bignumber.js';
+import cs from 'classnames';
+import { Formik } from 'formik';
+import { useRouter } from 'next/router';
+import React, { useEffect, useRef, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { useSelector } from 'react-redux';
+import useAsyncEffect from 'use-async-effect';
+import { v4 as uuidv4 } from 'uuid';
+import DropFile from './DropFile';
+import s from './styles.module.scss';
 
 const LOG_PREFIX = 'Inscribe';
 
@@ -41,10 +44,12 @@ interface IFormValue {
 
 interface IProps {
   isModal?: boolean;
+  uploadedFile?: File | null;
+  setUploadedFile: (file: File | null) => void;
 }
 
 const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
-  const { isModal = false } = props;
+  const { isModal = false, uploadedFile, setUploadedFile } = props;
   const user = useSelector(getUserSelector);
   const [file, setFile] = useState<File | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
@@ -56,8 +61,12 @@ const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
   const [feeRate, setFeeRate] = useState<InscribeMintFeeRate>(
     InscribeMintFeeRate.FASTEST
   );
+  const [addressInputDisabled, setAddressInputDisabled] = useState(true);
+
   const router = useRouter();
   const { isAuthentic, tokenAddress, tokenId } = router.query;
+
+  const addressInputRef = useRef<HTMLInputElement>(null);
 
   const resetAuthenticQueryParams = (): void => {
     const { pathname, query } = router;
@@ -212,17 +221,28 @@ const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
     toast.success('Copied');
   };
 
+  useEffect(() => {
+    if (!addressInputDisabled && addressInputRef.current) {
+      addressInputRef.current.focus();
+    }
+  }, [addressInputDisabled]);
+
   useAsyncEffect(async () => {
     if (!file) {
       return;
     }
-
     setFileError(null);
     const base64 = await fileToBase64(file);
     if (base64) {
       setFileBase64(base64 as string);
     }
   }, [file]);
+
+  useEffect(() => {
+    if (uploadedFile) {
+      handleChangeFile(uploadedFile);
+    }
+  }, [uploadedFile]);
 
   useEffect(() => {
     if (router.isReady) {
@@ -265,37 +285,60 @@ const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
                               className={s.dropZoneContainer}
                               onChange={handleChangeFile}
                               fileOrFiles={file ? [file] : null}
+                              setFileError={setFileError}
                             />
-                            {fileError && (
-                              <p className={s.inputError}>{fileError}</p>
+                          </div>
+                          <div className={s.formItem}>
+                            <label className={s.addressLabel} htmlFor="address">
+                              <Text
+                                as="span"
+                                size="12"
+                                color="black-60"
+                                fontWeight="medium"
+                              >
+                                Where do we send the inscription to?
+                              </Text>
+                            </label>
+                            <div
+                              className={`${s.inputContainer} ${s.addressInput}`}
+                            >
+                              <input
+                                id="address"
+                                type="text"
+                                name="address"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                disabled={addressInputDisabled}
+                                value={
+                                  addressInputDisabled
+                                    ? formatLongAddress(values.address)
+                                    : values.address
+                                }
+                                className={s.input}
+                                placeholder="Paste your Ordinals-compatible address here"
+                                ref={addressInputRef}
+                              />
+                              <div
+                                className={s.editAddress}
+                                onClick={() => setAddressInputDisabled(false)}
+                              >
+                                Edit
+                              </div>
+                            </div>
+                            {errors.address && touched.address && (
+                              <p className={s.inputError}>{errors.address}</p>
                             )}
                           </div>
                         </div>
                       </div>
-                      <div className={s.formRight}>
-                        <div className={s.formItem}>
-                          <label className={s.label} htmlFor="address">
-                            Where do we send the inscription to?
-                          </label>
-                          <div className={s.inputContainer}>
-                            <input
-                              id="address"
-                              type="text"
-                              name="address"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              value={values.address}
-                              className={s.input}
-                              placeholder="Paste your Ordinals-compatible address here"
-                            />
-                          </div>
-                          {errors.address && touched.address && (
-                            <p className={s.inputError}>{errors.address}</p>
-                          )}
-                        </div>
+                      <div className={`${s.formRight}`}>
                         {fileBase64 && (
                           <>
-                            <div className={s.formItem}>
+                            <div
+                              className={`${s.formItem}  ${
+                                fileError ? s.disabled : ''
+                              }`}
+                            >
                               <label
                                 className={s.labelNoBottom}
                                 htmlFor="price"
@@ -392,7 +435,7 @@ const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
                             <Loading isLoaded={false} />
                           </div>
                         )}
-                        {inscriptionInfo && !isMinting && (
+                        {inscriptionInfo && !isMinting && !fileError && (
                           <div className={s.qrCodeContainer}>
                             <p className={s.qrTitle}>Payment</p>
                             <div className={s.qrCodeWrapper}>
@@ -437,18 +480,36 @@ const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
                           </div>
                         )}
                         <div className={s.actionWrapper}>
-                          {inscriptionInfo?.segwitAddress ? (
+                          {inscriptionInfo?.segwitAddress && !fileError ? (
                             <div className={s.end}>
-                              That’s it. Check your wallet in about an hour.
+                              <SvgInset
+                                size={18}
+                                svgUrl={`${CDN_URL}/icons/ic-clock.svg`}
+                              />
+                              <Text size="14" fontWeight="medium">
+                                That’s it. Check your wallet in about an hour.
+                              </Text>
                             </div>
                           ) : (
-                            <Button
-                              className={s.submitBtn}
-                              disabled={isMinting}
-                              type="submit"
-                            >
-                              Inscribe
-                            </Button>
+                            <>
+                              <Button
+                                className={s.submitBtn}
+                                disabled={isMinting}
+                                sizes={'large'}
+                                variants="secondary"
+                                onClick={() => setUploadedFile(null)}
+                              >
+                                Back
+                              </Button>
+                              <Button
+                                className={s.submitBtn}
+                                disabled={isMinting || !!fileError}
+                                type="submit"
+                                sizes={'large'}
+                              >
+                                Inscribe
+                              </Button>
+                            </>
                           )}
                         </div>
                       </div>

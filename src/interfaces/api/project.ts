@@ -126,6 +126,11 @@ export interface IReportProjectPayload {
   originalLink?: string;
 }
 export type IReportProjectResponse = Project;
+export interface IProjectMarketplaceData {
+  listed: number;
+  floor_price: number;
+  volume: number;
+}
 
 export interface IGetProjectVolumeResponse {
   amount: string;

@@ -36,6 +36,28 @@ export const IMAGE_EXTENSIONS = [
   'tiff',
 ];
 
+export const SUPPORT_INSCRIBE_IMAGE = [
+  'apng',
+  'asc',
+  'flac',
+  'gif',
+  'glb',
+  'html',
+  'jpg',
+  'json',
+  'mp3',
+  'mp4',
+  'pdf',
+  'png',
+  'stl',
+  'svg',
+  'txt',
+  'wav',
+  'webm',
+  'webp',
+  'yaml',
+];
+
 export const SUPPORTED_FILE_EXT: Array<{ mediaType: MediaType; ext: string }> =
   [
     {
