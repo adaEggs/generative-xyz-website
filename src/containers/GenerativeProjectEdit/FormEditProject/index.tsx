@@ -26,7 +26,7 @@ import { toast } from 'react-hot-toast';
 import Select, { MultiValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 
-import Input from '@components/Formik/Input';
+import MarkdownEditor from '@components/MarkdownEditor';
 import SvgInset from '@components/SvgInset';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import { Stack } from 'react-bootstrap';
@@ -373,21 +373,8 @@ const FormEditProject = () => {
                       Description of your collection{' '}
                       <sup className={s.requiredTag}>*</sup>
                     </label>
-                    <Input
-                      id="description"
-                      as="textarea"
-                      name="description"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.description}
-                      className={s.descriptionInput}
-                      useFormik
-                    />
-                    {errors.description && touched.description && (
-                      <p className={s.error}>{errors.description}</p>
-                    )}
 
-                    {/* <MarkdownEditor
+                    <MarkdownEditor
                       id="description"
                       className={s.mdEditor}
                       value={values.description}
@@ -402,7 +389,7 @@ const FormEditProject = () => {
                     />
                     {errors.description && touched.description && (
                       <p className={s.error}>{errors.description}</p>
-                    )} */}
+                    )}
                   </div>
                 </div>
                 <div className={s.uploadPreviewWrapper}>
