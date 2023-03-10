@@ -6,6 +6,7 @@ import { CDN_URL } from '@constants/config';
 import cs from 'classnames';
 import SvgInset from '@components/SvgInset';
 import { ROUTE_PATH } from '@constants/route-path';
+import Image from 'next/image';
 
 const Topbar: React.FC = (): React.ReactElement => {
   return (
@@ -27,8 +28,18 @@ const Topbar: React.FC = (): React.ReactElement => {
               svgUrl={`${CDN_URL}/icons/ic-shield-star-24x24.svg`}
             />
             <p className={s.centerText}>
-              Inscribe your existing Ethereum NFTs onto Bitcoin.{' '}
-              <Link href={ROUTE_PATH.AUTHENTIC_INSCRIPTIONS}>It’s free</Link>
+              Preserve your valuable Ethereum CryptoArt and NFTs on
+              Bitcoin.&nbsp;
+              <Link href={ROUTE_PATH.PRESERVE}>
+                Learn more &nbsp;
+                <Image
+                  alt="icon"
+                  className={s.arrowIcon}
+                  width={14}
+                  height={14}
+                  src={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+                />
+              </Link>
             </p>
           </div>
 

@@ -24,6 +24,7 @@ import React, { useContext } from 'react';
 import { TwitterShareButton } from 'react-share';
 import s from './CollectedCard.module.scss';
 import { AssetsContext } from '@contexts/assets-context';
+import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -170,6 +171,88 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     );
   };
 
+  const renderButton = () => {
+    if (
+      !isOwner &&
+      project.buyable &&
+      project.priceBTC &&
+      project.buyable &&
+      project.priceBTC &&
+      project.inscriptionID &&
+      project.inscriptionNumber &&
+      !project.cancelling
+    ) {
+      return (
+        <Link
+          href=""
+          onClick={() => ''}
+          className={s.projectCard_status_buyBtn}
+        >
+          <ButtonBuyListed
+            inscriptionID={project.inscriptionID}
+            price={project.priceBTC}
+            inscriptionNumber={Number(project.inscriptionNumber)}
+            orderID={project.orderID}
+          />
+        </Link>
+      );
+    }
+    return (
+      <div className={s.row}>
+        {showSendButton && (
+          <Link href="" onClick={toggleModal}>
+            <ButtonIcon
+              variants="outline"
+              className={s.projectCard_status_sendBtn}
+            >
+              Send
+            </ButtonIcon>
+          </Link>
+        )}
+        {isListable && (
+          <Link
+            href=""
+            onClick={() => {
+              // TODO
+            }}
+          >
+            <ButtonListForSale
+              inscriptionID={project.inscriptionID || ''}
+              inscriptionNumber={Number(project.inscriptionNumber)}
+            />
+          </Link>
+        )}
+        {isCancelListed && (
+          <Link
+            href=""
+            className={s.projectCard_status_cancelBtnList}
+            onClick={() => {
+              // TODO
+            }}
+          >
+            <ButtonCancelListed
+              inscriptionID={project.inscriptionID || ''}
+              inscriptionNumber={Number(project.inscriptionNumber)}
+              orderID={project.orderID}
+            />
+          </Link>
+        )}
+
+        {project.isCancel && !isCancelListed && (
+          <Link
+            href=""
+            className={s.projectCard_status_cancelBtn}
+            onClick={toggleConfirmCancelModal}
+          >
+            <Text as="span" size="14" fontWeight="medium">
+              Cancel
+            </Text>
+          </Link>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       <Link href={linkPath} className={`${s.projectCard} ${className}`}>
@@ -292,58 +375,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                 </ButtonIcon>
               </TwitterShareButton>
             )}
-            <div className={s.row}>
-              {showSendButton && (
-                <Link href="" onClick={toggleModal}>
-                  <ButtonIcon
-                    variants="outline"
-                    className={s.projectCard_status_sendBtn}
-                  >
-                    Send
-                  </ButtonIcon>
-                </Link>
-              )}
-              {isListable && (
-                <Link
-                  href=""
-                  onClick={() => {
-                    // TODO
-                  }}
-                >
-                  <ButtonListForSale
-                    inscriptionID={project.inscriptionID || ''}
-                    inscriptionNumber={Number(project.inscriptionNumber)}
-                  />
-                </Link>
-              )}
-              {isCancelListed && (
-                <Link
-                  href=""
-                  className={s.projectCard_status_cancelBtnList}
-                  onClick={() => {
-                    // TODO
-                  }}
-                >
-                  <ButtonCancelListed
-                    inscriptionID={project.inscriptionID || ''}
-                    inscriptionNumber={Number(project.inscriptionNumber)}
-                    orderID={project.orderID}
-                  />
-                </Link>
-              )}
-
-              {project.isCancel && !isCancelListed && (
-                <Link
-                  href=""
-                  className={s.projectCard_status_cancelBtn}
-                  onClick={toggleConfirmCancelModal}
-                >
-                  <Text as="span" size="14" fontWeight="medium">
-                    Cancel
-                  </Text>
-                </Link>
-              )}
-            </div>
+            {renderButton()}
           </div>
         </div>
       </Link>

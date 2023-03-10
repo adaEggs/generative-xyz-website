@@ -69,6 +69,12 @@ export const MENU_HEADER = [
     route: ROUTE_PATH.DEVELOPER,
     activePath: 'developers',
   },
+  {
+    id: 'menu-12',
+    name: 'CryptoArt & NFT Preservation',
+    route: ROUTE_PATH.PRESERVE_LANDING,
+    activePath: 'preserve-cryptoart',
+  },
 ];
 
 export const RIGHT_MENU = [

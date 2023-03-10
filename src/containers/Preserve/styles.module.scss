@@ -1,0 +1,32 @@
+.authentic {
+  padding-top: rem(60px);
+  padding-bottom: rem(60px);
+
+  @include mobile {
+    padding-top: rem(24px);
+    padding-bottom: rem(24px);
+  }
+
+  .sectionTitle {
+    font-weight: 500;
+    font-size: rem(34px);
+    line-height: rem(44px);
+    margin-bottom: rem(48px);
+
+    @include mobile {
+      font-size: rem(24px);
+      line-height: rem(34px);
+      margin-bottom: rem(24px);
+    }
+  }
+
+  .loadingWrapper {
+    position: relative;
+    padding-top: rem(60px);
+    padding-bottom: rem(60px);
+  }
+
+  .inscriptionScroller {
+    @include hideScrollbar;
+  }
+}

@@ -18,8 +18,7 @@ import { getError } from '@utils/text';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { useRouter } from 'next/router';
-import { validateBTCAddress, validateEVMAddress } from '@utils/validate';
-import { ROUTE_PATH } from '@constants/route-path';
+import { validateEVMAddress } from '@utils/validate';
 import { currentAssetsBuilder, comingAmountBuilder } from '@utils/utxo';
 
 const LOG_PREFIX = 'ASSETS_CONTEXT';
@@ -80,15 +79,15 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   const router = useRouter();
   const { walletAddress } = router.query as { walletAddress: string };
   const currentAddress = React.useMemo(() => {
-    if (
-      !!walletAddress &&
-      validateBTCAddress(walletAddress) &&
-      router.asPath.includes(ROUTE_PATH.PROFILE)
-    ) {
-      return walletAddress;
-    }
+    // if (
+    //   !!walletAddress &&
+    //   validateBTCAddress(walletAddress) &&
+    //   router.asPath.includes(ROUTE_PATH.PROFILE)
+    // ) {
+    //   return walletAddress;
+    // }
     return user?.walletAddressBtcTaproot || '';
-  }, [user?.walletAddressBtcTaproot, router?.asPath, walletAddress]);
+  }, [user?.walletAddressBtcTaproot]);
 
   // UTXOs
   const [assets, setAssets] = useState<ICollectedUTXOResp | undefined>();
