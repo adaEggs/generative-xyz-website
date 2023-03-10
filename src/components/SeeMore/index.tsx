@@ -1,7 +1,6 @@
+import Text from '@components/Text';
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import s from './styles.module.scss';
-import MarkdownPreview from '@components/MarkdownPreview';
-import Text from '@components/Text';
 
 export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
   children,
@@ -43,9 +42,9 @@ export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
         className={`${s.seemore_description} ${isShowMore ? s.isShowMore : ''}`}
         ref={refBox}
       >
-        <div ref={refContent} className="pointer-none">
-          <MarkdownPreview source={children} />
-          {/* {children} */}
+        <div ref={refContent}>
+          {/* <MarkdownPreview source={children} /> */}
+          <Text size="18">{children}</Text>
         </div>
       </div>
       {(contentOver || isShowMore) && (
