@@ -20,6 +20,7 @@ import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './TokenID.module.scss';
+import MarkdownPreview from '@components/MarkdownPreview';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -190,8 +191,8 @@ const TokenID: React.FC = (): React.ReactElement => {
             className={s.token_description}
             style={{ WebkitLineClamp: showMore ? 'unset' : '4' }}
           >
-            {/* <MarkdownPreview source={tokenData.description} /> */}
-            {tokenData.description}
+            <MarkdownPreview source={tokenData.description} />
+            {/* {tokenData.description} */}
           </div>
           {tokenData.description && tokenData.description.length > 300 && (
             <>
