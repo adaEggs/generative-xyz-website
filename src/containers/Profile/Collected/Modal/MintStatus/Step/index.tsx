@@ -11,7 +11,7 @@ import copy from 'copy-to-clipboard';
 import React, { useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
-import s from '../MintTransaction.module.scss';
+import s from '../styles.module.scss';
 
 export interface IStep {
   nft: ICollectedNFTItemDetail;
@@ -34,6 +34,8 @@ const Step = (props: IStep): JSX.Element => {
       : formatEthPrice(`${nft.amount || 0}`, '0.0');
 
   const isActiveStep = currentActiveStep.current >= index;
+  const isVerifyStep = currentActiveStep.current > index && status;
+
   if (status) {
     currentActiveStep.current = index + 1;
   }
@@ -56,7 +58,6 @@ const Step = (props: IStep): JSX.Element => {
       setIsShowStep(!isShowStep);
     }
   };
-
   const renderTx = (tx?: string) => {
     if (!tx || !nft) {
       return <></>;
@@ -125,10 +126,21 @@ const Step = (props: IStep): JSX.Element => {
   return (
     <div className={s.step}>
       <div className={s.header} onClick={onClick}>
-        <div className={`${s.indexContainer} ${isActiveStep ? s.active : ''}`}>
-          <p className={`${s.indexTitle} ${isActiveStep ? s.active : ''}`}>
-            {index + 1}
-          </p>
+        <div
+          className={`${s.indexContainer} ${
+            isVerifyStep ? '' : isActiveStep ? s.active : ''
+          }`}
+        >
+          {isVerifyStep ? (
+            <SvgInset
+              size={20}
+              svgUrl={`${CDN_URL}/icons/ic-check-status.svg`}
+            />
+          ) : (
+            <p className={`${s.indexTitle} ${isActiveStep ? s.active : ''}`}>
+              {index + 1}
+            </p>
+          )}
         </div>
 
         <Text

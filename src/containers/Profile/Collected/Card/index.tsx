@@ -21,6 +21,7 @@ import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
 import React, { useContext } from 'react';
 import { TwitterShareButton } from 'react-share';
+import MintStatusModal from '../Modal/MintStatus';
 import s from './CollectedCard.module.scss';
 
 interface IPros {
@@ -33,6 +34,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
   const user = useAppSelector(getUserSelector);
   const [showSendModal, setShowSendModal] = React.useState(false);
+  const [showMintStatusModal, setShowMintStatusModal] = React.useState(false);
 
   const {
     handelcancelMintingNFT,
@@ -44,6 +46,10 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
 
   const toggleModal = () => {
     setShowSendModal(value => !value);
+  };
+
+  const toggleMintStatusModal = () => {
+    setShowMintStatusModal(value => !value);
   };
   const isOwner = currentUser?.id === user?.id;
 
@@ -147,7 +153,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     return (
       <>
         {project.status !== CollectedNFTStatus.Success && (
-          <Link href={`${ROUTE_PATH.MINT_STATUS}/${project.id}`}>
+          <Link href="" onClick={toggleMintStatusModal}>
             <Text
               className={s.projectCard_creator_status_underline}
               size={'16'}
@@ -339,6 +345,14 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
             inscriptionNumber={Number(project.inscriptionNumber || 0)}
           />
         )}
+      {project.id && showMintStatusModal && (
+        <MintStatusModal
+          showModal={showMintStatusModal}
+          onClose={toggleMintStatusModal}
+          mintID={project.id}
+          projectName={projectName}
+        />
+      )}
     </>
   );
 };

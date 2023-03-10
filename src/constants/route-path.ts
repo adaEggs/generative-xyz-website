@@ -30,7 +30,6 @@ export const ROUTE_PATH = {
   AUTHENTIC: '/authentic',
   AUTHENTIC_INSCRIPTIONS: '/authentic-inscriptions',
   AIRDROP: '/airdrop',
-  MINT_STATUS: '/mint-status',
   DEVELOPER: '/developers',
 };
 
