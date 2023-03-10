@@ -1,5 +1,5 @@
 import Button from '@components/ButtonIcon';
-import Input from '@components/Formik/Input';
+import MarkdownEditor from '@components/MarkdownEditor';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
@@ -153,7 +153,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                   {/*  rows={4}*/}
                   {/*  placeholder="Tell us more about the meaning and inspiration behind your art."*/}
                   {/*/>*/}
-                  <Input
+                  {/* <Input
                     id="description"
                     as="textarea"
                     name="description"
@@ -162,11 +162,11 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                     value={values.description}
                     className={s.descriptionInput}
                     useFormik
-                  />
+                  /> */}
                   {/* {errors.description && touched.description && (
                     <p className={s.error}>{errors.description}</p>
                   )} */}
-                  {/* <MarkdownEditor
+                  <MarkdownEditor
                     id="description"
                     className={s.mdEditor}
                     value={values.description}
@@ -178,7 +178,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                       if (typeof val !== undefined)
                         setFieldValue('description', val);
                     }}
-                  /> */}
+                  />
                   {errors.description && touched.description && (
                     <p className={s.error}>{errors.description}</p>
                   )}

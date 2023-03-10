@@ -113,6 +113,11 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  pointer-events: none;
+
+  a {
+    color: $black-100;
+  }
 
   :global(.wmde-markdown) {
     line-height: (26/16);
