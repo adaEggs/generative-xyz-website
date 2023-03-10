@@ -2,6 +2,7 @@ import { LogLevel } from '@enums/log-level';
 import { get, post } from '@services/http-client';
 import log from '@utils/logger';
 import {
+  FeeRateName,
   HistoryStatusColor,
   HistoryStatusType,
   ICollectedUTXOResp,
@@ -78,7 +79,15 @@ export const filterCurrentAssets = (
 export const getFeeRate = async (): Promise<IFeeRate> => {
   try {
     const res = await fetch('https://mempool.space/api/v1/fees/recommended');
-    return res.json();
+    const fee: IFeeRate = await res.json();
+    if (fee[FeeRateName.fastestFee] <= 10) {
+      return {
+        [FeeRateName.fastestFee]: 15,
+        [FeeRateName.halfHourFee]: 10,
+        [FeeRateName.hourFee]: 5,
+      };
+    }
+    return fee;
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw err;
