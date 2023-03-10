@@ -44,7 +44,7 @@ export const getPendingUTXOsViaBlockStream = async (
   if (!btcAddress) return [];
   try {
     const res = await axios.get(
-      `https://blockstream.info/api/address/${btcAddress}/txs`
+      `https://mempool.space/api/address/${btcAddress}/txs/mempool`
     );
     pendingUTXOs = (res.data || []).filter(
       (item: IPendingUTXO) => !item.status.confirmed
