@@ -22,7 +22,7 @@ const ProjectIntroSection = () => {
   return (
     <div className={s.layoutMinting}>
       <div className="row">
-        <div className="col-xl-5 col-md-6 col-12">
+        <div className="col-xl-4 col-md-6 col-12">
           <div className={`${s.info_wrapper} ${s.layoutMinting_left}`}>
             <div className={s.info}>
               <ProjectName />
@@ -62,7 +62,7 @@ const ProjectIntroSection = () => {
           </div>
         </div>
         {!mobileScreen && (
-          <div className="col-xl-7 col-md-6 col-12">
+          <div className="col-xl-8 col-md-6 col-12">
             <div className={s.ThumbnailPreview}>
               <ThumbnailPreview
                 data={
