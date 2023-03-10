@@ -79,11 +79,13 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
 
   useAsyncEffect(async () => {
     const { result } = await getCategoryList();
-    const options = result.map(item => ({
-      value: item.id,
-      label: item.name,
-    }));
-    setCategoryOptions(options);
+    const options = result.map(item => {
+      return {
+        value: item.id,
+        label: item.name,
+      };
+    });
+    setCategoryOptions(options.filter(op => op.label !== 'Ethereum'));
   }, []);
 
   return (
