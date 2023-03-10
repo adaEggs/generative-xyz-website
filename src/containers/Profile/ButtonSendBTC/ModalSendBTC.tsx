@@ -9,7 +9,6 @@ import { Loading } from '@components/Loading';
 import { validateBTCAddress } from '@utils/validate';
 import * as GENERATIVE_SDK from 'generative-sdk';
 import { toast } from 'react-hot-toast';
-import { ErrorMessage } from '@enums/error-message';
 import FeeRate from '@containers/Profile/FeeRate';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { Modal } from 'react-bootstrap';
@@ -116,7 +115,8 @@ const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
       onHideModal();
     } catch (err: unknown) {
       // handle error
-      toast.error(ErrorMessage.DEFAULT);
+      const _error = getError(err);
+      toast.error(_error.message);
       onHideModal();
     } finally {
       setIsLoading(false);

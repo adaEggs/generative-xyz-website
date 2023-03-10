@@ -75,7 +75,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   }: ISendBTCProps) => {
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
-    const _collectedUTXOs = await getAvailableAssetsCreateTx();
+    const _collectedUTXOs = currentAssets;
     if (!evmAddress || !_collectedUTXOs || !taprootAddress) return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
@@ -89,6 +89,10 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       amount,
       feeRate
     );
+
+    // broadcast tx
+    await broadcastTx(txHex);
+
     await trackTx({
       txhash: txID,
       address: taprootAddress,
@@ -98,8 +102,6 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       send_amount: amount,
       type: TrackTxType.normal,
     });
-    // broadcast tx
-    await broadcastTx(txHex);
     // setPendingUTXOs(selectedUTXOs);
   };
 
