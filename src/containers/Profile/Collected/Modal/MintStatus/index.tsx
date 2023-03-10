@@ -81,14 +81,14 @@ const MintStatusModal = (props: IMintStatus): JSX.Element => {
               {nft ? (
                 <div className={s.stepContainer}>
                   <Row className={s.row}>
-                    <Col sm="3" xl="3">
+                    <Col sm="3" lg="3">
                       <img
                         className={s.thumbnail}
                         src={nft?.projectImage || LOGO_MARKETPLACE_URL}
                         alt={project.name}
                       />
                     </Col>
-                    <Col sm="9" xl="9">
+                    <Col sm="9" lg="9">
                       {nft.progressStatus &&
                         nft.progressStatus.length > 0 &&
                         nft.progressStatus.map((step, index) => (

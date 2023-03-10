@@ -25,7 +25,7 @@ export interface IStep {
 const Step = (props: IStep): JSX.Element => {
   const { step, index, isHideIndicator, currentActiveStep, nft } = props;
 
-  const { status, message, tx } = step;
+  const { status, title, message, tx } = step;
 
   const unit = nft.payType === 'btc' ? 'BTC' : 'ETH';
   const formatPrice =
@@ -41,7 +41,7 @@ const Step = (props: IStep): JSX.Element => {
   }
 
   const [isShowStep, setIsShowStep] = useState(
-    currentActiveStep.current === index
+    currentActiveStep.current === index || (isHideIndicator && status)
   );
 
   const onClickCopy = (text: string) => {
@@ -58,33 +58,39 @@ const Step = (props: IStep): JSX.Element => {
       setIsShowStep(!isShowStep);
     }
   };
-  const renderTx = (tx?: string) => {
-    if (!tx || !nft) {
+  const renderTx = (tx?: string, message?: string) => {
+    if (!nft) {
       return <></>;
     }
+
     const linkTxHash =
       nft.payType === 'btc'
         ? `https://www.blockchain.com/explorer/transactions/btc/${tx}`
         : `https://etherscan.io/tx/${tx}`;
 
     return (
-      <div className={s.transaction_tx}>
-        <Stack direction="horizontal" gap={3}>
-          <Text size="16">{ellipsisCenter({ str: tx, limit: 12 })}</Text>
-          <SvgInset
-            size={18}
-            svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-            className={s.wrapHistory_copy}
-            onClick={() => onClickCopy(tx)}
-          />
-          <SvgInset
-            size={18}
-            svgUrl={`${CDN_URL}/icons/ic-share.svg`}
-            className={s.wrapHistory_copy}
-            onClick={() => window.open(linkTxHash)}
-          />
-        </Stack>
-      </div>
+      <>
+        {message && <p className={s.transaction_message}>{message}</p>}
+        {tx && (
+          <div className={s.transaction_tx}>
+            <Stack direction="horizontal" gap={3}>
+              <Text size="16">{ellipsisCenter({ str: tx, limit: 12 })}</Text>
+              <SvgInset
+                size={18}
+                svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                className={s.wrapHistory_copy}
+                onClick={() => onClickCopy(tx)}
+              />
+              <SvgInset
+                size={18}
+                svgUrl={`${CDN_URL}/icons/ic-share.svg`}
+                className={s.wrapHistory_copy}
+                onClick={() => window.open(linkTxHash)}
+              />
+            </Stack>
+          </div>
+        )}
+      </>
     );
   };
 
@@ -93,33 +99,36 @@ const Step = (props: IStep): JSX.Element => {
       return <></>;
     }
     return (
-      <div className={s.payment_detail}>
-        <p className={s.payment_detail_desc}>
-          Send{' '}
-          <span style={{ fontWeight: 'bold' }}>
-            {formatPrice} {unit}
-          </span>{' '}
-          to this address
-        </p>
-        <QRCodeGenerator
-          className={s.payment_detail_qrCodeGenerator}
-          size={96}
-          value={nft?.receiveAddress || ''}
-        />
-        <div
-          className={s.payment_detail_amount}
-          onClick={() => onClickCopy(nft?.receiveAddress || '')}
-        >
-          <p className={s.payment_detail_amount_text}>
-            {ellipsisCenter({ str: nft?.receiveAddress || '', limit: 10 })}
+      <>
+        {message && <p className={s.transaction_message}>{message}</p>}
+        <div className={s.payment_detail}>
+          <p className={s.payment_detail_desc}>
+            Send{' '}
+            <span style={{ fontWeight: 'bold' }}>
+              {formatPrice} {unit}
+            </span>{' '}
+            to this address
           </p>
-          <SvgInset
-            className={s.payment_detail_amount_ic}
-            size={18}
-            svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+          <QRCodeGenerator
+            className={s.payment_detail_qrCodeGenerator}
+            size={96}
+            value={nft?.receiveAddress || ''}
           />
+          <div
+            className={s.payment_detail_amount}
+            onClick={() => onClickCopy(nft?.receiveAddress || '')}
+          >
+            <p className={s.payment_detail_amount_text}>
+              {ellipsisCenter({ str: nft?.receiveAddress || '', limit: 10 })}
+            </p>
+            <SvgInset
+              className={s.payment_detail_amount_ic}
+              size={18}
+              svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+            />
+          </div>
         </div>
-      </div>
+      </>
     );
   };
 
@@ -128,7 +137,7 @@ const Step = (props: IStep): JSX.Element => {
       <div className={s.header} onClick={onClick}>
         <div
           className={`${s.indexContainer} ${
-            isVerifyStep ? '' : isActiveStep ? s.active : ''
+            isVerifyStep ? s.verify : isActiveStep ? s.active : ''
           }`}
         >
           {isVerifyStep ? (
@@ -148,7 +157,7 @@ const Step = (props: IStep): JSX.Element => {
           size={'20'}
           className={`${s.header_title} ${isActiveStep ? s.active : ''}`}
         >
-          {message}
+          {title}
         </Text>
       </div>
       <div className={s.content}>
@@ -160,7 +169,9 @@ const Step = (props: IStep): JSX.Element => {
           <div className={s.content_empty} />
         )}
         {isShowStep && (
-          <div>{index === 0 ? renderPendingPayment() : renderTx(tx)}</div>
+          <div>
+            {index === 0 ? renderPendingPayment() : renderTx(tx, message)}
+          </div>
         )}
       </div>
     </div>

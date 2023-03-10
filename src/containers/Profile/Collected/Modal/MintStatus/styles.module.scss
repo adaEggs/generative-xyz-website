@@ -24,7 +24,7 @@
     width: 90%;
 
     @include min-tablet {
-      width: rem(880px);
+      width: rem(860px);
     }
 
     @include mobile {
@@ -60,25 +60,24 @@
   }
 
   .transaction {
-    padding-bottom: rem(24px);
-    padding-left: rem(66px);
-    padding-right: rem(66px);
+    padding-left: rem(16px);
+    padding-right: rem(16px);
+    padding-bottom: rem(16px);
 
     @include tablet {
-      padding-top: rem(16px);
       padding-bottom: rem(44px);
       padding-left: rem(44px);
       padding-right: rem(44px);
     }
 
     @include min-pc {
-      padding-top: rem(16px);
       padding-bottom: rem(66px);
       padding-left: rem(66px);
       padding-right: rem(66px);
     }
 
     .thumbnail {
+      min-width: rem(100px);
       aspect-ratio: 1/1;
       width: 95%;
       object-fit: cover;
@@ -89,6 +88,7 @@
         font-weight: 500;
         font-size: 24px;
         line-height: 34px;
+        word-break: break-all;
       }
     }
 
@@ -116,6 +116,10 @@
           height: rem(32px);
           border-radius: rem(18px);
           border: 1px solid #cecece;
+
+          &.verify {
+            border: 1px solid #1c1c1c;
+          }
 
           &.active {
             background: $neutral-07;
@@ -167,6 +171,13 @@
           background: transparent;
         }
       }
+    }
+
+    &_message {
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 20px;
+      color: $black-40-solid;
     }
 
     &_tx {

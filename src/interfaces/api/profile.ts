@@ -53,7 +53,8 @@ export interface ICollectedNFTItem {
 }
 
 export interface IStatusTransactionMint {
-  message: string;
+  title: string;
+  message?: string;
   tx?: string;
   status: boolean;
 }
