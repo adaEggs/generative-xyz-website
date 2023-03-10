@@ -70,7 +70,7 @@ const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
       values.address === currentUser?.walletAddressBtcTaproot
     ) {
       errors.address =
-        'Invalid wallet address. Please send the inscription to another wallet address.';
+        'Invalid wallet address. Please send the BTC to another wallet address.';
     }
 
     if (!values.amount) {
