@@ -372,7 +372,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
           showModal={showMintStatusModal}
           onClose={toggleMintStatusModal}
           mintID={project.id}
-          projectName={projectName || 'Mint NFT'}
+          projectName={project.projectName || 'Mint NFT'}
         />
       )}
       {project.isCancel && !isCancelListed && showConfirmCancelModal && (
