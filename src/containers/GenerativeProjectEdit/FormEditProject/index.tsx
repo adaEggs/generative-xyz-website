@@ -174,17 +174,14 @@ const FormEditProject = () => {
       maxSupply: Number(values.maxSupply) || 0,
       isHidden: isHidden,
       categories: categories || [],
-      // captureImageTime: values.captureImageTime || 20,
+      reserveMintLimit: parseFloat(values.reserveMintLimit.toString()),
+      reserveMintPrice: values.reserveMintPrice.toString(),
+      reservers: values.reservers.filter(Boolean),
     };
 
     if (projectFiles === 0) {
       payload.captureImageTime = values.captureImageTime || 20;
     }
-    if (values.reserveMintLimit)
-      payload.reserveMintLimit = parseFloat(values.reserveMintLimit.toString());
-    if (values.reserveMintPrice)
-      payload.reserveMintPrice = values.reserveMintPrice.toString();
-    if (values.reservers) payload.reservers = values.reservers.filter(Boolean);
 
     const [updateTraitRes, updateProjectRes] = await Promise.allSettled([
       file
@@ -288,7 +285,7 @@ const FormEditProject = () => {
         categories: valuesCategories(null),
         captureImageTime: project?.captureThumbnailDelayTime || 20,
         reserveMintPrice: formatBTCPrice(project?.reserveMintPrice || '0'),
-        reserveMintLimit: project?.reserveMintLimit || '',
+        reserveMintLimit: project?.reserveMintLimit || 1,
         reservers: project?.reservers ? project?.reservers : [''],
       }}
       validate={validateForm}
