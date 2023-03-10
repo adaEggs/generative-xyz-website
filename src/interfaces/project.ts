@@ -75,6 +75,9 @@ export type Project = {
   limitMintPerProcess?: number;
   inscribedBy?: string;
   htmlFile: string;
+  reserveMintPrice?: string;
+  reserveMintLimit?: number;
+  reservers?: string[];
 };
 
 export type BTCProject = Project & {

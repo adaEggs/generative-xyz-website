@@ -117,6 +117,9 @@ export type IUpdateProjectPayload = Pick<
   | 'mintPrice'
   | 'maxSupply'
   | 'captureImageTime'
+  | 'reserveMintPrice'
+  | 'reserveMintLimit'
+  | 'reservers'
 > & { isHidden: boolean; categories: string[] };
 
 export interface IReportProjectPayload {
