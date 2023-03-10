@@ -79,11 +79,22 @@ const DropFile: React.FC<IProps> = ({
   };
 
   useEffect(() => {
-    if (file && isInscribeImageFile(file)) {
-      setPreview(URL.createObjectURL(file));
-    } else {
-      onTypeError();
+    if (file) {
+      const fileSizeInKb = file.size / 1024;
+      if (fileSizeInKb > MINT_TOOL_MAX_FILE_SIZE * 1000) {
+        onSizeError();
+      } else if (!isInscribeImageFile(file)) {
+        onTypeError();
+      } else {
+        setPreview(URL.createObjectURL(file));
+      }
     }
+
+    // if (file && isInscribeImageFile(file)) {
+    //   setPreview(URL.createObjectURL(file));
+    // } else {
+    //   onTypeError();
+    // }
   }, [file]);
 
   useEffect(() => {
