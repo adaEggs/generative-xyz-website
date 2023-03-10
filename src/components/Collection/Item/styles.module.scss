@@ -96,6 +96,12 @@
           overflow: hidden;
           flex: 0 0 100%;
         }
+
+        &_customDesc {
+          font-weight: 500;
+          font-size: rem(18px);
+          color: $gray-9c;
+        }
       }
     }
 
@@ -146,6 +152,12 @@
 
         &_ownerName {
           width: 100%;
+        }
+
+        &_waiting {
+          width: 100%;
+          color: $gray-9c;
+          font-style: italic;
         }
       }
 

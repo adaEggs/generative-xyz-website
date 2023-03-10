@@ -20,21 +20,29 @@ const CollectionItem = ({
   data,
   className,
   showCollectionName,
+  total,
 }: {
   data: Token;
   className?: string;
   showCollectionName?: boolean;
+  total?: string | number;
 }) => {
   const tokenID = data.tokenID;
   const showInscriptionID =
-    data.genNFTAddr === '1000012' && !!data.inscriptionIndex;
+    data.genNFTAddr === '1000012' && !!data.inscriptionIndex && !!total;
   // const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
   const { isWhitelistProject } = useContext(GenerativeProjectDetailContext);
   const isBuyable = React.useMemo(() => {
-    return data.buyable && !!data.priceBTC;
-  }, [data.buyable, data.priceBTC]);
+    return data.buyable && !!data.priceBTC && data?.sell_verified;
+  }, [data.buyable, data.priceBTC, data?.sell_verified]);
+
+  const isWaitingVerify = React.useMemo(() => {
+    return data.buyable && !!data.priceBTC && !data?.sell_verified;
+  }, [data.buyable, data.priceBTC, data?.sell_verified]);
+
   const imgRef = useRef<HTMLImageElement>(null);
+
   const [thumb, setThumb] = useState<string>(data.image);
 
   const onThumbError = () => {
@@ -82,6 +90,24 @@ const CollectionItem = ({
       </Link>
     );
   };
+  const renderHeadDesc = () => {
+    const text = data?.orderInscriptionIndex
+      ? data?.orderInscriptionIndex
+      : data?.inscriptionIndex
+      ? data?.inscriptionIndex
+      : ellipsisCenter({
+          str: tokenID,
+          limit: 3,
+        });
+    if (showInscriptionID) {
+      return (
+        <span
+          className={s.textOverflow_customDesc}
+        >{`${data?.orderInscriptionIndex} / ${total}`}</span>
+      );
+    }
+    return <span>#{text}</span>;
+  };
 
   return (
     <div className={`${s.collectionCard} ${className}`}>
@@ -123,19 +149,11 @@ const CollectionItem = ({
                     title={data?.project?.name}
                     className={s.collectionCard_info_title_name}
                   >
-                    {data?.project?.name}
-                  </span>{' '}
-                  <span className={s.textOverflow}>
-                    #
-                    {data?.orderInscriptionIndex
-                      ? data?.orderInscriptionIndex
-                      : data?.inscriptionIndex
-                      ? data?.inscriptionIndex
-                      : ellipsisCenter({
-                          str: tokenID,
-                          limit: 3,
-                        })}
+                    {isWaitingVerify
+                      ? 'Incoming... ' + (data?.project?.name || '')
+                      : ''}
                   </span>
+                  {renderHeadDesc()}
                 </Text>
                 {showInscriptionID && (
                   <Text
@@ -153,6 +171,15 @@ const CollectionItem = ({
           ) : (
             <div className={cs(s.collectionCard_info, s.desktop)}>
               <div className={s.collectionCard_info_title}>
+                {isWaitingVerify && (
+                  <Heading
+                    as={'h6'}
+                    fontWeight="medium"
+                    className={s.collectionCard_info_wrapper_waiting}
+                  >
+                    Incoming...
+                  </Heading>
+                )}
                 <Stack
                   className={cs(s.collectionCard_info_stack, {
                     [s.collectionCard_info_wrapper]:
@@ -167,17 +194,7 @@ const CollectionItem = ({
                       maxWidth: data.stats?.price ? '70%' : '100%',
                     }}
                   >
-                    <span>
-                      #
-                      {data?.orderInscriptionIndex
-                        ? data?.orderInscriptionIndex
-                        : data?.inscriptionIndex
-                        ? data?.inscriptionIndex
-                        : ellipsisCenter({
-                            str: tokenID,
-                            limit: 3,
-                          })}
-                    </span>
+                    {renderHeadDesc()}
                   </Heading>
                   {showCollectionName && data?.creator?.displayName && (
                     <Heading

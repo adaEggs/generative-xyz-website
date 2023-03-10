@@ -29,10 +29,18 @@ interface IProps extends IBaseModalProps {
   price: number | string;
   orderID: string;
   inscriptionNumber: number;
+  isDetail: boolean;
 }
 
 const ModalBuyListed = React.memo(
-  ({ price, orderID, inscriptionID, inscriptionNumber, ...rest }: IProps) => {
+  ({
+    price,
+    orderID,
+    inscriptionID,
+    inscriptionNumber,
+    isDetail,
+    ...rest
+  }: IProps) => {
     const user = useSelector(getUserSelector);
     const [step, _] = useState<'buy' | 'success'>('buy');
     const [orderData, setOrderData] = useState<IRetrieveOrderResp | undefined>(
@@ -42,7 +50,7 @@ const ModalBuyListed = React.memo(
     const [isLoading, setLoading] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const { buyInscription } = useBitcoin({ inscriptionID });
+    const { buyInscription, satoshiAmount } = useBitcoin({ inscriptionID });
     const [error, setError] = useState('');
     const onSetError = (err: unknown) => {
       const _err = getError(err);
@@ -128,9 +136,15 @@ const ModalBuyListed = React.memo(
                 {step === 'buy' && (
                   <>
                     <div className={s.wrapItem}>
-                      <label className={s.wrapItem_label} htmlFor="price">
-                        Price
-                      </label>
+                      <div className={s.wrapItem_rowBetween}>
+                        <label className={s.wrapItem_label} htmlFor="amount">
+                          Price
+                        </label>
+                        <label className={s.wrapItem_label} htmlFor="amount">
+                          Balance: {formatBTCPrice(satoshiAmount.toString())}{' '}
+                          BTC
+                        </label>
+                      </div>
                       <div className={s.inputContainer}>
                         <input
                           id="price"
@@ -174,13 +188,12 @@ const ModalBuyListed = React.memo(
                                 placeholder="Paste your Ordinals-compatible BTC address here"
                                 disabled={isLoading}
                               />
-                              {((errors.receiveBTCAddress &&
-                                touched.receiveBTCAddress) ||
-                                !!error) && (
-                                <p className={s.inputContainer_inputError}>
-                                  {error || errors.receiveBTCAddress}
-                                </p>
-                              )}
+                              {errors.receiveBTCAddress &&
+                                touched.receiveBTCAddress && (
+                                  <p className={s.inputContainer_inputError}>
+                                    {errors.receiveBTCAddress}
+                                  </p>
+                                )}
                             </div>
                           </div>
                         </div>
@@ -208,23 +221,35 @@ const ModalBuyListed = React.memo(
                     <div>
                       <Loading isLoaded={!isSubmitting} />
                     </div>
-                    <ButtonIcon
-                      className={s.btnSend}
-                      disabled={isLoading}
-                      sizes="medium"
-                      type="submit"
-                      startIcon={isLoading ? <LoaderIcon /> : null}
-                      onClick={() => {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        validateForm(values);
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        // @ts-ignore
-                        handleSubmit(values);
-                      }}
-                    >
-                      Buy now
-                    </ButtonIcon>
+                    {isDetail ? (
+                      <ButtonIcon
+                        className={s.btnSend}
+                        disabled={isLoading}
+                        sizes="medium"
+                        type="submit"
+                        startIcon={isLoading ? <LoaderIcon /> : null}
+                      >
+                        Buy now
+                      </ButtonIcon>
+                    ) : (
+                      <ButtonIcon
+                        className={s.btnSend}
+                        disabled={isLoading}
+                        sizes="medium"
+                        type="submit"
+                        startIcon={isLoading ? <LoaderIcon /> : null}
+                        onClick={() => {
+                          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                          // @ts-ignore
+                          validateForm(values);
+                          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                          // @ts-ignore
+                          handleSubmit(values);
+                        }}
+                      >
+                        Buy now
+                      </ButtonIcon>
+                    )}
                   </>
                 )}
               </form>
