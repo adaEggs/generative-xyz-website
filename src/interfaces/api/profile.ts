@@ -50,6 +50,7 @@ export interface ICollectedNFTItem {
   orderID: string;
   cancelling: boolean;
   quantity?: number;
+  artistName?: string;
 }
 
 export interface IStatusTransactionMint {
@@ -98,6 +99,7 @@ export interface IGetCollectedNFTInsciptionResp {
   price_btc: string;
   order_id: string;
   cancelling: boolean;
+  artist_name: string;
 }
 
 export interface IGetCollectedNFTsResp {

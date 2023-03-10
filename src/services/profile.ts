@@ -148,6 +148,7 @@ export const getCollectedNFTs = async (
             priceBTC: data?.price_btc,
             orderID: data?.order_id,
             cancelling: data?.cancelling,
+            artistName: data?.artist_name,
           } as ICollectedNFTItem;
         }
       );
