@@ -37,7 +37,7 @@ const CollectionItem = ({
     return data.buyable && !!data.priceBTC && data?.sell_verified;
   }, [data.buyable, data.priceBTC, data?.sell_verified]);
 
-  const isWatingVerify = React.useMemo(() => {
+  const isWaitingVerify = React.useMemo(() => {
     return data.buyable && !!data.priceBTC && !data?.sell_verified;
   }, [data.buyable, data.priceBTC, data?.sell_verified]);
 
@@ -149,7 +149,7 @@ const CollectionItem = ({
                     title={data?.project?.name}
                     className={s.collectionCard_info_title_name}
                   >
-                    {isWatingVerify
+                    {isWaitingVerify
                       ? 'Incoming... ' + (data?.project?.name || '')
                       : ''}
                   </span>
@@ -171,7 +171,7 @@ const CollectionItem = ({
           ) : (
             <div className={cs(s.collectionCard_info, s.desktop)}>
               <div className={s.collectionCard_info_title}>
-                {isWatingVerify && (
+                {isWaitingVerify && (
                   <Heading
                     as={'h6'}
                     fontWeight="medium"
