@@ -43,6 +43,7 @@
     "dayjs": "^1.11.7",
     "ethers": "^5.7.1",
     "file-type": "^16.5.4",
+    "firebase": "^9.17.2",
     "formik": "^2.2.9",
     "generative-sdk": "https://github.com/generative-xyz/generative-sdk#v0.1.5",
     "gsap": "^3.11.3",

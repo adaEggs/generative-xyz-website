@@ -60,12 +60,21 @@ export const HOST_ORDINALS_EXPLORER = 'https://dev.generativeexplorer.com';
 
 export const GLB_COLLECTION_ID = process.env.NEXT_PUBLIC_GLB_COLLECTION_ID!;
 
-// Datadog
 // Datadog config
 export const DD_APP_ID = process.env.NEXT_PUBLIC_DD_APP_ID!;
 export const DD_CLIENT_TOKEN = process.env.NEXT_PUBLIC_DD_CLIENT_TOKEN!;
 export const DD_SITE = 'datadoghq.com';
 export const DD_SERVICE = process.env.NEXT_PUBLIC_DD_SERVICE!;
 export const ENABLE_DD = process.env.NEXT_PUBLIC_ENABLE_DD! === 'true';
+
+// Firebase config
+export const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+export const FIREBASE_DOMAIN = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN;
+export const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+export const FIREBASSE_BUCKET = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+export const FIREBASE_SENDER_ID = process.env.NEXT_PUBLIC_FIREBASE_SENDER_ID;
+export const FIREBASE_APP_ID = process.env.NEXT_PUBLIC_FIREBASE_APP_ID;
+export const FIREBASE_MESSAGING_VAPID_KEY =
+  process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_VAPID_KEY;
 
 /* eslint-enable @typescript-eslint/no-non-null-assertion */

@@ -15,4 +15,5 @@ export enum LocalStorageKey {
   CATEGORY_ID = 'categoryId',
   BITCOIN_PENDING_UTXO = 'bitcoin-pending-utxo',
   WALLET_ADDRESS_TAPROOT = 'wallet-address-taproot',
+  FCM_TOKEN = 'fcmToken',
 }
