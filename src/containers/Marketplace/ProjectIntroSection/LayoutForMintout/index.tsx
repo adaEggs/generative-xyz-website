@@ -20,7 +20,7 @@ const LayoutForMintout = () => {
           <div className={`${s.info} ${!isLimitMinted ? s.isSmall : ''}`}>
             <div className={s.info_inner}>
               <ProjectName />
-              {desktopScreen && RenderMetaContent()}
+              {desktopScreen && <RenderMetaContent />}
             </div>
           </div>
         </div>
