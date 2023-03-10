@@ -56,6 +56,7 @@
 
 .reserve {
   margin-bottom: rem(24);
+  display: none; // TODO: unhide reserve section until API is ready
 
   h2 p {
     font-weight: 700;
@@ -420,4 +421,8 @@
 
     @include calcFontAuto(14px, 16px);
   }
+}
+
+.descriptionInput textarea {
+  padding: rem(11) rem(14);
 }

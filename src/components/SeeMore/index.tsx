@@ -43,8 +43,9 @@ export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
         className={`${s.seemore_description} ${isShowMore ? s.isShowMore : ''}`}
         ref={refBox}
       >
-        <div ref={refContent}>
+        <div ref={refContent} className="pointer-none">
           <MarkdownPreview source={children} />
+          {/* {children} */}
         </div>
       </div>
       {(contentOver || isShowMore) && (
