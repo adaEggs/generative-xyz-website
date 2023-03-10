@@ -7,7 +7,6 @@ import { getUserSelector } from '@redux/user/selector';
 import { formatBTCPrice } from '@utils/format';
 import { WalletContext } from '@contexts/wallet-context';
 import s from './styles.module.scss';
-import { AssetsContext } from '@contexts/assets-context';
 
 interface IProps {
   className?: string;
@@ -33,7 +32,6 @@ const ButtonBuyListed = React.memo(
     const user = useSelector(getUserSelector);
     const walletCtx = useContext(WalletContext);
     const taprootAddress = user?.walletAddressBtcTaproot;
-    const { isLoadedHistory, isLoadedAssets } = useContext(AssetsContext);
 
     const openModal = async () => {
       if (!user || !user.walletAddressBtcTaproot) {
@@ -45,8 +43,6 @@ const ButtonBuyListed = React.memo(
     const hideModal = () => {
       setShow(false);
     };
-
-    if (!isLoadedHistory || !isLoadedAssets) return null;
 
     return (
       <>
