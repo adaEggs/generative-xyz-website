@@ -165,7 +165,7 @@
 
   &.primary {
     background-color: $primary-brand;
-    border: 2px inset $black-100;
+    border: 2px inset transparent;
     color: $white-100;
 
     &:hover {

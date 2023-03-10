@@ -1,5 +1,6 @@
 import ButtonIcon from '@components/ButtonIcon';
 import Link from '@components/Link';
+import ModalConfirm from '@components/ModalConfirm';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
@@ -35,6 +36,8 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const user = useAppSelector(getUserSelector);
   const [showSendModal, setShowSendModal] = React.useState(false);
   const [showMintStatusModal, setShowMintStatusModal] = React.useState(false);
+  const [showConfirmCancelModal, setShowConfirmCancelModal] =
+    React.useState(false);
 
   const {
     handelcancelMintingNFT,
@@ -51,6 +54,11 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const toggleMintStatusModal = () => {
     setShowMintStatusModal(value => !value);
   };
+
+  const toggleConfirmCancelModal = () => {
+    setShowConfirmCancelModal(value => !value);
+  };
+
   const isOwner = currentUser?.id === user?.id;
 
   const linkPath =
@@ -128,10 +136,13 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     isCancelListed,
   ]);
 
-  const projectName =
+  const tokenIdName =
     project.status === CollectedNFTStatus.Success
       ? `#${project.inscriptionNumber}`
       : project.projectName || '';
+
+  const projectName =
+    project.status === CollectedNFTStatus.Success ? project.projectName : '';
 
   const isNotShowBlur =
     project.status === CollectedNFTStatus.Success ||
@@ -207,8 +218,13 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
             {mobileScreen ? (
               <div className={cs(s.projectCard_info, s.mobile)}>
                 {renderStatusText()}
-                {projectName && (
+                {tokenIdName && (
                   <Text size="11" fontWeight="medium">
+                    {tokenIdName}
+                  </Text>
+                )}
+                {projectName && (
+                  <Text size="11" fontWeight="medium" color="black-40-solid">
                     {projectName}
                   </Text>
                 )}
@@ -223,12 +239,17 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
             ) : (
               <div className={cs(s.projectCard_info, s.desktop)}>
                 {renderStatusText()}
-                {projectName && (
+                {tokenIdName && (
                   <div className={s.projectCard_creator}>
                     <Text size={'20'} fontWeight="medium">
-                      {projectName}
+                      {tokenIdName}
                     </Text>
                   </div>
+                )}
+                {projectName && (
+                  <Text size="20" fontWeight="medium" color="black-40-solid">
+                    {projectName}
+                  </Text>
                 )}
                 {project.status !== CollectedNFTStatus.Success &&
                   project.quantity &&
@@ -281,6 +302,16 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
               </TwitterShareButton>
             )}
             <div className={s.row}>
+              {showSendButton && (
+                <Link href="" onClick={toggleModal}>
+                  <ButtonIcon
+                    variants="outline"
+                    className={s.projectCard_status_sendBtn}
+                  >
+                    Send
+                  </ButtonIcon>
+                </Link>
+              )}
               {isListable && (
                 <Link
                   href=""
@@ -309,21 +340,12 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                   />
                 </Link>
               )}
-              {showSendButton && (
-                <Link href="" onClick={toggleModal}>
-                  <ButtonIcon
-                    variants="outline"
-                    className={s.projectCard_status_sendBtn}
-                  >
-                    Send
-                  </ButtonIcon>
-                </Link>
-              )}
+
               {project.isCancel && !isCancelListed && (
                 <Link
                   href=""
                   className={s.projectCard_status_cancelBtn}
-                  onClick={() => handelcancelMintingNFT(project.id)}
+                  onClick={toggleConfirmCancelModal}
                 >
                   <Text as="span" size="14" fontWeight="medium">
                     Cancel
@@ -350,7 +372,19 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
           showModal={showMintStatusModal}
           onClose={toggleMintStatusModal}
           mintID={project.id}
-          projectName={projectName}
+          projectName={projectName || 'Mint NFT'}
+        />
+      )}
+      {project.isCancel && !isCancelListed && showConfirmCancelModal && (
+        <ModalConfirm
+          title="Are you sure you want to cancel this
+          transaction?"
+          showModal={showConfirmCancelModal}
+          onClose={toggleConfirmCancelModal}
+          onConfirm={() => {
+            handelcancelMintingNFT(project.id);
+            toggleConfirmCancelModal();
+          }}
         />
       )}
     </>

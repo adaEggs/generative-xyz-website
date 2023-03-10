@@ -19,6 +19,7 @@ import cs from 'classnames';
 
 type Props = {
   data: Token | Project | null;
+  className?: string;
   allowVariantion?: boolean;
   isBitcoinProject?: boolean;
   previewToken?: boolean;
@@ -89,7 +90,7 @@ const ThumbnailPreview = (props: Props) => {
   }, [animationUrl]);
 
   return (
-    <div className={s.ThumbnailPreview}>
+    <div className={`${s.ThumbnailPreview} ${props.className}`}>
       <div className={s.wrapper}>
         <div
           className={cs(

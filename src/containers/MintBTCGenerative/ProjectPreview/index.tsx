@@ -38,13 +38,18 @@ const ProjectPreview = () => {
 
   const handleIframeLoaded = (): void => {
     if (sandboxRef.current) {
-      const iframe = sandboxRef.current.getHtmlIframe();
-      if (iframe) {
-        // @ts-ignore: Allow read iframe's window object
-        if (iframe.contentWindow?.$generativeTraits) {
+      try {
+        const iframe = sandboxRef.current.getHtmlIframe();
+        if (iframe) {
           // @ts-ignore: Allow read iframe's window object
-          setAttributes(iframe.contentWindow?.$generativeTraits);
+          if (iframe.contentWindow?.$generativeTraits) {
+            // @ts-ignore: Allow read iframe's window object
+            setAttributes(iframe.contentWindow?.$generativeTraits);
+          }
         }
+      } catch (err: unknown) {
+        // eslint-disable-next-line no-console
+        console.log(err);
       }
     }
   };

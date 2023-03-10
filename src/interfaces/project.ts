@@ -1,6 +1,10 @@
 import { User } from '@interfaces/user';
+
+import {
+  IGetProjectItemsTraitsListResponse,
+  IGetProjectVolumeResponse,
+} from './api/project';
 import { MarketplaceStats } from './marketplace';
-import { IGetProjectVolumeResponse } from './api/project';
 
 export type ProjectSocial = {
   web: string;
@@ -71,6 +75,9 @@ export type Project = {
   limitMintPerProcess?: number;
   inscribedBy?: string;
   htmlFile: string;
+  reserveMintPrice?: string;
+  reserveMintLimit?: number;
+  reservers?: string[];
 };
 
 export type BTCProject = Project & {
@@ -87,3 +94,5 @@ export type TraitStats = {
 };
 
 export type ProjectVolume = IGetProjectVolumeResponse;
+
+export type ProjectItemsTraitList = IGetProjectItemsTraitsListResponse[];

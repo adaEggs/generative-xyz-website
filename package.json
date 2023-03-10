@@ -74,6 +74,7 @@
     "react-tagsinput": "^3.20.0",
     "reselect": "^4.1.7",
     "segwit": "https://github.com/generative-xyz/generative-segwit-sdk#0.0.3",
+    "sharp": "^0.31.3",
     "slick-carousel": "^1.8.1",
     "split-type": "^0.3.3",
     "supports-webp": "^3.0.0",

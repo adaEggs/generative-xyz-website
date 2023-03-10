@@ -2,8 +2,8 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-clamp: 8;
-  -webkit-line-clamp: 8;
+  line-clamp: 6;
+  -webkit-line-clamp: 6;
 
   &.isShowMore {
     line-clamp: unset;
@@ -28,6 +28,14 @@
 
     &:hover {
       text-decoration: none;
+    }
+  }
+
+  .descriptionContent {
+    pointer-events: none;
+
+    a {
+      color: $black-100;
     }
   }
 }
