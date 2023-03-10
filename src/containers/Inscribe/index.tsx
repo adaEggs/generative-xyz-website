@@ -427,7 +427,7 @@ const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
                                   <b>
                                     {formatUnixDateTime({
                                       dateTime: Number(
-                                        inscriptionInfo.timeout_at
+                                        inscriptionInfo.timeoutAt
                                       ),
                                     })}
                                   </b>
