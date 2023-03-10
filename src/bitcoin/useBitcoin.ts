@@ -5,8 +5,6 @@ import { getUserSelector } from '@redux/user/selector';
 import { useContext, useState, useEffect } from 'react';
 import {
   broadcastTx,
-  filterCurrentAssets,
-  getPendingUTXOsViaBlockStream,
   submitCancel,
   submitListForSale,
   trackTx,
@@ -29,15 +27,9 @@ interface IProps {
 
 const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   const user = useSelector(getUserSelector);
-  const { currentAssets } = useContext(AssetsContext);
+  const { currentAssets, getAvailableAssetsCreateTx } =
+    useContext(AssetsContext);
   const [satoshiAmount, setAmount] = useState(0);
-
-  const getAvailableAssets = async () => {
-    const pendingUTXOs = await getPendingUTXOsViaBlockStream(
-      user?.walletAddressBtcTaproot || ''
-    );
-    return filterCurrentAssets(currentAssets, pendingUTXOs);
-  };
 
   const sendInscription = async ({
     receiverAddress,
@@ -48,7 +40,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
 
-    const _collectedUTXOs = await getAvailableAssets();
+    const _collectedUTXOs = await getAvailableAssetsCreateTx();
     if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
@@ -83,7 +75,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   }: ISendBTCProps) => {
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
-    const _collectedUTXOs = await getAvailableAssets();
+    const _collectedUTXOs = await getAvailableAssetsCreateTx();
     if (!evmAddress || !_collectedUTXOs || !taprootAddress) return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
@@ -121,7 +113,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!inscriptionID) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
-    const _collectedUTXOs = await getAvailableAssets();
+    const _collectedUTXOs = await getAvailableAssetsCreateTx();
 
     if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;
@@ -167,7 +159,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!inscriptionID) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
-    const _collectedUTXOs = await getAvailableAssets();
+    const _collectedUTXOs = await getAvailableAssetsCreateTx();
 
     if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;
@@ -219,7 +211,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!inscriptionID || !receiverAddress) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
-    const _collectedUTXOs = await getAvailableAssets();
+    const _collectedUTXOs = await getAvailableAssetsCreateTx();
 
     if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;

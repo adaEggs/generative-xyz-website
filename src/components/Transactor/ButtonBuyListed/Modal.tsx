@@ -50,7 +50,7 @@ const ModalBuyListed = React.memo(
     const [isLoading, setLoading] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-    const { buyInscription } = useBitcoin({ inscriptionID });
+    const { buyInscription, satoshiAmount } = useBitcoin({ inscriptionID });
     const [error, setError] = useState('');
     const onSetError = (err: unknown) => {
       const _err = getError(err);
@@ -136,9 +136,15 @@ const ModalBuyListed = React.memo(
                 {step === 'buy' && (
                   <>
                     <div className={s.wrapItem}>
-                      <label className={s.wrapItem_label} htmlFor="price">
-                        Price
-                      </label>
+                      <div className={s.wrapItem_rowBetween}>
+                        <label className={s.wrapItem_label} htmlFor="amount">
+                          Price
+                        </label>
+                        <label className={s.wrapItem_label} htmlFor="amount">
+                          Balance: {formatBTCPrice(satoshiAmount.toString())}{' '}
+                          BTC
+                        </label>
+                      </div>
                       <div className={s.inputContainer}>
                         <input
                           id="price"

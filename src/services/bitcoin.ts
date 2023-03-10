@@ -28,16 +28,17 @@ export const getCollectedUTXO = async (
       `/wallet/wallet-info?address=${btcAddress}`
     );
 
-    const pendingUTXOs = await getPendingUTXOsViaBlockStream(btcAddress);
-
-    return filterCurrentAssets(res, pendingUTXOs);
+    return res;
+    // const pendingUTXOs = await getPendingUTXOs(btcAddress);
+    //
+    // return filterCurrentAssets(res, pendingUTXOs);
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw err;
   }
 };
 
-export const getPendingUTXOsViaBlockStream = async (
+export const getPendingUTXOs = async (
   btcAddress: string
 ): Promise<IPendingUTXO[]> => {
   let pendingUTXOs = [];

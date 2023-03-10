@@ -26,7 +26,7 @@ const Profile: React.FC = (): React.ReactElement => {
     totalFreeInscription,
     currentUser,
   } = useContext(ProfileContext);
-  const { isLoadedAssets } = useContext(AssetsContext);
+  const { isLoadedAssets, comingAmount } = useContext(AssetsContext);
   const [showModal, setShowModal] = React.useState(false);
   const { satoshiAmount } = useBitcoin();
   const isOwner = currentUser?.id === user?.id;
@@ -72,9 +72,18 @@ const Profile: React.FC = (): React.ReactElement => {
                       tabClassName={s.tab}
                       eventKey="balanceTab"
                       title={
-                        !isLoadedAssets
-                          ? 'Loading...'
-                          : `${formatBTCPrice(satoshiAmount.toString())} BTC`
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          {!isLoadedAssets
+                            ? 'Loading...'
+                            : `${formatBTCPrice(satoshiAmount.toString())} BTC`}
+                          {isLoadedAssets && !!comingAmount && (
+                            <span
+                              className={s.profile_pendingBox}
+                            >{`+${formatBTCPrice(
+                              comingAmount
+                            )} BTC Pending`}</span>
+                          )}
+                        </div>
                       }
                     >
                       <BalanceTab />

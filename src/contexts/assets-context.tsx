@@ -7,21 +7,20 @@ import {
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import {
-  filterCurrentAssets,
   getCollectedUTXO,
   getFeeRate,
   getHistory,
-  getPendingUTXOsViaBlockStream,
+  getPendingUTXOs,
 } from '@services/bitcoin';
 import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { getError } from '@utils/text';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
-import bitcoinStorage from '@bitcoin/utils/storage';
 import { useRouter } from 'next/router';
-import { validateBTCAddress } from '@utils/validate';
+import { validateBTCAddress, validateEVMAddress } from '@utils/validate';
 import { ROUTE_PATH } from '@constants/route-path';
+import { currentAssetsBuilder, comingAmountBuilder } from '@utils/utxo';
 
 const LOG_PREFIX = 'ASSETS_CONTEXT';
 
@@ -31,18 +30,22 @@ export interface IAssetsContext {
   isLoadingAssets: boolean;
   isLoadedAssets: boolean;
 
+  isOwner: boolean;
+
   history: ITxHistory[];
   isLoadingHistory: boolean;
   isLoadedHistory: boolean;
 
   feeRate: IFeeRate | undefined;
 
+  comingAmount: number;
+
   fetchAssets: () => void;
   fetchHistory: () => void;
   debounceFetchData: () => void;
   fetchFeeRate: () => void;
 
-  getAvailableAssets: () => void;
+  getAvailableAssetsCreateTx: () => Promise<ICollectedUTXOResp | undefined>;
 }
 
 const initialValue: IAssetsContext = {
@@ -56,12 +59,16 @@ const initialValue: IAssetsContext = {
   isLoadedHistory: false,
 
   feeRate: undefined,
+  isOwner: false,
+
+  comingAmount: 0,
 
   fetchAssets: () => new Promise<void>(r => r()),
   fetchHistory: () => new Promise<void>(r => r()),
   debounceFetchData: () => new Promise<void>(r => r()),
   fetchFeeRate: () => new Promise<void>(r => r()),
-  getAvailableAssets: () => new Promise<void>(r => r()),
+  getAvailableAssetsCreateTx: () =>
+    new Promise<ICollectedUTXOResp | undefined>(() => null),
 };
 
 export const AssetsContext = React.createContext<IAssetsContext>(initialValue);
@@ -99,6 +106,13 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   // Fee rate
   const [feeRate, setFeeRate] = useState<IFeeRate | undefined>();
 
+  const [comingAmount, setcomingAmount] = useState<number>(0);
+
+  const isOwner = React.useMemo(() => {
+    if (!walletAddress || validateEVMAddress(walletAddress)) return true;
+    return !!user && user?.walletAddressBtcTaproot === walletAddress;
+  }, [walletAddress, user]);
+
   const fetchAssets = async (): Promise<ICollectedUTXOResp | undefined> => {
     if (!currentAddress) return undefined;
     let _assets = undefined;
@@ -134,29 +148,29 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   };
 
   const fetchData = async () => {
-    const [assets, history] = await Promise.all([
+    const [assets, pendingUTXOs, _] = await Promise.all([
       await fetchAssets(),
+      await getPendingUTXOs(currentAddress),
       await fetchHistory(),
     ]);
 
-    const _currentUTXOs = bitcoinStorage.filterPendingUTXOsByHistory({
-      history,
-      utxos: assets?.txrefs || [],
-      trAddress: currentAddress,
-    });
-
+    // Current assets
     let _currentAssets = undefined;
     if (assets) {
-      _currentAssets = {
-        ...assets,
-        txrefs: [..._currentUTXOs],
-      };
+      _currentAssets = currentAssetsBuilder({
+        current: assets,
+        pending: pendingUTXOs,
+      });
     }
     setCurrentAssets(_currentAssets);
+
+    // Coming amount...
+    const _comingAmount = comingAmountBuilder(currentAddress, pendingUTXOs);
+    setcomingAmount(_comingAmount);
   };
 
   const debounceFetchData = React.useCallback(debounce(fetchData, 300), [
-    user?.walletAddressBtcTaproot,
+    currentAddress,
   ]);
 
   const fetchFeeRate = async () => {
@@ -172,11 +186,23 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
-  const getAvailableAssets = async () => {
-    const pendingUTXOs = await getPendingUTXOsViaBlockStream(
-      user?.walletAddressBtcTaproot || ''
-    );
-    return filterCurrentAssets(currentAssets, pendingUTXOs);
+  const getAvailableAssetsCreateTx = async () => {
+    const [assets, pendingUTXOs] = await Promise.all([
+      await fetchAssets(),
+      await getPendingUTXOs(currentAddress),
+    ]);
+
+    // Current assets
+    let _currentAssets = undefined;
+    if (assets) {
+      _currentAssets = currentAssetsBuilder({
+        current: assets,
+        pending: pendingUTXOs,
+      });
+    }
+    setCurrentAssets(_currentAssets);
+
+    return _currentAssets;
   };
 
   useEffect(() => {
@@ -208,10 +234,14 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
 
       feeRate,
 
+      isOwner,
+
+      comingAmount,
+
       fetchAssets,
       fetchHistory,
       fetchFeeRate,
-      getAvailableAssets,
+      getAvailableAssetsCreateTx,
 
       debounceFetchData,
     };
@@ -225,9 +255,13 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     isLoadingHistory,
     isLoadedHistory,
 
+    isOwner,
+
     feeRate,
 
-    getAvailableAssets,
+    comingAmount,
+
+    currentAddress,
   ]);
 
   return (
