@@ -23,6 +23,7 @@ import cs from 'classnames';
 import React, { useContext } from 'react';
 import { TwitterShareButton } from 'react-share';
 import s from './CollectedCard.module.scss';
+import { AssetsContext } from '@contexts/assets-context';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -37,13 +38,9 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const [showConfirmCancelModal, setShowConfirmCancelModal] =
     React.useState(false);
 
-  const {
-    handelcancelMintingNFT,
-    feeRate,
-    isLoadingHistory,
-    history,
-    currentUser,
-  } = useContext(ProfileContext);
+  const { handelcancelMintingNFT, currentUser } = useContext(ProfileContext);
+
+  const { isLoadingHistory, history } = useContext(AssetsContext);
 
   const toggleModal = () => {
     setShowSendModal(value => !value);
@@ -350,17 +347,14 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
           </div>
         </div>
       </Link>
-      {!!project.inscriptionID &&
-        !!feeRate &&
-        showSendModal &&
-        showSendButton && (
-          <SendInscriptionModal
-            showModal={showSendModal}
-            inscriptionID={project.inscriptionID}
-            onClose={toggleModal}
-            inscriptionNumber={Number(project.inscriptionNumber || 0)}
-          />
-        )}
+      {!!project.inscriptionID && showSendModal && showSendButton && (
+        <SendInscriptionModal
+          showModal={showSendModal}
+          inscriptionID={project.inscriptionID}
+          onClose={toggleModal}
+          inscriptionNumber={Number(project.inscriptionNumber || 0)}
+        />
+      )}
       {project.isCancel && !isCancelListed && showConfirmCancelModal && (
         <ModalConfirm
           title="Are you sure you want to cancel this

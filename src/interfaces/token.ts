@@ -56,6 +56,7 @@ export type Token = {
     block: string;
   };
   nftTokenId?: string;
+  sell_verified: boolean;
 };
 
 export type TokenOffer = {

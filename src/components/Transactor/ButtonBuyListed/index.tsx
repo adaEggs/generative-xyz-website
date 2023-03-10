@@ -6,8 +6,8 @@ import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { formatBTCPrice } from '@utils/format';
 import { WalletContext } from '@contexts/wallet-context';
-import { ProfileContext } from '@contexts/profile-context';
 import s from './styles.module.scss';
+import { AssetsContext } from '@contexts/assets-context';
 
 interface IProps {
   className?: string;
@@ -16,6 +16,7 @@ interface IProps {
   price: number | string;
   inscriptionNumber: number;
   orderID: string;
+  isDetail?: boolean;
 }
 
 const ButtonBuyListed = React.memo(
@@ -26,12 +27,13 @@ const ButtonBuyListed = React.memo(
     inscriptionNumber,
     price,
     sizes = 'xsmall',
+    isDetail = false,
   }: IProps) => {
     const [isShow, setShow] = React.useState(false);
     const user = useSelector(getUserSelector);
     const walletCtx = useContext(WalletContext);
     const taprootAddress = user?.walletAddressBtcTaproot;
-    const { isLoadingHistory } = useContext(ProfileContext);
+    const { isLoadedHistory, isLoadedAssets } = useContext(AssetsContext);
 
     const openModal = async () => {
       if (!user || !user.walletAddressBtcTaproot) {
@@ -44,7 +46,7 @@ const ButtonBuyListed = React.memo(
       setShow(false);
     };
 
-    if (isLoadingHistory) return null;
+    if (!isLoadedHistory || !isLoadedAssets) return null;
 
     return (
       <>
@@ -58,6 +60,7 @@ const ButtonBuyListed = React.memo(
         </ButtonIcon>
         {!!taprootAddress && isShow && (
           <ModalBuyListed
+            isDetail={!!isDetail}
             inscriptionNumber={inscriptionNumber}
             orderID={orderID}
             inscriptionID={inscriptionID}

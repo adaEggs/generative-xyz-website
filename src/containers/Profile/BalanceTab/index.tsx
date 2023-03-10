@@ -8,17 +8,20 @@ import ButtonSendBTC from '@containers/Profile/ButtonSendBTC';
 import useBitcoin from '@bitcoin/useBitcoin';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
+import { useContext } from 'react';
+import { AssetsContext } from '@contexts/assets-context';
 
 const BalanceTab = () => {
   const TABLE_BALANCE_HEADING = [
     'Asset',
     'Balance',
+    'Pending',
     <div key="action-header" className={s.headerAction}>
       <p className={s.headerAction_text}>Action</p>
     </div>,
   ];
   const { satoshiAmount } = useBitcoin();
-
+  const { comingAmount } = useContext(AssetsContext);
   const tableData = [
     {
       id: `$-balance`,
@@ -42,6 +45,11 @@ const BalanceTab = () => {
         volume: (
           <Text size="16" fontWeight="medium" color="black-100">
             {formatBTCPrice(satoshiAmount.toString())} BTC
+          </Text>
+        ),
+        coming: (
+          <Text size="16" fontWeight="medium" color="black-100">
+            {formatBTCPrice(comingAmount)} BTC
           </Text>
         ),
         action: (
