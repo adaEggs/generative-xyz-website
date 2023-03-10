@@ -1,17 +1,19 @@
-import s from './styles.module.scss';
-import cs from 'classnames';
-import { FileUploader } from 'react-drag-drop-files';
-import { useEffect, useState } from 'react';
-import { prettyPrintBytes } from '@utils/units';
-import { CDN_URL, MINT_TOOL_MAX_FILE_SIZE } from '@constants/config';
 import SvgInset from '@components/SvgInset';
-import { isImageFile } from '@utils/file';
+import Text from '@components/Text';
+import { CDN_URL, MINT_TOOL_MAX_FILE_SIZE } from '@constants/config';
+import { isInscribeImageFile } from '@utils/file';
+import { prettyPrintBytes } from '@utils/units';
+import cs from 'classnames';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { FileUploader } from 'react-drag-drop-files';
+import s from './styles.module.scss';
 
 export interface IProps {
   className: string;
   fileOrFiles: File[] | null;
   onChange: (files: File | null) => void;
+  setFileError: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
 // apng asc flac gif glb html jpg json mp3 mp4 pdf png stl svg txt wav webm webp yaml
@@ -41,6 +43,7 @@ const DropFile: React.FC<IProps> = ({
   fileOrFiles,
   className,
   onChange,
+  setFileError,
 }: IProps) => {
   const [file, setFile] = useState<File | null>(
     fileOrFiles?.length ? fileOrFiles[0] : null
@@ -51,6 +54,7 @@ const DropFile: React.FC<IProps> = ({
   const onChangeFile = (file: File): void => {
     setFile(file);
     setError('');
+    setFileError('');
     onChange(file);
   };
 
@@ -60,17 +64,25 @@ const DropFile: React.FC<IProps> = ({
         MINT_TOOL_MAX_FILE_SIZE * 1000
       }KB.`
     );
+    setFileError(
+      `File size error, maximum file size is ${
+        MINT_TOOL_MAX_FILE_SIZE * 1000
+      }KB.`
+    );
     setPreview(null);
   };
 
   const onTypeError = (): void => {
     setError('Invalid file extension. Please check and try again.');
+    setFileError('Invalid file extension. Please check and try again.');
     setPreview(null);
   };
 
   useEffect(() => {
-    if (file && isImageFile(file)) {
+    if (file && isInscribeImageFile(file)) {
       setPreview(URL.createObjectURL(file));
+    } else {
+      onTypeError();
     }
   }, [file]);
 
@@ -97,7 +109,7 @@ const DropFile: React.FC<IProps> = ({
       >
         <>
           {file ? (
-            <>
+            <div className={s.wrapper}>
               {preview ? (
                 <div className={s.thumbnailWrapper}>
                   <Image fill src={preview} alt="preview" />
@@ -107,7 +119,18 @@ const DropFile: React.FC<IProps> = ({
                   {`${file.name} (${prettyPrintBytes(file.size)})`}
                 </p>
               )}
-            </>
+              <div className={s.hoverUpload}>
+                <div className={s.hoverContext}>
+                  <SvgInset
+                    size={48}
+                    svgUrl={`${CDN_URL}/icons/ic-camera.svg`}
+                  />
+                  <Text size="18" fontWeight="medium">
+                    Click to change a file
+                  </Text>
+                </div>
+              </div>
+            </div>
           ) : (
             <div className={s.wrap_loader}>
               <SvgInset

@@ -32,7 +32,7 @@ const InscribeModal: React.FC<IProps> = (props: IProps): React.ReactElement => {
               </Button>
             </div>
             <div className={s.modalBody}>
-              <Inscribe isModal />
+              <Inscribe isModal setUploadedFile={() => null} />
             </div>
           </div>
         </div>
