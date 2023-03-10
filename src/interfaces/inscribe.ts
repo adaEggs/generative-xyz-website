@@ -11,7 +11,7 @@ export interface InscriptionInfo {
   ordAddress: string;
   segwitAddress: string;
   sentTokenFee: string;
-  timeout_at: string;
+  timeoutAt: string;
   userAddress: string;
 }
 
