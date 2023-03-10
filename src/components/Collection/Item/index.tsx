@@ -34,9 +34,15 @@ const CollectionItem = ({
   const { mobileScreen } = useWindowSize();
   const { isWhitelistProject } = useContext(GenerativeProjectDetailContext);
   const isBuyable = React.useMemo(() => {
-    return data.buyable && !!data.priceBTC;
-  }, [data.buyable, data.priceBTC]);
+    return data.buyable && !!data.priceBTC && data?.sell_verified;
+  }, [data.buyable, data.priceBTC, data?.sell_verified]);
+
+  const isWaitingVerify = React.useMemo(() => {
+    return data.buyable && !!data.priceBTC && !data?.sell_verified;
+  }, [data.buyable, data.priceBTC, data?.sell_verified]);
+
   const imgRef = useRef<HTMLImageElement>(null);
+
   const [thumb, setThumb] = useState<string>(data.image);
 
   const onThumbError = () => {
@@ -143,8 +149,10 @@ const CollectionItem = ({
                     title={data?.project?.name}
                     className={s.collectionCard_info_title_name}
                   >
-                    {data?.project?.name}
-                  </span>{' '}
+                    {isWaitingVerify
+                      ? 'Incoming... ' + (data?.project?.name || '')
+                      : ''}
+                  </span>
                   {renderHeadDesc()}
                 </Text>
                 {showInscriptionID && (
@@ -163,6 +171,15 @@ const CollectionItem = ({
           ) : (
             <div className={cs(s.collectionCard_info, s.desktop)}>
               <div className={s.collectionCard_info_title}>
+                {isWaitingVerify && (
+                  <Heading
+                    as={'h6'}
+                    fontWeight="medium"
+                    className={s.collectionCard_info_wrapper_waiting}
+                  >
+                    Incoming...
+                  </Heading>
+                )}
                 <Stack
                   className={cs(s.collectionCard_info_stack, {
                     [s.collectionCard_info_wrapper]:

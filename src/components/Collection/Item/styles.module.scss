@@ -153,6 +153,12 @@
         &_ownerName {
           width: 100%;
         }
+
+        &_waiting {
+          width: 100%;
+          color: $gray-9c;
+          font-style: italic;
+        }
       }
 
       .collectionCard_info_listing {
