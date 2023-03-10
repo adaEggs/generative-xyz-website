@@ -6,7 +6,13 @@ import {
 } from '@interfaces/api/bitcoin';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { getCollectedUTXO, getFeeRate, getHistory } from '@services/bitcoin';
+import {
+  filterCurrentAssets,
+  getCollectedUTXO,
+  getFeeRate,
+  getHistory,
+  getPendingUTXOsViaBlockStream,
+} from '@services/bitcoin';
 import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import debounce from 'lodash/debounce';
 import { getError } from '@utils/text';
@@ -35,6 +41,8 @@ export interface IAssetsContext {
   fetchHistory: () => void;
   debounceFetchData: () => void;
   fetchFeeRate: () => void;
+
+  getAvailableAssets: () => void;
 }
 
 const initialValue: IAssetsContext = {
@@ -53,6 +61,7 @@ const initialValue: IAssetsContext = {
   fetchHistory: () => new Promise<void>(r => r()),
   debounceFetchData: () => new Promise<void>(r => r()),
   fetchFeeRate: () => new Promise<void>(r => r()),
+  getAvailableAssets: () => new Promise<void>(r => r()),
 };
 
 export const AssetsContext = React.createContext<IAssetsContext>(initialValue);
@@ -163,6 +172,13 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
+  const getAvailableAssets = async () => {
+    const pendingUTXOs = await getPendingUTXOsViaBlockStream(
+      user?.walletAddressBtcTaproot || ''
+    );
+    return filterCurrentAssets(currentAssets, pendingUTXOs);
+  };
+
   useEffect(() => {
     if (currentAddress) {
       debounceFetchData();
@@ -195,6 +211,7 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
       fetchAssets,
       fetchHistory,
       fetchFeeRate,
+      getAvailableAssets,
 
       debounceFetchData,
     };
@@ -209,6 +226,8 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     isLoadedHistory,
 
     feeRate,
+
+    getAvailableAssets,
   ]);
 
   return (

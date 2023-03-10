@@ -70,6 +70,7 @@
   .titleWrapper {
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
 
   .title {
@@ -77,9 +78,17 @@
     font-size: rem(20px);
     line-height: rem(30px);
     white-space: nowrap;
-    max-width: calc(100% - 56px);
+    max-width: calc(100% - 60px);
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .statusText {
+    color: $black-40;
+    font-style: italic;
+    font-weight: 500;
+    font-size: rem(16px);
+    line-height: rem(26px);
   }
 
   .mintBtn {

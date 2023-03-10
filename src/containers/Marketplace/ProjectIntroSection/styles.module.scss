@@ -12,6 +12,14 @@
     }
   }
 
+  &_center {
+    margin-top: rem(24px);
+
+    @include min-pc {
+      margin-top: 0;
+    }
+  }
+
   &_right {
     &_inner {
       display: flex;

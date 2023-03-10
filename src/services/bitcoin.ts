@@ -7,14 +7,13 @@ import {
   ICollectedUTXOResp,
   IFeeRate,
   IListingPayload,
+  IPendingUTXO,
   IRetrieveOrderPayload,
   IRetrieveOrderResp,
   ITrackTx,
   ITxHistory,
 } from '@interfaces/api/bitcoin';
 import axios from 'axios';
-import { getPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
-import { getUTXOKey } from '@containers/Profile/ButtonSendBTC/utils';
 import { isExpiredTime } from '@utils/time';
 import { orderBy } from 'lodash';
 
@@ -23,26 +22,56 @@ const LOG_PREFIX = 'COLLECTED_NFT';
 // Collected UTXO
 export const getCollectedUTXO = async (
   btcAddress: string
-): Promise<ICollectedUTXOResp> => {
+): Promise<ICollectedUTXOResp | undefined> => {
   try {
     const res = await get<ICollectedUTXOResp>(
       `/wallet/wallet-info?address=${btcAddress}`
     );
 
-    const pendingUTXOs = getPendingUTXOs();
-    const data = {
-      ...res,
-      txrefs: res.txrefs.filter(item => {
-        const txIDKey = getUTXOKey(item);
-        const isPending = pendingUTXOs.some(tx => tx.txIDKey === txIDKey);
-        return !isPending;
-      }),
-    };
-    return data;
+    const pendingUTXOs = await getPendingUTXOsViaBlockStream(btcAddress);
+
+    return filterCurrentAssets(res, pendingUTXOs);
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw err;
   }
+};
+
+export const getPendingUTXOsViaBlockStream = async (
+  btcAddress: string
+): Promise<IPendingUTXO[]> => {
+  let pendingUTXOs = [];
+  if (!btcAddress) return [];
+  try {
+    const res = await axios.get(
+      `https://blockstream.info/api/address/${btcAddress}/txs`
+    );
+    pendingUTXOs = (res.data || []).filter(
+      (item: IPendingUTXO) => !item.status.confirmed
+    );
+  } catch (err) {
+    // throw new Error('Request pending UTXOs error');
+  }
+  return pendingUTXOs;
+};
+
+export const filterCurrentAssets = (
+  current: ICollectedUTXOResp | undefined,
+  pending: IPendingUTXO[]
+): ICollectedUTXOResp | undefined => {
+  if (!pending || !pending.length || !current) return current;
+
+  const utxos = current.txrefs.filter(({ tx_hash, tx_output_n }) => {
+    const isExist = pending.some(item =>
+      item.vin.some(vin => vin.txid === tx_hash && vin.vout === tx_output_n)
+    );
+    return !isExist;
+  });
+
+  return {
+    ...current,
+    txrefs: utxos,
+  };
 };
 
 export const getFeeRate = async (): Promise<IFeeRate> => {
@@ -117,16 +146,14 @@ export const getHistory = async (address: string): Promise<ITxHistory[]> => {
   }
 };
 
-export const broadcastTx = async (
-  txHex: string,
-  isSplit = false
-): Promise<never> => {
+export const broadcastTx = async (txHex: string) => {
   try {
-    return axios.post(`https://blockstream.info/api/tx`, txHex);
+    await axios.post(`https://blockstream.info/api/tx`, txHex);
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
-    const subMess = isSplit ? ' split ' : ' ';
-    throw new Error(`Broadcast the${subMess}tx error`);
+    throw new Error(
+      'There was an issue when broadcasting the transaction to the BTC network.'
+    );
   }
 };
 

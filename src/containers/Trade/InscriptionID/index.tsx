@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import useSWR from 'swr';
 import BigNumber from 'bignumber.js';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
+import useSWR from 'swr';
 
-import { Loading } from '@components/Loading';
 import Heading from '@components/Heading';
+import Link from '@components/Link';
+import { Loading } from '@components/Loading';
+import NFTDisplayBox from '@components/NFTDisplayBox';
 import Text from '@components/Text';
-import MarkdownPreview from '@components/MarkdownPreview';
+import { ROUTE_PATH } from '@constants/route-path';
+import useWindowSize from '@hooks/useWindowSize';
+import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
+import { getInscriptionDetail } from '@services/marketplace-btc';
 import {
   ellipsisCenter,
   formatBTCPrice,
   formatLongAddress,
 } from '@utils/format';
-import useWindowSize from '@hooks/useWindowSize';
-import { getInscriptionDetail } from '@services/marketplace-btc';
-import NFTDisplayBox from '@components/NFTDisplayBox';
-import Link from '@components/Link';
-import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
-import { ROUTE_PATH } from '@constants/route-path';
 import { getApiKey } from '@utils/swr';
 
 import s from './TokenID.module.scss';
@@ -144,7 +143,8 @@ const InscriptionID: React.FC = (): React.ReactElement => {
                   className={s.token_description}
                   style={{ WebkitLineClamp: showMore ? 'unset' : '4' }}
                 >
-                  <MarkdownPreview source={tokenData?.description} />
+                  {/* <MarkdownPreview source={tokenData?.description} /> */}
+                  {tokenData?.description}
                 </div>
                 {tokenData?.description &&
                   tokenData?.description.length > 300 && (

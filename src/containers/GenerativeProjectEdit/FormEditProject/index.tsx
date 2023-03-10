@@ -1,8 +1,8 @@
+import { default as Accordion } from '@components/Accordion';
 import ButtonIcon from '@components/ButtonIcon';
 import ImagePreviewInput from '@components/ImagePreviewInput';
-import MarkdownEditor from '@components/MarkdownEditor';
 import Text from '@components/Text';
-import { MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
+import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { ROUTE_PATH } from '@constants/route-path';
 import DropFile from '@containers/MintBTCGenerative/DropFile';
@@ -17,16 +17,19 @@ import {
   updateProject,
   uploadUpdatedTraitList,
 } from '@services/project';
-import { isProduction } from '@utils/common';
 import { formatBTCPrice } from '@utils/format';
 import log from '@utils/logger';
-import { Formik } from 'formik';
+import { ErrorMessage, Field, FieldArray, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import Select, { MultiValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 
+import Input from '@components/Formik/Input';
+import SvgInset from '@components/SvgInset';
+import { validateBTCAddressTaproot } from '@utils/validate';
+import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
 
 const LOG_PREFIX = 'FormEditProfile';
@@ -41,43 +44,10 @@ type IUpdateProjectFormValue = {
   isHidden: boolean;
   categories: Array<SelectOption>;
   captureImageTime: number;
+  reserveMintLimit: number | string;
+  reserveMintPrice: string;
+  reservers: string[];
 };
-
-// const MOCK_TRAITS = [
-//   {
-//     id: '9a7be21490f8d256d47afcf2ce936c98ed11ee8645cc281b7393b82b9d82b706i0',
-//     attributes: [
-//       {
-//         trait_type: 'Background',
-//         value: 'M1 Yellow',
-//       },
-//       {
-//         trait_type: 'Fur',
-//         value: 'M1 Golden Brown',
-//       },
-//       {
-//         trait_type: 'Eyes',
-//         value: 'M1 Closed',
-//       },
-//       {
-//         trait_type: 'Clothes',
-//         value: 'M1 Wool Turtleneck',
-//       },
-//       {
-//         trait_type: 'Hat',
-//         value: 'M1 Spinner Hat',
-//       },
-//       {
-//         trait_type: 'Mouth',
-//         value: 'M1 Bored Unshaven',
-//       },
-//     ],
-//   },
-//   {
-//     id: '9a7be21490f8d256d47afcf2ce936c98ed11ee8645cc281b7393b82b9d82b706i0',
-//     attributes: [],
-//   },
-// ];
 
 const FormEditProject = () => {
   const router = useRouter();
@@ -172,6 +142,10 @@ const FormEditProject = () => {
       errors.royalty = 'Invalid number. Must be  less then 25.';
     }
 
+    if (parseFloat(values.reserveMintLimit.toString()) < 1) {
+      errors.reserveMintLimit = 'Must be equal or greater than 1.';
+    }
+
     return errors;
   };
 
@@ -206,6 +180,11 @@ const FormEditProject = () => {
     if (projectFiles === 0) {
       payload.captureImageTime = values.captureImageTime || 20;
     }
+    if (values.reserveMintLimit)
+      payload.reserveMintLimit = parseFloat(values.reserveMintLimit.toString());
+    if (values.reserveMintPrice)
+      payload.reserveMintPrice = values.reserveMintPrice.toString();
+    if (values.reservers) payload.reservers = values.reservers.filter(Boolean);
 
     const [updateTraitRes, updateProjectRes] = await Promise.allSettled([
       file
@@ -254,7 +233,7 @@ const FormEditProject = () => {
         return categoryOptions.find(op => cat === op.value)!;
       });
 
-      return categories;
+      return categories?.filter(item => item?.label !== 'Ethereum');
     },
     [categoryOptions, project]
   );
@@ -292,7 +271,7 @@ const FormEditProject = () => {
       value: item.id,
       label: item.name,
     }));
-    setCategoryOptions(options);
+    setCategoryOptions(options.filter(op => op.label !== 'Ethereum'));
   }, []);
 
   return (
@@ -308,6 +287,9 @@ const FormEditProject = () => {
         isHidden: !(project?.isHidden || false),
         categories: valuesCategories(null),
         captureImageTime: project?.captureThumbnailDelayTime || 20,
+        reserveMintPrice: formatBTCPrice(project?.reserveMintPrice || '0'),
+        reserveMintLimit: project?.reserveMintLimit || '',
+        reservers: project?.reservers ? project?.reservers : [''],
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -391,8 +373,21 @@ const FormEditProject = () => {
                       Description of your collection{' '}
                       <sup className={s.requiredTag}>*</sup>
                     </label>
+                    <Input
+                      id="description"
+                      as="textarea"
+                      name="description"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.description}
+                      className={s.descriptionInput}
+                      useFormik
+                    />
+                    {errors.description && touched.description && (
+                      <p className={s.error}>{errors.description}</p>
+                    )}
 
-                    <MarkdownEditor
+                    {/* <MarkdownEditor
                       id="description"
                       className={s.mdEditor}
                       value={values.description}
@@ -407,7 +402,7 @@ const FormEditProject = () => {
                     />
                     {errors.description && touched.description && (
                       <p className={s.error}>{errors.description}</p>
-                    )}
+                    )} */}
                   </div>
                 </div>
                 <div className={s.uploadPreviewWrapper}>
@@ -428,8 +423,7 @@ const FormEditProject = () => {
                   </div>
                 </div>
               </div>
-              {!isProduction() &&
-                project &&
+              {project &&
                 projectFiles !== 0 &&
                 project?.mintingInfo?.index > 0 && (
                   <div className={s.updateTraits}>
@@ -545,6 +539,145 @@ const FormEditProject = () => {
                   )}
                 </div>
               </div>
+              <Accordion
+                header={'Reserve list (optional)'}
+                className={s.reserve}
+                content={
+                  <div>
+                    <div className={s.reserve_priceLimit}>
+                      <div className={s.formItem}>
+                        <label className={s.label} htmlFor="reserveMintPrice">
+                          Price
+                        </label>
+                        <div className={s.inputContainer}>
+                          <input
+                            id="reserveMintPrice"
+                            type="number"
+                            name="reserveMintPrice"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.reserveMintPrice}
+                            className={s.input}
+                            placeholder="Provide a number"
+                          />
+                          <div className={s.inputPostfix}>BTC</div>
+                        </div>
+                        {errors.reserveMintPrice &&
+                          touched.reserveMintPrice && (
+                            <p className={s.error}>{errors.reserveMintPrice}</p>
+                          )}
+                      </div>
+                      <div className={s.formItem}>
+                        <label className={s.label} htmlFor="reserveMintLimit">
+                          Limit
+                        </label>
+                        <div className={s.inputContainer}>
+                          <input
+                            id="reserveMintLimit"
+                            type="number"
+                            name="reserveMintLimit"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.reserveMintLimit}
+                            className={s.input}
+                            placeholder="Provide a number"
+                          />
+                        </div>
+                        {errors.reserveMintLimit &&
+                          touched.reserveMintLimit && (
+                            <p className={s.error}>{errors.reserveMintLimit}</p>
+                          )}
+                      </div>
+                    </div>
+                    <div className={s.reserve_wallets}>
+                      <div className={s.formItem}>
+                        <FieldArray
+                          name="reservers"
+                          validateOnChange
+                          render={arrayHelpers => (
+                            <>
+                              <div className={s.reservers_label}>
+                                <label className={s.label} htmlFor="reservers">
+                                  Wallet BTC Taproot Addresses
+                                </label>
+                                <Stack
+                                  direction="horizontal"
+                                  gap={3}
+                                  className="align-items-center cursor-pointer"
+                                  onClick={() => arrayHelpers.push('')}
+                                >
+                                  <SvgInset
+                                    size={14}
+                                    svgUrl={`${CDN_URL}/icons/ic-plus.svg`}
+                                    className={s.addBtn}
+                                  />
+                                  <Text>Add wallet</Text>
+                                </Stack>
+                              </div>
+
+                              <div className={`${s.inputReserveWallet}`}>
+                                {values.reservers &&
+                                  values.reservers.length > 0 &&
+                                  values.reservers.map((reserver, index) => (
+                                    <div
+                                      key={index}
+                                      className={s.inputContainer}
+                                    >
+                                      <Stack
+                                        direction="horizontal"
+                                        gap={3}
+                                        className="align-items-start"
+                                      >
+                                        <Stack>
+                                          <Field
+                                            id={`reservers.${index}`}
+                                            type="text"
+                                            name={`reservers.${index}`}
+                                            defaultValue={''}
+                                            validate={(value: string) => {
+                                              if (value === '') {
+                                                return '';
+                                              }
+                                              if (
+                                                !validateBTCAddressTaproot(
+                                                  value
+                                                )
+                                              ) {
+                                                return 'Invalid BTC Taproot address';
+                                              }
+                                            }}
+                                            className={s.input}
+                                            placeholder="Reserve user's BTC taproot address"
+                                          />
+                                          <div className={s.error}>
+                                            <ErrorMessage
+                                              name={`reservers[${index}]`}
+                                            />
+                                          </div>
+                                        </Stack>
+                                        <SvgInset
+                                          size={14}
+                                          svgUrl={`${CDN_URL}/icons/ic-close.svg`}
+                                          className={`${s.removeBtn} ${
+                                            values.reservers?.length === 1 &&
+                                            s.removeBtnDisabled
+                                          }`}
+                                          onClick={() =>
+                                            arrayHelpers.remove(index)
+                                          }
+                                        />
+                                      </Stack>
+                                    </div>
+                                  ))}
+                              </div>
+                            </>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                }
+              />
 
               <div className={s.container}>
                 <div className={s.actionWrapper}>

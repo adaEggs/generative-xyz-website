@@ -50,7 +50,7 @@ import { wordCase } from '@utils/common';
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
   // const { projectID } = router.query;
-  const { tabletScreen } = useWindowSize();
+  const { mobileScreen } = useWindowSize();
   const {
     tokenData,
     projectData,
@@ -239,16 +239,13 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     return projectData?.fromAuthentic || false;
   }, [projectData]);
 
-  const isLayoutSmall = useMemo(() => {
-    return tabletScreen;
-  }, [tabletScreen]);
-
   const renderBuyBTCView = () => {
     if (!tokenData || !isBuyable) return null;
     return (
       <div className={s.buy_btc}>
         {isBuyable && (
           <ButtonBuyListed
+            sizes={'large'}
             inscriptionID={tokenData.tokenID}
             price={tokenData.priceBTC}
             inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
@@ -312,226 +309,236 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   return (
     <>
       <Container>
-        <div className={s.wrapper}>
-          <div className={s.itemInfo_wrapper}>
-            <div className={s.itemInfo}>
-              <Loading isLoaded={!!tokenData} className={s.loading_token} />
-              <div className={`${s.projectHeader}`}>
-                <Link
-                  href={`${ROUTE_PATH.PROFILE}/${
-                    projectData?.creatorProfile?.walletAddressBtcTaproot ||
-                    projectData?.creatorProfile?.walletAddress
-                  }`}
-                  className={cs(
-                    s.creator_info,
-                    !projectData?.creatorProfile?.walletAddressBtcTaproot &&
-                      !projectData?.creatorProfile?.walletAddress &&
-                      'pointer-none'
-                  )}
-                >
-                  <Heading
-                    className={s.projectHeader_creator}
-                    as="h4"
-                    fontWeight="medium"
-                  >
-                    {projectData && filterCreatorName(projectData)}
-                  </Heading>
-                </Link>
-                <SocialVerify
-                  isTwVerified={isTwVerified}
-                  link={SOCIALS.twitter}
-                />
-              </div>
-
-              <Heading
-                as="h4"
-                className={s.itemInfo_heading}
-                fontWeight="medium"
-              >
-                <span
-                  title={`${projectData?.name} #${formatTokenId(
-                    isFromAuthentic
-                      ? projectData?.nftTokenId || ''
-                      : tokenData?.tokenID || ''
-                  )}`}
-                  className={isFromAuthentic ? s.isAuthentic : ''}
-                >
+        <div className={`row ${s.wrapper}`}>
+          <div className="col-xl-4 col-md-6 col-12">
+            <div className={s.itemInfo_wrapper}>
+              <div className={s.itemInfo}>
+                <Loading isLoaded={!!tokenData} className={s.loading_token} />
+                <div className={`${s.projectHeader}`}>
                   <Link
-                    href={`${ROUTE_PATH.GENERATIVE}/${projectData?.tokenID}`}
+                    href={`${ROUTE_PATH.PROFILE}/${
+                      projectData?.creatorProfile?.walletAddressBtcTaproot ||
+                      projectData?.creatorProfile?.walletAddress
+                    }`}
+                    className={cs(
+                      s.creator_info,
+                      !projectData?.creatorProfile?.walletAddressBtcTaproot &&
+                        !projectData?.creatorProfile?.walletAddress &&
+                        'pointer-none'
+                    )}
                   >
-                    {projectName}
+                    <Heading
+                      className={s.projectHeader_creator}
+                      as="h4"
+                      fontWeight="medium"
+                    >
+                      {projectData && filterCreatorName(projectData)}
+                    </Heading>
                   </Link>
-                  #
-                  {isFromAuthentic
-                    ? projectData?.nftTokenId || ''
-                    : tokenData?.orderInscriptionIndex
-                    ? tokenData?.orderInscriptionIndex
-                    : tokenData?.inscriptionIndex
-                    ? tokenData?.inscriptionIndex
-                    : formatTokenId(tokenData?.tokenID || '')}
-                </span>
-              </Heading>
-              {renderOwner()}
-              {renderBuyBTCView()}
-              {isLayoutSmall && (
-                <div className={s.reviewOnMobile}>
-                  <ThumbnailPreview data={tokenData} previewToken />
-                </div>
-              )}
-              {!isBitcoinProject && (
-                <>
-                  <div className={s.prices}>
-                    {isTokenListing && (
-                      <div>
-                        <Text size="12" fontWeight="medium" color="black-40">
-                          Price
-                        </Text>
-                        <Heading as="h6" fontWeight="medium">
-                          Ξ {listingPrice}
-                        </Heading>
-                      </div>
-                    )}
-
-                    <div>
-                      <Text size="12" fontWeight="medium" color="black-40">
-                        Royalty
-                      </Text>
-                      <Heading as="h6" fontWeight="medium">
-                        {(projectData?.royalty || 0) / 100}%
-                      </Heading>
-                    </div>
-                  </div>
-                  <div className={s.CTA_btn}>
-                    {/* Due to owner and status of this token to render appropriate action */}
-                    {isTokenOwner && !isTokenListing && (
-                      <ButtonIcon
-                        disabled={!tokenData}
-                        onClick={handleOpenListingTokenModal}
-                      >
-                        List for sale
-                      </ButtonIcon>
-                    )}
-                    {isTokenOwner && isTokenListing && (
-                      <ButtonIcon
-                        disabled={!tokenData}
-                        onClick={handleOpenCancelListingTokenModal}
-                      >
-                        Cancel listing
-                      </ButtonIcon>
-                    )}
-                    {isTokenOwner && (
-                      <ButtonIcon
-                        onClick={handleOpenTransferTokenModal}
-                        disabled={!tokenData}
-                        variants="outline"
-                      >
-                        Transfer
-                      </ButtonIcon>
-                    )}
-
-                    {!isTokenOwner && isTokenListing && (
-                      <>
-                        <ButtonIcon
-                          disabled={!listingOffers.length || isBuying}
-                          onClick={handleBuyToken}
-                        >
-                          Buy
-                        </ButtonIcon>
-                      </>
-                    )}
-                    {!isTokenOwner && (
-                      <ButtonIcon
-                        onClick={handleOpenMakeOfferModal}
-                        disabled={!tokenData}
-                        variants="outline"
-                      >
-                        Make offer
-                      </ButtonIcon>
-                    )}
-                  </div>
-                </>
-              )}
-              <div className={s.accordions}>
-                <div className={s.accordions_item}>
-                  <ProjectDescription
-                    desc={tokenDescription}
-                    attributes={
-                      featuresList() ? (
-                        <Stats data={featuresList() || []} />
-                      ) : (
-                        ''
-                      )
-                    }
-                    hasInteraction={hasProjectInteraction}
-                    descInteraction={projectData?.desc || ''}
-                    tokenDetail={
-                      tokenInfos && tokenInfos.length > 0 ? (
-                        <Stats data={tokenInfos} />
-                      ) : (
-                        ''
-                      )
-                    }
+                  <SocialVerify
+                    isTwVerified={isTwVerified}
+                    link={SOCIALS.twitter}
                   />
                 </div>
-              </div>
-              <div className="divider" />
-              {isFromAuthentic && (
-                <AuthenticCard
-                  nftTokenId={tokenData?.nftTokenId || ''}
-                  project={projectData}
-                />
-              )}
-            </div>
-            <ul className={s.shares}>
-              <li>
-                <div>
-                  <TwitterShareButton
-                    url={`${origin}${ROUTE_PATH.GENERATIVE}/${projectData?.tokenID}`}
-                    title={''}
-                    hashtags={[]}
-                  >
-                    <ButtonIcon
-                      sizes="small"
-                      variants="outline-small"
-                      className={s.projectBtn}
-                      startIcon={
-                        <SvgInset
-                          size={14}
-                          svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
-                        />
-                      }
-                    >
-                      Share
-                    </ButtonIcon>
-                  </TwitterShareButton>
-                </div>
-              </li>
-              <li>
-                <div
-                  className={s.reportBtn}
-                  onClick={() => setShowReportModal(true)}
+
+                <Heading
+                  as="h4"
+                  className={s.itemInfo_heading}
+                  fontWeight="medium"
                 >
-                  <SvgInset size={14} svgUrl={`${CDN_URL}/icons/ic-flag.svg`} />
-                  <Text as="span" size="14" fontWeight="medium">
-                    Report
-                  </Text>
+                  <span
+                    title={`${projectData?.name} #${formatTokenId(
+                      isFromAuthentic
+                        ? projectData?.nftTokenId || ''
+                        : tokenData?.tokenID || ''
+                    )}`}
+                    className={isFromAuthentic ? s.isAuthentic : ''}
+                  >
+                    <Link
+                      href={`${ROUTE_PATH.GENERATIVE}/${projectData?.tokenID}`}
+                    >
+                      {projectName}
+                    </Link>
+                    #
+                    {isFromAuthentic
+                      ? projectData?.nftTokenId || ''
+                      : tokenData?.orderInscriptionIndex
+                      ? tokenData?.orderInscriptionIndex
+                      : tokenData?.inscriptionIndex
+                      ? tokenData?.inscriptionIndex
+                      : formatTokenId(tokenData?.tokenID || '')}
+                  </span>
+                </Heading>
+                {renderOwner()}
+                {renderBuyBTCView()}
+                {mobileScreen && (
+                  <div className={s.reviewOnMobile}>
+                    <ThumbnailPreview data={tokenData} previewToken />
+                  </div>
+                )}
+                {!isBitcoinProject && (
+                  <>
+                    <div className={s.prices}>
+                      {isTokenListing && (
+                        <div>
+                          <Text size="12" fontWeight="medium" color="black-40">
+                            Price
+                          </Text>
+                          <Heading as="h6" fontWeight="medium">
+                            Ξ {listingPrice}
+                          </Heading>
+                        </div>
+                      )}
+
+                      <div>
+                        <Text size="12" fontWeight="medium" color="black-40">
+                          Royalty
+                        </Text>
+                        <Heading as="h6" fontWeight="medium">
+                          {(projectData?.royalty || 0) / 100}%
+                        </Heading>
+                      </div>
+                    </div>
+                    <div className={s.CTA_btn}>
+                      {/* Due to owner and status of this token to render appropriate action */}
+                      {isTokenOwner && !isTokenListing && (
+                        <ButtonIcon
+                          disabled={!tokenData}
+                          sizes={'large'}
+                          onClick={handleOpenListingTokenModal}
+                        >
+                          List for sale
+                        </ButtonIcon>
+                      )}
+                      {isTokenOwner && isTokenListing && (
+                        <ButtonIcon
+                          sizes={'large'}
+                          disabled={!tokenData}
+                          onClick={handleOpenCancelListingTokenModal}
+                        >
+                          Cancel listing
+                        </ButtonIcon>
+                      )}
+                      {isTokenOwner && (
+                        <ButtonIcon
+                          onClick={handleOpenTransferTokenModal}
+                          disabled={!tokenData}
+                          variants="outline"
+                          sizes={'large'}
+                        >
+                          Transfer
+                        </ButtonIcon>
+                      )}
+
+                      {!isTokenOwner && isTokenListing && (
+                        <>
+                          <ButtonIcon
+                            sizes={'large'}
+                            disabled={!listingOffers.length || isBuying}
+                            onClick={handleBuyToken}
+                          >
+                            Buy
+                          </ButtonIcon>
+                        </>
+                      )}
+                      {!isTokenOwner && (
+                        <ButtonIcon
+                          onClick={handleOpenMakeOfferModal}
+                          disabled={!tokenData}
+                          variants="outline"
+                          sizes={'large'}
+                        >
+                          Make offer
+                        </ButtonIcon>
+                      )}
+                    </div>
+                  </>
+                )}
+                <div className={s.accordions}>
+                  <div className={s.accordions_item}>
+                    <ProjectDescription
+                      desc={tokenDescription}
+                      attributes={
+                        featuresList() ? (
+                          <Stats data={featuresList() || []} />
+                        ) : (
+                          ''
+                        )
+                      }
+                      hasInteraction={hasProjectInteraction}
+                      descInteraction={projectData?.desc || ''}
+                      tokenDetail={
+                        tokenInfos && tokenInfos.length > 0 ? (
+                          <Stats data={tokenInfos} />
+                        ) : (
+                          ''
+                        )
+                      }
+                    />
+                  </div>
                 </div>
-              </li>
-            </ul>
+                {isFromAuthentic && (
+                  <AuthenticCard
+                    nftTokenId={tokenData?.nftTokenId || ''}
+                    project={projectData}
+                  />
+                )}
+              </div>
+              <ul className={s.shares}>
+                <li>
+                  <div>
+                    <TwitterShareButton
+                      url={`${origin}${ROUTE_PATH.GENERATIVE}/${projectData?.tokenID}`}
+                      title={''}
+                      hashtags={[]}
+                    >
+                      <ButtonIcon
+                        sizes="small"
+                        variants="outline-small"
+                        className={s.projectBtn}
+                        startIcon={
+                          <SvgInset
+                            size={14}
+                            svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                          />
+                        }
+                      >
+                        Share
+                      </ButtonIcon>
+                    </TwitterShareButton>
+                  </div>
+                </li>
+                <li>
+                  <div
+                    className={s.reportBtn}
+                    onClick={() => setShowReportModal(true)}
+                  >
+                    <SvgInset
+                      size={14}
+                      svgUrl={`${CDN_URL}/icons/ic-flag.svg`}
+                    />
+                    <Text as="span" size="14" fontWeight="medium">
+                      Report
+                    </Text>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
 
-          <div></div>
-          {!isLayoutSmall && (
-            <div className={s.thumbnailBg}>
-              <ThumbnailPreview
-                data={tokenData}
-                isBitcoinProject={isBitcoinProject}
-                previewToken
-              />
+          {!mobileScreen && (
+            <div className="col-xl-8 col-md-6 col-12">
+              <div className={s.thumbnailBg}>
+                <ThumbnailPreview
+                  data={tokenData}
+                  isBitcoinProject={isBitcoinProject}
+                  previewToken
+                />
+              </div>
             </div>
           )}
         </div>
-        <div className="h-divider"></div>
+        <div className="h-divider" />
         <MoreItemsSection genNFTAddr={projectData?.genNFTAddr || ''} />
 
         {!isBitcoinProject ? (

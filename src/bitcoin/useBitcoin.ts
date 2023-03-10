@@ -5,6 +5,8 @@ import { getUserSelector } from '@redux/user/selector';
 import { useContext, useState, useEffect } from 'react';
 import {
   broadcastTx,
+  filterCurrentAssets,
+  getPendingUTXOsViaBlockStream,
   submitCancel,
   submitListForSale,
   trackTx,
@@ -17,8 +19,7 @@ import {
   ISendBTCProps,
   ISendInsProps,
 } from '@bitcoin/types';
-import throttle from 'lodash/throttle';
-import bitcoinStorage from '@bitcoin/utils/storage';
+import { debounce } from 'lodash';
 import { sleep } from '@utils/sleep';
 import { AssetsContext } from '@contexts/assets-context';
 
@@ -28,8 +29,16 @@ interface IProps {
 
 const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   const user = useSelector(getUserSelector);
-  const { currentAssets, assets } = useContext(AssetsContext);
+  const { currentAssets } = useContext(AssetsContext);
   const [satoshiAmount, setAmount] = useState(0);
+
+  const getAvailableAssets = async () => {
+    const pendingUTXOs = await getPendingUTXOsViaBlockStream(
+      user?.walletAddressBtcTaproot || ''
+    );
+    return filterCurrentAssets(currentAssets, pendingUTXOs);
+  };
+
   const sendInscription = async ({
     receiverAddress,
     feeRate,
@@ -39,15 +48,16 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
 
-    if (!evmAddress || !inscriptionID || !currentAssets || !taprootAddress)
+    const _collectedUTXOs = await getAvailableAssets();
+    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
     const { txID, txHex } = GENERATIVE_SDK.createTx(
       privateKey,
-      currentAssets.txrefs,
-      currentAssets.inscriptions_by_outputs,
+      _collectedUTXOs.txrefs,
+      _collectedUTXOs.inscriptions_by_outputs,
       inscriptionID,
       receiverAddress,
       0,
@@ -73,14 +83,15 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   }: ISendBTCProps) => {
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
-    if (!evmAddress || !currentAssets || !taprootAddress) return;
+    const _collectedUTXOs = await getAvailableAssets();
+    if (!evmAddress || !_collectedUTXOs || !taprootAddress) return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex, selectedUTXOs } = GENERATIVE_SDK.createTx(
+    const { txID, txHex } = GENERATIVE_SDK.createTx(
       privateKey,
-      currentAssets.txrefs,
-      currentAssets.inscriptions_by_outputs,
+      _collectedUTXOs.txrefs,
+      _collectedUTXOs.inscriptions_by_outputs,
       '',
       receiverAddress,
       amount,
@@ -97,13 +108,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     });
     // broadcast tx
     await broadcastTx(txHex);
-
-    // storage pending UTXOS
-    bitcoinStorage.setPendingUTXOs({
-      trAddress: taprootAddress,
-      utxos: selectedUTXOs,
-      txHash: txID,
-    });
+    // setPendingUTXOs(selectedUTXOs);
   };
 
   const buyInscription = async ({
@@ -116,65 +121,39 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!inscriptionID) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
+    const _collectedUTXOs = await getAvailableAssets();
 
-    if (!evmAddress || !inscriptionID || !currentAssets || !taprootAddress)
+    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex, splitTxRaw, splitUTXOs, selectedUTXOs, splitTxID } =
-      await GENERATIVE_SDK.reqBuyInscription({
-        buyerPrivateKey: privateKey,
-        feeRatePerByte: feeRate,
-        inscriptions: currentAssets.inscriptions_by_outputs,
-        price: price,
-        receiverInscriptionAddress: receiverInscriptionAddress,
-        sellerSignedPsbtB64: sellerSignedPsbtB64,
-        utxos: currentAssets.txrefs,
-      });
-
-    await Promise.all([
-      await trackTx({
-        txhash: txID,
-        address: taprootAddress,
-        receiver: receiverInscriptionAddress,
-        inscription_id: inscriptionID,
-        inscription_number: inscriptionNumber,
-        send_amount: price,
-        type: TrackTxType.buyInscription,
-      }),
-      await trackTx({
-        txhash: splitTxID,
-        address: taprootAddress,
-        receiver: receiverInscriptionAddress,
-        inscription_id: inscriptionID,
-        inscription_number: inscriptionNumber,
-        send_amount: price,
-        type: TrackTxType.buySplit,
-      }),
-    ]);
+    const { txID, txHex, splitTxRaw } = await GENERATIVE_SDK.reqBuyInscription({
+      buyerPrivateKey: privateKey,
+      feeRatePerByte: feeRate,
+      inscriptions: _collectedUTXOs.inscriptions_by_outputs,
+      price: price,
+      receiverInscriptionAddress: receiverInscriptionAddress,
+      sellerSignedPsbtB64: sellerSignedPsbtB64,
+      utxos: _collectedUTXOs.txrefs,
+    });
+    await trackTx({
+      txhash: txID,
+      address: taprootAddress,
+      receiver: receiverInscriptionAddress,
+      inscription_id: inscriptionID,
+      inscription_number: inscriptionNumber,
+      send_amount: price,
+      type: TrackTxType.buyInscription,
+    });
 
     if (splitTxRaw) {
-      await broadcastTx(splitTxRaw, true);
+      await broadcastTx(splitTxRaw);
       await sleep(1);
     }
 
     // broadcast tx
     await broadcastTx(txHex);
-
-    bitcoinStorage.setPendingUTXOs({
-      trAddress: taprootAddress,
-      utxos: splitUTXOs || [],
-      txHash: splitTxID,
-    });
-
-    await sleep(0.5);
-
-    bitcoinStorage.setPendingUTXOs({
-      trAddress: taprootAddress,
-      utxos: selectedUTXOs || [],
-      txHash: txID,
-    });
   };
 
   const listInscription = async ({
@@ -188,23 +167,24 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!inscriptionID) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
+    const _collectedUTXOs = await getAvailableAssets();
 
-    if (!evmAddress || !inscriptionID || !currentAssets || !taprootAddress)
+    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { splitTxID, base64Psbt, splitTxRaw, splitUTXOs } =
+    const { splitTxID, base64Psbt, splitTxRaw } =
       await GENERATIVE_SDK.reqListForSaleInscription({
         sellerPrivateKey: privateKey,
         amountPayToSeller: amountPayToSeller,
         creatorAddress: creatorAddress,
         feePayToCreator: feePayToCreator,
         feeRatePerByte: feeRate,
-        inscriptions: currentAssets.inscriptions_by_outputs,
+        inscriptions: _collectedUTXOs.inscriptions_by_outputs,
         receiverBTCAddress: receiverBTCAddress,
         sellInscriptionID: inscriptionID,
-        utxos: currentAssets.txrefs,
+        utxos: _collectedUTXOs.txrefs,
       });
     const tasks = [
       await submitListForSale({
@@ -228,14 +208,6 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       );
     }
     await Promise.all(tasks);
-
-    if (splitTxID) {
-      bitcoinStorage.setPendingUTXOs({
-        trAddress: taprootAddress,
-        utxos: splitUTXOs,
-        txHash: splitTxID,
-      });
-    }
   };
 
   const cancelInscription = async ({
@@ -247,23 +219,26 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!inscriptionID || !receiverAddress) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
+    const _collectedUTXOs = await getAvailableAssets();
 
-    if (!evmAddress || !inscriptionID || !currentAssets || !taprootAddress)
+    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex, selectedUTXOs } = GENERATIVE_SDK.createTx(
+    const { txID, txHex } = GENERATIVE_SDK.createTx(
       privateKey,
-      currentAssets.txrefs,
-      currentAssets.inscriptions_by_outputs,
+      _collectedUTXOs.txrefs,
+      _collectedUTXOs.inscriptions_by_outputs,
       inscriptionID,
       receiverAddress,
       0,
       feeRate
     );
-
-    await Promise.all([
+    // broadcast tx
+    await broadcastTx(txHex);
+    await sleep(1);
+    const tasks = [
       await trackTx({
         txhash: txID,
         address: taprootAddress,
@@ -278,35 +253,25 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
         order_id: orderID,
         txhash: txID,
       }),
-    ]);
-
-    await sleep(1);
-
-    // broadcast tx
-    await broadcastTx(txHex);
-
-    bitcoinStorage.setPendingUTXOs({
-      trAddress: taprootAddress,
-      txHash: txID,
-      utxos: selectedUTXOs,
-    });
+    ];
+    await Promise.all(tasks);
   };
 
   // GET BALANCE
-  const getBalance = (assets: ICollectedUTXOResp | undefined) => {
-    if (!assets) return setAmount(0);
+  const getBalance = (_collectedUTXOs: ICollectedUTXOResp | undefined) => {
+    if (!_collectedUTXOs) return setAmount(0);
     setAmount(
       GENERATIVE_SDK.getBTCBalance({
-        utxos: assets.txrefs,
-        inscriptions: assets.inscriptions_by_outputs,
+        utxos: _collectedUTXOs.txrefs,
+        inscriptions: _collectedUTXOs.inscriptions_by_outputs,
       })
     );
   };
-  const debounceGetBalance = throttle(getBalance, 200);
+  const debounceGetBalance = debounce(getBalance, 200);
 
   useEffect(() => {
-    debounceGetBalance(assets);
-  }, [assets]);
+    debounceGetBalance(currentAssets);
+  }, [currentAssets]);
 
   return {
     sendInscription,
