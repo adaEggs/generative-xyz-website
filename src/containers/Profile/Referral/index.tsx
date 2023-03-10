@@ -133,16 +133,16 @@ const ReferralTab = () => {
         ),
         volume: (
           <>
-            {totalVolume === '0'
-              ? '-'
-              : `${formatBTCPrice(totalVolume)} ${currency}`}
+            {!totalVolume || Number(totalVolume) < 0
+              ? `0 ${currency}`
+              : `${formatBTCPrice(totalVolume || '')} ${currency}`}
           </>
         ),
         earning: (
           <>
-            {totalVolume === '0'
-              ? '-'
-              : ` ${calculateWithdrawAmount} ${currency}`}
+            {!item.referreeVolumn.earn || Number(item.referreeVolumn.earn) < 0
+              ? `0 ${currency}`
+              : `${calculateWithdrawAmount} ${currency}`}
           </>
         ),
         action: (

@@ -206,10 +206,9 @@ const ArtistCollectionEarn = ({
         // ),
         volume: (
           <>
-            {!totalVolume && '-'}
-            {currencyRecord === CurrencyType.ETH
-              ? `${formatBTCPrice(`${-61795676}`)} ETH`
-              : `${formatBTCPrice(totalVolume || '')} BTC`}
+            {!totalVolume || Number(totalVolume) < 0
+              ? `0 ${currencyRecord}`
+              : `${formatBTCPrice(totalVolume || '')} ${currencyRecord}`}
           </>
         ),
         action: (
