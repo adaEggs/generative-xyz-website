@@ -137,6 +137,22 @@ const Header: React.FC<IProp> = ({
       >
         <ul className={styles.freeToolList}>
           <li className={cs(styles.freeToolItem)}>
+            <Link href={getUrlWithQueryParams(MENU_HEADER[11].route)}>
+              <Image
+                src={`${CDN_URL}/icons/icon-crypto-art.svg`}
+                width={34}
+                height={34}
+                alt="icon-crypto-art"
+              />
+              <div className={styles.menuContent}>
+                <p className={styles.mainText}>{MENU_HEADER[11].name}</p>
+                <p className={styles.subText}>
+                  Preserve your Ethereum CryptoArt and NFTs on Bitcoin.
+                </p>
+              </div>
+            </Link>
+          </li>
+          <li className={cs(styles.freeToolItem)}>
             <Link href={getUrlWithQueryParams(MENU_HEADER[9].route)}>
               <Image
                 src={`${CDN_URL}/icons/ic-shield-star-34x34.svg`}
