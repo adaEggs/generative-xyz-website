@@ -72,6 +72,7 @@ const ArtistCollectionEarn = ({
       </Stack>
     </>,
   ];
+
   const [totalVolumeList, setTotalVolumeList] = useState<ProjectVolume[]>([]);
   const [tableData, setTableData] = useState<TColumn[]>();
 
@@ -205,10 +206,9 @@ const ArtistCollectionEarn = ({
         // ),
         volume: (
           <>
-            {!totalVolume && '-'}
-            {currencyRecord === CurrencyType.ETH
-              ? `${formatBTCPrice(`${totalVolume}`)} ETH`
-              : `${formatBTCPrice(totalVolume || '')} BTC`}
+            {!totalVolume || Number(totalVolume) < 0
+              ? `0 ${currencyRecord}`
+              : `${formatBTCPrice(totalVolume || '')} ${currencyRecord}`}
           </>
         ),
         action: (
@@ -218,7 +218,11 @@ const ArtistCollectionEarn = ({
                 <ButtonIcon
                   sizes="small"
                   variants="outline-small"
-                  disabled={!Number(totalVolume) || isProcessing}
+                  disabled={
+                    !Number(totalVolume) ||
+                    isProcessing ||
+                    Number(totalVolume) < 0
+                  }
                   onClick={() =>
                     handleWithdraw(totalVolume || '', item.tokenID)
                   }
