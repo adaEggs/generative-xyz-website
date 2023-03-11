@@ -2,7 +2,11 @@ import { default as Accordion } from '@components/Accordion';
 import ButtonIcon from '@components/ButtonIcon';
 import ImagePreviewInput from '@components/ImagePreviewInput';
 import Text from '@components/Text';
-import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
+import {
+  CATEGORY_SELECT_BLACKLIST,
+  CDN_URL,
+  MIN_MINT_BTC_PROJECT_PRICE,
+} from '@constants/config';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { ROUTE_PATH } from '@constants/route-path';
 import DropFile from '@containers/MintBTCGenerative/DropFile';
@@ -268,7 +272,9 @@ const FormEditProject = () => {
       value: item.id,
       label: item.name,
     }));
-    setCategoryOptions(options.filter(op => op.label !== 'Ethereum'));
+    setCategoryOptions(
+      options.filter(op => op.value !== CATEGORY_SELECT_BLACKLIST)
+    );
   }, []);
 
   return (

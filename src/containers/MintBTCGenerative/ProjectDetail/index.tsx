@@ -1,7 +1,7 @@
 import Button from '@components/ButtonIcon';
 import MarkdownEditor from '@components/MarkdownEditor';
 import SvgInset from '@components/SvgInset';
-import { CDN_URL } from '@constants/config';
+import { CATEGORY_SELECT_BLACKLIST, CDN_URL } from '@constants/config';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
 import { CollectionType } from '@enums/mint-generative';
 import { SelectOption } from '@interfaces/select-input';
@@ -85,7 +85,9 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
         label: item.name,
       };
     });
-    setCategoryOptions(options.filter(op => op.label !== 'Ethereum'));
+    setCategoryOptions(
+      options.filter(op => op.value !== CATEGORY_SELECT_BLACKLIST)
+    );
   }, []);
 
   return (
