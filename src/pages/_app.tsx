@@ -22,6 +22,7 @@ import { useRouter } from 'next/router';
 import NextNprogress from 'nextjs-progressbar';
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
+import { SSRProvider } from 'react-bootstrap';
 
 interface MyAppProps extends AppProps {
   Component: {
@@ -75,19 +76,25 @@ export default function App({ Component, pageProps }: MyAppProps) {
 
   const renderBody = () => {
     if (STANDALONE_PAGES.includes(pathname)) {
-      return <Component {...pageProps} />;
+      return (
+        <SSRProvider>
+          <Component {...pageProps} />
+        </SSRProvider>
+      );
     }
     return (
-      <Provider store={store}>
-        <WalletProvider>
-          <AuthWrapper>
-            <AssetsProvider>
-              <Component {...pageProps} />
-              <ToastOverlay />
-            </AssetsProvider>
-          </AuthWrapper>
-        </WalletProvider>
-      </Provider>
+      <SSRProvider>
+        <Provider store={store}>
+          <WalletProvider>
+            <AuthWrapper>
+              <AssetsProvider>
+                <Component {...pageProps} />
+                <ToastOverlay />
+              </AssetsProvider>
+            </AuthWrapper>
+          </WalletProvider>
+        </Provider>
+      </SSRProvider>
     );
   };
 
