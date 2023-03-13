@@ -11,6 +11,7 @@ import {
   getFeeRate,
   getHistory,
   getPendingUTXOs,
+  getTokenRate,
 } from '@services/bitcoin';
 import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import debounce from 'lodash/debounce';
@@ -42,7 +43,9 @@ export interface IAssetsContext {
   fetchAssets: () => void;
   fetchHistory: () => void;
   debounceFetchData: () => void;
-  fetchFeeRate: () => void;
+  fetchFeeRate: () => Promise<IFeeRate | undefined>;
+
+  eth2btcRate: number;
 
   getAvailableAssetsCreateTx: () => Promise<ICollectedUTXOResp | undefined>;
 }
@@ -62,10 +65,12 @@ const initialValue: IAssetsContext = {
 
   comingAmount: 0,
 
+  eth2btcRate: 0,
+
   fetchAssets: () => new Promise<void>(r => r()),
   fetchHistory: () => new Promise<void>(r => r()),
   debounceFetchData: () => new Promise<void>(r => r()),
-  fetchFeeRate: () => new Promise<void>(r => r()),
+  fetchFeeRate: () => new Promise<IFeeRate | undefined>(() => null),
   getAvailableAssetsCreateTx: () =>
     new Promise<ICollectedUTXOResp | undefined>(() => null),
 };
@@ -106,6 +111,7 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   const [feeRate, setFeeRate] = useState<IFeeRate | undefined>();
 
   const [comingAmount, setcomingAmount] = useState<number>(0);
+  const [eth2btcRate, setEth2BtcRate] = useState<number>(0);
 
   const isOwner = React.useMemo(() => {
     if (!walletAddress || validateEVMAddress(walletAddress)) return true;
@@ -173,16 +179,18 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   ]);
 
   const fetchFeeRate = async () => {
+    let _feeRate = {
+      fastestFee: 15,
+      halfHourFee: 10,
+      hourFee: 5,
+    };
     try {
-      const feeRate = await getFeeRate();
-      setFeeRate(feeRate);
+      _feeRate = await getFeeRate();
+      setFeeRate(_feeRate);
     } catch (error) {
-      setFeeRate({
-        fastestFee: 15,
-        halfHourFee: 10,
-        hourFee: 5,
-      });
+      setFeeRate(_feeRate);
     }
+    return _feeRate;
   };
 
   const getAvailableAssetsCreateTx = async () => {
@@ -204,6 +212,16 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     return _currentAssets;
   };
 
+  const getETH2BTCRate = async () => {
+    try {
+      const rate = await getTokenRate();
+      setEth2BtcRate(rate);
+    } catch (error) {
+      const _err = getError(error);
+      log(_err.message, LogLevel.ERROR, LOG_PREFIX + 'getETH2BTCRate');
+    }
+  };
+
   useEffect(() => {
     if (currentAddress) {
       debounceFetchData();
@@ -213,8 +231,12 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   }, [currentAddress]);
 
   useEffect(() => {
-    fetchFeeRate().then().catch();
-    const intervalID = setInterval(fetchFeeRate, 10 * 60 * 1000);
+    fetchFeeRate();
+    getETH2BTCRate();
+    const intervalID = setInterval(() => {
+      fetchFeeRate();
+      getETH2BTCRate();
+    }, 60 * 1000); // 1 min
     return () => {
       clearInterval(intervalID);
     };
@@ -243,6 +265,8 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
       getAvailableAssetsCreateTx,
 
       debounceFetchData,
+
+      eth2btcRate,
     };
   }, [
     currentAssets,
@@ -261,6 +285,8 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     comingAmount,
 
     currentAddress,
+
+    eth2btcRate,
   ]);
 
   return (

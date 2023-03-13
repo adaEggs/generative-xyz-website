@@ -261,6 +261,6 @@ const ModalBuyListed = React.memo(
   }
 );
 
-ModalBuyListed.displayName = 'ModalBuyListed';
+ModalBuyListed.displayName = 'ModalBuyListedBTC';
 
 export default ModalBuyListed;

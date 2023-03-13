@@ -2,21 +2,30 @@ import { LogLevel } from '@enums/log-level';
 import { get, post } from '@services/http-client';
 import log from '@utils/logger';
 import {
+  BINANCE_PAIR,
   FeeRateName,
   HistoryStatusColor,
   HistoryStatusType,
   ICollectedUTXOResp,
+  IEstimateThorResp,
+  IEstimateThorSwapReq,
   IFeeRate,
   IListingPayload,
   IPendingUTXO,
+  IReqGenAddressByETH,
+  IReqSubmitSwapETH,
+  IRespGenAddressByETH,
   IRetrieveOrderPayload,
   IRetrieveOrderResp,
+  ITokenPriceResp,
   ITrackTx,
   ITxHistory,
 } from '@interfaces/api/bitcoin';
 import axios from 'axios';
 import { isExpiredUnixTime } from '@utils/time';
 import { orderBy } from 'lodash';
+import { BINANCE_API_URL, THOR_SWAP_API_URL } from '@constants/config';
+import BigNumber from 'bignumber.js';
 
 const LOG_PREFIX = 'COLLECTED_NFT';
 
@@ -202,6 +211,66 @@ export const submitCancel = async (payload: {
     return res;
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
+};
+
+export const getGenDepositAddressETH = async (
+  payload: IReqGenAddressByETH
+): Promise<IRespGenAddressByETH> => {
+  try {
+    const resp = await post<IReqGenAddressByETH, never>(
+      '/dex/gen-buy-eth',
+      payload
+    );
+    return resp;
+  } catch (err: unknown) {
+    log('failed to get getThorDepositAddress', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
+};
+
+export const estimateETH2BTC = async ({
+  sellAmount,
+  receiver,
+}: IEstimateThorSwapReq): Promise<IEstimateThorResp> => {
+  try {
+    const res = await fetch(
+      `${THOR_SWAP_API_URL}/quote/swap?amount=${sellAmount}&from_asset=ETH.ETH&to_asset=BTC.BTC&destination=${receiver}`
+    );
+    const data: IEstimateThorResp = await res.json();
+    return data;
+  } catch (err: unknown) {
+    log('failed to get estimateETH2BTC', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
+};
+
+export const getTokenRate = async (
+  pair: BINANCE_PAIR = 'ETHBTC'
+): Promise<number> => {
+  try {
+    const res = await fetch(`${BINANCE_API_URL}/ticker/price?symbol=${pair}`);
+    const data: ITokenPriceResp = await res.json();
+    const rate = data?.price;
+    return new BigNumber(rate).toNumber();
+  } catch (err: unknown) {
+    log('failed to get estimateETH2BTC', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
+};
+
+export const submitSwapETH = async (
+  payload: IReqSubmitSwapETH
+): Promise<IRespGenAddressByETH> => {
+  try {
+    const res = await post<IReqSubmitSwapETH, never>(
+      '/dex/update-eth-order-tx',
+      payload
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get submitSwapETH', LogLevel.ERROR, LOG_PREFIX);
     throw err;
   }
 };

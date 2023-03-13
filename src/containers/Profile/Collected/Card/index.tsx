@@ -25,7 +25,7 @@ import { TwitterShareButton } from 'react-share';
 import MintStatusModal from '../Modal/MintStatus';
 import s from './CollectedCard.module.scss';
 import { AssetsContext } from '@contexts/assets-context';
-import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -194,7 +194,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
           onClick={() => ''}
           className={s.projectCard_status_buyBtn}
         >
-          <ButtonBuyListed
+          <ButtonBuyListedFromBTC
             inscriptionID={project.inscriptionID}
             price={project.priceBTC}
             inscriptionNumber={Number(project.inscriptionNumber)}

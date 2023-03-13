@@ -130,6 +130,15 @@ export const formatBTCPrice = (
   return ceilPrecised(priceNumb).toString().replace(',', '.');
 };
 
+export const formatPrice = (
+  price: number | string,
+  emptyStr?: string
+): string => {
+  if (!price) return emptyStr || '-';
+  const priceNumb = new BigNumber(price).toNumber();
+  return ceilPrecised(priceNumb, 4).toString().replace(',', '.');
+};
+
 // export const formatEthVolumePrice = (
 //   price: string | null,
 //   emptyStr?: string

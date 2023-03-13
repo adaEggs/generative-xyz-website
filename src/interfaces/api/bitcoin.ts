@@ -128,3 +128,53 @@ export interface IPendingUTXO {
   vout: Vout[];
   status: Status;
 }
+
+export type IThorAssetsType = 'BTC.BTC' | 'ETH.ETH';
+
+export interface IEstimateThorSwapReq {
+  sellAmount: string | number;
+  receiver: string;
+}
+
+export interface IEstimateThorResp {
+  expected_amount_out: string;
+  expiry: number;
+  fees: {
+    affiliate: string;
+    asset: IThorAssetsType;
+    outbound: string;
+  };
+  inbound_address: string;
+  memo: string;
+  notes: string;
+  outbound_delay_blocks: number;
+  outbound_delay_seconds: number;
+  router: string;
+  slippage_bps: number;
+  warning: string;
+  error: string;
+}
+
+export type BINANCE_PAIR = 'ETHBTC';
+
+export interface ITokenPriceResp {
+  symbol: string;
+  price: string;
+}
+
+export interface IReqGenAddressByETH {
+  order_id: string;
+  amount: number; //amount btc expected (inscription price + fees)
+  fee_rate: number;
+  receive_address: string;
+}
+
+export interface IRespGenAddressByETH {
+  temp_address: string;
+  order_id: string; //buy order id
+}
+
+export interface IReqSubmitSwapETH {
+  order_id: string;
+  txhash: string;
+}

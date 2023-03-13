@@ -8,7 +8,7 @@ import Stats from '@components/Stats';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
-import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
 import { SOCIALS } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { EXTERNAL_LINK } from '@constants/external-link';
@@ -261,7 +261,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     return (
       <div className={s.buy_btc}>
         {isBuyable && (
-          <ButtonBuyListed
+          <ButtonBuyListedFromBTC
             sizes={'large'}
             inscriptionID={tokenData.tokenID}
             price={tokenData.priceBTC}
