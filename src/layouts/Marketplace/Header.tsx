@@ -25,6 +25,7 @@ import { gsap } from 'gsap';
 import SearchCollection from './SearchCollection';
 import useOnClickOutside from '@hooks/useOnClickOutSide';
 import Image from 'next/image';
+import Avatar from '@components/Avatar';
 
 const LOG_PREFIX = 'MarketplaceHeader';
 
@@ -373,9 +374,10 @@ const Header: React.FC<IProp> = ({
                           className={styles.yourVault}
                           onClick={handleYourVault}
                         >
-                          <SvgInset
-                            size={24}
-                            svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
+                          <Avatar
+                            imgSrcs={user?.avatar}
+                            height={32}
+                            width={32}
                           />
                           {ellipsisCenter({
                             str: user.walletAddressBtcTaproot || '',
