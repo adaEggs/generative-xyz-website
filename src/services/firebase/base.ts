@@ -6,7 +6,7 @@ import {
   FIREBASE_SENDER_ID,
   FIREBASSE_BUCKET,
 } from '@constants/config';
-import firebase, { FirebaseApp } from 'firebase/app';
+import * as firebase from 'firebase/app';
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 const APP_NAME = 'generative-app';
@@ -21,8 +21,8 @@ const firebaseConfig = {
   appId: FIREBASE_APP_ID,
 };
 
-const getFirebaseApp = (): FirebaseApp => {
-  let firebaseApp: FirebaseApp;
+const getFirebaseApp = (): firebase.FirebaseApp => {
+  let firebaseApp: firebase.FirebaseApp;
   // Check if Firebase app with name "APP_NAME" exists
   try {
     firebaseApp = firebase.getApp(APP_NAME);
