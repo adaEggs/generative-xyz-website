@@ -33,7 +33,7 @@ export const ProjectProperty = (): JSX.Element => {
           {project?.maxSupply}
         </Heading>
       </div>
-      {marketplaceData?.listed &&
+      {!!marketplaceData?.listed &&
         marketplaceData?.listed > 1 &&
         project?.maxSupply && (
           <div className={s.stats_item}>
