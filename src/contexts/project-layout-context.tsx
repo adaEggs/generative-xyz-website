@@ -41,7 +41,6 @@ import { isWalletWhiteList, wordCase } from '@utils/common';
 import { Project } from '@interfaces/project';
 import { useRouter } from 'next/router';
 import { getCategoryList } from '@services/category';
-import { LocalStorageKey } from '@enums/local-storage';
 import { Category } from '@interfaces/category';
 import useAsyncEffect from 'use-async-effect';
 
