@@ -9,6 +9,7 @@ import Select, { components } from 'react-select';
 import { v4 } from 'uuid';
 import styles from './styles.module.scss';
 import useOnClickOutside from '@hooks/useOnClickOutSide';
+import RadioGroups from '@components/Input/Radio';
 
 type Props = {
   attributes?: TraitStats[];
@@ -31,6 +32,11 @@ const FilterOptions = ({ attributes }: Props) => {
     null
   );
   const [currentTraitOpen, setCurrentTraitOpen] = useState('');
+
+  const buyNowOptions = [
+    { key: 'buy-now', value: 'Only buy now' },
+    { key: 'All', value: 'Show all' },
+  ];
 
   const handleResetAllFilter = () => {
     setFilterTraits('');
@@ -137,14 +143,15 @@ const FilterOptions = ({ attributes }: Props) => {
         Filter
       </Heading>
       {/* DO NOT REMOVE CODE BELOW */}
-      {/* <div className={styles.filter_buy}>
+      <div className={styles.filter_buy}>
         <Text size="18" fontWeight="medium">
-          Buy now
+          Status
         </Text>
-        <ToogleSwitch onChange={() => setFilterBuyNow(!filterBuyNow)} />
+        <RadioGroups options={buyNowOptions} name="buyNow" />
+        {/* <ToogleSwitch onChange={() => setFilterBuyNow(!filterBuyNow)} /> */}
       </div>
-      <div className="divider"></div>
-      <div className={styles.filter_price}>
+      {/* <div className="divider"></div> */}
+      {/* <div className={styles.filter_price}>
         <Text size="18" fontWeight="medium">
           Price range
         </Text>
@@ -174,7 +181,7 @@ const FilterOptions = ({ attributes }: Props) => {
       </div> */}
       {sortedAttributes && sortedAttributes?.length > 0 && (
         <>
-          <div className="divider"></div>
+          {/* <div className="divider"></div> */}
           <div className={styles.filter_traits}>
             <Stack direction="horizontal" className="justify-between">
               <Text size="18" fontWeight="medium">
