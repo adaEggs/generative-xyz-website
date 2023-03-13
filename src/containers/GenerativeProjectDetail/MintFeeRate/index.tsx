@@ -165,6 +165,9 @@ const MintFeeRate = ({
                     }`}
                   </p>
                 )}
+                {/* {cusRate && Number(cusRate) <= feeRate.fastest.rate && (
+                  <p>Customize Sats must be better than fastest</p>
+                )} */}
               </div>
             </div>
           )}
