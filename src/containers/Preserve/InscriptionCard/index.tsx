@@ -32,7 +32,7 @@ const InscriptionCard: React.FC<IProps> = ({
 
   const handleClose = (): void => {
     setShowModal(false);
-    router.replace(`${ROUTE_PATH.AUTHENTIC}`, undefined, {
+    router.replace(`${ROUTE_PATH.PRESERVE}`, undefined, {
       shallow: true,
     });
   };
@@ -43,7 +43,7 @@ const InscriptionCard: React.FC<IProps> = ({
 
   const handleGotoInscribePage = (): void => {
     router.replace(
-      `${ROUTE_PATH.AUTHENTIC}?isAuthentic=true&tokenAddress=${inscription.token_address}&tokenId=${inscription.token_id}`,
+      `${ROUTE_PATH.PRESERVE}?isAuthentic=true&tokenAddress=${inscription.token_address}&tokenId=${inscription.token_id}`,
       undefined,
       {
         shallow: true,
