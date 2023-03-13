@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from '@components/Link';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
-import { formatLongAddress } from '@utils/format';
+// import { formatLongAddress } from '@utils/format';
 import { v4 } from 'uuid';
 import { Token } from '@interfaces/token';
 
@@ -16,8 +16,9 @@ const SearchTokenItem = ({
   tokenName,
   collectionId,
   tokenId,
-  inscriptionIndex,
+  // inscriptionIndex,
   projectName,
+  orderInscriptionIndex,
 }: {
   tokenName: string;
   collectionId?: string;
@@ -25,6 +26,7 @@ const SearchTokenItem = ({
   inscriptionIndex?: string;
   thumbnail?: string;
   projectName?: string;
+  orderInscriptionIndex?: string;
 }) => {
   return (
     <Link
@@ -36,9 +38,10 @@ const SearchTokenItem = ({
       </div>
       <div className={s.searchResult_collectionInfo}>
         <Text as="span" className={s.searchResult_collectionName}>
-          {inscriptionIndex
+          {/* {inscriptionIndex
             ? `${projectName} #${inscriptionIndex}`
-            : `${projectName} #${formatLongAddress(tokenId)}`}
+            : `${projectName} #${formatLongAddress(tokenId)}`} */}
+          {`${projectName} #${orderInscriptionIndex}`}
         </Text>
       </div>
     </Link>
@@ -64,6 +67,7 @@ const SearchTokensResult = ({ list }: { list: { tokenUri: Token }[] }) => {
           tokenId={token?.tokenUri?.tokenID}
           inscriptionIndex={token?.tokenUri?.inscriptionIndex}
           projectName={token?.tokenUri?.project?.name}
+          orderInscriptionIndex={token?.tokenUri?.orderInscriptionIndex}
         />
       ))}
     </>
