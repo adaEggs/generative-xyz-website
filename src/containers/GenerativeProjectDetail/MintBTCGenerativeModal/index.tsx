@@ -25,11 +25,9 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
+import FeeRate from '../MintFeeRate';
+import useMintFeeRate from '../MintFeeRate/useMintFeeRate';
 import s from './styles.module.scss';
-import FeeRate from '@containers/Profile/FeeRate';
-import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
-import { isNumeric } from '@utils/string';
-import * as SDK from 'generative-sdk';
 
 interface IFormValue {
   address: string;
@@ -41,17 +39,13 @@ const MintBTCGenerativeModal: React.FC = () => {
   const user = useAppSelector(getUserSelector);
 
   const {
-    selectedRate,
-    handleChangeFee,
-    allRate,
+    projectFeeRate,
+    currentFee,
+    rateType,
+    handleChangeRateType,
     customRate,
     handleChangeCustomRate,
-  } = useFeeRate();
-
-  const currentRate =
-    customRate && isNumeric(customRate)
-      ? Number(customRate)
-      : allRate[selectedRate];
+  } = useMintFeeRate();
 
   const [useWallet, setUseWallet] = useState<'default' | 'another'>('default');
   const [isShowAdvance, setIsShowAdvance] = useState(false);
@@ -78,19 +72,33 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const [quantity, setQuantity] = useState(1);
 
+  const isReserveUser =
+    projectData?.reservers &&
+    projectData?.reservers.length > 0 &&
+    user &&
+    user.walletAddressBtcTaproot &&
+    projectData?.reservers.includes(user.walletAddressBtcTaproot);
+
+  const limitMint =
+    isReserveUser && projectData?.reserveMintLimit
+      ? projectData?.reserveMintLimit
+      : projectData?.limitMintPerProcess;
+
   const priceFormat = formatBTCPrice(
-    mintPrice ? mintPrice : projectData?.mintPrice || '',
+    mintPrice ? mintPrice : currentFee?.mintFees.btc.mintPrice || '',
     '0.0'
   );
   const feePriceFormat = formatBTCPrice(
-    feePrice ? Number(feePrice) : SDK.estimateTxFee(2, 2, currentRate),
+    feePrice
+      ? Number(feePrice)
+      : Number(currentFee ? currentFee.mintFees.btc.networkFee : 0),
     '0.0'
   );
   const totalPriceFormat = formatBTCPrice(
     totalPrice
       ? totalPrice
       : `${
-          (SDK.estimateTxFee(2, 2, currentRate) +
+          (Number(currentFee ? currentFee.mintFees.btc.networkFee : 0) +
             Number(projectData?.mintPrice)) *
           quantity
         }` || ''
@@ -105,7 +113,12 @@ const MintBTCGenerativeModal: React.FC = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
       if (step === 'showAddress' && userBtcAddress) {
-        debounceGetBTCAddress(userBtcAddress, userBtcAddress, quantity);
+        debounceGetBTCAddress(
+          userBtcAddress,
+          userBtcAddress,
+          quantity,
+          currentFee?.rate
+        );
       }
     }
   };
@@ -114,7 +127,12 @@ const MintBTCGenerativeModal: React.FC = () => {
     if (useWallet !== 'another') {
       setUseWallet('another');
       if (step === 'showAddress' && addressInput) {
-        debounceGetBTCAddress(addressInput, userBtcAddress, quantity);
+        debounceGetBTCAddress(
+          addressInput,
+          userBtcAddress,
+          quantity,
+          currentFee?.rate
+        );
       }
     }
   };
@@ -122,16 +140,18 @@ const MintBTCGenerativeModal: React.FC = () => {
   const onClickPay = () => {
     if (useWallet === 'default') {
       if (userBtcAddress) {
-        debounceGetBTCAddress(userBtcAddress, userBtcAddress, quantity);
+        debounceGetBTCAddress(
+          userBtcAddress,
+          userBtcAddress,
+          quantity,
+          currentFee?.rate
+        );
       }
     }
   };
 
   const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (
-      projectData?.limitMintPerProcess &&
-      projectData.limitMintPerProcess >= Number(e.target.value)
-    ) {
+    if (limitMint && limitMint >= Number(e.target.value)) {
       setQuantity(Number(e.target.value));
     }
   };
@@ -143,10 +163,7 @@ const MintBTCGenerativeModal: React.FC = () => {
   };
 
   const onClickPlus = () => {
-    if (
-      projectData?.limitMintPerProcess &&
-      projectData.limitMintPerProcess >= quantity + 1
-    ) {
+    if (limitMint && limitMint >= quantity + 1) {
       setQuantity(quantity + 1);
     }
   };
@@ -154,7 +171,8 @@ const MintBTCGenerativeModal: React.FC = () => {
   const getBTCAddress = async (
     walletAddress: string,
     refundAddress: string,
-    _quantity: number
+    _quantity: number,
+    _rate?: number
   ): Promise<void> => {
     if (!projectData) return;
 
@@ -170,6 +188,7 @@ const MintBTCGenerativeModal: React.FC = () => {
           payType: 'btc',
           refundUserAddress: refundAddress,
           quantity: _quantity,
+          rate: _rate,
         });
       // const { address, Price: price } = await generateBTCReceiverAddress({
       //   walletAddress,
@@ -209,8 +228,8 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const debounceGetBTCAddress = useCallback(
     _debounce(
-      (address, refundAddress, quantity) =>
-        getBTCAddress(address, refundAddress, quantity),
+      (address, refundAddress, quantity, rate) =>
+        getBTCAddress(address, refundAddress, quantity, rate),
       500
     ),
     [projectData]
@@ -226,7 +245,12 @@ const MintBTCGenerativeModal: React.FC = () => {
     } else {
       if (step === 'showAddress' && addressInput !== values.address) {
         setAddressInput(values.address);
-        debounceGetBTCAddress(values.address, userBtcAddress, quantity);
+        debounceGetBTCAddress(
+          values.address,
+          userBtcAddress,
+          quantity,
+          currentFee?.rate
+        );
       }
     }
 
@@ -235,7 +259,12 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const handleSubmit = async (values: IFormValue): Promise<void> => {
     if (addressInput !== values.address) {
-      debounceGetBTCAddress(values.address, userBtcAddress, quantity);
+      debounceGetBTCAddress(
+        values.address,
+        userBtcAddress,
+        quantity,
+        currentFee?.rate
+      );
       setAddressInput(values.address);
     }
   };
@@ -317,8 +346,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                           />
                           <SvgInset
                             className={`${
-                              projectData?.limitMintPerProcess &&
-                              quantity >= projectData.limitMintPerProcess
+                              limitMint && quantity >= limitMint
                                 ? s.paymentPrice_inputContainer_icon_disable
                                 : s.paymentPrice_inputContainer_icon
                             }`}
@@ -332,14 +360,15 @@ const MintBTCGenerativeModal: React.FC = () => {
                       )}
                     </div>
 
-                    {step === 'info' && (
+                    {step === 'info' && projectFeeRate && currentFee && (
                       <FeeRate
-                        handleChangeFee={handleChangeFee}
-                        selectedRate={selectedRate}
-                        allRate={allRate}
+                        feeRate={projectFeeRate}
+                        selectedRateType={rateType}
+                        handleChangeRateType={handleChangeRateType}
                         useCustomRate={true}
                         handleChangeCustomRate={handleChangeCustomRate}
                         customRate={customRate}
+                        payType="btc"
                       />
                     )}
 
@@ -466,7 +495,9 @@ const MintBTCGenerativeModal: React.FC = () => {
                               type="submit"
                               sizes="large"
                               className={s.buyBtn}
-                              disabled={isLoading || quantity === 0}
+                              disabled={
+                                isLoading || quantity === 0 || !currentFee
+                              }
                             >
                               Pay
                             </ButtonIcon>
@@ -479,7 +510,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading || quantity === 0}
+                        disabled={isLoading || quantity === 0 || !currentFee}
                         onClick={onClickPay}
                       >
                         Pay

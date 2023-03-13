@@ -21,12 +21,14 @@ export const getBTCAddress = async ({
   projectData,
   paymentMethod,
   quantity,
+  rate,
 }: {
   walletAddress: string;
   refundAddress: string;
   projectData: Project;
   paymentMethod: PaymentMethod;
   quantity: number;
+  rate?: number;
 }): Promise<IResponse> => {
   let _address = '';
   let _price: string = projectData.mintPrice;
@@ -41,6 +43,7 @@ export const getBTCAddress = async ({
         payType: 'eth',
         refundUserAddress: refundAddress,
         quantity,
+        rate,
       });
 
     sendAAEvent({

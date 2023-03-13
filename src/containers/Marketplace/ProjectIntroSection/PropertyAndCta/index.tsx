@@ -1,24 +1,22 @@
-import s from '@containers/Marketplace/ProjectIntroSection/styles.module.scss';
-import Text from '@components/Text';
-import Heading from '@components/Heading';
-import { formatBTCPrice, formatEthPrice } from '@utils/format';
 import ButtonIcon from '@components/ButtonIcon';
-import Web3 from 'web3';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { PaymentMethod } from '@enums/mint-generative';
+import Heading from '@components/Heading';
 import Link from '@components/Link';
+import Text from '@components/Text';
 import { EXTERNAL_LINK } from '@constants/external-link';
-import { useContext } from 'react';
+import s from '@containers/Marketplace/ProjectIntroSection/styles.module.scss';
 import { ProjectLayoutContext } from '@contexts/project-layout-context';
+import { PaymentMethod } from '@enums/mint-generative';
+import { formatBTCPrice, formatEthPrice } from '@utils/format';
+import { useContext } from 'react';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 export const PropertyAndCta = (): JSX.Element => {
   const {
     project,
+    projectFeeRate,
     minted,
     isWhitelist,
-    isBitcoinProject,
     isMinting,
-    handleMintToken,
     isAvailable,
     isRoyalty,
     isLimitMinted,
@@ -62,7 +60,7 @@ export const PropertyAndCta = (): JSX.Element => {
       </div>
       {!isWhitelist && project?.status && !project?.isHidden && (
         <div className={s.CTA}>
-          {!isBitcoinProject && (
+          {/* {!isBitcoinProject && (
             <ButtonIcon
               sizes="large"
               className={s.mint_btn}
@@ -81,7 +79,7 @@ export const PropertyAndCta = (): JSX.Element => {
                 )}
               </Text>
             </ButtonIcon>
-          )}
+          )} */}
           {isAvailable && !!project?.btcFloorPrice && !project?.isHidden && (
             <>
               <ButtonIcon
@@ -119,7 +117,12 @@ export const PropertyAndCta = (): JSX.Element => {
                           color="primary-333"
                         >
                           Inscription fee:{' '}
-                          {formatBTCPrice(Number(project?.networkFee))} BTC
+                          {formatBTCPrice(
+                            Number(
+                              projectFeeRate?.fastest.mintFees.btc.networkFee
+                            )
+                          )}{' '}
+                          BTC
                         </Text>
                       </Tooltip>
                     ) : (
@@ -140,7 +143,9 @@ export const PropertyAndCta = (): JSX.Element => {
                         <>
                           <span>{textMint}</span>
 
-                          {Number(project?.mintPrice) ? (
+                          {Number(
+                            projectFeeRate?.fastest.mintFees.btc.mintPrice
+                          ) ? (
                             <span>{priceMemo}</span>
                           ) : (
                             ' with'
@@ -165,7 +170,11 @@ export const PropertyAndCta = (): JSX.Element => {
                           color="primary-333"
                         >
                           Inscription fee:{' '}
-                          {formatEthPrice(project?.networkFeeEth)} ETH
+                          {formatEthPrice(
+                            projectFeeRate?.fastest.mintFees.eth.networkFee ||
+                              ''
+                          )}{' '}
+                          ETH
                         </Text>
                       </Tooltip>
                     ) : (
@@ -186,7 +195,9 @@ export const PropertyAndCta = (): JSX.Element => {
                       {!isMinting && (
                         <>
                           <span>{textMint}</span>
-                          {Number(project?.mintPriceEth) ? (
+                          {Number(
+                            projectFeeRate?.fastest.mintFees.eth.mintPrice
+                          ) ? (
                             <span>{priceEthMemo}</span>
                           ) : (
                             ' with'

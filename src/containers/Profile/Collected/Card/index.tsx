@@ -136,7 +136,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
 
   const tokenIdName =
     project.status === CollectedNFTStatus.Success
-      ? `#${project.inscriptionNumber}`
+      ? project.number || `#${project.inscriptionNumber}`
       : project.projectName || '';
 
   const projectName =
@@ -294,94 +294,100 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
               )}
             </div>
           )}
-          <div className={s.projectCard_status}>
-            {mobileScreen ? (
-              <div className={cs(s.projectCard_info, s.mobile)}>
-                {renderStatusText()}
-                {tokenIdName && (
-                  <Text size="11" fontWeight="medium">
-                    {tokenIdName}
-                  </Text>
-                )}
-                {projectName && (
-                  <Text size="11" fontWeight="medium" color="black-40-solid">
-                    {projectName}
-                  </Text>
-                )}
-                {project.status !== CollectedNFTStatus.Success &&
-                  project.quantity &&
-                  project.quantity > 1 && (
-                    <Text size={'11'} fontWeight="medium">
-                      {`Quantity: (${project.quantity})`}
-                    </Text>
-                  )}
-              </div>
-            ) : (
-              <div className={cs(s.projectCard_info, s.desktop)}>
-                {renderStatusText()}
-                {tokenIdName && (
-                  <div className={s.projectCard_creator}>
-                    <Text size={'20'} fontWeight="medium">
+          <div className={s.projectCard_statusContainer}>
+            <div className={s.projectCard_status}>
+              {mobileScreen ? (
+                <div className={cs(s.projectCard_info, s.mobile)}>
+                  {renderStatusText()}
+                  {tokenIdName && (
+                    <Text size="11" fontWeight="medium">
                       {tokenIdName}
                     </Text>
-                  </div>
-                )}
-                {projectName && (
-                  <Text size="20" fontWeight="medium" color="black-40-solid">
-                    {projectName}
-                  </Text>
-                )}
-                {project.status !== CollectedNFTStatus.Success &&
-                  project.quantity &&
-                  project.quantity > 1 && (
-                    <Text size={'16'} fontWeight="medium">
-                      {`Quantity: ${project.quantity}`}
+                  )}
+                  {projectName && (
+                    <Text size="11" fontWeight="medium" color="black-40-solid">
+                      {projectName}
                     </Text>
                   )}
-              </div>
-            )}
-            {project.status === CollectedNFTStatus.Success && (
-              <TwitterShareButton
-                className={s.twitter}
-                url={
-                  isOwner
-                    ? `${location.origin}${linkPath}?referral_code=${user?.id}`
-                    : `${location.origin}${linkPath}`
-                }
-                title={''}
-                hashtags={[]}
-              >
-                <ButtonIcon
-                  sizes="small"
-                  variants="ghost"
-                  className={s.twitter_btnShare}
-                  onClick={() => {
-                    sendAAEvent({
-                      eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
-                      data: {
-                        nft_id: project?.id,
-                        project_id: project?.projectID,
-                        nft_name: project?.name,
-                        nft_image: project?.image,
-                        referrer_id: user?.id,
-                        referrer_name: user?.displayName,
-                        referrer_address: user?.walletAddress,
-                        referrer_taproot_address: user?.walletAddressBtcTaproot,
-                      },
-                    });
-                  }}
-                  startIcon={
-                    <SvgInset
-                      size={16}
-                      svgUrl={`${CDN_URL}/icons/ic-twitter-white-20x20.svg`}
-                    />
+                </div>
+              ) : (
+                <div className={cs(s.projectCard_info, s.desktop)}>
+                  {renderStatusText()}
+                  {tokenIdName && (
+                    <div className={s.projectCard_creator}>
+                      <Text size={'20'} fontWeight="medium">
+                        {tokenIdName}
+                      </Text>
+                    </div>
+                  )}
+                  {projectName && (
+                    <Text size="20" fontWeight="medium" color="black-40-solid">
+                      {projectName}
+                    </Text>
+                  )}
+                </div>
+              )}
+              {project.status === CollectedNFTStatus.Success && (
+                <TwitterShareButton
+                  className={s.twitter}
+                  url={
+                    isOwner
+                      ? `${location.origin}${linkPath}?referral_code=${user?.id}`
+                      : `${location.origin}${linkPath}`
                   }
+                  title={''}
+                  hashtags={[]}
                 >
-                  Share
-                </ButtonIcon>
-              </TwitterShareButton>
-            )}
-            {renderButton()}
+                  <ButtonIcon
+                    sizes="small"
+                    variants="ghost"
+                    className={s.twitter_btnShare}
+                    onClick={() => {
+                      sendAAEvent({
+                        eventName: BTC_PROJECT.SHARE_REFERRAL_LINK,
+                        data: {
+                          nft_id: project?.id,
+                          project_id: project?.projectID,
+                          nft_name: project?.name,
+                          nft_image: project?.image,
+                          referrer_id: user?.id,
+                          referrer_name: user?.displayName,
+                          referrer_address: user?.walletAddress,
+                          referrer_taproot_address:
+                            user?.walletAddressBtcTaproot,
+                        },
+                      });
+                    }}
+                    startIcon={
+                      <SvgInset
+                        size={16}
+                        svgUrl={`${CDN_URL}/icons/ic-twitter-white-20x20.svg`}
+                      />
+                    }
+                  >
+                    Share
+                  </ButtonIcon>
+                </TwitterShareButton>
+              )}
+            </div>
+            <div className={s.projectCard_buttonContainer}>
+              <div>
+                {project.status !== CollectedNFTStatus.Success ? (
+                  project.quantity && (
+                    <Text size={'16'} fontWeight="medium">
+                      {project.quantity > 1
+                        ? `Quantity: ${project.quantity}`
+                        : `${project.artistName || ''}`}
+                    </Text>
+                  )
+                ) : (
+                  <Text size={'16'} fontWeight="medium">
+                    {`${project.artistName}`}
+                  </Text>
+                )}
+              </div>
+              {renderButton()}
+            </div>
           </div>
         </div>
       </Link>

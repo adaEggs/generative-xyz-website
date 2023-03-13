@@ -27,6 +27,7 @@ const GenerativeProjectDetail: React.FC<{
 }> = ({ isWhitelist, project }): React.ReactElement => {
   const {
     projectData: projectInfo,
+    projectFeeRate,
     listItems,
     handleFetchNextPage,
     total,
@@ -61,6 +62,7 @@ const GenerativeProjectDetail: React.FC<{
                 .catch();
             }}
             project={project ? project : projectInfo}
+            projectFeeRate={projectFeeRate}
             isWhitelist={isWhitelist}
           />
 

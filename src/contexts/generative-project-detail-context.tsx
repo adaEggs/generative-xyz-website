@@ -2,16 +2,21 @@ import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import { ROUTE_PATH } from '@constants/route-path';
 import { LogLevel } from '@enums/log-level';
+import { IProjectMintFeeRate } from '@interfaces/api/project';
 import { Project, ProjectItemsTraitList } from '@interfaces/project';
 import { Token } from '@interfaces/token';
+import { useAppSelector } from '@redux';
 import { setProjectCurrent } from '@redux/project/action';
+import { getUserSelector } from '@redux/user/selector';
 import {
   getProjectDetail,
   getProjectItems,
   getProjectItemsTraitsList,
+  getProjectMintFeeRate,
 } from '@services/project';
 import { checkIsBitcoinProject } from '@utils/generative';
 import log from '@utils/logger';
+import { debounce } from 'lodash';
 import { useRouter } from 'next/router';
 import React, {
   Dispatch,
@@ -21,6 +26,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+  useCallback,
 } from 'react';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
@@ -31,6 +37,9 @@ const FETCH_NUM = 20;
 
 export interface IGenerativeProjectDetailContext {
   projectData: Project | null;
+  projectFeeRate: IProjectMintFeeRate | null;
+  debounceFetchProjectFeeRate: (projectData?: Project, rate?: number) => void;
+
   setProjectData: Dispatch<SetStateAction<Project | null>>;
   listItems: Token[] | null;
   setListItems: Dispatch<SetStateAction<Token[] | null>>;
@@ -72,6 +81,10 @@ export interface IGenerativeProjectDetailContext {
 
 const initialValue: IGenerativeProjectDetailContext = {
   projectData: null,
+  projectFeeRate: null,
+  debounceFetchProjectFeeRate: () => {
+    return;
+  },
   setProjectData: _ => {
     return;
   },
@@ -138,8 +151,14 @@ export const GenerativeProjectDetailContext =
 export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   children,
 }: PropsWithChildren): React.ReactElement => {
+  const user = useAppSelector(getUserSelector);
+
   const dispatch = useDispatch();
   const [projectData, setProjectData] = useState<Project | null>(null);
+  const [projectFeeRate, setProjectFeeRate] =
+    useState<IProjectMintFeeRate | null>(null);
+  const currentCustomFeeRate = React.useRef<number | null>();
+
   const [listItems, setListItems] = useState<Token[] | null>(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -191,14 +210,57 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
         const data = await getProjectDetail({
           contractAddress: GENERATIVE_PROJECT_CONTRACT,
           projectID: isSatoshisPage ? SATOSHIS_PROJECT_ID : projectID,
+          userAddress: user?.walletAddressBtcTaproot,
         });
         dispatch(setProjectCurrent(data));
         setProjectData(data);
+
+        debounceFetchProjectFeeRate(data, 0);
       } catch (_: unknown) {
         log('failed to fetch project detail data', LogLevel.ERROR, LOG_PREFIX);
       }
     }
   };
+
+  const fetchProjectFeeRate = useCallback(
+    async (projData?: Project, rate?: number): Promise<void> => {
+      const isReserveUser =
+        projData?.reservers &&
+        projData?.reservers.length > 0 &&
+        user &&
+        user.walletAddressBtcTaproot &&
+        projData?.reservers.includes(user.walletAddressBtcTaproot);
+
+      try {
+        const data = await getProjectMintFeeRate(
+          projData ? projData.maxFileSize : 0,
+          rate,
+          projData
+            ? isReserveUser
+              ? Number(projData.reserveMintPrice)
+              : Number(projData.mintPrice)
+            : 0
+        );
+        setProjectFeeRate(data);
+        currentCustomFeeRate.current = rate;
+      } catch (_: unknown) {
+        log(
+          'failed to fetch project fee rate data',
+          LogLevel.ERROR,
+          LOG_PREFIX
+        );
+      }
+    },
+    [user]
+  );
+
+  const debounceFetchProjectFeeRate = debounce(fetchProjectFeeRate, 300);
+
+  useEffect(() => {
+    if (user && user.walletAddressBtcTaproot && projectData) {
+      debounceFetchProjectFeeRate(projectData);
+    }
+  }, [user, projectData]);
 
   const fetchProjectItems = async (): Promise<void> => {
     if (projectData?.genNFTAddr && !isWhitelistProject) {
@@ -308,6 +370,12 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   }, [projectID]);
 
   useEffect(() => {
+    if (user && user.walletAddressBtcTaproot) {
+      fetchProjectDetail();
+    }
+  }, [user]);
+
+  useEffect(() => {
     if (filterPrice.to_price && filterPrice.to_price < filterPrice.from_price) {
       toast.error('Max price must be larger than min price');
     } else {
@@ -337,6 +405,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const contextValues = useMemo((): IGenerativeProjectDetailContext => {
     return {
       projectData,
+      projectFeeRate,
+      debounceFetchProjectFeeRate,
       setProjectData,
       listItems,
       setListItems,
