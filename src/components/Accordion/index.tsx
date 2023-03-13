@@ -7,7 +7,7 @@ import { CDN_URL } from '@constants/config';
 import cs from 'classnames';
 
 type Props = {
-  header: string;
+  header: ReactNode;
   content: string | ReactNode;
   className?: string;
 };

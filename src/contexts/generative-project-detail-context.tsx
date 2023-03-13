@@ -2,10 +2,14 @@ import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import { ROUTE_PATH } from '@constants/route-path';
 import { LogLevel } from '@enums/log-level';
-import { Project } from '@interfaces/project';
+import { Project, ProjectItemsTraitList } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 import { setProjectCurrent } from '@redux/project/action';
-import { getProjectDetail, getProjectItems } from '@services/project';
+import {
+  getProjectDetail,
+  getProjectItems,
+  getProjectItemsTraitsList,
+} from '@services/project';
 import { checkIsBitcoinProject } from '@utils/generative';
 import log from '@utils/logger';
 import { useRouter } from 'next/router';
@@ -23,8 +27,7 @@ import { useDispatch } from 'react-redux';
 
 const LOG_PREFIX = 'GenerativeProjectDetailContext';
 
-// const FETCH_NUM = 20;
-const FETCH_NUM = 2000; // TODO: HOT FIX LIMIT
+const FETCH_NUM = 20;
 
 export interface IGenerativeProjectDetailContext {
   projectData: Project | null;
@@ -46,6 +49,7 @@ export interface IGenerativeProjectDetailContext {
   setShowFilter: Dispatch<SetStateAction<boolean>>;
   filterTraits: string;
   setFilterTraits: Dispatch<SetStateAction<string>>;
+  projectItemsTraitList: ProjectItemsTraitList | null;
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
   filterPrice: {
@@ -75,6 +79,7 @@ const initialValue: IGenerativeProjectDetailContext = {
   setListItems: _ => {
     return;
   },
+  projectItemsTraitList: null,
   handleFetchNextPage: () => {
     return;
   },
@@ -138,7 +143,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const [listItems, setListItems] = useState<Token[] | null>(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState('newest');
+  const [sort, setSort] = useState('price-asc');
   const [filterBuyNow, setFilterBuyNow] = useState(false);
   const [searchToken, setSearchToken] = useState('');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -150,6 +155,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     from_price: '',
     to_price: '',
   });
+  const [projectItemsTraitList, setProjectItemsTraitList] =
+    useState<ProjectItemsTraitList | null>(null);
   const router = useRouter();
 
   const { projectID } = router?.query as {
@@ -278,8 +285,26 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
+  const featProjectItemsTraitsList = async (): Promise<void> => {
+    try {
+      if (projectID) {
+        const res = await getProjectItemsTraitsList({
+          contractAddress: GENERATIVE_PROJECT_CONTRACT,
+          projectID: projectID,
+        });
+        if (res) {
+          setProjectItemsTraitList(res);
+        }
+      }
+    } catch (err: unknown) {
+      log('failed to ', LogLevel.ERROR, LOG_PREFIX);
+      throw Error();
+    }
+  };
+
   useEffect(() => {
     fetchProjectDetail();
+    featProjectItemsTraitsList();
   }, [projectID]);
 
   useEffect(() => {
@@ -340,6 +365,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       isBitcoinProject,
       isWhitelistProject,
       isSatoshisPage,
+      projectItemsTraitList,
     };
   }, [
     projectData,
@@ -371,6 +397,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     isBitcoinProject,
     isWhitelistProject,
     isSatoshisPage,
+    projectItemsTraitList,
   ]);
 
   return (

@@ -2,9 +2,11 @@ import Button from '@components/ButtonIcon';
 import Heading from '@components/Heading';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
-import { MoralisNFT } from '@interfaces/inscribe';
+import { InscribeStatus } from '@enums/inscribe';
+import { IMoralisNFTMetadata, MoralisNFT } from '@interfaces/inscribe';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import InscribeEthModal from '../InscribeEthModal';
@@ -18,17 +20,14 @@ const InscriptionCard: React.FC<IProps> = ({
   inscription,
 }: IProps): React.ReactElement => {
   const router = useRouter();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const metadata = useMemo((): any => {
+  const metadata = useMemo((): IMoralisNFTMetadata => {
     try {
       return JSON.parse(inscription.metadata);
     } catch (err: unknown) {
-      return {};
+      return {} as IMoralisNFTMetadata;
     }
   }, [inscription]);
-  const [thumb, setThumb] = useState<string>(
-    metadata?.image || LOGO_MARKETPLACE_URL
-  );
+  const [thumb, setThumb] = useState<string>(metadata?.image || '');
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = (): void => {
@@ -52,6 +51,33 @@ const InscriptionCard: React.FC<IProps> = ({
     );
     setShowModal(true);
   };
+
+  const canInscribe = useMemo((): boolean => {
+    return !!(!inscription.is_minted && metadata?.image);
+  }, [inscription]);
+
+  const statusText = useMemo((): React.ReactElement => {
+    switch (inscription.inscribe_btc?.status) {
+      case InscribeStatus.ReceivedFund:
+      case InscribeStatus.SendingBTCFromSegwitAddrToOrdAddr:
+      case InscribeStatus.SentBTCFromSegwitAddrToOrdAdd:
+      case InscribeStatus.Minting:
+      case InscribeStatus.Minted:
+      case InscribeStatus.SendingNFTToUser:
+        return <span className={s.statusText}>Inscribing...</span>;
+      case InscribeStatus.SentNFTToUser:
+        return (
+          <Link
+            className={s.statusText}
+            href={`${ROUTE_PATH.GENERATIVE}/${inscription.inscribe_btc?.project_token_id}/${inscription.inscribe_btc?.inscription_id}`}
+          >
+            View inscription
+          </Link>
+        );
+      default:
+        return <></>;
+    }
+  }, [inscription]);
 
   return (
     <div
@@ -78,10 +104,12 @@ const InscriptionCard: React.FC<IProps> = ({
               <Heading className={s.title} as={'h6'} fontWeight="medium">
                 {metadata?.name || 'Unknown'}
               </Heading>
-              {!inscription.is_minted && (
+              {canInscribe ? (
                 <Button onClick={handleGotoInscribePage} className={s.mintBtn}>
                   Inscribe
                 </Button>
+              ) : (
+                <>{statusText}</>
               )}
             </div>
           </div>

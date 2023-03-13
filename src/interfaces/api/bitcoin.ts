@@ -108,3 +108,23 @@ export interface IRetrieveOrderPayload {
 export interface IRetrieveOrderResp {
   raw_psbt: string;
 }
+
+interface Vin {
+  txid: string;
+  vout: number;
+}
+
+interface Vout {
+  scriptpubkey_address: string;
+  value: string;
+}
+
+export interface Status {
+  confirmed: boolean;
+}
+
+export interface IPendingUTXO {
+  vin: Vin[];
+  vout: Vout[];
+  status: Status;
+}

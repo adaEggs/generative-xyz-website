@@ -8,8 +8,10 @@ type Props = {
   desc: string;
   hasInteraction?: boolean;
   profileBio?: string;
+  descInteraction?: string;
   tokenDetail?: ReactNode | null;
   attributes?: ReactNode | null;
+  onlyDesc?: boolean;
 };
 
 const ProjectDescription = ({
@@ -18,6 +20,8 @@ const ProjectDescription = ({
   profileBio,
   tokenDetail,
   attributes,
+  descInteraction = '',
+  onlyDesc,
 }: Props) => {
   const [projectDescription, setProjectDescription] = useState('');
   const [projectInteraction, setProjectInteraction] = useState('');
@@ -37,34 +41,22 @@ const ProjectDescription = ({
   };
 
   useEffect(() => {
-    if (hasInteraction && desc) {
-      const splitDesc = desc.split('Interaction');
+    if (hasInteraction && (desc || descInteraction)) {
+      const splitDesc = (descInteraction || desc).split('Interaction');
       setProjectDescription(splitDesc[0]);
       setProjectInteraction(splitDesc[1]);
     }
-  }, [desc, hasInteraction]);
+  }, [desc, hasInteraction, descInteraction]);
 
   useEffect(() => {
     setDefaultActiveKey(handleSetDefaultActiveKey());
   }, [desc, profileBio, attributes, tokenDetail]);
 
-  // if (!hasInteraction) {
-  //   return (
-  //     <div className={s.project_desc}>
-  //       <Text
-  //         size="14"
-  //         color="black-40"
-  //         fontWeight="medium"
-  //         className="text-uppercase"
-  //       >
-  //         description
-  //       </Text>
-  //       <SeeMore>{desc || ''}</SeeMore>
-  //     </div>
-  //   );
-  // }
-
-  return (
+  return onlyDesc ? (
+    <div className={s.project_desc}>
+      <SeeMore>{hasInteraction ? projectDescription : desc}</SeeMore>
+    </div>
+  ) : (
     <Tabs
       className={s.tabs}
       activeKey={defaultActiveKey}
@@ -94,19 +86,13 @@ const ProjectDescription = ({
       )}
       {!!attributes && (
         <Tab tabClassName={s.tab} eventKey="features" title={`Features`}>
-          <div className={s.project_desc}>
-            {/* <SeeMore render={render}>{attributes || ''}</SeeMore> */}
-            {attributes}
-          </div>
+          <div className={s.project_desc}>{attributes}</div>
         </Tab>
       )}
 
       {!!tokenDetail && (
         <Tab tabClassName={cs(s.tab)} eventKey="token" title={`ORDINAL THEORY`}>
-          <div className={s.project_desc}>
-            {tokenDetail}
-            {/* <SeeMore render={render}>{tokenDetail || ''}</SeeMore> */}
-          </div>
+          <div className={s.project_desc}>{tokenDetail}</div>
         </Tab>
       )}
     </Tabs>

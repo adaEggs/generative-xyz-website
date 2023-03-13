@@ -91,12 +91,13 @@ const CollectionList = ({
               {listData?.map(item => (
                 <CollectionItem
                   className={`${
-                    hasTraitAtrribute
+                    showFilter
                       ? 'col-wide-3 col-xl-4 col-12'
                       : 'col-wide-2_5 col-xl-3 col-lg-4 col-sm-6 col-12'
                   } `}
                   key={`collection-item-${item.tokenID}`}
                   data={item}
+                  total={projectInfo?.maxSupply}
                 />
               ))}
             </div>

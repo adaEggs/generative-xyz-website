@@ -1,7 +1,7 @@
 import { WithdrawStatus } from '@constants/referral';
 import { IPagingParams, IPagingResponse } from '@interfaces/api/paging';
 import { BTCProject, Project } from '@interfaces/project';
-import { Token } from '@interfaces/token';
+import { Token, TokenAttribute } from '@interfaces/token';
 
 export interface IGetProjectDetailParams {
   contractAddress: string;
@@ -87,6 +87,9 @@ export interface ICreateBTCProjectPayload {
   animationURL: string;
   isFullChain: boolean;
   captureImageTime?: number;
+  reserveMintPrice?: string;
+  reserveMintLimit?: number;
+  reservers?: Array<string>;
 }
 
 export type ICreateBTCProjectResponse = BTCProject;
@@ -114,12 +117,20 @@ export type IUpdateProjectPayload = Pick<
   | 'mintPrice'
   | 'maxSupply'
   | 'captureImageTime'
+  | 'reserveMintPrice'
+  | 'reserveMintLimit'
+  | 'reservers'
 > & { isHidden: boolean; categories: string[] };
 
 export interface IReportProjectPayload {
   originalLink?: string;
 }
 export type IReportProjectResponse = Project;
+export interface IProjectMarketplaceData {
+  listed: number;
+  floor_price: number;
+  volume: number;
+}
 
 export interface IGetProjectVolumeResponse {
   amount: string;
@@ -129,4 +140,13 @@ export interface IGetProjectVolumeResponse {
   projectID: string;
   withdraw: string;
   status: WithdrawStatus;
+}
+
+export interface IGetProjectItemsTraitsListParams {
+  emptyTrait: boolean;
+}
+
+export interface IGetProjectItemsTraitsListResponse {
+  id: string;
+  attributes: TokenAttribute[];
 }

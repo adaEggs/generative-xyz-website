@@ -133,6 +133,7 @@ export const getInscriptionDetail = async (
     );
     const dataRes: IInscriptionDetailResp = await res.json();
     const randomStr = Date.now().toString();
+
     return {
       inscriptionID,
       inscriptionNumber: `${dataRes.number}`,
@@ -146,6 +147,9 @@ export const getInscriptionDetail = async (
       image: '',
       contentLength: randomStr,
       owner: dataRes?.address,
+      sat: dataRes?.sat,
+      timestamp: dataRes?.timestamp,
+      block: dataRes?.genesis_height,
     };
   } catch (err: unknown) {
     log('failed to get ordinal detail', LogLevel.ERROR, LOG_PREFIX);

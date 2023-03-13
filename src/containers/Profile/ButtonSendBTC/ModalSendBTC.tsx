@@ -8,9 +8,7 @@ import s from './styles.module.scss';
 import { Loading } from '@components/Loading';
 import { validateBTCAddress } from '@utils/validate';
 import * as GENERATIVE_SDK from 'generative-sdk';
-import { ProfileContext } from '@contexts/profile-context';
 import { toast } from 'react-hot-toast';
-import { ErrorMessage } from '@enums/error-message';
 import FeeRate from '@containers/Profile/FeeRate';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { Modal } from 'react-bootstrap';
@@ -25,6 +23,9 @@ import { MINIMUM_SATOSHI } from '@bitcoin/contants';
 import Text from '@components/Text';
 import { isNumeric } from '@utils/string';
 import { getError } from '@utils/text';
+import { AssetsContext } from '@contexts/assets-context';
+import { useSelector } from 'react-redux';
+import { getUserSelector } from '@redux/user/selector';
 
 interface IFormValue {
   address: string;
@@ -39,12 +40,10 @@ interface IProps {
 
 const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
-  const {
-    collectedUTXOs,
-    currentUser,
-    debounceFetchCollectedUTXOs,
-    debounceFetchHistory,
-  } = useContext(ProfileContext);
+  const currentUser = useSelector(getUserSelector);
+  const { currentAssets: collectedUTXOs, debounceFetchData } =
+    useContext(AssetsContext);
+
   const {
     selectedRate,
     handleChangeFee,
@@ -71,7 +70,7 @@ const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
       values.address === currentUser?.walletAddressBtcTaproot
     ) {
       errors.address =
-        'Invalid wallet address. Please send the inscription to another wallet address.';
+        'Invalid wallet address. Please send the BTC to another wallet address.';
     }
 
     if (!values.amount) {
@@ -112,12 +111,12 @@ const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
         amount: convertToSatoshiNumber(_data.amount),
       });
       toast.success('Transferred successfully');
-      debounceFetchCollectedUTXOs();
-      debounceFetchHistory();
+      debounceFetchData();
       onHideModal();
     } catch (err: unknown) {
       // handle error
-      toast.error(ErrorMessage.DEFAULT);
+      const _error = getError(err);
+      toast.error(_error.message);
       onHideModal();
     } finally {
       setIsLoading(false);

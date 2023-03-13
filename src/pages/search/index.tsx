@@ -26,7 +26,7 @@ const SearchPage: NextPage = () => {
 
 export default SearchPage;
 
-export async function getServerSideProps() {
+export const getServerSideProps = async () => {
   return {
     props: {
       seoInfo: {
@@ -36,4 +36,4 @@ export async function getServerSideProps() {
       },
     },
   };
-}
+};

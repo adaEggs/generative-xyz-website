@@ -2,7 +2,6 @@ import CollectionList from '@components/Collection/List';
 import { TriggerLoad } from '@components/TriggerLoader';
 import ClientOnly from '@components/Utils/ClientOnly';
 import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModalV3';
-// import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal';
 import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal/CollectingV3';
 import ProjectIntroSection from '@containers/Marketplace/ProjectIntroSection';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
@@ -20,6 +19,7 @@ import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import MintWalletModal from './MintWalletModal';
 import TokenTopFilter from './TokenTopFilter';
 import styles from './styles.module.scss';
+import { GridDebug } from '@components/Grid/grid';
 
 const GenerativeProjectDetail: React.FC<{
   isWhitelist?: boolean;
@@ -29,12 +29,9 @@ const GenerativeProjectDetail: React.FC<{
     projectData: projectInfo,
     listItems,
     handleFetchNextPage,
-    // setSearchToken,
-    // setSort,
     total,
     isLoaded,
     isNextPageLoaded,
-    // isBitcoinProject,
   } = useContext(GenerativeProjectDetailContext);
 
   const {
@@ -70,23 +67,11 @@ const GenerativeProjectDetail: React.FC<{
           <ClientOnly>
             <Tabs className={styles.tabs} defaultActiveKey="outputs">
               <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">
-                {/* {!isBitcoinProject && !isWhitelist && ( */}
                 {projectInfo?.traitStat && projectInfo.traitStat.length > 0 && (
                   <div className={cs(styles.filterWrapper)} id="PROJECT_LIST">
-                    <TokenTopFilter
-                      // keyword=""
-                      // sort=""
-                      // onKeyWordChange={setSearchToken}
-                      // onSortChange={value => {
-                      //   setSort(value);
-                      // }}
-                      // placeholderSearch="Search by id..."
-                      className={styles.filter_sort}
-                    />
+                    <TokenTopFilter className={styles.filter_sort} />
                   </div>
                 )}
-
-                {/* )} */}
                 <div className={styles.tokenListWrapper} id="PROJECT_LIST">
                   <div className={styles.tokenList}>
                     <CollectionList
@@ -120,6 +105,7 @@ const GenerativeProjectDetail: React.FC<{
           )}
         </>
       )}
+      <GridDebug />
     </>
   );
 };

@@ -1,18 +1,18 @@
-import s from './styles.module.scss';
-import { Formik } from 'formik';
-import React, { useContext, useState } from 'react';
 import Button from '@components/ButtonIcon';
+import MarkdownEditor from '@components/MarkdownEditor';
 import SvgInset from '@components/SvgInset';
-import { CDN_URL } from '@constants/config';
-import { useRouter } from 'next/router';
-import UploadThumbnailButton from '../UploadThumbnailButton';
+import { CATEGORY_SELECT_BLACKLIST, CDN_URL } from '@constants/config';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
-import useAsyncEffect from 'use-async-effect';
+import { CollectionType } from '@enums/mint-generative';
 import { SelectOption } from '@interfaces/select-input';
 import { getCategoryList } from '@services/category';
+import { Formik } from 'formik';
+import { useRouter } from 'next/router';
+import React, { useContext, useState } from 'react';
 import Select, { MultiValue } from 'react-select';
-import MarkdownEditor from '@components/MarkdownEditor';
-import { CollectionType } from '@enums/mint-generative';
+import useAsyncEffect from 'use-async-effect';
+import UploadThumbnailButton from '../UploadThumbnailButton';
+import s from './styles.module.scss';
 
 type IProductDetailFormValue = {
   name: string;
@@ -79,11 +79,15 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
 
   useAsyncEffect(async () => {
     const { result } = await getCategoryList();
-    const options = result.map(item => ({
-      value: item.id,
-      label: item.name,
-    }));
-    setCategoryOptions(options);
+    const options = result.map(item => {
+      return {
+        value: item.id,
+        label: item.name,
+      };
+    });
+    setCategoryOptions(
+      options.filter(op => op.value !== CATEGORY_SELECT_BLACKLIST)
+    );
   }, []);
 
   return (
@@ -151,6 +155,19 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                   {/*  rows={4}*/}
                   {/*  placeholder="Tell us more about the meaning and inspiration behind your art."*/}
                   {/*/>*/}
+                  {/* <Input
+                    id="description"
+                    as="textarea"
+                    name="description"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.description}
+                    className={s.descriptionInput}
+                    useFormik
+                  /> */}
+                  {/* {errors.description && touched.description && (
+                    <p className={s.error}>{errors.description}</p>
+                  )} */}
                   <MarkdownEditor
                     id="description"
                     className={s.mdEditor}

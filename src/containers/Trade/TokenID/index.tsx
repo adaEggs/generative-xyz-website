@@ -3,7 +3,6 @@ import ModalBuyItem from '@components/Collection/ModalBuyItem';
 import ModalBuyItemViaPSBT from '@components/Collection/ModalBuyItemViaPSBT';
 import Heading from '@components/Heading';
 import { Loading } from '@components/Loading';
-import MarkdownPreview from '@components/MarkdownPreview';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
@@ -21,6 +20,7 @@ import React, { useEffect, useState } from 'react';
 import { Container } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import s from './TokenID.module.scss';
+import MarkdownPreview from '@components/MarkdownPreview';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -192,6 +192,7 @@ const TokenID: React.FC = (): React.ReactElement => {
             style={{ WebkitLineClamp: showMore ? 'unset' : '4' }}
           >
             <MarkdownPreview source={tokenData.description} />
+            {/* {tokenData.description} */}
           </div>
           {tokenData.description && tokenData.description.length > 300 && (
             <>

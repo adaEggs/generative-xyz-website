@@ -40,6 +40,10 @@ export const SANDBOX_BTC_IMAGE_SIZE_LIMIT = 380; // kb
 export const SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT = 3000; // kb
 export const MIN_MINT_BTC_PROJECT_PRICE = 0;
 
+// Category
+export const CATEGORY_SELECT_BLACKLIST =
+  process.env.NEXT_PUBLIC_CATEGORY_SELECT_BLACKLIST;
+
 // Mempool
 export const MEMPOOL_API_URL = 'https://mempool.space/api/v1';
 export const BINANCE_API_URL = 'https://api.binance.com/api/v3';
@@ -56,7 +60,7 @@ export const RAPI_HOST = 'telize-v1.p.rapidapi.com';
 export const RAPID_CLIENT_TOKEN = process.env.NEXT_PUBLIC_RAPID_CLIENT_TOKEN!;
 
 // Ordinals
-export const HOST_ORDINALS_EXPLORER = 'https://dev-v5.generativeexplorer.com';
+export const HOST_ORDINALS_EXPLORER = 'https://dev.generativeexplorer.com';
 
 export const GLB_COLLECTION_ID = process.env.NEXT_PUBLIC_GLB_COLLECTION_ID!;
 

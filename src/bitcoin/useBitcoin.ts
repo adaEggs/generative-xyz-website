@@ -3,7 +3,6 @@ import { generateBitcoinTaprootKey } from '@hooks/useBTCSignOrd/connect.methods'
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { useContext, useState, useEffect } from 'react';
-import { ProfileContext } from '@contexts/profile-context';
 import {
   broadcastTx,
   submitCancel,
@@ -19,7 +18,8 @@ import {
   ISendInsProps,
 } from '@bitcoin/types';
 import { debounce } from 'lodash';
-import { setPendingUTXOs } from '@containers/Profile/ButtonSendBTC/storage';
+import { sleep } from '@utils/sleep';
+import { AssetsContext } from '@contexts/assets-context';
 
 interface IProps {
   inscriptionID?: string;
@@ -27,8 +27,10 @@ interface IProps {
 
 const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   const user = useSelector(getUserSelector);
-  const { collectedUTXOs } = useContext(ProfileContext);
+  const { currentAssets, getAvailableAssetsCreateTx } =
+    useContext(AssetsContext);
   const [satoshiAmount, setAmount] = useState(0);
+
   const sendInscription = async ({
     receiverAddress,
     feeRate,
@@ -38,15 +40,16 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
 
-    if (!evmAddress || !inscriptionID || !collectedUTXOs || !taprootAddress)
+    const _collectedUTXOs = await getAvailableAssetsCreateTx();
+    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
     const { txID, txHex } = GENERATIVE_SDK.createTx(
       privateKey,
-      collectedUTXOs.txrefs,
-      collectedUTXOs.inscriptions_by_outputs,
+      _collectedUTXOs.txrefs,
+      _collectedUTXOs.inscriptions_by_outputs,
       inscriptionID,
       receiverAddress,
       0,
@@ -72,19 +75,24 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   }: ISendBTCProps) => {
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
-    if (!evmAddress || !collectedUTXOs || !taprootAddress) return;
+    const _collectedUTXOs = currentAssets;
+    if (!evmAddress || !_collectedUTXOs || !taprootAddress) return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex, selectedUTXOs } = GENERATIVE_SDK.createTx(
+    const { txID, txHex } = GENERATIVE_SDK.createTx(
       privateKey,
-      collectedUTXOs.txrefs,
-      collectedUTXOs.inscriptions_by_outputs,
+      _collectedUTXOs.txrefs,
+      _collectedUTXOs.inscriptions_by_outputs,
       '',
       receiverAddress,
       amount,
       feeRate
     );
+
+    // broadcast tx
+    await broadcastTx(txHex);
+
     await trackTx({
       txhash: txID,
       address: taprootAddress,
@@ -94,9 +102,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       send_amount: amount,
       type: TrackTxType.normal,
     });
-    // broadcast tx
-    await broadcastTx(txHex);
-    setPendingUTXOs(selectedUTXOs);
+    // setPendingUTXOs(selectedUTXOs);
   };
 
   const buyInscription = async ({
@@ -109,8 +115,9 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!inscriptionID) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
+    const _collectedUTXOs = await getAvailableAssetsCreateTx();
 
-    if (!evmAddress || !inscriptionID || !collectedUTXOs || !taprootAddress)
+    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
@@ -118,11 +125,11 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     const { txID, txHex, splitTxRaw } = await GENERATIVE_SDK.reqBuyInscription({
       buyerPrivateKey: privateKey,
       feeRatePerByte: feeRate,
-      inscriptions: collectedUTXOs.inscriptions_by_outputs,
+      inscriptions: _collectedUTXOs.inscriptions_by_outputs,
       price: price,
       receiverInscriptionAddress: receiverInscriptionAddress,
       sellerSignedPsbtB64: sellerSignedPsbtB64,
-      utxos: collectedUTXOs.txrefs,
+      utxos: _collectedUTXOs.txrefs,
     });
     await trackTx({
       txhash: txID,
@@ -134,12 +141,13 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       type: TrackTxType.buyInscription,
     });
 
-    // broadcast tx
-    const tasks = [await broadcastTx(txHex)];
     if (splitTxRaw) {
-      tasks.push(await broadcastTx(splitTxRaw));
+      await broadcastTx(splitTxRaw);
+      await sleep(1);
     }
-    await Promise.all(tasks);
+
+    // broadcast tx
+    await broadcastTx(txHex);
   };
 
   const listInscription = async ({
@@ -153,8 +161,9 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!inscriptionID) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
+    const _collectedUTXOs = await getAvailableAssetsCreateTx();
 
-    if (!evmAddress || !inscriptionID || !collectedUTXOs || !taprootAddress)
+    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
@@ -166,10 +175,10 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
         creatorAddress: creatorAddress,
         feePayToCreator: feePayToCreator,
         feeRatePerByte: feeRate,
-        inscriptions: collectedUTXOs.inscriptions_by_outputs,
+        inscriptions: _collectedUTXOs.inscriptions_by_outputs,
         receiverBTCAddress: receiverBTCAddress,
         sellInscriptionID: inscriptionID,
-        utxos: collectedUTXOs.txrefs,
+        utxos: _collectedUTXOs.txrefs,
       });
     const tasks = [
       await submitListForSale({
@@ -204,16 +213,17 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!inscriptionID || !receiverAddress) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
+    const _collectedUTXOs = await getAvailableAssetsCreateTx();
 
-    if (!evmAddress || !inscriptionID || !collectedUTXOs || !taprootAddress)
+    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
       return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
     const { txID, txHex } = GENERATIVE_SDK.createTx(
       privateKey,
-      collectedUTXOs.txrefs,
-      collectedUTXOs.inscriptions_by_outputs,
+      _collectedUTXOs.txrefs,
+      _collectedUTXOs.inscriptions_by_outputs,
       inscriptionID,
       receiverAddress,
       0,
@@ -221,6 +231,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     );
     // broadcast tx
     await broadcastTx(txHex);
+    await sleep(1);
     const tasks = [
       await trackTx({
         txhash: txID,
@@ -253,8 +264,8 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   const debounceGetBalance = debounce(getBalance, 200);
 
   useEffect(() => {
-    debounceGetBalance(collectedUTXOs);
-  }, [collectedUTXOs]);
+    debounceGetBalance(currentAssets);
+  }, [currentAssets]);
 
   return {
     sendInscription,
