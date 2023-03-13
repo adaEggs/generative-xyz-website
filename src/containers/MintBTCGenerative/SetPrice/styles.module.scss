@@ -71,11 +71,6 @@
       flex-direction: column;
       align-items: flex-start;
       gap: rem(10);
-
-      .addBtn {
-        cursor: pointer;
-        transform: translateY(50%);
-      }
     }
 
     .removeBtn {
@@ -186,4 +181,22 @@
   color: $secondary-red;
   line-height: 20px;
   margin-top: rem(6px);
+}
+
+.importBtn {
+  background-color: #fff;
+  transition: color 0.2s;
+
+  &:hover {
+    color: $secondary-green-c;
+  }
+}
+
+.addWallet {
+  // border: 1px solid $black-20;
+  // padding: rem(5);
+
+  .addBtn {
+    cursor: pointer;
+  }
 }
