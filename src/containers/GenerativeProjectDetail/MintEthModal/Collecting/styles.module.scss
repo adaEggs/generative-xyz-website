@@ -1,0 +1,117 @@
+.mintBTCGenerativeModal {
+  .backdrop {
+    background: $black-40;
+    backdrop-filter: blur(5px);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modalWrapper {
+    background: #fff;
+    box-shadow: -10px 0 40px $black-20;
+    transition: all 0.2s ease-in;
+    z-index: 20;
+    border-radius: 2px;
+    width: 90%;
+
+    @include min-tablet {
+      width: 520px;
+    }
+
+    @include min-pc-superWide {
+      width: rem(520px);
+    }
+  }
+
+  .modalHeader {
+    padding-top: rem(20px);
+    padding-left: rem(20px);
+    padding-right: rem(20px);
+    padding-bottom: rem(8px);
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .closeBtn {
+    padding: 0;
+    background-color: transparent !important;
+
+    &:hover {
+      .closeIcon {
+        transform: rotate(90deg);
+        transition: all 0.3s;
+
+        :global(svg path) {
+          fill: $black-100;
+          fill-opacity: 1;
+        }
+      }
+    }
+  }
+
+  .modalBody {
+    padding-bottom: rem(24px);
+    padding-left: rem(16px);
+    padding-right: rem(16px);
+
+    @include tablet {
+      padding-bottom: rem(34px);
+      padding-left: rem(24px);
+      padding-right: rem(24px);
+    }
+
+    @include min-pc {
+      padding-bottom: rem(48px);
+      padding-left: rem(48px);
+      padding-right: rem(48px);
+    }
+  }
+
+  .modalTitle {
+    font-weight: 700;
+    color: $black-100;
+    margin-bottom: rem(24px);
+    line-height: (34 / 24);
+
+    @include calcFontAuto(18px, 24px);
+  }
+
+  .loadingWrapper {
+    position: relative;
+    padding: rem(80);
+  }
+}
+
+.modalBody {
+  p {
+    padding-left: rem(12px);
+    padding-right: rem(12px);
+    text-align: center;
+    font-weight: 500;
+    line-height: 160%;
+    margin-bottom: rem(32px);
+    font-size: rem(20px);
+  }
+}
+
+.row {
+  margin-top: rem(24px);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  .button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48%;
+  }
+}

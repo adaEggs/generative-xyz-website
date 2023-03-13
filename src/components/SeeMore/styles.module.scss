@@ -2,8 +2,8 @@
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-clamp: 8;
-  -webkit-line-clamp: 8;
+  line-clamp: 6;
+  -webkit-line-clamp: 6;
 
   &.isShowMore {
     line-clamp: unset;
@@ -11,14 +11,14 @@
   }
 
   :global(.wmde-markdown) {
-    line-height: (26/16);
+    line-height: (28/18);
 
-    @include calcFontAuto(14px, 16px);
+    @include calcFontAuto(16px, 18px);
 
     font-family: $font-paragraph;
 
     @include min-pc-superWide {
-      font-size: 16px;
+      font-size: 18px;
     }
   }
 
@@ -28,6 +28,14 @@
 
     &:hover {
       text-decoration: none;
+    }
+  }
+
+  .descriptionContent {
+    pointer-events: none;
+
+    a {
+      color: $black-100;
     }
   }
 }

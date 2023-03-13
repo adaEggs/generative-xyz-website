@@ -176,7 +176,7 @@
 }
 
 .text-black-60 {
-  color: #5b5b5b;
+  color: #5b5b5b !important;
 }
 
 .text-black-80 {
@@ -271,7 +271,7 @@
 
 .row {
   // --bs-gutter-y: #{rem(24px)};
-  row-gap: rem(56);
+  row-gap: rem(24);
 
   @include mobile {
     --bs-gutter-x: #{rem(10px)};
@@ -295,4 +295,14 @@
   &:hover {
     text-decoration: underline !important;
   }
+}
+
+.hover-purple-c {
+  &:hover {
+    color: $secondary-purple-c !important;
+  }
+}
+
+.font-italic {
+  font-style: italic;
 }

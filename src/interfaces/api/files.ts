@@ -31,3 +31,28 @@ export interface IMinifyFileResponse {
     }
   >;
 }
+
+export interface IInitiateMultipartUploadPayload {
+  fileName: string;
+  group?: string;
+}
+
+export interface IInitiateMultipartUploadResponse {
+  uploadId: string;
+}
+
+export interface ICompleteMultipartUploadPayload {
+  uploadId: string;
+}
+
+export interface ICompleteMultipartUploadResponse {
+  fileUrl: string;
+}
+
+export interface IResizeImagePayload {
+  file: string; // fileBase64
+}
+
+export interface IResizeImageResponse {
+  file: string; // fileBase64
+}

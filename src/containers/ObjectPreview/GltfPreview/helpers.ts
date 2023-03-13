@@ -34,3 +34,41 @@ export function getRandomArbitrary(min: number, max: number) {
 export function getRandomSign() {
   return Math.round(Math.random()) * 2 - 1;
 }
+
+export function getDebugMode(): boolean {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('debug')) {
+    return params.get('debug') === 'true';
+  }
+  return false;
+}
+
+export const promiseCounting = <T>(func: Promise<T>, callback: () => void) => {
+  return new Promise(resolve => {
+    func.then(() => {
+      callback();
+      resolve(true);
+    });
+  });
+};
+
+export const promiseAllCounting = <T>(
+  values: Array<Promise<T>>,
+  totalCounter: (total: number) => void,
+  counter: (doneStep: number) => void
+): Promise<T[]> => {
+  totalCounter(values.length);
+
+  let counting = 0;
+  const callback = () => {
+    counting += 1;
+    counter(counting);
+  };
+  return new Promise(resolve => {
+    const wrapper = values.map(v => promiseCounting(v, callback));
+    Promise.all(wrapper).then(results => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      resolve(results as any);
+    });
+  });
+};

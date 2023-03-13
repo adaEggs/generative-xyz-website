@@ -1,0 +1,22 @@
+.collection {
+  margin-bottom: rem(90);
+
+  &_title {
+    margin-bottom: rem(48);
+    font-weight: 500;
+    font-size: rem(34);
+    line-height: rem(44);
+    color: $black-100;
+  }
+
+  &_slider {
+    [class*="slick-track"] {
+      display: flex;
+      gap: rem(24);
+    }
+  }
+
+  &_resetRowGap {
+    row-gap: 0;
+  }
+}

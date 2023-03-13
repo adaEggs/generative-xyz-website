@@ -4,13 +4,17 @@ import { InscribeMintFeeRate } from '@enums/inscribe';
 export const calculateMintFee = (
   feeRate: InscribeMintFeeRate,
   fileSizeByte: number,
-  transferFee = MINT_TRANSFER_FEE
+  isAuthentic = false
 ): number => {
   const minSize = 1024 * 4;
   if (fileSizeByte < minSize) {
     fileSizeByte = minSize;
   }
-  return (feeRate * fileSizeByte) / 4 + transferFee;
+  const totalFee = (feeRate * fileSizeByte) / 4 + MINT_TRANSFER_FEE;
+  if (isAuthentic) {
+    return totalFee * 1.2;
+  }
+  return totalFee;
 };
 
 export const calculateNetworkFee = (
@@ -24,5 +28,5 @@ export const calculateNetworkFee = (
 
 export const getOrdinalImgURL = (inscriptionID: string) => {
   if (!inscriptionID) return '';
-  return `https://ordinals-explorer-v5-dev.generative.xyz/preview/${inscriptionID}`;
+  return `https://dev-v5.generativeexplorer.com/preview/${inscriptionID}`;
 };

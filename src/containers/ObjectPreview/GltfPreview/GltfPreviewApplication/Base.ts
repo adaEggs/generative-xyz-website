@@ -1,15 +1,19 @@
 import * as THREE from 'three';
-import { GLTFLoader, GLTF } from 'three/examples/jsm/loaders/GLTFLoader';
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+
 import { Sky } from 'three/examples/jsm/objects/Sky';
 import UserController from './UserController';
+import { getDebugMode } from '../helpers';
+import Colliders from './Colliders';
+import ObjectLoader from './ObjectLoader';
+import DecorObject from './DecorObject';
 
 class Base {
+  order: THREE.EulerOrder = 'YXZ';
   container: HTMLDivElement;
 
+  isDebugging = false;
+
   clock = new THREE.Clock();
-  dracoLoader = new DRACOLoader();
-  glTFLoader = new GLTFLoader();
 
   renderer!: THREE.WebGLRenderer;
   scene!: THREE.Scene;
@@ -31,18 +35,18 @@ class Base {
   pointLight3!: THREE.PointLight;
   pointLight4!: THREE.PointLight;
 
-  particle = new THREE.Object3D();
   whiteHouse: boolean;
+  colliders: Colliders;
+  objectLoader: ObjectLoader;
+  decorObject: DecorObject;
 
   constructor(id: string, _whiteHouse: boolean) {
+    this.isDebugging = getDebugMode();
     this.whiteHouse = _whiteHouse;
-    this.dracoLoader.setDecoderPath('/js/libs/draco/');
     this.container = document.getElementById(id) as HTMLDivElement;
 
-    this.glTFLoader.setDRACOLoader(this.dracoLoader);
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.userController = new UserController(this as any);
+    this.colliders = new Colliders();
+    this.objectLoader = new ObjectLoader();
 
     this.createScene();
     this.createCamera();
@@ -50,38 +54,32 @@ class Base {
     this.createFloor();
     this.createBasicLights();
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.decorObject = new DecorObject(this as any);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    this.userController = new UserController(this as any);
+
     this.onWindowResize = this.onWindowResize.bind(this);
 
     this.animate = this.animate.bind(this);
 
     this.animate();
+
+    this.addEventListeners();
   }
 
-  createGalaxyStars() {
-    this.scene.add(this.particle);
+  addEventListeners() {
+    // document.body.addEventListener('mousemove', event => {
+    //   // move orig
+    // });
+    window.addEventListener('resize', this.onWindowResize);
+  }
 
-    setTimeout(() => {
-      const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-
-      const material = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        // flatShading: true,
-      });
-      const sphere = new THREE.Mesh(geometry, material);
-      for (let i = 0; i < 1000; i++) {
-        const mesh = sphere.clone();
-        mesh.position
-          .set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5)
-          .normalize();
-        mesh.position.multiplyScalar(90 + Math.random() * 700);
-        mesh.rotation.set(
-          Math.random() * 2,
-          Math.random() * 2,
-          Math.random() * 2
-        );
-        this.particle.add(mesh);
-      }
-    }, 1500);
+  getModelDimension(model: THREE.Object3D) {
+    const box3 = new THREE.Box3().setFromObject(model);
+    const size = new THREE.Vector3();
+    return box3.getSize(size);
   }
 
   createScene() {
@@ -98,9 +96,14 @@ class Base {
       1000
     );
 
-    this.camera.rotation.order = 'YXZ';
+    this.camera.rotation.order = this.order;
     this.camera.rotation.y = 0.02;
     this.camera.rotation.x = 0.5;
+
+    // this.camera.lookAt(this.thirdPersonCamera);
+
+    // this.cameraGroup.add(this.camera);
+    // this.scene.add(this.cameraGroup);
   }
 
   createRenderer() {
@@ -118,29 +121,27 @@ class Base {
   }
 
   createBasicLights() {
-    setTimeout(() => {
-      const ambientLight = new THREE.AmbientLight(0xb9d5ff, 1);
-      this.scene.add(ambientLight);
+    const ambientLight = new THREE.AmbientLight(0xb9d5ff, 1);
+    this.scene.add(ambientLight);
 
-      this.dirLight = new THREE.DirectionalLight(0xffe87c, 1);
-      this.dirLight.position.set(-60, 100, 30);
-      this.dirLight.castShadow = true;
-      this.dirLight.shadow.camera.left = -50;
-      this.dirLight.shadow.camera.right = 50;
-      this.dirLight.shadow.camera.top = 50;
-      this.dirLight.shadow.camera.bottom = -50;
-      this.dirLight.shadow.camera.far = 3500;
-      this.dirLight.shadow.bias = -0.0001;
-      this.dirLight.shadow.mapSize.width = 2048;
-      this.dirLight.shadow.mapSize.height = 2048;
-      this.dirLight.shadow.radius = 2;
-      this.dirLight.shadow.blurSamples = 10;
-      this.scene.add(this.dirLight);
-    }, 0);
+    this.dirLight = new THREE.DirectionalLight(0xffe87c, 1);
+    this.dirLight.position.set(-60, 100, 30);
+    this.dirLight.castShadow = true;
+    this.dirLight.shadow.camera.left = -50;
+    this.dirLight.shadow.camera.right = 50;
+    this.dirLight.shadow.camera.top = 50;
+    this.dirLight.shadow.camera.bottom = -50;
+    this.dirLight.shadow.camera.far = 3500;
+    this.dirLight.shadow.bias = -0.0001;
+    this.dirLight.shadow.mapSize.width = 2048;
+    this.dirLight.shadow.mapSize.height = 2048;
+    this.dirLight.shadow.radius = 2;
+    this.dirLight.shadow.blurSamples = 10;
+    this.scene.add(this.dirLight);
   }
 
   createDecoLights() {
-    setTimeout(() => {
+    return new Promise(resolve => {
       // Top
       this.topLight = new THREE.SpotLight(0xffee88, 4);
       this.topLight.position.set(0, 100, 0);
@@ -150,6 +151,11 @@ class Base {
       this.topLight.distance = 200;
       this.scene.add(this.topLight);
 
+      if (this.isDebugging) {
+        const topLightHelper = new THREE.SpotLightHelper(this.topLight);
+        this.scene.add(topLightHelper);
+      }
+
       this.bottomLight = new THREE.SpotLight(0xffee88, 1);
       this.bottomLight.position.set(0, -50, 0);
       this.bottomLight.angle = 0.3;
@@ -157,8 +163,11 @@ class Base {
       this.bottomLight.decay = 0;
       this.bottomLight.distance = 200;
       this.scene.add(this.bottomLight);
-      // const spotLightHelper1 = new THREE.SpotLightHelper(spotLight1);
-      // this.scene.add(spotLightHelper1);
+
+      if (this.isDebugging) {
+        const bottomLightHelper = new THREE.SpotLightHelper(this.bottomLight);
+        this.scene.add(bottomLightHelper);
+      }
 
       this.spotLight1 = new THREE.SpotLight(0x7f00ff, 1);
       this.spotLight1.position.set(50, 0, 50);
@@ -167,8 +176,11 @@ class Base {
       this.spotLight1.decay = 0;
       this.spotLight1.distance = 100;
       this.scene.add(this.spotLight1);
-      // const spotLightHelper2 = new THREE.SpotLightHelper(this.spotLight2);
-      // this.scene.add(spotLightHelper2);
+
+      if (this.isDebugging) {
+        const spotLightHelper1 = new THREE.SpotLightHelper(this.spotLight1);
+        this.scene.add(spotLightHelper1);
+      }
 
       this.spotLight2 = new THREE.SpotLight(0xff7f00, 1);
       this.spotLight2.position.set(-50, 0, 50);
@@ -177,8 +189,11 @@ class Base {
       this.spotLight2.decay = 0;
       this.spotLight2.distance = 100;
       this.scene.add(this.spotLight2);
-      // // const spotLightHelper3 = new THREE.SpotLightHelper(spotLight3);
-      // // this.scene.add(spotLightHelper3);
+
+      if (this.isDebugging) {
+        const spotLightHelper2 = new THREE.SpotLightHelper(this.spotLight2);
+        this.scene.add(spotLightHelper2);
+      }
 
       this.spotLight3 = new THREE.SpotLight(0xb00c3f, 1);
       this.spotLight3.position.set(50, 0, -50);
@@ -187,8 +202,11 @@ class Base {
       this.spotLight3.decay = 0;
       this.spotLight3.distance = 100;
       this.scene.add(this.spotLight3);
-      // // const spotLightHelper4 = new THREE.SpotLightHelper(spotLight4);
-      // // this.scene.add(spotLightHelper4);
+
+      if (this.isDebugging) {
+        const spotLightHelper3 = new THREE.SpotLightHelper(this.spotLight3);
+        this.scene.add(spotLightHelper3);
+      }
 
       this.spotLight4 = new THREE.SpotLight(0x0c8cbf, 1);
       this.spotLight4.position.set(-50, 0, -50);
@@ -197,6 +215,11 @@ class Base {
       this.spotLight4.decay = 0;
       this.spotLight4.distance = 100;
       this.scene.add(this.spotLight4);
+
+      if (this.isDebugging) {
+        const spotLightHelper4 = new THREE.SpotLightHelper(this.spotLight4);
+        this.scene.add(spotLightHelper4);
+      }
 
       const pointLightSphere = new THREE.SphereGeometry(0.25, 16, 8);
       this.pointLight1 = new THREE.PointLight(0xff0040, 2, 50);
@@ -234,11 +257,12 @@ class Base {
         )
       );
       this.scene.add(this.pointLight4);
-    }, 0);
+      resolve(true);
+    });
   }
 
   createSky() {
-    setTimeout(() => {
+    return new Promise(resolve => {
       const sky = new Sky();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (sky.material as any).color = new THREE.Color(0xffe87c);
@@ -265,7 +289,9 @@ class Base {
       sun.setFromSphericalCoords(1, phi, theta);
       uniforms['sunPosition'].value.copy(sun);
       this.renderer.toneMappingExposure = effectController.exposure;
-    }, 0);
+
+      resolve(true);
+    });
   }
 
   createFloor() {
@@ -282,7 +308,7 @@ class Base {
     floor.position.y = 0;
     this.scene.add(floor);
 
-    this.userController.worldOctree.fromGraphNode(floor);
+    this.colliders.worldOctree.fromGraphNode(floor);
   }
 
   onWindowResize() {
@@ -299,8 +325,7 @@ class Base {
   render() {
     this.renderer.render(this.scene, this.camera);
 
-    this.particle.rotation.x += 0.0;
-    this.particle.rotation.y -= 0.004;
+    this.decorObject.update();
 
     const sLTime = performance.now() / 1000;
     if (this.topLight) {
@@ -337,14 +362,6 @@ class Base {
       this.pointLight4.position.y = Math.cos(plTime * 0.7) * 20;
       this.pointLight4.position.z = Math.sin(plTime * 0.5) * 10;
     }
-  }
-
-  async loadModel(url: string): Promise<GLTF> {
-    return new Promise(resolve => {
-      this.glTFLoader.load(url, gltf => {
-        resolve(gltf);
-      });
-    });
   }
 }
 

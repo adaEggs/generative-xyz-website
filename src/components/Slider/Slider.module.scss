@@ -1,0 +1,87 @@
+.slider {
+  &_container {
+    width: 100%;
+    position: relative;
+  }
+
+  &_arrow {
+    position: absolute;
+    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: rem(52);
+    height: rem(52);
+    padding: 0;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    transform: translateY(-50%);
+    z-index: 12;
+    outline: none;
+
+    &[class~="slick-disabled"] {
+      display: none;
+    }
+  }
+
+  &_arrowInner {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: rem(48);
+    height: rem(48);
+    padding: 0;
+    cursor: pointer;
+    background: $white-100;
+    box-shadow: 0 12px 40px -16px rgb(0 0 0 / 5%);
+    border-radius: 2px;
+    z-index: 12;
+    transition: all 0.3s ease-in-out 0s;
+    outline: none;
+
+    &:hover,
+    &:focus,
+    &:active {
+      background: rgba($color: white, $alpha: 100%);
+      box-shadow: 0 rem(8px) rem(24px) rgb(0 0 0 / 9%);
+    }
+  }
+
+  &_prev {
+    left: rem(-16);
+  }
+
+  &_next {
+    right: rem(-16);
+  }
+
+  &_dots {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    position: absolute;
+    bottom: rem(-34px);
+    text-align: center;
+
+    li {
+      display: inline-block;
+      margin: 0 rem(12);
+    }
+
+    :global(.slick-active .slider_dot) {
+      background: $black-100;
+      border: 1px solid #333;
+    }
+  }
+
+  &_dot {
+    font-size: 0;
+    width: rem(8px);
+    height: rem(8px);
+    border: 1px solid $black-outline;
+    transition: width 0.3s ease;
+  }
+}

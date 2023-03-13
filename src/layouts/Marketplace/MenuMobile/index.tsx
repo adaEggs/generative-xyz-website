@@ -1,4 +1,3 @@
-import ButtonIcon from '@components/ButtonIcon';
 import Link from '@components/Link';
 import SvgInset from '@components/SvgInset';
 import { SOCIALS } from '@constants/common';
@@ -23,13 +22,7 @@ interface IProp {
 
 const MenuMobile = React.forwardRef(
   (
-    {
-      theme,
-      isConnecting,
-      handleConnectWallet,
-      renderProfileHeader,
-      ProfileDropdown,
-    }: IProp,
+    { theme, renderProfileHeader, ProfileDropdown }: IProp,
     ref: ForwardedRef<HTMLDivElement>
   ) => {
     const router = useRouter();
@@ -44,25 +37,31 @@ const MenuMobile = React.forwardRef(
       return `${url}?${querystring.stringify(query)}`;
     };
 
-    // const showWalletButton = (): boolean => {
-    //   if (!isProduction()) return true;
-    //   if (router.pathname === ROUTE_PATH.ORDER_NOW) {
-    //     return true;
-    //   } else return false;
-    // };
-
     return (
       <div ref={ref} className={`${s.menuMobile} ${s[theme || 'light']}`}>
         <div className={s.menuMobile_inner}>
           <ul className={`${s.navBar}`}>
             <li
               className={cs(
-                activePath === MENU_HEADER[0].activePath && s.active
+                (activePath === MENU_HEADER[0].activePath ||
+                  activePath === '') &&
+                  s.active
               )}
               key={`header-${MENU_HEADER[0].id}`}
             >
               <Link href={getUrlWithQueryParams(MENU_HEADER[0].route)}>
                 {MENU_HEADER[0].name}
+              </Link>
+            </li>
+
+            <li
+              className={cs(
+                activePath === MENU_HEADER[7].activePath && s.active
+              )}
+              key={`header-${MENU_HEADER[7].id}`}
+            >
+              <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
+                {MENU_HEADER[7].name}
               </Link>
             </li>
 
@@ -87,16 +86,51 @@ const MenuMobile = React.forwardRef(
                 {MENU_HEADER[2].name}
               </Link>
             </li>
+
+            <li
+              className={cs(
+                activePath === MENU_HEADER[8].activePath && s.active
+              )}
+              key={`header-${MENU_HEADER[8].id}`}
+            >
+              <Link href={getUrlWithQueryParams(MENU_HEADER[8].route)}>
+                {MENU_HEADER[8].name}
+              </Link>
+            </li>
+
+            <li
+              className={cs(
+                activePath === MENU_HEADER[11].activePath && s.active
+              )}
+              key={`header-${MENU_HEADER[11].id}`}
+            >
+              <Link href={getUrlWithQueryParams(MENU_HEADER[11].route)}>
+                {MENU_HEADER[11].name}
+              </Link>
+            </li>
+
+            {!user && (
+              <li
+                className={cs(
+                  activePath === MENU_HEADER[6].activePath && s.active
+                )}
+                key={`header-${MENU_HEADER[6].id}`}
+              >
+                <Link href={getUrlWithQueryParams(MENU_HEADER[6].route)}>
+                  {MENU_HEADER[6].name}
+                </Link>
+              </li>
+            )}
           </ul>
           <div className={`${s.menuMobile_bottom} ${user ? s.hasUser : ''}`}>
             <div className={`${s.connectWallet}`}>
-              {user ? (
+              {user && (
                 <div className="position-relative">
                   {renderProfileHeader()}
                   {ProfileDropdown()}
                 </div>
-              ) : (
-                <div className={s.menuMobile_bottom_cta}>
+              )}
+              {/* <div className={s.menuMobile_bottom_cta}>
                   <ButtonIcon
                     disabled={isConnecting}
                     sizes="medium"
@@ -105,8 +139,7 @@ const MenuMobile = React.forwardRef(
                   >
                     {isConnecting ? 'Connecting...' : 'Connect wallet'}
                   </ButtonIcon>
-                </div>
-              )}
+                </div> */}
             </div>
 
             <ul className={s.menuMobile_bottom_socials}>

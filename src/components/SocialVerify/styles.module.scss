@@ -1,0 +1,60 @@
+.whiteList_icon {
+  position: relative;
+  padding-top: 0.3em;
+
+  &_tooltip {
+    max-width: 240px;
+  }
+
+  svg,
+  img {
+    cursor: pointer;
+    height: rem(20px);
+    width: rem(20px);
+
+    @include min-pc {
+      height: rem(34px);
+      width: rem(34px);
+    }
+  }
+
+  &:hover {
+    .whiteList_content {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+.whiteList_content {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: rem(280px);
+  background: $white;
+  opacity: 0;
+  visibility: hidden;
+
+  &_inner {
+    position: relative;
+
+    :global(.tooltip-arrow) {
+      &::before {
+        left: 50%;
+        z-index: 2;
+        top: -2px;
+        transform: translateX(-50%);
+      }
+    }
+  }
+
+  a {
+    text-decoration: none;
+    color: #3cf;
+
+    &:hover {
+      color: unset;
+      text-decoration: none;
+    }
+  }
+}

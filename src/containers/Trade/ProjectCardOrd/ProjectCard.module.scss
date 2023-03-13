@@ -68,6 +68,18 @@
   }
 
   &_info {
+    .projectCard_info_title {
+      .projectCard_info_wrapper {
+        &_displayName {
+          width: 100%;
+          line-height: rem(30px);
+          letter-spacing: -0.01em;
+          color: $black-40-solid;
+          font-weight: 500;
+        }
+      }
+    }
+
     &.desktop {
       .projectCard_info_title {
         display: flex;
@@ -87,6 +99,10 @@
           display: block;
           overflow: hidden;
         }
+      }
+
+      .projectCard_info_wrapper {
+        flex-wrap: wrap;
       }
 
       :global(.useInfo) {

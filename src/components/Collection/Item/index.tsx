@@ -1,48 +1,47 @@
 import Heading from '@components/Heading';
-import Link from '@components/Link';
 import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import { ProfileContext } from '@contexts/profile-context';
+// import { ProfileContext } from '@contexts/profile-context';
+import Link from '@components/Link';
+import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import { GLB_EXTENSION } from '@constants/file';
+import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import useWindowSize from '@hooks/useWindowSize';
 import { Token } from '@interfaces/token';
-import { convertToETH } from '@utils/currency';
-import {
-  formatAddress,
-  formatBTCPrice,
-  formatTokenId,
-  getProjectIdFromTokenId,
-} from '@utils/format';
+import { ellipsisCenter, formatAddress } from '@utils/format';
 import cs from 'classnames';
-import { useContext, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
-
-import ButtonIcon from '@components/ButtonIcon';
-import ModalBuyItemViaBTC from '@components/Collection/ModalBuyItemViaBTC';
 import s from './styles.module.scss';
-import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 
 const CollectionItem = ({
   data,
   className,
+  showCollectionName,
+  total,
 }: {
   data: Token;
   className?: string;
+  showCollectionName?: boolean;
+  total?: string | number;
 }) => {
-  const tokenID = useMemo(
-    () => data.name.split('#')[1] || data.name,
-    [data.name]
-  );
-  const { currentUser } = useContext(ProfileContext);
+  const tokenID = data.tokenID;
+  const showInscriptionID =
+    data.genNFTAddr === '1000012' && !!data.inscriptionIndex && !!total;
+  // const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
-  const { isBitcoinProject, isWhitelistProject } = useContext(
-    GenerativeProjectDetailContext
-  );
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const isBTCListable =
-    (data.buyable || (!data.buyable && !data.isCompleted)) && !!data.priceBTC;
-  const isBTCDisable = !data.buyable && !data.isCompleted && !!data.priceBTC;
+  const { isWhitelistProject } = useContext(GenerativeProjectDetailContext);
+  const isBuyable = React.useMemo(() => {
+    return data.buyable && !!data.priceBTC && data?.sell_verified;
+  }, [data.buyable, data.priceBTC, data?.sell_verified]);
+
+  const isWaitingVerify = React.useMemo(() => {
+    return data.buyable && !!data.priceBTC && !data?.sell_verified;
+  }, [data.buyable, data.priceBTC, data?.sell_verified]);
+
+  const imgRef = useRef<HTMLImageElement>(null);
 
   const [thumb, setThumb] = useState<string>(data.image);
 
@@ -50,71 +49,70 @@ const CollectionItem = ({
     setThumb(LOGO_MARKETPLACE_URL);
   };
 
-  const toggleModal = () => {
-    if (isBTCDisable) return;
-    setShowModal(show => !show);
-  };
-
-  const renderButton = () => {
-    if (isBTCListable)
-      return (
-        <ul className={s.ordinalsLinks}>
-          <ButtonIcon
-            sizes={'large'}
-            className={s.buy_now}
-            onClick={toggleModal}
-          >
-            <Text as="span" fontWeight="medium">
-              {isBTCDisable ? 'The inscription is being purchased' : 'Buy now'}
-            </Text>
-          </ButtonIcon>
-        </ul>
-      );
-    return null;
-  };
-
-  const renderPrice = () => {
-    let text = '';
-    let suffix = '';
-    if (isBTCListable) {
-      text = formatBTCPrice(data.priceBTC);
-      suffix = ' BTC';
-    } else if (data.stats?.price) {
-      text = convertToETH(data.stats?.price);
-      suffix = ' ETH';
+  useEffect(() => {
+    const fileExt = data.image.split('.').pop();
+    if (fileExt && fileExt === GLB_EXTENSION && data.thumbnail) {
+      setThumb(data.thumbnail);
     }
-    if (!text) return null;
-    if (mobileScreen) {
-      return (
-        <Text size="14" fontWeight="bold">
-          {text}
-        </Text>
-      );
+  }, [data.image]);
+
+  const handleOnImgLoaded = (
+    evt: React.SyntheticEvent<HTMLImageElement>
+  ): void => {
+    const img = evt.target as HTMLImageElement;
+    const naturalWidth = img.naturalWidth;
+    if (naturalWidth < 100 && imgRef.current) {
+      imgRef.current.style.imageRendering = 'pixelated';
     }
-    return (
-      <Stack direction="horizontal" className={s.collectionCard_info_listing}>
-        <Heading as={'h4'}>
-          {text}
-          {suffix}
-        </Heading>
-      </Stack>
-    );
   };
 
   const tokenUrl = useMemo(() => {
     if (isWhitelistProject)
       return `${ROUTE_PATH.GENERATIVE}/${SATOSHIS_PROJECT_ID}/${tokenID}`;
-    return `${ROUTE_PATH.GENERATIVE}/${
-      isBitcoinProject
-        ? data.project.tokenID
-        : getProjectIdFromTokenId(parseInt(tokenID))
-    }/${tokenID}`;
+    return `${ROUTE_PATH.GENERATIVE}/${data.project.tokenID}/${tokenID}`;
   }, [isWhitelistProject, tokenID, data.project.tokenID]);
+
+  const renderBuyButton = () => {
+    if (!isBuyable) return null;
+    return (
+      <Link
+        href=""
+        onClick={() => {
+          // DO NOTHING
+        }}
+      >
+        <ButtonBuyListed
+          inscriptionID={tokenID}
+          price={data.priceBTC}
+          inscriptionNumber={Number(data.inscriptionIndex || 0)}
+          orderID={data.orderID}
+        />
+      </Link>
+    );
+  };
+  const renderHeadDesc = () => {
+    const text = data?.orderInscriptionIndex
+      ? data?.orderInscriptionIndex
+      : data?.inscriptionIndex
+      ? data?.inscriptionIndex
+      : ellipsisCenter({
+          str: tokenID,
+          limit: 3,
+        });
+    if (showInscriptionID) {
+      return (
+        <span
+          className={s.textOverflow_customDesc}
+        >{`${data?.orderInscriptionIndex} / ${total}`}</span>
+      );
+    }
+    return <span>#{text}</span>;
+  };
 
   return (
     <div className={`${s.collectionCard} ${className}`}>
       <div className={s.collectionCard_inner_wrapper}>
-        <Link href={tokenUrl} className={s.collectionCard_inner}>
+        <Link className={s.collectionCard_inner} href={`${tokenUrl}`}>
           <div
             className={`${s.collectionCard_thumb} ${
               thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
@@ -126,6 +124,8 @@ const CollectionItem = ({
                 src={thumb}
                 alt={data.name}
                 loading={'lazy'}
+                ref={imgRef}
+                onLoad={handleOnImgLoaded}
               />
             </div>
           </div>
@@ -134,7 +134,9 @@ const CollectionItem = ({
               <Text size="11" fontWeight="medium">
                 {data?.owner?.displayName ||
                   formatAddress(
-                    data?.owner?.walletAddress || data?.ownerAddr || ''
+                    data?.owner?.walletAddressBtcTaproot ||
+                      data?.ownerAddr ||
+                      ''
                   )}
               </Text>
               <div className={s.collectionCard_info_title}>
@@ -147,23 +149,42 @@ const CollectionItem = ({
                     title={data?.project?.name}
                     className={s.collectionCard_info_title_name}
                   >
-                    {data?.project?.name}
-                  </span>{' '}
-                  <span className={s.textOverflow}>
-                    #
-                    {data?.inscriptionIndex
-                      ? data?.inscriptionIndex
-                      : formatTokenId(tokenID)}
+                    {isWaitingVerify
+                      ? 'Incoming... ' + (data?.project?.name || '')
+                      : ''}
                   </span>
+                  {renderHeadDesc()}
                 </Text>
-                {renderPrice()}
+                {showInscriptionID && (
+                  <Text
+                    className={s.textOverflow}
+                    fontWeight="semibold"
+                    size="14"
+                    style={{ marginBottom: 4 }}
+                  >
+                    #{data?.inscriptionIndex}
+                  </Text>
+                )}
+                {renderBuyButton()}
               </div>
             </div>
           ) : (
             <div className={cs(s.collectionCard_info, s.desktop)}>
               <div className={s.collectionCard_info_title}>
+                {isWaitingVerify && (
+                  <Heading
+                    as={'h6'}
+                    fontWeight="medium"
+                    className={s.collectionCard_info_wrapper_waiting}
+                  >
+                    Incoming...
+                  </Heading>
+                )}
                 <Stack
-                  className={s.collectionCard_info_stack}
+                  className={cs(s.collectionCard_info_stack, {
+                    [s.collectionCard_info_wrapper]:
+                      showCollectionName && data?.project?.name,
+                  })}
                   direction="horizontal"
                 >
                   <Heading
@@ -173,38 +194,39 @@ const CollectionItem = ({
                       maxWidth: data.stats?.price ? '70%' : '100%',
                     }}
                   >
-                    {currentUser && (
-                      <span
-                        title={data?.project?.name}
-                        className={s.collectionCard_info_title_name}
-                      >
-                        {data?.project?.name}
-                      </span>
-                    )}
-                    <span>
-                      #
-                      {data?.inscriptionIndex
-                        ? data?.inscriptionIndex
-                        : formatTokenId(tokenID)}
-                    </span>
+                    {renderHeadDesc()}
                   </Heading>
-                  {renderPrice()}
+                  {showCollectionName && data?.project?.name && (
+                    <div className={s.collectionCard_info_wrapper_ownerName}>
+                      {data?.project?.name}
+                    </div>
+                  )}
+                  <div
+                    className={cs(
+                      data?.creator?.displayName && s.collectionCard_info_artist
+                    )}
+                  >
+                    {data?.creator?.displayName && (
+                      <div className={s.collectionCard_info_artist_name}>
+                        {data?.creator?.displayName}
+                      </div>
+                    )}
+                    {renderBuyButton()}
+                  </div>
                 </Stack>
+                {showInscriptionID && (
+                  <Heading
+                    as={'h4'}
+                    className={`token_id ml-auto ${s.textOverflow}}`}
+                  >
+                    #{data?.inscriptionIndex}
+                  </Heading>
+                )}
               </div>
             </div>
           )}
         </Link>
-        {renderButton()}
       </div>
-      {data.buyable && (
-        <ModalBuyItemViaBTC
-          showModal={showModal}
-          orderID={data.orderID}
-          inscriptionID={data.tokenID}
-          price={data.priceBTC}
-          onClose={toggleModal}
-        />
-      )}
     </div>
   );
 };

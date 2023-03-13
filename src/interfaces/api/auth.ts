@@ -7,8 +7,12 @@ export interface IGenerativeNonceMessageResponse {
 }
 
 export interface IVerifyNonceMessagePayload {
-  address: string;
   signature: string;
+  messagePrefix: string;
+  address: string;
+  addressBtc: string; // taproot
+  addressBtcSegwit: string;
+  ethSignature: string;
 }
 
 export interface IVerifyNonceMessageResponse {

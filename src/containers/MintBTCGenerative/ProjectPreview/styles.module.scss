@@ -82,4 +82,8 @@
 
     @include calcFontAuto(14px, 16px);
   }
+
+  .projectSeed {
+    word-wrap: break-word;
+  }
 }

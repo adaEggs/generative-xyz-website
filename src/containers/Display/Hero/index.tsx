@@ -1,18 +1,16 @@
-import s from './hero.module.scss';
 import { gsap } from 'gsap';
+import s from './hero.module.scss';
 
-import React, { useEffect } from 'react';
-import Button from '@components/Button';
-import { AnimParallax } from '@animations/parallax';
 import { AnimFade } from '@animations/fade';
-import classNames from 'classnames';
 import { AnimHeading } from '@animations/heading';
+import { AnimParallax } from '@animations/parallax';
+import Button from '@components/Button';
+import { SOCIALS } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
+import classNames from 'classnames';
 import { useRouter } from 'next/router';
-import { SOCIALS } from '@constants/common';
-import Link from 'next/link';
-import { EXTERNAL_LINK } from '@constants/external-link';
+import { useEffect } from 'react';
 
 export const SectionHero = (): JSX.Element => {
   const router = useRouter();
@@ -96,7 +94,7 @@ export const SectionHero = (): JSX.Element => {
             </AnimFade>
           </li>
         </ul>
-        <AnimFade screen={0.6}>
+        {/* <AnimFade screen={0.6}>
           <Link
             href={EXTERNAL_LINK.CALENDLY}
             target={'_blank'}
@@ -104,7 +102,7 @@ export const SectionHero = (): JSX.Element => {
           >
             TALK TO OUR TEAM
           </Link>
-        </AnimFade>
+        </AnimFade> */}
 
         {/*<AnimFade className={s.Home_video_content_ctas_play} screen={0.6}>*/}
         {/*  <Button*/}

@@ -1,47 +1,37 @@
 import CollectionList from '@components/Collection/List';
 import { TriggerLoad } from '@components/TriggerLoader';
 import ClientOnly from '@components/Utils/ClientOnly';
-import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModal';
-import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal';
+import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModalV3';
+import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal/CollectingV3';
 import ProjectIntroSection from '@containers/Marketplace/ProjectIntroSection';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import {
   GenerativeProjectDetailContext,
   GenerativeProjectDetailProvider,
 } from '@contexts/generative-project-detail-context';
+import { PaymentMethod } from '@enums/mint-generative';
 import { Project } from '@interfaces/project';
 import cs from 'classnames';
 import React, { useContext } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
+
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import MintWalletModal from './MintWalletModal';
 import TokenTopFilter from './TokenTopFilter';
 import styles from './styles.module.scss';
-import { PaymentMethod } from '@enums/mint-generative';
+import { GridDebug } from '@components/Grid/grid';
 
 const GenerativeProjectDetail: React.FC<{
   isWhitelist?: boolean;
   project?: Project;
 }> = ({ isWhitelist, project }): React.ReactElement => {
-  // const router = useRouter();
-
-  // const { projectID } = router.query;
-
-  // useEffect(() => {
-  //   if (projectID === SATOSHIS_PROJECT_ID) {
-  //     router.push(SATOSHIS_PAGE);
-  //   }
-  // }, [router.asPath]);
-
   const {
     projectData: projectInfo,
     listItems,
     handleFetchNextPage,
-    setSearchToken,
-    setSort,
     total,
     isLoaded,
     isNextPageLoaded,
-    isBitcoinProject,
   } = useContext(GenerativeProjectDetailContext);
 
   const {
@@ -53,15 +43,22 @@ const GenerativeProjectDetail: React.FC<{
     setPaymentStep,
   } = useContext(BitcoinProjectContext);
 
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
   return (
     <>
       <section>
         <Container>
           <ProjectIntroSection
             openMintBTCModal={(chain: PaymentMethod) => {
-              setPaymentStep('mint');
-              setIsPopupPayment(true);
-              setPaymentMethod(chain);
+              onButtonClick({
+                cbSigned: () => {
+                  setPaymentStep('mint');
+                  setIsPopupPayment(true);
+                  setPaymentMethod(chain);
+                },
+              })
+                .then()
+                .catch();
             }}
             project={project ? project : projectInfo}
             isWhitelist={isWhitelist}
@@ -70,21 +67,12 @@ const GenerativeProjectDetail: React.FC<{
           <ClientOnly>
             <Tabs className={styles.tabs} defaultActiveKey="outputs">
               <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">
-                {!isBitcoinProject && !isWhitelist && (
-                  <div className={cs(styles.filterWrapper)}>
-                    <TokenTopFilter
-                      keyword=""
-                      sort=""
-                      onKeyWordChange={setSearchToken}
-                      onSortChange={value => {
-                        setSort(value);
-                      }}
-                      placeholderSearch="Search by token id..."
-                      className={styles.filter_sort}
-                    />
+                {projectInfo?.traitStat && projectInfo.traitStat.length > 0 && (
+                  <div className={cs(styles.filterWrapper)} id="PROJECT_LIST">
+                    <TokenTopFilter className={styles.filter_sort} />
                   </div>
                 )}
-                <div className={styles.tokenListWrapper}>
+                <div className={styles.tokenListWrapper} id="PROJECT_LIST">
                   <div className={styles.tokenList}>
                     <CollectionList
                       projectInfo={projectInfo}
@@ -104,7 +92,7 @@ const GenerativeProjectDetail: React.FC<{
           </ClientOnly>
         </Container>
       </section>
-      {isPopupPayment && (
+      {isPopupPayment && !!ordAddress && (
         <>
           {paymentStep === 'mint' && paymentMethod === PaymentMethod.BTC && (
             <MintBTCGenerativeModal />
@@ -117,6 +105,7 @@ const GenerativeProjectDetail: React.FC<{
           )}
         </>
       )}
+      <GridDebug />
     </>
   );
 };

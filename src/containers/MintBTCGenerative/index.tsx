@@ -1,5 +1,5 @@
-import Button from '@components/ButtonIcon';
 import ClientOnly from '@components/Utils/ClientOnly';
+import RequestConnectWallet from '@containers/RequestConnectWallet';
 import { MintBTCGenerativeContextProvider } from '@contexts/mint-btc-generative-context';
 import { WalletContext } from '@contexts/wallet-context';
 import { LogLevel } from '@enums/log-level';
@@ -8,7 +8,6 @@ import log from '@utils/logger';
 import React, { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import MintGenerativeController from './MintGenerativeController';
-import s from './styles.module.scss';
 
 const LOG_PREFIX = 'MintBTCGenerative';
 
@@ -30,14 +29,10 @@ const MintBTCGenerative: React.FC = (): React.ReactElement => {
 
   if (!user) {
     return (
-      <div className={s.unauthorizedWrapper}>
-        <div className={s.actionWrapper}>
-          <Button disabled={isProcessing} onClick={handleConnectWallet}>
-            {isProcessing ? 'Connecting' : 'Connect wallet'}
-          </Button>
-          <p className={s.text}>To continue you need to connect your wallet.</p>
-        </div>
-      </div>
+      <RequestConnectWallet
+        isProcessing={isProcessing}
+        handleConnectWallet={handleConnectWallet}
+      />
     );
   }
 

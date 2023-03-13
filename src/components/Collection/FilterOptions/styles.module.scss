@@ -9,6 +9,28 @@
   }
 }
 
+.checkbox > input {
+  height: rem(16);
+  width: rem(16);
+  appearance: none;
+  border-radius: 2px;
+  outline: none;
+  transition-duration: 0.3s;
+  border: 1px solid $black-20;
+  cursor: pointer;
+}
+
+.checkbox > input:checked {
+  background-image: url("https://cdn.generative.xyz/icons/ic_checkboxed.svg");
+  background-size: contain;
+  border: none;
+  transition-duration: 0.3s;
+}
+
+.checkbox > input:active {
+  border: 2px solid #34495e;
+}
+
 .filter_price {
   margin: rem(20) 0;
 
@@ -74,6 +96,14 @@
   }
 }
 
+.reset_all {
+  display: none;
+
+  @include mobile {
+    display: block;
+  }
+}
+
 .filter_title {
   color: $black;
   margin-bottom: rem(21);
@@ -99,15 +129,104 @@
   }
 }
 
+.selectInput {
+  :global(.select__control) {
+    background-color: $white-100;
+    cursor: pointer;
+    outline: none;
+    box-shadow: none;
+    border-radius: 2px;
+    min-height: rem(48);
+    border: 1px solid $black-10;
+    min-width: rem(250px);
+  }
+
+  :global(.select__menu) {
+    border-radius: 2px;
+    box-shadow: 35px 15px 120px 0 #00000026;
+  }
+
+  :global(.select__menu-list) {
+    padding: 0;
+  }
+
+  :global(.select__indicator-separator) {
+    display: none;
+  }
+
+  :global(.select__placeholder) {
+    color: $black-40;
+    font-weight: 500;
+    line-height: (26/16);
+
+    @include calcFontAuto(14px, 16px);
+  }
+
+  :global(.select__multi-value__label) {
+    font-size: 14px;
+    line-height: 14px;
+    font-weight: 400;
+  }
+
+  :global(.select__input-container) {
+    color: $black-100;
+  }
+
+  :global(.select__option) {
+    padding: rem(10) rem(16);
+    font-weight: 400;
+    line-height: (26/16);
+
+    @include calcFontAuto(14px, 16px);
+
+    &:hover {
+      background-color: $black-5;
+    }
+  }
+
+  :global(.select__option--is-focused) {
+    background-color: $white;
+  }
+
+  :global(.select__option--is-selected) {
+    background-color: $white;
+    color: $black-100;
+
+    &:hover {
+      background-color: $black-5;
+      color: $black-100;
+    }
+  }
+}
+
+.checkbox {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  &_ic {
+    cursor: pointer;
+  }
+
+  &_text {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 26px;
+    color: #1c1c1c;
+    margin-left: rem(12px);
+  }
+}
+
 @include mobile {
   .filter_wrapper {
     position: fixed;
     top: rem(65);
-    height: 100vh;
+    height: calc(100vh - 65px);
     background: $white;
     left: 0;
     width: 100%;
     z-index: 7;
     padding: 16px;
+    overflow-y: scroll;
   }
 }

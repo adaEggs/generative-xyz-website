@@ -1,0 +1,80 @@
+.container {
+  position: relative;
+
+  .titleKey {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 20px;
+    color: #5b5b5b;
+    margin-bottom: rem(8px);
+  }
+
+  .apiKeyContainer {
+    .note {
+      padding: 20px 24px;
+      gap: 8px;
+      background: #e3f5ff;
+      border: 1px solid #4185ec;
+      border-radius: 2px;
+      font-size: 14px;
+      color: #4185ec;
+      margin-bottom: rem(16px);
+    }
+
+    .apiKey {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px;
+      height: rem(48px);
+      border: 1px solid #cecece;
+
+      .icCopy {
+        cursor: pointer;
+
+        :hover {
+          opacity: 0.8;
+        }
+      }
+    }
+
+    .btnContainer {
+      display: flex;
+      justify-content: flex-end;
+
+      .readDocBtn {
+        margin-top: rem(16px);
+      }
+    }
+  }
+
+  .generateContainer {
+    .note {
+      padding: 20px 24px;
+      gap: 8px;
+      background: #e3f5ff;
+      border: 1px solid #4185ec;
+      border-radius: 2px;
+      font-size: 14px;
+      color: #4185ec;
+    }
+
+    .btnContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: rem(16px);
+
+      .generateBtn {
+        margin-left: rem(8px);
+        height: rem(48px);
+      }
+    }
+  }
+
+  .loadingWrapper {
+    position: relative;
+  }
+}

@@ -8,7 +8,7 @@ import useWindowSize from '@hooks/useWindowSize';
 import Text from '@components/Text';
 import React from 'react';
 import NFTDisplayBox from '@components/NFTDisplayBox';
-import { formatBTCPrice } from '@utils/format';
+import { formatBTCPrice, formatLongAddress } from '@utils/format';
 import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
 
 interface IPros {
@@ -48,14 +48,35 @@ export const ProjectCardOrd = ({
                     {formatBTCPrice(project.price || 0)}&nbsp;BTC
                   </Text>
                 )}
+                <Text
+                  size="14"
+                  fontWeight="medium"
+                  className={s.projectCard_info_wrapper_displayName}
+                >
+                  {project?.holder?.displayName ||
+                    formatLongAddress(project?.address as string)}
+                </Text>
               </div>
             </div>
           ) : (
             <div className={cs(s.projectCard_info, s.desktop)}>
-              <div className={s.projectCard_info_title}>
+              <div
+                className={cs(
+                  s.projectCard_info_title,
+                  s.projectCard_info_wrapper
+                )}
+              >
                 <Heading as={'h4'}>
                   <span title={project.name}>#{project.inscriptionNumber}</span>
                 </Heading>
+                <Text
+                  size="20"
+                  fontWeight="medium"
+                  className={s.projectCard_info_wrapper_displayName}
+                >
+                  {project?.holder?.displayName ||
+                    formatLongAddress(project?.address as string)}
+                </Text>
                 {(Number(project?.price) || 0) > 0 && (
                   <Heading as={'h4'} className={s.projectCard_info_price}>
                     {formatBTCPrice(project.price || 0)}&nbsp;BTC

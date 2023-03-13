@@ -1,16 +1,14 @@
 import ButtonIcon from '@components/ButtonIcon';
-import Dropdown from '@components/Dropdown';
 import Heading from '@components/Heading';
 import Text from '@components/Text';
-import ToogleSwitch from '@components/Toggle';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { TraitStats } from '@interfaces/project';
-import { useCallback, useContext, useEffect } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
+import Select, { components } from 'react-select';
 import { v4 } from 'uuid';
 import styles from './styles.module.scss';
-import { debounce } from 'lodash';
-import Web3 from 'web3';
+import useOnClickOutside from '@hooks/useOnClickOutSide';
 
 type Props = {
   attributes?: TraitStats[];
@@ -18,85 +16,128 @@ type Props = {
 
 const FilterOptions = ({ attributes }: Props) => {
   const {
-    filterBuyNow,
-    setFilterBuyNow,
     filterTraits,
     setFilterTraits,
-    query,
-    setQuery,
     setPage,
     showFilter,
     setShowFilter,
-    filterPrice,
-    setFilterPrice,
+    // filterPrice,
+    // setFilterPrice,
   } = useContext(GenerativeProjectDetailContext);
 
-  const initialAttributesMap = useCallback(() => {
-    const attrMap = new Map();
-    attributes?.forEach(attr => {
-      attrMap.set(attr.traitName, '');
-    });
-    setQuery(attrMap);
-  }, [attributes]);
+  const filterdropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleSelectFilter = (
-    values: { value: string; label: string }[],
-    attr: TraitStats
-  ) => {
-    const newQuery = query?.set(attr.traitName, values[0].label);
-    let str = '';
-    newQuery?.forEach((value: string, key: string) => {
-      if (value) {
-        str += `,${key}:${value}`;
-      }
-    });
-    setFilterTraits(str.substring(1));
-    setQuery(newQuery || null);
-    setPage(1);
-  };
+  const [sortedAttributes, setSortedAttributes] = useState<TraitStats[] | null>(
+    null
+  );
+  const [currentTraitOpen, setCurrentTraitOpen] = useState('');
 
   const handleResetAllFilter = () => {
     setFilterTraits('');
-    initialAttributesMap();
+    setCurrentTraitOpen('');
   };
 
-  const handleMinPriceChange = (value: string) => {
-    if (value) {
-      setFilterPrice({
-        ...filterPrice,
-        from_price: `${Web3.utils.toWei(value, 'ether') || ''}`,
+  // const handleMinPriceChange = (value: string) => {
+  //   if (value) {
+  //     setFilterPrice({
+  //       ...filterPrice,
+  //       from_price: `${Web3.utils.toWei(value, 'ether') || ''}`,
+  //     });
+  //   } else {
+  //     setFilterPrice({
+  //       ...filterPrice,
+  //       from_price: '',
+  //     });
+  //   }
+  // };
+  // const handleMaxPriceChange = (value: string) => {
+  //   if (value) {
+  //     setFilterPrice({
+  //       ...filterPrice,
+  //       to_price: `${Web3.utils.toWei(value, 'ether')}`,
+  //     });
+  //   } else {
+  //     setFilterPrice({
+  //       ...filterPrice,
+  //       to_price: '',
+  //     });
+  //   }
+  // };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const Option = (props: any) => {
+    const attrName = props.label.split(':')[0];
+    const rarity = props.label.split(':')[1];
+
+    const { value, selectProps } = props;
+
+    const handleSelectOption = () => {
+      setCurrentTraitOpen(selectProps.placeholder);
+
+      const str = `${selectProps.placeholder}:${value}`;
+      setFilterTraits(prev => {
+        if (!prev) {
+          return str;
+        }
+        if (prev.includes(str)) {
+          const list = prev.split(',');
+          const newList = list.filter(item => item !== str);
+
+          return newList.length > 1 ? newList.join(',') : newList[0];
+        } else {
+          return `${prev},${str}`;
+        }
       });
-    } else {
-      setFilterPrice({
-        ...filterPrice,
-        from_price: '',
-      });
-    }
-  };
-  const handleMaxPriceChange = (value: string) => {
-    if (value) {
-      setFilterPrice({
-        ...filterPrice,
-        to_price: `${Web3.utils.toWei(value, 'ether')}`,
-      });
-    } else {
-      setFilterPrice({
-        ...filterPrice,
-        to_price: '',
-      });
-    }
+      setPage(1);
+    };
+
+    const defaultChecked = filterTraits
+      ?.split(',')
+      ?.includes(`${selectProps.placeholder}:${value}`);
+
+    return (
+      <div>
+        <components.Option {...props}>
+          <Stack
+            direction="horizontal"
+            className="justify-between cursor-pointer"
+            onClick={handleSelectOption}
+          >
+            <label htmlFor={`trait-${attrName}`}>{attrName}</label>
+            <Stack direction="horizontal" gap={3} className={styles.checkbox}>
+              <Text as="span" color="black-40">
+                {rarity}
+              </Text>
+              <input
+                type="checkbox"
+                id={`trait-${attrName}`}
+                checked={defaultChecked}
+              />
+            </Stack>
+          </Stack>
+        </components.Option>
+      </div>
+    );
   };
 
   useEffect(() => {
-    initialAttributesMap();
+    if (attributes) {
+      const _attirbutes = [...attributes];
+      setSortedAttributes(
+        _attirbutes.sort((a, b) => a.traitName.localeCompare(b.traitName))
+      );
+    }
   }, [attributes]);
+
+  useOnClickOutside(filterdropdownRef, () => setCurrentTraitOpen(''));
 
   return (
     <div className={styles.filter_wrapper}>
       <Heading fontWeight="semibold" className={styles.filter_title}>
         Filter
       </Heading>
-      <div className={styles.filter_buy}>
+      {/* DO NOT REMOVE CODE BELOW */}
+      {/* <div className={styles.filter_buy}>
         <Text size="18" fontWeight="medium">
           Buy now
         </Text>
@@ -130,9 +171,8 @@ const FilterOptions = ({ attributes }: Props) => {
           ></input>
           <Text>ETH</Text>
         </div>
-        {/* <ToogleSwitch onChange={() => setFilterBuyNow(!filterBuyNow)} /> */}
-      </div>
-      {attributes && attributes?.length > 0 && (
+      </div> */}
+      {sortedAttributes && sortedAttributes?.length > 0 && (
         <>
           <div className="divider"></div>
           <div className={styles.filter_traits}>
@@ -144,6 +184,7 @@ const FilterOptions = ({ attributes }: Props) => {
                 sizes="small"
                 variants="ghost"
                 onClick={handleResetAllFilter}
+                className={styles.reset_all}
               >
                 <Text size="14" fontWeight="medium">
                   Reset all
@@ -151,33 +192,43 @@ const FilterOptions = ({ attributes }: Props) => {
               </ButtonIcon>
             </Stack>
             <div className={styles.filter_traits_dropdown}>
-              {attributes?.length > 0 &&
-                attributes.map(attr => {
-                  const options: Array<{ value: string; label: string }> =
-                    attr.traitValuesStat.map(item => {
-                      return {
-                        value: item.value,
-                        label: `${item.value}`,
-                      };
-                    });
+              {sortedAttributes?.length > 0 &&
+                sortedAttributes.map(attr => {
+                  const _traitStats = [...attr.traitValuesStat];
 
-                  const defaultValue = options.filter(
-                    option => option.value === query?.get(attr.traitName)
-                  );
+                  const options: Array<{ value: string; label: string }> =
+                    _traitStats
+                      .sort((a, b) => a.rarity - b.rarity)
+                      .map(item => {
+                        return {
+                          value: item.value,
+                          label: `${item.value}:${item.rarity}%`,
+                        };
+                      });
 
                   return (
-                    <Dropdown
-                      values={filterTraits ? defaultValue : []}
+                    <Select
+                      defaultMenuIsOpen={currentTraitOpen === attr.traitName}
+                      id={`attributes-${v4()}`}
+                      key={`attributes-${v4()}`}
+                      isMulti
+                      name={`attributes-${v4()}`}
                       options={options}
-                      multi={false}
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      onChange={(values: any) =>
-                        handleSelectFilter(values, attr)
-                      }
+                      className={styles.selectInput}
+                      components={{
+                        Option,
+                      }}
+                      // onFocus={() => setCurrentTraitOpen(attr.traitName)}
+                      // onInputChange={() => setCurrentTraitOpen('')}
+                      onMenuOpen={() => setCurrentTraitOpen(attr.traitName)}
+                      onBlur={() => setCurrentTraitOpen('')}
+                      classNamePrefix="select"
+                      closeMenuOnSelect={false}
+                      hideSelectedOptions={false}
+                      controlShouldRenderValue={false}
+                      isClearable={false}
                       placeholder={attr.traitName}
-                      className={styles.filter_dropdown}
-                      key={`trait-${v4()}`}
-                      addPlaceholder={`${attr.traitName}: `}
+                      autoFocus={currentTraitOpen === attr.traitName}
                     />
                   );
                 })}

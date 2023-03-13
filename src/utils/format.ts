@@ -112,6 +112,7 @@ export const formatCurrency = (value: number): string => {
     const decimalStr = exponentialToDecimal(num).split('.')[1];
     return decimalStr.length;
   }
+
   const decimalLength = getDecimalPart(value);
   return value
     .toFixed(decimalLength > 2 ? decimalLength : 2)
@@ -120,17 +121,41 @@ export const formatCurrency = (value: number): string => {
 
 export const tokenID = (tokenName: string) => tokenName.split('#')[1];
 
-export const formatBTCPrice = (price: number | string): string => {
-  if (!price) return '--';
+export const formatBTCPrice = (
+  price: number | string,
+  emptyStr?: string
+): string => {
+  if (!price) return emptyStr || '-';
   const priceNumb = new BigNumber(price).dividedBy(1e8).toNumber();
   return ceilPrecised(priceNumb).toString().replace(',', '.');
 };
 
-export const formatEthPrice = (price: string | null): string => {
-  if (!price) return '--';
-  return ceilPrecised(parseFloat(Web3.utils.fromWei(price, 'ether')))
+// export const formatEthVolumePrice = (
+//   price: string | null,
+//   emptyStr?: string
+// ): string => {
+//   if (!price) return emptyStr || '-';
+//   const priceNumb = new BigNumber(price).dividedBy(1e8).toNumber();
+//   return ceilPrecised(priceNumb).toString().replace(',', '.');
+// };
+
+export const formatEthPrice = (
+  price: string | null,
+  emptyStr?: string
+): string => {
+  if (!price) return emptyStr || '-';
+  return ceilPrecised(parseFloat(Web3.utils.fromWei(price, 'ether')), 6)
     .toString()
     .replace(',', '.');
+};
+
+export const formatEthPriceInput = (
+  price: string | null,
+  emptyStr?: string
+): string => {
+  if (!price) return emptyStr || '-';
+  const priceNumb = new BigNumber(price).dividedBy(1e18).toNumber();
+  return ceilPrecised(priceNumb, 6).toString().replace(',', '.');
 };
 
 export const ceilPrecised = (number: number, precision = 6) => {
@@ -155,4 +180,19 @@ export const ellipsisCenter = (payload: {
   } catch {
     return str;
   }
+};
+
+export const formatWebDomain = (link: string): string => {
+  return link ? new URL(link).hostname : '';
+};
+
+export const convertToSatoshiNumber = (amount: number | string): number => {
+  if (!amount) throw 'Invalid amount';
+  return new BigNumber(amount).multipliedBy(1e8).toNumber();
+};
+
+export const formatBTCOriginalPrice = (price: number | string): string => {
+  if (!price) return '--';
+  const priceNumb = new BigNumber(price).dividedBy(1e8);
+  return priceNumb.toString().replace(',', '.');
 };

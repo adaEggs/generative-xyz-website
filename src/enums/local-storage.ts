@@ -10,4 +10,10 @@ export enum LocalStorageKey {
   USER_WALLET_ADDRESS = 'userWalletAddress',
   USER_LOCATION = 'userLocation',
   SESSION_FIRST_PAGE_VIEW = 'sessionFirstPageView',
+  FLAG_SIGN = 'flagSign',
+  ORD_ADDRESS = 'ordAddress',
+  CATEGORY_ID = 'categoryId',
+  BITCOIN_PENDING_UTXO = 'bitcoin-pending-utxo',
+  WALLET_ADDRESS_TAPROOT = 'wallet-address-taproot',
+  FCM_TOKEN = 'fcmToken',
 }

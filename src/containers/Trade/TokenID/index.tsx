@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import s from './TokenID.module.scss';
-import { Loading } from '@components/Loading';
-import Heading from '@components/Heading';
-import Text from '@components/Text';
-import { Container } from 'react-bootstrap';
 import ButtonIcon from '@components/ButtonIcon';
-import MarkdownPreview from '@components/MarkdownPreview';
-import { ellipsisCenter, formatBTCPrice } from '@utils/format';
-import useWindowSize from '@hooks/useWindowSize';
-import { getMarketplaceBtcNFTDetail } from '@services/marketplace-btc';
-import BigNumber from 'bignumber.js';
-import BuyTokenModal from '@containers/Trade/BuyTokenModal';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
-import { toast } from 'react-hot-toast';
-import { ErrorMessage } from '@enums/error-message';
-import { ROUTE_PATH } from '@constants/route-path';
+import ModalBuyItem from '@components/Collection/ModalBuyItem';
+import ModalBuyItemViaPSBT from '@components/Collection/ModalBuyItemViaPSBT';
+import Heading from '@components/Heading';
+import { Loading } from '@components/Loading';
 import NFTDisplayBox from '@components/NFTDisplayBox';
+import Text from '@components/Text';
+import { ROUTE_PATH } from '@constants/route-path';
+import { ErrorMessage } from '@enums/error-message';
+import { LogLevel } from '@enums/log-level';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
+import useWindowSize from '@hooks/useWindowSize';
 import { IGetMarketplaceBtcNFTDetail } from '@interfaces/api/marketplace-btc';
+import { getMarketplaceBtcNFTDetail } from '@services/marketplace-btc';
+import { ellipsisCenter, formatBTCPrice, formatEthPrice } from '@utils/format';
+import log from '@utils/logger';
+import BigNumber from 'bignumber.js';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
+import { Container } from 'react-bootstrap';
+import { toast } from 'react-hot-toast';
+import s from './TokenID.module.scss';
+import MarkdownPreview from '@components/MarkdownPreview';
 
 const LOG_PREFIX = 'BUY-NFT-BTC-DETAIL';
 
@@ -31,6 +33,28 @@ const TokenID: React.FC = (): React.ReactElement => {
   const [showMore, setShowMore] = useState(false);
   const { mobileScreen } = useWindowSize();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
+  const [payType, setPayType] = useState<'btc' | 'eth'>('btc');
+
+  const onShowModal = () => {
+    onButtonClick({
+      cbSigned: () => setShowModal(true),
+    }).then();
+  };
+
+  const onClickBuyBTC = () => {
+    if (tokenData && tokenData.buyable) {
+      setPayType('btc');
+      onShowModal();
+    }
+  };
+
+  const onClickBuyETH = () => {
+    if (tokenData && tokenData.buyable) {
+      setPayType('eth');
+      onShowModal();
+    }
+  };
 
   const renderLoading = () => {
     return (
@@ -50,7 +74,7 @@ const TokenID: React.FC = (): React.ReactElement => {
         <a
           color={'text-black-80'}
           className={s.row_right}
-          href={`https://ordinals-explorer-v5-dev.generative.xyz/inscription/${tokenData?.inscriptionID}`}
+          href={`https://dev-v5.generativeexplorer.com/inscription/${tokenData?.inscriptionID}`}
           target="_blank"
           rel="noreferrer"
         >
@@ -96,19 +120,53 @@ const TokenID: React.FC = (): React.ReactElement => {
             This inscription is not available for buying now.
           </Text>
         )}
-        <ButtonIcon
-          sizes="large"
-          className={s.info_buyBtn}
-          onClick={() => {
-            // return setShowModal(true);
-            if (tokenData.buyable) return setShowModal(true);
-            router.push(ROUTE_PATH.TRADE);
-          }}
-        >
-          <Text as="span" size="14" fontWeight="medium">
-            {tokenData.buyable ? 'Buy Now' : 'Buy others'}
-          </Text>
-        </ButtonIcon>
+        {tokenData.buyable ? (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+          >
+            <ButtonIcon
+              sizes="large"
+              className={s.info_buyBtn}
+              onClick={onClickBuyBTC}
+            >
+              <Text as="span" size="14" fontWeight="medium">
+                {`Buy   ${formatBTCPrice(tokenData.price)} BTC`}
+              </Text>
+            </ButtonIcon>
+            {tokenData.paymentListingInfo.eth &&
+              tokenData.paymentListingInfo.eth.price && (
+                <ButtonIcon
+                  sizes="large"
+                  className={s.info_buyBtn}
+                  style={{ marginLeft: 8 }}
+                  onClick={onClickBuyETH}
+                  variants="outline"
+                >
+                  <Text as="span" size="14" fontWeight="medium">
+                    {`Buy   ${formatEthPrice(
+                      tokenData.paymentListingInfo.eth.price
+                    )} ETH`}
+                  </Text>
+                </ButtonIcon>
+              )}
+          </div>
+        ) : (
+          <ButtonIcon
+            sizes="large"
+            className={s.info_buyBtn}
+            onClick={() => {
+              router.push(ROUTE_PATH.TRADE);
+            }}
+          >
+            <Text as="span" size="14" fontWeight="medium">
+              {'Buy others'}
+            </Text>
+          </ButtonIcon>
+        )}
         {mobileScreen && (
           <NFTDisplayBox
             inscriptionID={tokenData.inscriptionID}
@@ -134,6 +192,7 @@ const TokenID: React.FC = (): React.ReactElement => {
             style={{ WebkitLineClamp: showMore ? 'unset' : '4' }}
           >
             <MarkdownPreview source={tokenData.description} />
+            {/* {tokenData.description} */}
           </div>
           {tokenData.description && tokenData.description.length > 300 && (
             <>
@@ -187,7 +246,7 @@ const TokenID: React.FC = (): React.ReactElement => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    fetchData().then();
+    fetchData().then().catch();
     const intervalID = setInterval(fetchData, 60000);
     return () => {
       clearInterval(intervalID);
@@ -210,15 +269,38 @@ const TokenID: React.FC = (): React.ReactElement => {
           />
         </div>
       )}
-      {!!tokenData?.inscriptionID && !!tokenData?.price && (
-        <BuyTokenModal
-          showModal={showModal}
-          onClose={() => setShowModal(false)}
-          inscriptionID={tokenData.inscriptionID || ''}
-          price={new BigNumber(tokenData?.price || 0).toNumber()}
-          orderID={tokenData.orderID}
-        />
-      )}
+      {!!tokenData?.inscriptionID &&
+        !!tokenData?.price &&
+        !!ordAddress &&
+        showModal && (
+          <>
+            {payType === 'eth' ? (
+              <ModalBuyItem
+                showModal={showModal}
+                onClose={() => setShowModal(false)}
+                inscriptionID={tokenData.inscriptionID || ''}
+                price={new BigNumber(
+                  tokenData.paymentListingInfo.eth
+                    ? tokenData.paymentListingInfo.eth.price
+                    : 0
+                ).toNumber()}
+                orderID={tokenData.orderID}
+                ordAddress={ordAddress}
+                payType="eth"
+              />
+            ) : (
+              <ModalBuyItemViaPSBT
+                showModal={showModal}
+                onClose={() => setShowModal(false)}
+                inscriptionID={tokenData.inscriptionID || ''}
+                price={new BigNumber(tokenData?.price || 0).toNumber()}
+                orderID={tokenData.orderID}
+                ordAddress={ordAddress}
+                payType="btc"
+              />
+            )}
+          </>
+        )}
     </Container>
   );
 };

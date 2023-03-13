@@ -8,6 +8,7 @@
 
   &_row {
     min-height: rem(40px);
+    gap: rem(10);
   }
 
   &_inner {
@@ -75,6 +76,22 @@
     .logo {
       color: $white;
     }
+
+    .freeTools {
+      .arrowIcon {
+        :global(svg path) {
+          stroke: $black-40-solid;
+        }
+      }
+
+      a:hover {
+        .arrowIcon {
+          :global(svg path) {
+            stroke: $white;
+          }
+        }
+      }
+    }
   }
 
   &_logo {
@@ -135,6 +152,10 @@
         font-size: rem(16);
         position: relative;
         cursor: pointer;
+        color: $black-40-solid;
+        display: inline-flex;
+        align-items: center;
+        gap: rem(6px);
 
         @include mobile {
           text-align: center;
@@ -165,16 +186,16 @@
         }
       }
 
-      .active,
+      .active a,
       a:hover {
         transition: all 0.3s;
         color: $black-100;
       }
 
       &.dark {
-        color: $white-60-solid;
+        color: $black-40-solid;
 
-        .active,
+        .active a,
         a:hover {
           transition: all 0.3s;
           color: $white;
@@ -249,8 +270,13 @@
     transition: all 0.4s $easeOutCubic;
   }
 
-  &.isMenuOpen {
+  &:not(.isDisplay) {
     position: sticky;
+    top: 0;
+  }
+
+  &.isMenuOpen {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
@@ -264,11 +290,6 @@
       opacity: 0;
       visibility: hidden;
     }
-  }
-
-  &:not(.isDisplay) {
-    position: sticky;
-    top: 0;
   }
 }
 
@@ -351,10 +372,15 @@
 }
 
 .header {
+  &_left,
   &_right {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
+    gap: rem(48);
+
+    @include mobile {
+      gap: rem(12);
+    }
 
     &_links {
       margin-right: rem(26px);
@@ -383,6 +409,10 @@
       }
     }
   }
+
+  &_right {
+    justify-content: flex-end;
+  }
 }
 
 .btnMenuMobile {
@@ -390,6 +420,10 @@
   background: none;
   padding: rem(8px) 0;
   margin-left: rem(15px);
+
+  @include mobile {
+    margin-left: 0;
+  }
 
   svg {
     width: 24px;
@@ -443,6 +477,7 @@
 
 .yourVault {
   position: relative;
+  text-transform: unset !important;
 
   :global(.dropdown) {
     opacity: 0;
@@ -455,6 +490,83 @@
     :global(.dropdown) {
       visibility: visible;
       opacity: 1;
+    }
+  }
+}
+
+.freeTools {
+  position: relative;
+
+  &:hover {
+    .freeToolsDropdown {
+      display: block;
+    }
+  }
+
+  .freeToolsDropdown {
+    position: absolute;
+    background-color: $white;
+    width: rem(410px);
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%);
+    box-shadow: 35px 15px 120px rgb(0 0 0 / 15%);
+    border-radius: 2px;
+    display: none;
+
+    &.show {
+      display: block;
+    }
+  }
+
+  .freeToolItem {
+    display: flex;
+    align-items: center;
+    gap: rem(12px);
+    padding: rem(10px) rem(16px);
+
+    &.disabled * {
+      cursor: not-allowed;
+    }
+
+    &:hover {
+      background-color: rgb(0 0 0 / 5%);
+    }
+
+    a {
+      padding: 0;
+    }
+  }
+
+  .mainText {
+    font-weight: 500;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: $black-100;
+    text-transform: capitalize;
+  }
+
+  .subText {
+    font-weight: 400;
+    font-size: rem(14px);
+    line-height: rem(22px);
+    text-transform: none;
+    color: $black-40-solid;
+  }
+
+  .arrowIcon {
+    display: inline-block;
+
+    :global(svg path) {
+      stroke: $black-40-solid;
+    }
+  }
+
+  :hover {
+    .arrowIcon {
+      :global(svg path) {
+        stroke: $black-100;
+      }
     }
   }
 }

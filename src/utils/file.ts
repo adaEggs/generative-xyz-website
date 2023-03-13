@@ -1,5 +1,10 @@
 import FileType from 'file-type/browser';
-import { NAIVE_MIMES, SUPPORTED_FILE_EXT } from '@constants/file';
+import {
+  IMAGE_EXTENSIONS,
+  NAIVE_MIMES,
+  SUPPORTED_FILE_EXT,
+  SUPPORT_INSCRIBE_IMAGE,
+} from '@constants/file';
 import { unzip } from 'unzipit';
 import { MASOX_SYSTEM_PREFIX } from '@constants/sandbox';
 import { MediaType } from '@enums/file';
@@ -57,6 +62,12 @@ export const fileToBase64 = (
     reader.onerror = error => reject(error);
   });
 
+export const blobToFile = (fileName: string, fileBlob: Blob): File => {
+  return new File([fileBlob], fileName, {
+    type: fileBlob.type,
+  });
+};
+
 export const blobToBase64 = (
   blob: Blob
 ): Promise<string | ArrayBuffer | null> =>
@@ -72,9 +83,33 @@ export const getSupportedFileExtList = (): Array<string> => {
 };
 
 export const getMediaTypeFromFileExt = (ext: string): MediaType | null => {
-  const supportedFile = SUPPORTED_FILE_EXT.find(item => item.ext === ext);
+  const supportedFile = SUPPORTED_FILE_EXT.find(
+    item => item.ext.toLowerCase() === ext.toLowerCase()
+  );
   if (supportedFile) {
     return supportedFile.mediaType;
   }
   return null;
+};
+
+export const getFileNameFromUrl = (url: string): string => {
+  return url.substring(url.lastIndexOf('/') + 1, url.length);
+};
+
+export const isImageFile = (file: File): boolean => {
+  const fileName = file.name;
+  const fileExt = getFileExtensionByFileName(fileName);
+  if (!fileExt) {
+    return false;
+  }
+  return IMAGE_EXTENSIONS.includes(fileExt);
+};
+
+export const isInscribeImageFile = (file: File): boolean => {
+  const fileName = file.name;
+  const fileExt = getFileExtensionByFileName(fileName);
+  if (!fileExt) {
+    return false;
+  }
+  return SUPPORT_INSCRIBE_IMAGE.includes(fileExt);
 };

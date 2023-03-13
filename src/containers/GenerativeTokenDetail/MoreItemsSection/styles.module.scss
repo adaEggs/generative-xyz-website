@@ -43,8 +43,8 @@
 .view_collection {
   display: flex;
   justify-content: center;
-  margin-top: rem(50px);
-  margin-bottom: rem(90px);
+  margin-top: rem(48px);
+  margin-bottom: rem(100px);
 
   .icon_btn {
     svg,
@@ -55,7 +55,8 @@
 }
 
 .listWrapper {
-  margin-top: rem(52px);
+  margin-top: rem(48px);
+  margin-bottom: rem(100px);
   min-height: rem(400px);
 }
 

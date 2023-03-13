@@ -21,6 +21,8 @@ import Row from 'react-bootstrap/Row';
 import Select, { SingleValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
+import { LocalStorageKey } from '@enums/local-storage';
+import { useRouter } from 'next/router';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -40,13 +42,16 @@ const SORT_OPTIONS: Array<{ value: string; label: string }> = [
 const LOG_PREFIX = 'RecentWorks';
 
 export const RecentWorks = (): JSX.Element => {
+  const router = useRouter();
+
+  const { category: categoryNameParams } = router.query;
+
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoadedMore, setIsLoadMore] = useState<boolean>(false);
   const [projects, setProjects] = useState<IGetProjectListResponse>();
   const [listData, setListData] = useState<Project[]>([]);
   const [sort, setSort] = useState<string | null>('');
   const [currentTotal, setCurrentTotal] = useState<number>(0);
-  // const router = useRouter();
   const [categoriesList, setCategoriesList] = useState<Category[]>();
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
@@ -62,11 +67,18 @@ export const RecentWorks = (): JSX.Element => {
       try {
         setIsLoadMore(false);
 
+        const _categoryID = () => {
+          if (categoryID === 'All') {
+            return '';
+          }
+          return categoryID;
+        };
+
         const tmpProject = await getProjectList({
           contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
           limit: 12,
           page: page + 1,
-          category: categoryID ? [categoryID] : [''],
+          category: categoryID ? [_categoryID()] : [''],
           sort: sort || SORT_OPTIONS[0].value,
         });
 
@@ -90,7 +102,10 @@ export const RecentWorks = (): JSX.Element => {
   );
 
   const onLoadMore = () => {
-    getProjectAll({ page: pageNum + 1, categoryID: filterCategory || '' });
+    getProjectAll({
+      page: pageNum + 1,
+      categoryID: filterCategory || activeCategory || '',
+    });
     setPageNum(prev => prev + 1);
   };
 
@@ -98,34 +113,58 @@ export const RecentWorks = (): JSX.Element => {
     try {
       setCategoriesLoading(true);
       const { result } = await getCategoryList();
+
+      let historyCategoryID = sessionStorage.getItem(
+        LocalStorageKey.CATEGORY_ID
+      );
+      if (!historyCategoryID) {
+        historyCategoryID = 'All';
+      }
       if (result && result.length > 0) {
+        historyCategoryID =
+          result?.find(category => category.name === categoryNameParams)?.id ||
+          'All';
+
         setCategoriesList(result);
         setCategoriesLoading(false);
         const projectRes = await getProjectAll({
           page: 0,
-          categoryID: result[0].id,
+          categoryID:
+            historyCategoryID || historyCategoryID?.length === 0
+              ? historyCategoryID
+              : result[0].id,
         });
-        setActiveCategory(result[0].id);
+        setActiveCategory(
+          historyCategoryID || historyCategoryID?.length === 0
+            ? historyCategoryID
+            : result[0].id
+        );
         if (projectRes && projectRes.result && projectRes.result.length > 0)
           setIsLoaded(true);
       }
     } catch (err: unknown) {
       log('failed to fetch category list', LogLevel.ERROR, LOG_PREFIX);
-      throw Error();
     }
   };
 
-  const handleClickCategory = (categoryID: string) => {
+  const handleClickCategory = (categoryID: string, categoryName: string) => {
     setFilterCategory(categoryID);
     setActiveCategory(categoryID);
+    sessionStorage.setItem(LocalStorageKey.CATEGORY_ID, categoryID);
     setProjects(undefined);
+    router.replace({
+      query: { ...router.query, category: categoryName },
+    });
   };
 
   useAsyncEffect(async () => {
     if (categoriesList && categoriesList.length > 0) {
       setIsLoadMore(false);
       setIsLoaded(false);
-      await getProjectAll({ page: 0, categoryID: filterCategory || '' });
+      await getProjectAll({
+        page: 0,
+        categoryID: filterCategory ? filterCategory : categoriesList[0].id,
+      });
       setIsLoaded(true);
     }
   }, [filterCategory, sort]);
@@ -146,6 +185,16 @@ export const RecentWorks = (): JSX.Element => {
             md={'auto'}
             xs={'12'}
           >
+            <CategoryTab
+              type="3"
+              text="All"
+              onClick={() => {
+                setPageNum(0);
+                handleClickCategory('All', 'All');
+              }}
+              active={activeCategory === 'All'}
+              loading={categoriesLoading}
+            />
             {categoriesList &&
               categoriesList?.map(category => (
                 <CategoryTab
@@ -154,22 +203,12 @@ export const RecentWorks = (): JSX.Element => {
                   key={`category-${category.id}`}
                   onClick={() => {
                     setPageNum(0);
-                    handleClickCategory(category.id);
+                    handleClickCategory(category.id, category.name);
                   }}
                   active={activeCategory === category.id}
                   loading={categoriesLoading}
                 />
               ))}
-            <CategoryTab
-              type="3"
-              text="All"
-              onClick={() => {
-                setPageNum(0);
-                handleClickCategory('');
-              }}
-              active={activeCategory === ''}
-              loading={categoriesLoading}
-            />
           </Col>
           <Col
             className={cs(s.recentWorks_heading_col, s.sort_dropdown)}
@@ -187,6 +226,7 @@ export const RecentWorks = (): JSX.Element => {
                 classNamePrefix="select"
                 onChange={(op: SingleValue<SelectOption>) => {
                   if (op) {
+                    setPageNum(0);
                     setSort(op.value);
                     setProjects(undefined);
                   }

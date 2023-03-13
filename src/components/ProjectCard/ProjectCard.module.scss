@@ -72,13 +72,39 @@
       left: rem(16px);
       right: rem(16px);
       bottom: rem(16px);
-    };
+    }
+
+    &_price {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &_mintoutContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      &_text {
+        font-style: normal;
+        font-weight: 500;
+        font-size: rem(16px);
+        line-height: rem(26px);
+        color: #ff7e21;
+        margin-left: rem(4px);
+      }
+
+      &_floorPrice {
+        font-style: normal;
+        font-weight: 500;
+        font-size: rem(16px);
+        line-height: rem(26px);
+        margin-left: rem(4px);
+        margin-right: rem(6px);
+      }
+    }
 
     @include mobile {
-      top: rem(12px);
-      left: rem(6px);
-      right: rem(6px);
-      bottom: rem(6px);
+      padding: rem(12px) rem(8px);
     }
 
     &.desktop {
@@ -110,6 +136,33 @@
         margin-top: rem(5);
       }
     }
+
+    &_price_price {
+      &_wrap {
+        display: flex;
+      }
+
+      &_minted {
+        position: relative;
+
+        &:not(.isOnlyMintedShow) {
+          margin-left: 0.5em;
+          padding-left: 0.7em;
+
+          &::before {
+            content: "";
+            display: block;
+            border: 2px solid rgb(0 0 0 / 40%);
+            width: 0;
+            height: 0;
+            left: 0;
+            top: 0.7em;
+            position: absolute;
+            border-radius: 50%;
+          }
+        }
+      }
+    }
   }
 
   &:hover {
@@ -132,6 +185,13 @@
   &_progress {
     width: 100%;
     height: rem(32);
+  }
+
+  .row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 

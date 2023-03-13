@@ -15,6 +15,7 @@ import s from './RecentWorks.module.scss';
 import ButtonIcon from '@components/ButtonIcon';
 import { Container } from 'react-bootstrap';
 import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const LIMIT = 20;
 
@@ -24,6 +25,16 @@ export const RecentWorks = (): JSX.Element => {
 
   const [listData, setListData] = useState<IGetMarketplaceBtcListItem[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
+
+  const onShowModal = () => {
+    onButtonClick({
+      cbSigned: () => setShowModal(true),
+    })
+      .then()
+      .catch();
+  };
 
   const fetchData = async () => {
     if (isLoading) return;
@@ -66,7 +77,7 @@ export const RecentWorks = (): JSX.Element => {
           sizes="large"
           variants="primary"
           className={s.banner_btn}
-          onClick={() => setShowModal(true)}
+          onClick={onShowModal}
         >
           List for sale
         </ButtonIcon>
@@ -97,10 +108,13 @@ export const RecentWorks = (): JSX.Element => {
           </Col>
         </Row>
       </Container>
-      <ListForSaleModal
-        showModal={showModal}
-        onClose={() => setShowModal(false)}
-      />
+      {!!ordAddress && showModal && (
+        <ListForSaleModal
+          showModal={showModal}
+          onClose={() => setShowModal(false)}
+          ordAddress={ordAddress}
+        />
+      )}
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import { Loading } from '@components/Loading';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
@@ -28,6 +28,7 @@ interface IProps {
   inscriptionID: string;
   price: number;
   orderID: string;
+  ordAddress: string;
 }
 
 const LOG_PREFIX = 'BuyModal';
@@ -38,6 +39,7 @@ const ListForSaleModal = ({
   price,
   inscriptionID,
   orderID,
+  ordAddress,
 }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
@@ -54,7 +56,7 @@ const ListForSaleModal = ({
 
     if (!values.address) {
       errors.address = 'Address is required.';
-    } else if (!validateBTCWalletAddress(values.address)) {
+    } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     }
     return errors;
@@ -67,6 +69,7 @@ const ListForSaleModal = ({
         walletAddress: _data.address,
         inscriptionID,
         orderID,
+        payType: 'btc',
       });
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);
@@ -134,7 +137,7 @@ const ListForSaleModal = ({
                       <Formik
                         key="mintBTCGenerativeForm"
                         initialValues={{
-                          address: '',
+                          address: ordAddress,
                         }}
                         validate={validateForm}
                         onSubmit={handleSubmit}
@@ -151,15 +154,16 @@ const ListForSaleModal = ({
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
                                 Enter the Ordinals-compatible BTC address to
-                                receive your buying inscription. Don’t have one?{' '}
-                                <a
-                                  href="https://gist.github.com/windsok/5b53a1ced6ef3eddbde260337de28980"
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  Start here
-                                </a>
-                                .{/*<OverlayTrigger*/}
+                                receive your buying inscription.
+                                {/*Don’t have one?{' '}*/}
+                                {/*<a*/}
+                                {/*  href="https://gist.github.com/windsok/5b53a1ced6ef3eddbde260337de28980"*/}
+                                {/*  target="_blank"*/}
+                                {/*  rel="noreferrer"*/}
+                                {/*>*/}
+                                {/*  Start here*/}
+                                {/*</a>*/}
+                                {/*<OverlayTrigger*/}
                                 {/*  placement="bottom"*/}
                                 {/*  delay={{ show: 250, hide: 400 }}*/}
                                 {/*  overlay={*/}

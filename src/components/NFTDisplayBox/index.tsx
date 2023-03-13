@@ -9,8 +9,9 @@ import Skeleton from '@components/Skeleton';
 import { ROUTE_PATH } from '@constants/route-path';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { getTokenUri } from '@services/token-uri';
+import { GLB_EXTENSION } from '@constants/file';
 
-const EXPLORER = 'https://ordinals-explorer-v5-dev.generative.xyz';
+const EXPLORER = 'https://dev-v5.generativeexplorer.com';
 // CDN_URL;
 type ContentVariantsType = 'full' | 'absolute';
 
@@ -59,7 +60,7 @@ const NFTDisplayBox = ({
       <iframe
         className={contentClass}
         src={getURLPreview()}
-        sandbox="allow-scripts"
+        sandbox="allow-scripts allow-pointer-lock"
         scrolling="no"
         loading="lazy"
         onError={onError}
@@ -158,7 +159,7 @@ const NFTDisplayBox = ({
         .then(data => {
           const { image } = data;
           const fileExt = image?.split('.').pop();
-          if (fileExt && fileExt === 'glb') {
+          if (fileExt && fileExt === GLB_EXTENSION) {
             setHTMLContentRender(renderGLBIframe());
           } else {
             setHTMLContentRender(renderIframe());
@@ -201,7 +202,6 @@ const NFTDisplayBox = ({
             setHTMLContentRender(renderImage());
             return;
           case 'application/json':
-          case 'application/pdf':
           case 'application/pgp-signature':
           case 'application/yaml':
           case 'audio/flac':
@@ -212,6 +212,7 @@ const NFTDisplayBox = ({
           case 'text/html;charset=utf-8':
             handleRenderHTML();
             return;
+          case 'application/pdf':
           case 'text/plain;charset=utf-8':
             setHTMLContentRender(renderIframe());
             return;
@@ -241,4 +242,4 @@ const NFTDisplayBox = ({
   );
 };
 
-export default NFTDisplayBox;
+export default React.memo(NFTDisplayBox);

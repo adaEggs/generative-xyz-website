@@ -36,8 +36,32 @@
   }
 
   /* Button sizes */
+  &.xlarge {
+    padding: rem(19px) rem(24px);
+    gap: rem(6px);
+
+    &:has(.leftIcon) {
+      padding-left: rem(20px);
+    }
+
+    &:has(.rightIcon) {
+      padding-right: rem(20px);
+    }
+
+    &.iconOnly {
+      width: rem(64px);
+      height: rem(64px);
+      padding: 0;
+    }
+
+    .icon {
+      width: rem(22px);
+      height: rem(22px);
+    }
+  }
+
   &.large {
-    padding: rem(15px) rem(24px);
+    padding: rem(11px) rem(12px);
     gap: rem(10px);
 
     &:has(.leftIcon) {
@@ -165,7 +189,7 @@
 
   &.primary {
     background-color: $primary-brand;
-    border: 2px inset $black-100;
+    border: 2px inset transparent;
     color: $white-100;
 
     &:hover {
@@ -176,6 +200,22 @@
       background-color: $black-5;
       color: $black-20;
       border: none;
+    }
+  }
+
+  &.secondary-2 {
+    background-color: $black-5;
+    border: 2px solid $black-5;
+    color: $primary-brand;
+
+    &:hover {
+      background-color: $white-5;
+      border: 2px solid $white-5;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      pointer-events: none;
     }
   }
 
@@ -263,6 +303,44 @@
 
     &:hover {
       background-color: $black-5;
+    }
+
+    &:disabled {
+      opacity: 0.2;
+    }
+  }
+
+  &.blue {
+    color: $white;
+    background-color: $blue-100;
+    font-size: rem(16px);
+    line-height: 140%;
+
+    svg path {
+      stroke: white !important;
+    }
+
+    &:hover {
+      opacity: 0.8;
+    }
+
+    &:disabled {
+      opacity: 0.2;
+    }
+  }
+
+  &.blue-deep {
+    color: $white;
+    background-color: #4f43e2;
+    font-size: rem(16px);
+    line-height: 140%;
+
+    svg path {
+      stroke: white !important;
+    }
+
+    &:hover {
+      opacity: 0.8;
     }
 
     &:disabled {

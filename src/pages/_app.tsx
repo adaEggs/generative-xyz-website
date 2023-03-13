@@ -7,9 +7,11 @@ import {
   SEO_TITLE,
 } from '@constants/seo-default-info';
 import { WalletProvider } from '@contexts/wallet-context';
+import { AssetsProvider } from '@contexts/assets-context';
 import { LogLevel } from '@enums/log-level';
 import store from '@redux';
 import { sendAAPageView } from '@services/aa-tracking';
+import DatadogService from '@services/datadog';
 import '@styles/index.scss';
 import log from '@utils/logger';
 import { getReferralCodeURLParameter, setReferral } from '@utils/referral';
@@ -18,7 +20,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import NextNprogress from 'nextjs-progressbar';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 
 interface MyAppProps extends AppProps {
@@ -33,7 +35,6 @@ export default function App({ Component, pageProps }: MyAppProps) {
   const router = useRouter();
   const { seoInfo = {} } = pageProps;
   const { title, description, image } = seoInfo;
-  const isFirstRender = useRef(true);
   const { pathname } = useRouter();
 
   useEffect(() => {
@@ -52,10 +53,7 @@ export default function App({ Component, pageProps }: MyAppProps) {
   }, []);
 
   useEffect(() => {
-    if (router.isReady && !isFirstRender.current) {
-      sendAAPageView({ page: window.location.pathname });
-    }
-    isFirstRender.current = false;
+    sendAAPageView({ page: window.location.pathname });
   }, [router.asPath]);
 
   useEffect(() => {
@@ -63,6 +61,16 @@ export default function App({ Component, pageProps }: MyAppProps) {
     if (refCode) {
       setReferral(refCode);
     }
+  }, []);
+
+  useEffect(() => {
+    const ddInstance = DatadogService.getInstance();
+    ddInstance.init();
+    ddInstance.startRUMTracking();
+
+    return () => {
+      ddInstance.stopRUMTracking();
+    };
   }, []);
 
   const renderBody = () => {
@@ -73,8 +81,10 @@ export default function App({ Component, pageProps }: MyAppProps) {
       <Provider store={store}>
         <WalletProvider>
           <AuthWrapper>
-            <Component {...pageProps} />
-            <ToastOverlay />
+            <AssetsProvider>
+              <Component {...pageProps} />
+              <ToastOverlay />
+            </AssetsProvider>
           </AuthWrapper>
         </WalletProvider>
       </Provider>

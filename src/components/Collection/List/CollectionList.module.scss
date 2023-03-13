@@ -7,6 +7,36 @@
   }
 }
 
+.filterList {
+  display: flex;
+  align-items: center;
+  gap: rem(10);
+  margin-bottom: rem(24);
+  flex-wrap: wrap;
+
+  > button {
+    max-height: rem(48px);
+    font-weight: 500;
+  }
+}
+
+.filterItem {
+  gap: rem(10);
+  border: 1px solid $black-20;
+  padding: rem(11) rem(12);
+  border-radius: 2px;
+  width: fit-content;
+}
+
+.removeIcon {
+  svg,
+  path {
+    stroke: $black-100;
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
 .listToken {
   &:global(.grid-cols-1) {
     grid-template-columns: 100%;
@@ -28,4 +58,8 @@
   position: absolute;
   z-index: 0;
   top: 0;
+
+  > div:first-of-type {
+    width: rem(400);
+  }
 }

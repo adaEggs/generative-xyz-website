@@ -1,3 +1,4 @@
+import { GLB_EXTENSION } from '@constants/file';
 import { Token } from '@interfaces/token';
 import { useMemo } from 'react';
 import GLTFPreview from './GltfPreview';
@@ -13,8 +14,8 @@ const ObjectPreview: React.FC<IProps> = ({ token }) => {
     return image?.split('.').pop();
   }, [image]);
 
-  if (fileExt && fileExt === 'glb') {
-    return <GLTFPreview whiteHouse url={image} />;
+  if (fileExt && fileExt === GLB_EXTENSION) {
+    return <GLTFPreview whiteHouse url={image} download />;
   }
 
   return <></>;

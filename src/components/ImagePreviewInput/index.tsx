@@ -9,6 +9,7 @@ import React, {
   useState,
 } from 'react';
 import s from './styles.module.scss';
+import { prettyPrintBytes } from '@utils/units';
 
 interface IProps {
   file: string;
@@ -16,6 +17,8 @@ interface IProps {
   className?: string;
   placeHolderHtml?: JSX.Element;
   previewHtml?: JSX.Element;
+  maxSizeKb?: number;
+  onError?: (r: boolean) => void;
 }
 
 const ImagePreviewInput: React.FC<IProps> = ({
@@ -24,8 +27,11 @@ const ImagePreviewInput: React.FC<IProps> = ({
   placeHolderHtml,
   onFileChange,
   previewHtml,
+  maxSizeKb = 1024,
+  onError,
 }: IProps): React.ReactElement => {
   const [preview, setPreview] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [currentImage, setCurrentImage] = useState<JSX.Element | null>(
     previewHtml || null
   );
@@ -37,19 +43,34 @@ const ImagePreviewInput: React.FC<IProps> = ({
     }
 
     setPreview(file);
-
     return () => URL.revokeObjectURL(file);
   }, [file]);
 
   const onSelectFile = (evt: ChangeEvent<HTMLInputElement>) => {
+    setError(null);
     if (!evt.target.files || evt.target.files.length === 0) {
       setCurrentImage(previewHtml || null);
       return;
     }
+
     const newFile = evt.target.files[0];
-    onFileChange(newFile);
+    const fileSize = newFile.size / 1024;
+
     setPreview(URL.createObjectURL(newFile));
     setCurrentImage(null);
+
+    if (fileSize > maxSizeKb) {
+      onFileChange(null);
+      setError(
+        `File size error, maximum file size is ${prettyPrintBytes(
+          maxSizeKb * 1024
+        )}.`
+      );
+      onError && onError(true);
+    } else {
+      onFileChange(newFile);
+      onError && onError(false);
+    }
   };
 
   return (
@@ -85,8 +106,9 @@ const ImagePreviewInput: React.FC<IProps> = ({
         accept="image/*"
         onChange={onSelectFile}
       />
+
+      {error && <p className={s.errorText}>{error}</p>}
     </div>
   );
 };
-
 export default ImagePreviewInput;

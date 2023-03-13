@@ -158,6 +158,26 @@
     color: $secondary-red;
   }
 
+  .checkBoxContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: rem(8px);
+    margin-bottom: rem(24px);
+
+    .checkBoxIc {
+      cursor: pointer;
+    }
+
+    .checkBoxlabel {
+      font-size: rem(14px);
+      line-height: rem(22px);
+      color: $black-60;
+      display: block;
+      margin-left: rem(8px);
+    }
+  }
+
   .inputError {
     font-size: rem(14px);
     font-weight: 400;

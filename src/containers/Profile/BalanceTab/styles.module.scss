@@ -1,0 +1,102 @@
+.wrapper {
+  margin-top: rem(58);
+
+  &_title {
+    font-size: rem(34px) !important;
+    font-weight: 700;
+    line-height: 44px;
+    margin-bottom: rem(48px);
+  }
+}
+
+.referral_link {
+  margin: {
+    bottom: rem(50);
+  }
+
+  .link {
+    display: flex;
+    align-items: center;
+    padding: rem(14) rem(11);
+    gap: rem(20);
+    border: 1px solid $black-10;
+  }
+}
+
+.referee {
+  gap: rem(10);
+  padding-left: rem(5);
+}
+
+.actions {
+  text-align: right;
+}
+
+.iconCopy {
+  cursor: pointer;
+  margin-left: 8px;
+
+  :hover {
+    opacity: 0.9;
+  }
+}
+
+.switch_currency {
+  justify-content: flex-end;
+}
+
+.Refferal_table {
+  :global(tbody tr td) {
+    padding: {
+      top: rem(13) !important;
+      bottom: rem(13) !important;
+    }
+  }
+}
+
+.Withdraw_all {
+  &_btn {
+    display: flex;
+    align-items: center;
+    gap: rem(10);
+    margin-left: auto;
+
+    .dots {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background-color: $white;
+    }
+  }
+}
+
+.ctas {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: rem(16px);
+
+  .send {
+    min-width: 110px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .receiver {
+    width: fit-content;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.headerAction {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+
+  &_text {
+    text-align: center;
+    width: 240px;
+  }
+}

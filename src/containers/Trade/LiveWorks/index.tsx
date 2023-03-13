@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 
 import Heading from '@components/Heading';
-import ListForSaleModal from '@containers/Trade/ListForSaleModal';
 import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { ProjectList } from '@containers/Trade/ProjectLists';
 
@@ -22,12 +21,12 @@ export const LiveWorks = (): JSX.Element => {
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [showModal, setShowModal] = useState<boolean>(false);
-
   const router = useRouter();
+
   const goToInscriptionsPage = () => {
-    router.push(ROUTE_PATH.INSCRIBE);
+    router.push(ROUTE_PATH.FREE_INSCRIPTION);
   };
+
   const [dataOrd, setdataOrd] = useState<IGetMarketplaceBtcListItem[]>([]);
   const [fromOrd, setFromOrd] = useState(0);
   const fetchDataOrdinals = async () => {
@@ -70,13 +69,6 @@ export const LiveWorks = (): JSX.Element => {
           className={s.wrap_btn}
         >
           <ButtonIcon
-            sizes="large"
-            className={s.recentWorks_btn}
-            onClick={() => setShowModal(true)}
-          >
-            List for sale
-          </ButtonIcon>
-          <ButtonIcon
             className={s.recentWorks_btnIns}
             onClick={goToInscriptionsPage}
             sizes="large"
@@ -110,10 +102,6 @@ export const LiveWorks = (): JSX.Element => {
           )}
         </Col>
       </Row>
-      <ListForSaleModal
-        showModal={showModal}
-        onClose={() => setShowModal(false)}
-      />
     </div>
   );
 };

@@ -10,4 +10,7 @@ export type User = {
   profileSocial?: ProjectSocial;
   bgCover?: string;
   walletAddressBtc?: string;
+  walletAddressBtcTaproot?: string;
+  projects?: { name: string; projectId: string }[];
+  walletAddressPayment?: string;
 };

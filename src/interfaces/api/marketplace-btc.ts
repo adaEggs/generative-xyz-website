@@ -17,11 +17,37 @@ export interface IGetMarketplaceBtcListItem {
   inscriptionNumber: string;
   contentType: IMAGE_TYPE;
   contentLength: string;
+  owner: string;
+  paymentListingInfo?: {
+    btc: {
+      paymentAddress: string;
+      price: string;
+    };
+    eth?: {
+      paymentAddress: string;
+      price: string;
+    };
+  };
+  holder?: Record<string, string> | null;
+  sat?: string | null;
+  timestamp: string | null;
+  block: string | null;
+  address?: string | null;
+}
+
+export interface IPostMarketplaceBtcListNFTForms {
+  receiveAddress: string;
+  receiveOrdAddress: string;
+  receiveETHAddress: string;
+  inscriptionID: string;
+  name: string;
+  description: string;
+  price: string;
 }
 
 export interface IPostMarketplaceBtcListNFTParams {
-  receiveAddress: string;
-  receiveOrdAddress: string;
+  ordWalletAddress: string;
+  payType: { btc: string; eth?: string };
   inscriptionID: string;
   name: string;
   description: string;
@@ -43,17 +69,29 @@ export interface IGetMarketplaceBtcNFTDetail {
   inscriptionNumber: string;
   contentType: IMAGE_TYPE;
   contentLength: string;
+  paymentListingInfo: {
+    btc: {
+      paymentAddress: string;
+      price: string;
+    };
+    eth?: {
+      paymentAddress: string;
+      price: string;
+    };
+  };
 }
 
 export interface ISubmitBTCAddressResponse {
   receiveAddress: string;
   timeoutAt: string;
+  price?: string;
 }
 
 export interface ISubmitBTCAddressPayload {
   walletAddress: string;
   inscriptionID: string;
   orderID: string;
+  payType: string;
 }
 
 export interface IListingFeePayload {
@@ -61,8 +99,11 @@ export interface IListingFeePayload {
 }
 
 export interface IListingFee {
-  serviceFee: number;
-  royaltyFee: number;
+  serviceFee: number | string;
+  royaltyFee: number | string;
+  royaltyAddress: string;
+  serviceAddress: string;
+  projectID: string;
 }
 
 export interface IListingordinals {
@@ -76,4 +117,16 @@ export interface IInscriptionDetailResp {
   content_type: IMAGE_TYPE;
   inscription_id: string;
   number: number;
+  address: string;
+  sat: string | null;
+  timestamp: string | null;
+  genesis_height: string | null;
+}
+
+export interface ICollectionFloorPricePayload {
+  projectID: string;
+}
+
+export interface ICollectionFloorPriceResp {
+  floor_price: number;
 }

@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import { Loading } from '@components/Loading';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot, validateEVMAddress } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
@@ -23,24 +23,36 @@ import { debounce } from 'lodash';
 import cs from 'classnames';
 import {
   IListingFee,
-  IPostMarketplaceBtcListNFTParams,
+  IPostMarketplaceBtcListNFTForms,
 } from '@interfaces/api/marketplace-btc';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
 
 // const FEE_CHARGE_PERCENT = 0.1;
 const MIN_PRICE = 0.005;
 const INITIAL_LISTING_FEE: IListingFee = {
   serviceFee: 0,
   royaltyFee: 0,
+  royaltyAddress: '',
+  serviceAddress: '',
+  projectID: '',
 };
 
 interface IProps {
   showModal: boolean;
   onClose: () => void;
+  ordAddress: string;
 }
 
 const LOG_PREFIX = 'ListForSaleModal';
 
-const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
+const ListForSaleModal = ({
+  showModal,
+  onClose,
+  ordAddress,
+}: IProps): JSX.Element => {
+  const user = useAppSelector(getUserSelector);
+
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
   const [expireTime, setExpireTime] = useState('');
@@ -50,18 +62,32 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     ...INITIAL_LISTING_FEE,
   });
 
-  const validateForm = (values: IPostMarketplaceBtcListNFTParams) => {
+  const [useEth, setUseEth] = useState(false);
+
+  const onClickCheckboxEth = () => {
+    setUseEth(!useEth);
+  };
+
+  const validateForm = (values: IPostMarketplaceBtcListNFTForms) => {
     const errors: Record<string, string> = {};
 
     if (!values.receiveAddress) {
       errors.receiveAddress = 'Address is required.';
-    } else if (!validateBTCWalletAddress(values.receiveAddress)) {
+    } else if (!validateBTCAddressTaproot(values.receiveAddress)) {
       errors.receiveAddress = 'Invalid wallet address.';
+    }
+
+    if (useEth) {
+      if (!values.receiveETHAddress) {
+        errors.receiveETHAddress = 'Address is required.';
+      } else if (!validateEVMAddress(values.receiveETHAddress)) {
+        errors.receiveETHAddress = 'Invalid wallet address.';
+      }
     }
 
     if (!values.receiveOrdAddress) {
       errors.receiveOrdAddress = 'Address is required.';
-    } else if (!validateBTCWalletAddress(values.receiveOrdAddress)) {
+    } else if (!validateBTCAddressTaproot(values.receiveOrdAddress)) {
       errors.receiveOrdAddress = 'Invalid wallet address.';
     }
 
@@ -76,11 +102,21 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
     return errors;
   };
 
-  const handleSubmit = async (_data: IPostMarketplaceBtcListNFTParams) => {
+  const handleSubmit = async (_data: IPostMarketplaceBtcListNFTForms) => {
     try {
       setIsLoading(true);
+      const data = {
+        ordWalletAddress: ordAddress,
+        payType: useEth
+          ? { btc: _data.receiveAddress, eth: _data.receiveETHAddress }
+          : { btc: _data.receiveAddress },
+        inscriptionID: _data.inscriptionID,
+        name: _data.name,
+        description: _data.description,
+        price: _data.price,
+      };
       const res = await postMarketplaceBtcListNFT({
-        ..._data,
+        ...data,
         price: new BigNumber(_data.price || 0).multipliedBy(1e8).toString(),
       });
       if (res.receiveAddress) {
@@ -163,12 +199,6 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
               {step === 'info' && (
                 <div>
                   <h3 className={s.modalTitle}>List for sale</h3>
-                  {/*<div className={s.alert_info}>*/}
-                  {/*  Do not spend any satoshis from this wallet unless you*/}
-                  {/*  understand what you are doing. If you ignore this warning,*/}
-                  {/*  you could inadvertently lose access to your ordinals and*/}
-                  {/*  inscriptions.*/}
-                  {/*</div>*/}
                   <div className={s.formWrapper}>
                     <Formik
                       key="mintBTCGenerativeForm"
@@ -177,8 +207,9 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                         name: '',
                         description: '',
                         price: '',
-                        receiveAddress: '',
-                        receiveOrdAddress: '',
+                        receiveAddress: ordAddress,
+                        receiveETHAddress: user ? user.walletAddress : '',
+                        receiveOrdAddress: ordAddress,
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}
@@ -209,7 +240,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 onBlur={handleBlur}
                                 value={values.inscriptionID}
                                 className={s.input}
-                                placeholder="https://ordinals.com/inscription/12345"
+                                placeholder="https://ordinals.com/inscription/abcd12345"
                               />
                             </div>
                             {errors.inscriptionID && touched.inscriptionID && (
@@ -238,6 +269,19 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                             {errors.price && touched.price && (
                               <p className={s.inputError}>{errors.price}</p>
                             )}
+                            <div className={s.checkBoxContainer}>
+                              <SvgInset
+                                className={s.checkBoxIc}
+                                size={18}
+                                svgUrl={`${CDN_URL}/icons/${
+                                  useEth ? 'ic_checkboxed' : 'ic_checkbox'
+                                }.svg`}
+                                onClick={onClickCheckboxEth}
+                              />
+                              <p className={s.checkBoxlabel}>
+                                {`I'd like to receive payment in ETH too.`}
+                              </p>
+                            </div>
                           </div>
                           <div className={s.formItem}>
                             <label className={s.label} htmlFor="receiveAddress">
@@ -262,6 +306,36 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                   {errors.receiveAddress}
                                 </p>
                               )}
+                            {useEth && (
+                              <>
+                                <label
+                                  style={{ marginTop: 16 }}
+                                  className={s.label}
+                                  htmlFor="receiveAddress"
+                                >
+                                  Enter your ETH address to receive payment{' '}
+                                  <sup className={s.requiredTag}>*</sup>
+                                </label>
+                                <div className={s.inputContainer}>
+                                  <input
+                                    id="receiveETHAddress"
+                                    type="address"
+                                    name="receiveETHAddress"
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                    value={values.receiveETHAddress}
+                                    className={s.input}
+                                    placeholder="Paste your ETH address here"
+                                  />
+                                </div>
+                                {errors.receiveETHAddress &&
+                                  touched.receiveETHAddress && (
+                                    <p className={s.inputError}>
+                                      {errors.receiveETHAddress}
+                                    </p>
+                                  )}
+                              </>
+                            )}
                           </div>
                           <div className={s.formItem}>
                             <label
@@ -367,7 +441,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                               {listingFee.serviceFee
                                 ? convertFee(
                                     Number(values.price || 0),
-                                    listingFee.serviceFee
+                                    Number(listingFee.serviceFee)
                                   )
                                 : 'FREE'}
                             </Text>
@@ -394,7 +468,7 @@ const ListForSaleModal = ({ showModal, onClose }: IProps): JSX.Element => {
                                 >
                                   {convertFee(
                                     Number(values.price || 0),
-                                    listingFee.royaltyFee
+                                    Number(listingFee.royaltyFee)
                                   )}
                                   &nbsp;BTC
                                 </Text>

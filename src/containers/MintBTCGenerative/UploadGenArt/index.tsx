@@ -3,19 +3,25 @@ import Heading from '@components/Heading';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { SOCIALS } from '@constants/common';
-import { CDN_URL, SANDBOX_BTC_FILE_SIZE_LIMIT } from '@constants/config';
+import { CDN_URL, SANDBOX_BTC_IMAGE_SIZE_LIMIT } from '@constants/config';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
+import { MediaType } from '@enums/file';
 import { LogLevel } from '@enums/log-level';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { ImageFileError, SandboxFileError } from '@enums/sandbox';
-import { getSupportedFileExtList } from '@utils/file';
 import { postReferralCode } from '@services/referrals';
+import {
+  getFileExtensionByFileName,
+  getMediaTypeFromFileExt,
+  getSupportedFileExtList,
+} from '@utils/file';
 import log from '@utils/logger';
 import { getReferral } from '@utils/referral';
-import { processHTMLFile, processCollectionZipFile } from '@utils/sandbox';
+import { processCollectionZipFile, processHTMLFile } from '@utils/sandbox';
 import { prettyPrintBytes } from '@utils/units';
 import cs from 'classnames';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { ReactElement, useContext, useEffect, useMemo, useState } from 'react';
 import DropFile from '../DropFile';
@@ -37,7 +43,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
     setImageCollectionFile,
   } = useContext(MintBTCGenerativeContext);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
-
   const processGenerativeFile = async (file: File) => {
     try {
       const sandboxFiles = await processHTMLFile(file);
@@ -49,7 +54,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
       if ((err as Error).message === SandboxFileError.WRONG_FORMAT) {
         errorMessage += 'Invalid file format.';
       } else if ((err as Error).message === SandboxFileError.TOO_LARGE) {
-        errorMessage += `File size error, maximum file size is ${SANDBOX_BTC_FILE_SIZE_LIMIT}kb.`;
+        errorMessage += `File size error, maximum file size is ${SANDBOX_BTC_IMAGE_SIZE_LIMIT}kb.`;
       }
       setShowErrorAlert({ open: true, message: errorMessage });
     }
@@ -57,12 +62,23 @@ const UploadGenArt: React.FC = (): ReactElement => {
 
   const processCollectionFile = async (file: File) => {
     try {
-      const imageFiles = await processCollectionZipFile(file);
+      const imageFiles =
+        collectionType === CollectionType.COLLECTION
+          ? await processCollectionZipFile(file)
+          : await processCollectionZipFile(file, 1);
       setImageCollectionFile(imageFiles);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
-      const errorMessage =
-        'There is a problem with your file. Please check and try again.';
+      let errorMessage =
+        'There is a problem with your file. Please check and try again. ';
+      if ((err as Error).message === ImageFileError.TOO_MANY_EXT) {
+        errorMessage +=
+          'Your file contain many different file extensions. Please note that one zip file can only include one file extension.';
+      }
+      if ((err as Error).message === ImageFileError.ONLY_ONE_FILE_ALLOWED) {
+        errorMessage +=
+          'Your zip file contain too many files. Please note that one zip file can only include one file.';
+      }
       setShowErrorAlert({ open: true, message: errorMessage });
     }
   };
@@ -74,7 +90,13 @@ const UploadGenArt: React.FC = (): ReactElement => {
       await processGenerativeFile(rawFile);
     }
 
-    if (collectionType == CollectionType.COLLECTION) {
+    if (
+      [
+        CollectionType.COLLECTION,
+        CollectionType.EDITIONS,
+        CollectionType.ONE,
+      ].includes(collectionType)
+    ) {
       setIsProcessingFile(true);
       await processCollectionFile(rawFile);
       setIsProcessingFile(false);
@@ -128,15 +150,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
             </div>
           </div>
           <div className={s.container}>
-            <div className={s.checkboxWrapper}>
-              {/* <Checkbox
-                checked={isProjectWork}
-                onClick={handleChangeIsProjectWork}
-                className={s.checkbox}
-                id="workProperly"
-                label="My NFT collection is ready to go!"
-              /> */}
-            </div>
             <div className={s.actionWrapper}>
               <Button
                 disabled={!filesSandbox}
@@ -184,13 +197,32 @@ const UploadGenArt: React.FC = (): ReactElement => {
   const getFileError = (errorType: ImageFileError): string => {
     switch (errorType) {
       case ImageFileError.TOO_LARGE:
-        return `File size error, maximum file size is ${SANDBOX_BTC_FILE_SIZE_LIMIT}kb.`;
+        return `File size error, maximum file size is ${SANDBOX_BTC_IMAGE_SIZE_LIMIT}KB.`;
+      case ImageFileError.ONLY_ONE_FILE_ALLOWED:
+        return `File size error, only one file is allowed.`;
       case ImageFileError.INVALID_EXTENSION:
         return `Invalid file format. Supported file extensions are ${getSupportedFileExtList().join(
           ', '
         )}.`;
       default:
         return '';
+    }
+  };
+
+  const getIconByFileType = (fileMediaType: string | null): string => {
+    switch (fileMediaType) {
+      case MediaType.IMAGE:
+        return `${CDN_URL}/icons/ic-image-24x24.svg`;
+      case MediaType.MODEL_3D:
+        return `${CDN_URL}/icons/ic-3d-24x24.svg`;
+      case MediaType.VIDEO:
+        return `${CDN_URL}/icons/ic-video-24x24.svg`;
+      case MediaType.AUDIO:
+        return `${CDN_URL}/icons/ic-audio-24x24.svg`;
+      case MediaType.IFRAME:
+        return `${CDN_URL}/icons/ic-html-24x24.svg`;
+      default:
+        return `${CDN_URL}/icons/ic-file-24x24.svg`;
     }
   };
 
@@ -220,40 +252,42 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 </Heading>
               </div>
               <ul className={s.zipFileList}>
-                {fileList.map((fileItem, index) => (
-                  <li key={index} className={s.fileItem}>
-                    <div className={s.fileInfo}>
-                      {fileItem.error ? (
+                {fileList.map((fileItem, index) => {
+                  const fileExt =
+                    getFileExtensionByFileName(fileItem.name) ?? '';
+                  const fileMediaType = getMediaTypeFromFileExt(fileExt);
+
+                  return (
+                    <li key={index} className={s.fileItem}>
+                      <div className={s.fileInfo}>
                         <SvgInset
-                          className={cs(s.codeIcon, s.codeIcon__error)}
+                          className={cs(s.codeIcon, {
+                            [`codeIconError_${fileMediaType?.toLowerCase()}`]:
+                              fileItem.error,
+                          })}
                           size={24}
-                          svgUrl={`${CDN_URL}/icons/ic-image-error-24x24.svg`}
+                          svgUrl={getIconByFileType(fileMediaType)}
                         />
-                      ) : (
-                        <SvgInset
-                          className={s.codeIcon}
-                          size={24}
-                          svgUrl={`${CDN_URL}/icons/ic-image-check-24x24.svg`}
-                        />
+                        <Text
+                          as={'span'}
+                          size={'18'}
+                          color={cs('primary-color', {
+                            [`${s.errorText}`]: !!fileItem.error,
+                          })}
+                          className={s.fileName}
+                        >
+                          {fileItem.name}{' '}
+                          {`(${prettyPrintBytes(fileItem.size)})`}
+                        </Text>
+                      </div>
+                      {fileItem.error && (
+                        <p className={s.fileError}>
+                          {getFileError(fileItem.error)}
+                        </p>
                       )}
-                      <Text
-                        as={'span'}
-                        size={'18'}
-                        color={cs('primary-color', {
-                          [`${s.errorText}`]: !!fileItem.error,
-                        })}
-                        className={s.fileName}
-                      >
-                        {fileItem.name} {`(${prettyPrintBytes(fileItem.size)})`}
-                      </Text>
-                    </div>
-                    {fileItem.error && (
-                      <p className={s.fileError}>
-                        {getFileError(fileItem.error)}
-                      </p>
-                    )}
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </ul>
             </div>
             <div className={s.actionWrapper}>
@@ -288,7 +322,6 @@ const UploadGenArt: React.FC = (): ReactElement => {
       </>
     );
   };
-
   const renderUpload = useMemo(
     (): JSX.Element => (
       <>
@@ -300,7 +333,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
             <p className={s.collectionTypeLabel}>Choose collection type:</p>
             <div className={s.choiceList}>
               <div
-                onClick={() => setCollectionType(CollectionType.GENERATIVE)}
+                onClick={() => {
+                  setCollectionType(CollectionType.GENERATIVE);
+                }}
                 className={cs(s.choiceItem, {
                   [`${s.choiceItem__active}`]:
                     collectionType === CollectionType.GENERATIVE,
@@ -310,7 +345,9 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 <span className={s.checkmark}></span>
               </div>
               <div
-                onClick={() => setCollectionType(CollectionType.COLLECTION)}
+                onClick={() => {
+                  setCollectionType(CollectionType.COLLECTION);
+                }}
                 className={cs(s.choiceItem, {
                   [`${s.choiceItem__active}`]:
                     collectionType === CollectionType.COLLECTION,
@@ -319,22 +356,67 @@ const UploadGenArt: React.FC = (): ReactElement => {
                 File collection
                 <span className={s.checkmark}></span>
               </div>
+              <div
+                onClick={() => {
+                  setCollectionType(CollectionType.EDITIONS);
+                }}
+                className={cs(s.choiceItem, {
+                  [`${s.choiceItem__active}`]:
+                    collectionType === CollectionType.EDITIONS,
+                })}
+              >
+                Editions
+                <span className={s.checkmark}></span>
+              </div>
+              <div
+                onClick={() => {
+                  setCollectionType(CollectionType.ONE);
+                }}
+                className={cs(s.choiceItem, {
+                  [`${s.choiceItem__active}`]:
+                    collectionType === CollectionType.ONE,
+                })}
+              >
+                1/1
+                <span className={s.checkmark}></span>
+              </div>
             </div>
             <div className={s.guideWrapper}>
               <p>
-                New artist?&nbsp;
-                <a
-                  href={SOCIALS.docsForArtist}
-                  target={'_blank'}
-                  rel="noreferrer"
-                >
-                  Start here.
-                </a>
+                {collectionType === CollectionType.GENERATIVE && (
+                  <>
+                    New artist?&nbsp;
+                    <Link
+                      href={SOCIALS.docsForArtist}
+                      target={'_blank'}
+                      rel="noreferrer"
+                    >
+                      Start here.
+                    </Link>
+                  </>
+                )}
+                {collectionType === CollectionType.COLLECTION && (
+                  <>
+                    First time? Check the step-by-step instructions&nbsp;
+                    <Link
+                      href={SOCIALS.docsForArtist2}
+                      target={'_blank'}
+                      rel="noreferrer"
+                    >
+                      here.
+                    </Link>
+                  </>
+                )}
+                {collectionType === CollectionType.EDITIONS && (
+                  <>Same artwork with numerous copies.</>
+                )}
+                {collectionType === CollectionType.ONE && (
+                  <>An unique artwork. No copy.</>
+                )}
               </p>
             </div>
           </div>
           <div className={s.dropZoneWrapper}>
-            <div className={s.loadingOverlay}></div>
             <DropFile
               labelText={
                 collectionType === CollectionType.GENERATIVE
@@ -354,6 +436,14 @@ const UploadGenArt: React.FC = (): ReactElement => {
               fileOrFiles={rawFile ? [rawFile] : null}
               isProcessing={isProcessingFile}
             />
+            <p className={s.supportedFileText}>
+              Supported file extensions are{' '}
+              {`${getSupportedFileExtList().join(', ')}. `}
+              <b>
+                Please note that one zip file can only include one file
+                extension.
+              </b>
+            </p>
           </div>
         </div>
       </>
@@ -371,6 +461,7 @@ const UploadGenArt: React.FC = (): ReactElement => {
       await postReferralCode(refCode);
     }
   };
+
   useEffect(() => {
     postRefCode();
   }, []);
@@ -383,8 +474,11 @@ const UploadGenArt: React.FC = (): ReactElement => {
         <>
           {collectionType === CollectionType.GENERATIVE &&
             renderUploadGenerativeSuccess()}
-          {collectionType === CollectionType.COLLECTION &&
-            renderUploadImageCollectionSuccess()}
+          {[
+            CollectionType.COLLECTION,
+            CollectionType.EDITIONS,
+            CollectionType.ONE,
+          ].includes(collectionType) && renderUploadImageCollectionSuccess()}
         </>
       )}
     </section>

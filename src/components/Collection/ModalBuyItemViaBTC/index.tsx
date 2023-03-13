@@ -6,7 +6,7 @@ import { Formik } from 'formik';
 import s from './styles.module.scss';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import { Loading } from '@components/Loading';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
 import { toast } from 'react-hot-toast';
@@ -16,6 +16,7 @@ import ButtonIcon from '@components/ButtonIcon';
 import Text from '@components/Text';
 import { formatUnixDateTime } from '@utils/time';
 import { formatBTCPrice } from '@utils/format';
+import { ISubmitBTCAddressPayload } from '@interfaces/api/marketplace-btc';
 
 interface IFormValue {
   address: string;
@@ -27,6 +28,7 @@ interface IProps {
   inscriptionID: string;
   price: number | string;
   orderID: string;
+  ordAddress: string;
 }
 
 const LOG_PREFIX = 'BuyModal';
@@ -38,6 +40,7 @@ const ModalBuyItemViaBTC = ({
   inscriptionID,
   orderID,
   onSuccess,
+  ordAddress,
 }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const [receiveAddress, setReceiveAddress] = useState('');
@@ -53,7 +56,7 @@ const ModalBuyItemViaBTC = ({
 
     if (!values.address) {
       errors.address = 'Address is required.';
-    } else if (!validateBTCWalletAddress(values.address)) {
+    } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     }
     return errors;
@@ -66,7 +69,8 @@ const ModalBuyItemViaBTC = ({
         walletAddress: _data.address,
         inscriptionID,
         orderID,
-      });
+        payType: 'btc',
+      } as ISubmitBTCAddressPayload);
       if (data?.receiveAddress) {
         setReceiveAddress(data.receiveAddress);
         setExpireTime(data.timeoutAt);
@@ -133,7 +137,7 @@ const ModalBuyItemViaBTC = ({
                       <Formik
                         key="mintBTCGenerativeForm"
                         initialValues={{
-                          address: '',
+                          address: ordAddress,
                         }}
                         validate={validateForm}
                         onSubmit={handleSubmit}
@@ -150,15 +154,7 @@ const ModalBuyItemViaBTC = ({
                             <div className={s.formItem}>
                               <label className={s.label} htmlFor="address">
                                 Enter the Ordinals-compatible BTC address to
-                                receive your buying inscription. Don’t have one?{' '}
-                                <a
-                                  href="https://gist.github.com/windsok/5b53a1ced6ef3eddbde260337de28980"
-                                  target="_blank"
-                                  rel="noreferrer"
-                                >
-                                  Start here
-                                </a>
-                                .
+                                receive your buying inscription
                               </label>
                               <div className={s.inputContainer}>
                                 <input

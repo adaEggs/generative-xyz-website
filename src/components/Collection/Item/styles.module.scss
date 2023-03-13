@@ -56,13 +56,26 @@
   }
 
   &_info {
-
     padding: {
       top: rem(24px);
       left: rem(16px);
       right: rem(16px);
       bottom: rem(16px);
-    };
+    }
+
+    &_artist {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &_name {
+        font-weight: 500;
+        font-size: rem(16px);
+        line-height: rem(26px);
+        color: $primary-brand;
+      }
+    }
 
     @include mobile {
       top: rem(12px);
@@ -96,6 +109,12 @@
           display: block;
           overflow: hidden;
           flex: 0 0 100%;
+        }
+
+        &_customDesc {
+          font-weight: 500;
+          font-size: rem(18px);
+          color: $gray-9c;
         }
       }
     }
@@ -140,6 +159,24 @@
         justify-content: space-between;
         // flex-wrap: wrap;
         gap: rem(3px);
+      }
+
+      .collectionCard_info_wrapper {
+        flex-wrap: wrap;
+
+        &_ownerName {
+          width: 100%;
+          font-weight: 500;
+          font-size: rem(20px);
+          line-height: rem(30px);
+          color: $black-40-solid;
+        }
+
+        &_waiting {
+          width: 100%;
+          color: $gray-9c;
+          font-style: italic;
+        }
       }
 
       .collectionCard_info_listing {

@@ -25,6 +25,7 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
   (props: IProps, ref: ForwardedRef<ISandboxRef>) => {
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const workerReg = useRef<ServiceWorker | null>(null);
+    const allowSandbox = 'allow-scripts allow-pointer-lock allow-same-origin';
     const {
       sandboxFiles,
       rawHtml,
@@ -146,7 +147,7 @@ const SandboxPreview = React.forwardRef<ISandboxRef, IProps>(
         {showIframe && (
           <iframe
             ref={iframeRef}
-            sandbox="allow-scripts allow-same-origin"
+            sandbox={allowSandbox}
             className={s.iframeContainer}
             onLoad={onLoaded}
             style={{ overflow: 'hidden' }}

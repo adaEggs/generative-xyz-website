@@ -8,7 +8,7 @@ import { LogLevel } from '@enums/log-level';
 import s from '@layouts/Default/HeaderFixed/Header.module.scss';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress } from '@utils/format';
+import { ellipsisCenter, formatAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import { useRouter } from 'next/router';
@@ -22,7 +22,10 @@ import _isEmpty from 'lodash/isEmpty';
 import { MENU_HEADER } from '@constants/header';
 import MenuMobile from '@layouts/Marketplace/MenuMobile';
 import { gsap } from 'gsap';
-import { isProduction } from '@utils/common';
+import SearchCollection from './SearchCollection';
+import useOnClickOutside from '@hooks/useOnClickOutSide';
+import Image from 'next/image';
+import Avatar from '@components/Avatar';
 
 const LOG_PREFIX = 'MarketplaceHeader';
 
@@ -35,7 +38,6 @@ interface IProp {
 
 const Header: React.FC<IProp> = ({
   theme = 'light',
-  isShowFaucet = false,
   isDisplay = false,
 }): React.ReactElement => {
   const { connect, disconnect, walletBalance } = useContext(WalletContext);
@@ -44,20 +46,26 @@ const Header: React.FC<IProp> = ({
   const { query } = router;
   const activePath = router.pathname.split('/')[1];
   const [isConnecting, setIsConnecting] = useState(false);
-  const [isFaucet, _] = useState<boolean>(isShowFaucet);
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
   const refMenu = useRef<HTMLDivElement | null>(null);
+  const freeToolsRef = useRef<HTMLLIElement | null>(null);
+  const [isOpenFreetools, setIsOpenFreetools] = useState(false);
 
   const PROFILE_MENU = [
     {
       id: 'view-profile',
       name: 'View Profile',
-      onClick: () => router.push(ROUTE_PATH.PROFILE),
+      onClick: (btcAddress?: string) =>
+        router.push(`${ROUTE_PATH.PROFILE}/${btcAddress}`),
     },
     {
       id: 'disconect-wallet',
       name: 'Disconnect wallet',
-      onClick: () => disconnect(),
+      onClick: () => {
+        disconnect().then(() => {
+          router.replace(ROUTE_PATH.HOME);
+        });
+      },
     },
     {
       id: 'faucet',
@@ -77,6 +85,12 @@ const Header: React.FC<IProp> = ({
     }
     return `${url}?${querystring.stringify(query)}`;
   };
+
+  // const handleOpenFreetoolsDropdown = (): void => {
+  //   setIsOpenFreetools(true);
+  // };
+
+  useOnClickOutside(freeToolsRef, () => setIsOpenFreetools(false));
 
   const handleConnectWallet = async (): Promise<void> => {
     try {
@@ -115,6 +129,83 @@ const Header: React.FC<IProp> = ({
     );
   };
 
+  const renderFreeToolsDropDown = (): React.ReactElement => {
+    return (
+      <div
+        className={cs(styles.freeToolsDropdown, {
+          [`${styles.show}`]: isOpenFreetools,
+        })}
+      >
+        <ul className={styles.freeToolList}>
+          <li className={cs(styles.freeToolItem)}>
+            <Link href={getUrlWithQueryParams(MENU_HEADER[11].route)}>
+              <Image
+                src={`${CDN_URL}/icons/icon-crypto-art.svg`}
+                width={34}
+                height={34}
+                alt="icon-crypto-art"
+              />
+              <div className={styles.menuContent}>
+                <p className={styles.mainText}>{MENU_HEADER[11].name}</p>
+                <p className={styles.subText}>
+                  Preserve your Ethereum CryptoArt and NFTs on Bitcoin.
+                </p>
+              </div>
+            </Link>
+          </li>
+          <li className={cs(styles.freeToolItem)}>
+            <Link href={getUrlWithQueryParams(MENU_HEADER[9].route)}>
+              <Image
+                src={`${CDN_URL}/icons/ic-shield-star-34x34.svg`}
+                width={34}
+                height={34}
+                alt="ic-percent-circle"
+              />
+              <div className={styles.menuContent}>
+                <p className={styles.mainText}>{MENU_HEADER[9].name}</p>
+                <p className={styles.subText}>
+                  Inscribe your existing Ethereum NFTs onto Bitcoin.
+                </p>
+              </div>
+            </Link>
+          </li>
+          <li className={styles.freeToolItem}>
+            <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
+              <Image
+                src={`${CDN_URL}/icons/ic-percent-circle-34x34.svg`}
+                width={34}
+                height={34}
+                alt="ic-percent-circle"
+              />
+              <div className={styles.menuContent}>
+                <p className={styles.mainText}>{MENU_HEADER[7].name}</p>
+                <p className={styles.subText}>
+                  The easiest way to inscribe anything.
+                </p>
+              </div>
+            </Link>
+          </li>
+          <li className={styles.freeToolItem}>
+            <Link href={getUrlWithQueryParams(MENU_HEADER[5].route)}>
+              <Image
+                src={`${CDN_URL}/icons/ic-poll-vertical-square-34x34.svg`}
+                width={34}
+                height={34}
+                alt="ic-percent-circle"
+              />
+              <div className={styles.menuContent}>
+                <p className={styles.mainText}>Ordinals Live Feed</p>
+                <p className={styles.subText}>
+                  Watch the latest inscriptions live.
+                </p>
+              </div>
+            </Link>
+          </li>
+        </ul>
+      </div>
+    );
+  };
+
   const ProfileDropdown = () => {
     return (
       <ul className={`${styles.dropdown} dropdown`}>
@@ -124,7 +215,13 @@ const Header: React.FC<IProp> = ({
               (item.id != 'faucet' || isTestnet()) && (
                 <li
                   className="dropdown-item"
-                  onClick={item.onClick}
+                  onClick={() => {
+                    if (item.id === 'view-profile') {
+                      item.onClick(user?.walletAddressBtcTaproot || '');
+                    } else {
+                      item.onClick();
+                    }
+                  }}
                   key={item.id}
                 >
                   {item.name}
@@ -136,12 +233,6 @@ const Header: React.FC<IProp> = ({
   };
 
   const refHeader = useRef<HTMLDivElement>(null);
-  const clickToFaucet = (): void => {
-    const faucet = getFaucetLink();
-    if (faucet) {
-      window.open(faucet, '_blank');
-    }
-  };
 
   useEffect(() => {
     if (refMenu.current) {
@@ -159,7 +250,7 @@ const Header: React.FC<IProp> = ({
 
   const handleYourVault = () => {
     if (user) {
-      router.push(ROUTE_PATH.PROFILE);
+      router.push(`${ROUTE_PATH.PROFILE}/${user?.walletAddressBtcTaproot}`);
     } else {
       handleConnectWallet();
     }
@@ -179,16 +270,15 @@ const Header: React.FC<IProp> = ({
               <div
                 className={`d-flex align-items-center justify-content-between w-100 ${styles.header_row}`}
               >
-                <Link
-                  className={styles.logo}
-                  href={getUrlWithQueryParams(ROUTE_PATH.HOME)}
-                >
-                  <Text size="24" fontWeight={'semibold'}>
-                    Generative
-                  </Text>
-                </Link>
-
-                <div className={styles.header_right}>
+                <div className={styles.header_left}>
+                  <Link
+                    className={styles.logo}
+                    href={getUrlWithQueryParams(ROUTE_PATH.HOME)}
+                  >
+                    <Text size="24" fontWeight={'semibold'}>
+                      Generative
+                    </Text>
+                  </Link>
                   <ul className={`${styles.navBar} ${styles[theme]}`}>
                     <li
                       className={cs(
@@ -225,16 +315,92 @@ const Header: React.FC<IProp> = ({
                         {MENU_HEADER[2].name}
                       </Link>
                     </li>
+                  </ul>
+                </div>
+
+                <div className={styles.header_right}>
+                  <SearchCollection theme={theme} />
+
+                  <ul className={`${styles.navBar} ${styles[theme]}`}>
+                    <li
+                      ref={freeToolsRef}
+                      // onClick={handleOpenFreetoolsDropdown}
+                      className={cs(styles.freeTools, {
+                        [`${styles.active}`]:
+                          activePath === MENU_HEADER[7].activePath,
+                      })}
+                    >
+                      <a>
+                        Free tools
+                        <SvgInset
+                          className={styles.arrowIcon}
+                          svgUrl={`${CDN_URL}/icons/ic-chevron-down-20x20.svg`}
+                          size={20}
+                        />
+                      </a>
+                      {renderFreeToolsDropDown()}
+                    </li>
 
                     <li
-                      className={cs(activePath === 'profile' && styles.active)}
-                      key={`header-profile`}
+                      className={cs(
+                        activePath === MENU_HEADER[8].activePath &&
+                          styles.active
+                      )}
                     >
-                      <a className={styles.yourVault} onClick={handleYourVault}>
-                        YOUR VAULT
-                        {user && ProfileDropdown()}
-                      </a>
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[8].route)}>
+                        {MENU_HEADER[8].name}
+                      </Link>
                     </li>
+
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[10].activePath &&
+                          styles.active
+                      )}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[10].route)}>
+                        {MENU_HEADER[10].name}
+                      </Link>
+                    </li>
+
+                    {!!user && (
+                      <li
+                        className={cs(
+                          activePath === 'profile' && styles.active
+                        )}
+                        key={`header-profile`}
+                      >
+                        <a
+                          className={styles.yourVault}
+                          onClick={handleYourVault}
+                        >
+                          <Avatar
+                            imgSrcs={user?.avatar}
+                            height={32}
+                            width={32}
+                          />
+                          {ellipsisCenter({
+                            str: user.walletAddressBtcTaproot || '',
+                            limit: 4,
+                          })}
+                        </a>
+                      </li>
+                    )}
+                    {!user && (
+                      <li
+                        className={cs(
+                          activePath === MENU_HEADER[6].activePath &&
+                            styles.active
+                        )}
+                        key={`header-${MENU_HEADER[6].id}`}
+                      >
+                        <Link
+                          href={getUrlWithQueryParams(MENU_HEADER[6].route)}
+                        >
+                          {MENU_HEADER[6].name}
+                        </Link>
+                      </li>
+                    )}
                   </ul>
 
                   <button
@@ -254,19 +420,6 @@ const Header: React.FC<IProp> = ({
           </Container>
         </div>
       </header>
-      {isFaucet && !isProduction() && (
-        <div className={styles.testNet}>
-          <img
-            src={`${CDN_URL}/icons/star-shooting-horizontal.svg`}
-            alt="star-shooting-horizontal"
-          />
-          Welcome to Generative testnet! Don’t have ETH for testnet? Request
-          some
-          <a onClick={clickToFaucet} target="_blank" rel="noreferrer">
-            {' here.'}
-          </a>
-        </div>
-      )}
 
       {isDisplay && <QuickBuy />}
       <MenuMobile

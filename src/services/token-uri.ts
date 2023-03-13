@@ -1,11 +1,14 @@
 import { LogLevel } from '@enums/log-level';
 import {
+  ICreateTokenThumbnailPayload,
   IGetGenerativeTokenAttributesParams,
   IGetGenerativeTokenAttributesResponse,
+  IGetGenerativeTokenUriListParams,
+  IGetGenerativeTokenUriListResponse,
   IGetGenerativeTokenUriParams,
   IGetGenerativeTokenUriResponse,
 } from '@interfaces/api/token-uri';
-import { get } from '@services/http-client';
+import { get, post } from '@services/http-client';
 import log from '@utils/logger';
 import querystring from 'query-string';
 
@@ -42,5 +45,33 @@ export const getTokenAttributes = async (
   } catch (err: unknown) {
     log('failed to get token attributes', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get token attributes');
+  }
+};
+
+export const getTokenUriList = async (
+  params: IGetGenerativeTokenUriListParams
+): Promise<IGetGenerativeTokenUriListResponse> => {
+  try {
+    const qs = '?' + querystring.stringify(params);
+    const res = await get<IGetGenerativeTokenUriListResponse>(
+      `/token-uri${qs}`
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get token uri', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get token uri');
+  }
+};
+
+export const createTokenThumbnail = async (
+  payload: ICreateTokenThumbnailPayload
+): Promise<unknown> => {
+  try {
+    const { tokenID, ...body } = payload;
+    const res = await post(`${API_TOKEN_URI_PATH}/${tokenID}/thumbnail`, body);
+    return res;
+  } catch (err: unknown) {
+    log('failed to get token uri', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to create token thumbnail');
   }
 };

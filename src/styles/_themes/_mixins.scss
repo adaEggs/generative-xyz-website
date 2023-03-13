@@ -363,7 +363,11 @@
 }
 
 @mixin fullViewScreen {
-  height: calc(88vh - #{rem(260px)});
+  height: calc(75vh - #{rem(260px)});
+
+  @include min-pc {
+    min-height: 520px;
+  }
 }
 
 @function vhMathDiv($px, $base) {
@@ -380,4 +384,13 @@
 
 @function vhOnMobile($px, $base: 1080px) {
   @return calc(var(--vh) * #{vhMathDiv($px, $base)});
+}
+
+@mixin hideScrollbar {
+  &::-webkit-scrollbar {
+    width: 0 !important;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

@@ -15,6 +15,8 @@ import {
   IPostMarketplaceBtcListNFTResponse,
   ISubmitBTCAddressPayload,
   ISubmitBTCAddressResponse,
+  ICollectionFloorPricePayload,
+  ICollectionFloorPriceResp,
 } from '@interfaces/api/marketplace-btc';
 
 const LOG_PREFIX = 'MarketplaceBtcService';
@@ -85,10 +87,11 @@ export const getListingFee = async (
 ): Promise<IListingFee> => {
   try {
     const res = await post<IListingFeePayload, IListingFee>(
-      `${API_PATH}/listing-fee`,
+      `/dex/listing-fee`,
       payload
     );
     return {
+      ...res,
       royaltyFee: Number(res.royaltyFee || 0),
       serviceFee: Number(res.serviceFee || 0),
     };
@@ -130,6 +133,7 @@ export const getInscriptionDetail = async (
     );
     const dataRes: IInscriptionDetailResp = await res.json();
     const randomStr = Date.now().toString();
+
     return {
       inscriptionID,
       inscriptionNumber: `${dataRes.number}`,
@@ -142,9 +146,26 @@ export const getInscriptionDetail = async (
       description: '',
       image: '',
       contentLength: randomStr,
+      owner: dataRes?.address,
+      sat: dataRes?.sat,
+      timestamp: dataRes?.timestamp,
+      block: dataRes?.genesis_height,
     };
   } catch (err: unknown) {
     log('failed to get ordinal detail', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get ordinal detail');
+  }
+};
+
+export const getCollectionFloorPrice = async (
+  params: ICollectionFloorPricePayload
+): Promise<ICollectionFloorPriceResp> => {
+  try {
+    return get<ICollectionFloorPriceResp>(
+      `${API_PATH}/collection-stats?project_id=${params.projectID}`
+    );
+  } catch (err: unknown) {
+    log('failed to get floor price collection', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get floor price collection');
   }
 };
