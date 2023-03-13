@@ -104,111 +104,115 @@ export const PropertyAndCta = (): JSX.Element => {
           )}
           {isAvailable && isLimitMinted && !project?.isHidden && (
             <ul>
-              <li>
-                <OverlayTrigger
-                  placement="bottom"
-                  delay={{ show: 0, hide: 100 }}
-                  overlay={
-                    project?.networkFee ? (
-                      <Tooltip id="btc-fee-tooltip">
-                        <Text
-                          size="14"
-                          fontWeight="semibold"
-                          color="primary-333"
-                        >
-                          Inscription fee:{' '}
-                          {formatBTCPrice(
-                            Number(
-                              projectFeeRate?.fastest.mintFees.btc.networkFee
-                            )
-                          )}{' '}
-                          BTC
-                        </Text>
-                      </Tooltip>
-                    ) : (
-                      <></>
-                    )
-                  }
-                >
-                  <ButtonIcon
-                    sizes="large"
-                    className={s.mint_btn}
-                    onClick={() => {
-                      openMintBTCModal && openMintBTCModal(PaymentMethod.BTC);
-                    }}
+              {projectFeeRate && (
+                <li>
+                  <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 0, hide: 100 }}
+                    overlay={
+                      project?.networkFee ? (
+                        <Tooltip id="btc-fee-tooltip">
+                          <Text
+                            size="14"
+                            fontWeight="semibold"
+                            color="primary-333"
+                          >
+                            Inscription fee:{' '}
+                            {formatBTCPrice(
+                              Number(
+                                projectFeeRate?.fastest.mintFees.btc.networkFee
+                              )
+                            )}{' '}
+                            BTC
+                          </Text>
+                        </Tooltip>
+                      ) : (
+                        <></>
+                      )
+                    }
                   >
-                    <Text as="span" size="14" fontWeight="medium">
-                      {isMinting && 'Minting...'}
-                      {!isMinting && (
-                        <>
-                          <span>{textMint}</span>
+                    <ButtonIcon
+                      sizes="large"
+                      className={s.mint_btn}
+                      onClick={() => {
+                        openMintBTCModal && openMintBTCModal(PaymentMethod.BTC);
+                      }}
+                    >
+                      <Text as="span" size="14" fontWeight="medium">
+                        {isMinting && 'Minting...'}
+                        {!isMinting && (
+                          <>
+                            <span>{textMint}</span>
 
-                          {Number(
-                            projectFeeRate?.fastest.mintFees.btc.mintPrice
-                          ) ? (
-                            <span>{priceMemo}</span>
-                          ) : (
-                            ' with'
-                          )}
-                          {` BTC`}
-                        </>
-                      )}
-                    </Text>
-                  </ButtonIcon>
-                </OverlayTrigger>
-              </li>
-              <li>
-                <OverlayTrigger
-                  placement="bottom"
-                  delay={{ show: 0, hide: 100 }}
-                  overlay={
-                    project?.networkFeeEth ? (
-                      <Tooltip id="btc-fee-tooltip">
-                        <Text
-                          size="14"
-                          fontWeight="semibold"
-                          color="primary-333"
-                        >
-                          Inscription fee:{' '}
-                          {formatEthPrice(
-                            projectFeeRate?.fastest.mintFees.eth.networkFee ||
-                              ''
-                          )}{' '}
-                          ETH
-                        </Text>
-                      </Tooltip>
-                    ) : (
-                      <></>
-                    )
-                  }
-                >
-                  <ButtonIcon
-                    sizes="large"
-                    variants="outline"
-                    className={`${s.mint_btn} ${s.mint_btn__eth}`}
-                    onClick={() => {
-                      openMintBTCModal && openMintBTCModal(PaymentMethod.ETH);
-                    }}
+                            {Number(
+                              projectFeeRate?.fastest.mintFees.btc.mintPrice
+                            ) ? (
+                              <span>{priceMemo}</span>
+                            ) : (
+                              ' with'
+                            )}
+                            {` BTC`}
+                          </>
+                        )}
+                      </Text>
+                    </ButtonIcon>
+                  </OverlayTrigger>
+                </li>
+              )}
+              {projectFeeRate && (
+                <li>
+                  <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 0, hide: 100 }}
+                    overlay={
+                      project?.networkFeeEth ? (
+                        <Tooltip id="btc-fee-tooltip">
+                          <Text
+                            size="14"
+                            fontWeight="semibold"
+                            color="primary-333"
+                          >
+                            Inscription fee:{' '}
+                            {formatEthPrice(
+                              projectFeeRate?.fastest.mintFees.eth.networkFee ||
+                                ''
+                            )}{' '}
+                            ETH
+                          </Text>
+                        </Tooltip>
+                      ) : (
+                        <></>
+                      )
+                    }
                   >
-                    <Text as="span" size="14" fontWeight="medium">
-                      {isMinting && 'Minting...'}
-                      {!isMinting && (
-                        <>
-                          <span>{textMint}</span>
-                          {Number(
-                            projectFeeRate?.fastest.mintFees.eth.mintPrice
-                          ) ? (
-                            <span>{priceEthMemo}</span>
-                          ) : (
-                            ' with'
-                          )}
-                          {` ETH`}
-                        </>
-                      )}
-                    </Text>
-                  </ButtonIcon>
-                </OverlayTrigger>
-              </li>
+                    <ButtonIcon
+                      sizes="large"
+                      variants="outline"
+                      className={`${s.mint_btn} ${s.mint_btn__eth}`}
+                      onClick={() => {
+                        openMintBTCModal && openMintBTCModal(PaymentMethod.ETH);
+                      }}
+                    >
+                      <Text as="span" size="14" fontWeight="medium">
+                        {isMinting && 'Minting...'}
+                        {!isMinting && (
+                          <>
+                            <span>{textMint}</span>
+                            {Number(
+                              projectFeeRate?.fastest.mintFees.eth.mintPrice
+                            ) ? (
+                              <span>{priceEthMemo}</span>
+                            ) : (
+                              ' with'
+                            )}
+                            {` ETH`}
+                          </>
+                        )}
+                      </Text>
+                    </ButtonIcon>
+                  </OverlayTrigger>
+                </li>
+              )}
             </ul>
           )}
         </div>

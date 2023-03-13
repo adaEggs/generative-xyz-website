@@ -256,12 +256,6 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
 
   const debounceFetchProjectFeeRate = debounce(fetchProjectFeeRate, 800);
 
-  useEffect(() => {
-    if (user && user.walletAddressBtcTaproot && projectData) {
-      debounceFetchProjectFeeRate(projectData);
-    }
-  }, [user, projectData]);
-
   const fetchProjectItems = async (): Promise<void> => {
     if (projectData?.genNFTAddr && !isWhitelistProject) {
       try {
@@ -373,7 +367,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     if (user && user.walletAddressBtcTaproot) {
       fetchProjectDetail();
     }
-  }, [user]);
+  }, [user?.walletAddressBtcTaproot]);
 
   useEffect(() => {
     if (filterPrice.to_price && filterPrice.to_price < filterPrice.from_price) {
