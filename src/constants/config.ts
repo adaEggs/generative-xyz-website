@@ -40,6 +40,10 @@ export const SANDBOX_BTC_IMAGE_SIZE_LIMIT = 380; // kb
 export const SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT = 3000; // kb
 export const MIN_MINT_BTC_PROJECT_PRICE = 0;
 
+// Category
+export const CATEGORY_SELECT_BLACKLIST =
+  process.env.NEXT_PUBLIC_CATEGORY_SELECT_BLACKLIST;
+
 // Mempool
 export const MEMPOOL_API_URL = 'https://mempool.space/api/v1';
 export const BINANCE_API_URL = 'https://api.binance.com/api/v3';

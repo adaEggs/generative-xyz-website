@@ -27,6 +27,7 @@
       height: 0;
       padding-top: 100%;
       position: relative;
+      margin-bottom: rem(32);
     }
 
     .dropZoneContainer {
@@ -44,15 +45,26 @@
         position: relative;
       }
     }
+
+    .addressLabel {
+      text-transform: uppercase;
+    }
   }
 
   .formRight {
     width: calc(100% - 432px);
     padding-left: rem(48px);
+    display: flex;
+    flex-direction: column;
 
     @include max-tablet {
       width: 100%;
       padding-left: 0;
+    }
+
+    .disabled {
+      opacity: 0.5;
+      pointer-events: none;
     }
   }
 }
@@ -66,7 +78,7 @@
   padding: {
     top: rem(60px);
     bottom: rem(60px);
-  };
+  }
 
   @include max-tablet {
     min-height: auto;
@@ -232,6 +244,8 @@
   }
 
   .qrCodeContainer {
+    margin-bottom: rem(32);
+
     @include max-tablet {
       flex-direction: column;
     }
@@ -320,18 +334,20 @@
 
   .actionWrapper {
     display: flex;
-    justify-content: center;
-    margin-top: rem(32px);
+    justify-content: flex-end;
+    gap: rem(10);
 
     .end {
-      border: 1px solid #e9e9e9;
+      border: 1px solid $blue-100;
+      background-color: $primary-blue;
+      color: $blue-100;
       display: flex;
       flex-direction: row;
       justify-content: center;
       align-items: center;
-      padding: rem(10px);
-      gap: rem(10px);
-      width: rem(700px);
+      padding: rem(6px);
+      gap: rem(8px);
+      width: 100%;
       height: rem(50px);
     }
   }
@@ -413,6 +429,28 @@
     .container {
       width: 100%;
       box-shadow: none;
+    }
+  }
+}
+
+.addressInput {
+  position: relative;
+
+  input {
+    padding-right: rem(60) !important;
+  }
+
+  .editAddress {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: rem(14);
+    cursor: pointer;
+    font-size: rem(16);
+    font-weight: medium;
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 }

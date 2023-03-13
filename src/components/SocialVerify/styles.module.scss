@@ -2,6 +2,10 @@
   position: relative;
   padding-top: 0.3em;
 
+  &_tooltip {
+    max-width: 240px;
+  }
+
   svg,
   img {
     cursor: pointer;

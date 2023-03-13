@@ -25,6 +25,7 @@ import { gsap } from 'gsap';
 import SearchCollection from './SearchCollection';
 import useOnClickOutside from '@hooks/useOnClickOutSide';
 import Image from 'next/image';
+import Avatar from '@components/Avatar';
 
 const LOG_PREFIX = 'MarketplaceHeader';
 
@@ -136,6 +137,22 @@ const Header: React.FC<IProp> = ({
         })}
       >
         <ul className={styles.freeToolList}>
+          <li className={cs(styles.freeToolItem)}>
+            <Link href={getUrlWithQueryParams(MENU_HEADER[11].route)}>
+              <Image
+                src={`${CDN_URL}/icons/icon-crypto-art.svg`}
+                width={34}
+                height={34}
+                alt="icon-crypto-art"
+              />
+              <div className={styles.menuContent}>
+                <p className={styles.mainText}>{MENU_HEADER[11].name}</p>
+                <p className={styles.subText}>
+                  Preserve your Ethereum CryptoArt and NFTs on Bitcoin.
+                </p>
+              </div>
+            </Link>
+          </li>
           <li className={cs(styles.freeToolItem)}>
             <Link href={getUrlWithQueryParams(MENU_HEADER[9].route)}>
               <Image
@@ -357,9 +374,10 @@ const Header: React.FC<IProp> = ({
                           className={styles.yourVault}
                           onClick={handleYourVault}
                         >
-                          <SvgInset
-                            size={24}
-                            svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
+                          <Avatar
+                            imgSrcs={user?.avatar}
+                            height={32}
+                            width={32}
                           />
                           {ellipsisCenter({
                             str: user.walletAddressBtcTaproot || '',

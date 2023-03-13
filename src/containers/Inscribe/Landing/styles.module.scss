@@ -1,0 +1,64 @@
+.wrapper {
+  height: auto;
+  background-color: $primary-light;
+  padding-top: rem(40);
+
+  @include min-pc {
+    padding-top: 0;
+    height: calc(100vh - rem(200px));
+  }
+}
+
+.metamaskContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+
+  .leftContainer {
+    .title {
+      margin-bottom: rem(24);
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      gap: rem(8);
+      margin-bottom: rem(38);
+    }
+
+    .bullet {
+      display: flex;
+      align-items: center;
+      gap: rem(16);
+    }
+
+    .login {
+      display: flex;
+      align-items: center;
+      gap: rem(6);
+      margin-bottom: rem(24);
+    }
+
+    .upload {
+      position: relative;
+
+      .dropZoneContainer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: rem(175);
+        height: rem(64);
+        opacity: 0;
+      }
+    }
+
+    .inputError {
+      font-size: rem(14px);
+      font-weight: 400;
+      color: $secondary-red;
+      line-height: rem(20px);
+      margin-top: rem(6px);
+    }
+  }
+}

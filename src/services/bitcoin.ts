@@ -2,6 +2,7 @@ import { LogLevel } from '@enums/log-level';
 import { get, post } from '@services/http-client';
 import log from '@utils/logger';
 import {
+  FeeRateName,
   HistoryStatusColor,
   HistoryStatusType,
   ICollectedUTXOResp,
@@ -28,16 +29,17 @@ export const getCollectedUTXO = async (
       `/wallet/wallet-info?address=${btcAddress}`
     );
 
-    const pendingUTXOs = await getPendingUTXOsViaBlockStream(btcAddress);
-
-    return filterCurrentAssets(res, pendingUTXOs);
+    return res;
+    // const pendingUTXOs = await getPendingUTXOs(btcAddress);
+    //
+    // return filterCurrentAssets(res, pendingUTXOs);
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw err;
   }
 };
 
-export const getPendingUTXOsViaBlockStream = async (
+export const getPendingUTXOs = async (
   btcAddress: string
 ): Promise<IPendingUTXO[]> => {
   let pendingUTXOs = [];
@@ -77,7 +79,15 @@ export const filterCurrentAssets = (
 export const getFeeRate = async (): Promise<IFeeRate> => {
   try {
     const res = await fetch('https://mempool.space/api/v1/fees/recommended');
-    return res.json();
+    const fee: IFeeRate = await res.json();
+    if (fee[FeeRateName.fastestFee] <= 10) {
+      return {
+        [FeeRateName.fastestFee]: 15,
+        [FeeRateName.halfHourFee]: 10,
+        [FeeRateName.hourFee]: 5,
+      };
+    }
+    return fee;
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw err;
@@ -97,7 +107,7 @@ export const trackTx = async (payload: ITrackTx): Promise<never> => {
 export const getHistory = async (address: string): Promise<ITxHistory[]> => {
   try {
     const txs = await get<ITxHistory[]>(
-      `/wallet/txs?address=${address}&limit=100&offset=0`
+      `/wallet/txs?address=${address}&limit=30&offset=0`
     );
     // const res = await get<ITxHistory[]>(`/dex/history`);
     // const history = res.filter(

@@ -1,6 +1,12 @@
 .userInfo {
+  padding-bottom: rem(40px);
   position: sticky;
   top: rem(120px);
+
+  @include min-pc {
+    overflow-y: auto;
+    max-height: calc(100vh - rem(140px));
+  }
 
   &_content {
     position: relative;

@@ -15,19 +15,25 @@ const ButtonSendBTC = ({
 }: IProps) => {
   const [isShow, setShow] = React.useState(false);
 
-  const toggle = () => setShow(value => !value);
+  const hideModal = () => {
+    setShow(false);
+  };
+
+  const openModal = () => {
+    setShow(true);
+  };
 
   return (
     <>
       <ButtonIcon
         variants={'outline'}
         sizes={sizes}
-        onClick={toggle}
+        onClick={openModal}
         className={`${className}`}
       >
         {title}
       </ButtonIcon>
-      <ModalSendBTC isShow={isShow} onHideModal={toggle} title={title} />
+      <ModalSendBTC isShow={isShow} onHideModal={hideModal} title={title} />
     </>
   );
 };

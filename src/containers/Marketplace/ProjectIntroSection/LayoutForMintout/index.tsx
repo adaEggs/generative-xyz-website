@@ -20,7 +20,7 @@ const LayoutForMintout = () => {
           <div className={`${s.info} ${!isLimitMinted ? s.isSmall : ''}`}>
             <div className={s.info_inner}>
               <ProjectName />
-              {desktopScreen && RenderMetaContent()}
+              {desktopScreen && <RenderMetaContent />}
             </div>
           </div>
         </div>
@@ -28,6 +28,7 @@ const LayoutForMintout = () => {
           className={`${s.projectInfo_center} col-xl-5 col-12  order-xl-2 order-3`}
         >
           <ProjectDescription
+            onlyDesc={true}
             desc={project?.desc || ''}
             hasInteraction={hasProjectInteraction}
             profileBio={project?.creatorProfile?.bio || ''}

@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '@enums/error-message';
 
 interface IBTCSignOrgProps {
+  processing: boolean;
   onButtonClick: ({ cbSigned }: IBtnProps) => Promise<void>;
   ordAddress: string;
 }
@@ -47,6 +48,7 @@ const useBTCSignOrd = (): IBTCSignOrgProps => {
   }, [user]);
 
   return {
+    processing,
     onButtonClick,
     ordAddress,
   } as IBTCSignOrgProps;
