@@ -427,3 +427,12 @@
   padding: rem(11) rem(14);
   font-size: rem(16) !important;
 }
+
+.importBtn {
+  background-color: #fff;
+  transition: color 0.2s;
+
+  &:hover {
+    color: $secondary-green-c;
+  }
+}

@@ -25,7 +25,7 @@ import { formatBTCPrice } from '@utils/format';
 import log from '@utils/logger';
 import { ErrorMessage, Field, FieldArray, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import Select, { MultiValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
@@ -35,6 +35,7 @@ import SvgInset from '@components/SvgInset';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
+import { useCSVReader } from 'react-papaparse';
 
 const LOG_PREFIX = 'FormEditProfile';
 
@@ -55,6 +56,8 @@ type IUpdateProjectFormValue = {
 
 const FormEditProject = () => {
   const router = useRouter();
+  const { CSVReader } = useCSVReader();
+
   const {
     setProjectData,
     projectData: project,
@@ -66,6 +69,7 @@ const FormEditProject = () => {
     []
   );
   const [file, setFile] = useState<File | null>(null);
+  const [uploadWalletList, setUploadWalletList] = useState<string[]>(['']);
 
   const [isDelete, setIsDelete] = useState<boolean>(false);
   // const [isProcessingFile, setIsProcessingFile] = useState(false);
@@ -266,6 +270,11 @@ const FormEditProject = () => {
     document.body.removeChild(downloadLink);
   };
 
+  const handleUpdateReservers = ({ data }: { data: string[] }) => {
+    const reserveListFromFile = data.map(item => item[0]).filter(Boolean);
+    setUploadWalletList(reserveListFromFile);
+  };
+
   useAsyncEffect(async () => {
     const { result } = await getCategoryList();
     const options = result.map(item => ({
@@ -276,6 +285,12 @@ const FormEditProject = () => {
       options.filter(op => op.value !== CATEGORY_SELECT_BLACKLIST)
     );
   }, []);
+
+  useEffect(() => {
+    if (project) {
+      setUploadWalletList(project?.reservers || ['']);
+    }
+  }, [project]);
 
   return (
     <Formik
@@ -292,7 +307,7 @@ const FormEditProject = () => {
         captureImageTime: project?.captureThumbnailDelayTime || 20,
         reserveMintPrice: formatBTCPrice(project?.reserveMintPrice || '0'),
         reserveMintLimit: project?.reserveMintLimit || 1,
-        reservers: project?.reservers ? project?.reservers : [''],
+        reservers: uploadWalletList,
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -590,18 +605,41 @@ const FormEditProject = () => {
                                 <label className={s.label} htmlFor="reservers">
                                   Wallet BTC Taproot Addresses
                                 </label>
-                                <Stack
-                                  direction="horizontal"
-                                  gap={3}
-                                  className="align-items-center cursor-pointer"
-                                  onClick={() => arrayHelpers.push('')}
-                                >
-                                  <SvgInset
+                                <Stack direction="horizontal" gap={4}>
+                                  <CSVReader
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    onUploadAccepted={(results: any) => {
+                                      handleUpdateReservers(results);
+                                    }}
+                                  >
+                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                    {({ getRootProps }: any) => (
+                                      <>
+                                        <div>
+                                          <button
+                                            type="button"
+                                            className={s.importBtn}
+                                            {...getRootProps()}
+                                          >
+                                            Import csv
+                                          </button>
+                                        </div>
+                                      </>
+                                    )}
+                                  </CSVReader>
+                                  <Stack
+                                    direction="horizontal"
+                                    gap={3}
+                                    className="align-items-center cursor-pointer"
+                                    onClick={() => arrayHelpers.push('')}
+                                  >
+                                    {/* <SvgInset
                                     size={14}
                                     svgUrl={`${CDN_URL}/icons/ic-plus.svg`}
                                     className={s.addBtn}
-                                  />
-                                  <Text>Add wallet</Text>
+                                  /> */}
+                                    <Text>Add wallet</Text>
+                                  </Stack>
                                 </Stack>
                               </div>
 
@@ -623,7 +661,8 @@ const FormEditProject = () => {
                                             id={`reservers.${index}`}
                                             type="text"
                                             name={`reservers.${index}`}
-                                            defaultValue={''}
+                                            value={reserver ? reserver : ''}
+                                            validateOnChange
                                             onBlur={handleBlur}
                                             onChange={handleChange}
                                             validate={(value: string) => {
@@ -653,6 +692,7 @@ const FormEditProject = () => {
                                           className={`${s.removeBtn} ${
                                             values.reservers?.filter(Boolean)
                                               .length === 0 &&
+                                            values.reservers.length === 1 &&
                                             s.removeBtnDisabled
                                           }`}
                                           onClick={() => {
