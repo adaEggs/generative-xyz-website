@@ -6,6 +6,7 @@ export interface IGetMintReceiverAddressPayload {
   payType: IPaymentType;
   refundUserAddress?: string;
   quantity: number;
+  rate?: number;
 }
 
 export interface IGetMintReceiverAddressResp {

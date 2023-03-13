@@ -528,10 +528,11 @@
   }
 }
 
-.attrs_item{
-  a{
+.attrs_item {
+  a {
     color: $primary-brand;
-    &:hover{
+
+    &:hover {
       text-decoration: none;
     }
   }

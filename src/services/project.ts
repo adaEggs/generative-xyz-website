@@ -15,6 +15,8 @@ import {
   IGetProjectTokensResponse,
   IGetProjectVolumeResponse,
   IProjectMarketplaceData,
+  IProjectMintFeeRate,
+  IProjectMintFeeRateResponse,
   IReportProjectPayload,
   IReportProjectResponse,
   IUpdateProjectPayload,
@@ -37,7 +39,9 @@ export const getProjectDetail = async (
 ): Promise<IGetProjectDetailResponse> => {
   try {
     const project = await get<IGetProjectDetailResponse>(
-      `${API_PATH}/${params.contractAddress}/tokens/${params.projectID}`
+      `${API_PATH}/${params.contractAddress}/tokens/${params.projectID}${
+        params.userAddress ? `?userAddress=${params.userAddress}` : ''
+      }`
     );
     const { tokenID: projectID, maxSupply, mintingInfo } = project;
     if (
@@ -307,5 +311,21 @@ export const projectMarketplaceData = async ({
   } catch (err: unknown) {
     log('failed to report project', LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to report project');
+  }
+};
+
+export const getProjectMintFeeRate = async (
+  maxSize: number,
+  rate = 0,
+  mintPrice = 0
+): Promise<IProjectMintFeeRate> => {
+  try {
+    const res = await get<IProjectMintFeeRateResponse>(
+      `/mint-nft-btc/get-mint-fee-rate-info/${maxSize}/${rate}/${mintPrice}`
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get mint fee rate project', LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get mint fee rate project');
   }
 };

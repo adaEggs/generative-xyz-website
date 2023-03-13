@@ -40,6 +40,7 @@ import { PaymentMethod } from '@enums/mint-generative';
 import { isWalletWhiteList, wordCase } from '@utils/common';
 import { Project } from '@interfaces/project';
 import { useRouter } from 'next/router';
+import { IProjectMintFeeRate } from '@interfaces/api/project';
 import { getCategoryList } from '@services/category';
 import { Category } from '@interfaces/category';
 import useAsyncEffect from 'use-async-effect';
@@ -48,6 +49,7 @@ const LOG_PREFIX = 'ProjectLayoutContext';
 
 export interface IProjectLayoutContext {
   project?: Project | null;
+  projectFeeRate?: IProjectMintFeeRate | null;
   isHasBtcWallet: boolean;
   creatorAddress: string;
   isTwVerified: boolean;
@@ -83,6 +85,7 @@ export interface IProjectLayoutContext {
 
 const initialValue: IProjectLayoutContext = {
   project: null,
+  projectFeeRate: null,
   isHasBtcWallet: false,
   creatorAddress: '',
   isTwVerified: false,
@@ -129,6 +132,7 @@ export const ProjectLayoutContext =
 
 type Props = {
   project?: Project | null;
+  projectFeeRate?: IProjectMintFeeRate | null;
   openMintBTCModal: (s: PaymentMethod) => void;
   isWhitelist?: boolean;
   children: ReactNode;
@@ -137,6 +141,7 @@ type Props = {
 export const ProjectLayoutProvider = ({
   children,
   project,
+  projectFeeRate,
   isWhitelist,
   openMintBTCModal,
 }: Props): React.ReactElement => {
@@ -205,8 +210,10 @@ export const ProjectLayoutProvider = ({
   }, [project]);
 
   const textMint = useMemo((): string => {
-    return Number(project?.mintPrice) ? 'Mint' : 'Free mint';
-  }, [project]);
+    return Number(projectFeeRate?.fastest.mintFees.btc.mintPrice)
+      ? 'Mint'
+      : 'Free mint';
+  }, [projectFeeRate?.fastest.mintFees]);
 
   const handleFetchMarketplaceStats = async () => {
     try {
@@ -272,13 +279,15 @@ export const ProjectLayoutProvider = ({
   };
 
   const priceMemo = useMemo(
-    () => formatBTCPrice(Number(project?.mintPrice)),
-    [project?.mintPrice]
+    () =>
+      formatBTCPrice(Number(projectFeeRate?.fastest.mintFees.btc.mintPrice)),
+    [projectFeeRate?.fastest.mintFees.btc]
   );
 
   const priceEthMemo = useMemo(
-    () => formatEthPrice(project?.mintPriceEth || null),
-    [project?.mintPriceEth]
+    () =>
+      formatEthPrice(projectFeeRate?.fastest.mintFees.eth.mintPrice || null),
+    [projectFeeRate?.fastest.mintFees.eth]
   );
 
   const isFullonChain = useMemo(() => {
@@ -431,6 +440,7 @@ export const ProjectLayoutProvider = ({
   const contextValues = useMemo((): IProjectLayoutContext => {
     return {
       project,
+      projectFeeRate,
       isHasBtcWallet,
       creatorAddress,
       isTwVerified,
@@ -465,6 +475,7 @@ export const ProjectLayoutProvider = ({
     };
   }, [
     project,
+    projectFeeRate,
     isHasBtcWallet,
     creatorAddress,
     isTwVerified,
