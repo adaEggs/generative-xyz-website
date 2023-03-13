@@ -14,3 +14,9 @@ export const setFCMToken = (token: string): void => {
     localStorage.setItem(LocalStorageKey.FCM_TOKEN, token);
   }
 };
+
+export const removeFCMToken = (): void => {
+  if (isBrowser()) {
+    localStorage.removeItem(LocalStorageKey.FCM_TOKEN);
+  }
+};

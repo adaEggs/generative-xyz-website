@@ -8,7 +8,6 @@ import {
 } from '@constants/seo-default-info';
 import { WalletProvider } from '@contexts/wallet-context';
 import { AssetsProvider } from '@contexts/assets-context';
-
 import { LogLevel } from '@enums/log-level';
 import store from '@redux';
 import { sendAAPageView } from '@services/aa-tracking';
