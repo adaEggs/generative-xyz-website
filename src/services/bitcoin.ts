@@ -15,7 +15,7 @@ import {
   ITxHistory,
 } from '@interfaces/api/bitcoin';
 import axios from 'axios';
-import { isExpiredTime } from '@utils/time';
+import { isExpiredUnixTime } from '@utils/time';
 import { orderBy } from 'lodash';
 
 const LOG_PREFIX = 'COLLECTED_NFT';
@@ -118,8 +118,8 @@ export const getHistory = async (address: string): Promise<ITxHistory[]> => {
         let statusColor: HistoryStatusColor = '#ff7e21';
         let status: HistoryStatusType = HistoryStatusType.pending;
         const now = new Date().getTime();
-        const isExpired = isExpiredTime({
-          time: history.created_at || now,
+        const isExpired = isExpiredUnixTime({
+          unixTime: history.created_at || now,
           expiredMin: 4,
         });
         if (isExpired) {
