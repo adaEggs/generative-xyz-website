@@ -298,9 +298,7 @@ const InscribeEthModal: React.FC<IProps> = (
     }
 
     if (!isAuth && isBrowser()) {
-      router.push(
-        `${ROUTE_PATH.AUTHENTIC_INSCRIPTIONS}?next=${ROUTE_PATH.AUTHENTIC}`
-      );
+      router.push(`${ROUTE_PATH.PRESERVE_LANDING}?next=${ROUTE_PATH.PRESERVE}`);
       return;
     }
 
