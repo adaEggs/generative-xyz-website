@@ -41,6 +41,9 @@ import { isWalletWhiteList, wordCase } from '@utils/common';
 import { Project } from '@interfaces/project';
 import { useRouter } from 'next/router';
 import { IProjectMintFeeRate } from '@interfaces/api/project';
+import { getCategoryList } from '@services/category';
+import { Category } from '@interfaces/category';
+import useAsyncEffect from 'use-async-effect';
 
 const LOG_PREFIX = 'ProjectLayoutContext';
 
@@ -77,6 +80,7 @@ export interface IProjectLayoutContext {
   isWhitelist?: boolean;
   hasMint?: boolean;
   origin?: string;
+  categoryName: string | null;
 }
 
 const initialValue: IProjectLayoutContext = {
@@ -120,6 +124,7 @@ const initialValue: IProjectLayoutContext = {
   isWhitelist: undefined,
   origin: '',
   hasMint: false,
+  categoryName: '',
 };
 
 export const ProjectLayoutContext =
@@ -154,6 +159,7 @@ export const ProjectLayoutProvider = ({
   const [isConnecting, setIsConnecting] = useState<boolean>(false);
   const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
 
   const origin =
     typeof window !== 'undefined' && window.location.origin
@@ -380,6 +386,19 @@ export const ProjectLayoutProvider = ({
     return false;
   }, [project?.reportUsers]);
 
+  const fetchAllCategory = async () => {
+    try {
+      const { result } = await getCategoryList();
+      setCategoryList(result);
+    } catch (err: unknown) {
+      log('failed to fetch category list', LogLevel.ERROR, LOG_PREFIX);
+    }
+  };
+
+  useAsyncEffect(() => {
+    fetchAllCategory();
+  }, []);
+
   useEffect(() => {
     handleFetchMarketplaceStats();
   }, [projectDetail]);
@@ -406,6 +425,17 @@ export const ProjectLayoutProvider = ({
       setProjectDetail(projectDetailObj);
     }
   }, [project?.id]);
+
+  const categoryName = useMemo(() => {
+    if (project && project?.categories?.length) {
+      for (let i = 0; i < categoryList.length; i++) {
+        if (project.categories[0] === categoryList[i].id) {
+          return categoryList[i].name;
+        }
+      }
+    }
+    return null;
+  }, [project, categoryList]);
 
   const contextValues = useMemo((): IProjectLayoutContext => {
     return {
@@ -441,6 +471,7 @@ export const ProjectLayoutProvider = ({
       openMintBTCModal,
       origin,
       hasMint,
+      categoryName,
     };
   }, [
     project,
@@ -475,6 +506,7 @@ export const ProjectLayoutProvider = ({
     openMintBTCModal,
     origin,
     hasMint,
+    categoryName,
   ]);
 
   return (

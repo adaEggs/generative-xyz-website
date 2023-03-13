@@ -70,8 +70,17 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   const [isBuying, setIsBuying] = useState(false);
   // const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
   const isBuyable = React.useMemo(() => {
-    return tokenData?.buyable && !!tokenData?.priceBTC;
-  }, [tokenData?.buyable, tokenData?.priceBTC]);
+    return (
+      tokenData?.buyable && !!tokenData?.priceBTC && tokenData?.sell_verified
+    );
+  }, [tokenData?.buyable, tokenData?.priceBTC, tokenData?.sell_verified]);
+
+  const isWaitingVerify = React.useMemo(() => {
+    return (
+      tokenData?.buyable && !!tokenData?.priceBTC && !tokenData?.sell_verified
+    );
+  }, [tokenData?.buyable, tokenData?.priceBTC, tokenData?.sell_verified]);
+
   const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
 
   const [showReportModal, setShowReportModal] = useState(false);
@@ -240,7 +249,15 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   }, [projectData]);
 
   const renderBuyBTCView = () => {
-    if (!tokenData || !isBuyable) return null;
+    if (!tokenData) return null;
+    if (isWaitingVerify) {
+      return (
+        <Heading as={'h6'} fontWeight="medium" className={s.waiting}>
+          Incoming...
+        </Heading>
+      );
+    }
+    if (!isBuyable) return null;
     return (
       <div className={s.buy_btc}>
         {isBuyable && (

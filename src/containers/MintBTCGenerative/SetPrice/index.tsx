@@ -37,6 +37,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 import s from './styles.module.scss';
+import { useCSVReader } from 'react-papaparse';
 
 const LOG_PREFIX = 'SetPrice';
 
@@ -63,6 +64,7 @@ const SetPrice = () => {
     imageCollectionFile,
     filesSandbox,
   } = useContext(MintBTCGenerativeContext);
+  const { CSVReader } = useCSVReader();
 
   const [isMinting, setIsMinting] = useState(false);
   const [feeRate, setFeeRate] = useState<number>(-1);
@@ -161,7 +163,7 @@ const SetPrice = () => {
         reserveMintLimit: values.reserveMintLimit
           ? parseInt(values.reserveMintLimit.toString(), 10)
           : undefined,
-        reservers: values.reservers,
+        reservers: values.reservers ? values.reservers : undefined,
       },
     });
 
@@ -355,6 +357,15 @@ const SetPrice = () => {
     }
   };
 
+  const handleUpdateReservers = ({ data }: { data: string[] }) => {
+    const reserveListFromFile = data.map(item => item[0]).filter(Boolean);
+
+    setFormValues({
+      ...formValues,
+      reservers: reserveListFromFile,
+    });
+  };
+
   useEffect(() => {
     getEstimateNetworkFee();
   }, [rawFile, collectionType, imageCollectionFile]);
@@ -384,6 +395,7 @@ const SetPrice = () => {
       validate={validateForm}
       onSubmit={handleSubmit}
       validateOnChange
+      enableReinitialize
     >
       {({
         values,
@@ -485,6 +497,7 @@ const SetPrice = () => {
                   <p className={s.error}>{errors.royalty}</p>
                 )}
               </div>
+
               <Accordion
                 header={'Reserve list (optional)'}
                 className={s.reserve}
@@ -546,18 +559,41 @@ const SetPrice = () => {
                                 <label className={s.label} htmlFor="reservers">
                                   Wallet BTC Taproot Addresses
                                 </label>
-                                <Stack
-                                  direction="horizontal"
-                                  gap={3}
-                                  className="align-items-center cursor-pointer"
-                                  onClick={() => arrayHelpers.push('')}
-                                >
-                                  <SvgInset
-                                    size={14}
-                                    svgUrl={`${CDN_URL}/icons/ic-plus.svg`}
-                                    className={s.addBtn}
-                                  />
-                                  <Text>Add wallet</Text>
+                                <Stack direction="horizontal" gap={4}>
+                                  <CSVReader
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    onUploadAccepted={(results: any) => {
+                                      handleUpdateReservers(results);
+                                    }}
+                                  >
+                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                    {({ getRootProps }: any) => (
+                                      <>
+                                        <div>
+                                          <button
+                                            type="button"
+                                            className={s.importBtn}
+                                            {...getRootProps()}
+                                          >
+                                            Import csv
+                                          </button>
+                                        </div>
+                                      </>
+                                    )}
+                                  </CSVReader>
+                                  <Stack
+                                    direction="horizontal"
+                                    gap={3}
+                                    className={`align-items-center cursor-pointer ${s.addWallet}`}
+                                    onClick={() => arrayHelpers.push('')}
+                                  >
+                                    {/* <SvgInset
+                                      size={14}
+                                      svgUrl={`${CDN_URL}/icons/ic-plus.svg`}
+                                      className={s.addBtn}
+                                    /> */}
+                                    <Text>Add wallet</Text>
+                                  </Stack>
                                 </Stack>
                               </div>
 
@@ -579,7 +615,8 @@ const SetPrice = () => {
                                             id={`reservers.${index}`}
                                             type="text"
                                             name={`reservers.${index}`}
-                                            defaultValue={''}
+                                            value={reserver ? reserver : ''}
+                                            validateOnChange
                                             validate={(value: string) => {
                                               if (value === '') {
                                                 return '';
@@ -605,12 +642,18 @@ const SetPrice = () => {
                                           size={14}
                                           svgUrl={`${CDN_URL}/icons/ic-close.svg`}
                                           className={`${s.removeBtn} ${
-                                            formValues.reservers?.length ===
-                                              1 && s.removeBtnDisabled
+                                            values.reservers?.filter(Boolean)
+                                              .length === 0 &&
+                                            values.reservers.length === 1 &&
+                                            s.removeBtnDisabled
                                           }`}
-                                          onClick={() =>
-                                            arrayHelpers.remove(index)
-                                          }
+                                          onClick={() => {
+                                            if (values.reservers.length > 1) {
+                                              arrayHelpers.remove(index);
+                                            } else {
+                                              arrayHelpers.replace(index, '');
+                                            }
+                                          }}
                                         />
                                       </Stack>
                                     </div>
