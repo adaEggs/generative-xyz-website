@@ -26,6 +26,7 @@ import MintStatusModal from '../Modal/MintStatus';
 import s from './CollectedCard.module.scss';
 import { AssetsContext } from '@contexts/assets-context';
 import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
+import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -189,18 +190,32 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
       !project.cancelling
     ) {
       return (
-        <Link
-          href=""
-          onClick={() => ''}
-          className={s.projectCard_status_buyBtn}
-        >
-          <ButtonBuyListedFromBTC
-            inscriptionID={project.inscriptionID}
-            price={project.priceBTC}
-            inscriptionNumber={Number(project.inscriptionNumber)}
-            orderID={project.orderID}
-          />
-        </Link>
+        <div className={s.row}>
+          <Link
+            href=""
+            onClick={() => ''}
+            className={s.projectCard_status_buyBtn}
+          >
+            <ButtonBuyListedFromETH
+              inscriptionID={project.inscriptionID}
+              price={project.priceBTC}
+              inscriptionNumber={Number(project.inscriptionNumber)}
+              orderID={project.orderID}
+            />
+          </Link>
+          <Link
+            href=""
+            onClick={() => ''}
+            className={s.projectCard_status_buyBtn}
+          >
+            <ButtonBuyListedFromBTC
+              inscriptionID={project.inscriptionID}
+              price={project.priceBTC}
+              inscriptionNumber={Number(project.inscriptionNumber)}
+              orderID={project.orderID}
+            />
+          </Link>
+        </div>
       );
     }
     return (

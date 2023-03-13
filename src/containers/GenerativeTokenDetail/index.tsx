@@ -46,6 +46,7 @@ import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal
 import { AuthenticCard } from './AuthenticCard';
 import { filterCreatorName } from '@utils/generative';
 import { wordCase } from '@utils/common';
+import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
@@ -260,16 +261,22 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     if (!isBuyable) return null;
     return (
       <div className={s.buy_btc}>
-        {isBuyable && (
-          <ButtonBuyListedFromBTC
-            sizes={'large'}
-            inscriptionID={tokenData.tokenID}
-            price={tokenData.priceBTC}
-            inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
-            orderID={tokenData.orderID}
-            isDetail={true}
-          />
-        )}
+        <ButtonBuyListedFromETH
+          sizes={'large'}
+          inscriptionID={tokenData.tokenID}
+          price={tokenData.priceBTC}
+          inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+          orderID={tokenData.orderID}
+          isDetail={true}
+        />
+        <ButtonBuyListedFromBTC
+          sizes={'large'}
+          inscriptionID={tokenData.tokenID}
+          price={tokenData.priceBTC}
+          inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+          orderID={tokenData.orderID}
+          isDetail={true}
+        />
       </div>
     );
   };
