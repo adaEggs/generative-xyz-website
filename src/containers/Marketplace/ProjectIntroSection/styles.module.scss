@@ -527,3 +527,13 @@
     padding-top: rem(10px);
   }
 }
+
+.attrs_item {
+  a {
+    color: $primary-brand;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}

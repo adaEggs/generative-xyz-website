@@ -3,8 +3,8 @@ import Image from 'next/image';
 import React, { useMemo } from 'react';
 import Text from '@components/Text';
 import s from './styles.module.scss';
-import { Project } from '../../../interfaces/project';
-import { formatLongAddress } from '../../../utils/format';
+import { Project } from '@interfaces/project';
+import { formatLongAddress } from '@utils/format';
 import { ROUTE_PATH } from '@constants/route-path';
 import Link from 'next/link';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -64,7 +64,7 @@ export const AuthenticCard = ({
               <div className="label">Original Token ID</div>
               <div className="val">
                 <a
-                  href={`https://etherscan.io/token/${project.tokenAddress}?a=${nftTokenId}`}
+                  href={`https://opensea.io/assets/ethereum/${project.tokenAddress}/${nftTokenId}`}
                   target="_blank"
                 >
                   {nftTokenId}
