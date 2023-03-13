@@ -178,8 +178,8 @@ const FormEditProject = () => {
       maxSupply: Number(values.maxSupply) || 0,
       isHidden: isHidden,
       categories: categories || [],
-      reserveMintLimit: parseFloat(values.reserveMintLimit.toString()),
-      reserveMintPrice: values.reserveMintPrice.toString(),
+      reserveMintLimit: parseFloat(values.reserveMintLimit.toString()) || 1,
+      reserveMintPrice: values.reserveMintPrice.toString() || '0',
       reservers: values.reservers.filter(Boolean),
     };
 
@@ -624,6 +624,8 @@ const FormEditProject = () => {
                                             type="text"
                                             name={`reservers.${index}`}
                                             defaultValue={''}
+                                            onBlur={handleBlur}
+                                            onChange={handleChange}
                                             validate={(value: string) => {
                                               if (value === '') {
                                                 return '';
@@ -649,12 +651,17 @@ const FormEditProject = () => {
                                           size={14}
                                           svgUrl={`${CDN_URL}/icons/ic-close.svg`}
                                           className={`${s.removeBtn} ${
-                                            values.reservers?.length === 1 &&
+                                            values.reservers?.filter(Boolean)
+                                              .length === 0 &&
                                             s.removeBtnDisabled
                                           }`}
-                                          onClick={() =>
-                                            arrayHelpers.remove(index)
-                                          }
+                                          onClick={() => {
+                                            if (values.reservers.length > 1) {
+                                              arrayHelpers.remove(index);
+                                            } else {
+                                              arrayHelpers.replace(index, '');
+                                            }
+                                          }}
                                         />
                                       </Stack>
                                     </div>
@@ -668,7 +675,6 @@ const FormEditProject = () => {
                   </div>
                 }
               />
-
               <div className={s.container}>
                 <div className={s.actionWrapper}>
                   <ButtonIcon

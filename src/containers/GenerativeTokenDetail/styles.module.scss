@@ -88,6 +88,12 @@
   margin-bottom: rem(16px);
 }
 
+.waiting {
+  width: 100%;
+  color: $gray-9c;
+  font-style: italic;
+}
+
 .usersInfo {
   margin-bottom: 16px;
   display: flex;

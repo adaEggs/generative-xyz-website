@@ -314,15 +314,25 @@ const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
                                     ? formatLongAddress(values.address)
                                     : values.address
                                 }
-                                className={s.input}
+                                className={cs(
+                                  s.input,
+                                  addressInputDisabled && 'text-black-60'
+                                )}
                                 placeholder="Paste your Ordinals-compatible address here"
                                 ref={addressInputRef}
                               />
                               <div
-                                className={s.editAddress}
-                                onClick={() => setAddressInputDisabled(false)}
+                                className={cs(
+                                  s.editAddress,
+                                  errors.address &&
+                                    touched.address &&
+                                    s.disabled
+                                )}
+                                onClick={() =>
+                                  setAddressInputDisabled(!addressInputDisabled)
+                                }
                               >
-                                Edit
+                                {addressInputDisabled ? 'Edit' : 'Save'}
                               </div>
                             </div>
                             {errors.address && touched.address && (
