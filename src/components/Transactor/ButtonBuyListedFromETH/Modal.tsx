@@ -26,6 +26,9 @@ import useThorSwap from '@bitcoin/useThorSwap';
 import { debounce } from 'lodash';
 import { sleep } from '@utils/sleep';
 import { formatUnixDateTime } from '@utils/time';
+import useContractOperation from '@hooks/useContractOperation';
+import CreateSwapOperation from '@services/contract-operations/thor/create-transaction';
+import { NETWORK_CHAIN_ID } from '@constants/config';
 
 interface IFormValues {
   price: string;
@@ -65,6 +68,11 @@ const ModalBuyListed = React.memo(
 
     const [sellAmount, setSellAmount] = useState<number | undefined>(undefined);
 
+    const { call: createSwapTx } = useContractOperation(
+      CreateSwapOperation,
+      false
+    );
+
     const _loading = isLoading || !state.networkFee;
 
     const [error, setError] = useState('');
@@ -77,9 +85,9 @@ const ModalBuyListed = React.memo(
     const validateForm = (values: IFormValues) => {
       const errors: Record<string, string> = {};
 
-      if (!values.price || !new BigNumber(values.price || 0)) {
-        errors.price = 'Required.';
-      }
+      // if (!values.price || !new BigNumber(values.price || 0)) {
+      //   errors.price = 'Required.';
+      // }
 
       if (!values.receiveBTCAddress) {
         errors.receiveBTCAddress = 'Address is required.';
@@ -91,28 +99,45 @@ const ModalBuyListed = React.memo(
       return errors;
     };
 
-    const handleSubmit = async (values: IFormValues) => {
+    const handleSubmit = async (_: IFormValues) => {
       try {
         if (
+          !sellAmount ||
           !depositData ||
-          !estimateData ||
-          !estimateData?.memo
-            .toLowerCase()
-            .includes(values.receiveBTCAddress.toLowerCase())
+          !estimateData
+          //   ||
+          // !estimateData?.memo
+          //   .toLowerCase()
+          //   .includes(values.receiveBTCAddress.toLowerCase())
         ) {
           throw new Error('Estimate fail.');
         }
         setIsSubmitting(true);
+
+        const _sendAmount = Math.floor(
+          new BigNumber(sellAmount).div(1e8).multipliedBy(1e18).toNumber()
+        );
+        const _ = await createSwapTx({
+          chainID: NETWORK_CHAIN_ID,
+          amount: _sendAmount,
+          expected_amount_out: new BigNumber(
+            estimateData.expected_amount_out
+          ).toNumber(),
+          expiry: estimateData.expiry,
+          inbound_address: estimateData.inbound_address,
+          memo: estimateData.memo,
+          router: estimateData.router,
+        });
         await submitSwapETH({
           order_id: depositData?.order_id,
           txhash: '',
         });
         toast.success('Bought inscription successfully');
-        setTimeout(() => {
-          setIsSubmitting(false);
-          window.location.reload();
-          setError('');
-        }, 2000);
+        // setTimeout(() => {
+        //   setIsSubmitting(false);
+        //   window.location.reload();
+        //   setError('');
+        // }, 2000);
       } catch (err: unknown) {
         setIsSubmitting(false);
         onSetError(err);
@@ -170,6 +195,10 @@ const ModalBuyListed = React.memo(
           order_id: sellOrderID,
           receive_address: receiveAddress,
         });
+        // const depositData: IRespGenAddressByETH = {
+        //   temp_address: TEMP_ADDRESS,
+        //   order_id: '1234',
+        // };
 
         estimateData = await estimateETH2BTC({
           sellAmount: _sellAmount,
