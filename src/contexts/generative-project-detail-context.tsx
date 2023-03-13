@@ -254,7 +254,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     [user]
   );
 
-  const debounceFetchProjectFeeRate = debounce(fetchProjectFeeRate, 300);
+  const debounceFetchProjectFeeRate = debounce(fetchProjectFeeRate, 800);
 
   useEffect(() => {
     if (user && user.walletAddressBtcTaproot && projectData) {

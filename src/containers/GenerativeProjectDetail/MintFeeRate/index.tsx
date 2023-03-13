@@ -133,7 +133,7 @@ const MintFeeRate = ({
                   !!inputRef &&
                   !!inputRef.current
                 ) {
-                  handleChangeCustomRate(`${fastest.rate + 1}`);
+                  // handleChangeCustomRate(`${fastest.rate + 1}`);
                   inputRef.current.focus();
                 }
               }}
