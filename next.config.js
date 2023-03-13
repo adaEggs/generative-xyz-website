@@ -70,6 +70,7 @@ module.exports = withRemoveImports(
       ];
     },
     images: {
+      dangerouslyAllowSVG: true,
       remotePatterns: [
         {
           protocol: 'https',
