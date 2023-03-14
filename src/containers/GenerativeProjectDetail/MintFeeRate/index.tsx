@@ -1,4 +1,3 @@
-import Text from '@components/Text';
 import { IProjectMintFeeRate } from '@interfaces/api/project';
 import { formatBTCPrice, formatEthPrice } from '@utils/format';
 import cs from 'classnames';
@@ -47,9 +46,7 @@ const MintFeeRate = ({
   };
   return (
     <div className={s.container}>
-      <Text size="18" fontWeight="medium" className={s.header}>
-        Select the network fee you want to pay:
-      </Text>
+      <p className={s.header}>Select the network fee you want to pay</p>
       <Row className={s.mintFeeWrapper}>
         <Col className={s.row}>
           <div

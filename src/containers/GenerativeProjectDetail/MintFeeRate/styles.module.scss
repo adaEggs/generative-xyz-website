@@ -1,6 +1,10 @@
 .container {
   .header {
     margin-top: 0;
+    font-weight: 400;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: #333;
   }
 
   .mintFeeWrapper {
@@ -60,7 +64,7 @@
       }
 
       .feeTotalContainer {
-        height: rem(20px);
+        height: rem(22px);
       }
 
       .feeTotal {
