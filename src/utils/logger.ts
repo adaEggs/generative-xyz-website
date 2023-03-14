@@ -43,7 +43,7 @@ const log = (
     return;
   }
 
-  const timestamp: string = dayjs().format('YYYY-MM-DD, HH:mm:ss.SSS');
+  const timestamp: string = dayjs().format('DD-MM-YYYY, HH:mm');
 
   const prettyPrefix = prefix ? ` [${prefix}]:` : '';
 
@@ -62,12 +62,12 @@ const log = (
       eventLogItem.message = `${messagePrefix} ${(msg as Error).message}`;
     }
     // eslint-disable-next-line no-console
-    console.error(eventLogItem.message);
+    console.error(eventLogItem);
 
     if ((msg as Error).stack) {
       eventLogItem.stackTrace = (msg as Error).stack as string;
       // eslint-disable-next-line no-console
-      console.error((msg as Error).stack);
+      console.log((msg as Error).stack);
     }
 
     sendLogToSystem(eventLogItem);
