@@ -99,7 +99,7 @@ const MintBTCGenerativeModal: React.FC = () => {
       ? totalPrice
       : `${
           (Number(currentFee ? currentFee.mintFees.btc.networkFee : 0) +
-            Number(projectData?.mintPrice)) *
+            Number(currentFee ? currentFee.mintFees.btc.mintPrice : 0)) *
           quantity
         }` || ''
   );
