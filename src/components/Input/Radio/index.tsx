@@ -8,6 +8,8 @@ type Props = {
   className?: string;
   name: string;
   defaultValue?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  checked?: string;
 };
 
 const RadioGroups = ({
@@ -16,6 +18,8 @@ const RadioGroups = ({
   className,
   name,
   defaultValue,
+  onChange,
+  checked,
 }: Props) => {
   return (
     <div className={className}>
@@ -30,6 +34,8 @@ const RadioGroups = ({
                 value={option.key}
                 name={name}
                 defaultChecked={option.key === defaultValue}
+                onChange={onChange}
+                checked={checked === option.key}
                 // checked={field.value === option.value}
               />
               <label htmlFor={option.key}>{option.value}</label>
