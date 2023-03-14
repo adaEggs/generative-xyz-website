@@ -102,7 +102,7 @@ const MintEthModal: React.FC = () => {
     totalPrice
       ? totalPrice
       : `${
-          (Number(projectData?.mintPriceEth) +
+          (Number(currentFee ? currentFee.mintFees.eth.mintPrice : 0) +
             Number(currentFee ? currentFee.mintFees.eth.networkFee : 0)) *
           quantity
         }` || '',
