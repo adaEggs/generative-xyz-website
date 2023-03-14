@@ -188,7 +188,7 @@ const MintBTCGenerativeModal: React.FC = () => {
           payType: 'btc',
           refundUserAddress: refundAddress,
           quantity: _quantity,
-          rate: _rate,
+          feeRate: _rate,
         });
       // const { address, Price: price } = await generateBTCReceiverAddress({
       //   walletAddress,

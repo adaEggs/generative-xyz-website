@@ -43,7 +43,7 @@ export const getBTCAddress = async ({
         payType: 'eth',
         refundUserAddress: refundAddress,
         quantity,
-        rate,
+        feeRate: rate,
       });
 
     sendAAEvent({
