@@ -46,7 +46,7 @@ const MintFeeRate = ({
   };
   return (
     <div className={s.container}>
-      <p className={s.header}>Select the network fee you want to pay</p>
+      <p className={s.header}>Select the network fee you want to pay:</p>
       <Row className={s.mintFeeWrapper}>
         <Col className={s.row}>
           <div
