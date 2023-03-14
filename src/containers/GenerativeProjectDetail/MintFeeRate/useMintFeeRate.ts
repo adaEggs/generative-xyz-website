@@ -32,15 +32,6 @@ const useMintFeeRate = () => {
   }, [projectFeeRate]);
 
   useEffect(() => {
-    if (Number(customRate) < (projectFeeRate?.economy.rate || 0)) {
-      setCustomRate('');
-    }
-    if (projectData) {
-      debounceFetchProjectFeeRate(projectData, Number(customRate));
-    }
-  }, [customRate]);
-
-  useEffect(() => {
     const intervalID = setInterval(() => {
       debounceFetchProjectFeeRate(projectData || undefined, Number(customRate));
     }, 10000);
@@ -56,6 +47,12 @@ const useMintFeeRate = () => {
 
   const handleChangeCustomRate = (rate: string): void => {
     setCustomRate(rate);
+    if (Number(rate) < (projectFeeRate?.economy.rate || 0)) {
+      setCustomRate('');
+    }
+    if (projectData) {
+      debounceFetchProjectFeeRate(projectData, Number(rate));
+    }
   };
 
   return {
