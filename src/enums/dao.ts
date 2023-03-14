@@ -18,3 +18,9 @@ export enum ProposalState {
   Expired,
   Executed,
 }
+
+export enum ProposalStatus {
+  Voting = 0,
+  Executed = 1,
+  Defeated = 2,
+}

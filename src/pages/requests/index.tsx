@@ -4,9 +4,15 @@ import { SWRConfig } from 'swr';
 import RequestWrapper from '@containers/Request';
 import MarketplaceLayout from '@layouts/Marketplace';
 import { CDN_URL } from '@constants/config';
-import { getSearchByKeyword } from '@services/search';
+import { getDaoProjects } from '@services/request';
+// import { LIMIT } from '@containers/Request/useApi';
+// import { getApiKey } from '@utils/swr';
 
-const RequestsPage: NextPage = () => {
+interface IPropsPage {
+  fallback: Record<string, string> | null;
+}
+
+const RequestsPage: NextPage<IPropsPage> = ({ fallback }) => {
   return (
     <MarketplaceLayout>
       <SWRConfig
@@ -14,8 +20,8 @@ const RequestsPage: NextPage = () => {
           keepPreviousData: true,
           revalidateOnFocus: false,
           revalidateIfStale: false,
-          fetcher: getSearchByKeyword,
-          fallback: {},
+          fetcher: getDaoProjects,
+          fallback: fallback || {},
         }}
       >
         <RequestWrapper />
@@ -27,8 +33,14 @@ const RequestsPage: NextPage = () => {
 export default RequestsPage;
 
 export const getServerSideProps = async () => {
+  // const params = { limit: LIMIT };
+  // const collections = await getDaoProjects(params);
+
   return {
     props: {
+      fallback: {
+        // [getApiKey(getDaoProjects, params)]: collections,
+      },
       seoInfo: {
         title: 'Generative | Requests',
         description: 'All requests are there.',

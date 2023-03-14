@@ -1,0 +1,23 @@
+.noData {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: rem(16);
+  font-weight: 400;
+  color: $black-100;
+
+  &_icon {
+    min-width: rem(22);
+    margin-right: rem(14.4);
+  }
+
+  &_text {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  // &_keyword {
+  //   font-weight: 600;
+  // }
+}
