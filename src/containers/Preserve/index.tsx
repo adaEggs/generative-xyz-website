@@ -16,9 +16,9 @@ import InscriptionList from './InscriptionList';
 import _uniqBy from 'lodash/uniqBy';
 import s from './styles.module.scss';
 
-const LOG_PREFIX = 'Authentic';
+const LOG_PREFIX = 'Preserve';
 
-const Authentic: React.FC = (): React.ReactElement => {
+const Preserve: React.FC = (): React.ReactElement => {
   const isAuth = getAccessToken();
   const router = useRouter();
   const user = useSelector(getUserSelector);
@@ -120,4 +120,4 @@ const Authentic: React.FC = (): React.ReactElement => {
   );
 };
 
-export default Authentic;
+export default Preserve;
