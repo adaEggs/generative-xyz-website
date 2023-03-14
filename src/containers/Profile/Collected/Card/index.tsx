@@ -25,6 +25,7 @@ import MintStatusModal from '../Modal/MintStatus';
 import s from './CollectedCard.module.scss';
 import { AssetsContext } from '@contexts/assets-context';
 import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import { capitalizeFirstLetter } from '@utils/string';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -359,12 +360,12 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                     <Text size={'16'} fontWeight="medium">
                       {project.quantity > 1
                         ? `Quantity: ${project.quantity}`
-                        : `${project.artistName || ''}`}
+                        : `${capitalizeFirstLetter(project.artistName || '')}`}
                     </Text>
                   )
                 ) : (
                   <Text size={'16'} fontWeight="medium">
-                    {`${project.artistName}`}
+                    {`${capitalizeFirstLetter(project.artistName || '')}`}
                   </Text>
                 )}
               </div>
