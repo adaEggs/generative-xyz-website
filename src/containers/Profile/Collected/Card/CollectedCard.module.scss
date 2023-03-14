@@ -134,7 +134,7 @@
     }
 
     @include mobile {
-      padding: rem(8px);
+      // padding: rem(8px);
     }
 
     &_inner {
@@ -203,12 +203,12 @@
   &_info {
     position: relative;
 
-    @include mobile {
-      top: rem(12px);
-      left: rem(6px);
-      right: rem(6px);
-      bottom: rem(6px);
-    }
+    // @include mobile {
+    //   top: rem(12px);
+    //   left: rem(6px);
+    //   right: rem(6px);
+    //   bottom: rem(6px);
+    // }
 
     &.desktop {
       .projectCard_info_title {
