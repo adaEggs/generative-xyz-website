@@ -130,7 +130,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                         formatAddress(item?.user?.wallet_address)}
                     </div>
                     <div className="col-md-2">
-                      {item?.user?.profile_social?.twitter || '[link]'}
+                      {item?.user?.profile_social?.twitter}
                     </div>
                     <div className="col-md-2">{`${dayjs(
                       item?.user?.updated_at
@@ -138,9 +138,9 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                     <div className="col-md-2">
                       {getStatusProposal(item?.status)}
                     </div>
-                    <div className="col-md-3">
-                      <Button>Against</Button>
-                      <Button>Vote</Button>
+                    <div className="col-md-3 d-flex justify-content-end">
+                      <Button variant="outline-black">Report</Button>
+                      <Button disabled={item?.action?.can_vote === false}>Verify</Button>
                     </div>
                   </div>
                 ))}

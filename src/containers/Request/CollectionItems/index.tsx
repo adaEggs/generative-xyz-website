@@ -165,8 +165,10 @@ export const CollectionItems = ({
                       {getStatusProposal(item?.status)}
                     </div>
                     <div className="col-md-2 d-flex justify-content-end">
-                      <Button>Against</Button>
-                      <Button>Vote</Button>
+                      <Button variant="outline-black">Against</Button>
+                      <Button disabled={item?.action?.can_vote === false}>
+                        Vote
+                      </Button>
                     </div>
                   </div>
                 ))}
