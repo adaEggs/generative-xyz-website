@@ -33,6 +33,7 @@ export const ROUTE_PATH = {
   DEVELOPER: '/developers',
   PRESERVE: '/preserve',
   PRESERVE_LANDING: '/preserve-cryptoart',
+  SHOP: '/shop',
 };
 
 export const STANDALONE_PAGES = [

@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
-import { default as BSTable } from 'react-bootstrap/Table';
+import { default as BSTable, TableProps } from 'react-bootstrap/Table';
 import { v4 } from 'uuid';
 import cs from 'classnames';
 import s from './styles.module.scss';
@@ -13,13 +13,18 @@ export type TColumn = {
   };
 };
 
-type Props = {
+interface IProps extends TableProps {
   data?: TColumn[];
   tableHead: ReactNode[];
   className?: string;
-};
+}
 
-const Table = ({ tableHead = [], data, className }: Props) => {
+const Table = ({
+  tableHead = [],
+  data,
+  className,
+  ...delegatedProps
+}: IProps) => {
   const [tableData, setTableData] = useState<TColumn[] | null>(null);
 
   const TableHeads = () => {
@@ -70,7 +75,7 @@ const Table = ({ tableHead = [], data, className }: Props) => {
 
   return (
     <div className={s.wrapper}>
-      <BSTable bordered className={cs(s.table, className)}>
+      <BSTable bordered className={cs(s.table, className)} {...delegatedProps}>
         <TableHeads />
         <TableBody />
         {(!tableData || tableData.length === 0) && (
