@@ -3,21 +3,30 @@ import { Loading } from '@components/Loading';
 import QRCodeGenerator from '@components/QRCodeGenerator';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
+import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import { WalletContext } from '@contexts/wallet-context';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
 import { mintBTCGenerative } from '@services/btc';
 import { generateETHReceiverAddressWithWhitelist } from '@services/eth';
 import { formatEthPrice } from '@utils/format';
 import log from '@utils/logger';
-import { validateBTCWalletAddress } from '@utils/validate';
+import { validateBTCAddressTaproot } from '@utils/validate';
 import { Formik } from 'formik';
 import _debounce from 'lodash/debounce';
-import React, { useCallback, useContext, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { toast } from 'react-hot-toast';
 import s from './styles.module.scss';
-import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 
 interface IFormValue {
   address: string;
@@ -30,6 +39,8 @@ const MintWalletModal: React.FC = () => {
     GenerativeProjectDetailContext
   );
 
+  const user = useAppSelector(getUserSelector);
+  const { transfer } = useContext(WalletContext);
   const { setIsPopupPayment } = useContext(BitcoinProjectContext);
   const [isLoading, setIsLoading] = useState(false);
   const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
@@ -55,7 +66,7 @@ const MintWalletModal: React.FC = () => {
       setPrice(price || projectData?.mintPrice || '');
     } catch (err: unknown) {
       setReceiverAddress(null);
-      seterrorMsg(err?.toString() || '');
+      seterrorMsg(err?.toString() || 'Something went wrong');
     } finally {
       setIsLoading(false);
     }
@@ -66,12 +77,28 @@ const MintWalletModal: React.FC = () => {
     [projectData]
   );
 
+  const userBtcAddress = useMemo(
+    () => user?.walletAddressBtcTaproot || '',
+    [user]
+  );
+
+  const handleTransfer = async (
+    toAddress: string,
+    val: string
+  ): Promise<void> => {
+    try {
+      await transfer(toAddress, val);
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
+    }
+  };
+
   const validateForm = (values: IFormValue) => {
     const errors: Record<string, string> = {};
 
     if (!values.address) {
       errors.address = 'Wallet address is required.';
-    } else if (!validateBTCWalletAddress(values.address)) {
+    } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     } else {
       if (addressInput !== values.address) {
@@ -103,6 +130,18 @@ const MintWalletModal: React.FC = () => {
   };
 
   const priceMemo = useMemo(() => formatEthPrice(price), [price]);
+
+  useEffect(() => {
+    if (user && receiverAddress && price) {
+      handleTransfer(receiverAddress, formatEthPrice(price));
+    }
+  }, [receiverAddress, user, price]);
+
+  useEffect(() => {
+    if (userBtcAddress) {
+      getBTCAddress(userBtcAddress);
+    }
+  }, [userBtcAddress]);
 
   if (!projectData && !isWhitelistProject) {
     return <></>;
@@ -172,7 +211,7 @@ const MintWalletModal: React.FC = () => {
                     <Formik
                       key="mintBTCGenerativeForm"
                       initialValues={{
-                        address: '',
+                        address: userBtcAddress || '',
                       }}
                       validate={validateForm}
                       onSubmit={handleSubmit}

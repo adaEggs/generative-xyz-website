@@ -15,10 +15,14 @@ export const DEFAULT_ART_THUMBNAIL = `${CDN_URL}/images/default-thumbnail.svg`;
 export const PLACE_HOLDER_IMAGE = `${CLOUDFRONT_SERVER_NAME}static/upload/images/common/upload/20210519/2560x1600-dark-gray-solid-color-backgrounda218631f0e.jpeg`;
 export const CONTACT_EMAIL = 'gm@generative.xyz';
 export const SOCIALS = {
-  discord: 'https://discord.com/invite/eUrvfKKTxP',
+  github: 'https://github.com/generative-xyz',
+  discord: 'https://generative.xyz/discord',
   twitter: 'https://twitter.com/generative_xyz',
   whitepaper: 'https://docs.generative.xyz/',
-  docsForArtist: 'https://docs.generative.xyz/how-to/launch-your-art',
+  docsForArtist:
+    'https://docs.generative.xyz/launch-your-generative-art-on-bitcoin/start-a-new-project',
+  docsForArtist2:
+    'https://docs.generative.xyz/launch-your-art-on-bitcoin/submit-your-collection',
   bookATour:
     'https://calendly.com/generative_xyz/welcome_to_generative_showroom',
 };
@@ -29,3 +33,4 @@ export const PAGE_ENTER = 'PAGE_ENTER';
 
 export const METAMASK_DOWNLOAD_PAGE = 'https://metamask.io/download/';
 export const UNISWAP_PAGE = 'https://app.uniswap.org/#/swap';
+export const DEFAULT_USER_AVATAR = `${CDN_URL}/images/default-avatar.jpg`;

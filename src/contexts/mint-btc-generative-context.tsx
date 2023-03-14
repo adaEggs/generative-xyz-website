@@ -1,12 +1,14 @@
 import { MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
 import { CollectionType, MintGenerativeStep } from '@enums/mint-generative';
 import { IBTCFormValue } from '@interfaces/mint-generative';
+import { Project } from '@interfaces/project';
 import {
   ImageCollectionFiles,
   ISandboxRef,
   RawTokenAttributes,
   SandboxFiles,
 } from '@interfaces/sandbox';
+import { getUserSelector } from '@redux/user/selector';
 import { generateHash } from '@utils/generate-data';
 import { useRouter } from 'next/router';
 import React, {
@@ -20,6 +22,7 @@ import React, {
   useEffect,
   PropsWithChildren,
 } from 'react';
+import { useSelector } from 'react-redux';
 
 export type TMintBTCGenerativeContext = {
   currentStep: number;
@@ -38,8 +41,8 @@ export type TMintBTCGenerativeContext = {
   setFormValues: Dispatch<SetStateAction<Partial<IBTCFormValue>>>;
   thumbnailPreviewUrl: string | null;
   setThumbnailPreviewUrl: Dispatch<SetStateAction<string | null>>;
-  mintedProjectID: string | null;
-  setMintedProjectID: Dispatch<SetStateAction<string | null>>;
+  mintedProject: Project | null;
+  setMintedProject: Dispatch<SetStateAction<Project | null>>;
   showErrorAlert: { open: boolean; message: string | null };
   setShowErrorAlert: Dispatch<
     SetStateAction<{ open: boolean; message: string | null }>
@@ -81,8 +84,8 @@ const initialValues: TMintBTCGenerativeContext = {
   setThumbnailPreviewUrl: _ => {
     return;
   },
-  mintedProjectID: null,
-  setMintedProjectID: _ => {
+  mintedProject: null,
+  setMintedProject: _ => {
     return;
   },
   showErrorAlert: { open: false, message: null },
@@ -105,6 +108,7 @@ export const MintBTCGenerativeContext =
 export const MintBTCGenerativeContextProvider = ({
   children,
 }: PropsWithChildren) => {
+  const user = useSelector(getUserSelector);
   const router = useRouter();
   const { stepParam } = router.query;
   const [filesSandbox, setFilesSandbox] = useState<SandboxFiles | null>(null);
@@ -116,12 +120,16 @@ export const MintBTCGenerativeContextProvider = ({
   const sandboxRef = useRef<ISandboxRef | null>(null);
   const [hash, setHash] = useState<string>(generateHash());
   const [formValues, setFormValues] = useState<Partial<IBTCFormValue>>({
-    mintPrice: MIN_MINT_BTC_PROJECT_PRICE.toString(),
+    mintPrice: MIN_MINT_BTC_PROJECT_PRICE,
+    creatorWalletAddress: user?.walletAddressBtc || '',
+    royalty: 5,
+    captureImageTime: 20,
+    reservers: [''],
   });
   const [thumbnailPreviewUrl, setThumbnailPreviewUrl] = useState<string | null>(
     null
   );
-  const [mintedProjectID, setMintedProjectID] = useState<string | null>(null);
+  const [mintedProject, setMintedProject] = useState<Project | null>(null);
   const [collectionType, setCollectionType] = useState(
     CollectionType.GENERATIVE
   );
@@ -180,8 +188,8 @@ export const MintBTCGenerativeContextProvider = ({
         setFormValues,
         thumbnailPreviewUrl,
         setThumbnailPreviewUrl,
-        mintedProjectID,
-        setMintedProjectID,
+        mintedProject,
+        setMintedProject,
         showErrorAlert,
         setShowErrorAlert,
         collectionType,

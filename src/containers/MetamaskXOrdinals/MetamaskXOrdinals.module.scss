@@ -1,0 +1,109 @@
+.metamaskContainer {
+  background: $primary-brand;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: rem(100px);
+  min-height: 100vh;
+
+  .leftContainer {
+    @include mobile {
+      margin-top: rem(34px) !important;
+    }
+
+    .title {
+      font-weight: 500;
+      font-size: rem(24px);
+      line-height: 140%;
+      color: $secondary-purple-b;
+      margin-bottom: rem(24px);
+    }
+
+    .subTitle {
+      font-weight: 600;
+      font-size: rem(48px);
+      color: $white-100;
+      line-height: 140%;
+      margin-bottom: rem(24px);
+
+      @include mobile {
+        font-size: rem(28px);
+      }
+    }
+
+    .descItem {
+      display: flex;
+      align-items: center;
+      margin-bottom: rem(8px);
+
+      .icon {
+        width: 20px;
+        height: 20px;
+        margin-right: rem(16px);
+      }
+
+      .text {
+        font-weight: 400;
+        font-size: rem(20px);
+        line-height: 140%;
+        color: #b6b6b6;
+
+        @include mobile {
+          font-size: rem(16px);
+        }
+      }
+
+      .link {
+        color: #4185ec;
+      }
+    }
+
+    .login {
+      margin-top: rem(64px);
+      // text-transform: uppercase;
+      padding: 16px 24px;
+
+      @include mobile {
+        margin-top: rem(32px);
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+
+    .icMetamask {
+      width: 26px;
+      height: 26px;
+    }
+
+    .buttonContainer {
+      margin-top: rem(64px);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      text-transform: uppercase;
+      padding: 16px 24px;
+
+      .learnMoreButton {
+        margin-left: rem(40px);
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        cursor: pointer;
+
+        .learnMoreText {
+          font-weight: 500;
+          font-size: rem(16px);
+          line-height: rem(26px);
+          color: $white-100;
+        }
+
+        .learnMoreIcon {
+          width: rem(20px);
+          height: rem(20px);
+          margin-left: rem(6px);
+        }
+      }
+    }
+  }
+}

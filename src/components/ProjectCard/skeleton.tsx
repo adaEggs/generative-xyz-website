@@ -27,19 +27,15 @@ const ProjectCardSkeleton = ({ className = '' }: { className: string }) => {
         ) : (
           <div className={cs(s.projectCard_info, s.desktop)}>
             <div className={s.projectCard_creator}>
-              <div className={s.projectCard_avatar}>
-                <Skeleton fill />
-              </div>
               <div className={s.projectCard_name}>
-                <Skeleton width={80} height={14} />
+                <Skeleton width={80} height={30} />
               </div>
             </div>
             <div className={s.projectCard_info_title}>
-              <Skeleton width={180} height={30} />
+              <Skeleton width={250} height={30} />
             </div>
-
-            <div className={s.projectCard_progress}>
-              <Skeleton fill />
+            <div className={s.projectCard_info_price_price}>
+              <Skeleton width={100} height={30} />
             </div>
           </div>
         )}

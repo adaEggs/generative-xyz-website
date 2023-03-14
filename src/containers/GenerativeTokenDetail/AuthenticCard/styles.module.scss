@@ -1,0 +1,123 @@
+.authenticCard {
+  padding: rem(16px);
+  margin-top: rem(16px);
+  background-image: url("https://storage.googleapis.com/generative-static-prod/images/bg-eth.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: #fff;
+  border-radius: rem(20px);
+
+  @include min-pc {
+    padding: rem(24px) rem(34px);
+    margin-top: rem(32px);
+  }
+
+  &_inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: rem(32px);
+  }
+
+  &_thumb {
+    flex: 0 0 100%;
+    display: none;
+    justify-content: center;
+
+    img {
+      max-width: 88px;
+      width: rem(88px);
+      height: auto;
+    }
+
+    @include min-tablet {
+      flex: 0 0 auto;
+      display: block;
+    }
+  }
+
+  &_content {
+    max-width: 100%;
+    flex: 0 0 100%;
+
+    @include min-tablet {
+      flex: 0 0 calc(100% - #{rem(130px)});
+    }
+
+    &_heading {
+      margin-bottom: rem(8px);
+      color: #fff;
+    }
+
+    &_property {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 400;
+
+      @include calcFontAuto(12px, 14px);
+
+      line-height: (22/14);
+      margin-bottom: rem(4px);
+
+      :global(.label) {
+        flex: 0 0 50%;
+        color: #fff;
+
+        :global(.label_inner) {
+          display: flex;
+          gap: rem(6px);
+          align-items: center;
+          cursor: pointer;
+        }
+      }
+
+      :global(.val) {
+        flex: 0 0 50%;
+        text-align: left;
+
+        a {
+          color: #fff;
+          text-decoration: underline;
+          display: block;
+          line-break: anywhere;
+        }
+      }
+    }
+  }
+}
+
+.question {
+  width: 16px;
+  height: 16px;
+  display: block;
+  border: 1px solid white;
+  border-radius: 50%;
+  padding: 0;
+  line-height: 15px;
+  font-size: 12px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.more {
+  margin-top: rem(10px);
+
+  a:hover {
+    color: white;
+  }
+
+  button {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    background: none !important;
+    border: none !important;
+    color: white !important;
+
+    svg {
+      path {
+        stroke: white;
+      }
+    }
+  }
+}

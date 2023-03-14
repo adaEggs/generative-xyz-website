@@ -1,34 +1,57 @@
 .userInfo {
-  margin-bottom: rem(60px);
+  padding-bottom: rem(40px);
+  position: sticky;
+  top: rem(120px);
 
-  @include min-tablet {
-    margin-bottom: rem(90px);
-  }
-
-  &_cover {
-    height: rem(240px);
-    background: $primary-brand;
-    overflow: hidden;
-
-    img {
-      object-fit: cover;
-      width: 100%;
-      height: 100%;
-    }
+  @include min-pc {
+    overflow-y: auto;
+    max-height: calc(100vh - rem(140px));
   }
 
   &_content {
     position: relative;
 
+    &_wallet {
+      align-items: center;
+      display: flex;
+      gap: rem(8px);
+    }
+
+    &_wrapper {
+      margin-top: rem(24px);
+
+      &_icHistory {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        :hover {
+          opacity: 0.8;
+        }
+      }
+    }
+
+    &_displayName {
+      margin-top: rem(0);
+      margin-bottom: rem(0);
+    }
+
+    &_address {
+      width: fit-content;
+    }
+
+    &_title {
+      width: fit-content;
+      text-transform: uppercase;
+    }
+
     &_avatar {
-      position: absolute;
-      bottom: 100%;
       background: $white;
       border-radius: 50%;
       overflow: hidden;
       border: rem(6px) solid $white;
-      height: rem(200px);
-      width: rem(200px);
+      height: rem(160px);
+      width: rem(160px);
 
       img {
         object-fit: cover;
@@ -38,9 +61,43 @@
       }
     }
 
-    &_wallet {
-      margin-top: rem(50px);
-      padding-top: rem(32px);
+    &_btcWallet {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    &_evmWallet {
+      padding-top: rem(12px);
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
+
+    .iconCopy {
+      cursor: pointer;
+      margin-left: 8px;
+
+      :hover {
+        opacity: 0.9;
+      }
+    }
+
+    .iconExport {
+      cursor: pointer;
+      margin-left: 8px;
+
+      :hover {
+        opacity: 0.9;
+      }
+    }
+
+    .iconHistory {
+      cursor: pointer;
+
+      :hover {
+        opacity: 0.9;
+      }
     }
 
     &_display {
@@ -53,6 +110,18 @@
         @include mobile {
           width: 100%;
         }
+      }
+    }
+
+    &_ctas {
+      margin-top: rem(24px);
+      margin-bottom: rem(24px);
+      display: flex;
+      gap: rem(16px);
+
+      &_receiver {
+        width: 75%;
+        justify-content: center;
       }
     }
   }
@@ -83,6 +152,100 @@
       svg {
         width: rem(24px);
         height: rem(24px);
+      }
+    }
+  }
+}
+
+.wallet_tooltip {
+  width: rem(360);
+  text-align: left;
+}
+
+.editProfile {
+  margin-top: rem(24px);
+}
+
+.editProfile {
+  button {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      background-color: transparent !important;
+      text-decoration: none;
+    }
+  }
+}
+
+.bio {
+  max-width: rem(390px);
+}
+
+.userInfo_content_wrapper_info {
+  display: flex;
+  margin-bottom: rem(16px);
+
+  &_name {
+    flex: 0 0 1;
+    max-width: calc(100% - #{rem(40px)});
+  }
+
+  &_inner {
+    display: flex;
+    gap: rem(8px);
+    width: 100%;
+  }
+}
+
+.creator {
+  &_divider {
+    width: 1px;
+    height: rem(16);
+    display: block;
+    background-color: $black-20;
+  }
+
+  &_social {
+    margin-bottom: rem(24px);
+
+    &_item {
+      display: flex;
+      align-items: center;
+      gap: rem(6);
+      margin-bottom: rem(16px);
+
+      a {
+        text-decoration: none;
+      }
+
+      &_inner {
+        display: flex;
+        align-items: center;
+        gap: rem(6);
+      }
+    }
+
+    &_twitter {
+      svg,
+      path {
+        fill: #3cf;
+      }
+    }
+  }
+
+  &_bio {
+    align-items: flex-start;
+
+    .info_icon {
+      width: rem(24);
+      transform: translateY(6px);
+
+      svg {
+        margin-left: auto;
+        margin-right: auto;
       }
     }
   }

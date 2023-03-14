@@ -1,0 +1,61 @@
+.gltfPreview {
+  margin: 0;
+  background: rgb(0 0 0 / 20%);
+  min-width: 100vw;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+
+  canvas {
+    width: 100%;
+    height: 100%;
+    background: rgb(0 0 0 / 20%);
+  }
+
+  .viewer {
+    width: 100%;
+    height: 100%;
+    background: rgb(0 0 0 / 20%);
+  }
+
+  .loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+
+    .loadingText {
+      width: 100%;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      border-bottom: 1px solid #ddd;
+
+      .loadingProcess {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 10%;
+        background-color: #198754;
+        z-index: -1;
+        transition: all 200ms;
+      }
+    }
+  }
+
+  .instruction {
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
+    z-index: 2;
+    width: calc(100% - 40px);
+  }
+}

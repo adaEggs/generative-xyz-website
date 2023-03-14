@@ -7,7 +7,7 @@
   --bs-nav-tabs-link-active-bg: transparent;
   --bs-nav-tabs-link-active-border-color: transparent transparent transparent;
 
-  border-bottom: 1px solid $black-10;
+  border-bottom: 1px solid transparent;
 
   --bs-nav-link-color: #{rgba(#000, 0.4)};
   --bs-nav-link-hover-color: #{$primary-brand};
@@ -38,14 +38,19 @@
 
 .tab {
   font-style: normal;
-  font-weight: 700;
-  line-height: (28/18);
+  font-weight: 500;
+  line-height: (30/20);
   padding-left: 0 !important;
   padding-right: 0 !important;
-  margin-right: rem(48px);
+  margin-right: rem(24px);
   position: relative;
 
-  @include calcFontAuto(16px, 18px);
+  @include calcFontAuto(18px, 20px);
+
+  sup {
+    font-size: 80% !important;
+    font-weight: 700;
+  }
 
   &::after {
     content: "";
@@ -60,8 +65,25 @@
 }
 
 .profile {
+  margin-top: rem(40px);
+
+  @include min-pc {
+    margin-top: rem(60px);
+  }
+
   :global(.empty) {
     padding-top: 0 !important;
     padding-bottom: 0 !important;
+  }
+
+  &_pendingBox {
+    color: $secondary-purple-a;
+    border: 1px solid $secondary-purple-a;
+    font-weight: 400;
+    font-size: rem(12px);
+    line-height: rem(20px);
+    border-radius: 2px;
+    padding: 4px 6px;
+    margin-left: 6px;
   }
 }

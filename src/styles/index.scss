@@ -9,6 +9,7 @@
 @import "_themes/laddingpage";
 @import "_grid-debug";
 @import "_themes/bootstrap-overrides";
+@import "~slick-carousel/slick/slick.css";
 
 * {
   margin: 0;
@@ -59,8 +60,7 @@ main {
   @include calcFontAuto(14px, 16px);
 }
 
-input,
-textarea {
+input {
   outline: 0;
   overflow: hidden;
   text-overflow: ellipsis;

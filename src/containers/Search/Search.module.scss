@@ -1,0 +1,21 @@
+.search {
+  padding: rem(32px) 0 rem(88px) 0;
+
+  &_category {
+    padding-bottom: rem(10px);
+    display: flex;
+    align-items: center;
+    gap: rem(24px);
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &_results {
+    margin-top: rem(50px);
+  }
+}

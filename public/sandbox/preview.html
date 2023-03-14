@@ -3,7 +3,18 @@
 
 <body>
   <script>
-    const ID = new URLSearchParams(window.location.search).get('id')
+    window.parent = {};
+    window.ethereum = {};
+
+    let ID = new URLSearchParams(window.location.search).get('id')
+    if (!ID) {
+      const pathnames = window.location.href.split('/');
+      const index = pathnames.length - 2;
+      const newID = pathnames[index];
+      if (newID) {
+        ID = newID;
+      }
+    }
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
@@ -18,11 +29,13 @@
                 document.close()
 
                 const timex = setInterval(() => {
-                  const canvas = document.querySelectorAll('main canvas');
+                  const canvas = document.querySelectorAll('body canvas');
                   if (canvas.length) {
                     clearInterval(timex);
                     canvas.forEach(can => {
-                      can.setAttribute('style', `max-width: 100%;
+                      can.setAttribute('style', `
+                        display: block;
+                        max-width: 100%;
                         max-height: 100%;
                         margin: auto;
                         overflow: auto;
@@ -31,7 +44,8 @@
                         top: 0;
                         bottom: 0;
                         left: 0;
-                        right: 0;`);
+                        right: 0;
+                      `);
                     });
                   }
                 }, 100);

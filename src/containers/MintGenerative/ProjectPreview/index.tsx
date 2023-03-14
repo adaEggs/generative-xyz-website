@@ -2,7 +2,7 @@ import Button from '@components/ButtonIcon';
 import Skeleton from '@components/Skeleton';
 import ClientOnly from '@components/Utils/ClientOnly';
 import { CDN_URL } from '@constants/config';
-import SandboxPreview from '@containers/Sandbox/SandboxPreview';
+import SandboxPreview from '@components/SandboxPreview';
 import { MintGenerativeContext } from '@contexts/mint-generative-context';
 import { PreviewDisplayMode } from '@enums/mint-generative';
 import { ISandboxRef } from '@interfaces/sandbox';
@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { useContext, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import s from './styles.module.scss';
+import { DEFAULT_USER_AVATAR } from '@constants/common';
 
 const ProjectPreview = () => {
   const user = useSelector(getUserSelector);
@@ -36,13 +37,18 @@ const ProjectPreview = () => {
 
   const handleIframeLoaded = (): void => {
     if (sandboxRef.current) {
-      const iframe = sandboxRef.current.getHtmlIframe();
-      if (iframe) {
-        // @ts-ignore: Allow read iframe's window object
-        if (iframe.contentWindow?.$generativeTraits) {
+      try {
+        const iframe = sandboxRef.current.getHtmlIframe();
+        if (iframe) {
           // @ts-ignore: Allow read iframe's window object
-          setAttributes(iframe.contentWindow?.$generativeTraits);
+          if (iframe.contentWindow?.$generativeTraits) {
+            // @ts-ignore: Allow read iframe's window object
+            setAttributes(iframe.contentWindow?.$generativeTraits);
+          }
         }
+      } catch (err: unknown) {
+        // eslint-disable-next-line no-console
+        console.log(err);
       }
     }
   };
@@ -158,14 +164,13 @@ const ProjectPreview = () => {
               <Image
                 className={s.ownerAvatar}
                 alt="owner avatar"
-                src={
-                  user ? user.avatar : `${CDN_URL}/images/default-avatar.jpeg`
-                }
+                src={user ? user.avatar : DEFAULT_USER_AVATAR}
                 width={48}
                 height={48}
               ></Image>
               <span className={s.ownerName}>
-                {user?.displayName || formatAddress(user?.walletAddress)}
+                {user?.displayName ||
+                  formatAddress(user?.walletAddressBtcTaproot)}
               </span>
             </div>
             <div className={s.projectInfo}>

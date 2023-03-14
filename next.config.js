@@ -3,7 +3,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 });
 
-const removeImports = require('next-remove-imports')();
+const withRemoveImports = require('next-remove-imports')();
 
 const path = require('path');
 
@@ -19,7 +19,7 @@ const baseSecurityHeaders = [
 ];
 
 /** @type {import('next').NextConfig} */
-module.exports = removeImports(
+module.exports = withRemoveImports(
   withBundleAnalyzer({
     reactStrictMode: true,
     swcMinify: true,
@@ -31,7 +31,7 @@ module.exports = removeImports(
           headers: [
             {
               key: 'Content-Security-Policy',
-              value: `frame-ancestors 'self' https://ordinals.com https://ordinals-explorer.generative.xyz; frame-src 'self' https://ordinals.com https://ordinals-explorer.generative.xyz;`,
+              value: `frame-ancestors 'self' http://localhost:3000 https://generative.xyz https://*.generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://preview.generativeexplorer.com https://preview-dev.generativeexplorer.com https://storage.googleapis.com; frame-src 'self' http://localhost:3000 https://generative.xyz https://*.generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://preview.generativeexplorer.com https://preview-dev.generativeexplorer.com https://storage.googleapis.com https://www.google.com;`,
             },
             ...baseSecurityHeaders,
           ],
@@ -59,7 +59,7 @@ module.exports = removeImports(
           headers: [
             {
               key: 'Content-Security-Policy',
-              value: `frame-ancestors 'self' https://ordinals.com; frame-src 'self' https://ordinals.com;`,
+              value: `frame-ancestors 'self' http://localhost:3000 https://generative.xyz https://*.generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://preview.generativeexplorer.com https://preview-dev.generativeexplorer.com https://storage.googleapis.com; frame-src 'self' http://localhost:3000 https://generative.xyz https://*.generative.xyz https://ordinals.com https://dev-v5.generativeexplorer.com https://preview.generativeexplorer.com https://preview-dev.generativeexplorer.com https://storage.googleapis.com https://www.google.com;`,
             },
             {
               key: 'Cross-Origin-Embedder-Policy',
@@ -70,6 +70,7 @@ module.exports = removeImports(
       ];
     },
     images: {
+      dangerouslyAllowSVG: true,
       remotePatterns: [
         {
           protocol: 'https',
@@ -104,7 +105,13 @@ module.exports = removeImports(
           destination: '/create/upload-project',
           permanent: true,
         },
-      ]
+      ];
     },
+    rewrites: async () => [
+      {
+        source: '/sandbox/:path*',
+        destination: '/sandbox/preview.html',
+      },
+    ],
   })
 );

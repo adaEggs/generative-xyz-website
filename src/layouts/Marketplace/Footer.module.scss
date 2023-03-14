@@ -103,6 +103,7 @@
     order: 0;
     flex: 0 0 auto;
     width: 100%;
+    margin-bottom: rem(16px);
 
     @include min-tablet {
       gap: rem(42px);
@@ -110,6 +111,7 @@
       justify-content: flex-end;
       order: 1;
       width: auto;
+      margin-bottom: 0;
     }
   }
 }

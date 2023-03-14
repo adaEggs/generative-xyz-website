@@ -1,12 +1,6 @@
 .wrapper {
-  display: flex;
   margin-top: rem(18px);
-  gap: rem(90px);
   margin-bottom: rem(141px);
-
-  @include mobile {
-    display: block;
-  }
 }
 
 .back_btn {
@@ -16,5 +10,51 @@
 .setting {
   h4 {
     margin-bottom: rem(40px);
+  }
+}
+
+.editProfile {
+  margin-top: rem(40px);
+
+  @include min-pc {
+    margin-top: rem(60px);
+  }
+
+  &_titleContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &_icon {
+      margin-right: rem(12px);
+    }
+  }
+
+  &_row {
+    justify-content: center;
+  }
+
+  &_tabs {
+    display: flex;
+    gap: rem(24px);
+    margin-bottom: rem(48px);
+    margin-top: rem(48px);
+
+    li {
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+
+      span {
+        color: $black-60-solid;
+      }
+
+      &.isActive {
+        border-bottom: 2px solid $primary-brand;
+
+        span {
+          color: $primary-brand;
+        }
+      }
+    }
   }
 }

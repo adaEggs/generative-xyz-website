@@ -24,6 +24,76 @@
 
   .formItem {
     margin-bottom: 24px;
+    flex: 1;
+  }
+
+  .reserve {
+    margin-bottom: rem(24);
+    // display: none; // TODO: unhide reserve section until API is ready
+
+    h2 p {
+      font-weight: 700;
+      font-size: 12px;
+      line-height: 20px;
+      color: $black-60-solid;
+      display: block;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+
+    .reserve_priceLimit {
+      display: flex;
+      align-items: flex-start;
+      gap: rem(24);
+    }
+
+    .reservers_label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: rem(6);
+    }
+
+    .inputContainer {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: rem(10);
+      width: 100%;
+
+      .input {
+        flex: 1;
+      }
+    }
+
+    .inputReserveWallet {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: rem(10);
+    }
+
+    .removeBtn {
+      cursor: pointer;
+      transform: translateY(100%);
+
+      svg,
+      path {
+        stroke: $black-100;
+      }
+
+      &:hover {
+        svg,
+        path {
+          stroke: $secondary-red;
+        }
+      }
+    }
+
+    .removeBtnDisabled {
+      opacity: 0.3;
+      pointer-events: none;
+    }
   }
 
   .label {
@@ -93,40 +163,40 @@
     }
   }
 
-  .error {
-    font-size: 12px;
-    font-weight: 400;
-    color: $secondary-red;
-    line-height: 20px;
-    margin-top: rem(6px);
+  .loadingContainer {
+    margin-bottom: rem(24px);
+
+    .progressText {
+      font-size: rem(16px);
+      line-height: rem(26px);
+      color: $black-100;
+      margin-bottom: rem(4px);
+    }
   }
 }
 
-.stepFooterWrapper {
-  position: fixed;
-  bottom: 0;
-  z-index: 1;
-  width: 100vw;
-  left: 0;
-  right: 0;
+.error {
+  font-size: 12px;
+  font-weight: 400;
+  color: $secondary-red;
+  line-height: 20px;
+  margin-top: rem(6px);
+}
 
-  .stepFooter {
-    padding: 28px 0;
-    background-color: $white-100;
-    border-top: 1px solid $black-10;
+.importBtn {
+  background-color: #fff;
+  transition: color 0.2s;
+
+  &:hover {
+    color: $secondary-green-c;
   }
+}
 
-  .container {
-    max-width: 1016px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
+.addWallet {
+  // border: 1px solid $black-20;
+  // padding: rem(5);
 
-  .nextBtn {
-    height: 48px;
-    min-width: 174px;
-    justify-content: center;
+  .addBtn {
+    cursor: pointer;
   }
 }

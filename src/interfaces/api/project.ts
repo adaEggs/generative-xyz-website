@@ -1,7 +1,15 @@
+import { WithdrawStatus } from '@constants/referral';
 import { IPagingParams, IPagingResponse } from '@interfaces/api/paging';
 import { BTCProject, Project } from '@interfaces/project';
-import { Token } from '@interfaces/token';
+import { Token, TokenAttribute } from '@interfaces/token';
+
 export interface IGetProjectDetailParams {
+  contractAddress: string;
+  projectID: string;
+  userAddress?: string;
+}
+
+export interface IGetProjectVolumeParams {
   contractAddress: string;
   projectID: string;
 }
@@ -11,6 +19,7 @@ export type IGetProjectDetailResponse = Project;
 export interface IGetProjectItemsParams {
   contractAddress: string;
 }
+
 export interface IGetProjectItemsQuery extends IPagingParams {
   name?: string;
   sort?: string;
@@ -43,6 +52,9 @@ export type ICreateProjectMetadataResponse = IGetProjectDetailResponse;
 
 export interface IGetProjectListParams extends IPagingParams {
   contractAddress: string;
+  category?: string[];
+  sort?: string;
+  name?: string;
 }
 
 export interface IGetProjectListResponse extends IPagingResponse {
@@ -52,7 +64,7 @@ export interface IGetProjectListResponse extends IPagingResponse {
 export interface ICreateBTCProjectPayload {
   categories: Array<string>;
   closeMintUnixTimestamp: number;
-  creatorAddrrBTC: string;
+  // creatorAddrrBTC: string;
   description: string;
   license: string;
   limitSupply: number;
@@ -75,6 +87,10 @@ export interface ICreateBTCProjectPayload {
   royalty: number;
   animationURL: string;
   isFullChain: boolean;
+  captureImageTime?: number;
+  reserveMintPrice?: string;
+  reserveMintLimit?: number;
+  reservers?: Array<string>;
 }
 
 export type ICreateBTCProjectResponse = BTCProject;
@@ -92,3 +108,62 @@ export interface IUploadBTCProjectFileResponse {
   uploadedBy: string;
   url: string;
 }
+
+export type IUpdateProjectPayload = Pick<
+  ICreateBTCProjectPayload,
+  | 'name'
+  | 'description'
+  | 'thumbnail'
+  | 'royalty'
+  | 'mintPrice'
+  | 'maxSupply'
+  | 'captureImageTime'
+  | 'reserveMintPrice'
+  | 'reserveMintLimit'
+  | 'reservers'
+> & { isHidden: boolean; categories: string[] };
+
+export interface IReportProjectPayload {
+  originalLink?: string;
+}
+export type IReportProjectResponse = Project;
+export interface IProjectMarketplaceData {
+  listed: number;
+  floor_price: number;
+  volume: number;
+}
+
+export interface IGetProjectVolumeResponse {
+  amount: string;
+  available: string;
+  earning: string;
+  payType: string;
+  projectID: string;
+  withdraw: string;
+  status: WithdrawStatus;
+}
+
+export interface IGetProjectItemsTraitsListParams {
+  emptyTrait: boolean;
+}
+
+export interface IGetProjectItemsTraitsListResponse {
+  id: string;
+  attributes: TokenAttribute[];
+}
+
+export interface IMintFeeRate {
+  rate: number;
+  mintFees: {
+    btc: { networkFee: string; mintPrice: string };
+    eth: { networkFee: string; mintPrice: string };
+  };
+}
+export interface IProjectMintFeeRate {
+  economy: IMintFeeRate;
+  faster: IMintFeeRate;
+  fastest: IMintFeeRate;
+  customRate?: IMintFeeRate;
+}
+
+export type IProjectMintFeeRateResponse = IProjectMintFeeRate;

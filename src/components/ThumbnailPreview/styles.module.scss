@@ -4,7 +4,7 @@
 
   @include min-tablet {
     flex: 1;
-    margin-left: rem(60px);
+    // margin-left: rem(60px);
     margin-bottom: 0;
   }
 }
@@ -19,7 +19,7 @@
   }
 }
 
-.thumbnail_iframe {
+.thumbnailIframe {
   height: 100%;
 
   @include min-tablet {
@@ -43,7 +43,12 @@
   @include fullViewScreen;
 
   @include mobile {
+    position: static;
     height: auto;
+
+    &.thumbnail {
+      padding-top: 100%;
+    }
   }
 
   .sandboxContent {
@@ -51,6 +56,11 @@
     margin-left: auto;
     margin-right: auto;
     position: relative;
+
+    @include mobile {
+      height: auto;
+      padding-top: 100%;
+    }
   }
 }
 
@@ -76,25 +86,34 @@
 
 .actionWrapper {
   position: absolute;
-  bottom: rem(32px);
-  right: rem(32px);
+  bottom: rem(-43px);
+  right: 0;
 
   @include mobile {
-    bottom: rem(16px);
-    right: rem(16px);
+    bottom: rem(-46px);
+    right: 0;
   }
 }
 
-.thumbnail_image {
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
+.ThumbnailPreview.smallReview {
+  .sandboxWrapper {
+    height: auto !important;
+  }
 
-  > img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+  .sandboxContent {
+    padding-bottom: (198/352) * 100% !important;
+    background-color: #f2f2f2;
+  }
+
+  .thumbnailIframe {
+    height: auto !important;
+    aspect-ratio: 1 / 1 !important;
+  }
+
+  .actionWrapper {
+    position: relative;
+    right: unset;
+    bottom: unset;
+    margin-top: rem(18px);
   }
 }

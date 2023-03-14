@@ -49,10 +49,10 @@ export const HardwareDisplaySection = (): JSX.Element => {
                 as="p"
                 animOption={{ screen: 0, offset: 0, type: 'paragraph' }}
               >
-                Generative Display is a groundbreaking new frame that renders
-                generative artworks and allows collectors to interact with their
-                art. It accomplishes this by using powerful internal components
-                and code to develop unique artworks in real time.
+                Grail is a groundbreaking new frame that renders generative
+                artworks and allows collectors to interact with their art. It
+                accomplishes this by using powerful internal components and code
+                to develop unique artworks in real time.
               </Text>
               <AnimFade offset={0.25}>
                 <ButtonIcon

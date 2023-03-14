@@ -23,9 +23,40 @@ export type Token = {
   ownerAddr: string;
   creator: User;
   tokenID: string;
+  inscriptionIndex: string;
+  buyable: boolean;
+  isCompleted: boolean;
+  priceBTC: string;
+  orderInscriptionIndex: string;
+  orderID: string;
+  projectID?: string;
+  projectName?: string;
   stats: {
     price: string;
   };
+  animationHtml: string;
+  listingDetail?: {
+    paymentListingInfo: {
+      btc: {
+        paymentAddress: string;
+        price: string;
+      };
+      eth?: {
+        paymentAddress: string;
+        price: string;
+      };
+    };
+  };
+
+  ordinalsData?: {
+    sat: string;
+    contentLength: string;
+    contentType: string;
+    timestamp: string;
+    block: string;
+  };
+  nftTokenId?: string;
+  sell_verified: boolean;
 };
 
 export type TokenOffer = {

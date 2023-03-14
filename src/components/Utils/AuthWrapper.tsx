@@ -2,7 +2,7 @@ import { LogLevel } from '@enums/log-level';
 import { useAppDispatch } from '@redux';
 import { resetUser, setUser } from '@redux/user/action';
 import { getProfile } from '@services/profile';
-import { clearAuthStorage, getAccessToken } from '@utils/auth';
+import { clearAuthStorage, getAccessToken, setUserInfo } from '@utils/auth';
 import log from '@utils/logger';
 import React, { PropsWithChildren, useEffect } from 'react';
 import { useRouter } from 'next/router';
@@ -18,8 +18,12 @@ const AuthWrapper: React.FC<PropsWithChildren> = ({
   const router = useRouter();
 
   const checkUserRedirect = (userRes: User | null) => {
-    if (router.pathname === ROUTE_PATH.PROFILE && !userRes) {
-      router.push(ROUTE_PATH.COLLECTIONS);
+    if (
+      (router.pathname === ROUTE_PATH.PROFILE ||
+        router.pathname.indexOf(ROUTE_PATH.GENERATIVE_EDIT) !== -1) &&
+      !userRes
+    ) {
+      router.push(ROUTE_PATH.DROPS);
     }
   };
 
@@ -29,11 +33,13 @@ const AuthWrapper: React.FC<PropsWithChildren> = ({
       try {
         const userRes = await getProfile();
         checkUserRedirect(userRes);
+        setUserInfo(userRes);
         dispatch(setUser(userRes));
       } catch (err: unknown) {
         log('failed to get profile', LogLevel.ERROR, LOG_PREFIX);
         clearAuthStorage();
         dispatch(resetUser());
+        router.push(ROUTE_PATH.DROPS);
       }
     } else {
       checkUserRedirect(null);

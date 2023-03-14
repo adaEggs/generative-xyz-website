@@ -1,0 +1,17 @@
+.requestConnectWallet {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 88px);
+  background-color: $white;
+
+  .actionWrapper {
+    text-align: center;
+  }
+
+  .text {
+    margin-top: rem(16px);
+    font-size: rem(18px);
+    font-weight: 400;
+  }
+}

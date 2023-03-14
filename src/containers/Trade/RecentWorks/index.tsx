@@ -1,22 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import Heading from '@components/Heading';
+import ListForSaleModal from '@containers/Trade/ListForSaleModal';
 import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { ProjectList } from '@containers/Trade/ProjectLists';
-import ListForSaleModal from '@containers/Trade/ListForSaleModal';
-
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import s from './RecentWorks.module.scss';
-import { Button } from 'react-bootstrap';
-import {
-  getMarketplaceBtcList,
-  IGetMarketplaceBtcListItem,
-} from '@services/marketplace-btc';
 import { Loading } from '@components/Loading';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import { getMarketplaceBtcList } from '@services/marketplace-btc';
 import debounce from 'lodash/debounce';
 import uniqBy from 'lodash/uniqBy';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import s from './RecentWorks.module.scss';
+import ButtonIcon from '@components/ButtonIcon';
+import { Container } from 'react-bootstrap';
+import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
 
 const LIMIT = 20;
 
@@ -26,6 +25,16 @@ export const RecentWorks = (): JSX.Element => {
 
   const [listData, setListData] = useState<IGetMarketplaceBtcListItem[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
+
+  const { ordAddress, onButtonClick } = useBTCSignOrd();
+
+  const onShowModal = () => {
+    onButtonClick({
+      cbSigned: () => setShowModal(true),
+    })
+      .then()
+      .catch();
+  };
 
   const fetchData = async () => {
     if (isLoading) return;
@@ -60,47 +69,52 @@ export const RecentWorks = (): JSX.Element => {
 
   return (
     <div className={s.recentWorks}>
-      <Row style={{ justifyContent: 'space-between' }}>
-        <Col xs={'auto'}>
-          <Heading as="h4" fontWeight="semibold">
-            Bazaar
-          </Heading>
-        </Col>
-        <Col xs={'auto'}>
-          <Button
-            className={s.recentWorks_btn}
-            size="lg"
-            onClick={() => setShowModal(true)}
-          >
-            List for sale
-          </Button>
-        </Col>
-      </Row>
-      <Row className={s.recentWorks_projects}>
-        {!isLoaded && <ProjectListLoading numOfItems={12} />}
-        {isLoaded && (
-          <InfiniteScroll
-            dataLength={listData.length}
-            next={debounceFetchData}
-            className={s.recentWorks_projects_list}
-            hasMore={true}
-            loader={
-              isLoading ? (
-                <div className={s.recentWorks_projects_loader}>
-                  <Loading isLoaded={isLoading} />
-                </div>
-              ) : null
-            }
-            endMessage={<></>}
-          >
-            <ProjectList listData={listData} />
-          </InfiniteScroll>
-        )}
-      </Row>
-      <ListForSaleModal
-        showModal={showModal}
-        onClose={() => setShowModal(false)}
-      />
+      <div className={s.banner}>
+        <Heading as="h4" fontWeight="semibold" color="black">
+          The easiest way to buy and sell Bitcoin NFTs
+        </Heading>
+        <ButtonIcon
+          sizes="large"
+          variants="primary"
+          className={s.banner_btn}
+          onClick={onShowModal}
+        >
+          List for sale
+        </ButtonIcon>
+      </div>
+      <Container>
+        <Row className={s.recentWorks_projects}>
+          <Col xs={'12'}>
+            {!isLoaded ? (
+              <ProjectListLoading numOfItems={12} />
+            ) : (
+              <InfiniteScroll
+                dataLength={listData.length}
+                next={debounceFetchData}
+                className={s.recentWorks_projects_list}
+                hasMore={true}
+                loader={
+                  isLoading ? (
+                    <div className={s.recentWorks_projects_loader}>
+                      <Loading isLoaded={isLoading} />
+                    </div>
+                  ) : null
+                }
+                endMessage={<></>}
+              >
+                <ProjectList isNFTBuy={true} listData={listData} />
+              </InfiniteScroll>
+            )}
+          </Col>
+        </Row>
+      </Container>
+      {!!ordAddress && showModal && (
+        <ListForSaleModal
+          showModal={showModal}
+          onClose={() => setShowModal(false)}
+          ordAddress={ordAddress}
+        />
+      )}
     </div>
   );
 };

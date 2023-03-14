@@ -1,21 +1,65 @@
 @import "src/styles/_themes/mixins";
 
+.projectInfo {
+  &_inner {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: rem(16px);
+    row-gap: 0 !important;
+
+    @include min-tablet {
+      margin-top: rem(48px);
+    }
+  }
+
+  &_center {
+    margin-top: rem(24px);
+
+    @include min-pc {
+      margin-top: 0;
+    }
+  }
+
+  &_right {
+    &_inner {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    &_art {
+      flex: 0 0 100%;
+
+      @include min-pc {
+        flex: 0 0 62%;
+        padding-right: rem(24px);
+      }
+    }
+
+    &_ctas {
+      flex: 0 0 100%;
+
+      @include min-pc {
+        flex: 0 0 38%;
+      }
+    }
+  }
+}
+
 .wrapper {
   color: $black-100;
-  padding-top: rem(32px);
+  // padding-top: rem(32px);
+}
 
-  @include min-tablet {
-    display: grid;
-    grid-template-columns: rem(520px) 1px 1fr;
-    padding-top: rem(40px);
-    margin-bottom: rem(40px);
-  }
+.info_wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .info {
   @include min-tablet {
     overflow-y: scroll;
-    padding-right: rem(60px);
     position: relative;
 
     @include fullViewScreen;
@@ -42,6 +86,10 @@
 
   :global(.label_text) {
     margin-bottom: rem(12px);
+  }
+
+  .progressBar {
+    max-width: rem(320px);
   }
 }
 
@@ -93,13 +141,20 @@
 
   &_social {
     display: flex;
-    gap: rem(20);
+    gap: rem(16);
     align-items: center;
+    margin-top: rem(10px);
 
     &_item {
       display: flex;
       align-items: center;
       gap: rem(6);
+
+      &_inner {
+        display: flex;
+        align-items: center;
+        gap: rem(6);
+      }
     }
 
     &_twitter {
@@ -109,10 +164,6 @@
       }
     }
   }
-}
-
-.progressBar {
-  margin-bottom: rem(24px);
 }
 
 .CTA {
@@ -130,21 +181,13 @@
       width: 100%;
     }
 
-    // &__eth {
-    //   background: #00aa6c !important;
-
-    //   &:hover {
-    //     background: #01b875 !important;
-    //   }
-    // }
-
     &__wallet {
       padding-top: rem(17px);
       padding-bottom: rem(17px);
     }
 
     span:nth-child(2) {
-      margin-left: rem(5px);
+      margin-left: rem(12px);
 
       span {
         font-size: 120%;
@@ -174,6 +217,10 @@
     display: flex;
     gap: rem(12px);
     flex-wrap: wrap;
+
+    @include mobile {
+      width: 100%;
+    }
 
     li {
       @include mobile {
@@ -285,9 +332,18 @@
   }
 
   &_item {
+    margin-bottom: rem(24px);
+
     > p:first-of-type {
       color: $black-40;
       text-transform: uppercase;
+    }
+
+    &__icon {
+      .stats_item_text {
+        display: flex;
+        align-items: center;
+      }
     }
   }
 }
@@ -330,9 +386,154 @@
 .project_info {
   margin-bottom: rem(24px);
   margin-top: rem(24px);
+  max-width: rem(520px);
 }
 
 .shares {
   display: flex;
   gap: rem(8px);
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.projectHeader {
+  display: flex;
+  gap: rem(8px);
+
+  &_title {
+    font-style: italic;
+  }
+
+  &_heading {
+    &.hasEdit {
+      display: flex;
+
+      .projectHeader_title {
+        flex: 0 0 auto;
+        margin-right: rem(30px);
+        max-width: calc(100% - #{rem(120px)});
+      }
+
+      .projectHeader_btn {
+        flex: 0 0 auto;
+        margin-top: rem(5px);
+      }
+    }
+  }
+}
+
+.projectBtn {
+  transition: all 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: rem(4);
+  padding: rem(5) rem(10);
+  border: 1px solid $black-20 !important;
+
+  &:hover {
+    background-color: $black-100;
+    color: $white;
+
+    svg,
+    path {
+      stroke: $white;
+    }
+  }
+}
+
+.reportBtn {
+  display: flex;
+  align-items: center;
+  gap: rem(4);
+}
+
+.reportMsg {
+  margin-top: rem(24);
+  display: flex;
+  align-items: center;
+  gap: rem(8);
+  color: $secondary-orange;
+  padding: rem(6) rem(16);
+  border: 1px solid $secondary-orange;
+  background-color: #ff7e210f;
+}
+
+.reviewOnMobile {
+  margin-top: rem(24px);
+  padding: rem(32);
+  background-color: $primary-light;
+}
+
+.shares_wrapper {
+  padding-right: rem(60);
+}
+
+.wrapper.minted {
+  margin-bottom: rem(24px);
+
+  .info,
+  .projectInfo_right_inner {
+    @include min-pc {
+      position: sticky;
+      top: rem(86px);
+    }
+  }
+
+  .shares {
+    justify-content: unset;
+    gap: rem(24px);
+  }
+
+  .projectInfo_right_ctas {
+    .CTA,
+    :is(ul) {
+      display: unset;
+      flex: unset;
+    }
+
+    .CTA button {
+      margin-bottom: rem(8px);
+      width: 50%;
+    }
+  }
+
+  .stats {
+    margin-top: rem(12px);
+    width: 100%;
+    column-gap: unset;
+
+    &_item {
+      flex: 0 0 calc(33.33% - 0.6rem);
+    }
+  }
+
+  .info {
+    height: unset !important;
+    min-height: unset !important;
+  }
+}
+
+.layoutMinting {
+  margin-top: rem(32px);
+  margin-bottom: rem(40px);
+
+  .shares {
+    padding-top: rem(10px);
+  }
+}
+
+.attrs_item {
+  a {
+    color: $primary-brand;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
 }

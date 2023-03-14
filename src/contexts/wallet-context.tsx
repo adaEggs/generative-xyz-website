@@ -22,6 +22,12 @@ import { getUserSelector } from '@redux/user/selector';
 import { METAMASK_DOWNLOAD_PAGE } from '@constants/common';
 import { isMobile } from '@utils/animation';
 import { openMetamaskDeeplink } from '@utils/metamask';
+import { generateBitcoinKey } from '@hooks/useBTCSignOrd/connect.methods';
+import { getReferral } from '@utils/referral';
+import { postReferralCode } from '@services/referrals';
+import { WalletEvent } from '@enums/wallet-event';
+import { useRouter } from 'next/router';
+import { ROUTE_PATH } from '@constants/route-path';
 
 const LOG_PREFIX = 'WalletContext';
 
@@ -65,6 +71,7 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
   const walletManagerRef = useRef<WalletManager | null>(walletManager);
   const dispatch = useAppDispatch();
   const user = useSelector(getUserSelector);
+  const route = useRouter();
 
   const isDeepLinkRequired = (): boolean => {
     const wallet = walletManagerRef.current;
@@ -112,6 +119,14 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
     []
   );
 
+  const postRefCode = async () => {
+    const refCode = getReferral();
+
+    if (refCode && user && refCode !== user.id) {
+      await postReferralCode(refCode);
+    }
+  };
+
   const connect = useCallback(async (): Promise<void> => {
     if (isDeepLinkRequired()) {
       openMetamaskDeeplink();
@@ -138,20 +153,37 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
 
     const walletAddress = walletRes.data;
     try {
-      const { message } = await generateNonceMessage({
+      const { message: nonceMessage } = await generateNonceMessage({
         address: walletAddress,
       });
-      const { data: signature } = await wallet.signMessage(
-        message,
-        walletAddress
-      );
-      if (!signature) {
+
+      const { segwit, taproot, signatureMetamask } = await generateBitcoinKey({
+        address: walletAddress,
+        message: nonceMessage,
+      });
+
+      if (
+        !taproot.sendAddress ||
+        !segwit.sendAddress ||
+        !segwit.signature ||
+        !segwit.messagePrefix ||
+        !signatureMetamask
+      ) {
         throw Error(WalletError.FAILED_LINK_WALLET);
       }
+
       const { accessToken, refreshToken } = await verifyNonceMessage({
-        signature,
+        signature: segwit.signature.toString('base64'),
         address: walletAddress,
+
+        messagePrefix: segwit.messagePrefix,
+        addressBtcSegwit: segwit.sendAddress,
+
+        addressBtc: taproot.sendAddress,
+
+        ethSignature: signatureMetamask,
       });
+
       setAccessToken(accessToken, refreshToken);
       const userRes = await getProfile();
       dispatch(setUser(userRes));
@@ -255,6 +287,23 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
     return 0;
   };
 
+  const switchAccountListener = () => {
+    const userAddress = user?.walletAddress;
+    if (walletManager && walletManager.isConnected() && !!userAddress) {
+      walletManager.registerEvent(WalletEvent.ACCOUNT_CHANGED, accounts => {
+        if (!!accounts && Array.isArray(accounts) && !!accounts.length) {
+          const switchedAccount = accounts[0] as string;
+          // handle switched account, clear data
+          if (switchedAccount !== userAddress) {
+            clearAuthStorage();
+            dispatch(resetUser());
+            route.replace(ROUTE_PATH.WALLET);
+          }
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     const walletManagerInstance = new WalletManager();
     walletManagerRef.current = walletManagerInstance;
@@ -271,6 +320,17 @@ export const WalletProvider: React.FC<PropsWithChildren> = ({
       getWalletBalance();
     }
   }, [walletManager, user]);
+
+  useEffect(() => {
+    if (user && user.walletAddress) {
+      postRefCode();
+    }
+  }, [user]);
+
+  // listen event switch account
+  useEffect(() => {
+    switchAccountListener();
+  }, [walletManager, user?.walletAddress]);
 
   const contextValues = useMemo((): IWalletContext => {
     return {

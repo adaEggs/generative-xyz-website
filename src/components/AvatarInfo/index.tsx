@@ -31,7 +31,7 @@ const AvatarInfo = ({
       onClick={onClick}
       ref={ref}
     >
-      <div className={`${styles.avatar} avatar`}>
+      <div className={`${styles.avatar}`}>
         <Avatar
           imgSrcs={convertIpfsToHttp(imgSrc)}
           width={width}

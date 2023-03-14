@@ -1,22 +1,25 @@
-import { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import s from './ProjectCard.module.scss';
-
-import Avatar from '@components/Avatar';
 import Heading from '@components/Heading';
 import Link from '@components/Link';
-import ProgressBar from '@components/ProgressBar';
+import MintingProgressBar from '@components/MintingProgressBar';
 import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
 import useWindowSize from '@hooks/useWindowSize';
 import { Project } from '@interfaces/project';
 import { User } from '@interfaces/user';
-import { formatAddress, formatBTCPrice } from '@utils/format';
-import { checkIsBitcoinProject } from '@utils/generative';
+import { formatBTCPrice } from '@utils/format';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
-// import { CountDown } from '@components/CountDown';
+import { CDN_URL } from '@constants/config';
+import SvgInset from '@components/SvgInset';
+import ButtonIcon from '@components/ButtonIcon';
+import { sendAAEvent } from '@services/aa-tracking';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
+import { filterCreatorName } from '@utils/generative';
+import { wordCase } from '@utils/common';
 
 interface IPros {
   project: Project;
@@ -27,15 +30,10 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
   const [creator, setCreator] = useState<User | null>(null);
   const { mobileScreen } = useWindowSize();
   const [thumb, setThumb] = useState<string>(project.image);
-
   const onThumbError = () => {
     setThumb(LOGO_MARKETPLACE_URL);
   };
-
-  const isBitcoinProject = useMemo((): boolean => {
-    if (!project) return false;
-    return checkIsBitcoinProject(project.tokenID);
-  }, [project]);
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     if (project.creatorProfile) {
@@ -43,13 +41,135 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     }
   }, [project]);
 
-  const creatorMemo = useMemo((): User | null => {
-    return creator;
-  }, [creator]);
+  const handleOnImgLoaded = (
+    evt: React.SyntheticEvent<HTMLImageElement>
+  ): void => {
+    const img = evt.target as HTMLImageElement;
+    const naturalWidth = img.naturalWidth;
+    if (naturalWidth < 100 && imgRef.current) {
+      imgRef.current.style.imageRendering = 'pixelated';
+    }
+  };
 
-  const isLimitMinted = useMemo((): boolean => {
-    if (!project) return false;
-    return project?.mintingInfo?.index < project?.maxSupply;
+  const handleTrackOnClick = (): void => {
+    sendAAEvent({
+      eventName: BTC_PROJECT.CLICK_PROJECT,
+      data: {
+        project_id: project.tokenID,
+        project_name: project.name,
+        project_thumbnail: project.image,
+      },
+    });
+  };
+
+  const isMinted = useMemo((): boolean => {
+    return (
+      project.mintingInfo.index + project.mintingInfo.indexReserve >=
+      (project.maxSupply || project.limit)
+    );
+  }, [project]);
+
+  const isOnlyMintedShow = useMemo((): boolean => {
+    return !project.btcFloorPrice && isMinted;
+  }, [project, isMinted]);
+
+  const minted = useMemo((): string => {
+    return `${project.mintingInfo.index + project.mintingInfo.indexReserve}/${
+      project.maxSupply || project.limit
+    } minted`;
+  }, [project]);
+
+  const mintedOut = useMemo(() => {
+    if (project) {
+      return project?.maxSupply === project?.mintingInfo.index;
+    }
+    return false;
+  }, [project?.maxSupply, project?.mintingInfo.index]);
+
+  const isFromAuthentic = useMemo((): boolean => {
+    return project.fromAuthentic || false;
+  }, [project]);
+
+  const isAuthenticIn24h = useMemo((): boolean => {
+    const providedDate = new Date(project.mintedTime);
+    const currentDate = new Date();
+
+    const delta = currentDate.getTime() - providedDate.getTime();
+    const secondsAgo = delta / 1000;
+
+    return Boolean(secondsAgo < 24 * 60 * 60);
+  }, [project]);
+
+  const renderFooter = () => {
+    if (project.btcFloorPrice && mintedOut) {
+      return (
+        <div className={s.row}>
+          <span
+            className={`${s.projectCard_info_price_price_minted} ${s.isOnlyMintedShow}`}
+          >
+            {`${formatBTCPrice(project.btcFloorPrice)} BTC`}
+          </span>
+          <ButtonIcon sizes="xsmall">Buy</ButtonIcon>
+        </div>
+      );
+    }
+    if (mintedOut) {
+      return !isFromAuthentic ? (
+        <div className={s.projectCard_info_mintoutContainer}>
+          <SvgInset svgUrl={`${CDN_URL}/icons/ic_mintedout.svg`} />
+          <Text className={s.projectCard_info_mintoutContainer_text}>
+            {`${project?.mintingInfo.index} Minted out`}
+          </Text>
+        </div>
+      ) : (
+        <div className={s.projectCard_info_edition}>
+          <Text
+            color="black-40-solid"
+            fontWeight={'medium'}
+            className={s.projectCard_info_edition_text}
+          >
+            {isAuthenticIn24h
+              ? ` ${project?.mintingInfo.index} inscribed`
+              : `Edition of ${project?.mintingInfo.index}`}
+          </Text>
+        </div>
+      );
+    }
+    return (
+      <div className={`${s.projectCard_info_price_price}`}>
+        <Text
+          className={s.projectCard_info_price_price_wrap}
+          size={'16'}
+          fontWeight="medium"
+          color="black-40-solid"
+        >
+          <span className={s.projectCard_info_price_price_el}>
+            {project.btcFloorPrice
+              ? `${formatBTCPrice(project.btcFloorPrice)} BTC`
+              : !isMinted
+              ? Number(project.mintPrice)
+                ? `${formatBTCPrice(Number(project.mintPrice))} BTC`
+                : 'Free'
+              : ''}
+          </span>
+          <span
+            className={`${s.projectCard_info_price_price_minted} ${
+              isOnlyMintedShow ? s.isOnlyMintedShow : ''
+            }`}
+          >
+            {minted}
+          </span>
+        </Text>
+      </div>
+    );
+  };
+
+  const projectName = useMemo((): string => {
+    return project.fromAuthentic || false
+      ? project.name.indexOf('Ordinal') === -1
+        ? wordCase(`Ordinal ${project.name}`)
+        : project.name
+      : project.name;
   }, [project]);
 
   return (
@@ -57,7 +177,7 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
       href={`${ROUTE_PATH.GENERATIVE}/${project.tokenID}`}
       className={`${s.projectCard} ${className}`}
     >
-      <div className={s.projectCard_inner}>
+      <div className={s.projectCard_inner} onClick={handleTrackOnClick}>
         <div
           className={`${s.projectCard_thumb} ${
             thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
@@ -69,30 +189,26 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
               src={convertIpfsToHttp(thumb)}
               alt={project.name}
               loading={'lazy'}
+              ref={imgRef}
+              onLoad={handleOnImgLoaded}
             />
           </div>
         </div>
         <div className={s.projectCard_inner_info}>
           {mobileScreen ? (
             <div className={cs(s.projectCard_info, s.mobile)}>
-              {/*{isBitcoinProject && (*/}
-              {/*  <CountDown*/}
-              {/*    openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}*/}
-              {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
-              {/*  />*/}
-              {/*)}*/}
               {creator && (
                 <Text size="11" fontWeight="medium">
-                  {creator.displayName || formatAddress(creator.walletAddress)}
+                  {filterCreatorName(project)}
                 </Text>
               )}
               <div className={s.projectCard_info_title}>
                 <Text size="14" fontWeight="semibold">
-                  {project.name}
+                  {projectName}
                 </Text>
               </div>
 
-              <ProgressBar
+              <MintingProgressBar
                 size={'small'}
                 current={
                   project.mintingInfo.index + project.mintingInfo.indexReserve
@@ -102,63 +218,19 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
             </div>
           ) : (
             <div className={cs(s.projectCard_info, s.desktop)}>
-              {/*{isBitcoinProject && (*/}
-              {/*  <CountDown*/}
-              {/*    openMintUnixTimestamp={project?.openMintUnixTimestamp || 0}*/}
-              {/*    closeMintUnixTimestamp={project?.closeMintUnixTimestamp || 0}*/}
-              {/*  />*/}
-              {/*)}*/}
               {creator && (
                 <div className={s.projectCard_creator}>
-                  <Avatar
-                    imgSrcs={creatorMemo?.avatar || ''}
-                    width={24}
-                    height={24}
-                  />
-                  <Text fontWeight="medium" color="black-60">
-                    {creatorMemo?.displayName || creatorMemo?.walletAddress}
+                  <Text size={'20'} fontWeight="medium">
+                    {filterCreatorName(project)}
                   </Text>
                 </div>
               )}
-              {/* {creator && <CreatorInfo creator={creatorMemo} />} */}
-
               <div className={s.projectCard_info_title}>
-                <Heading as={'h5'} fontWeight="medium">
-                  <span title={project.name}>{project.name}</span>
+                <Heading as={'h6'} fontWeight="medium">
+                  <span title={projectName}>{projectName}</span>
                 </Heading>
               </div>
-              {isBitcoinProject ? (
-                <div className={s.projectCard_info_price}>
-                  {isLimitMinted && (
-                    <div className={s.projectCard_info_price_price}>
-                      <span>
-                        {formatBTCPrice(Number(project.mintPrice))}
-                        <small>BTC</small>
-                      </span>
-                    </div>
-                  )}
-
-                  <div className={s.projectCard_info_price_bar}>
-                    <ProgressBar
-                      size={'small'}
-                      isHideBar={true}
-                      current={
-                        project.mintingInfo.index +
-                        project.mintingInfo.indexReserve
-                      }
-                      total={project.maxSupply || project.limit}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <ProgressBar
-                  size={'small'}
-                  current={
-                    project.mintingInfo.index + project.mintingInfo.indexReserve
-                  }
-                  total={project.maxSupply || project.limit}
-                />
-              )}
+              <div className={s.projectCard_info_price}>{renderFooter()}</div>
             </div>
           )}
         </div>

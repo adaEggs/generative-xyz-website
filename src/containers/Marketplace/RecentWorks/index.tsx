@@ -1,150 +1,257 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
+import CategoryTab from '@components/CategoryTab';
 import Heading from '@components/Heading';
 import ProjectListLoading from '@components/ProjectListLoading';
 import { ProjectList } from '@components/ProjectLists';
 import { TriggerLoad } from '@components/TriggerLoader';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { LogLevel } from '@enums/log-level';
 import { IGetProjectListResponse } from '@interfaces/api/project';
+import { Category } from '@interfaces/category';
 import { Project } from '@interfaces/project';
+import { SelectOption } from '@interfaces/select-input';
+import { getCategoryList } from '@services/category';
 import { getProjectList } from '@services/project';
+import log from '@utils/logger';
+import cs from 'classnames';
+import { Container } from 'react-bootstrap';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import Select, { SingleValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
-import { ROUTE_PATH } from '@constants/route-path';
-import ButtonIcon from '@components/ButtonIcon';
+import { LocalStorageKey } from '@enums/local-storage';
 import { useRouter } from 'next/router';
 
-// const SORT_OPTIONS: Array<{ value: string; label: string }> = [
-//   {
-//     value: '',
-//     label: 'All',
-//   },
-//   {
-//     value: 'progress',
-//     label: 'Minting in progress',
-//   },
-//   {
-//     value: 'fully',
-//     label: 'Fully minted',
-//   },
-// ];
+const SORT_OPTIONS: Array<{ value: string; label: string }> = [
+  {
+    value: 'trending-score',
+    label: 'Trending',
+  },
+  {
+    value: 'newest',
+    label: 'Latest',
+  },
+  {
+    value: 'oldest',
+    label: 'Oldest',
+  },
+];
 
 const LOG_PREFIX = 'RecentWorks';
 
 export const RecentWorks = (): JSX.Element => {
+  const router = useRouter();
+
+  const { category: categoryNameParams } = router.query;
+
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoadedMore, setIsLoadMore] = useState<boolean>(false);
   const [projects, setProjects] = useState<IGetProjectListResponse>();
   const [listData, setListData] = useState<Project[]>([]);
-  const [sort, _] = useState<string | null>('');
+  const [sort, setSort] = useState<string | null>('');
   const [currentTotal, setCurrentTotal] = useState<number>(0);
-  const router = useRouter();
+  const [categoriesList, setCategoriesList] = useState<Category[]>();
+  const [filterCategory, setFilterCategory] = useState<string | null>(null);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [pageNum, setPageNum] = useState(0);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
-  // const selectedOption = useMemo(() => {
-  //   return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
-  // }, [sort]);
+  const selectedOption = useMemo(() => {
+    return SORT_OPTIONS.find(op => sort === op.value) ?? SORT_OPTIONS[0];
+  }, [sort]);
 
-  const getProjectAll = useCallback(async () => {
-    try {
-      let page = (projects && projects?.page) || 0;
-      page += 1;
+  const getProjectAll = useCallback(
+    async ({ page, categoryID }: { page: number; categoryID: string }) => {
+      try {
+        setIsLoadMore(false);
 
-      setIsLoadMore(false);
-      const tmpProject = await getProjectList({
-        contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
-        limit: 12,
-        page,
-      });
+        const _categoryID = () => {
+          if (categoryID === 'All') {
+            return '';
+          }
+          return categoryID;
+        };
 
-      if (tmpProject) {
-        if (projects && projects?.result) {
-          tmpProject.result = [...projects.result, ...tmpProject.result];
+        const tmpProject = await getProjectList({
+          contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
+          limit: 12,
+          page: page + 1,
+          category: categoryID ? [_categoryID()] : [''],
+          sort: sort || SORT_OPTIONS[0].value,
+        });
+
+        if (tmpProject) {
+          if (projects && projects?.result) {
+            tmpProject.result = [...projects.result, ...tmpProject.result];
+          }
+
+          setIsLoadMore(true);
+          setProjects(tmpProject);
+          setListData(tmpProject?.result || []);
+          setCurrentTotal(tmpProject.total || 0);
+
+          return tmpProject;
         }
+      } catch (err: unknown) {
+        log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      }
+    },
+    [projects, filterCategory, sort]
+  );
 
-        setIsLoadMore(true);
-        setProjects(tmpProject);
-        setListData(tmpProject?.result || []);
-        setCurrentTotal(tmpProject.total || 0);
+  const onLoadMore = () => {
+    getProjectAll({
+      page: pageNum + 1,
+      categoryID: filterCategory || activeCategory || '',
+    });
+    setPageNum(prev => prev + 1);
+  };
+
+  const fetchAllCategory = async () => {
+    try {
+      setCategoriesLoading(true);
+      const { result } = await getCategoryList();
+
+      let historyCategoryID = sessionStorage.getItem(
+        LocalStorageKey.CATEGORY_ID
+      );
+      if (!historyCategoryID) {
+        historyCategoryID = 'All';
+      }
+      if (result && result.length > 0) {
+        historyCategoryID =
+          result?.find(category => category.name === categoryNameParams)?.id ||
+          'All';
+
+        setCategoriesList(result);
+        setCategoriesLoading(false);
+        const projectRes = await getProjectAll({
+          page: 0,
+          categoryID:
+            historyCategoryID || historyCategoryID?.length === 0
+              ? historyCategoryID
+              : result[0].id,
+        });
+        setActiveCategory(
+          historyCategoryID || historyCategoryID?.length === 0
+            ? historyCategoryID
+            : result[0].id
+        );
+        if (projectRes && projectRes.result && projectRes.result.length > 0)
+          setIsLoaded(true);
       }
     } catch (err: unknown) {
-      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
-    }
-  }, [projects]);
-
-  const onLoadMore = async () => {
-    switch (sort) {
-      default:
-        getProjectAll();
-        break;
+      log('failed to fetch category list', LogLevel.ERROR, LOG_PREFIX);
     }
   };
 
-  // const sortChange = async (): Promise<void> => {
-  //   switch (sort) {
-  //     case 'progress':
-  //       setListData(projects.result);
-  //       break;
-  //     default:
-  //       getProjectAll();
-  //       break;
-  //   }
-  //
-  //   // const tmpProject = await getProjectList({
-  //   //   contractAddress: String(GENERATIVE_PROJECT_CONTRACT),
-  //   //   limit: 100,
-  //   //   page: 1,
-  //   // });
-  //   // setIsLoaded(true);
-  //   // setProjects(tmpProject.result);
-  // };
+  const handleClickCategory = (categoryID: string, categoryName: string) => {
+    setFilterCategory(categoryID);
+    setActiveCategory(categoryID);
+    sessionStorage.setItem(LocalStorageKey.CATEGORY_ID, categoryID);
+    setProjects(undefined);
+    router.replace({
+      query: { ...router.query, category: categoryName },
+    });
+  };
 
   useAsyncEffect(async () => {
-    // sortChange();
-    setIsLoadMore(false);
-    await getProjectAll();
-    setIsLoaded(true);
+    if (categoriesList && categoriesList.length > 0) {
+      setIsLoadMore(false);
+      setIsLoaded(false);
+      await getProjectAll({
+        page: 0,
+        categoryID: filterCategory ? filterCategory : categoriesList[0].id,
+      });
+      setIsLoaded(true);
+    }
+  }, [filterCategory, sort]);
+
+  useAsyncEffect(async () => {
+    await fetchAllCategory();
   }, []);
 
   return (
     <div className={s.recentWorks}>
-      <Row
-        className={s.recentWorks_heading}
-        style={{ justifyContent: 'space-between', alignItems: 'center' }}
-      >
-        <Col className={s.recentWorks_heading_col} md={'auto'} xs={'12'}>
-          <Heading as="h4" fontWeight="semibold">
-            Generative art on Bitcoin. Be the first to collect.
-          </Heading>
-        </Col>
-        <Col className={s.recentWorks_heading_col} md={'auto'} xs={'12'}>
-          <ButtonIcon
-            onClick={() => router.push(ROUTE_PATH.CREATE_BTC_PROJECT)}
-            variants={'primary'}
-            sizes={'medium'}
+      <Container>
+        <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
+          Be the first to collect art on Bitcoin.
+        </Heading>
+        <Row className={s.recentWorks_heading}>
+          <Col
+            className={cs(s.recentWorks_heading_col, s.category_list)}
+            md={'auto'}
+            xs={'12'}
           >
-            Create
-          </ButtonIcon>
-        </Col>
-      </Row>
-      <Row className={s.recentWorks_projects}>
-        {/* <Loading isLoaded={isLoaded} /> */}
-        {!isLoaded && <ProjectListLoading numOfItems={12} />}
-        {isLoaded && (
-          <div className={s.recentWorks_projects_list}>
-            <ProjectList listData={listData} />
-            <TriggerLoad
-              len={listData.length || 0}
-              total={currentTotal || 0}
-              isLoaded={isLoadedMore}
-              onEnter={onLoadMore}
+            <CategoryTab
+              type="3"
+              text="All"
+              onClick={() => {
+                setPageNum(0);
+                handleClickCategory('All', 'All');
+              }}
+              active={activeCategory === 'All'}
+              loading={categoriesLoading}
             />
-          </div>
-        )}
-      </Row>
+            {categoriesList &&
+              categoriesList?.map(category => (
+                <CategoryTab
+                  type="3"
+                  text={category.name}
+                  key={`category-${category.id}`}
+                  onClick={() => {
+                    setPageNum(0);
+                    handleClickCategory(category.id, category.name);
+                  }}
+                  active={activeCategory === category.id}
+                  loading={categoriesLoading}
+                />
+              ))}
+          </Col>
+          <Col
+            className={cs(s.recentWorks_heading_col, s.sort_dropdown)}
+            md={'auto'}
+            xs={'12'}
+          >
+            {/* {!isProduction() && ( */}
+            <div className={s.dropDownWrapper}>
+              <Select
+                isSearchable={false}
+                isClearable={false}
+                defaultValue={selectedOption}
+                options={SORT_OPTIONS}
+                className={'select-input'}
+                classNamePrefix="select"
+                onChange={(op: SingleValue<SelectOption>) => {
+                  if (op) {
+                    setPageNum(0);
+                    setSort(op.value);
+                    setProjects(undefined);
+                  }
+                }}
+              />
+            </div>
+            {/* )} */}
+          </Col>
+        </Row>
+        <Row className={s.recentWorks_projects}>
+          {/* <Loading isLoaded={isLoaded} /> */}
+          {!isLoaded && <ProjectListLoading numOfItems={12} />}
+          {isLoaded && (
+            <div className={s.recentWorks_projects_list}>
+              <ProjectList listData={listData} />
+              <TriggerLoad
+                len={listData.length || 0}
+                total={currentTotal || 0}
+                isLoaded={isLoadedMore}
+                onEnter={onLoadMore}
+              />
+            </div>
+          )}
+        </Row>
+      </Container>
     </div>
   );
 };

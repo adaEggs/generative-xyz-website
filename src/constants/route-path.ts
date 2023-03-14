@@ -1,28 +1,41 @@
-import { isProduction, isStaging } from '@utils/common';
-
 export const ROUTE_PATH = {
-  HOME: isStaging() ? 'https://generative.xyz' : '/',
-  COLLECTIONS: '/collections',
-  CREATE_PROJECT: isProduction()
-    ? 'https://testnet.generative.xyz/mint-generative/upload-project'
-    : '/mint-generative/upload-project',
-  BENEFIT: isProduction() ? 'https://testnet.generative.xyz/create' : '/create',
+  HOME: '/',
+  DROPS: '/art-on-bitcoin',
+  CREATE_PROJECT: '/create',
+  BENEFIT: '/create',
   GENERATIVE: '/generative',
+  GENERATIVE_EDIT: '/generative/edit',
   PROFILE: '/profile',
   EDIT_PROFILE: `/profile/edit`,
   SANDBOX: '/sandbox',
-  DISPLAY: isStaging() ? 'https://generative.xyz' : '/display',
-  ORDER_NOW: isStaging() ? 'https://generative.xyz/order-now' : '/order-now',
-  LEADERBOARDS: isProduction()
-    ? 'https://testnet.generative.xyz/leaderboards'
-    : '/leaderboards',
+  DISPLAY: '/grail',
+  ORDER_NOW: '/order-now',
+  LEADERBOARDS: '/leaderboards',
   DAO: '/dao',
-  INCENTIVIZED_TESTNET: isProduction()
-    ? 'https://testnet.generative.xyz/incentivized-testnet'
-    : '/incentivized-testnet',
-  TRADE: '/bazaar',
+  INCENTIVIZED_TESTNET: '/incentivized-testnet',
+  TRADE: '/marketplace',
+  LIVE: '/live',
   REFERRAL: '/referral',
   NOT_FOUND: '/404',
   INSCRIBE: '/inscribe',
   CREATE_BTC_PROJECT: '/create',
+  GLTF_PREVIEW: '/gltf-preview',
+  OBJECT_PREVIEW: '/object-preview',
+  SATOSHIS_FREE_MINT: '/satoshis/free',
+  SATOSHIS_PAGE: '/satoshis',
+  WALLET: '/wallet',
+  ARTISTS: '/artists',
+  SEARCH: '/search',
+  FREE_INSCRIPTION: '/free',
+  AUTHENTIC: '/authentic',
+  AUTHENTIC_INSCRIPTIONS: '/authentic-inscriptions',
+  AIRDROP: '/airdrop',
+  DEVELOPER: '/developers',
+  PRESERVE: '/preserve',
+  PRESERVE_LANDING: '/preserve-cryptoart',
 };
+
+export const STANDALONE_PAGES = [
+  ROUTE_PATH.GLTF_PREVIEW,
+  ROUTE_PATH.OBJECT_PREVIEW,
+];

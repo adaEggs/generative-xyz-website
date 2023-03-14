@@ -1,0 +1,72 @@
+.topbar {
+  background-color: $secondary-purple-c;
+  padding: {
+    top: rem(8px);
+    bottom: rem(8px);
+  }
+
+  .wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .text {
+    font-weight: 500;
+    font-size: rem(14px);
+    line-height: rem(22px);
+    color: $white;
+
+    .startedLink {
+      // color: var(--bs-link-hover-color);
+      color: $white;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+    gap: rem(10px);
+
+    :global(svg path) {
+      fill: $white;
+    }
+  }
+
+  .center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: rem(8);
+
+    @include max-tablet {
+      order: 2;
+    }
+
+    .arrowIcon {
+      display: inline;
+    }
+
+    .centerText {
+      font-weight: 400;
+      font-size: rem(14px);
+      line-height: rem(22px);
+      color: $white;
+      text-align: center;
+
+      a {
+        color: $white;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+}

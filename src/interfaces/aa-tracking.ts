@@ -1,10 +1,11 @@
 export interface IAATrackingConfig {
-  clientSecret: string;
   debugMode: boolean;
 }
 
 export interface ITrackEventPayload {
   eventName: string;
+  userId: string;
+  userPseudoId: string;
   eventParams: Array<{
     key: string;
     value: unknown;

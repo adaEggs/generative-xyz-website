@@ -14,5 +14,5 @@ export const generateID = (length: number): string => {
   for (let i = 0; i < length; i++) {
     result += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
   }
-  return result;
+  return `${result}xyz`;
 };

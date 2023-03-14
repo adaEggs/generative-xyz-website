@@ -1,16 +1,24 @@
-import s from './styles.module.scss';
-import { Formik } from 'formik';
-import React, { useContext } from 'react';
 import Button from '@components/ButtonIcon';
+import MarkdownEditor from '@components/MarkdownEditor';
 import SvgInset from '@components/SvgInset';
-import { CDN_URL } from '@constants/config';
-import { useRouter } from 'next/router';
-import UploadThumbnailButton from '../UploadThumbnailButton';
+import { CATEGORY_SELECT_BLACKLIST, CDN_URL } from '@constants/config';
 import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
+import { CollectionType } from '@enums/mint-generative';
+import { SelectOption } from '@interfaces/select-input';
+import { getCategoryList } from '@services/category';
+import { Formik } from 'formik';
+import { useRouter } from 'next/router';
+import React, { useContext, useState } from 'react';
+import Select, { MultiValue } from 'react-select';
+import useAsyncEffect from 'use-async-effect';
+import UploadThumbnailButton from '../UploadThumbnailButton';
+import s from './styles.module.scss';
 
 type IProductDetailFormValue = {
   name: string;
   description: string;
+  categories: Array<SelectOption>;
+  captureImageTime: number;
 };
 
 const ProjectDetail: React.FC = (): React.ReactElement => {
@@ -21,7 +29,11 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
     thumbnailFile,
     setShowErrorAlert,
     currentStep,
+    collectionType,
   } = useContext(MintBTCGenerativeContext);
+  const [categoryOptions, setCategoryOptions] = useState<Array<SelectOption>>(
+    []
+  );
 
   const validateForm = (
     _formValues: IProductDetailFormValue
@@ -30,6 +42,9 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
     setFormValues({
       ...formValues,
       ..._formValues,
+      categories: _formValues.categories
+        ? _formValues.categories.map(cat => cat.value)
+        : [],
     });
 
     const errors: Record<string, string> = {};
@@ -40,6 +55,12 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
 
     if (!_formValues.description) {
       errors.description = 'Description is required';
+    }
+    if (!_formValues.captureImageTime) {
+      errors.captureImageTime = 'Capture time is required';
+    }
+    if (_formValues.captureImageTime && _formValues.captureImageTime < 7) {
+      errors.captureImageTime = 'Capture time must be greater than 7 seconds';
     }
 
     return errors;
@@ -56,12 +77,32 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
     router.push('/create/set-price', undefined, { shallow: true });
   };
 
+  useAsyncEffect(async () => {
+    const { result } = await getCategoryList();
+    const options = result.map(item => {
+      return {
+        value: item.id,
+        label: item.name,
+      };
+    });
+    setCategoryOptions(
+      options.filter(op => op.value !== CATEGORY_SELECT_BLACKLIST)
+    );
+  }, []);
+
   return (
     <Formik
       key="projectDetailForm"
       initialValues={{
         name: formValues.name ?? '',
         description: formValues.description ?? '',
+        categories: formValues.categories
+          ? formValues.categories.map(cat => {
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              return categoryOptions.find(op => cat === op.value)!;
+            })
+          : [],
+        captureImageTime: formValues.captureImageTime ?? 20,
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -73,6 +114,7 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
         errors,
         touched,
         handleChange,
+        setFieldValue,
         handleBlur,
         handleSubmit,
       }) => (
@@ -103,19 +145,64 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                     Description of your collection&nbsp;
                     <sup className={s.requiredTag}>*</sup>
                   </label>
-                  <textarea
+                  {/*<textarea*/}
+                  {/*  id="description"*/}
+                  {/*  name="description"*/}
+                  {/*  onChange={handleChange}*/}
+                  {/*  onBlur={handleBlur}*/}
+                  {/*  value={values.description}*/}
+                  {/*  className={s.input}*/}
+                  {/*  rows={4}*/}
+                  {/*  placeholder="Tell us more about the meaning and inspiration behind your art."*/}
+                  {/*/>*/}
+                  {/* <Input
                     id="description"
+                    as="textarea"
                     name="description"
                     onChange={handleChange}
                     onBlur={handleBlur}
                     value={values.description}
-                    className={s.input}
-                    rows={4}
-                    placeholder="Tell us more about the meaning and inspiration behind your art."
+                    className={s.descriptionInput}
+                    useFormik
+                  /> */}
+                  {/* {errors.description && touched.description && (
+                    <p className={s.error}>{errors.description}</p>
+                  )} */}
+                  <MarkdownEditor
+                    id="description"
+                    className={s.mdEditor}
+                    value={values.description}
+                    onBlur={handleBlur}
+                    preview="edit"
+                    visiableDragbar={false}
+                    height={200}
+                    onValueChange={(val: string | undefined) => {
+                      if (typeof val !== undefined)
+                        setFieldValue('description', val);
+                    }}
                   />
                   {errors.description && touched.description && (
                     <p className={s.error}>{errors.description}</p>
                   )}
+                </div>
+                <div className={s.formItem}>
+                  <label className={s.label} htmlFor="categories">
+                    Categories
+                  </label>
+                  <Select
+                    id="categories"
+                    isMulti
+                    name="categories"
+                    options={categoryOptions}
+                    className={s.selectInput}
+                    classNamePrefix="select"
+                    isOptionDisabled={() => values.categories.length >= 3}
+                    onChange={(ops: MultiValue<SelectOption>) => {
+                      setFieldValue('categories', ops);
+                    }}
+                    onBlur={handleBlur}
+                    placeholder="Select categories"
+                  />
                 </div>
               </div>
               <div className={s.uploadPreviewWrapper}>
@@ -123,6 +210,27 @@ const ProjectDetail: React.FC = (): React.ReactElement => {
                   <UploadThumbnailButton />
                 )}
               </div>
+              {collectionType === CollectionType.GENERATIVE && (
+                <div className={s.formItem}>
+                  <label className={s.label} htmlFor="captureImageTime">
+                    Capture time (seconds)
+                    <sup className={s.requiredTag}>*</sup>
+                  </label>
+                  <input
+                    id="captureImageTime"
+                    type="number"
+                    name="captureImageTime"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.captureImageTime}
+                    className={s.input}
+                    placeholder="Please set the captureImageTime time."
+                  />
+                  {errors.captureImageTime && touched.captureImageTime && (
+                    <p className={s.error}>{errors.captureImageTime}</p>
+                  )}
+                </div>
+              )}
             </div>
 
             <div className={s.container}>

@@ -1,21 +1,28 @@
 import ToastOverlay from '@components/ToastOverlay';
 import AuthWrapper from '@components/Utils/AuthWrapper';
+import { STANDALONE_PAGES } from '@constants/route-path';
 import {
   SEO_DESCRIPTION,
   SEO_IMAGE,
   SEO_TITLE,
 } from '@constants/seo-default-info';
 import { WalletProvider } from '@contexts/wallet-context';
+import { AssetsProvider } from '@contexts/assets-context';
 import { LogLevel } from '@enums/log-level';
 import store from '@redux';
+import { sendAAPageView } from '@services/aa-tracking';
+import DatadogService from '@services/datadog';
 import '@styles/index.scss';
 import log from '@utils/logger';
+import { getReferralCodeURLParameter, setReferral } from '@utils/referral';
 import { NextComponentType, NextPageContext } from 'next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import NextNprogress from 'nextjs-progressbar';
 import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
+import { SSRProvider } from 'react-bootstrap';
 
 interface MyAppProps extends AppProps {
   Component: {
@@ -26,10 +33,10 @@ interface MyAppProps extends AppProps {
 }
 
 export default function App({ Component, pageProps }: MyAppProps) {
+  const router = useRouter();
   const { seoInfo = {} } = pageProps;
   const { title, description, image } = seoInfo;
-
-  // const Layout = Component.Layout || React.Fragment;
+  const { pathname } = useRouter();
 
   useEffect(() => {
     if ('serviceWorker' in navigator) {
@@ -45,6 +52,51 @@ export default function App({ Component, pageProps }: MyAppProps) {
     const vh = window.innerHeight * 0.01;
     document.documentElement.style.setProperty('--vh', `${vh}px`);
   }, []);
+
+  useEffect(() => {
+    sendAAPageView({ page: window.location.pathname });
+  }, [router.asPath]);
+
+  useEffect(() => {
+    const refCode = getReferralCodeURLParameter();
+    if (refCode) {
+      setReferral(refCode);
+    }
+  }, []);
+
+  useEffect(() => {
+    const ddInstance = DatadogService.getInstance();
+    ddInstance.init();
+    ddInstance.startRUMTracking();
+
+    return () => {
+      ddInstance.stopRUMTracking();
+    };
+  }, []);
+
+  const renderBody = () => {
+    if (STANDALONE_PAGES.includes(pathname)) {
+      return (
+        <SSRProvider>
+          <Component {...pageProps} />
+        </SSRProvider>
+      );
+    }
+    return (
+      <SSRProvider>
+        <Provider store={store}>
+          <WalletProvider>
+            <AuthWrapper>
+              <AssetsProvider>
+                <Component {...pageProps} />
+                <ToastOverlay />
+              </AssetsProvider>
+            </AuthWrapper>
+          </WalletProvider>
+        </Provider>
+      </SSRProvider>
+    );
+  };
 
   return (
     <>
@@ -157,14 +209,7 @@ export default function App({ Component, pageProps }: MyAppProps) {
       </Head>
 
       <NextNprogress />
-      <Provider store={store}>
-        <WalletProvider>
-          <AuthWrapper>
-            <Component {...pageProps} />
-            <ToastOverlay />
-          </AuthWrapper>
-        </WalletProvider>
-      </Provider>
+      {renderBody()}
     </>
   );
 }

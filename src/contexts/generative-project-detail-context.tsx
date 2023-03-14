@@ -1,12 +1,22 @@
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
-import { SATOSHIS_FREE_MINT, SATOSHIS_PROJECT_ID } from '@constants/generative';
+import { SATOSHIS_PROJECT_ID } from '@constants/generative';
+import { ROUTE_PATH } from '@constants/route-path';
 import { LogLevel } from '@enums/log-level';
-import { Project } from '@interfaces/project';
+import { IProjectMintFeeRate } from '@interfaces/api/project';
+import { Project, ProjectItemsTraitList } from '@interfaces/project';
 import { Token } from '@interfaces/token';
+import { useAppSelector } from '@redux';
 import { setProjectCurrent } from '@redux/project/action';
-import { getProjectDetail, getProjectItems } from '@services/project';
+import { getUserSelector } from '@redux/user/selector';
+import {
+  getProjectDetail,
+  getProjectItems,
+  getProjectItemsTraitsList,
+  getProjectMintFeeRate,
+} from '@services/project';
 import { checkIsBitcoinProject } from '@utils/generative';
 import log from '@utils/logger';
+import { debounce } from 'lodash';
 import { useRouter } from 'next/router';
 import React, {
   Dispatch,
@@ -16,6 +26,7 @@ import React, {
   useEffect,
   useMemo,
   useState,
+  useCallback,
 } from 'react';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
@@ -26,6 +37,9 @@ const FETCH_NUM = 20;
 
 export interface IGenerativeProjectDetailContext {
   projectData: Project | null;
+  projectFeeRate: IProjectMintFeeRate | null;
+  debounceFetchProjectFeeRate: (projectData?: Project, rate?: number) => void;
+
   setProjectData: Dispatch<SetStateAction<Project | null>>;
   listItems: Token[] | null;
   setListItems: Dispatch<SetStateAction<Token[] | null>>;
@@ -44,8 +58,7 @@ export interface IGenerativeProjectDetailContext {
   setShowFilter: Dispatch<SetStateAction<boolean>>;
   filterTraits: string;
   setFilterTraits: Dispatch<SetStateAction<string>>;
-  query: Map<string, string> | null;
-  setQuery: Dispatch<SetStateAction<Map<string, string> | null>>;
+  projectItemsTraitList: ProjectItemsTraitList | null;
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
   filterPrice: {
@@ -63,10 +76,15 @@ export interface IGenerativeProjectDetailContext {
   hideMintBTCModal: () => void;
   isBitcoinProject: boolean;
   isWhitelistProject: boolean;
+  isSatoshisPage: boolean;
 }
 
 const initialValue: IGenerativeProjectDetailContext = {
   projectData: null,
+  projectFeeRate: null,
+  debounceFetchProjectFeeRate: () => {
+    return;
+  },
   setProjectData: _ => {
     return;
   },
@@ -74,6 +92,7 @@ const initialValue: IGenerativeProjectDetailContext = {
   setListItems: _ => {
     return;
   },
+  projectItemsTraitList: null,
   handleFetchNextPage: () => {
     return;
   },
@@ -103,10 +122,6 @@ const initialValue: IGenerativeProjectDetailContext = {
   setFilterTraits: _ => {
     return;
   },
-  query: null,
-  setQuery: _ => {
-    return;
-  },
   page: 1,
   setPage: _ => {
     return;
@@ -127,6 +142,7 @@ const initialValue: IGenerativeProjectDetailContext = {
   },
   isBitcoinProject: false,
   isWhitelistProject: false,
+  isSatoshisPage: false,
 };
 
 export const GenerativeProjectDetailContext =
@@ -135,12 +151,18 @@ export const GenerativeProjectDetailContext =
 export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   children,
 }: PropsWithChildren): React.ReactElement => {
+  const user = useAppSelector(getUserSelector);
+
   const dispatch = useDispatch();
   const [projectData, setProjectData] = useState<Project | null>(null);
+  const [projectFeeRate, setProjectFeeRate] =
+    useState<IProjectMintFeeRate | null>(null);
+  const currentCustomFeeRate = React.useRef<number | null>();
+
   const [listItems, setListItems] = useState<Token[] | null>(null);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [sort, setSort] = useState('newest');
+  const [sort, setSort] = useState('price-asc');
   const [filterBuyNow, setFilterBuyNow] = useState(false);
   const [searchToken, setSearchToken] = useState('');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
@@ -148,18 +170,24 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const [isNextPageLoaded, setIsNextPageLoaded] = useState(true);
   const [showFilter, setShowFilter] = useState(false);
   const [filterTraits, setFilterTraits] = useState('');
-  const [query, setQuery] = useState<Map<string, string> | null>(null);
   const [filterPrice, setFilterPrice] = useState({
     from_price: '',
     to_price: '',
   });
+  const [projectItemsTraitList, setProjectItemsTraitList] =
+    useState<ProjectItemsTraitList | null>(null);
   const router = useRouter();
-  const { projectID } = router.query as {
+
+  const { projectID } = router?.query as {
     projectID: string;
   };
 
   const isWhitelistProject = useMemo(() => {
-    return router.pathname === SATOSHIS_FREE_MINT;
+    return router.pathname === ROUTE_PATH.SATOSHIS_FREE_MINT;
+  }, []);
+
+  const isSatoshisPage = useMemo(() => {
+    return router.pathname === ROUTE_PATH.SATOSHIS_PAGE;
   }, []);
 
   const handleFetchNextPage = () => {
@@ -177,19 +205,56 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   };
 
   const fetchProjectDetail = async (): Promise<void> => {
-    if (projectID) {
+    if (projectID || isSatoshisPage) {
       try {
         const data = await getProjectDetail({
           contractAddress: GENERATIVE_PROJECT_CONTRACT,
-          projectID,
+          projectID: isSatoshisPage ? SATOSHIS_PROJECT_ID : projectID,
+          userAddress: user?.walletAddressBtcTaproot,
         });
         dispatch(setProjectCurrent(data));
         setProjectData(data);
+
+        debounceFetchProjectFeeRate(data, 0);
       } catch (_: unknown) {
         log('failed to fetch project detail data', LogLevel.ERROR, LOG_PREFIX);
       }
     }
   };
+
+  const fetchProjectFeeRate = useCallback(
+    async (projData?: Project, rate?: number): Promise<void> => {
+      const isReserveUser =
+        projData?.reservers &&
+        projData?.reservers.length > 0 &&
+        user &&
+        user.walletAddressBtcTaproot &&
+        projData?.reservers.includes(user.walletAddressBtcTaproot);
+
+      try {
+        const data = await getProjectMintFeeRate(
+          projData ? projData.maxFileSize : 0,
+          rate,
+          projData
+            ? isReserveUser
+              ? Number(projData.reserveMintPrice)
+              : Number(projData.mintPrice)
+            : 0
+        );
+        setProjectFeeRate(data);
+        currentCustomFeeRate.current = rate;
+      } catch (_: unknown) {
+        log(
+          'failed to fetch project fee rate data',
+          LogLevel.ERROR,
+          LOG_PREFIX
+        );
+      }
+    },
+    [user]
+  );
+
+  const debounceFetchProjectFeeRate = debounce(fetchProjectFeeRate, 800);
 
   const fetchProjectItems = async (): Promise<void> => {
     if (projectData?.genNFTAddr && !isWhitelistProject) {
@@ -237,7 +302,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   };
 
   const fetchWhitelistProjectItems = async (): Promise<void> => {
-    if (isWhitelistProject) {
+    if (isWhitelistProject || isSatoshisPage) {
       try {
         if (page > 1) {
           setIsNextPageLoaded(false);
@@ -276,9 +341,33 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
+  const featProjectItemsTraitsList = async (): Promise<void> => {
+    try {
+      if (projectID) {
+        const res = await getProjectItemsTraitsList({
+          contractAddress: GENERATIVE_PROJECT_CONTRACT,
+          projectID: projectID,
+        });
+        if (res) {
+          setProjectItemsTraitList(res);
+        }
+      }
+    } catch (err: unknown) {
+      log('failed to ', LogLevel.ERROR, LOG_PREFIX);
+      throw Error();
+    }
+  };
+
   useEffect(() => {
     fetchProjectDetail();
+    featProjectItemsTraitsList();
   }, [projectID]);
+
+  useEffect(() => {
+    if (user && user.walletAddressBtcTaproot) {
+      fetchProjectDetail();
+    }
+  }, [user?.walletAddressBtcTaproot]);
 
   useEffect(() => {
     if (filterPrice.to_price && filterPrice.to_price < filterPrice.from_price) {
@@ -310,6 +399,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const contextValues = useMemo((): IGenerativeProjectDetailContext => {
     return {
       projectData,
+      projectFeeRate,
+      debounceFetchProjectFeeRate,
       setProjectData,
       listItems,
       setListItems,
@@ -328,8 +419,6 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       setShowFilter,
       filterTraits,
       setFilterTraits,
-      query,
-      setQuery,
       page,
       setPage,
       filterPrice,
@@ -339,6 +428,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       hideMintBTCModal,
       isBitcoinProject,
       isWhitelistProject,
+      isSatoshisPage,
+      projectItemsTraitList,
     };
   }, [
     projectData,
@@ -360,8 +451,6 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     setShowFilter,
     filterTraits,
     setFilterTraits,
-    query,
-    setQuery,
     page,
     setPage,
     filterPrice,
@@ -371,6 +460,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     hideMintBTCModal,
     isBitcoinProject,
     isWhitelistProject,
+    isSatoshisPage,
+    projectItemsTraitList,
   ]);
 
   return (

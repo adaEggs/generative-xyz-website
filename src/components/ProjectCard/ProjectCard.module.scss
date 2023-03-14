@@ -6,22 +6,25 @@
 
   &_inner {
     background: #fff;
-    border: 1px solid rgb(0 0 0 / 20%);
-    border-radius: 2px;
     min-height: 100%;
     transition: box-shadow 0.4s $easeOutCubic, border-color 0.4s $easeOutCubic;
+    border: 1px solid transparent;
 
     &:hover {
-      box-shadow: 0 4px 20px rgb(0 0 0 / 15%);
-      border-color: #1c1c1c;
+      box-shadow: 0 2px 10px rgb(0 0 0 / 15%);
+      border-color: rgba(#1c1c1c, 0.3);
     }
   }
 
   &_thumb {
     position: relative;
-    border-radius: 2px;
     width: 100%;
-    padding: rem(16px);
+    background: #f7f9fb;
+    padding: rem(32px);
+
+    @include min-pc-superWide {
+      padding: 32px;
+    }
 
     @include mobile {
       padding: rem(8px);
@@ -39,8 +42,6 @@
     }
 
     &.isDefault {
-      background: #fff;
-
       img {
         width: rem(200px);
         height: rem(200px);
@@ -66,25 +67,53 @@
   }
 
   &_info {
-    border-top: 1px solid rgb(0 0 0 / 20%);
-    padding: rem(16px);
+    padding: {
+      top: rem(24px);
+      left: rem(16px);
+      right: rem(16px);
+      bottom: rem(16px);
+    }
+
+    &_price {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &_mintoutContainer {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+
+      &_text {
+        font-style: normal;
+        font-weight: 500;
+        font-size: rem(16px);
+        line-height: rem(26px);
+        color: #ff7e21;
+        margin-left: rem(4px);
+      }
+
+      &_floorPrice {
+        font-style: normal;
+        font-weight: 500;
+        font-size: rem(16px);
+        line-height: rem(26px);
+        margin-left: rem(4px);
+        margin-right: rem(6px);
+      }
+    }
 
     @include mobile {
-      padding: rem(8px);
+      padding: rem(12px) rem(8px);
     }
 
     &.desktop {
       .projectCard_info_title {
         display: block;
-        margin-top: rem(10px);
-        margin-bottom: rem(2px);
+        margin-bottom: rem(12px);
+        font-style: italic;
 
-        h4 {
-          font-weight: 600;
-          line-height: (34 / 24);
-
-          @include calcFontAuto(18px, 24px);
-
+        span {
           white-space: nowrap;
           text-overflow: ellipsis;
           display: block;
@@ -108,29 +137,30 @@
       }
     }
 
-    &_price {
-      display: flex;
-
-
-      &_price {
-        flex: 0 0 60%;
-        padding-right: rem(10px);
-        color: $secondary-purple-c;
-        line-height: (28/18);
-
-        @include calcFontAuto(16px, 18px);
-
-        small {
-          font-size: 80%;
-          font-weight: bold;
-          margin-left: rem(5px);
-        }
+    &_price_price {
+      &_wrap {
+        display: flex;
       }
 
-      &_bar {
-        flex: 0 0 40%;
-        text-align: right;
-        margin-left: auto;
+      &_minted {
+        position: relative;
+
+        &:not(.isOnlyMintedShow) {
+          margin-left: 0.5em;
+          padding-left: 0.7em;
+
+          &::before {
+            content: "";
+            display: block;
+            border: 2px solid rgb(0 0 0 / 40%);
+            width: 0;
+            height: 0;
+            left: 0;
+            top: 0.7em;
+            position: absolute;
+            border-radius: 50%;
+          }
+        }
       }
     }
   }
@@ -143,7 +173,6 @@
     display: flex;
     align-items: center;
     gap: rem(6);
-    margin-bottom: rem(7);
   }
 
   &_avatar {
@@ -157,6 +186,13 @@
     width: 100%;
     height: rem(32);
   }
+
+  .row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 .countDown {
@@ -166,5 +202,4 @@
   min-width: rem(160px);
   text-align: center;
   padding: rem(7px);
-  border-radius: 2px;
 }

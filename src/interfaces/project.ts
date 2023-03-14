@@ -1,4 +1,9 @@
 import { User } from '@interfaces/user';
+
+import {
+  IGetProjectItemsTraitsListResponse,
+  IGetProjectVolumeResponse,
+} from './api/project';
 import { MarketplaceStats } from './marketplace';
 
 export type ProjectSocial = {
@@ -8,11 +13,13 @@ export type ProjectSocial = {
   medium?: string;
   etherScan?: string;
   instagram: string;
+  twitterVerified?: boolean;
 };
 
 export type Project = {
   id: string;
   maxSupply: number;
+  maxFileSize: number;
   limit: number;
   mintPrice: string;
   mintPriceAddr: string;
@@ -40,6 +47,7 @@ export type Project = {
     indexReserve: number;
   };
   creatorProfile?: User;
+  contractAddress?: string;
   mintedTime: number;
   stats: MarketplaceStats;
   traitStat: TraitStats[];
@@ -48,6 +56,30 @@ export type Project = {
   whiteListEthContracts?: string[];
   isFullChain: boolean;
   isHidden: boolean;
+  networkFee?: string;
+  networkFeeEth?: string;
+  totalImages?: number;
+  categories?: string[];
+  btcFloorPrice: number; // satoshi number
+  reportUsers?: {
+    originalLink?: string;
+    reportUserAddress: string;
+  }[];
+  animationHtml: string;
+  totalVolume: string;
+  fromAuthentic?: boolean;
+  ordinalsTx?: string;
+  tokenAddress?: string;
+  nftTokenId?: string;
+  captureImageTime?: number;
+  captureThumbnailDelayTime?: number;
+  tokenId?: string;
+  limitMintPerProcess?: number;
+  inscribedBy?: string;
+  htmlFile: string;
+  reserveMintPrice?: string;
+  reserveMintLimit?: number;
+  reservers?: string[];
 };
 
 export type BTCProject = Project & {
@@ -62,3 +94,7 @@ export type TraitStats = {
     rarity: number;
   }[];
 };
+
+export type ProjectVolume = IGetProjectVolumeResponse;
+
+export type ProjectItemsTraitList = IGetProjectItemsTraitsListResponse[];

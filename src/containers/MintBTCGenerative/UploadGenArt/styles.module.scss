@@ -11,6 +11,10 @@
     box-shadow: 35px 15px 120px rgb(0 0 0 / 15%);
     border-radius: 2px;
     margin-bottom: 42px;
+
+    @include mobile {
+      padding: rem(12px) rem(24px) rem(24);
+    }
   }
 
   .uploadSuccessWrapper {
@@ -45,6 +49,7 @@
 
   .dropZoneContainer {
     cursor: pointer;
+    margin-bottom: rem(8px);
   }
 
   .disclaimerWrapper {
@@ -118,21 +123,20 @@
   .codeIcon {
     display: inline-block;
     margin-right: 6px;
+  }
 
-    &__error {
-      :global(svg path) {
-        fill: $secondary-red;
-      }
+  :global(.codeIconError_image) {
+    :global(svg path) {
+      fill: $secondary-red;
     }
   }
 
-  .stepFooterWrapper {
-    position: fixed;
-    bottom: 0;
-    z-index: 1;
-    width: 100vw;
-    left: 0;
-    right: 0;
+  :global(.codeIconError_video),
+  :global(.codeIconError_model_3d),
+  :global(.codeIconError_audio) {
+    :global(svg path) {
+      stroke: $secondary-red;
+    }
   }
 
   .stepFooter {
@@ -208,8 +212,16 @@
     .choiceList {
       display: flex;
       align-items: center;
-      justify-content: center;
       margin-bottom: rem(16px);
+      flex-wrap: wrap;
+      row-gap: rem(12);
+
+      @include mobile {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: rem(8px);
+      }
     }
 
     .choiceItem {
@@ -269,5 +281,22 @@
 
   .guideWrapper {
     margin-bottom: rem(24px);
+    text-align: left;
+  }
+
+  .errorMessage {
+    font-weight: 500;
+    font-size: rem(14px);
+    line-height: rem(24px);
+    color: $secondary-red;
+    margin-top: rem(8px);
+  }
+
+  .supportedFileText {
+    font-weight: 400;
+    font-size: rem(14px);
+    line-height: rem(24px);
+    color: $black-100;
+    text-align: left;
   }
 }

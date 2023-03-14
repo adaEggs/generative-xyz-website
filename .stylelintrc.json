@@ -14,8 +14,10 @@
     "function-no-unknown": null,
     "property-no-unknown": null,
     "no-descending-specificity": null,
+    "custom-property-pattern": null,
     "selector-pseudo-class-no-unknown": null,
     "selector-pseudo-element-no-unknown": null,
+    "max-line-length": null,
     "declaration-block-no-redundant-longhand-properties": null,
     "no-duplicate-selectors": null,
     "selector-class-pattern": [

@@ -1,47 +1,89 @@
 import Heading from '@components/Heading';
+import { Loading } from '@components/Loading';
 import Text from '@components/Text';
-import { Container } from 'react-bootstrap';
+import { CDN_URL } from '@constants/config';
+import { ROUTE_PATH } from '@constants/route-path';
+import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useContext, useEffect, useState } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
 import FormEditProfile from './FormEditProfile';
 import s from './styles.module.scss';
-import ButtonIcon from '@components/ButtonIcon';
-import { useRouter } from 'next/router';
-import { ProfileContext, ProfileProvider } from '@contexts/profile-context';
-import { Loading } from '@components/Loading';
-import React, { useContext } from 'react';
 
 const EditProfile = (): JSX.Element => {
-  const router = useRouter();
+  const [tab, setTab] = useState<string>('account');
   const { isLoaded } = useContext(ProfileContext);
+  const router = useRouter();
+  const { developers } = router.query;
+
+  useEffect(() => {
+    if (developers && tab !== 'developer') {
+      setTab('developer');
+    }
+  }, [developers]);
 
   return (
-    <>
+    <div className={s.editProfile}>
       <Container>
-        <ButtonIcon
-          variants="ghost"
-          onClick={() => router.back()}
-          className={s.back_btn}
-        >
-          Back
-        </ButtonIcon>
-        <div className={s.wrapper}>
-          <div className={s.setting}>
-            <Heading as="h4" fontWeight="bold">
-              Setting
-            </Heading>
-            <Text size="18" fontWeight="bold">
-              Edit profile
-            </Text>
-          </div>
-          <div className="h-divider"></div>
-          <FormEditProfile />
-        </div>
+        <Row className={s.editProfile_row}>
+          <Col xl={4}>
+            <div className={s.editProfile_titleContainer}>
+              <Link href={ROUTE_PATH.PROFILE}>
+                <img
+                  className={s.editProfile_titleContainer_icon}
+                  alt="back"
+                  src={`${CDN_URL}/icons/ic-back-profile.png`}
+                />
+              </Link>
+              <Heading as={'h4'}>Settings</Heading>
+            </div>
+            <ul className={s.editProfile_tabs}>
+              <li
+                className={`${tab === 'account' ? s.isActive : ''}`}
+                onClick={() => setTab('account')}
+              >
+                <Text as={'span'} size={'20'}>
+                  Account Info
+                </Text>
+              </li>
+              <li
+                className={`${tab === 'wallet' ? s.isActive : ''}`}
+                onClick={() => setTab('wallet')}
+              >
+                <Text as={'span'} size={'20'}>
+                  Artist Payments
+                </Text>
+              </li>
+              <li
+                className={`${tab === 'export' ? s.isActive : ''}`}
+                onClick={() => setTab('export')}
+              >
+                <Text as={'span'} size={'20'}>
+                  Wallet
+                </Text>
+              </li>
+              <li
+                className={`${tab === 'developer' ? s.isActive : ''}`}
+                onClick={() => setTab('developer')}
+              >
+                <Text as={'span'} size={'20'}>
+                  Developers
+                </Text>
+              </li>
+            </ul>
+            <div className={s.wrapper}>
+              <FormEditProfile tab={tab} />
+            </div>
+          </Col>
+        </Row>
       </Container>
       <Loading
         className={s.profile_loading}
         isLoaded={isLoaded}
         isPage={true}
       />
-    </>
+    </div>
   );
 };
 

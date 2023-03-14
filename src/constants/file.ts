@@ -1,3 +1,5 @@
+import { MediaType } from '@enums/file';
+
 export const ZIP_MIMES = [
   'application/zip',
   'application/x-zip-compressed',
@@ -14,5 +16,116 @@ export const NAIVE_MIMES: Record<string, string> = {
 export const JS_EXTENSION = 'js';
 export const HTML_EXTENSION = 'html';
 export const CSS_EXTENSION = 'css';
+export const GLB_EXTENSION = 'glb';
+export const IMAGE_EXTENSIONS = [
+  'apng',
+  'avif',
+  'gif',
+  'jpg',
+  'jpeg',
+  'jfif',
+  'pjpeg',
+  'pjp',
+  'png',
+  'svg',
+  'webp',
+  'bmp',
+  'ico',
+  'cur',
+  'tif',
+  'tiff',
+];
 
-export const IMAGE_FILE_EXT = ['jpg', 'jpeg', 'png', 'gif'];
+export const SUPPORT_INSCRIBE_IMAGE = [
+  'apng',
+  'asc',
+  'flac',
+  'gif',
+  'glb',
+  'html',
+  'jpg',
+  'json',
+  'mp3',
+  'mp4',
+  'pdf',
+  'png',
+  'stl',
+  'svg',
+  'txt',
+  'wav',
+  'webm',
+  'webp',
+  'yaml',
+];
+
+export const SUPPORTED_FILE_EXT: Array<{ mediaType: MediaType; ext: string }> =
+  [
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'jpg',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'jpeg',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'png',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'gif',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'svg',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'webp',
+    },
+    {
+      mediaType: MediaType.IMAGE,
+      ext: 'apng',
+    },
+    {
+      mediaType: MediaType.MODEL_3D,
+      ext: 'glb',
+    },
+    {
+      mediaType: MediaType.VIDEO,
+      ext: 'mp4',
+    },
+    {
+      mediaType: MediaType.VIDEO,
+      ext: 'webm',
+    },
+    {
+      mediaType: MediaType.AUDIO,
+      ext: 'flac',
+    },
+    {
+      mediaType: MediaType.AUDIO,
+      ext: 'mp3',
+    },
+    {
+      mediaType: MediaType.AUDIO,
+      ext: 'wav',
+    },
+    {
+      mediaType: MediaType.IFRAME,
+      ext: 'html',
+    },
+    {
+      mediaType: MediaType.PDF,
+      ext: 'pdf',
+    },
+    // {
+    //   mediaType: MediaType.TEXT,
+    //   ext: 'txt',
+    // },
+    // {
+    //   mediaType: MediaType.TEXT,
+    //   ext: 'json',
+    // },
+  ];

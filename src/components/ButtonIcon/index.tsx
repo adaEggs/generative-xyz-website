@@ -6,11 +6,20 @@ type ButtonType = 'button' | 'submit' | 'reset' | undefined;
 type ButtonVariantsType =
   | 'primary'
   | 'secondary'
+  | 'secondary-2'
   | 'outline'
   | 'outline-small'
   | 'ghost'
-  | 'filter';
-type ButtonSizesType = 'large' | 'medium' | 'mid' | 'small' | 'xsmall';
+  | 'filter'
+  | 'blue'
+  | 'blue-deep';
+export type ButtonSizesType =
+  | 'xlarge'
+  | 'large'
+  | 'medium'
+  | 'mid'
+  | 'small'
+  | 'xsmall';
 
 interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   className?: string;

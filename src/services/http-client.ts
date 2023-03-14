@@ -36,16 +36,20 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
 };
 
 const getHeader = (configHeader?: HeadersInit): HeadersInit => {
-  const defaultHeader = configHeader ?? {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const defaultHeader: any = configHeader ?? {};
   const headers: Record<string, string> = {
     Accept: 'application/json',
     'Content-Type': 'application/json',
+    'Accept-Encoding': 'gzip',
     ...Object(defaultHeader),
   };
 
-  const accessToken = getAccessToken();
-  if (accessToken) {
-    headers['Authorization'] = `Bearer ${accessToken}`;
+  if (defaultHeader && !defaultHeader['Authorization']) {
+    const accessToken = getAccessToken();
+    if (accessToken) {
+      headers['Authorization'] = `Bearer ${accessToken}`;
+    }
   }
 
   return headers;
@@ -147,7 +151,24 @@ export const del = async <R>(
   config?: RequestConfig
 ): Promise<R> => {
   const requestOptions: RequestInit = getRequestOptions(
-    HttpMethod.POST,
+    HttpMethod.DELETE,
+    config
+  );
+  const requestUrl = getRequestEndpoint(
+    url,
+    !!config?.externalResource,
+    config?.baseUrl
+  );
+  const response = await fetch(requestUrl, requestOptions);
+  return handleResponse(response);
+};
+
+export const deleteMethod = async <R>(
+  url: string,
+  config?: RequestConfig
+): Promise<R> => {
+  const requestOptions: RequestInit = getRequestOptions(
+    HttpMethod.DELETE,
     config
   );
   const requestUrl = getRequestEndpoint(

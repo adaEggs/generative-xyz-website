@@ -1,39 +1,57 @@
-import s from './styles.module.scss';
-import { CDN_URL, MIN_MINT_BTC_PROJECT_PRICE } from '@constants/config';
-import { Formik } from 'formik';
-import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
-import log from '@utils/logger';
-import { LogLevel } from '@enums/log-level';
-import _get from 'lodash/get';
-import Text from '@components/Text';
+import { default as Accordion } from '@components/Accordion';
 import ButtonIcon from '@components/ButtonIcon';
+import ProgressBar from '@components/ProgressBar';
 import SvgInset from '@components/SvgInset';
-import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
-import { uploadFile } from '@services/file';
-import { CollectionType } from '@enums/mint-generative';
+import Text from '@components/Text';
 import {
-  createBTCProject,
-  getProjectDetail,
-  uploadBTCProjectFiles,
-} from '@services/project';
-import { v4 as uuidv4 } from 'uuid';
-import { ICreateBTCProjectPayload } from '@interfaces/api/project';
-import { fileToBase64 } from '@utils/file';
-import { validateBTCWalletAddress } from '@utils/validate';
-import { detectUsedLibs } from '@utils/sandbox';
+  CDN_URL,
+  CHUNK_SIZE,
+  MIN_MINT_BTC_PROJECT_PRICE,
+} from '@constants/config';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
+import { MintBTCGenerativeContext } from '@contexts/mint-btc-generative-context';
+import { InscribeMintFeeRate } from '@enums/inscribe';
+import { LogLevel } from '@enums/log-level';
+import { CollectionType } from '@enums/mint-generative';
+import useChunkedFileUploader from '@hooks/useChunkedFileUploader';
+import { ICreateBTCProjectPayload } from '@interfaces/api/project';
+import { getUserSelector } from '@redux/user/selector';
+import { sendAAEvent } from '@services/aa-tracking';
+import {
+  completeMultipartUpload,
+  initiateMultipartUpload,
+  uploadFile,
+} from '@services/file';
+import { getMempoolFeeRate } from '@services/mempool';
+import { createBTCProject, getProjectDetail } from '@services/project';
+import { blobToBase64, fileToBase64 } from '@utils/file';
+import { formatBTCPrice, formatEthPrice } from '@utils/format';
+import { calculateNetworkFee } from '@utils/inscribe';
+import log from '@utils/logger';
+import { detectUsedLibs } from '@utils/sandbox';
+import { validateBTCAddressTaproot } from '@utils/validate';
+import { ErrorMessage, Field, FieldArray, Formik } from 'formik';
+import { useRouter } from 'next/router';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { Stack } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import s from './styles.module.scss';
+import { useCSVReader } from 'react-papaparse';
 
 const LOG_PREFIX = 'SetPrice';
 
 type ISetPriceFormValue = {
-  maxSupply: number;
-  mintPrice: number;
-  royalty: number;
-  creatorWalletAddress: string;
+  maxSupply: string | number;
+  mintPrice: string | number;
+  royalty: string | number;
+  reserveMintPrice: string | number;
+  reserveMintLimit: string | number;
+  reservers: string[];
 };
 
 const SetPrice = () => {
+  const user = useSelector(getUserSelector);
   const router = useRouter();
   const {
     formValues,
@@ -42,14 +60,86 @@ const SetPrice = () => {
     setShowErrorAlert,
     rawFile,
     collectionType,
-    setMintedProjectID,
+    setMintedProject,
     imageCollectionFile,
     filesSandbox,
   } = useContext(MintBTCGenerativeContext);
+  const { CSVReader } = useCSVReader();
+
   const [isMinting, setIsMinting] = useState(false);
+  const [feeRate, setFeeRate] = useState<number>(-1);
+  const [networkFee, setNetworkFee] = useState(0);
+
   const numberOfFile = imageCollectionFile
     ? Object.keys(imageCollectionFile).length
     : 0;
+  const { uploadFile: uploadChunkFile, uploadProgress } =
+    useChunkedFileUploader();
+  const intervalID = useRef<NodeJS.Timer | null>(null);
+
+  const fetchNetworkFee = async (): Promise<number> => {
+    try {
+      const res = await getMempoolFeeRate();
+      setFeeRate(res.fastestFee);
+      return res.fastestFee;
+    } catch (err: unknown) {
+      log('fetchNetworkFee error', LogLevel.ERROR, LOG_PREFIX);
+      return -1;
+    }
+  };
+
+  const getEstimateNetworkFee = async (): Promise<void> => {
+    try {
+      let networkFeeRate = feeRate;
+      if (networkFeeRate < 0) {
+        networkFeeRate = await fetchNetworkFee();
+      }
+
+      if (networkFeeRate < 0) {
+        networkFeeRate = InscribeMintFeeRate.FASTEST;
+      }
+
+      if (collectionType === CollectionType.GENERATIVE) {
+        if (!rawFile) {
+          setNetworkFee(0);
+          return;
+        }
+
+        const fileBase64 = await fileToBase64(rawFile);
+        const sats = calculateNetworkFee(
+          networkFeeRate,
+          fileBase64 as string,
+          0
+        );
+        setNetworkFee(sats);
+      }
+
+      if (collectionType === CollectionType.COLLECTION) {
+        if (!imageCollectionFile) {
+          setNetworkFee(0);
+          return;
+        }
+        const [_, largestFile] = Object.entries(imageCollectionFile).reduce(
+          (prev, current) => {
+            const [_prevK, _prevV] = prev;
+            const [_currentK, _currentV] = current;
+
+            return _prevV.blob.size > _currentV.blob.size ? prev : current;
+          }
+        );
+
+        const fileBase64 = await blobToBase64(largestFile.blob);
+        const sats = calculateNetworkFee(
+          networkFeeRate,
+          fileBase64 as string,
+          0
+        );
+        setNetworkFee(sats);
+      }
+    } catch (err: unknown) {
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+    }
+  };
 
   const validateForm = (values: ISetPriceFormValue): Record<string, string> => {
     const errors: Record<string, string> = {};
@@ -58,58 +148,75 @@ const SetPrice = () => {
     setFormValues({
       ...formValues,
       ...{
-        creatorWalletAddress: values.creatorWalletAddress ?? '',
-        maxSupply: values.maxSupply.toString() ? values.maxSupply : 0,
-        mintPrice: values.mintPrice.toString()
-          ? values.mintPrice.toString()
-          : '0',
-        royalty: values.royalty.toString() ? values.royalty : 10,
+        maxSupply: values.maxSupply
+          ? parseInt(values.maxSupply.toString(), 10)
+          : undefined,
+        mintPrice: values.mintPrice
+          ? parseFloat(values.mintPrice.toString())
+          : undefined,
+        royalty: values.royalty
+          ? parseInt(values.royalty.toString(), 10)
+          : undefined,
+        reserveMintPrice: values.reserveMintPrice
+          ? parseInt(values.reserveMintPrice.toString(), 10)
+          : undefined,
+        reserveMintLimit: values.reserveMintLimit
+          ? parseInt(values.reserveMintLimit.toString(), 10)
+          : undefined,
+        reservers: values.reservers ? values.reservers : undefined,
       },
     });
 
-    if (!values.creatorWalletAddress.toString()) {
-      errors.creatorWalletAddress = 'Creator wallet address is required.';
-    } else if (!validateBTCWalletAddress(values.creatorWalletAddress)) {
-      errors.creatorWalletAddress = 'Invalid BTC wallet address.';
-    }
-
     if (!values.maxSupply.toString()) {
       errors.maxSupply = 'Number of editions is required.';
-    } else if (values.maxSupply <= 0) {
+    } else if (parseInt(values.maxSupply.toString(), 10) <= 0) {
       errors.maxSupply = 'Invalid number. Must be greater than 0.';
     } else if (
-      collectionType === CollectionType.IMAGES &&
-      values.maxSupply > numberOfFile
+      collectionType === CollectionType.COLLECTION &&
+      numberOfFile > 1 &&
+      parseInt(values.maxSupply.toString(), 10) > numberOfFile
     ) {
       errors.maxSupply = `Invalid number. Must be equal or less than ${numberOfFile}.`;
     }
 
     if (!values.mintPrice.toString()) {
       errors.mintPrice = 'Price is required.';
-    } else if (values.mintPrice < MIN_MINT_BTC_PROJECT_PRICE) {
+    } else if (
+      parseFloat(values.mintPrice.toString()) < MIN_MINT_BTC_PROJECT_PRICE
+    ) {
       errors.mintPrice = `Invalid number. Must be equal or greater than ${MIN_MINT_BTC_PROJECT_PRICE}.`;
     }
 
     if (!values.royalty.toString()) {
       errors.royalty = 'Royalty is required.';
-    } else if (values.royalty > 25) {
+    } else if (parseInt(values.royalty.toString(), 10) < 0) {
+      errors.royalty = 'Invalid number. Must be equal or greater than 0.';
+    } else if (parseInt(values.royalty.toString(), 10) > 25) {
       errors.royalty = 'Invalid number. Must be  less then 25.';
     }
 
+    if (parseFloat(values.reserveMintLimit.toString()) < 1) {
+      errors.reserveMintLimit = 'Must be equal or greater than 1.';
+    }
+
     return errors;
+    // if (!validateBTCAddressTaproot(values.address)) {
+    //   errors.address = 'Invalid wallet address.';
+    // }
   };
 
   const intervalGetProjectStatus = (projectID: string): void => {
-    const intervalID = setInterval(async () => {
+    intervalID.current = setInterval(async () => {
       try {
         const projectRes = await getProjectDetail({
           contractAddress: GENERATIVE_PROJECT_CONTRACT,
           projectID,
         });
         if (projectRes && !projectRes.isHidden && projectRes.status) {
-          setMintedProjectID(projectRes.tokenID);
+          setMintedProject(projectRes);
           setIsMinting(false);
-          clearInterval(intervalID);
+          intervalID.current && clearInterval(intervalID.current);
+          intervalID.current = null;
           router.push('/create/mint-success', undefined, {
             shallow: true,
           });
@@ -130,7 +237,6 @@ const SetPrice = () => {
       setIsMinting(true);
 
       const {
-        creatorWalletAddress,
         description,
         license,
         maxSupply,
@@ -146,6 +252,10 @@ const SetPrice = () => {
         tokenDescription,
         categories,
         tags,
+        captureImageTime,
+        reserveMintPrice,
+        reserveMintLimit,
+        reservers,
       } = formValues;
 
       let thumbnailUrl = '';
@@ -155,7 +265,6 @@ const SetPrice = () => {
       }
 
       const payload: ICreateBTCProjectPayload = {
-        creatorAddrrBTC: creatorWalletAddress ?? '',
         maxSupply: maxSupply ?? 0,
         limitSupply: 0,
         mintPrice: mintPrice?.toString() ? mintPrice.toString() : '0',
@@ -166,7 +275,7 @@ const SetPrice = () => {
         scripts: [],
         styles: '',
         tokenDescription: tokenDescription ?? '',
-        royalty: royalty ? royalty * 100 : 1000,
+        royalty: royalty !== undefined ? royalty * 100 : 0,
         socialDiscord: socialDiscord ?? '',
         socialInstagram: socialInstagram ?? '',
         socialMedium: socialMedium ?? '',
@@ -182,17 +291,42 @@ const SetPrice = () => {
         isFullChain: true,
       };
 
-      if (collectionType === CollectionType.IMAGES) {
-        const uploadRes = await uploadBTCProjectFiles({
-          file: rawFile,
-          projectName: name ?? uuidv4(),
-        });
-        payload.zipLink = uploadRes.url;
+      if (reserveMintLimit) payload.reserveMintLimit = reserveMintLimit;
+      if (reserveMintPrice)
+        payload.reserveMintPrice = reserveMintPrice.toString();
+      if (reservers) payload.reservers = reservers.filter(Boolean);
+
+      if (
+        [
+          CollectionType.COLLECTION,
+          CollectionType.EDITIONS,
+          CollectionType.ONE,
+        ].includes(collectionType)
+      ) {
+        try {
+          const initUploadRes = await initiateMultipartUpload({
+            fileName: rawFile.name,
+            group: payload.name.toLowerCase().replaceAll(' ', '_'),
+          });
+
+          await uploadChunkFile(initUploadRes.uploadId, rawFile, CHUNK_SIZE);
+
+          const completeUploadRes = await completeMultipartUpload({
+            uploadId: initUploadRes.uploadId,
+          });
+          payload.zipLink = completeUploadRes.fileUrl;
+        } catch (err: unknown) {
+          log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+          setShowErrorAlert({ open: true, message: 'Upload file error.' });
+          setIsMinting(false);
+          return;
+        }
       }
 
       if (collectionType === CollectionType.GENERATIVE) {
         const animationURL = await fileToBase64(rawFile);
         payload.animationURL = animationURL as string;
+        payload.captureImageTime = captureImageTime ?? 20;
         if (filesSandbox) {
           const libs = await detectUsedLibs(filesSandbox);
           payload.isFullChain = libs.length === 0;
@@ -200,6 +334,21 @@ const SetPrice = () => {
       }
 
       const projectRes = await createBTCProject(payload);
+
+      // Send tracking
+      sendAAEvent({
+        eventName: BTC_PROJECT.LAUNCH_NEW_PROJECT,
+        data: {
+          ...projectRes,
+          mintPrice: formatBTCPrice(projectRes.mintPrice),
+          mintPriceEth: formatEthPrice(projectRes.mintPriceEth),
+          networkFee: formatBTCPrice(projectRes.networkFee ?? ''),
+          networkFeeEth: formatBTCPrice(projectRes.networkFeeEth ?? ''),
+          artistName: user?.displayName ?? '',
+        },
+      });
+
+      // Polling to get project status
       intervalGetProjectStatus(projectRes.tokenID);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -208,14 +357,40 @@ const SetPrice = () => {
     }
   };
 
+  const handleUpdateReservers = ({ data }: { data: string[] }) => {
+    const reserveListFromFile = data.map(item => item[0]).filter(Boolean);
+
+    setFormValues({
+      ...formValues,
+      reservers: reserveListFromFile,
+    });
+  };
+
+  useEffect(() => {
+    getEstimateNetworkFee();
+  }, [rawFile, collectionType, imageCollectionFile]);
+
+  useEffect(() => {
+    return () => {
+      intervalID.current && clearInterval(intervalID.current);
+    };
+  }, []);
+
   return (
     <Formik
       key="setPriceForm"
       initialValues={{
-        maxSupply: formValues.maxSupply ?? 0,
-        mintPrice: parseFloat(formValues.mintPrice ?? '0.01'),
-        royalty: formValues.royalty ?? 10,
-        creatorWalletAddress: formValues.creatorWalletAddress ?? '',
+        maxSupply:
+          collectionType === CollectionType.ONE
+            ? 1
+            : formValues.maxSupply || '',
+        mintPrice: formValues.mintPrice || '',
+        royalty: formValues.royalty || '',
+        reserveMintPrice: formValues.reserveMintPrice || '0',
+        reserveMintLimit: formValues.reserveMintLimit || 1,
+        reservers: formValues.reservers || [''],
+
+        // creatorWalletAddress: formValues.creatorWalletAddress ?? '',
       }}
       validate={validateForm}
       onSubmit={handleSubmit}
@@ -236,48 +411,9 @@ const SetPrice = () => {
               <h3 className={s.descriptionTitle}>
                 How will your piece be sold
               </h3>
-              <Text
-                size={'16'}
-                as={'p'}
-                fontWeight={'regular'}
-                className={s.description}
-              >
-                Name your price, the number of outputs and the royalties fee.
-                Remember, these numbers can be changed later after publishing.
-              </Text>
             </div>
             <div className={s.divider} />
             <div className={s.formWrapper}>
-              <div className={s.formItem}>
-                <label className={s.label} htmlFor="creatorWalletAddress">
-                  Creator BTC wallet address{' '}
-                  <sup className={s.requiredTag}>*</sup>
-                </label>
-                <div className={s.inputContainer}>
-                  <input
-                    id="creatorWalletAddress"
-                    type="text"
-                    name="creatorWalletAddress"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.creatorWalletAddress}
-                    className={s.input}
-                    placeholder="Provide your BTC wallet address"
-                  />
-                </div>
-                {errors.creatorWalletAddress &&
-                  touched.creatorWalletAddress && (
-                    <p className={s.error}>{errors.creatorWalletAddress}</p>
-                  )}
-                <Text
-                  as={'p'}
-                  size={'14'}
-                  color={'black-60'}
-                  className={s.inputDesc}
-                >
-                  Set up your BTC wallet address
-                </Text>
-              </div>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="maxSupply">
                   Number of outputs <sup className={s.requiredTag}>*</sup>
@@ -292,6 +428,7 @@ const SetPrice = () => {
                     value={values.maxSupply}
                     className={s.input}
                     placeholder="Provide a number"
+                    disabled={collectionType === CollectionType.ONE}
                   />
                   <div className={s.inputPostfix}>Items</div>
                 </div>
@@ -310,7 +447,7 @@ const SetPrice = () => {
               </div>
               <div className={s.formItem}>
                 <label className={s.label} htmlFor="mintPrice">
-                  PRICE <sup className={s.requiredTag}>*</sup>
+                  Price <sup className={s.requiredTag}>*</sup>
                 </label>
                 <div className={s.inputContainer}>
                   <input
@@ -327,6 +464,16 @@ const SetPrice = () => {
                 </div>
                 {errors.mintPrice && touched.mintPrice && (
                   <p className={s.error}>{errors.mintPrice}</p>
+                )}
+                {networkFee > 0 && (
+                  <Text
+                    as={'p'}
+                    size={'14'}
+                    color={'black-60'}
+                    className={s.inputDesc}
+                  >
+                    {`Estimate network fee ${formatBTCPrice(networkFee)} BTC`}
+                  </Text>
                 )}
               </div>
               <div className={s.formItem}>
@@ -349,33 +496,208 @@ const SetPrice = () => {
                 {errors.royalty && touched.royalty && (
                   <p className={s.error}>{errors.royalty}</p>
                 )}
-                <Text
-                  as={'p'}
-                  size={'14'}
-                  color={'black-60'}
-                  className={s.inputDesc}
-                >
-                  The payment artists receive every time a secondary sale of
-                  their artworks occurs. This number ranges from 0% to 25%.
-                </Text>
               </div>
-            </div>
-          </div>
-          <div className={s.container}>
-            <div className={s.actionWrapper}>
-              <ButtonIcon
-                disabled={isMinting}
-                type="submit"
-                className={s.nextBtn}
-                sizes="medium"
-                endIcon={
-                  <SvgInset
-                    svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
-                  />
+
+              <Accordion
+                header={'Reserve list (optional)'}
+                className={s.reserve}
+                content={
+                  <div>
+                    <div className={s.reserve_priceLimit}>
+                      <div className={s.formItem}>
+                        <label className={s.label} htmlFor="reserveMintPrice">
+                          Price
+                        </label>
+                        <div className={s.inputContainer}>
+                          <input
+                            id="reserveMintPrice"
+                            type="number"
+                            name="reserveMintPrice"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.reserveMintPrice}
+                            className={s.input}
+                            placeholder="Provide a number"
+                          />
+                          <div className={s.inputPostfix}>BTC</div>
+                        </div>
+                        {errors.reserveMintPrice &&
+                          touched.reserveMintPrice && (
+                            <p className={s.error}>{errors.reserveMintPrice}</p>
+                          )}
+                      </div>
+                      <div className={s.formItem}>
+                        <label className={s.label} htmlFor="reserveMintLimit">
+                          Limit
+                        </label>
+                        <div className={s.inputContainer}>
+                          <input
+                            id="reserveMintLimit"
+                            type="number"
+                            name="reserveMintLimit"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.reserveMintLimit}
+                            className={s.input}
+                            placeholder="Provide a number"
+                          />
+                        </div>
+                        {errors.reserveMintLimit &&
+                          touched.reserveMintLimit && (
+                            <p className={s.error}>{errors.reserveMintLimit}</p>
+                          )}
+                      </div>
+                    </div>
+                    <div className={s.reserve_wallets}>
+                      <div className={s.formItem}>
+                        <FieldArray
+                          name="reservers"
+                          validateOnChange
+                          render={arrayHelpers => (
+                            <>
+                              <div className={s.reservers_label}>
+                                <label className={s.label} htmlFor="reservers">
+                                  Wallet BTC Taproot Addresses
+                                </label>
+                                <Stack direction="horizontal" gap={4}>
+                                  <CSVReader
+                                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                    onUploadAccepted={(results: any) => {
+                                      handleUpdateReservers(results);
+                                    }}
+                                  >
+                                    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                                    {({ getRootProps }: any) => (
+                                      <>
+                                        <div>
+                                          <button
+                                            type="button"
+                                            className={s.importBtn}
+                                            {...getRootProps()}
+                                          >
+                                            Import csv
+                                          </button>
+                                        </div>
+                                      </>
+                                    )}
+                                  </CSVReader>
+                                  <Stack
+                                    direction="horizontal"
+                                    gap={3}
+                                    className={`align-items-center cursor-pointer ${s.addWallet}`}
+                                    onClick={() => arrayHelpers.push('')}
+                                  >
+                                    {/* <SvgInset
+                                      size={14}
+                                      svgUrl={`${CDN_URL}/icons/ic-plus.svg`}
+                                      className={s.addBtn}
+                                    /> */}
+                                    <Text>Add wallet</Text>
+                                  </Stack>
+                                </Stack>
+                              </div>
+
+                              <div className={`${s.inputReserveWallet}`}>
+                                {values.reservers &&
+                                  values.reservers.length > 0 &&
+                                  values.reservers.map((reserver, index) => (
+                                    <div
+                                      key={index}
+                                      className={s.inputContainer}
+                                    >
+                                      <Stack
+                                        direction="horizontal"
+                                        gap={3}
+                                        className="align-items-start"
+                                      >
+                                        <Stack>
+                                          <Field
+                                            id={`reservers.${index}`}
+                                            type="text"
+                                            name={`reservers.${index}`}
+                                            value={reserver ? reserver : ''}
+                                            validateOnChange
+                                            validate={(value: string) => {
+                                              if (value === '') {
+                                                return '';
+                                              }
+                                              if (
+                                                !validateBTCAddressTaproot(
+                                                  value
+                                                )
+                                              ) {
+                                                return 'Invalid BTC Taproot address';
+                                              }
+                                            }}
+                                            className={s.input}
+                                            placeholder="Reserve user's BTC taproot address"
+                                          />
+                                          <div className={s.error}>
+                                            <ErrorMessage
+                                              name={`reservers[${index}]`}
+                                            />
+                                          </div>
+                                        </Stack>
+                                        <SvgInset
+                                          size={14}
+                                          svgUrl={`${CDN_URL}/icons/ic-close.svg`}
+                                          className={`${s.removeBtn} ${
+                                            values.reservers?.filter(Boolean)
+                                              .length === 0 &&
+                                            values.reservers.length === 1 &&
+                                            s.removeBtnDisabled
+                                          }`}
+                                          onClick={() => {
+                                            if (values.reservers.length > 1) {
+                                              arrayHelpers.remove(index);
+                                            } else {
+                                              arrayHelpers.replace(index, '');
+                                            }
+                                          }}
+                                        />
+                                      </Stack>
+                                    </div>
+                                  ))}
+                              </div>
+                            </>
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 }
-              >
-                {isMinting ? 'Creating...' : 'Publish collection'}
-              </ButtonIcon>
+              />
+            </div>
+            <div className={s.container}>
+              {isMinting && (
+                <div className={s.loadingContainer}>
+                  <p className={s.progressText}>
+                    Uploading -{' '}
+                    <b>{`${
+                      uploadProgress === 100 ? 'Done' : `${uploadProgress}%`
+                    }`}</b>
+                  </p>
+                  <ProgressBar
+                    height={6}
+                    percent={uploadProgress}
+                  ></ProgressBar>
+                </div>
+              )}
+              <div className={s.actionWrapper}>
+                <ButtonIcon
+                  disabled={isMinting}
+                  type="submit"
+                  className={s.nextBtn}
+                  sizes="medium"
+                  endIcon={
+                    <SvgInset
+                      svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+                    />
+                  }
+                >
+                  {isMinting ? 'Creating...' : 'Publish collection'}
+                </ButtonIcon>
+              </div>
             </div>
           </div>
         </form>

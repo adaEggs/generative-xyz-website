@@ -1,15 +1,21 @@
 .wrapper {
   color: $black-100;
-  margin-top: rem(32px);
   margin-bottom: rem(48px);
+  padding-top: rem(64px);
 
-  @include min-tablet {
-    margin-top: rem(60px);
+  @include min-pc {
     margin-bottom: rem(90px);
-    display: grid;
-    grid-template-columns: rem(420px) 1px 1fr;
-    height: calc(100vh - #{rem(260px)});
+    padding-top: rem(40px);
   }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
+
+.projectHeader {
+  display: flex;
+  gap: rem(8px);
 }
 
 .itemInfo {
@@ -20,6 +26,8 @@
 
   &_heading {
     width: 100%;
+    margin-bottom: rem(8px);
+    font-style: italic;
 
     span {
       display: block;
@@ -29,9 +37,12 @@
     }
   }
 
-  @include min-tablet {
+  @include min-pc {
     overflow-y: scroll;
     padding-right: rem(60px);
+    position: relative;
+
+    @include fullViewScreen;
   }
 
   &::-webkit-scrollbar {
@@ -47,8 +58,10 @@
 
   .projectName {
     text-decoration: none;
+    color: $secondary-purple-c;
 
     &:hover {
+      color: $secondary-purple-c;
       text-decoration: underline;
     }
   }
@@ -73,6 +86,12 @@
 .collectionName {
   color: $black-60;
   margin-bottom: rem(16px);
+}
+
+.waiting {
+  width: 100%;
+  color: $gray-9c;
+  font-style: italic;
 }
 
 .usersInfo {
@@ -114,6 +133,22 @@
   }
 }
 
+.buy_btc {
+  margin-top: rem(24px);
+
+  p {
+    text-transform: uppercase;
+    color: $black-60;
+  }
+
+  &_button {
+    margin-top: rem(24px);
+    margin-bottom: rem(12px);
+    display: flex;
+    justify-content: center;
+  }
+}
+
 .CTA_btn {
   display: flex;
   align-items: center;
@@ -128,7 +163,7 @@
 }
 
 .owner {
-  margin-bottom: rem(34px);
+  margin-bottom: rem(24px);
 
   > a {
     text-decoration: none;
@@ -166,7 +201,28 @@
   display: flex;
   flex-direction: column;
   gap: rem(24px);
-  margin-bottom: rem(30px);
+  margin-top: rem(24);
+  max-width: rem(520px);
+}
+
+.shares {
+  display: flex;
+  gap: rem(8px);
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  margin-top: rem(24);
+  padding-right: rem(60);
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.reportBtn {
+  display: flex;
+  align-items: center;
+  gap: rem(4);
 }
 
 .walletAddress {
@@ -186,4 +242,56 @@ a.info_creatorLink {
   &:hover {
     text-decoration: underline;
   }
+}
+
+.creator {
+  display: flex;
+  align-items: center;
+  gap: rem(16);
+  margin-top: rem(4);
+  margin-bottom: rem(16);
+
+  &_divider {
+    width: 1px;
+    height: rem(16);
+    display: block;
+    background-color: $black-20;
+  }
+
+  &_info {
+    display: flex;
+    gap: rem(8);
+    align-items: center;
+  }
+
+  &_social {
+    display: flex;
+    gap: rem(20);
+    align-items: center;
+
+    &_item {
+      display: flex;
+      align-items: center;
+      gap: rem(6);
+    }
+
+    &_twitter {
+      svg,
+      path {
+        fill: #3cf;
+      }
+    }
+  }
+}
+
+.reviewOnMobile {
+  margin-top: rem(24px);
+  padding: rem(32);
+  background-color: $primary-light;
+}
+
+.itemInfo_wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }

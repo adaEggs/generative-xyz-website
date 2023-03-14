@@ -1,0 +1,71 @@
+.tabWrapper {
+  color: $black-60;
+  cursor: pointer;
+  width: fit-content;
+
+  p {
+    width: 100%;
+    max-width: rem(250);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  &.default-1 {
+    position: relative;
+
+    &::after {
+      content: "";
+      display: block;
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 2px;
+      border-radius: 50px;
+      background-color: transparent;
+    }
+
+    &.active,
+    &:hover {
+      color: $black-100;
+    }
+
+    &.active {
+      &::after {
+        background-color: $black-100;
+      }
+    }
+  }
+
+  &.default-2 {
+    &.active,
+    &:hover {
+      color: $black-100;
+    }
+  }
+
+  &.default-3 {
+    position: relative;
+    transition: color 0.4s $easeOutCubic;
+
+    &::after {
+      content: "";
+      display: block;
+      width: 100%;
+      position: absolute;
+      bottom: rem(-5px);
+      left: 0;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.4s $easeOutCubic;
+    }
+
+    &.active,
+    &:hover {
+      color: $primary-brand;
+
+      &::after {
+        border-bottom: 2px solid $primary-brand;
+      }
+    }
+  }
+}
