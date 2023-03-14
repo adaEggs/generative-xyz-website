@@ -51,6 +51,7 @@ export interface ICollectedNFTItem {
   cancelling: boolean;
   quantity?: number;
   artistName?: string;
+  number?: number;
 }
 
 export interface IStatusTransactionMint {
@@ -84,6 +85,7 @@ export interface IGetMintingCollectedNFTResp {
   orderID: string;
   cancelling: boolean;
   quantity?: number;
+  artist_name?: string;
 }
 
 export interface IGetCollectedNFTInsciptionResp {

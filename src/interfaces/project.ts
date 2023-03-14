@@ -19,6 +19,7 @@ export type ProjectSocial = {
 export type Project = {
   id: string;
   maxSupply: number;
+  maxFileSize: number;
   limit: number;
   mintPrice: string;
   mintPriceAddr: string;

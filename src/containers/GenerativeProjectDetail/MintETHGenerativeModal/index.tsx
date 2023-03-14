@@ -8,7 +8,6 @@ import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
-import { getBTCAddress } from '@containers/GenerativeProjectDetail/MintEthModal/Collecting/utils';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { WalletContext } from '@contexts/wallet-context';
@@ -37,7 +36,10 @@ import {
 } from 'react';
 import { Col, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
+import FeeRate from '../MintFeeRate';
+import useMintFeeRate from '../MintFeeRate/useMintFeeRate';
 import s from './styles.module.scss';
+import { getBTCAddress } from './utils';
 
 const LOG_PREFIX = 'MintEthModal';
 
@@ -55,6 +57,15 @@ const MintEthModal: React.FC = () => {
 
   const user = useAppSelector(getUserSelector);
 
+  const {
+    projectFeeRate,
+    currentFee,
+    rateType,
+    handleChangeRateType,
+    customRate,
+    handleChangeCustomRate,
+  } = useMintFeeRate();
+
   const [isSent, setIsSent] = React.useState(false);
   const [totalPrice, setTotalPrice] = React.useState('');
   const [feePrice, setFeePrice] = React.useState('');
@@ -71,30 +82,43 @@ const MintEthModal: React.FC = () => {
 
   const [quantity, setQuantity] = useState(1);
 
+  const isReserveUser =
+    projectData?.reservers &&
+    projectData?.reservers.length > 0 &&
+    user &&
+    user.walletAddressBtcTaproot &&
+    projectData?.reservers.includes(user.walletAddressBtcTaproot);
+
+  const limitMint =
+    isReserveUser && projectData?.reserveMintLimit
+      ? projectData?.reserveMintLimit
+      : projectData?.limitMintPerProcess;
+
   const priceFormat = formatEthPrice(
-    mintPrice ? mintPrice : projectData?.mintPriceEth || '',
+    mintPrice ? mintPrice : currentFee?.mintFees.eth.mintPrice || '',
     '0.0'
   );
   const totalFormatPrice = formatEthPriceInput(
     totalPrice
       ? totalPrice
       : `${
-          (Number(projectData?.mintPriceEth) +
-            Number(projectData?.networkFeeEth)) *
+          (Number(currentFee ? currentFee.mintFees.eth.mintPrice : 0) +
+            Number(currentFee ? currentFee.mintFees.eth.networkFee : 0)) *
           quantity
         }` || '',
     '0.0'
   );
   const feePriceFormat = formatEthPrice(
-    `${feePrice ? Number(feePrice) : Number(projectData?.networkFeeEth)}`,
+    `${
+      feePrice
+        ? Number(feePrice)
+        : Number(currentFee ? currentFee.mintFees.eth.networkFee : 0)
+    }`,
     '0.0'
   );
 
   const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (
-      projectData?.limitMintPerProcess &&
-      projectData.limitMintPerProcess >= Number(e.target.value)
-    ) {
+    if (limitMint && limitMint >= Number(e.target.value)) {
       setQuantity(Number(e.target.value));
     }
   };
@@ -106,10 +130,7 @@ const MintEthModal: React.FC = () => {
   };
 
   const onClickPlus = () => {
-    if (
-      projectData?.limitMintPerProcess &&
-      projectData.limitMintPerProcess >= quantity + 1
-    ) {
+    if (limitMint && limitMint >= quantity + 1) {
       setQuantity(quantity + 1);
     }
   };
@@ -142,7 +163,7 @@ const MintEthModal: React.FC = () => {
   }, [receiverAddress, totalPrice]);
 
   const debounceGetBTCAddress = useCallback(
-    _debounce(async (ordAddress, refundAddress, _quantity) => {
+    _debounce(async (ordAddress, refundAddress, _quantity, _rate) => {
       if (!projectData) return;
       try {
         setIsLoading(true);
@@ -159,6 +180,7 @@ const MintEthModal: React.FC = () => {
           projectData,
           paymentMethod,
           quantity: _quantity,
+          rate: _rate,
         });
         if (!_address || !_price) {
           toast.error(ErrorMessage.DEFAULT);
@@ -201,7 +223,12 @@ const MintEthModal: React.FC = () => {
         userAddress.evm &&
         userAddress.taproot
       ) {
-        debounceGetBTCAddress(userAddress.taproot, userAddress.evm, quantity);
+        debounceGetBTCAddress(
+          userAddress.taproot,
+          userAddress.evm,
+          quantity,
+          currentFee?.rate
+        );
       }
     }
   };
@@ -215,7 +242,12 @@ const MintEthModal: React.FC = () => {
   const onClickPay = () => {
     if (useWallet === 'default') {
       if (userAddress && userAddress.evm && userAddress.taproot) {
-        debounceGetBTCAddress(userAddress.taproot, userAddress.evm, quantity);
+        debounceGetBTCAddress(
+          userAddress.taproot,
+          userAddress.evm,
+          quantity,
+          currentFee?.rate
+        );
       }
     }
   };
@@ -230,7 +262,12 @@ const MintEthModal: React.FC = () => {
     } else {
       if (step === 'showAddress' && addressInput !== values.address) {
         setAddressInput(values.address);
-        debounceGetBTCAddress(values.address, userAddress.evm, quantity);
+        debounceGetBTCAddress(
+          values.address,
+          userAddress.evm,
+          quantity,
+          currentFee?.rate
+        );
       }
     }
 
@@ -239,7 +276,12 @@ const MintEthModal: React.FC = () => {
 
   const handleSubmit = async (values: IFormValue): Promise<void> => {
     if (addressInput !== values.address) {
-      debounceGetBTCAddress(values.address, userAddress.evm, quantity);
+      debounceGetBTCAddress(
+        values.address,
+        userAddress.evm,
+        quantity,
+        currentFee?.rate
+      );
       setAddressInput(values.address);
     }
   };
@@ -286,12 +328,14 @@ const MintEthModal: React.FC = () => {
                         className={s.paymentPrice_price}
                       >{`${priceFormat} ETH`}</p>
                     </div>
-                    <div className={s.paymentPrice}>
-                      <p className={s.paymentPrice_title}>Inscription fee</p>
-                      <p
-                        className={s.paymentPrice_price}
-                      >{`${feePriceFormat} ETH`}</p>
-                    </div>
+                    {step === 'showAddress' && (
+                      <div className={s.paymentPrice}>
+                        <p className={s.paymentPrice_title}>Inscription fee</p>
+                        <p
+                          className={s.paymentPrice_price}
+                        >{`${feePriceFormat} ETH`}</p>
+                      </div>
+                    )}
                     <div className={s.paymentPrice} style={{ marginTop: 4 }}>
                       <p className={s.paymentPrice_title}>Quantity</p>
                       {step === 'info' ? (
@@ -316,8 +360,7 @@ const MintEthModal: React.FC = () => {
                           />
                           <SvgInset
                             className={`${
-                              projectData?.limitMintPerProcess &&
-                              quantity >= projectData.limitMintPerProcess
+                              limitMint && quantity >= limitMint
                                 ? s.paymentPrice_inputContainer_icon_disable
                                 : s.paymentPrice_inputContainer_icon
                             }`}
@@ -330,6 +373,18 @@ const MintEthModal: React.FC = () => {
                         <p className={s.paymentPrice_price}>{quantity}</p>
                       )}
                     </div>
+
+                    {step === 'info' && projectFeeRate && currentFee && (
+                      <FeeRate
+                        feeRate={projectFeeRate}
+                        selectedRateType={rateType}
+                        handleChangeRateType={handleChangeRateType}
+                        useCustomRate={true}
+                        handleChangeCustomRate={handleChangeCustomRate}
+                        customRate={customRate}
+                        payType="eth"
+                      />
+                    )}
                     <div className={s.indicator} />
 
                     <div className={s.paymentPrice}>
@@ -343,7 +398,9 @@ const MintEthModal: React.FC = () => {
                           size={18}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
-                        <p className={s.text}>{`${totalFormatPrice} ETH`}</p>
+                        <p className={s.text}>{`${
+                          step === 'info' ? '~ ' : ''
+                        }${totalFormatPrice} ETH`}</p>
                       </div>
                     </div>
                   </div>
@@ -452,7 +509,9 @@ const MintEthModal: React.FC = () => {
                               type="submit"
                               sizes="large"
                               className={s.buyBtn}
-                              disabled={isLoading || quantity === 0}
+                              disabled={
+                                isLoading || quantity === 0 || !currentFee
+                              }
                             >
                               Pay
                             </ButtonIcon>
@@ -465,7 +524,7 @@ const MintEthModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading || quantity === 0}
+                        disabled={isLoading || quantity === 0 || !currentFee}
                         onClick={onClickPay}
                       >
                         Pay

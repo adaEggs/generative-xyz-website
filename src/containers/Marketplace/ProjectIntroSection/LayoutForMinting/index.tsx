@@ -1,5 +1,4 @@
 import ProjectDescription from '@components/ProjectDescription';
-import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
 import { Project } from '@interfaces/project';
 import { useContext } from 'react';
@@ -9,15 +8,11 @@ import useWindowSize from '@hooks/useWindowSize';
 import { ProjectName } from '@containers/Marketplace/ProjectIntroSection/ProjectName';
 import { PropertyAndCta } from '@containers/Marketplace/ProjectIntroSection/PropertyAndCta';
 import { SocialAndReport } from '@containers/Marketplace/ProjectIntroSection/SocailAndReport';
+import { RenderProjectAttrs } from '@containers/Marketplace/ProjectIntroSection/ProjectAttrs';
 
 const ProjectIntroSection = () => {
-  const {
-    project,
-    mintedDate,
-    isFullonChain,
-    hasProjectInteraction,
-    projectDetail,
-  } = useContext(ProjectLayoutContext);
+  const { project, hasProjectInteraction, projectDetail } =
+    useContext(ProjectLayoutContext);
   const { mobileScreen } = useWindowSize();
   return (
     <div className={s.layoutMinting}>
@@ -47,15 +42,7 @@ const ProjectIntroSection = () => {
                   hasInteraction={hasProjectInteraction}
                   profileBio={project?.creatorProfile?.bio || ''}
                 />
-                <>
-                  <Text size="14" color="black-40">
-                    Created date: {mintedDate}
-                  </Text>
-
-                  <Text size="14" color="black-40">
-                    Fully on-chain: {isFullonChain ? 'Yes' : 'No'}
-                  </Text>
-                </>
+                <RenderProjectAttrs />
               </div>
             </div>
             <SocialAndReport />

@@ -1,8 +1,8 @@
 import CollectionList from '@components/Collection/List';
 import { TriggerLoad } from '@components/TriggerLoader';
 import ClientOnly from '@components/Utils/ClientOnly';
-import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModalV3';
-import MintETHModal from '@containers/GenerativeProjectDetail/MintEthModal/CollectingV3';
+import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModal';
+import MintETHModal from '@containers/GenerativeProjectDetail/MintETHGenerativeModal';
 import ProjectIntroSection from '@containers/Marketplace/ProjectIntroSection';
 import { BitcoinProjectContext } from '@contexts/bitcoin-project-context';
 import {
@@ -27,6 +27,7 @@ const GenerativeProjectDetail: React.FC<{
 }> = ({ isWhitelist, project }): React.ReactElement => {
   const {
     projectData: projectInfo,
+    projectFeeRate,
     listItems,
     handleFetchNextPage,
     total,
@@ -61,6 +62,7 @@ const GenerativeProjectDetail: React.FC<{
                 .catch();
             }}
             project={project ? project : projectInfo}
+            projectFeeRate={projectFeeRate}
             isWhitelist={isWhitelist}
           />
 
