@@ -28,24 +28,11 @@ class CreateSwapOperation extends ContractOperation<
 
     const walletAddress = await this.walletManager.connectedAddress();
 
-    const {
-      inbound_address,
-      expected_amount_out,
-      expiry,
-      memo,
-      router,
-      amount,
-    } = this.params;
+    const { inbound_address, expiry, memo, router, amount } = this.params;
 
     // function depositWithExpiry(address payable vault, address asset, uint amount, string memory memo, uint expiration)
     const data = await this.contract.methods
-      .depositWithExpiry(
-        inbound_address,
-        ROOT_ADDRESS,
-        expected_amount_out,
-        memo,
-        expiry
-      )
+      .depositWithExpiry(inbound_address, ROOT_ADDRESS, amount, memo, expiry)
       .send({
         from: walletAddress,
         to: router,

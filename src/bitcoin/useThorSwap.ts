@@ -66,20 +66,6 @@ const useThorSwap = ({ priceBTCNano }: IProps) => {
     }
   };
 
-  // const onEstimate = () => {
-  //   try {
-  //     // segwit address
-  //     const depositAddress = getThorDepositAddress();
-  //   } catch (error) {
-  //     const _err = getError(error);
-  //     log(_err.message, LogLevel.ERROR, LOG_PREFIX + 'onEstimate');
-  //   }
-  // };
-  //
-  // const onSwapETH2BTC = async () => {
-  //   await onEstimate();
-  // };
-
   React.useEffect(() => {
     onEstimateETHAmount();
   }, [user, eth2btcRate, feeRate]);

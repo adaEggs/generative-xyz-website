@@ -54,6 +54,7 @@ const ModalBuyListed = React.memo(
     const [isLoading, setLoading] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     const { state } = useThorSwap({ priceBTCNano: price });
+
     const [receiveAddress, setReceiveAddress] = useState<string>(
       user?.walletAddressBtcTaproot || ''
     );
@@ -84,11 +85,6 @@ const ModalBuyListed = React.memo(
 
     const validateForm = (values: IFormValues) => {
       const errors: Record<string, string> = {};
-
-      // if (!values.price || !new BigNumber(values.price || 0)) {
-      //   errors.price = 'Required.';
-      // }
-
       if (!values.receiveBTCAddress) {
         errors.receiveBTCAddress = 'Address is required.';
       } else if (!validateBTCAddress(values.receiveBTCAddress)) {
@@ -105,8 +101,7 @@ const ModalBuyListed = React.memo(
           !sellAmount ||
           !depositData ||
           !estimateData
-          //   ||
-          // !estimateData?.memo
+          //   || !estimateData?.memo
           //   .toLowerCase()
           //   .includes(values.receiveBTCAddress.toLowerCase())
         ) {
@@ -114,30 +109,32 @@ const ModalBuyListed = React.memo(
         }
         setIsSubmitting(true);
 
-        const _sendAmount = Math.floor(
-          new BigNumber(sellAmount).div(1e8).multipliedBy(1e18).toNumber()
-        );
-        const _ = await createSwapTx({
+        const _sendAmount = new BigNumber(sellAmount)
+          .div(1e8)
+          .multipliedBy(1e18);
+        const tx = await createSwapTx({
           chainID: NETWORK_CHAIN_ID,
           amount: _sendAmount,
-          expected_amount_out: new BigNumber(
-            estimateData.expected_amount_out
-          ).toNumber(),
           expiry: estimateData.expiry,
           inbound_address: estimateData.inbound_address,
           memo: estimateData.memo,
           router: estimateData.router,
         });
-        await submitSwapETH({
-          order_id: depositData?.order_id,
-          txhash: '',
-        });
-        toast.success('Bought inscription successfully');
-        // setTimeout(() => {
-        //   setIsSubmitting(false);
-        //   window.location.reload();
-        //   setError('');
-        // }, 2000);
+        if (!!tx && !!tx.transactionHash) {
+          toast.success('Bought inscription successfully');
+          await submitSwapETH({
+            order_id: depositData?.order_id,
+            txhash: tx.transactionHash,
+          });
+          setTimeout(() => {
+            setIsSubmitting(false);
+            window.location.reload();
+            setError('');
+          }, 2000);
+        } else {
+          toast.error('Bought inscription failed');
+          throw new Error('Bought inscription failed');
+        }
       } catch (err: unknown) {
         setIsSubmitting(false);
         onSetError(err);
@@ -217,7 +214,7 @@ const ModalBuyListed = React.memo(
     };
 
     const debounceEstimateSellAmount = React.useCallback(
-      debounce(estimateSellAmount, 300),
+      debounce(estimateSellAmount, 500),
       []
     );
 

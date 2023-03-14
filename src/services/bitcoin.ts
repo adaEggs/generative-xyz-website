@@ -220,7 +220,7 @@ export const getGenDepositAddressETH = async (
 ): Promise<IRespGenAddressByETH> => {
   try {
     const resp = await post<IReqGenAddressByETH, never>(
-      '/dex/gen-buy-eth',
+      '/dex/gen-eth-order',
       payload
     );
     return resp;
@@ -240,6 +240,18 @@ export const estimateETH2BTC = async ({
     );
     const data: IEstimateThorResp = await res.json();
     return data;
+
+    // if (data.error) {
+    //   return data;
+    // }
+    // &tolerance_bps=100
+    // const arrMemos = data.memo.split(':');
+    // console.log('SANG TEST: ', arrMemos);
+    // const minAmount = arrMemos[arrMemos.length - 1];
+    // return {
+    //   ...data,
+    //   expected_amount_out: minAmount,
+    // };
   } catch (err: unknown) {
     log('failed to get estimateETH2BTC', LogLevel.ERROR, LOG_PREFIX);
     throw err;
