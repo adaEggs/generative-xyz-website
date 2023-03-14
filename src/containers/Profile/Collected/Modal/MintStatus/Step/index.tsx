@@ -62,10 +62,12 @@ const Step = (props: IStep): JSX.Element => {
       return <></>;
     }
 
-    const linkTxHash =
-      nft.payType === 'btc'
-        ? `https://www.blockchain.com/explorer/transactions/btc/${tx}`
-        : `https://etherscan.io/tx/${tx}`;
+    // const linkTxHash =
+    //   nft.payType === 'btc'
+    //     ? `https://www.blockchain.com/explorer/transactions/btc/${tx}`
+    //     : `https://etherscan.io/tx/${tx}`;
+
+    const linkTxHash = `https://www.blockchain.com/explorer/transactions/btc/${tx}`;
 
     return (
       <>
