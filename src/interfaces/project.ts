@@ -80,6 +80,7 @@ export type Project = {
   reserveMintPrice?: string;
   reserveMintLimit?: number;
   reservers?: string[];
+  hasListing?: boolean;
 };
 
 export type BTCProject = Project & {
