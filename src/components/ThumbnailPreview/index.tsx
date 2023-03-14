@@ -116,7 +116,7 @@ const ThumbnailPreview = (props: Props) => {
             </>
           )}
         </div>
-        {animationUrl && (
+        {animationUrl ? (
           <div className={s.actionWrapper}>
             <div className={s.sandboxControls}>
               {allowVariantion &&
@@ -265,6 +265,39 @@ const ThumbnailPreview = (props: Props) => {
                   </Link>
                 </OverlayTrigger>
               )}
+            </div>
+          </div>
+        ) : (
+          <div className={s.actionWrapper}>
+            <div className={s.sandboxControls}>
+              <OverlayTrigger
+                placement="bottom"
+                delay={{ show: 250, hide: 400 }}
+                overlay={
+                  <Tooltip id="expand-tooltip">
+                    {' '}
+                    <Text size="14" fontWeight="semibold" color="primary-333">
+                      Expand
+                    </Text>
+                  </Tooltip>
+                }
+              >
+                <Link href={previewUrl} target="_blank">
+                  <ButtonIcon
+                    className={s.actionBtn}
+                    sizes="mid"
+                    variants="outline"
+                    iconOnly
+                  >
+                    <Image
+                      alt="pause icon"
+                      width={16}
+                      height={16}
+                      src={`${CDN_URL}/icons/ic-expand.svg`}
+                    ></Image>
+                  </ButtonIcon>
+                </Link>
+              </OverlayTrigger>
             </div>
           </div>
         )}

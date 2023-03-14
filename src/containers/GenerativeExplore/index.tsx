@@ -12,6 +12,9 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { getTokenUri } from '@services/token-uri';
 import { Loading } from '@components/Loading';
+import PreviewController from '@components/ThumbnailPreview/PreviewController';
+import { Token } from '@interfaces/token';
+import { Project } from '@interfaces/project';
 
 const LOG_PREFIX = 'GenerativeExplore';
 
@@ -22,6 +25,7 @@ const GenerativeExplore: React.FC = (): React.ReactElement => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [rawHTML, setRawHTML] = useState<string>('');
+  const [data, setData] = useState<Token | Project | null>(null);
 
   const handleGetProjectPreview = async () => {
     try {
@@ -29,8 +33,9 @@ const GenerativeExplore: React.FC = (): React.ReactElement => {
         contractAddress: GENERATIVE_PROJECT_CONTRACT,
         projectID: projectId as string,
       });
-
       if (!project) return;
+
+      setData(project);
       const _projectDetail = base64ToUtf8(
         project.projectURI.replace('data:application/json;base64,', '')
       );
@@ -65,6 +70,7 @@ const GenerativeExplore: React.FC = (): React.ReactElement => {
         animationUrl.replace('data:text/html;base64,', '')
       );
       setRawHTML(html);
+      setData(res);
       setIsLoading(false);
     } catch (_: unknown) {
       log('failed to fetch token detail data', LogLevel.ERROR, LOG_PREFIX);
@@ -93,13 +99,19 @@ const GenerativeExplore: React.FC = (): React.ReactElement => {
                 <p className={s.errorMessage}>An error occurred!</p>
               </div>
             ) : (
-              <SandboxPreview
-                showIframe={true}
-                rawHtml={rawHTML}
-                hash={(tokenId ? tokenId : seed) as string}
-                sandboxFiles={null}
-                className={s.thumbnailIframe}
-              />
+              <>
+                {rawHTML ? (
+                  <SandboxPreview
+                    showIframe={true}
+                    rawHtml={rawHTML}
+                    hash={(tokenId ? tokenId : seed) as string}
+                    sandboxFiles={null}
+                    className={s.thumbnailIframe}
+                  />
+                ) : (
+                  <PreviewController data={data} />
+                )}
+              </>
             )}
           </>
         )}
