@@ -52,6 +52,7 @@ export interface ICollectedNFTItem {
   quantity?: number;
   artistName?: string;
   number?: number;
+  priceETH: string;
 }
 
 export interface IStatusTransactionMint {

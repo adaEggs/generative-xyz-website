@@ -197,7 +197,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
           >
             <ButtonBuyListedFromETH
               inscriptionID={project.inscriptionID}
-              price={project.priceBTC}
+              price={project.priceETH}
               inscriptionNumber={Number(project.inscriptionNumber)}
               orderID={project.orderID}
             />

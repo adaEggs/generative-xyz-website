@@ -3,6 +3,7 @@ import {
   ICollectedUTXOResp,
   IFeeRate,
   ITxHistory,
+  ITxHistoryBuyInsETH,
 } from '@interfaces/api/bitcoin';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
@@ -33,6 +34,7 @@ export interface IAssetsContext {
   isOwner: boolean;
 
   history: ITxHistory[];
+  txsETH: ITxHistoryBuyInsETH[];
   isLoadingHistory: boolean;
   isLoadedHistory: boolean;
 
@@ -57,6 +59,7 @@ const initialValue: IAssetsContext = {
   isLoadedAssets: false,
 
   history: [],
+  txsETH: [],
   isLoadingHistory: false,
   isLoadedHistory: false,
 
@@ -104,6 +107,7 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
 
   // History
   const [history, setHistory] = useState<ITxHistory[]>([]);
+  const [txsETH, setTxsETH] = useState<ITxHistoryBuyInsETH[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState<boolean>(false);
   const [isLoadedHistory, setIsLoadedHistory] = useState<boolean>(false);
 
@@ -140,8 +144,10 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     let _history: ITxHistory[] = [];
     try {
       setIsLoadingHistory(true);
-      _history = await getHistory(currentAddress);
+      const { txs, txsETH } = await getHistory(currentAddress);
+      _history = txs;
       setHistory(_history);
+      setTxsETH(txsETH);
     } catch (err) {
       const error = getError(err);
       log(error.message, LogLevel.ERROR, LOG_PREFIX);
@@ -235,8 +241,8 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     getETH2BTCRate();
     const intervalID = setInterval(() => {
       fetchFeeRate();
-      getETH2BTCRate();
-    }, 60 * 1000); // 1 min
+      // getETH2BTCRate();
+    }, 60 * 20 * 1000); // 1 min
     return () => {
       clearInterval(intervalID);
     };
@@ -250,6 +256,7 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
       isLoadedAssets,
 
       history,
+      txsETH,
       isLoadingHistory,
       isLoadedHistory,
 
@@ -275,6 +282,7 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     isLoadedAssets,
 
     history,
+    txsETH,
     isLoadingHistory,
     isLoadedHistory,
 

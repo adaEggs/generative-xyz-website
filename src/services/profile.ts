@@ -190,6 +190,7 @@ export const getMintingCollectedNFTs = async (
           orderID: '',
           quantity: item.quantity,
           artistName: item?.artist_name,
+          priceETH: '0',
         };
       });
     }
@@ -228,6 +229,7 @@ export const getDetailMintingCollectedNFT = async (
       cancelling: false,
       priceBTC: '0',
       orderID: '',
+      priceETH: '0',
     };
   } catch (err: unknown) {
     log('failed to get detail collected NFT', LogLevel.ERROR, LOG_PREFIX);

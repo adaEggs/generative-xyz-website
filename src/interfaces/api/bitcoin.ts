@@ -58,6 +58,14 @@ export enum HistoryStatusType {
   listing = 'listing',
   matched = 'matched',
   cancelled = 'cancelled',
+
+  waitingPayment = 'Waiting for payment',
+  receivedPayment = 'Received payment',
+  buying = 'Buying',
+  bought = 'Bought',
+  refunding = 'Refunding',
+  refunded = 'Refunded',
+  expired = 'Expired',
 }
 
 export type HistoryStatusColor = '#ff7e21' | '#24c087' | '#ff4747';
@@ -164,17 +172,42 @@ export interface ITokenPriceResp {
 
 export interface IReqGenAddressByETH {
   order_id: string;
-  amount: number; //amount btc expected (inscription price + fees)
   fee_rate: number;
   receive_address: string;
+  refund_address: string;
 }
 
 export interface IRespGenAddressByETH {
-  temp_address: string;
-  order_id: string; //buy order id
+  order_id: string; //buy order id,
+  eth_address: string;
+  eth_amount: number;
+  expired_at: number;
 }
 
 export interface IReqSubmitSwapETH {
   order_id: string;
   txhash: string;
+}
+
+export interface ITxHistoryBuyInsETH {
+  id: string;
+  order_id: string;
+  inscription_id: string;
+  amount_btc: number;
+  amount_eth: string;
+  user_id: string;
+  receive_address: string;
+  refund_address: string;
+  expired_at: number;
+  created_at: string;
+  buy_tx: string;
+  refund_tx: string;
+  fee_rate: number;
+  status: HistoryStatusType;
+  statusColor: HistoryStatusColor;
+}
+
+export interface IHistoryResp {
+  txs: ITxHistory[];
+  txsETH: ITxHistoryBuyInsETH[];
 }

@@ -264,8 +264,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
         <ButtonBuyListedFromETH
           sizes={'large'}
           inscriptionID={tokenData.tokenID}
-          // price={tokenData.priceBTC}
-          price={0.001 * 1e8}
+          price={tokenData.priceETH}
           inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
           orderID={tokenData.orderID}
           isDetail={true}

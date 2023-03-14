@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
 import ButtonIcon, { ButtonSizesType } from '@components/ButtonIcon';
-import ModalBuyListed from '@components/Transactor/ButtonBuyListedFromETH/Modal';
 import cs from 'classnames';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import { WalletContext } from '@contexts/wallet-context';
 import s from './styles.module.scss';
-import useThorSwap from '@bitcoin/useThorSwap';
-import { formatPrice } from '@utils/format';
+import { formatEthPrice } from '@utils/format';
+import ModalBuyListed from '@components/Transactor/ButtonBuyListedFromETH/Modal';
 
 interface IProps {
   className?: string;
@@ -32,9 +31,6 @@ const ButtonBuyListedFromETH = React.memo(
     const [isShow, setShow] = React.useState(false);
     const user = useSelector(getUserSelector);
     const walletCtx = useContext(WalletContext);
-    const taprootAddress = user?.walletAddressBtcTaproot;
-
-    const { state } = useThorSwap({ priceBTCNano: price });
 
     const openModal = async () => {
       if (!user || !user.walletAddressBtcTaproot) {
@@ -55,9 +51,9 @@ const ButtonBuyListedFromETH = React.memo(
           className={cs(s.container, `${className}`)}
           onClick={openModal}
         >
-          Buy {`~${formatPrice(state.ethHumanAmount)} ETH`}
+          Buy {`~${formatEthPrice(price)} ETH`}
         </ButtonIcon>
-        {!!taprootAddress && isShow && (
+        {!!user?.walletAddressBtcTaproot && isShow && (
           <ModalBuyListed
             isDetail={!!isDetail}
             inscriptionNumber={inscriptionNumber}

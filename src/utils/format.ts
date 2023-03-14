@@ -149,11 +149,11 @@ export const formatPrice = (
 // };
 
 export const formatEthPrice = (
-  price: string | null,
+  price: string | number | null,
   emptyStr?: string
 ): string => {
   if (!price) return emptyStr || '-';
-  return ceilPrecised(parseFloat(Web3.utils.fromWei(price, 'ether')), 6)
+  return ceilPrecised(parseFloat(Web3.utils.fromWei(`${price}`, 'ether')), 6)
     .toString()
     .replace(',', '.');
 };

@@ -85,7 +85,7 @@ const CollectionItem = ({
         >
           <ButtonBuyListedFromETH
             inscriptionID={tokenID}
-            price={data.priceBTC}
+            price={data.priceETH}
             inscriptionNumber={Number(data.inscriptionIndex || 0)}
             orderID={data.orderID}
           />

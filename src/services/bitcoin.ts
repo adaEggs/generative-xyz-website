@@ -10,6 +10,7 @@ import {
   IEstimateThorResp,
   IEstimateThorSwapReq,
   IFeeRate,
+  IHistoryResp,
   IListingPayload,
   IPendingUTXO,
   IReqGenAddressByETH,
@@ -20,6 +21,7 @@ import {
   ITokenPriceResp,
   ITrackTx,
   ITxHistory,
+  ITxHistoryBuyInsETH,
 } from '@interfaces/api/bitcoin';
 import axios from 'axios';
 import { isExpiredUnixTime } from '@utils/time';
@@ -113,52 +115,117 @@ export const trackTx = async (payload: ITrackTx): Promise<never> => {
   }
 };
 
-export const getHistory = async (address: string): Promise<ITxHistory[]> => {
+const statusMapper = (
+  createdAt: string | number,
+  respStatus: HistoryStatusType,
+  isTxs = true
+) => {
+  let statusColor: HistoryStatusColor = '#ff7e21';
+  let status: HistoryStatusType = HistoryStatusType.pending;
+  const now = new Date().getTime();
+  const isExpired = isExpiredUnixTime({
+    unixTime: createdAt || now,
+    expiredMin: 4,
+  });
+  if (isExpired || !isTxs) {
+    status = respStatus;
+    switch (status) {
+      case HistoryStatusType.cancelled:
+      case HistoryStatusType.pending:
+      case HistoryStatusType.cancelling:
+      case HistoryStatusType.listing:
+      case HistoryStatusType.buying:
+      case HistoryStatusType.waitingPayment:
+      case HistoryStatusType.refunding:
+      case HistoryStatusType.refunded:
+      case HistoryStatusType.receivedPayment:
+        statusColor = '#ff7e21';
+        break;
+      case HistoryStatusType.bought:
+      case HistoryStatusType.matched:
+      case HistoryStatusType.success:
+        statusColor = '#24c087';
+        break;
+      case HistoryStatusType.failed:
+        statusColor = '#ff4747';
+        break;
+    }
+  }
+  return {
+    statusColor,
+    status,
+    isExpired,
+  };
+};
+
+export const getHistory = async (address: string): Promise<IHistoryResp> => {
   try {
-    const txs = await get<ITxHistory[]>(
-      `/wallet/txs?address=${address}&limit=30&offset=0`
-    );
-    // const res = await get<ITxHistory[]>(`/dex/history`);
-    // const history = res.filter(
-    //   item => !(txs || []).some(_item => _item.txhash === item.txhash)
-    // );
-    return orderBy(
-      (txs || []).map(history => {
-        let statusColor: HistoryStatusColor = '#ff7e21';
-        let status: HistoryStatusType = HistoryStatusType.pending;
-        const now = new Date().getTime();
-        const isExpired = isExpiredUnixTime({
-          unixTime: history.created_at || now,
-          expiredMin: 4,
-        });
-        if (isExpired) {
-          status = history.status;
-          switch (status) {
-            case HistoryStatusType.cancelled:
-            case HistoryStatusType.pending:
-            case HistoryStatusType.cancelling:
-            case HistoryStatusType.listing:
-              statusColor = '#ff7e21';
-              break;
-            case HistoryStatusType.matched:
-            case HistoryStatusType.success:
-              statusColor = '#24c087';
-              break;
-            case HistoryStatusType.failed:
-              statusColor = '#ff4747';
-              break;
-          }
-        }
+    const [txs, txsETH] = await Promise.all([
+      await get<ITxHistory[]>(
+        `/wallet/txs?address=${address}&limit=30&offset=0`
+      ),
+      await get<ITxHistoryBuyInsETH[]>(`dex/buy-eth-history?limit=20&offset=0`),
+    ]);
+
+    // const txsETH = [
+    //   {
+    //     id: '64105ebdb63a6b6d890950e0',
+    //     order_id: '640ef531b35224d3ff045b0f',
+    //     inscription_id:
+    //       'a3a64278bf3e0e9472dbd2e0b411ba3d7e586958d78741f7a10cbb28ea88652di0',
+    //     amount_btc: 1000,
+    //     amount_eth: '1277906547854802',
+    //     user_id: '63f440e5b4a8b72bb220968b',
+    //     receive_address:
+    //       'bc1pjqaw4wqrc7nu9n8r7ntz3zs5xxufm8ft0nqhs0uvcecfzq6ypvqsaejfz9',
+    //     refund_address: '0x62044aF52aae537385cF26F0D5305848673B2D86',
+    //     expired_at: 1678801629,
+    //     buy_tx: '',
+    //     refund_tx: '',
+    //     fee_rate: 15,
+    //     created_at: new Date().getTime() + '',
+    //     status: 'Waiting for payment',
+    //   },
+    // ];
+
+    const _txsETH = txsETH
+      .map(history => {
+        const { statusColor, isExpired, status } = statusMapper(
+          history.created_at,
+          history.status as never,
+          false
+        );
         return {
           ...history,
           statusColor,
           status,
           isExpired,
         };
-      }),
-      item => item.created_at,
-      'desc'
-    );
+      })
+      .filter(item => {
+        const now = Math.floor(new Date().getTime() / 1000);
+        const isExpired = now - Number(item.expired_at) > 0;
+        return !isExpired;
+      });
+
+    const _txs = (txs || []).map(history => {
+      const { statusColor, isExpired, status } = statusMapper(
+        history.created_at,
+        history.status,
+        true
+      );
+
+      return {
+        ...history,
+        statusColor,
+        status,
+        isExpired,
+      };
+    });
+    return {
+      txs: orderBy(_txs, item => item.created_at, 'desc'),
+      txsETH: orderBy(_txsETH, item => item.created_at, 'desc'),
+    };
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw err;
@@ -219,11 +286,11 @@ export const getGenDepositAddressETH = async (
   payload: IReqGenAddressByETH
 ): Promise<IRespGenAddressByETH> => {
   try {
-    const resp = await post<IReqGenAddressByETH, never>(
+    const res = await post<IReqGenAddressByETH, never>(
       '/dex/gen-eth-order',
       payload
     );
-    return resp;
+    return res;
   } catch (err: unknown) {
     log('failed to get getThorDepositAddress', LogLevel.ERROR, LOG_PREFIX);
     throw err;
