@@ -1,16 +1,16 @@
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
+import RadioGroups from '@components/Input/Radio';
 import Text from '@components/Text';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import useOnClickOutside from '@hooks/useOnClickOutSide';
 import { TraitStats } from '@interfaces/project';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import Select, { components } from 'react-select';
 import { v4 } from 'uuid';
-import styles from './styles.module.scss';
-import useOnClickOutside from '@hooks/useOnClickOutSide';
-import RadioGroups from '@components/Input/Radio';
 import FilterMinMax from './FilterMinMax';
+import styles from './styles.module.scss';
 
 type Props = {
   attributes?: TraitStats[];
@@ -29,6 +29,7 @@ const FilterOptions = ({ attributes }: Props) => {
     setFilterRarity,
     filterBuyNow,
     setFilterBuyNow,
+    marketplaceData,
   } = useContext(GenerativeProjectDetailContext);
 
   const filterdropdownRef = useRef<HTMLDivElement>(null);
@@ -163,25 +164,30 @@ const FilterOptions = ({ attributes }: Props) => {
           }}
         />
       </div>
-      <div className={styles.rarity}>
-        <FilterMinMax
-          label="Rarity"
-          placeholderMin="1"
-          placeholderMax="100"
-          filter={filterRarity}
-          setFilter={setFilterRarity}
-        />
-      </div>
-      <div className={styles.price}>
-        <FilterMinMax
-          filterPrice
-          label="Price"
-          placeholderMin="0.001"
-          placeholderMax="0.001"
-          filter={filterPrice}
-          setFilter={setFilterPrice}
-        />
-      </div>
+      {sortedAttributes && sortedAttributes?.length > 0 && (
+        <div className={styles.rarity}>
+          <FilterMinMax
+            label="Rarity"
+            placeholderMin="1"
+            placeholderMax="100"
+            filter={filterRarity}
+            setFilter={setFilterRarity}
+          />
+        </div>
+      )}
+      {marketplaceData && marketplaceData.listed > 0 && (
+        <div className={styles.price}>
+          <FilterMinMax
+            filterPrice
+            label="Price"
+            placeholderMin="0.001"
+            placeholderMax="0.001"
+            filter={filterPrice}
+            setFilter={setFilterPrice}
+          />
+        </div>
+      )}
+
       {/* DO NOT REMOVE CODE BELOW */}
       {/* <div className={styles.filter_buy}>
             console.log("🚀 ~ FilterOptions ~ e.target.value:", e.target.value)
