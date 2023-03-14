@@ -6,6 +6,7 @@ import { Token, TokenAttribute } from '@interfaces/token';
 export interface IGetProjectDetailParams {
   contractAddress: string;
   projectID: string;
+  userAddress?: string;
 }
 
 export interface IGetProjectVolumeParams {
@@ -150,3 +151,19 @@ export interface IGetProjectItemsTraitsListResponse {
   id: string;
   attributes: TokenAttribute[];
 }
+
+export interface IMintFeeRate {
+  rate: number;
+  mintFees: {
+    btc: { networkFee: string; mintPrice: string };
+    eth: { networkFee: string; mintPrice: string };
+  };
+}
+export interface IProjectMintFeeRate {
+  economy: IMintFeeRate;
+  faster: IMintFeeRate;
+  fastest: IMintFeeRate;
+  customRate?: IMintFeeRate;
+}
+
+export type IProjectMintFeeRateResponse = IProjectMintFeeRate;

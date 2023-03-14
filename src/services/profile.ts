@@ -149,6 +149,7 @@ export const getCollectedNFTs = async (
             orderID: data?.order_id,
             cancelling: data?.cancelling,
             artistName: data?.artist_name,
+            number: data.number,
           } as ICollectedNFTItem;
         }
       );
@@ -188,6 +189,7 @@ export const getMintingCollectedNFTs = async (
           priceBTC: '0',
           orderID: '',
           quantity: item.quantity,
+          artistName: item?.artist_name,
         };
       });
     }

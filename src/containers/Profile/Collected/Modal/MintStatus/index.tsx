@@ -98,6 +98,7 @@ const MintStatusModal = (props: IMintStatus): JSX.Element => {
                             step={step}
                             index={index}
                             isHideIndicator={
+                              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                               index >= nft.progressStatus!.length - 1
                             }
                             currentActiveStep={currentActiveStep}

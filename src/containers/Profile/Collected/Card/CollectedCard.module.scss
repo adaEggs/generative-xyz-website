@@ -41,20 +41,25 @@
     min-height: 100%;
   }
 
-  &_status {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    // align-items: center;
-    height: rem(120px);
-
+  &_statusContainer {
+    height: rem(150px);
     padding: {
       top: rem(24px);
       left: rem(16px);
       right: rem(16px);
       bottom: rem(16px);
     }
+  }
 
+  &_buttonContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: rem(8px);
+  }
+
+  &_status {
     &_cancelBtn {
       display: flex;
       justify-content: center;
@@ -129,7 +134,7 @@
     }
 
     @include mobile {
-      padding: rem(8px);
+      // padding: rem(8px);
     }
 
     &_inner {
@@ -198,12 +203,12 @@
   &_info {
     position: relative;
 
-    @include mobile {
-      top: rem(12px);
-      left: rem(6px);
-      right: rem(6px);
-      bottom: rem(6px);
-    }
+    // @include mobile {
+    //   top: rem(12px);
+    //   left: rem(6px);
+    //   right: rem(6px);
+    //   bottom: rem(6px);
+    // }
 
     &.desktop {
       .projectCard_info_title {

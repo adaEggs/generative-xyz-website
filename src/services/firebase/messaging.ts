@@ -26,24 +26,21 @@ export const getClientToken = async (): Promise<string | null> => {
       return tokenInStorage;
     }
 
-    const isApproved = await requestNotificationPermission();
-    if (isApproved) {
-      const fcmToken = await getToken(messaging, {
-        vapidKey: FIREBASE_MESSAGING_VAPID_KEY,
+    const fcmToken = await getToken(messaging, {
+      vapidKey: FIREBASE_MESSAGING_VAPID_KEY,
+    });
+
+    if (fcmToken) {
+      // Save into localstorage
+      setFCMToken(fcmToken);
+
+      // Send to server
+      await createFCMToken({
+        device_type: 'web',
+        registration_token: fcmToken,
       });
 
-      if (fcmToken) {
-        // Save into localstorage
-        setFCMToken(fcmToken);
-
-        // Send to server
-        await createFCMToken({
-          device_type: 'web',
-          registration_token: fcmToken,
-        });
-
-        return fcmToken;
-      }
+      return fcmToken;
     }
 
     return null;
@@ -82,13 +79,13 @@ export const disableNotification = async (): Promise<void> => {
 
 export const requestNotificationPermission = async (): Promise<boolean> => {
   if ('Notification' in window) {
-    if (Notification.permission !== 'granted') {
+    if (Notification.permission === 'granted') {
+      return true;
+    } else {
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
         return true;
       }
-    } else {
-      return true;
     }
   }
 
