@@ -12,7 +12,6 @@ import { BTC_PROJECT } from '@constants/tracking-event-name';
 import SendInscriptionModal from '@containers/Profile/Collected/Modal/SendInscription';
 import { getStorageIns } from '@containers/Profile/Collected/Modal/SendInscription/utils';
 import { ProfileContext } from '@contexts/profile-context';
-import useWindowSize from '@hooks/useWindowSize';
 import { HistoryStatusType, TrackTxType } from '@interfaces/api/bitcoin';
 import { CollectedNFTStatus, ICollectedNFTItem } from '@interfaces/api/profile';
 import { useAppSelector } from '@redux';
@@ -27,6 +26,7 @@ import s from './CollectedCard.module.scss';
 import { AssetsContext } from '@contexts/assets-context';
 import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
 import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
+import { capitalizeFirstLetter } from '@utils/string';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -35,7 +35,6 @@ interface IPros {
 }
 
 const CollectedCard = ({ project, className }: IPros): JSX.Element => {
-  const { mobileScreen } = useWindowSize();
   const user = useAppSelector(getUserSelector);
   const [showSendModal, setShowSendModal] = React.useState(false);
   const [showMintStatusModal, setShowMintStatusModal] = React.useState(false);
@@ -311,37 +310,21 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
           )}
           <div className={s.projectCard_statusContainer}>
             <div className={s.projectCard_status}>
-              {mobileScreen ? (
-                <div className={cs(s.projectCard_info, s.mobile)}>
-                  {renderStatusText()}
-                  {tokenIdName && (
-                    <Text size="11" fontWeight="medium">
+              <div className={cs(s.projectCard_info, s.desktop)}>
+                {renderStatusText()}
+                {tokenIdName && (
+                  <div className={s.projectCard_creator}>
+                    <Text size={'20'} fontWeight="medium">
                       {tokenIdName}
                     </Text>
-                  )}
-                  {projectName && (
-                    <Text size="11" fontWeight="medium" color="black-40-solid">
-                      {projectName}
-                    </Text>
-                  )}
-                </div>
-              ) : (
-                <div className={cs(s.projectCard_info, s.desktop)}>
-                  {renderStatusText()}
-                  {tokenIdName && (
-                    <div className={s.projectCard_creator}>
-                      <Text size={'20'} fontWeight="medium">
-                        {tokenIdName}
-                      </Text>
-                    </div>
-                  )}
-                  {projectName && (
-                    <Text size="20" fontWeight="medium" color="black-40-solid">
-                      {projectName}
-                    </Text>
-                  )}
-                </div>
-              )}
+                  </div>
+                )}
+                {projectName && (
+                  <Text size="20" fontWeight="medium" color="black-40-solid">
+                    {projectName}
+                  </Text>
+                )}
+              </div>
               {project.status === CollectedNFTStatus.Success && (
                 <TwitterShareButton
                   className={s.twitter}
@@ -392,12 +375,12 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                     <Text size={'16'} fontWeight="medium">
                       {project.quantity > 1
                         ? `Quantity: ${project.quantity}`
-                        : `${project.artistName || ''}`}
+                        : `${capitalizeFirstLetter(project.artistName || '')}`}
                     </Text>
                   )
                 ) : (
                   <Text size={'16'} fontWeight="medium">
-                    {`${project.artistName}`}
+                    {`${capitalizeFirstLetter(project.artistName || '')}`}
                   </Text>
                 )}
               </div>

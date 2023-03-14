@@ -505,7 +505,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                 {isFromAuthentic && (
                   <AuthenticCard
                     nftTokenId={tokenData?.nftTokenId || ''}
-                    project={projectData}
+                    project={tokenData?.project || null}
                   />
                 )}
               </div>

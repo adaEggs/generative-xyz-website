@@ -231,7 +231,7 @@ const Inscribe: React.FC<IProps> = (props: IProps): React.ReactElement => {
     if (!file) {
       return;
     }
-    setFileError(null);
+    // setFileError(null);
     const base64 = await fileToBase64(file);
     if (base64) {
       setFileBase64(base64 as string);
