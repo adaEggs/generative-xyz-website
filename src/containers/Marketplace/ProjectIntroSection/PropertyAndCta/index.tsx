@@ -110,7 +110,7 @@ export const PropertyAndCta = (): JSX.Element => {
                     placement="bottom"
                     delay={{ show: 0, hide: 100 }}
                     overlay={
-                      project?.networkFee ? (
+                      projectFeeRate?.fastest.mintFees.btc.networkFee ? (
                         <Tooltip id="btc-fee-tooltip">
                           <Text
                             size="14"
@@ -165,7 +165,7 @@ export const PropertyAndCta = (): JSX.Element => {
                     placement="bottom"
                     delay={{ show: 0, hide: 100 }}
                     overlay={
-                      project?.networkFeeEth ? (
+                      projectFeeRate?.fastest.mintFees.eth.networkFee ? (
                         <Tooltip id="btc-fee-tooltip">
                           <Text
                             size="14"
