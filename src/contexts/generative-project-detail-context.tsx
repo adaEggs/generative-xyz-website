@@ -62,13 +62,23 @@ export interface IGenerativeProjectDetailContext {
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
   filterPrice: {
-    from_price: string;
-    to_price: string;
+    from: string;
+    to: string;
   };
   setFilterPrice: Dispatch<
     React.SetStateAction<{
-      from_price: string;
-      to_price: string;
+      from: string;
+      to: string;
+    }>
+  >;
+  filterRarity: {
+    from: string;
+    to: string;
+  };
+  setFilterRarity: Dispatch<
+    React.SetStateAction<{
+      from: string;
+      to: string;
     }>
   >;
   isShowMintBTCModal: boolean;
@@ -127,10 +137,17 @@ const initialValue: IGenerativeProjectDetailContext = {
     return;
   },
   filterPrice: {
-    from_price: '',
-    to_price: '',
+    from: '',
+    to: '',
   },
   setFilterPrice: _ => {
+    return;
+  },
+  filterRarity: {
+    from: '',
+    to: '',
+  },
+  setFilterRarity: _ => {
     return;
   },
   isShowMintBTCModal: false,
@@ -171,8 +188,12 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const [showFilter, setShowFilter] = useState(false);
   const [filterTraits, setFilterTraits] = useState('');
   const [filterPrice, setFilterPrice] = useState({
-    from_price: '',
-    to_price: '',
+    from: '',
+    to: '',
+  });
+  const [filterRarity, setFilterRarity] = useState({
+    from: '',
+    to: '',
   });
   const [projectItemsTraitList, setProjectItemsTraitList] =
     useState<ProjectItemsTraitList | null>(null);
@@ -265,6 +286,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
           setIsLoaded(false);
         }
 
+        const rarityMin = filterRarity?.from || '1';
+        const rarityMax = filterRarity?.to || '100';
+
         const res = await getProjectItems(
           {
             contractAddress: projectData.genNFTAddr,
@@ -275,9 +299,10 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
             sort,
             keyword: searchToken || '',
             attributes: filterTraits || '',
-            has_price: filterBuyNow || '',
-            from_price: filterPrice.from_price || '',
-            to_price: filterPrice.to_price || '',
+            is_buy_now: filterBuyNow || '',
+            from_price: filterPrice.from || '',
+            to_price: filterPrice.to || '',
+            rarity: `${rarityMin},${rarityMax}`,
           }
         );
         if (res.result) {
@@ -310,6 +335,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
           setIsLoaded(false);
         }
 
+        const rarityMin = filterRarity?.from || '1';
+        const rarityMax = filterRarity?.to || '100';
+
         const res = await getProjectItems(
           {
             contractAddress: SATOSHIS_PROJECT_ID,
@@ -321,8 +349,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
             keyword: searchToken || '',
             attributes: filterTraits || '',
             has_price: filterBuyNow || '',
-            from_price: filterPrice.from_price || '',
-            to_price: filterPrice.to_price || '',
+            from_price: filterPrice.from || '',
+            to_price: filterPrice.to || '',
+            rarity: `${rarityMin},${rarityMax}`,
           }
         );
         if (res.result) {
@@ -370,7 +399,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   }, [user?.walletAddressBtcTaproot]);
 
   useEffect(() => {
-    if (filterPrice.to_price && filterPrice.to_price < filterPrice.from_price) {
+    if (filterPrice.to && filterPrice.to < filterPrice.from) {
       toast.error('Max price must be larger than min price');
     } else {
       fetchProjectItems();
@@ -385,6 +414,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     filterBuyNow,
     filterPrice,
     isWhitelistProject,
+    filterRarity,
   ]);
 
   const isBitcoinProject = useMemo((): boolean => {
@@ -423,6 +453,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       setPage,
       filterPrice,
       setFilterPrice,
+      filterRarity,
+      setFilterRarity,
       isShowMintBTCModal,
       showMintBTCModal,
       hideMintBTCModal,
@@ -455,6 +487,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     setPage,
     filterPrice,
     setFilterPrice,
+    filterRarity,
+    setFilterRarity,
     isShowMintBTCModal,
     showMintBTCModal,
     hideMintBTCModal,
