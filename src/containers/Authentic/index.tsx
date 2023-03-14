@@ -9,7 +9,7 @@ import { getAccessToken } from '@utils/auth';
 import { isBrowser } from '@utils/common';
 import log from '@utils/logger';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useSelector } from 'react-redux';
 import InscriptionList from './InscriptionList';
@@ -22,8 +22,27 @@ const Authentic: React.FC = (): React.ReactElement => {
   const isAuth = getAccessToken();
   const router = useRouter();
   const user = useSelector(getUserSelector);
-  const [cursor, setCursor] = useState('');
   const [nftList, setNftList] = useState<Array<MoralisNFT>>([]);
+  // const [walletRec, setWalletRec] = useState<Record<string, string | null>>({});
+  const walletRec = useRef<Record<string, string | undefined>>({});
+
+  const handleFetchDelegatedWallets = async (): Promise<void> => {
+    if (!user) {
+      return;
+    }
+    const params: IGetNFTListFromMoralisParams = {
+      limit: 1,
+    };
+    const res = await getNFTListFromMoralis(params);
+    const wallets: Record<string, string | undefined> = {};
+
+    for (const walletAddress in res) {
+      wallets[walletAddress] = undefined;
+    }
+
+    walletRec.current = wallets;
+    handleFetchNftList();
+  };
 
   const handleFetchNftList = async (): Promise<void> => {
     if (!user) {
@@ -31,31 +50,42 @@ const Authentic: React.FC = (): React.ReactElement => {
     }
 
     try {
-      const params: IGetNFTListFromMoralisParams = {
-        walletAddress: user.walletAddress,
-        limit: 24,
-      };
-      if (cursor) {
-        params.cursor = cursor;
+      for (const walletAddress in walletRec.current) {
+        const params: IGetNFTListFromMoralisParams = {
+          limit: 24,
+          walletAddress,
+        };
+        if (walletRec.current[walletAddress]) {
+          params.cursor = walletRec.current[walletAddress];
+        }
+        const res = await getNFTListFromMoralis(params);
+        const data = res[walletAddress];
+        if (data.result && Array.isArray(data.result)) {
+          const newList = _uniqBy(
+            [...nftList, ...data.result],
+            nft => nft.token_address + nft.token_id
+          );
+          setNftList(newList);
+        }
+        walletRec.current[walletAddress] = data.cursor;
       }
-      const res = await getNFTListFromMoralis(params);
-      const data = res[user.walletAddress];
-      if (data.result && Array.isArray(data.result)) {
-        const newList = _uniqBy(
-          [...nftList, ...data.result],
-          nft => nft.token_address + nft.token_id
-        );
-        setNftList(newList);
-      }
-      setCursor(data.cursor);
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
     }
   };
 
   useEffect(() => {
-    handleFetchNftList();
+    handleFetchDelegatedWallets();
   }, [user]);
+
+  const hasMore = () => {
+    for (const walletAddress in walletRec.current) {
+      if (walletRec.current[walletAddress]) {
+        return true;
+      }
+    }
+    return false;
+  };
 
   if (!isAuth && isBrowser()) {
     router.push(
@@ -68,7 +98,7 @@ const Authentic: React.FC = (): React.ReactElement => {
     <div className={s.authentic}>
       <div className="container">
         <h2 className={s.sectionTitle}>
-          Choose an Ethereum NFT to inscribe onto Bitcoin
+          Which Ethereum NFT do you want to preverse?
         </h2>
 
         <div className={s.inscriptionListWrapper}>
@@ -76,7 +106,7 @@ const Authentic: React.FC = (): React.ReactElement => {
             dataLength={nftList.length}
             next={handleFetchNftList}
             className={s.inscriptionScroller}
-            hasMore={!!cursor}
+            hasMore={!!hasMore()}
             loader={
               <div className={s.loadingWrapper}>
                 <Loading isLoaded={false} />

@@ -44,7 +44,7 @@ export const SearchMembersResult = ({ list }: { list: { artist: User }[] }) => {
     <>
       <div className={s.list_heading}>
         <Text size="12" fontWeight="medium" color="black-40-solid">
-          MEMBERS
+          USERS
         </Text>
       </div>
       {list.map(user => (
