@@ -28,7 +28,12 @@ export const getTokenUri = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to get token uri', LogLevel.ERROR, LOG_PREFIX);
+    log(
+      `failed to get token uri ${JSON.stringify(params)}`,
+      LogLevel.ERROR,
+      LOG_PREFIX
+    );
+    log(err as Error, LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get token uri');
   }
 };
@@ -58,8 +63,12 @@ export const getTokenUriList = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to get token uri', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get token uri');
+    log(
+      `failed to get token uri list ${JSON.stringify(params)}`,
+      LogLevel.ERROR,
+      LOG_PREFIX
+    );
+    throw Error('Failed to get token uri list');
   }
 };
 
@@ -71,7 +80,11 @@ export const createTokenThumbnail = async (
     const res = await post(`${API_TOKEN_URI_PATH}/${tokenID}/thumbnail`, body);
     return res;
   } catch (err: unknown) {
-    log('failed to get token uri', LogLevel.ERROR, LOG_PREFIX);
+    log(
+      `failed to create token thumbnail ${payload.tokenID}`,
+      LogLevel.ERROR,
+      LOG_PREFIX
+    );
     throw Error('Failed to create token thumbnail');
   }
 };

@@ -244,7 +244,7 @@ export const cancelMintingCollectedNFT = async (
     await del(`/mint-nft-btc/receive-address/${mintID}`);
     return true;
   } catch (err: unknown) {
-    log('failed to get detail collected NFT', LogLevel.ERROR, LOG_PREFIX);
+    log('failed to cancel minting nft', LogLevel.ERROR, LOG_PREFIX);
     throw Error();
   }
 };
@@ -303,7 +303,7 @@ export const generateApiKey = async (token: string): Promise<IApikey> => {
       status: res.Status,
     };
   } catch (err: unknown) {
-    log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
+    log('failed to generate api key', LogLevel.ERROR, LOG_PREFIX);
     throw Error();
   }
 };
