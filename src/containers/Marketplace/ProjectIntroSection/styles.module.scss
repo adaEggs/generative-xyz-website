@@ -3,13 +3,11 @@
 .projectInfo {
   &_inner {
     display: flex;
-    flex-wrap: wrap;
-    margin-top: rem(16px);
-    row-gap: 0 !important;
-
-    @include min-tablet {
-      margin-top: rem(48px);
-    }
+    // flex-wrap: wrap;
+    // margin-top: rem(16px);
+    // row-gap: 0 !important;
+    align-items: center;
+    justify-content: space-between;
   }
 
   &_center {
@@ -21,8 +19,11 @@
   }
 
   &_right {
+    flex: 1;
+
     &_inner {
       display: flex;
+      justify-content: flex-end;
       flex-wrap: wrap;
       width: 100%;
     }
@@ -46,9 +47,22 @@
   }
 }
 
+.projectCard_thumb {
+  width: rem(49px);
+  height: rem(49px);
+  padding: rem(5);
+  background-color: $primary-light;
+}
+
 .wrapper {
   color: $black-100;
   // padding-top: rem(32px);
+}
+
+.info_inner {
+  display: flex;
+  align-items: center;
+  gap: rem(16);
 }
 
 .info_wrapper {
@@ -475,15 +489,22 @@
 }
 
 .wrapper.minted {
+  padding: {
+    top: rem(16);
+    bottom: rem(16);
+  }
+
+  border-top: 1px solid $black-5;
+  border-bottom: 1px solid $black-5;
   margin-bottom: rem(24px);
 
-  .info,
-  .projectInfo_right_inner {
-    @include min-pc {
-      position: sticky;
-      top: rem(86px);
-    }
-  }
+  // .info,
+  // .projectInfo_right_inner {
+  //   @include min-pc {
+  //     position: sticky;
+  //     top: rem(86px);
+  //   }
+  // }
 
   .shares {
     justify-content: unset;

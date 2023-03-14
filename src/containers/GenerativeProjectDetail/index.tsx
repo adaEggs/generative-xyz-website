@@ -48,24 +48,23 @@ const GenerativeProjectDetail: React.FC<{
   return (
     <>
       <section>
+        <ProjectIntroSection
+          openMintBTCModal={(chain: PaymentMethod) => {
+            onButtonClick({
+              cbSigned: () => {
+                setPaymentStep('mint');
+                setIsPopupPayment(true);
+                setPaymentMethod(chain);
+              },
+            })
+              .then()
+              .catch();
+          }}
+          project={project ? project : projectInfo}
+          projectFeeRate={projectFeeRate}
+          isWhitelist={isWhitelist}
+        />
         <Container>
-          <ProjectIntroSection
-            openMintBTCModal={(chain: PaymentMethod) => {
-              onButtonClick({
-                cbSigned: () => {
-                  setPaymentStep('mint');
-                  setIsPopupPayment(true);
-                  setPaymentMethod(chain);
-                },
-              })
-                .then()
-                .catch();
-            }}
-            project={project ? project : projectInfo}
-            projectFeeRate={projectFeeRate}
-            isWhitelist={isWhitelist}
-          />
-
           <ClientOnly>
             <Tabs className={styles.tabs} defaultActiveKey="outputs">
               <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">

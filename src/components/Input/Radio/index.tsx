@@ -7,9 +7,16 @@ type Props = {
   options: { key: string; value: string }[];
   className?: string;
   name: string;
+  defaultValue?: string;
 };
 
-const RadioGroups = ({ label, options, className, name }: Props) => {
+const RadioGroups = ({
+  label,
+  options,
+  className,
+  name,
+  defaultValue,
+}: Props) => {
   return (
     <div className={className}>
       {label && <label>{label}</label>}
@@ -22,6 +29,7 @@ const RadioGroups = ({ label, options, className, name }: Props) => {
                 id={option.key}
                 value={option.key}
                 name={name}
+                defaultChecked={option.key === defaultValue}
                 // checked={field.value === option.value}
               />
               <label htmlFor={option.key}>{option.value}</label>

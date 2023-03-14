@@ -15,7 +15,7 @@ const ProjectIntroSection = () => {
     useContext(ProjectLayoutContext);
   const { mobileScreen } = useWindowSize();
   return (
-    <div className={s.layoutMinting}>
+    <div className={`${s.layoutMinting} container`}>
       <div className="row">
         <div className="col-xl-4 col-md-6 col-12">
           <div className={`${s.info_wrapper} ${s.layoutMinting_left}`}>

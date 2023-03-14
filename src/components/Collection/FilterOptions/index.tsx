@@ -147,8 +147,55 @@ const FilterOptions = ({ attributes }: Props) => {
         <Text size="18" fontWeight="medium">
           Status
         </Text>
-        <RadioGroups options={buyNowOptions} name="buyNow" />
-        {/* <ToogleSwitch onChange={() => setFilterBuyNow(!filterBuyNow)} /> */}
+        <RadioGroups
+          options={buyNowOptions}
+          name="buyNow"
+          defaultValue={buyNowOptions[1].key}
+        />
+      </div>
+      <div className={styles.rarity}>
+        <Select
+          id={`rarity`}
+          key={`rarity`}
+          isMulti
+          name={`rarity`}
+          // options={options}
+          className={styles.selectInput}
+          // components={{
+          //   Option,
+          // }}
+          // onFocus={() => setCurrentTraitOpen(attr.traitName)}
+          // onInputChange={() => setCurrentTraitOpen('')}
+          classNamePrefix="select"
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          controlShouldRenderValue={false}
+          isClearable={false}
+          isSearchable={false}
+          placeholder={'Rarity'}
+        />
+      </div>
+      <div className="price">
+        <Select
+          id={`price`}
+          key={`price`}
+          isMulti
+          name={`price`}
+          // options={options}
+          className={styles.selectInput}
+          // components={{
+          //   Option,
+          // }}
+          // onFocus={() => setCurrentTraitOpen(attr.traitName)}
+          // onInputChange={() => setCurrentTraitOpen('')}
+          classNamePrefix="select"
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          controlShouldRenderValue={false}
+          isClearable={false}
+          isSearchable={false}
+          placeholder={'Price'}
+        />
       </div>
       {/* <div className="divider"></div> */}
       {/* <div className={styles.filter_price}>
