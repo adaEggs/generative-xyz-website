@@ -101,15 +101,25 @@ export const CollectionItems = ({
           </Col>
         ) : (
           <>
-            <div className={s.collections_header}>
-              <div>No.</div>
-              <div>Thumbnail</div>
-              <div>Collections Name</div>
-              <div>#Outputs</div>
-              <div>Artists</div>
-              <div>Expiration</div>
-              <div>Status</div>
-              <div>Action</div>
+            <div className={cn(s.collections_header)}>
+              <div className="col-md-1">No.</div>
+              <div className="col-md-1">Thumbnail</div>
+              <div className="col-md-2 d-flex justify-content-center">
+                Collections Name
+              </div>
+              <div className="col-md-1 d-flex justify-content-center">
+                #Outputs
+              </div>
+              <div className="col-md-2 d-flex justify-content-center">
+                Artists
+              </div>
+              <div className="col-md-1 d-flex justify-content-center">
+                Expiration
+              </div>
+              <div className="col-md-2 d-flex justify-content-center">
+                Status
+              </div>
+              <div className="col-md-2 invisible">Action</div>
             </div>
 
             {typeof isLoaded && combineList.length === 0 ? (
@@ -130,8 +140,8 @@ export const CollectionItems = ({
               >
                 {combineList?.map((item: any) => (
                   <div key={item.id} className={s.collections_row}>
-                    <div>{item?.seq_id}</div>
-                    <div>
+                    <div className="col-md-1">{item?.seq_id}</div>
+                    <div className="col-md-1">
                       <Image
                         src={convertIpfsToHttp(item?.project?.thumbnail)}
                         width={60}
@@ -139,12 +149,22 @@ export const CollectionItems = ({
                         alt={item?.project?.name}
                       />
                     </div>
-                    <div>{item?.project?.name}</div>
-                    <div>{item?.project?.max_supply}</div>
-                    <div>{item?.user?.display_name}</div>
-                    <div>{`${dayjs(item?.expired_at).format('MMM DD')}`}</div>
-                    <div>{getStatusProposal(item?.status)}</div>
-                    <div>
+                    <div className="col-md-2 d-flex justify-content-center">
+                      {item?.project?.name}
+                    </div>
+                    <div className="col-md-1 d-flex justify-content-center">
+                      {item?.project?.max_supply}
+                    </div>
+                    <div className="col-md-2 d-flex justify-content-center">
+                      {item?.user?.display_name}
+                    </div>
+                    <div className="col-md-1 d-flex justify-content-center">{`${dayjs(
+                      item?.expired_at
+                    ).format('MMM DD')}`}</div>
+                    <div className="col-md-2 d-flex justify-content-center">
+                      {getStatusProposal(item?.status)}
+                    </div>
+                    <div className="col-md-2 d-flex justify-content-end">
                       <Button>Against</Button>
                       <Button>Vote</Button>
                     </div>

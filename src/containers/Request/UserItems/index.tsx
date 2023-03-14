@@ -13,8 +13,8 @@ import ProjectListLoading from '@containers/Trade/ProjectListLoading';
 import { Loading } from '@components/Loading';
 import { getDaoArtists } from '@services/request';
 import Button from '@components/Button';
-import { convertIpfsToHttp } from '@utils/image';
 import useDidMountEffect from '@hooks/useDidMountEffect';
+import { formatAddress } from '@utils/format';
 
 import s from './UserItems.module.scss';
 
@@ -54,16 +54,16 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
     try {
       setIsLoading(true);
       if (totalPerPage > LIMIT) {
-        const nextusers = await getDaoArtists({
+        const nextUsers = await getDaoArtists({
           keyword,
           status,
           sort,
           limit: LIMIT,
           cursor: currentCursor,
         });
-        setTotalPerPage(nextusers?.total || LIMIT);
-        setCurrentCursor(nextusers?.cursor || '');
-        const newList = combineList.concat([...(nextusers?.result || [])]);
+        setTotalPerPage(nextUsers?.total || LIMIT);
+        setCurrentCursor(nextUsers?.cursor || '');
+        const newList = combineList.concat([...(nextUsers?.result || [])]);
         setCombineList(newList);
       }
     } catch (error) {
@@ -98,12 +98,12 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
         ) : (
           <>
             <div className={s.users_header}>
-              <div>No.</div>
-              <div>Artists</div>
-              <div>Twitter</div>
-              <div>Registration date</div>
-              <div>Status</div>
-              <div>Action</div>
+              <div className="col-md-1">No.</div>
+              <div className="col-md-2">Artists</div>
+              <div className="col-md-2">Twitter</div>
+              <div className="col-md-2">Registration date</div>
+              <div className="col-md-2">Status</div>
+              <div className="invisible col-md-3" />
             </div>
 
             {typeof isLoaded && combineList.length === 0 ? (
@@ -124,21 +124,21 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
               >
                 {combineList?.map((item: any) => (
                   <div key={item.id} className={s.users_row}>
-                    <div>{item?.seq_id}</div>
-                    <div>
-                      <Image
-                        src={convertIpfsToHttp(item?.project?.thumbnail)}
-                        width={60}
-                        height={60}
-                        alt={item?.project?.name}
-                      />
+                    <div className="col-md-1">{item?.seq_id}</div>
+                    <div className="col-md-2">
+                      {item?.user?.display_name ||
+                        formatAddress(item?.user?.wallet_address)}
                     </div>
-                    <div>{item?.project?.name}</div>
-                    <div>{item?.project?.max_supply}</div>
-                    <div>{item?.user?.display_name}</div>
-                    <div>{`${dayjs(item?.expired_at).format('MMM DD')}`}</div>
-                    <div>{getStatusProposal(item?.status)}</div>
-                    <div>
+                    <div className="col-md-2">
+                      {item?.user?.profile_social?.twitter || '[link]'}
+                    </div>
+                    <div className="col-md-2">{`${dayjs(
+                      item?.user?.updated_at
+                    ).format('MMM DD')}`}</div>
+                    <div className="col-md-2">
+                      {getStatusProposal(item?.status)}
+                    </div>
+                    <div className="col-md-3">
                       <Button>Against</Button>
                       <Button>Vote</Button>
                     </div>

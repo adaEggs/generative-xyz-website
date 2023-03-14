@@ -20,9 +20,9 @@ import { getUserSelector } from '@redux/user/selector';
 import { LogLevel } from '@enums/log-level';
 import log from '@utils/logger';
 import { useAppSelector } from '@redux';
-// import useRequestApi, { LIMIT } from './useApi';
-// import { getDaoProjects } from '@services/request';
+
 import CollectionItems from './CollectionItems';
+import UserItems from './UserItems';
 
 import s from './Request.module.scss';
 
@@ -235,7 +235,11 @@ const RequestPage = (): JSX.Element => {
         <Row>
           <Col md={12}>
             <div className={s.request_list}>
-              <CollectionItems />
+              {currentTabActive === DAO_TYPE.COLLECTION ? (
+                <CollectionItems />
+              ) : (
+                <UserItems />
+              )}
             </div>
           </Col>
         </Row>
