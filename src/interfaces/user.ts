@@ -13,4 +13,5 @@ export type User = {
   walletAddressBtcTaproot?: string;
   projects?: { name: string; projectId: string }[];
   walletAddressPayment?: string;
+  canCreateProposal?: boolean;
 };

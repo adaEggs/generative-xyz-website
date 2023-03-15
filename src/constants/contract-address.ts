@@ -34,4 +34,6 @@ export const IGNORABLE_GEN_HOLDER_ADDRESS_LIST = [
   '0xe55eade1b17bba28a80a71633af8c15dc2d556a5',
 ];
 
+export const THOR_CHAIN_ADDRESS = '0xD37BbE5744D730a1d98d8DC97c42F0Ca46aD7146';
+
 /* eslint-enable @typescript-eslint/no-non-null-assertion */

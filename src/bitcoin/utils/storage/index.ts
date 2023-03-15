@@ -1,15 +1,14 @@
 import { StorageService } from '@utils/storage';
 import { LocalStorageKey } from '@enums/local-storage';
 import {
-  IFilterPendingUTXOsPayload,
+  IFilterAvailableUTXOsPayload,
   IGetPendingUTXOsPayload,
   IPendingUTXO,
   ISetPendingUTXOsPayload,
 } from '@bitcoin/utils/storage/types';
 import { getUTXOKey } from '@containers/Profile/ButtonSendBTC/utils';
 import uniqBy from 'lodash/uniqBy';
-import { isExpiredTimeClone } from '@utils/time';
-import { HistoryStatusType } from '@interfaces/api/bitcoin';
+import { isExpiredTime } from '@utils/time';
 import { UTXO } from 'generative-sdk';
 
 class BitcoinStorage extends StorageService {
@@ -50,38 +49,21 @@ class BitcoinStorage extends StorageService {
     // action store
     this.set(_key, uniqUTXOs);
   };
-  filterPendingUTXOsByHistory = (
-    payload: IFilterPendingUTXOsPayload
-  ): UTXO[] => {
-    const { trAddress, utxos, history } = payload;
-    if (!utxos || !history || !history.length || !utxos.length) return [];
+  filterAvailableUTXOs = (payload: IFilterAvailableUTXOsPayload): UTXO[] => {
+    const { trAddress, utxos } = payload;
+    if (!utxos || !utxos.length) return [];
 
     const _key = this._pendingKey(trAddress);
     let storedUTXOs = this.getPendingUTXOs({ trAddress });
     storedUTXOs =
-      [...storedUTXOs].filter(({ txHash, createdTime }) => {
-        const isExpired = isExpiredTimeClone({
-          time: Number(createdTime || 0) / 1000, // UNIX time
+      [...storedUTXOs].filter(({ createdTime }) => {
+        const isExpired = isExpiredTime({
+          time: createdTime, // UNIX time
           expiredMin: 5,
         });
 
         // not expired, keep UTXO in storage
-        if (!isExpired) return true;
-
-        const _history = history.find(history => history.txhash === txHash);
-
-        // can't find from history, free this UTXO
-        if (!_history) return false;
-
-        // remove with status
-        const removes = [
-          HistoryStatusType.failed,
-          HistoryStatusType.cancelled,
-          HistoryStatusType.success,
-          HistoryStatusType.matched,
-        ];
-        const isRemove = removes.some(status => status === _history.status);
-        return !isRemove;
+        return !isExpired;
       }) || [];
 
     const availableUTXOs = (utxos || []).filter(utxo => {

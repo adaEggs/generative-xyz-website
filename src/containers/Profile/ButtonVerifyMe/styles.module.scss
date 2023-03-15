@@ -1,0 +1,15 @@
+.buttonVerifyMe {
+  margin-left: rem(8px);
+  padding: rem(3px) rem(12px);
+  background: #4f43e2;
+  border-radius: 2px;
+  font-weight: 500;
+  font-size: rem(14px);
+  line-height: rem(24px);
+  letter-spacing: 0.01em;
+  text-transform: initial;
+
+  &:hover {
+    background: #4f43e2;
+  }
+}
