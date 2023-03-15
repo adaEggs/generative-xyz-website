@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import ButtonIcon, { ButtonSizesType } from '@components/ButtonIcon';
-import ModalBuyListed from '@components/Transactor/ButtonBuyListed/Modal';
+import ModalBuyListed from '@components/Transactor/ButtonBuyListedFromBTC/Modal';
 import cs from 'classnames';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
@@ -18,7 +18,7 @@ interface IProps {
   isDetail?: boolean;
 }
 
-const ButtonBuyListed = React.memo(
+const ButtonBuyListedFromBTC = React.memo(
   ({
     className,
     orderID,
@@ -51,8 +51,7 @@ const ButtonBuyListed = React.memo(
           className={cs(s.container, `${className}`)}
           onClick={openModal}
         >
-          Buy <span className={s[sizes]} />
-          {`${formatBTCPrice(price)} BTC`}
+          Buy {`${formatBTCPrice(price)} BTC`}
         </ButtonIcon>
         {!!taprootAddress && isShow && (
           <ModalBuyListed
@@ -73,6 +72,6 @@ const ButtonBuyListed = React.memo(
   }
 );
 
-ButtonBuyListed.displayName = 'ButtonBuyListed';
+ButtonBuyListedFromBTC.displayName = 'ButtonBuyListedFromBTC';
 
-export default ButtonBuyListed;
+export default ButtonBuyListedFromBTC;

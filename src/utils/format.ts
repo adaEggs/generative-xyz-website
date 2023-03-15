@@ -130,6 +130,15 @@ export const formatBTCPrice = (
   return ceilPrecised(priceNumb).toString().replace(',', '.');
 };
 
+export const formatPrice = (
+  price: number | string,
+  emptyStr?: string
+): string => {
+  if (!price) return emptyStr || '-';
+  const priceNumb = new BigNumber(price).toNumber();
+  return ceilPrecised(priceNumb, 4).toString().replace(',', '.');
+};
+
 // export const formatEthVolumePrice = (
 //   price: string | null,
 //   emptyStr?: string
@@ -140,11 +149,11 @@ export const formatBTCPrice = (
 // };
 
 export const formatEthPrice = (
-  price: string | null,
+  price: string | number | null,
   emptyStr?: string
 ): string => {
   if (!price) return emptyStr || '-';
-  return ceilPrecised(parseFloat(Web3.utils.fromWei(price, 'ether')), 6)
+  return ceilPrecised(parseFloat(Web3.utils.fromWei(`${price}`, 'ether')), 6)
     .toString()
     .replace(',', '.');
 };

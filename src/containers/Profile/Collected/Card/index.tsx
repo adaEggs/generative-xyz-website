@@ -24,7 +24,8 @@ import { TwitterShareButton } from 'react-share';
 import MintStatusModal from '../Modal/MintStatus';
 import s from './CollectedCard.module.scss';
 import { AssetsContext } from '@contexts/assets-context';
-import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
+import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
 import { capitalizeFirstLetter } from '@utils/string';
 import { isImageURL } from '@utils/url';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
@@ -199,18 +200,32 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
       !project.cancelling
     ) {
       return (
-        <Link
-          href=""
-          onClick={() => ''}
-          className={s.projectCard_status_buyBtn}
-        >
-          <ButtonBuyListed
-            inscriptionID={project.inscriptionID}
-            price={project.priceBTC}
-            inscriptionNumber={Number(project.inscriptionNumber)}
-            orderID={project.orderID}
-          />
-        </Link>
+        <div className={s.row}>
+          <Link
+            href=""
+            onClick={() => ''}
+            className={s.projectCard_status_buyBtn}
+          >
+            <ButtonBuyListedFromETH
+              inscriptionID={project.inscriptionID}
+              price={project.priceETH}
+              inscriptionNumber={Number(project.inscriptionNumber)}
+              orderID={project.orderID}
+            />
+          </Link>
+          <Link
+            href=""
+            onClick={() => ''}
+            className={s.projectCard_status_buyBtn}
+          >
+            <ButtonBuyListedFromBTC
+              inscriptionID={project.inscriptionID}
+              price={project.priceBTC}
+              inscriptionNumber={Number(project.inscriptionNumber)}
+              orderID={project.orderID}
+            />
+          </Link>
+        </div>
       );
     }
     return (

@@ -5,7 +5,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 // import { ProfileContext } from '@contexts/profile-context';
 import Link from '@components/Link';
-import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
 import { GLB_EXTENSION } from '@constants/file';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import useWindowSize from '@hooks/useWindowSize';
@@ -15,6 +15,7 @@ import cs from 'classnames';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
+import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
 
 const CollectionItem = ({
   data,
@@ -75,19 +76,34 @@ const CollectionItem = ({
   const renderBuyButton = () => {
     if (!isBuyable) return null;
     return (
-      <Link
-        href=""
-        onClick={() => {
-          // DO NOTHING
-        }}
-      >
-        <ButtonBuyListed
-          inscriptionID={tokenID}
-          price={data.priceBTC}
-          inscriptionNumber={Number(data.inscriptionIndex || 0)}
-          orderID={data.orderID}
-        />
-      </Link>
+      <div className={s.row}>
+        <Link
+          href=""
+          onClick={() => {
+            // DO NOTHING
+          }}
+        >
+          <ButtonBuyListedFromETH
+            inscriptionID={tokenID}
+            price={data.priceETH}
+            inscriptionNumber={Number(data.inscriptionIndex || 0)}
+            orderID={data.orderID}
+          />
+        </Link>
+        <Link
+          href=""
+          onClick={() => {
+            // DO NOTHING
+          }}
+        >
+          <ButtonBuyListedFromBTC
+            inscriptionID={tokenID}
+            price={data.priceBTC}
+            inscriptionNumber={Number(data.inscriptionIndex || 0)}
+            orderID={data.orderID}
+          />
+        </Link>
+      </div>
     );
   };
   const renderHeadDesc = () => {

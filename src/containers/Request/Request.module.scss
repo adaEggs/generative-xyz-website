@@ -76,16 +76,9 @@
 
   &_textNote {
     margin: rem(32px) 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-weight: 500;
     font-size: rem(16px);
     line-height: rem(26px);
     color: #4f43e2;
-
-    p {
-      margin-left: rem(15.25px);
-    }
   }
 }

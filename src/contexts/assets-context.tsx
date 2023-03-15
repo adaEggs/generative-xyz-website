@@ -3,6 +3,8 @@ import {
   ICollectedUTXOResp,
   IFeeRate,
   ITxHistory,
+  ITxHistoryBuyInsETH,
+  ITxHistoryPurchase,
 } from '@interfaces/api/bitcoin';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
@@ -11,6 +13,7 @@ import {
   getFeeRate,
   getHistory,
   getPendingUTXOs,
+  getTokenRate,
 } from '@services/bitcoin';
 import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import debounce from 'lodash/debounce';
@@ -32,6 +35,8 @@ export interface IAssetsContext {
   isOwner: boolean;
 
   history: ITxHistory[];
+  txsETH: ITxHistoryBuyInsETH[];
+  txsPurchase: ITxHistoryPurchase[];
   isLoadingHistory: boolean;
   isLoadedHistory: boolean;
 
@@ -42,7 +47,9 @@ export interface IAssetsContext {
   fetchAssets: () => void;
   fetchHistory: () => void;
   debounceFetchData: () => void;
-  fetchFeeRate: () => void;
+  fetchFeeRate: () => Promise<IFeeRate | undefined>;
+
+  eth2btcRate: number;
 
   getAvailableAssetsCreateTx: () => Promise<ICollectedUTXOResp | undefined>;
 }
@@ -54,6 +61,8 @@ const initialValue: IAssetsContext = {
   isLoadedAssets: false,
 
   history: [],
+  txsETH: [],
+  txsPurchase: [],
   isLoadingHistory: false,
   isLoadedHistory: false,
 
@@ -62,10 +71,12 @@ const initialValue: IAssetsContext = {
 
   comingAmount: 0,
 
+  eth2btcRate: 0,
+
   fetchAssets: () => new Promise<void>(r => r()),
   fetchHistory: () => new Promise<void>(r => r()),
   debounceFetchData: () => new Promise<void>(r => r()),
-  fetchFeeRate: () => new Promise<void>(r => r()),
+  fetchFeeRate: () => new Promise<IFeeRate | undefined>(() => null),
   getAvailableAssetsCreateTx: () =>
     new Promise<ICollectedUTXOResp | undefined>(() => null),
 };
@@ -99,6 +110,8 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
 
   // History
   const [history, setHistory] = useState<ITxHistory[]>([]);
+  const [txsETH, setTxsETH] = useState<ITxHistoryBuyInsETH[]>([]);
+  const [txsPurchase, setTxsPurchase] = useState<ITxHistoryPurchase[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState<boolean>(false);
   const [isLoadedHistory, setIsLoadedHistory] = useState<boolean>(false);
 
@@ -106,6 +119,7 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   const [feeRate, setFeeRate] = useState<IFeeRate | undefined>();
 
   const [comingAmount, setcomingAmount] = useState<number>(0);
+  const [eth2btcRate, setEth2BtcRate] = useState<number>(0);
 
   const isOwner = React.useMemo(() => {
     if (!walletAddress || validateEVMAddress(walletAddress)) return true;
@@ -130,12 +144,20 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   };
 
   const fetchHistory = async (): Promise<ITxHistory[]> => {
-    if (!currentAddress) return [];
+    if (!currentAddress) {
+      setHistory([]);
+      setTxsETH([]);
+      setTxsPurchase([]);
+      return [];
+    }
     let _history: ITxHistory[] = [];
     try {
       setIsLoadingHistory(true);
-      _history = await getHistory(currentAddress);
+      const { txs, txsETH, txsPurchase } = await getHistory(currentAddress);
+      _history = txs;
       setHistory(_history);
+      setTxsETH(txsETH);
+      setTxsPurchase(txsPurchase);
     } catch (err) {
       const error = getError(err);
       log(error.message, LogLevel.ERROR, LOG_PREFIX);
@@ -173,16 +195,18 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   ]);
 
   const fetchFeeRate = async () => {
+    let _feeRate = {
+      fastestFee: 15,
+      halfHourFee: 10,
+      hourFee: 5,
+    };
     try {
-      const feeRate = await getFeeRate();
-      setFeeRate(feeRate);
+      _feeRate = await getFeeRate();
+      setFeeRate(_feeRate);
     } catch (error) {
-      setFeeRate({
-        fastestFee: 15,
-        halfHourFee: 10,
-        hourFee: 5,
-      });
+      setFeeRate(_feeRate);
     }
+    return _feeRate;
   };
 
   const getAvailableAssetsCreateTx = async () => {
@@ -204,6 +228,16 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     return _currentAssets;
   };
 
+  const getETH2BTCRate = async () => {
+    try {
+      const rate = await getTokenRate();
+      setEth2BtcRate(rate);
+    } catch (error) {
+      const _err = getError(error);
+      log(_err.message, LogLevel.ERROR, LOG_PREFIX + 'getETH2BTCRate');
+    }
+  };
+
   useEffect(() => {
     if (currentAddress) {
       debounceFetchData();
@@ -214,7 +248,11 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
 
   useEffect(() => {
     fetchFeeRate().then().catch();
-    const intervalID = setInterval(fetchFeeRate, 10 * 60 * 1000);
+    getETH2BTCRate().then().catch();
+    const intervalID = setInterval(() => {
+      fetchFeeRate().then().catch();
+      getETH2BTCRate().then().catch();
+    }, 60 * 2 * 1000); // 2 mins
     return () => {
       clearInterval(intervalID);
     };
@@ -228,6 +266,8 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
       isLoadedAssets,
 
       history,
+      txsETH,
+      txsPurchase,
       isLoadingHistory,
       isLoadedHistory,
 
@@ -243,6 +283,8 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
       getAvailableAssetsCreateTx,
 
       debounceFetchData,
+
+      eth2btcRate,
     };
   }, [
     currentAssets,
@@ -251,6 +293,8 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     isLoadedAssets,
 
     history,
+    txsETH,
+    txsPurchase,
     isLoadingHistory,
     isLoadedHistory,
 
@@ -261,6 +305,8 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
     comingAmount,
 
     currentAddress,
+
+    eth2btcRate,
   ]);
 
   return (

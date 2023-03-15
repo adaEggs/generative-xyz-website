@@ -69,3 +69,5 @@ export interface IPutDaoArtistResponse {
   status: boolean;
   data: Record<string, string>;
 }
+
+export type IPostDaoArtistResponse = IPutDaoArtistResponse;
