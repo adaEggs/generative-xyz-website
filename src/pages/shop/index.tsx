@@ -19,8 +19,8 @@ export async function getServerSideProps() {
       seoInfo: {
         title: 'Generative | Shop',
         description:
-          'Launch a new collection or mint an artwork to receive the keys.',
-        image: `${CDN_URL}/images/airdrop.jpg`,
+          'Buy art on Bitcoin. It’s easy, fast, with zero platform fees.',
+        image: `${CDN_URL}/images/image.jpg`,
       },
     },
   };
