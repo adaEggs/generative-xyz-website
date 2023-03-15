@@ -59,7 +59,7 @@ const Collection: React.FC = (): React.ReactElement => {
                   e.stopPropagation();
                 }}
                 href={`${ROUTE_PATH.PROFILE}/${
-                  collection.owner.walletAddress_btc_taproot || ''
+                  collection.owner?.walletAddress_btc_taproot || ''
                 }`}
                 className={s.owner}
               >
@@ -76,7 +76,7 @@ const Collection: React.FC = (): React.ReactElement => {
                 collection.projectMarketplaceData.floor_price,
                 '0.00'
               )}{' '}
-              &#8383;
+              BTC
             </span>
           </div>
         ),
@@ -107,7 +107,7 @@ const Collection: React.FC = (): React.ReactElement => {
         // volume15M: (
         //   <div className={s.volume15M}>
         //     <span>
-        //       &#8383;{' '}
+        //       BTC{' '}
         //       {formatCurrency(
         //         parseFloat(collection.volumeFifteenMinutes.amount)
         //       )}
@@ -117,7 +117,7 @@ const Collection: React.FC = (): React.ReactElement => {
         // volume1D: (
         //   <div className={s.volume1D}>
         //     <span>
-        //       &#8383;{' '}
+        //       BTC{' '}
         //       {formatCurrency(parseFloat(collection.volumeOneDay.amount))}
         //     </span>
         //   </div>
@@ -125,7 +125,7 @@ const Collection: React.FC = (): React.ReactElement => {
         // volume7D: (
         //   <div className={s.volume7D}>
         //     <span>
-        //       &#8383;{' '}
+        //       BTC{' '}
         //       {formatCurrency(parseFloat(collection.volumeOneWeek.amount))}
         //     </span>
         //   </div>
@@ -134,7 +134,7 @@ const Collection: React.FC = (): React.ReactElement => {
           <div className={s.volume7D}>
             <span>
               {formatBTCPrice(collection.projectMarketplaceData.volume, '0.00')}{' '}
-              &#8383;
+              BTC
             </span>
           </div>
         ),

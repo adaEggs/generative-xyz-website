@@ -23,7 +23,7 @@ const ShopController: React.FC = (): React.ReactElement => {
           height={18}
           alt="ic collection"
         />
-        <h2 className={s.tabName}>Collection</h2>
+        <h2 className={s.tabName}>Collections</h2>
       </div>
     ),
     []
