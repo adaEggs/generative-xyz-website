@@ -4,8 +4,8 @@ import s from './styles.module.scss';
 import { Loading } from '@components/Loading';
 import { ICollection } from '@interfaces/shop';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import cs from 'classnames';
-import { formatCurrency } from '@utils/format';
+// import cs from 'classnames';
+import { formatBTCPrice } from '@utils/format';
 import { getCollectionList } from '@services/shop';
 import _uniqBy from 'lodash/uniqBy';
 import log from '@utils/logger';
@@ -14,11 +14,12 @@ import { LogLevel } from '@enums/log-level';
 const TABLE_HEADINGS = [
   'Name',
   'Floor price',
-  '1D change',
-  '7D change',
-  '15M volume',
-  '1D volume',
-  '7D volume',
+  // '1D change',
+  // '7D change',
+  // '15M volume',
+  // '1D volume',
+  // '7D volume',
+  'Volume',
   'Owners',
   'Supply',
 ];
@@ -32,7 +33,7 @@ const Collection: React.FC = (): React.ReactElement => {
 
   const tableData = collectionList.map(collection => {
     return {
-      id: collection.contractAddress,
+      id: collection.project.tokenId,
       render: {
         name: (
           <div className={s.name}>
@@ -42,7 +43,7 @@ const Collection: React.FC = (): React.ReactElement => {
               alt={collection.project.name}
             />
             <div className={s.projectInfo}>
-              <p className={s.owner}>{collection.owner.name}</p>
+              <p className={s.owner}>{collection.owner?.displayName}</p>
               <p className={s.collectionName}>{collection.project.name}</p>
             </div>
           </div>
@@ -50,57 +51,69 @@ const Collection: React.FC = (): React.ReactElement => {
         floorPrice: (
           <div className={s.floorPrice}>
             <span>
-              &#8383; {formatCurrency(parseFloat(collection.floorPrice.amount))}
-            </span>
-          </div>
-        ),
-        oneDayChange: (
-          <div
-            className={cs(s.oneDayChange, {
-              negative: collection.floorPriceOneDay.percentageChanged < 0,
-              positive: collection.floorPriceOneDay.percentageChanged > 0,
-            })}
-          >
-            {`${collection.floorPriceOneDay.percentageChanged <= 0 ? '' : '+'}${
-              collection.floorPriceOneDay.percentageChanged
-            }%`}
-          </div>
-        ),
-        oneWeekChange: (
-          <div
-            className={cs(s.oneWeekChange, {
-              negative: collection.floorPriceOneWeek.percentageChanged < 0,
-              positive: collection.floorPriceOneWeek.percentageChanged > 0,
-            })}
-          >
-            {`${
-              collection.floorPriceOneWeek.percentageChanged <= 0 ? '' : '+'
-            }${collection.floorPriceOneWeek.percentageChanged}%`}
-          </div>
-        ),
-        volume15M: (
-          <div className={s.volume15M}>
-            <span>
               &#8383;{' '}
-              {formatCurrency(
-                parseFloat(collection.volumeFifteenMinutes.amount)
+              {formatBTCPrice(
+                collection.projectMarketplaceData.floor_price,
+                '0.00'
               )}
             </span>
           </div>
         ),
-        volume1D: (
-          <div className={s.volume1D}>
-            <span>
-              &#8383;{' '}
-              {formatCurrency(parseFloat(collection.volumeOneDay.amount))}
-            </span>
-          </div>
-        ),
-        volume7D: (
+        // oneDayChange: (
+        //   <div
+        //     className={cs(s.oneDayChange, {
+        //       negative: collection.floorPriceOneDay.percentageChanged < 0,
+        //       positive: collection.floorPriceOneDay.percentageChanged > 0,
+        //     })}
+        //   >
+        //     {`${collection.floorPriceOneDay.percentageChanged <= 0 ? '' : '+'}${
+        //       collection.floorPriceOneDay.percentageChanged
+        //     }%`}
+        //   </div>
+        // ),
+        // oneWeekChange: (
+        //   <div
+        //     className={cs(s.oneWeekChange, {
+        //       negative: collection.floorPriceOneWeek.percentageChanged < 0,
+        //       positive: collection.floorPriceOneWeek.percentageChanged > 0,
+        //     })}
+        //   >
+        //     {`${
+        //       collection.floorPriceOneWeek.percentageChanged <= 0 ? '' : '+'
+        //     }${collection.floorPriceOneWeek.percentageChanged}%`}
+        //   </div>
+        // ),
+        // volume15M: (
+        //   <div className={s.volume15M}>
+        //     <span>
+        //       &#8383;{' '}
+        //       {formatCurrency(
+        //         parseFloat(collection.volumeFifteenMinutes.amount)
+        //       )}
+        //     </span>
+        //   </div>
+        // ),
+        // volume1D: (
+        //   <div className={s.volume1D}>
+        //     <span>
+        //       &#8383;{' '}
+        //       {formatCurrency(parseFloat(collection.volumeOneDay.amount))}
+        //     </span>
+        //   </div>
+        // ),
+        // volume7D: (
+        //   <div className={s.volume7D}>
+        //     <span>
+        //       &#8383;{' '}
+        //       {formatCurrency(parseFloat(collection.volumeOneWeek.amount))}
+        //     </span>
+        //   </div>
+        // ),
+        volume: (
           <div className={s.volume7D}>
             <span>
               &#8383;{' '}
-              {formatCurrency(parseFloat(collection.volumeOneWeek.amount))}
+              {formatBTCPrice(collection.projectMarketplaceData.volume, '0.00')}
             </span>
           </div>
         ),
@@ -130,7 +143,7 @@ const Collection: React.FC = (): React.ReactElement => {
       if (result && Array.isArray(result)) {
         const newList = _uniqBy(
           [...collectionList, ...result],
-          nft => nft.contractAddress + nft.project.tokenId
+          nft => nft.project.contractAddress + nft.project.tokenId
         );
         setCollections(newList);
       }
