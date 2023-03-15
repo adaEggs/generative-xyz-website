@@ -138,7 +138,6 @@ const TxsTab = () => {
         },
       };
     });
-
   return (
     <Table
       tableHead={TABLE_HISTORY_HEADING}

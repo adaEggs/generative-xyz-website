@@ -158,41 +158,41 @@ const statusMapper = (
   };
 };
 
+const getTxsHistory = async (address: string): Promise<ITxHistory[]> => {
+  let history: ITxHistory[] = [];
+  try {
+    history = await get<ITxHistory[]>(
+      `/wallet/txs?address=${address}&limit=30&offset=0`
+    );
+  } catch (_) {
+    log('failed to get txs history', LogLevel.ERROR, LOG_PREFIX);
+  }
+  return history || [];
+};
+
+const getTxsETHHistory = async (): Promise<ITxHistoryBuyInsETH[]> => {
+  let history: ITxHistoryBuyInsETH[] = [];
+  try {
+    history = await get<ITxHistoryBuyInsETH[]>(
+      `dex/buy-eth-history?limit=20&offset=0`
+    );
+  } catch (_) {
+    log('failed to get txs eth history', LogLevel.ERROR, LOG_PREFIX);
+  }
+  return history || [];
+};
+
 export const getHistory = async (address: string): Promise<IHistoryResp> => {
   try {
     const [txs, txsETH] = await Promise.all([
-      await get<ITxHistory[]>(
-        `/wallet/txs?address=${address}&limit=30&offset=0`
-      ),
-      await get<ITxHistoryBuyInsETH[]>(`dex/buy-eth-history?limit=20&offset=0`),
+      await getTxsHistory(address),
+      await getTxsETHHistory(),
     ]);
-
-    // const txsETH = [
-    //   {
-    //     id: '64105ebdb63a6b6d890950e0',
-    //     order_id: '640ef531b35224d3ff045b0f',
-    //     inscription_id:
-    //       'a3a64278bf3e0e9472dbd2e0b411ba3d7e586958d78741f7a10cbb28ea88652di0',
-    //     amount_btc: 1000,
-    //     amount_eth: '1277906547854802',
-    //     user_id: '63f440e5b4a8b72bb220968b',
-    //     receive_address:
-    //       'bc1pjqaw4wqrc7nu9n8r7ntz3zs5xxufm8ft0nqhs0uvcecfzq6ypvqsaejfz9',
-    //     refund_address: '0x62044aF52aae537385cF26F0D5305848673B2D86',
-    //     expired_at: 1678801629,
-    //     buy_tx: '',
-    //     refund_tx: '',
-    //     fee_rate: 15,
-    //     created_at: new Date().getTime() + '',
-    //     status: 'Waiting for payment',
-    //   },
-    // ];
-
     const _txsETH = txsETH
       .map(history => {
         const { statusColor, isExpired, status } = statusMapper(
           history.created_at,
-          history.status as never,
+          history.status,
           false
         );
         return {
