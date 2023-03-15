@@ -1,6 +1,6 @@
 export const ROUTE_PATH = {
   HOME: '/',
-  DROPS: '/art-on-bitcoin',
+  DROPS: '/mint',
   CREATE_PROJECT: '/create',
   BENEFIT: '/create',
   GENERATIVE: '/generative',
