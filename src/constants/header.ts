@@ -81,6 +81,12 @@ export const MENU_HEADER = [
     route: ROUTE_PATH.SHOP,
     activePath: 'shop',
   },
+  {
+    id: 'menu-14',
+    name: 'Dao',
+    route: ROUTE_PATH.DAO,
+    activePath: 'dao',
+  },
 ];
 
 export const RIGHT_MENU = [
