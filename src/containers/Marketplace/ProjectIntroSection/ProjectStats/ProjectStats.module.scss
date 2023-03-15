@@ -9,6 +9,7 @@
 
   &_item {
     min-width: rem(120);
+    text-align: right;
 
     > p:first-of-type {
       color: $black-40;
@@ -19,6 +20,7 @@
       .stats_item_text {
         display: flex;
         align-items: center;
+        justify-content: flex-end;
       }
     }
   }
