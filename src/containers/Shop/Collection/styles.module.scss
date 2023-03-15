@@ -53,6 +53,7 @@
       position: sticky;
       background-color: #fff;
       width: rem(200);
+      z-index: 2;
 
       @include tablet {
         width: rem(300);
