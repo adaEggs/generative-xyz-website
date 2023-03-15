@@ -153,6 +153,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                     <div className="col-md-1">{item?.seq_id}</div>
                     <div className="col-md-2">
                       <span
+                        className={s.users_pointer}
                         onClick={() =>
                           goToProfilePage('', item?.user?.wallet_address)
                         }
