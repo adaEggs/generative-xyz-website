@@ -58,7 +58,12 @@ export const getProjectDetail = async (
     }
     return { ...project };
   } catch (err: unknown) {
-    log('failed to get project detail', LogLevel.ERROR, LOG_PREFIX);
+    log(
+      `failed to get project detail ${JSON.stringify(params)}`,
+      LogLevel.ERROR,
+      LOG_PREFIX
+    );
+    log(err as Error, LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to get project detail');
   }
 };
@@ -73,8 +78,13 @@ export const getProjectVolume = async (
     );
     return res;
   } catch (err: unknown) {
-    log('failed to get project detail', LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get project detail');
+    log(
+      `failed to get project volume ${JSON.stringify(params)}`,
+      LogLevel.ERROR,
+      LOG_PREFIX
+    );
+    log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to get project volume');
   }
 };
 
@@ -84,8 +94,9 @@ export const getRandomProject =
       const res = await get<IGetProjectDetailResponse>(`${API_PATH}/random`);
       return res;
     } catch (err: unknown) {
-      log('failed to get project detail', LogLevel.ERROR, LOG_PREFIX);
-      throw Error('Failed to get project detail');
+      log(`failed to get random project`, LogLevel.ERROR, LOG_PREFIX);
+      log(err as Error, LogLevel.ERROR, LOG_PREFIX);
+      throw Error('Failed to get random project');
     }
   };
 

@@ -7,7 +7,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { ellipsisCenter, formatAddress, formatWebDomain } from '@utils/format';
+import { formatAddress, formatWebDomain } from '@utils/format';
 import copy from 'copy-to-clipboard';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -63,13 +63,13 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                   as={'h4'}
                   title={
                     currentUser?.displayName ||
-                    formatAddress(currentUser?.walletAddressBtcTaproot) ||
+                    formatAddress(currentUser?.walletAddressBtcTaproot, 10) ||
                     formatAddress(walletAddress)
                   }
                   className={s.userInfo_content_wrapper_info_name}
                 >
                   {currentUser?.displayName ||
-                    formatAddress(currentUser?.walletAddressBtcTaproot) ||
+                    formatAddress(currentUser?.walletAddressBtcTaproot, 10) ||
                     formatAddress(walletAddress)}
                 </Heading>
                 <div className={s.userInfo_content_wrapper_info_icon}>
@@ -90,10 +90,10 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                     svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
                   />
                   <Text size={'18'} fontWeight={'regular'}>
-                    {ellipsisCenter({
-                      str: currentUser?.walletAddressBtcTaproot || '',
-                      limit: 10,
-                    })}
+                    {formatAddress(
+                      currentUser?.walletAddressBtcTaproot || '',
+                      10
+                    )}
                   </Text>
                   <SvgInset
                     onClick={() => {

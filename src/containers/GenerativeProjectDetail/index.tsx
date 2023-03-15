@@ -12,14 +12,14 @@ import {
 import { PaymentMethod } from '@enums/mint-generative';
 import { Project } from '@interfaces/project';
 import cs from 'classnames';
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Container, Tab, Tabs } from 'react-bootstrap';
 
+import { GridDebug } from '@components/Grid/grid';
 import useBTCSignOrd from '@hooks/useBTCSignOrd';
 import MintWalletModal from './MintWalletModal';
 import TokenTopFilter from './TokenTopFilter';
 import styles from './styles.module.scss';
-import { GridDebug } from '@components/Grid/grid';
 
 const GenerativeProjectDetail: React.FC<{
   isWhitelist?: boolean;
@@ -33,6 +33,7 @@ const GenerativeProjectDetail: React.FC<{
     total,
     isLoaded,
     isNextPageLoaded,
+    marketplaceData,
   } = useContext(GenerativeProjectDetailContext);
 
   const {
@@ -44,7 +45,17 @@ const GenerativeProjectDetail: React.FC<{
     setPaymentStep,
   } = useContext(BitcoinProjectContext);
 
+  const hasFilter = useMemo(() => {
+    if (
+      (projectInfo?.traitStat && projectInfo.traitStat.length > 0) ||
+      (marketplaceData && marketplaceData?.listed > 0)
+    ) {
+      return true;
+    } else return false;
+  }, [projectInfo?.traitStat, marketplaceData?.listed]);
+
   const { ordAddress, onButtonClick } = useBTCSignOrd();
+
   return (
     <>
       <section>
@@ -68,7 +79,7 @@ const GenerativeProjectDetail: React.FC<{
           <ClientOnly>
             <Tabs className={styles.tabs} defaultActiveKey="outputs">
               <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">
-                {projectInfo?.traitStat && projectInfo.traitStat.length > 0 && (
+                {hasFilter && (
                   <div className={cs(styles.filterWrapper)} id="PROJECT_LIST">
                     <TokenTopFilter className={styles.filter_sort} />
                   </div>
