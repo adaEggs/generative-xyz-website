@@ -120,9 +120,9 @@ const CollectionActivityTable = () => {
             <div className={s.address}>
               <Link
                 href={`${ROUTE_PATH.PROFILE}/${
-                  transaction.user_a.walletAddressBtcTaproot
-                    ? transaction.user_a.walletAddressBtcTaproot
-                    : transaction.user_a.walletAddress
+                  transaction?.user_b?.walletAddressBtcTaproot
+                    ? transaction?.user_b?.walletAddressBtcTaproot
+                    : transaction?.user_b?.walletAddress
                 }`}
                 className="hover-underline"
               >
