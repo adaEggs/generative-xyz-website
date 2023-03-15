@@ -26,6 +26,8 @@ import s from './CollectedCard.module.scss';
 import { AssetsContext } from '@contexts/assets-context';
 import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
 import { capitalizeFirstLetter } from '@utils/string';
+import { isImageURL } from '@utils/url';
+import { LOGO_MARKETPLACE_URL } from '@constants/common';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -135,8 +137,17 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
 
   const tokenIdName =
     project.status === CollectedNFTStatus.Success
-      ? project.number || `#${project.inscriptionNumber}`
+      ? `#${
+          project.tokenNumber ? project.tokenNumber : project.inscriptionNumber
+        }`
       : project.projectName || '';
+
+  const imageUrl =
+    project.image && isImageURL(project.image)
+      ? project.image
+      : project.inscriptionID === undefined
+      ? LOGO_MARKETPLACE_URL
+      : undefined;
 
   const projectName =
     project.status === CollectedNFTStatus.Success ? project.projectName : '';
@@ -262,12 +273,12 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     <>
       <Link href={linkPath} className={`${s.projectCard} ${className}`}>
         <div className={s.projectCard_inner}>
-          {project.image ? (
+          {imageUrl ? (
             <div className={`${s.projectCard_thumb}`}>
               <div className={s.projectCard_thumb_inner}>
                 <img
-                  src={convertIpfsToHttp(project.image)}
-                  alt={project.image}
+                  src={convertIpfsToHttp(imageUrl)}
+                  alt={imageUrl}
                   loading={'lazy'}
                 />
               </div>

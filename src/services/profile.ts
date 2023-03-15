@@ -150,6 +150,7 @@ export const getCollectedNFTs = async (
             cancelling: data?.cancelling,
             artistName: data?.artist_name,
             number: data.number,
+            tokenNumber: data?.token_number,
           } as ICollectedNFTItem;
         }
       );
