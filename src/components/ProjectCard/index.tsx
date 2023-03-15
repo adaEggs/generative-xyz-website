@@ -13,8 +13,6 @@ import { User } from '@interfaces/user';
 import { formatBTCPrice } from '@utils/format';
 import { convertIpfsToHttp } from '@utils/image';
 import cs from 'classnames';
-import { CDN_URL } from '@constants/config';
-import SvgInset from '@components/SvgInset';
 import ButtonIcon from '@components/ButtonIcon';
 import { sendAAEvent } from '@services/aa-tracking';
 import { BTC_PROJECT } from '@constants/tracking-event-name';
@@ -86,10 +84,6 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
     return false;
   }, [project?.maxSupply, project?.mintingInfo.index]);
 
-  const isFromAuthentic = useMemo((): boolean => {
-    return project.fromAuthentic || false;
-  }, [project]);
-
   const isAuthenticIn24h = useMemo((): boolean => {
     const providedDate = new Date(project.mintedTime);
     const currentDate = new Date();
@@ -114,23 +108,18 @@ export const ProjectCard = ({ project, className }: IPros): JSX.Element => {
       );
     }
     if (mintedOut) {
-      return !isFromAuthentic ? (
-        <div className={s.projectCard_info_mintoutContainer}>
-          <SvgInset svgUrl={`${CDN_URL}/icons/ic_mintedout.svg`} />
-          <Text className={s.projectCard_info_mintoutContainer_text}>
-            {`${project?.mintingInfo.index} Minted out`}
-          </Text>
-        </div>
-      ) : (
+      return (
         <div className={s.projectCard_info_edition}>
           <Text
             color="black-40-solid"
             fontWeight={'medium'}
             className={s.projectCard_info_edition_text}
           >
-            {isAuthenticIn24h
-              ? ` ${project?.mintingInfo.index} inscribed`
-              : `Edition of ${project?.mintingInfo.index}`}
+            {`${project?.mintingInfo.index} ${
+              isAuthenticIn24h
+                ? 'inscribed'
+                : `Artwork${project?.mintingInfo.index > 1 ? 's' : ''}`
+            }`}
           </Text>
         </div>
       );
