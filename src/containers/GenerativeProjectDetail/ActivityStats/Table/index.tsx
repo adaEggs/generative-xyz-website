@@ -158,7 +158,9 @@ const CollectionActivityTable = () => {
       <div className={s.wrapper}>
         <Table
           tableHead={TABLE_COLLECTION_ACTIVITIES_HEADING}
-          data={activityDatas}
+          data={
+            listData?.result && listData?.result.length > 0 ? activityDatas : []
+          }
           className={s.collectionActivityTable}
         ></Table>
       </div>

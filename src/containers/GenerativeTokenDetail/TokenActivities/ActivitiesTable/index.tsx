@@ -115,7 +115,14 @@ const TableActivities = () => {
   );
 
   return (
-    <Table tableHead={TABLE_ACTIVITIES_HEADING} data={activityDatas}></Table>
+    <Table
+      tableHead={TABLE_ACTIVITIES_HEADING}
+      data={
+        tokenActivities?.result && tokenActivities?.result.length > 0
+          ? activityDatas
+          : []
+      }
+    ></Table>
   );
 };
 

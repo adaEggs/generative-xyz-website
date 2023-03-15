@@ -64,7 +64,7 @@ export const ProjectStats = (): JSX.Element => {
               size={24}
               svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
             />{' '} */}
-            &#8383; {formatBTCPrice(project?.btcFloorPrice)}
+            {formatBTCPrice(project?.btcFloorPrice)} BTC
           </Heading>
         </div>
       )}
@@ -78,7 +78,7 @@ export const ProjectStats = (): JSX.Element => {
               size={24}
               svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
             />{' '} */}
-            &#8383; {formatBTCPrice(marketplaceData?.volume)}
+            {formatBTCPrice(marketplaceData?.volume)} BTC
           </Heading>
         </div>
       )}
