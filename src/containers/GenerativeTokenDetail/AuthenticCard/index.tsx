@@ -4,7 +4,7 @@ import React, { useMemo } from 'react';
 import Text from '@components/Text';
 import s from './styles.module.scss';
 import { Project } from '@interfaces/project';
-import { formatLongAddress } from '@utils/format';
+import { formatAddress, formatLongAddress } from '@utils/format';
 import { ROUTE_PATH } from '@constants/route-path';
 import Link from 'next/link';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -99,7 +99,7 @@ export const AuthenticCard = ({
                   href={`https://opensea.io/${project.inscribedBy}`}
                   target="_blank"
                 >
-                  {formatLongAddress(project.inscribedBy || '')}
+                  {formatAddress(project.inscribedBy || '')}
                 </a>
               </div>
             </div>
