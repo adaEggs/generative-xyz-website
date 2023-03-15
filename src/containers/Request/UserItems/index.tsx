@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import cn from 'classnames';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -14,7 +14,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { Loading } from '@components/Loading';
 import { getDaoArtists, voteDaoArtist } from '@services/request';
 import Button from '@components/Button';
-import useDidMountEffect from '@hooks/useDidMountEffect';
+// import useDidMountEffect from '@hooks/useDidMountEffect';
 import { formatAddress } from '@utils/format';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
 
@@ -49,7 +49,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
     setCurrentCursor(users?.cursor || '');
   };
 
-  useDidMountEffect(() => {
+  useEffect(() => {
     initData();
   }, [keyword, status, sort]);
 
