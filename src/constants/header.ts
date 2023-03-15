@@ -75,6 +75,12 @@ export const MENU_HEADER = [
     route: ROUTE_PATH.PRESERVE_LANDING,
     activePath: 'preserve-cryptoart',
   },
+  {
+    id: 'menu-13',
+    name: 'Shop',
+    route: ROUTE_PATH.SHOP,
+    activePath: 'shop',
+  },
 ];
 
 export const RIGHT_MENU = [

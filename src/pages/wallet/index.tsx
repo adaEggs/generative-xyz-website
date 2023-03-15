@@ -20,7 +20,8 @@ export async function getServerSideProps() {
     props: {
       seoInfo: {
         title: 'Generative | Wallet',
-        description: 'Securely keep your Ordinal Inscriptions.',
+        description:
+          'Built on Metamask—you can send, receive, store and trade ordinal inscriptions.',
         image: `${CDN_URL}/images/wallet-seo.jpg`,
       },
     },
