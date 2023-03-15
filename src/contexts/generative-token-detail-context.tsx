@@ -678,8 +678,8 @@ export const GenerativeTokenDetailProvider: React.FC<PropsWithChildren> = ({
     try {
       if (tokenData && tokenData.genNFTAddr) {
         const res = await getTokenActivities({
-          contractAddress: tokenData.genNFTAddr,
-          tokenID: tokenID,
+          inscription_id: tokenData.tokenID,
+          limit: 20,
         });
         if (res) setTokenActivities(res);
       }

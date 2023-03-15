@@ -5,11 +5,21 @@ import Text from '@components/Text';
 import { IconVerified } from '@components/IconVerified';
 import Image from 'next/image';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import cs from 'classnames';
 
 export const SocialVerify: React.FC<{
   link: string;
   isTwVerified: boolean;
-}> = ({ link = '#', isTwVerified = false }) => {
+  width?: number;
+  height?: number;
+  className?: string;
+}> = ({
+  link = '#',
+  isTwVerified = false,
+  width = 34,
+  height = 34,
+  className,
+}) => {
   const [show, setShow] = useState<boolean>(false);
   return (
     <div
@@ -19,10 +29,10 @@ export const SocialVerify: React.FC<{
       onMouseLeave={() => {
         setShow(false);
       }}
-      className={s.whiteList_icon}
+      className={cs(s.whiteList_icon, className)}
     >
       {isTwVerified ? (
-        <IconVerified />
+        <IconVerified width={width} height={height} />
       ) : (
         <>
           <OverlayTrigger
@@ -55,8 +65,8 @@ export const SocialVerify: React.FC<{
             }
           >
             <Image
-              width={34}
-              height={34}
+              width={width}
+              height={height}
               src={`${CDN_URL}/icons/badge-question.svg`}
               alt={'badge-question'}
             />

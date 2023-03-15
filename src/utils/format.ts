@@ -37,7 +37,7 @@ export const toBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
     reader.onerror = error => reject(error);
   });
 
-export const formatAddress = (address?: string, length = 7): string => {
+export const formatAddress = (address?: string, length = 10): string => {
   if (!address) return '';
   if (address.length < 14) return address;
   return `${address.substring(0, length)}`;

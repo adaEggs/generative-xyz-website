@@ -2,6 +2,7 @@ import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import { ROUTE_PATH } from '@constants/route-path';
 import { LogLevel } from '@enums/log-level';
+import { IGetTokenActivitiesResponse } from '@interfaces/api/nfts';
 import {
   IProjectMarketplaceData,
   IProjectMintFeeRate,
@@ -11,6 +12,7 @@ import { Token } from '@interfaces/token';
 import { useAppSelector } from '@redux';
 import { setProjectCurrent } from '@redux/project/action';
 import { getUserSelector } from '@redux/user/selector';
+import { getTokenActivities } from '@services/nfts';
 import {
   getProjectDetail,
   getProjectItems,
@@ -27,10 +29,10 @@ import React, {
   PropsWithChildren,
   SetStateAction,
   createContext,
+  useCallback,
   useEffect,
   useMemo,
   useState,
-  useCallback,
 } from 'react';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
@@ -94,6 +96,9 @@ export interface IGenerativeProjectDetailContext {
   isSatoshisPage: boolean;
   marketplaceData: IProjectMarketplaceData | null;
   setMarketplaceData: (data: IProjectMarketplaceData) => void;
+  isLimitMinted: boolean;
+  collectionActivities: IGetTokenActivitiesResponse | null;
+  setFilterActivities: Dispatch<SetStateAction<string>>;
 }
 
 const initialValue: IGenerativeProjectDetailContext = {
@@ -171,6 +176,11 @@ const initialValue: IGenerativeProjectDetailContext = {
   setMarketplaceData: _data => {
     return;
   },
+  isLimitMinted: false,
+  collectionActivities: null,
+  setFilterActivities: _ => {
+    return;
+  },
 };
 
 export const GenerativeProjectDetailContext =
@@ -190,6 +200,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const currentCustomFeeRate = React.useRef<number | null>();
 
   const [listItems, setListItems] = useState<Token[] | null>(null);
+  const [collectionActivities, setCollectionActivities] =
+    useState<IGetTokenActivitiesResponse | null>(null);
+
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState('price-asc');
@@ -208,6 +221,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     from: '',
     to: '',
   });
+
+  const [filterActivities, setFilterActivities] = useState('1,3');
+
   const [projectItemsTraitList, setProjectItemsTraitList] =
     useState<ProjectItemsTraitList | null>(null);
   const router = useRouter();
@@ -223,6 +239,11 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const isSatoshisPage = useMemo(() => {
     return router.pathname === ROUTE_PATH.SATOSHIS_PAGE;
   }, []);
+
+  const isLimitMinted = useMemo((): boolean => {
+    if (!projectData) return false;
+    return projectData?.mintingInfo?.index < projectData?.maxSupply;
+  }, [projectData]);
 
   const handleFetchNextPage = () => {
     setPage(prev => prev + 1);
@@ -383,7 +404,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
-  const featProjectItemsTraitsList = async (): Promise<void> => {
+  const fetchProjectItemsTraitsList = async (): Promise<void> => {
     try {
       if (projectID) {
         const res = await getProjectItemsTraitsList({
@@ -400,10 +421,39 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
+  const fetchProjectActivities = async (): Promise<void> => {
+    try {
+      if (projectID) {
+        const res = await getTokenActivities({
+          project_id: projectID,
+          limit: 100,
+          types: filterActivities,
+        });
+        if (res) {
+          setCollectionActivities(res);
+        }
+      }
+    } catch (err: unknown) {
+      log('failed to get project activities', LogLevel.ERROR, LOG_PREFIX);
+      throw Error();
+    }
+  };
+
   useEffect(() => {
     fetchProjectDetail();
-    featProjectItemsTraitsList();
+    fetchProjectItemsTraitsList();
+    fetchProjectActivities();
   }, [projectID]);
+
+  useEffect(() => {
+    if (projectData && projectData.btcFloorPrice > 0) {
+      setFilterBuyNow(true);
+    }
+  }, [projectData]);
+
+  useEffect(() => {
+    fetchProjectActivities();
+  }, [filterActivities]);
 
   useEffect(() => {
     if (user && user.walletAddressBtcTaproot) {
@@ -490,6 +540,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       projectItemsTraitList,
       marketplaceData,
       setMarketplaceData,
+      isLimitMinted,
+      collectionActivities,
+      setFilterActivities,
     };
   }, [
     projectData,
@@ -526,6 +579,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     projectItemsTraitList,
     marketplaceData,
     setMarketplaceData,
+    isLimitMinted,
+    collectionActivities,
+    setFilterActivities,
   ]);
 
   return (

@@ -1,93 +1,82 @@
 import NotFound from '@components/NotFound';
-import SvgInset from '@components/SvgInset';
 import Table from '@components/Table';
-import { CDN_URL } from '@constants/config';
 import { GenerativeTokenDetailContext } from '@contexts/generative-token-detail-context';
-import { useContext } from 'react';
-import s from './styles.module.scss';
+import { formatAddress, formatBTCPrice } from '@utils/format';
 import dayjs from 'dayjs';
-import { formatAddress } from '@utils/format';
-import { convertToETH } from '@utils/currency';
-import { getScanUrl } from '@utils/chain';
+import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
-import Link from 'next/link';
+import { v4 } from 'uuid';
+import s from './styles.module.scss';
 
 const TABLE_ACTIVITIES_HEADING = ['Event', 'Price', 'From', 'To', 'Date'];
 
 const TableActivities = () => {
   const { tokenActivities } = useContext(GenerativeTokenDetailContext);
-  const scanURL = getScanUrl();
+  // const scanURL = getScanUrl();
 
-  if (!tokenActivities?.items) return <NotFound infoText="No activity yet" />;
+  if (!tokenActivities?.result) return <NotFound infoText="No activity yet" />;
 
-  const activityDatas = tokenActivities?.items[0]?.nft_transactions?.map(
+  const activityDatas = tokenActivities?.result.map(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (transaction: any, index, transactionList) => {
-      const updatedAt = dayjs(transaction?.block_signed_at).format(
-        'MMM DD, YYYY'
-      );
+    transaction => {
+      const updatedAt = transaction?.time
+        ? dayjs(transaction?.time).format('MMM DD, YYYY')
+        : '-';
 
-      const logEvent = transaction.log_events.filter(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (evt: any) => evt.decoded?.name === 'Transfer'
-      )[0];
+      const fromAddress =
+        transaction.user_a?.displayName ||
+        formatAddress(transaction?.user_a_address, 10) ||
+        '-';
+      const toAddress =
+        transaction.user_b?.displayName ||
+        formatAddress(transaction?.user_b_address, 10) ||
+        '-';
 
-      const fromAddress = logEvent.decoded?.params[0].value;
-      const toAddress = logEvent.decoded?.params[1].value;
-
-      if (index + 1 === transactionList.length) {
-        // Last transaction is first "Mint"
-        return {
-          id: transaction.tx_hash,
-          render: {
-            event: (
-              <div className={s.event}>
-                <SvgInset svgUrl={`${CDN_URL}/icons/ic-stars.svg`} />
-                Mint
-              </div>
-            ),
-            price:
-              transaction.value === '0' ? '-' : convertToETH(transaction.value),
-            form_address: formatAddress(fromAddress),
-            to_address: formatAddress(toAddress),
-            updated_at: (
-              <Stack direction="horizontal" gap={3}>
-                {updatedAt}
-                <Link
-                  href={`${scanURL}/tx/${transaction.tx_hash}`}
-                  target="_blank"
-                >
-                  <SvgInset svgUrl={`${CDN_URL}/icons/ic-link.svg`} />
-                </Link>
-              </Stack>
-            ),
-          },
-        };
-      }
+      // if (index + 1 === transactionList.length) {
+      //   // Last transaction is first "Mint"
+      //   return {
+      //     id: transaction.tx_hash,
+      //     render: {
+      //       event: (
+      //         <div className={s.event}>
+      //           <SvgInset svgUrl={`${CDN_URL}/icons/ic-stars.svg`} />
+      //           Mint
+      //         </div>
+      //       ),
+      //       price:
+      //         transaction.value === '0' ? '-' : convertToETH(transaction.value),
+      //       form_address: formatAddress(fromAddress),
+      //       to_address: formatAddress(toAddress),
+      //       updated_at: (
+      //         <Stack direction="horizontal" gap={3}>
+      //           {updatedAt}
+      //           <Link
+      //             href={`${scanURL}/tx/${transaction.tx_hash}`}
+      //             target="_blank"
+      //           >
+      //             <SvgInset svgUrl={`${CDN_URL}/icons/ic-link.svg`} />
+      //           </Link>
+      //         </Stack>
+      //       ),
+      //     },
+      //   };
+      // }
       return {
-        id: transaction.tx_hash,
+        id: `activity-${v4()}`,
         render: {
-          event: (
-            <div className={s.event}>
-              <SvgInset
-                svgUrl={`${CDN_URL}/icons/ic-arrow-switch-vertical-24x24.svg`}
-              />
-              Transfer
-            </div>
-          ),
-          price:
-            transaction.value === '0' ? '-' : convertToETH(transaction.value),
-          form_address: formatAddress(fromAddress),
-          to_address: formatAddress(toAddress),
+          event: <div className={s.event}>{transaction.title}</div>,
+          price: formatBTCPrice(transaction?.amount),
+          form_address: fromAddress,
+          to_address: toAddress,
           updated_at: (
             <Stack direction="horizontal" gap={3}>
               {updatedAt}
-              <Link
+              {/* <Link
                 href={`${scanURL}/tx/${transaction.tx_hash}`}
                 target="_blank"
               >
                 <SvgInset svgUrl={`${CDN_URL}/icons/ic-link.svg`} />
-              </Link>
+              </Link> */}
             </Stack>
           ),
         },

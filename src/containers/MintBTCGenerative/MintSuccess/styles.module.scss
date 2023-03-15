@@ -6,11 +6,15 @@
     font-size: rem(48px);
     line-height: rem(58px);
     color: $black-100;
-    margin-bottom: rem(24);
+    margin-bottom: rem(40px);
 
     & + h5 {
       margin-bottom: rem(24);
     }
+  }
+
+  &_content {
+    margin-bottom: rem(24px);
   }
 
   .actionWrapper {

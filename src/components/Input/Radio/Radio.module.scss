@@ -1,7 +1,8 @@
 .groups {
   display: flex;
-  flex-direction: column;
-  gap: rem(8);
+  flex-wrap: wrap;
+  column-gap: rem(24);
+  row-gap: rem(8);
 
   .inputGroups {
     display: flex;

@@ -1,9 +1,9 @@
 import { LogLevel } from '@enums/log-level';
 import {
-  IGetTokenActivitiesParams,
-  IGetTokenActivitiesResponse,
   IGetNFTHolderListParams,
   IGetNFTHolderListResponse,
+  IGetTokenActivitiesQuery,
+  IGetTokenActivitiesResponse,
 } from '@interfaces/api/nfts';
 import { get } from '@services/http-client';
 import log from '@utils/logger';
@@ -14,12 +14,13 @@ const LOG_PREFIX = 'NftsService';
 const API_PATH = '/nfts';
 
 export const getTokenActivities = async (
-  params: IGetTokenActivitiesParams
+  // params: IGetTokenActivitiesParams,
+  query: IGetTokenActivitiesQuery
 ): Promise<IGetTokenActivitiesResponse> => {
   try {
-    const { contractAddress, tokenID } = params;
+    const qs = '?' + queryString.stringify(query);
     const res = await get<IGetTokenActivitiesResponse>(
-      `${API_PATH}/${contractAddress}/transactions/${tokenID}`
+      `/token-activities${qs}`
     );
     return res;
   } catch (err: unknown) {

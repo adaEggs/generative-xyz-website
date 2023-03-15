@@ -1,0 +1,27 @@
+.wrapper {
+  max-height: calc(100vh - #{rem(350)});
+  overflow: auto;
+
+  @include disable-scrollbar;
+}
+
+.activitiesScroller {
+  position: relative;
+}
+
+.collectionActivityTable {
+  * {
+    font-size: rem(14) !important;
+  }
+
+  .price {
+    max-width: rem(100);
+  }
+
+  :global(tbody) {
+    max-height: calc(100vh - #{rem(400)});
+    overflow-y: scroll;
+
+    @include disable-scrollbar;
+  }
+}

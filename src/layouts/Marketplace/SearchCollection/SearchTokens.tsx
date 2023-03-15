@@ -38,9 +38,6 @@ const SearchTokenItem = ({
       </div>
       <div className={s.searchResult_collectionInfo}>
         <Text as="span" className={s.searchResult_collectionName}>
-          {/* {inscriptionIndex
-            ? `${projectName} #${inscriptionIndex}`
-            : `${projectName} #${formatLongAddress(tokenId)}`} */}
           {`${projectName} #${orderInscriptionIndex}`}
         </Text>
       </div>
