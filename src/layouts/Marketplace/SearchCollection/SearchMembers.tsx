@@ -5,7 +5,7 @@ import Avatar from '@components/Avatar';
 import Link from '@components/Link';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
-import { formatLongAddress } from '@utils/format';
+import { formatAddress } from '@utils/format';
 import { v4 } from 'uuid';
 import { User } from '@interfaces/user';
 
@@ -52,7 +52,7 @@ export const SearchMembersResult = ({ list }: { list: { artist: User }[] }) => {
           key={`member-${v4()}`}
           memberName={
             user?.artist?.displayName ||
-            formatLongAddress(user?.artist?.walletAddress)
+            formatAddress(user?.artist?.walletAddress)
           }
           avatar={user?.artist?.avatar}
           memberId={user?.artist?.walletAddress}
