@@ -222,7 +222,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     to: '',
   });
 
-  const [filterActivities, setFilterActivities] = useState('1,3');
+  const [filterActivities, setFilterActivities] = useState('0,1,2,3');
 
   const [projectItemsTraitList, setProjectItemsTraitList] =
     useState<ProjectItemsTraitList | null>(null);

@@ -31,7 +31,7 @@ const TableActivities = () => {
         formatAddress(transaction?.user_a_address, 10) ||
         '-';
       const toAddress =
-        transaction.user_b?.displayName ||
+        transaction?.user_b?.displayName ||
         formatAddress(transaction?.user_b_address, 10) ||
         '-';
 
@@ -72,7 +72,7 @@ const TableActivities = () => {
               {TokenActivityType[transaction?.type]}
             </div>
           ),
-          price: <>&#8383; {formatBTCPrice(transaction?.amount)}</>,
+          price: <>{formatBTCPrice(transaction?.amount)} BTC</>,
           form_address: (
             <Link
               href={`${ROUTE_PATH.PROFILE}/${

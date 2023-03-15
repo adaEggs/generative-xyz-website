@@ -14,6 +14,7 @@ import { CDN_URL } from '@constants/config';
 import { v4 } from 'uuid';
 import Text from '@components/Text';
 import useWindowSize from '@hooks/useWindowSize';
+import ActivityStats from '@containers/GenerativeProjectDetail/ActivityStats';
 
 const CollectionList = ({
   listData,
@@ -26,9 +27,13 @@ const CollectionList = ({
   isLoaded?: boolean;
   layout?: 'mint' | 'shop';
 }) => {
-  const { showFilter, filterTraits, setFilterTraits } = useContext(
-    GenerativeProjectDetailContext
-  );
+  const {
+    showFilter,
+    filterTraits,
+    setFilterTraits,
+    collectionActivities,
+    isLimitMinted,
+  } = useContext(GenerativeProjectDetailContext);
 
   const { mobileScreen } = useWindowSize();
 
@@ -46,21 +51,26 @@ const CollectionList = ({
     setFilterTraits(newFilterTraits);
   };
 
-  const layoutCols =
-    layout === 'mint'
-      ? 'col-wide-2_5 col-xl-3 col-lg-4 col-sm-6 col-12'
-      : 'col-xl-4 ';
+  const layoutCols = layout === 'mint' ? 'col-xl-4' : 'col-xl-4 ';
 
   return (
     <div
-      className={`${s.listToken} grid  ${
+      className={`${s.listToken} row ${
         layout === 'mint' && !mobileScreen ? s.showFilter : 'grid-cols-1'
       }`}
     >
-      {layout === 'mint' && !mobileScreen && (
-        <FilterOptions attributes={projectInfo?.traitStat} />
+      {collectionActivities && isLimitMinted && (
+        <div className="col-3">
+          {layout === 'mint' && !mobileScreen && (
+            <FilterOptions attributes={projectInfo?.traitStat} />
+          )}
+        </div>
       )}
-      <div>
+      <div
+        className={`${
+          collectionActivities && isLimitMinted && 'col-12 col-md-5'
+        }`}
+      >
         {filterTraits && filterTraits.length > 0 && (
           <div className={s.filterList}>
             {filterTraits.split(',').map(trait => (
@@ -123,6 +133,13 @@ const CollectionList = ({
           )}
         </div>
       </div>
+      {collectionActivities &&
+        isLimitMinted &&
+        collectionActivities.result.length > 0 && (
+          <div className="col-12 col-md-3">
+            <ActivityStats />
+          </div>
+        )}
     </div>
   );
 };

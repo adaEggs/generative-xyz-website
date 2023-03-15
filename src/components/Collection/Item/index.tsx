@@ -5,7 +5,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 // import { ProfileContext } from '@contexts/profile-context';
 import Link from '@components/Link';
-import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
 import { GLB_EXTENSION } from '@constants/file';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import useWindowSize from '@hooks/useWindowSize';
@@ -15,6 +15,8 @@ import cs from 'classnames';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
+import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
+import usePurchaseStatus from '@hooks/usePurchaseStatus';
 
 const CollectionItem = ({
   data,
@@ -33,13 +35,14 @@ const CollectionItem = ({
   // const { currentUser } = useContext(ProfileContext);
   const { mobileScreen } = useWindowSize();
   const { isWhitelistProject } = useContext(GenerativeProjectDetailContext);
-  const isBuyable = React.useMemo(() => {
-    return data.buyable && !!data.priceBTC && data?.sell_verified;
-  }, [data.buyable, data.priceBTC, data?.sell_verified]);
 
-  const isWaitingVerify = React.useMemo(() => {
-    return data.buyable && !!data.priceBTC && !data?.sell_verified;
-  }, [data.buyable, data.priceBTC, data?.sell_verified]);
+  const { isWaiting, isBuyETH, isBuyBTC, isBuyable } = usePurchaseStatus({
+    buyable: data?.buyable,
+    isVerified: data?.sell_verified,
+    orderID: data?.orderID,
+    priceBTC: data?.priceBTC,
+    priceETH: data?.priceETH,
+  });
 
   const imgRef = useRef<HTMLImageElement>(null);
 
@@ -75,19 +78,38 @@ const CollectionItem = ({
   const renderBuyButton = () => {
     if (!isBuyable) return null;
     return (
-      <Link
-        href=""
-        onClick={() => {
-          // DO NOTHING
-        }}
-      >
-        <ButtonBuyListed
-          inscriptionID={tokenID}
-          price={data.priceBTC}
-          inscriptionNumber={Number(data.inscriptionIndex || 0)}
-          orderID={data.orderID}
-        />
-      </Link>
+      <div className={s.row}>
+        {isBuyETH && (
+          <Link
+            href=""
+            onClick={() => {
+              // DO NOTHING
+            }}
+          >
+            <ButtonBuyListedFromETH
+              inscriptionID={tokenID}
+              price={data.priceETH}
+              inscriptionNumber={Number(data.inscriptionIndex || 0)}
+              orderID={data.orderID}
+            />
+          </Link>
+        )}
+        {isBuyBTC && (
+          <Link
+            href=""
+            onClick={() => {
+              // DO NOTHING
+            }}
+          >
+            <ButtonBuyListedFromBTC
+              inscriptionID={tokenID}
+              price={data.priceBTC}
+              inscriptionNumber={Number(data.inscriptionIndex || 0)}
+              orderID={data.orderID}
+            />
+          </Link>
+        )}
+      </div>
     );
   };
   const renderHeadDesc = () => {
@@ -149,7 +171,7 @@ const CollectionItem = ({
                     title={data?.project?.name}
                     className={s.collectionCard_info_title_name}
                   >
-                    {isWaitingVerify
+                    {isWaiting
                       ? 'Incoming... ' + (data?.project?.name || '')
                       : ''}
                   </span>
@@ -171,7 +193,7 @@ const CollectionItem = ({
           ) : (
             <div className={cs(s.collectionCard_info, s.desktop)}>
               <div className={s.collectionCard_info_title}>
-                {isWaitingVerify && (
+                {isWaiting && (
                   <Heading
                     as={'h6'}
                     fontWeight="medium"

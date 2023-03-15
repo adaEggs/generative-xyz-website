@@ -135,6 +135,9 @@
 
 .buy_btc {
   margin-top: rem(24px);
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
 
   p {
     text-transform: uppercase;

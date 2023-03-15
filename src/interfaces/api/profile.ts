@@ -52,7 +52,9 @@ export interface ICollectedNFTItem {
   quantity?: number;
   artistName?: string;
   number?: number;
+  priceETH: string;
   tokenNumber?: number;
+  sell_verified?: boolean;
 }
 
 export interface IStatusTransactionMint {
@@ -100,10 +102,12 @@ export interface IGetCollectedNFTInsciptionResp {
   thumbnail: string;
   buyable: boolean;
   price_btc: string;
+  price_eth: string;
   order_id: string;
   cancelling: boolean;
   artist_name: string;
   token_number?: number;
+  sell_verified?: boolean;
 }
 
 export interface IGetCollectedNFTsResp {
