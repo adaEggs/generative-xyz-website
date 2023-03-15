@@ -38,19 +38,16 @@ const CollectionList = ({
       .split(',')
       .filter(item => item !== trait)
       .join(',');
-    // console.log('🚀 ~ handleRemoveFilter ~ newFilterTraits:', newFilterTraits);
     setFilterTraits(newFilterTraits);
   };
 
   return (
     <div
       className={`${s.listToken} grid  ${
-        showFilter && hasTraitAtrribute ? s.showFilter : 'grid-cols-1'
+        showFilter ? s.showFilter : 'grid-cols-1'
       }`}
     >
-      {showFilter && hasTraitAtrribute && (
-        <FilterOptions attributes={projectInfo?.traitStat} />
-      )}
+      {showFilter && <FilterOptions attributes={projectInfo?.traitStat} />}
       <div>
         {filterTraits && filterTraits.length > 0 && (
           <div className={s.filterList}>

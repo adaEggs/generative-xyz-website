@@ -34,7 +34,6 @@ const Step = (props: IStep): JSX.Element => {
       : formatEthPrice(`${nft.amount || 0}`, '0.0');
 
   const isActiveStep = currentActiveStep.current >= index;
-  const isVerifyStep = currentActiveStep.current > index && status;
 
   if (status) {
     currentActiveStep.current = index + 1;
@@ -63,10 +62,12 @@ const Step = (props: IStep): JSX.Element => {
       return <></>;
     }
 
-    const linkTxHash =
-      nft.payType === 'btc'
-        ? `https://www.blockchain.com/explorer/transactions/btc/${tx}`
-        : `https://etherscan.io/tx/${tx}`;
+    // const linkTxHash =
+    //   nft.payType === 'btc'
+    //     ? `https://www.blockchain.com/explorer/transactions/btc/${tx}`
+    //     : `https://etherscan.io/tx/${tx}`;
+
+    const linkTxHash = `https://www.blockchain.com/explorer/transactions/btc/${tx}`;
 
     return (
       <>
@@ -137,10 +138,10 @@ const Step = (props: IStep): JSX.Element => {
       <div className={s.header} onClick={onClick}>
         <div
           className={`${s.indexContainer} ${
-            isVerifyStep ? s.verify : isActiveStep ? s.active : ''
+            status ? s.verify : isActiveStep ? s.active : ''
           }`}
         >
-          {isVerifyStep ? (
+          {status ? (
             <SvgInset
               size={20}
               svgUrl={`${CDN_URL}/icons/ic-check-status.svg`}

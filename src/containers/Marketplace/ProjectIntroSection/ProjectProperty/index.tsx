@@ -14,6 +14,7 @@ export const ProjectProperty = (): JSX.Element => {
   const { project, isRoyalty } = useContext(ProjectLayoutContext);
   const [marketplaceData, setMarketplaceData] =
     useState<IProjectMarketplaceData>();
+
   useAsyncEffect(async () => {
     if (project?.tokenID && project?.contractAddress) {
       const data = await projectMarketplaceData({
