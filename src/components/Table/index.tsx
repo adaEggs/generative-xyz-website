@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { default as BSTable, TableProps } from 'react-bootstrap/Table';
 import { v4 } from 'uuid';
 import cs from 'classnames';
+import _camelCase from 'lodash/camelCase';
 import s from './styles.module.scss';
 import { Empty } from '@components/Collection/Empty';
 
@@ -32,8 +33,11 @@ const Table = ({
       <thead className={s.tableHead}>
         <tr>
           {tableHead?.length > 0 &&
-            tableHead.map(label => (
-              <th key={`thead-${v4()}`} className={s.tableHead_item}>
+            tableHead.map((label, index) => (
+              <th
+                key={`thead-${index}`}
+                className={cs(s.tableHead_item, _camelCase(label?.toString()))}
+              >
                 {label}
               </th>
             ))}
@@ -46,8 +50,8 @@ const Table = ({
     return (
       <tr {...rowData.config} className={s.tableData}>
         {rowData.render &&
-          Object.values(rowData.render).map(value => (
-            <td key={`tdata-${v4()}`} className={s.tableData_item}>
+          Object.values(rowData.render).map((value, index) => (
+            <td key={`tdata-${index}}`} className={s.tableData_item}>
               {value}
             </td>
           ))}

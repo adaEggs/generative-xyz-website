@@ -1,4 +1,76 @@
 .collection {
-  position: relative;
-  min-height: rem(400px);
+  .loadingWrapper {
+    position: relative;
+    min-height: rem(100);
+    margin-top: rem(48);
+  }
+
+  .dataTable {
+    :global(th):not(:first-child),
+    :global(td):not(:first-child) {
+      text-align: right;
+    }
+
+    .name {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: rem(20);
+    }
+
+    .projectThumbnail {
+      width: rem(40);
+      height: rem(40);
+      object-fit: cover;
+      flex-basis: rem(40);
+    }
+
+    .projectInfo {
+      width: calc(100% - rem(60));
+    }
+
+    .owner {
+      font-style: normal;
+      font-weight: 500;
+      font-size: rem(16);
+      line-height: rem(26);
+      color: $black-100;
+      margin-bottom: rem(-4);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: rem(300);
+    }
+
+    .collectionName {
+      font-style: italic;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 26px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: rem(300);
+    }
+
+    .floorPrice,
+    .volume15M,
+    .volume1D,
+    .volume7D {
+      display: inline-flex;
+      align-items: center;
+      gap: rem(2);
+    }
+
+    .oneDayChange,
+    .oneWeekChange {
+      &:global(.negative) {
+        color: $secondary-red;
+      }
+
+      &:global(.positive) {
+        color: $secondary-green-c;
+      }
+    }
+  }
 }

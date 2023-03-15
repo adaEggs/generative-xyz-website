@@ -30,4 +30,7 @@ export interface ICollection {
   volumeOneWeek: {
     amount: string;
   };
+  owner: {
+    name: string;
+  };
 }
