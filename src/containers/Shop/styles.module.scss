@@ -1,0 +1,58 @@
+.shopController {
+  padding: {
+    top: rem(60px);
+    bottom: rem(60px);
+  }
+
+  .heading {
+    font-weight: 500;
+    font-size: rem(34px);
+    line-height: rem(44px);
+    color: $primary-brand;
+    margin-bottom: rem(32px);
+  }
+
+  .tabs {
+    margin-bottom: rem(24);
+    gap: rem(32);
+    border: none;
+    flex-wrap: nowrap;
+
+    :global(.nav-link) {
+      white-space: nowrap;
+      border: none;
+      padding: {
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: rem(10);
+      }
+
+      .tabTitle {
+        display: inline-flex;
+        align-items: center;
+        gap: rem(8);
+      }
+
+      .tabName {
+        text-transform: capitalize;
+        color: $black-40;
+        font-weight: 500;
+        font-size: rem(16);
+        line-height: rem(26);
+
+        &:hover {
+          color: $black-60;
+        }
+      }
+    }
+
+    :global(.nav-link.active) {
+      border-bottom: 2px solid $primary-brand;
+
+      .tabName {
+        color: $primary-brand;
+      }
+    }
+  }
+}
