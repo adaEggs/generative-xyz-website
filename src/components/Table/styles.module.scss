@@ -10,6 +10,9 @@
       font-weight: 500;
       line-height: rem(24px);
       color: $black-40;
+      position: sticky;
+      top: 0;
+      background-color: #fff;
 
       @include mobile {
         white-space: nowrap;
