@@ -56,7 +56,7 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
                 <Tab
                   tabClassName={s.tab}
                   eventKey="txsPurchase"
-                  title="Purchase"
+                  title="Purchases"
                 >
                   <TxsPurchaseTab />
                 </Tab>
