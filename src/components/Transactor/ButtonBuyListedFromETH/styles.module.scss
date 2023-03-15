@@ -21,11 +21,11 @@
     padding-top: 0;
 
     @include min-tablet {
-      width: 840px !important;
+      width: 1040px !important;
     }
 
     @include min-pc-superWide {
-      width: 840px !important;
+      width: 1040px !important;
     }
   }
 }
