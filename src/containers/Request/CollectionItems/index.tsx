@@ -176,6 +176,7 @@ export const CollectionItems = ({
                     <div className="col-md-1">{item?.seq_id}</div>
                     <div className="col-md-1">
                       <Image
+                        className={s.collections_pointer}
                         onClick={() =>
                           goToCollectionPage(item?.project?.token_id)
                         }
@@ -187,6 +188,7 @@ export const CollectionItems = ({
                     </div>
                     <div className="col-md-2 d-flex justify-content-center">
                       <span
+                        className={s.collections_pointer}
                         onClick={() =>
                           goToCollectionPage(item?.project?.token_id)
                         }

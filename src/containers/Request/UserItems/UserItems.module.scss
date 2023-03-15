@@ -71,4 +71,10 @@
   &_verified {
     color: #4f43e2;
   }
+
+  &_pointer {
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
