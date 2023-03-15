@@ -18,8 +18,9 @@ export const getServerSideProps = async () => {
   return {
     props: {
       seoInfo: {
-        title: 'Generative | Requests',
-        description: 'All requests are there.',
+        title: 'Generative | DAO',
+        description:
+          'Co-owned and co-operated by the community to empower artists.',
         image: `${CDN_URL}/images/image.png`,
       },
     },
