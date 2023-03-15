@@ -1,4 +1,7 @@
 .container {
+  justify-content: center;
+  align-items: center;
+
   :global(.modal-dialog) {
     min-width: fit-content;
   }
