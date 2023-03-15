@@ -33,6 +33,7 @@ const CollectionList = ({
     setFilterTraits,
     collectionActivities,
     isLimitMinted,
+    marketplaceData,
   } = useContext(GenerativeProjectDetailContext);
 
   const { mobileScreen } = useWindowSize();
@@ -51,7 +52,7 @@ const CollectionList = ({
     setFilterTraits(newFilterTraits);
   };
 
-  const layoutCols = layout === 'mint' ? 'col-xl-4' : 'col-xl-4 ';
+  const layoutCols = layout === 'mint' ? 'col-xl-6' : 'col-xl-6 ';
 
   return (
     <div
@@ -133,13 +134,11 @@ const CollectionList = ({
           )}
         </div>
       </div>
-      {collectionActivities &&
-        isLimitMinted &&
-        collectionActivities.result.length > 0 && (
-          <div className="col-12 col-md-3">
-            <ActivityStats />
-          </div>
-        )}
+      {marketplaceData && marketplaceData.listed > 0 && isLimitMinted && (
+        <div className="col-12 col-md-3">
+          <ActivityStats />
+        </div>
+      )}
     </div>
   );
 };
