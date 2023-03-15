@@ -14,6 +14,7 @@ import styles from './styles.module.scss';
 
 type Props = {
   attributes?: TraitStats[];
+  layout?: 'mint' | 'shop';
 };
 
 const FilterOptions = ({ attributes }: Props) => {
@@ -155,7 +156,7 @@ const FilterOptions = ({ attributes }: Props) => {
         <RadioGroups
           options={buyNowOptions}
           name="buyNow"
-          defaultValue={buyNowOptions[1].key}
+          defaultValue={buyNowOptions[0].key}
           checked={`${filterBuyNow}`}
           className={styles.radio_buynow}
           onChange={e => {
@@ -192,12 +193,60 @@ const FilterOptions = ({ attributes }: Props) => {
       {/* <div className={styles.filter_buy}>
             console.log("🚀 ~ FilterOptions ~ e.target.value:", e.target.value)
         <Text size="18" fontWeight="medium">
-          Buy now
+          Status
         </Text>
-        <ToogleSwitch onChange={() => setFilterBuyNow(!filterBuyNow)} />
+        <RadioGroups
+          options={buyNowOptions}
+          name="buyNow"
+          defaultValue={buyNowOptions[1].key}
+        />
       </div>
-      <div className="divider"></div>
-      <div className={styles.filter_price}>
+      <div className={styles.rarity}>
+        <Select
+          id={`rarity`}
+          key={`rarity`}
+          isMulti
+          name={`rarity`}
+          // options={options}
+          className={styles.selectInput}
+          // components={{
+          //   Option,
+          // }}
+          // onFocus={() => setCurrentTraitOpen(attr.traitName)}
+          // onInputChange={() => setCurrentTraitOpen('')}
+          classNamePrefix="select"
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          controlShouldRenderValue={false}
+          isClearable={false}
+          isSearchable={false}
+          placeholder={'Rarity'}
+        />
+      </div>
+      <div className="price">
+        <Select
+          id={`price`}
+          key={`price`}
+          isMulti
+          name={`price`}
+          // options={options}
+          className={styles.selectInput}
+          // components={{
+          //   Option,
+          // }}
+          // onFocus={() => setCurrentTraitOpen(attr.traitName)}
+          // onInputChange={() => setCurrentTraitOpen('')}
+          classNamePrefix="select"
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          controlShouldRenderValue={false}
+          isClearable={false}
+          isSearchable={false}
+          placeholder={'Price'}
+        />
+      </div>
+      {/* <div className="divider"></div> */}
+      {/* <div className={styles.filter_price}>
         <Text size="18" fontWeight="medium">
           Price range
         </Text>
@@ -227,7 +276,7 @@ const FilterOptions = ({ attributes }: Props) => {
       </div> */}
       {sortedAttributes && sortedAttributes?.length > 0 && (
         <>
-          <div className="divider"></div>
+          {/* <div className="divider"></div> */}
           <div className={styles.filter_traits}>
             <Stack direction="horizontal" className="justify-between">
               <Text size="18" fontWeight="medium">

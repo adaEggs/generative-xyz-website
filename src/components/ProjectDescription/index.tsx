@@ -12,6 +12,7 @@ type Props = {
   tokenDetail?: ReactNode | null;
   attributes?: ReactNode | null;
   onlyDesc?: boolean;
+  className?: string;
 };
 
 const ProjectDescription = ({
@@ -22,6 +23,7 @@ const ProjectDescription = ({
   attributes,
   descInteraction = '',
   onlyDesc,
+  className,
 }: Props) => {
   const [projectDescription, setProjectDescription] = useState('');
   const [projectInteraction, setProjectInteraction] = useState('');
@@ -53,7 +55,7 @@ const ProjectDescription = ({
   }, [desc, profileBio, attributes, tokenDetail]);
 
   return onlyDesc ? (
-    <div className={s.project_desc}>
+    <div className={cs(s.project_desc, className)}>
       <SeeMore>{hasInteraction ? projectDescription : desc}</SeeMore>
     </div>
   ) : (

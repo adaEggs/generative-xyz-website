@@ -34,6 +34,7 @@ export const ROUTE_PATH = {
   PRESERVE: '/preserve',
   PRESERVE_LANDING: '/preserve-cryptoart',
   SHOP: '/shop',
+  REQUEST: '/requests',
 };
 
 export const STANDALONE_PAGES = [
