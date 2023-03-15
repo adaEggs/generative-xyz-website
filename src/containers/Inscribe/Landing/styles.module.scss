@@ -1,11 +1,14 @@
 .wrapper {
-  height: auto;
   background-color: $primary-light;
-  padding-top: rem(40);
 
-  @include min-pc {
-    padding-top: 0;
-    height: calc(100vh - rem(200px));
+  &_container {
+    padding-top: rem(40);
+    height: auto;
+
+    @include min-pc {
+      padding-top: 0;
+      height: calc(100vh - rem(200px));
+    }
   }
 }
 
@@ -25,6 +28,12 @@
       flex-direction: column;
       gap: rem(8);
       margin-bottom: rem(38);
+      max-width: 720px;
+
+      &_support {
+        max-width: 460px;
+        margin-bottom: rem(12px);
+      }
     }
 
     .bullet {

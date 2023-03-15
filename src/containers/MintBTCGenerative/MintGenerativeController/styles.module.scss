@@ -47,5 +47,13 @@
         column-gap: rem(100px);
       }
     }
+
+    &:global(.mint-success) {
+      display: block;
+      max-width: rem(600px);
+      aspect-ratio: 1/ 1;
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
 }
