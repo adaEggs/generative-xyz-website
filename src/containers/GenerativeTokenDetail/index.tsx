@@ -20,7 +20,7 @@ import {
 import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
-import { formatLongAddress, formatTokenId } from '@utils/format';
+import { formatAddress, formatLongAddress, formatTokenId } from '@utils/format';
 import React, {
   useCallback,
   useContext,
@@ -293,7 +293,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               className={s.projectName}
             >
               {tokenData?.owner?.displayName ||
-                formatLongAddress(
+                formatAddress(
                   tokenData?.owner?.walletAddressBtcTaproot ||
                     tokenData?.owner?.walletAddress ||
                     ''
@@ -307,7 +307,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               href={`${ROUTE_PATH.PROFILE}/${tokenData?.ownerAddr}`}
               className={s.projectName}
             >
-              {formatLongAddress(tokenData?.ownerAddr || '')}
+              {formatAddress(tokenData?.ownerAddr || '')}
             </Link>
           </Text>
         )}
