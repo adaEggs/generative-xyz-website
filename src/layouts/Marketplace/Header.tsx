@@ -8,7 +8,7 @@ import { LogLevel } from '@enums/log-level';
 import s from '@layouts/Default/HeaderFixed/Header.module.scss';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { ellipsisCenter, formatAddress } from '@utils/format';
+import { formatAddress } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import { useRouter } from 'next/router';
@@ -379,10 +379,10 @@ const Header: React.FC<IProp> = ({
                             height={32}
                             width={32}
                           />
-                          {ellipsisCenter({
-                            str: user.walletAddressBtcTaproot || '',
-                            limit: 4,
-                          })}
+                          {formatAddress(
+                            user.walletAddressBtcTaproot || '',
+                            10
+                          )}
                         </a>
                       </li>
                     )}

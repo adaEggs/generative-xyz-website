@@ -53,6 +53,7 @@ export interface ICollectedNFTItem {
   artistName?: string;
   number?: number;
   priceETH: string;
+  tokenNumber?: number;
 }
 
 export interface IStatusTransactionMint {
@@ -103,6 +104,7 @@ export interface IGetCollectedNFTInsciptionResp {
   order_id: string;
   cancelling: boolean;
   artist_name: string;
+  token_number?: number;
 }
 
 export interface IGetCollectedNFTsResp {
