@@ -11,6 +11,49 @@
       text-align: right;
     }
 
+    tr {
+      display: flex;
+      width: 100%;
+    }
+
+    td:not(:nth-child(1)),
+    th:not(:nth-child(1)) {
+      display: flex;
+      align-items: center;
+      justify-content: right;
+      width: rem(120px);
+
+      @include min-tablet {
+        width: rem(150px);
+      }
+
+      @include min-pc {
+        //display: table;
+        //align-items: unset;
+        //justify-content: unset;
+        width: (180/1800) * 100%;
+      }
+    }
+
+    td:nth-child(1),
+    th:nth-child(1) {
+      left: 0;
+      position: sticky;
+      background-color: #fff;
+      width: rem(220px);
+
+      @include tablet {
+        width: rem(300px);
+      }
+
+      @include min-pc {
+        left: unset;
+        position: unset;
+        min-width: unset;
+        width: (360/1800) * 100%;
+      }
+    }
+
     .name {
       display: inline-flex;
       align-items: center;
@@ -36,10 +79,12 @@
       line-height: rem(26);
       color: $black-100;
       margin-bottom: rem(-4);
-      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: rem(300);
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /* number of lines to show */
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
 
     .collectionName {
@@ -47,10 +92,13 @@
       font-weight: 500;
       font-size: 16px;
       line-height: 26px;
-      white-space: nowrap;
+      max-width: rem(300);
       overflow: hidden;
       text-overflow: ellipsis;
-      max-width: rem(300);
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /* number of lines to show */
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
     }
 
     .floorPrice,
