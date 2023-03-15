@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import cn from 'classnames';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -16,7 +16,7 @@ import { Loading } from '@components/Loading';
 import { getDaoProjects, voteDaoProject } from '@services/request';
 import Button from '@components/Button';
 import { convertIpfsToHttp } from '@utils/image';
-import useDidMountEffect from '@hooks/useDidMountEffect';
+// import useDidMountEffect from '@hooks/useDidMountEffect';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
 
 import s from './CollectionItems.module.scss';
@@ -52,7 +52,7 @@ export const CollectionItems = ({
     setCurrentCursor(collections?.cursor || '');
   };
 
-  useDidMountEffect(() => {
+  useEffect(() => {
     initData();
   }, [keyword, status, sort]);
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import cn from 'classnames';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -14,7 +14,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { Loading } from '@components/Loading';
 import { getDaoArtists, voteDaoArtist } from '@services/request';
 import Button from '@components/Button';
-import useDidMountEffect from '@hooks/useDidMountEffect';
+// import useDidMountEffect from '@hooks/useDidMountEffect';
 import { formatAddress } from '@utils/format';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
 
@@ -49,7 +49,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
     setCurrentCursor(users?.cursor || '');
   };
 
-  useDidMountEffect(() => {
+  useEffect(() => {
     initData();
   }, [keyword, status, sort]);
 
@@ -126,10 +126,10 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
             <div className={s.users_header}>
               <div className="col-md-1">No.</div>
               <div className="col-md-2">Artists</div>
-              <div className="col-md-2">Twitter</div>
+              <div className="col-md-3">Twitter</div>
               <div className="col-md-2">Registration date</div>
               <div className="col-md-2">Status</div>
-              <div className="invisible col-md-3" />
+              <div className="invisible col-md-2" />
             </div>
 
             {typeof isLoaded && combineList.length === 0 ? (
@@ -161,7 +161,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                           formatAddress(item?.user?.wallet_address)}
                       </span>
                     </div>
-                    <div className="col-md-2">
+                    <div className="col-md-3">
                       {item?.user?.profile_social?.twitter || '-'}
                     </div>
                     <div className="col-md-2">{`${dayjs(
@@ -170,7 +170,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                     <div className="col-md-2">
                       {getStatusProposal(item?.status)}
                     </div>
-                    <div className="col-md-3 d-flex justify-content-end">
+                    <div className="col-md-2 d-flex justify-content-end">
                       <Button
                         className={cn(s.users_btn, s.users_mr6)}
                         disabled={item?.action?.can_vote === false}
