@@ -146,11 +146,13 @@ export const getCollectedNFTs = async (
             statusText: '',
             buyable: data?.buyable,
             priceBTC: data?.price_btc,
+            priceETH: data?.price_eth,
             orderID: data?.order_id,
             cancelling: data?.cancelling,
             artistName: data?.artist_name,
             number: data.number,
             tokenNumber: data?.token_number,
+            sell_verified: data?.sell_verified,
           } as ICollectedNFTItem;
         }
       );

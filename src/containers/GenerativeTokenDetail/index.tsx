@@ -47,6 +47,7 @@ import { AuthenticCard } from './AuthenticCard';
 import { filterCreatorName } from '@utils/generative';
 import { wordCase } from '@utils/common';
 import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
+import usePurchaseStatus from '@hooks/usePurchaseStatus';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
@@ -70,17 +71,14 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const mintedDate = dayjs(tokenData?.mintedTime).format('MMM DD, YYYY');
   const [isBuying, setIsBuying] = useState(false);
   // const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
-  const isBuyable = React.useMemo(() => {
-    return (
-      tokenData?.buyable && !!tokenData?.priceBTC && tokenData?.sell_verified
-    );
-  }, [tokenData?.buyable, tokenData?.priceBTC, tokenData?.sell_verified]);
 
-  const isWaitingVerify = React.useMemo(() => {
-    return (
-      tokenData?.buyable && !!tokenData?.priceBTC && !tokenData?.sell_verified
-    );
-  }, [tokenData?.buyable, tokenData?.priceBTC, tokenData?.sell_verified]);
+  const { isWaiting, isBuyETH, isBuyBTC, isBuyable } = usePurchaseStatus({
+    buyable: tokenData?.buyable,
+    isVerified: tokenData?.sell_verified,
+    orderID: tokenData?.orderID,
+    priceBTC: tokenData?.priceBTC,
+    priceETH: tokenData?.priceETH,
+  });
 
   const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
 
@@ -251,7 +249,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
 
   const renderBuyBTCView = () => {
     if (!tokenData) return null;
-    if (isWaitingVerify) {
+    if (isWaiting) {
       return (
         <Heading as={'h6'} fontWeight="medium" className={s.waiting}>
           Incoming...
@@ -261,22 +259,26 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     if (!isBuyable) return null;
     return (
       <div className={s.buy_btc}>
-        <ButtonBuyListedFromETH
-          sizes={'large'}
-          inscriptionID={tokenData.tokenID}
-          price={tokenData.priceETH}
-          inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
-          orderID={tokenData.orderID}
-          isDetail={true}
-        />
-        <ButtonBuyListedFromBTC
-          sizes={'large'}
-          inscriptionID={tokenData.tokenID}
-          price={tokenData.priceBTC}
-          inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
-          orderID={tokenData.orderID}
-          isDetail={true}
-        />
+        {isBuyETH && (
+          <ButtonBuyListedFromETH
+            sizes={'large'}
+            inscriptionID={tokenData.tokenID}
+            price={tokenData.priceETH}
+            inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+            orderID={tokenData.orderID}
+            isDetail={true}
+          />
+        )}
+        {isBuyBTC && (
+          <ButtonBuyListedFromBTC
+            sizes={'large'}
+            inscriptionID={tokenData.tokenID}
+            price={tokenData.priceBTC}
+            inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+            orderID={tokenData.orderID}
+            isDetail={true}
+          />
+        )}
       </div>
     );
   };

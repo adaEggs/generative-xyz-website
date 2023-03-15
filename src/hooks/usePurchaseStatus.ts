@@ -3,8 +3,8 @@ import React from 'react';
 interface IProps {
   buyable?: boolean;
   isVerified?: boolean;
-  priceBTC?: number;
-  priceETH?: string;
+  priceBTC?: string | number;
+  priceETH?: string | number;
   orderID?: string;
 }
 const usePurchaseStatus = ({
