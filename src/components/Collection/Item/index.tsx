@@ -88,6 +88,7 @@ const CollectionItem = ({
             className={s.wrapButton}
           >
             <ButtonBuyListedFromETH
+              sizes="medium"
               inscriptionID={tokenID}
               price={data.priceETH}
               inscriptionNumber={Number(data.inscriptionIndex || 0)}
@@ -104,6 +105,7 @@ const CollectionItem = ({
             }}
           >
             <ButtonBuyListedFromBTC
+              sizes="medium"
               inscriptionID={tokenID}
               price={data.priceBTC}
               inscriptionNumber={Number(data.inscriptionIndex || 0)}
