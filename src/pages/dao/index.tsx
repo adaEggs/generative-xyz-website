@@ -1,27 +1,28 @@
-import { CDN_URL } from '@constants/config';
-import ProposalList from '@containers/DAO/ProposalList';
-import MarketplaceLayout from '@layouts/Marketplace';
 import { NextPage } from 'next';
 
-const DAOProposalListPage: NextPage = () => {
+import RequestWrapper from '@containers/Request';
+import MarketplaceLayout from '@layouts/Marketplace';
+import { CDN_URL } from '@constants/config';
+
+const RequestsPage: NextPage = () => {
   return (
     <MarketplaceLayout>
-      <ProposalList />
+      <RequestWrapper />
     </MarketplaceLayout>
   );
 };
 
-export default DAOProposalListPage;
+export default RequestsPage;
 
-export async function getServerSideProps() {
+export const getServerSideProps = async () => {
   return {
     props: {
       seoInfo: {
         title: 'Generative | DAO',
         description:
-          'Collectively contribute to the development of the Generative protocol',
-        image: `${CDN_URL}/images/collection.jpg`,
+          'Co-owned and co-operated by the community to empower artists.',
+        image: `${CDN_URL}/images/image.png`,
       },
     },
   };
-}
+};

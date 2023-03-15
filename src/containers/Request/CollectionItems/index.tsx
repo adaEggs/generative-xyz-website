@@ -16,8 +16,8 @@ import { Loading } from '@components/Loading';
 import { getDaoProjects, voteDaoProject } from '@services/request';
 import Button from '@components/Button';
 import { convertIpfsToHttp } from '@utils/image';
-// import useDidMountEffect from '@hooks/useDidMountEffect';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
+import { formatBTCPrice } from '@utils/format';
 
 import s from './CollectionItems.module.scss';
 import NoData from '../NoData';
@@ -40,6 +40,7 @@ export const CollectionItems = ({
   const [currentCursor, setCurrentCursor] = useState<string>('');
 
   const initData = async (): Promise<void> => {
+    setIsLoaded(false);
     const collections = await getDaoProjects({
       keyword,
       status,
@@ -123,6 +124,10 @@ export const CollectionItems = ({
     router.push(`${ROUTE_PATH.GENERATIVE}/${tokenId}`);
   };
 
+  const goToProfilePage = (walletAddress: string): void => {
+    router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
+  };
+
   return (
     <div className={cn(className, s.collections)}>
       <Row className={s.items_projects}>
@@ -135,21 +140,24 @@ export const CollectionItems = ({
         ) : (
           <>
             <div className={cn(s.collections_header)}>
-              <div className="col-md-1">No.</div>
-              <div className="col-md-1">Thumbnail</div>
+              <div className="col-md-1">Proposal ID</div>
+              <div className="col-md-2">Image</div>
               <div className="col-md-2 d-flex justify-content-center">
-                Collections Name
+                Collections
               </div>
               <div className="col-md-1 d-flex justify-content-center">
-                #Outputs
+                Max Supply
               </div>
-              <div className="col-md-2 d-flex justify-content-center">
-                Artists
+              <div className="col-md-1 d-flex justify-content-center">
+                Price
+              </div>
+              <div className="col-md-1 d-flex justify-content-center">
+                Artist
               </div>
               <div className="col-md-1 d-flex justify-content-center">
                 Expiration
               </div>
-              <div className="col-md-2 d-flex justify-content-center">
+              <div className="col-md-1 d-flex justify-content-center">
                 Status
               </div>
               <div className="col-md-2 invisible">Action</div>
@@ -174,15 +182,15 @@ export const CollectionItems = ({
                 {combineList?.map((item: any) => (
                   <div key={item.id} className={s.collections_row}>
                     <div className="col-md-1">{item?.seq_id}</div>
-                    <div className="col-md-1">
+                    <div className="col-md-2">
                       <Image
                         className={s.collections_pointer}
                         onClick={() =>
                           goToCollectionPage(item?.project?.token_id)
                         }
                         src={convertIpfsToHttp(item?.project?.thumbnail)}
-                        width={60}
-                        height={60}
+                        width={120}
+                        height={120}
                         alt={item?.project?.name}
                       />
                     </div>
@@ -199,13 +207,23 @@ export const CollectionItems = ({
                     <div className="col-md-1 d-flex justify-content-center">
                       {item?.project?.max_supply}
                     </div>
-                    <div className="col-md-2 d-flex justify-content-center">
-                      {item?.user?.display_name}
+                    <div className="col-md-1 d-flex justify-content-center">
+                      {formatBTCPrice(item?.project?.mint_price)} BTC
+                    </div>
+                    <div className="col-md-1 d-flex justify-content-center">
+                      <span
+                        className={s.collections_pointer}
+                        onClick={() =>
+                          goToProfilePage(item?.user?.wallet_address)
+                        }
+                      >
+                        {item?.user?.display_name}
+                      </span>
                     </div>
                     <div className="col-md-1 d-flex justify-content-center">{`${dayjs(
                       item?.expired_at
                     ).format('MMM DD')}`}</div>
-                    <div className="col-md-2 d-flex justify-content-center">
+                    <div className="col-md-1 d-flex justify-content-center">
                       {getStatusProposal(item?.status)}
                     </div>
                     <div className="col-md-2 d-flex justify-content-end">
