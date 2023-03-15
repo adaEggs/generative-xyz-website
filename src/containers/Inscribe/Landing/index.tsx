@@ -11,6 +11,7 @@ import { SetStateAction, useMemo } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import { FileUploader } from 'react-drag-drop-files';
 import s from './styles.module.scss';
+import { getSupportedFileExtList } from '@utils/file';
 
 const InscribeLanding = ({
   onChangeFile,
@@ -29,41 +30,21 @@ const InscribeLanding = ({
   }, [user]);
 
   return (
-    <>
-      <Container className={s.wrapper}>
+    <div className={s.wrapper}>
+      <Container className={s.wrapper_container}>
         <Row className={s.metamaskContainer}>
           <Col md={'12'} xl={'6'} className={s.leftContainer}>
             <Heading as="h2" className={s.title}>
-              Inscribe NFTs on Bitcoin. For free
+              Inscribe your NFTs on Bitcoin—for FREE!
             </Heading>
             <div className={s.content}>
               <Text size="20">
-                Generative makes it quick and easy to inscribe BTC NFTs with
-                zero fee.
+                At Generative, we’ve made it a cinch to inscribe your NFTs on
+                the most trusted blockchain, Bitcoin, at no cost. <br />
+                <br /> Just upload your picture, GIF, video,… and we’ll take
+                care of the rest.
               </Text>
-              <Text size="20" className={s.bullet}>
-                <SvgInset
-                  size={20}
-                  svgUrl={`${CDN_URL}/icons/check-circle.svg`}
-                />
-                No fees charged by Generative. Only the network fee need to be
-                paid.
-              </Text>
-              <Text size="20" className={s.bullet}>
-                <SvgInset
-                  size={20}
-                  svgUrl={`${CDN_URL}/icons/check-circle.svg`}
-                />
-                Not necessary to set up a full node, ord indexer, or any other
-                technical infrastructure.
-              </Text>
-              <Text size="20" className={s.bullet}>
-                <SvgInset
-                  size={20}
-                  svgUrl={`${CDN_URL}/icons/check-circle.svg`}
-                />
-                Make inscribing as easy as a piece of cake.
-              </Text>
+              <Text color="black-60">*A network fee still applies.</Text>
             </div>
 
             {isUser ? (
@@ -84,12 +65,6 @@ const InscribeLanding = ({
                     Inscribe now
                   </Text>
                 </ButtonIcon>
-                {/* <DropFile
-                  className={s.dropZoneContainer}
-                  onChange={onChangeFile}
-                  fileOrFiles={null}
-                  setFileError={setFileError}
-                /> */}
                 <FileUploader
                   handleChange={onChangeFile}
                   name={'fileUploader'}
@@ -118,10 +93,12 @@ const InscribeLanding = ({
                 Login via MetaMask
               </ButtonIcon>
             )}
-            <Text color="black-60">
-              Select a file to inscribe (text, jpg, mp3, etc.)
+            <Text className={s.content_support} color="black-60">
+              Select a file to inscribe ({getSupportedFileExtList().join(', ')})
             </Text>
-            <Text color="black-60">Maximum 380Kb</Text>
+            <Text className={s.content_size} color="black-60">
+              Maximum 380Kb
+            </Text>
           </Col>
           <Col md={'12'} xl={'6'} className={s.poster}>
             <img alt="banner" src={`${CDN_URL}/images/free-background.png`} />
@@ -129,7 +106,7 @@ const InscribeLanding = ({
         </Row>
       </Container>
       <GridDebug />
-    </>
+    </div>
   );
 };
 
