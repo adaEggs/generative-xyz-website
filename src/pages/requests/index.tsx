@@ -4,11 +4,7 @@ import RequestWrapper from '@containers/Request';
 import MarketplaceLayout from '@layouts/Marketplace';
 import { CDN_URL } from '@constants/config';
 
-interface IPropsPage {
-  fallback: Record<string, string> | null;
-}
-
-const RequestsPage: NextPage<IPropsPage> = ({ fallback }) => {
+const RequestsPage: NextPage = () => {
   return (
     <MarketplaceLayout>
       <RequestWrapper />
