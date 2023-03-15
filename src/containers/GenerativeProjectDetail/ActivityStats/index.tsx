@@ -8,7 +8,7 @@ import CollectionActivityTable from './Table';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
-    value: '1,3',
+    value: '0,1,2,3',
     label: 'All',
   },
   {

@@ -72,7 +72,7 @@ const TableActivities = () => {
               {TokenActivityType[transaction?.type]}
             </div>
           ),
-          price: <>&#8383; {formatBTCPrice(transaction?.amount)}</>,
+          price: <>{formatBTCPrice(transaction?.amount)} BTC</>,
           form_address: (
             <Link
               href={`${ROUTE_PATH.PROFILE}/${

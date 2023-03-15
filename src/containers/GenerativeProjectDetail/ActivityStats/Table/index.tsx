@@ -99,16 +99,16 @@ const CollectionActivityTable = () => {
           ),
           price: (
             <div className={s.price}>
-              {formatBTCPrice(transaction.amount)} &#8383;
+              {formatBTCPrice(transaction.amount)} BTC
             </div>
           ),
           seller: (
             <div className={s.address}>
               <Link
                 href={`${ROUTE_PATH.PROFILE}/${
-                  transaction.user_a.walletAddressBtcTaproot
-                    ? transaction.user_a.walletAddressBtcTaproot
-                    : transaction.user_a.walletAddress
+                  transaction?.user_a?.walletAddressBtcTaproot
+                    ? transaction?.user_a?.walletAddressBtcTaproot
+                    : transaction?.user_a?.walletAddress
                 }`}
                 className="hover-underline"
               >
