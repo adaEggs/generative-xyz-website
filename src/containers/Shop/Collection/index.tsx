@@ -6,6 +6,10 @@ import { ICollection } from '@interfaces/shop';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import cs from 'classnames';
 import { formatCurrency } from '@utils/format';
+import { getCollectionList } from '@services/shop';
+import _uniqBy from 'lodash/uniqBy';
+import log from '@utils/logger';
+import { LogLevel } from '@enums/log-level';
 
 const TABLE_HEADINGS = [
   'Name',
@@ -19,41 +23,7 @@ const TABLE_HEADINGS = [
   'Supply',
 ];
 
-const SAMPLE_DATA: ICollection = {
-  contractAddress: '0x00',
-  project: {
-    name: 'Timechain Timechain Timechain Timechain Timechain Timechain Timechain Timechain Timechain ',
-    tokenId: '0x123',
-    thumbnail:
-      'https://cdn.generative.xyz/upload/1678089979922719472-gansypollockandkandinskystyle703929b280804b128fe586ced783eae5denoiseaistandardsharpenaistandard.jpg',
-  },
-  totalSupply: 1200,
-  numberOwners: 213,
-  numberOwnersPercentage: 54,
-  floorPrice: {
-    amount: '12000',
-  },
-  floorPriceOneDay: {
-    amount: '13000',
-    percentageChanged: 4.2,
-  },
-  floorPriceOneWeek: {
-    amount: '15000',
-    percentageChanged: 4.2,
-  },
-  volumeFifteenMinutes: {
-    amount: '123000',
-  },
-  volumeOneDay: {
-    amount: '1223000',
-  },
-  volumeOneWeek: {
-    amount: '90123',
-  },
-  owner: {
-    name: 'Naruto Naruto Naruto Naruto Naruto Naruto Naruto Naruto Naruto ',
-  },
-};
+const LOG_PREFIX = 'CollectionTab';
 
 const Collection: React.FC = (): React.ReactElement => {
   const [collectionList, setCollections] = useState<Array<ICollection>>([]);
@@ -150,41 +120,36 @@ const Collection: React.FC = (): React.ReactElement => {
     };
   });
 
-  const handleLoadCollection = async (): Promise<void> => {
-    // TODO fetch data
-    setTotal(100);
-    const newPage = page + 1;
-    setPage(newPage);
-    const sampleList = [
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-      SAMPLE_DATA,
-    ];
-    setCollections(prev => [...prev, ...sampleList]);
+  const handleFetchCollections = async (): Promise<void> => {
+    try {
+      const newPage = page + 1;
+      const { result, total } = await getCollectionList({
+        limit: 15,
+        page: newPage,
+      });
+      if (result && Array.isArray(result)) {
+        const newList = _uniqBy(
+          [...collectionList, ...result],
+          nft => nft.contractAddress + nft.project.tokenId
+        );
+        setCollections(newList);
+      }
+      setPage(newPage);
+      setTotal(total);
+    } catch (err: unknown) {
+      log('can not fetch data', LogLevel.ERROR, LOG_PREFIX);
+    }
   };
 
   useEffect(() => {
-    handleLoadCollection();
+    handleFetchCollections();
   }, []);
 
   return (
     <div className={s.collection}>
       <InfiniteScroll
         dataLength={collectionList.length}
-        next={handleLoadCollection}
+        next={handleFetchCollections}
         className={s.collectionScroller}
         hasMore={collectionList.length < total}
         loader={
