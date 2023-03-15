@@ -43,7 +43,7 @@ const ButtonBuyListedFromETH = React.memo(
     const hideModal = () => {
       setShow(false);
     };
-    if (!price || isProduction()) return null;
+    if (!price && isProduction()) return null;
 
     return (
       <>

@@ -85,8 +85,10 @@ const CollectionItem = ({
             onClick={() => {
               // DO NOTHING
             }}
+            className={s.wrapButton}
           >
             <ButtonBuyListedFromETH
+              sizes="medium"
               inscriptionID={tokenID}
               price={data.priceETH}
               inscriptionNumber={Number(data.inscriptionIndex || 0)}
@@ -97,11 +99,13 @@ const CollectionItem = ({
         {isBuyBTC && (
           <Link
             href=""
+            className={s.wrapButton}
             onClick={() => {
               // DO NOTHING
             }}
           >
             <ButtonBuyListedFromBTC
+              sizes="medium"
               inscriptionID={tokenID}
               price={data.priceBTC}
               inscriptionNumber={Number(data.inscriptionIndex || 0)}
@@ -233,9 +237,9 @@ const CollectionItem = ({
                         {data?.creator?.displayName}
                       </div>
                     )}
-                    {renderBuyButton()}
                   </div>
                 </Stack>
+                {renderBuyButton()}
                 {showInscriptionID && (
                   <Heading
                     as={'h4'}
