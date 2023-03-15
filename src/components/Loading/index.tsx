@@ -15,7 +15,7 @@ export const Loading = ({
     <div
       className={`${s.loading} ${isPage ? s.isPage : ''} ${
         !isLoaded ? s.isShow : ''
-      } ${className || ''} ${s[themes]}`}
+      } ${className || ''} ${s[themes]} loading`}
     >
       <div className={`${s.loading_inner} loading_inner`}>
         <div className={s['lds-spinner']}>
