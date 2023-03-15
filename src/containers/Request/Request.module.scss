@@ -44,6 +44,7 @@
   &_submit {
     display: inline-flex;
     align-items: center;
+
     &_text {
       margin-right: rem(12px);
       font-weight: 500;
@@ -51,6 +52,7 @@
       line-height: rem(26px);
       color: #898989;
     }
+
     &_btn {
       padding: rem(11px) rem(20px);
       background: #4f43e2;
@@ -60,7 +62,7 @@
       font-size: 16px;
       line-height: 26px;
       letter-spacing: 0.01em;
-      color: #ffffff;
+      color: #fff;
 
       &:hover {
         background: #4f43e2;
@@ -81,6 +83,7 @@
     font-size: rem(16px);
     line-height: rem(26px);
     color: #4f43e2;
+
     p {
       margin-left: rem(15.25px);
     }

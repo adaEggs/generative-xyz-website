@@ -5,6 +5,7 @@
     width: 100%;
     margin-top: rem(50px);
   }
+
   &_header {
     padding-bottom: rem(10px);
     width: 100%;
@@ -16,6 +17,7 @@
     line-height: 22px;
     color: #898989;
   }
+
   &_row {
     padding: rem(8px);
     width: 100%;
@@ -24,20 +26,25 @@
     align-items: center;
     border-bottom: 1px solid #cecece;
   }
+
   &_status {
     font-weight: 500;
     font-size: 14px;
     line-height: 22px;
   }
+
   &_executed {
     color: #ff7e21;
   }
+
   &_voting {
     color: #00aa6c;
   }
+
   &_defeated {
     color: #ff4747;
   }
+
   &_btn {
     padding: rem(5px) rem(14px);
     border-radius: 2px;
@@ -47,15 +54,19 @@
     line-height: 24px;
     letter-spacing: 0.01em;
     text-transform: initial;
+
     &:disabled {
-      background-color: #ffffff;
+      background-color: #fff;
     }
   }
+
   &_mr6 {
     margin-right: rem(6px);
   }
+
   &_btnVote {
     border: none;
+
     &:disabled {
       background-color: #f2f2f2;
     }
