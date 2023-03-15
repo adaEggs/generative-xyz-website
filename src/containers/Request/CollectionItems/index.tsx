@@ -143,7 +143,7 @@ export const CollectionItems = ({
               <div className="col-md-1">Proposal ID</div>
               <div className="col-md-2">Image</div>
               <div className="col-md-2 d-flex justify-content-center">
-                Collections
+                Collection
               </div>
               <div className="col-md-1 d-flex justify-content-center">
                 Max Supply

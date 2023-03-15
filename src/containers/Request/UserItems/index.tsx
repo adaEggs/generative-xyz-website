@@ -156,9 +156,6 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                           formatAddress(item?.user?.wallet_address)}
                       </span>
                     </div>
-                    {/* <div className="col-md-2">
-                      {item?.user?.profile_social?.twitter || '-'}
-                    </div> */}
                     <div className="col-md-3">{`${dayjs(
                       item?.user?.expired_at
                     ).format('MMM DD')}`}</div>
