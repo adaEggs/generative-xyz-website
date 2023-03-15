@@ -4,6 +4,7 @@ import {
   IFeeRate,
   ITxHistory,
   ITxHistoryBuyInsETH,
+  ITxHistoryPurchase,
 } from '@interfaces/api/bitcoin';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
@@ -35,6 +36,7 @@ export interface IAssetsContext {
 
   history: ITxHistory[];
   txsETH: ITxHistoryBuyInsETH[];
+  txsPurchase: ITxHistoryPurchase[];
   isLoadingHistory: boolean;
   isLoadedHistory: boolean;
 
@@ -60,6 +62,7 @@ const initialValue: IAssetsContext = {
 
   history: [],
   txsETH: [],
+  txsPurchase: [],
   isLoadingHistory: false,
   isLoadedHistory: false,
 
@@ -108,6 +111,7 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   // History
   const [history, setHistory] = useState<ITxHistory[]>([]);
   const [txsETH, setTxsETH] = useState<ITxHistoryBuyInsETH[]>([]);
+  const [txsPurchase, setTxsPurchase] = useState<ITxHistoryPurchase[]>([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState<boolean>(false);
   const [isLoadedHistory, setIsLoadedHistory] = useState<boolean>(false);
 
@@ -140,14 +144,20 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   };
 
   const fetchHistory = async (): Promise<ITxHistory[]> => {
-    if (!currentAddress) return [];
+    if (!currentAddress) {
+      setHistory([]);
+      setTxsETH([]);
+      setTxsPurchase([]);
+      return [];
+    }
     let _history: ITxHistory[] = [];
     try {
       setIsLoadingHistory(true);
-      const { txs, txsETH } = await getHistory(currentAddress);
+      const { txs, txsETH, txsPurchase } = await getHistory(currentAddress);
       _history = txs;
       setHistory(_history);
       setTxsETH(txsETH);
+      setTxsPurchase(txsPurchase);
     } catch (err) {
       const error = getError(err);
       log(error.message, LogLevel.ERROR, LOG_PREFIX);
@@ -257,6 +267,7 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
 
       history,
       txsETH,
+      txsPurchase,
       isLoadingHistory,
       isLoadedHistory,
 
@@ -283,6 +294,7 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
 
     history,
     txsETH,
+    txsPurchase,
     isLoadingHistory,
     isLoadedHistory,
 

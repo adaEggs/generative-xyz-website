@@ -6,6 +6,7 @@ import s from './styles.module.scss';
 import { Tab, Tabs } from 'react-bootstrap';
 import TxsTab from '@containers/Profile/Collected/Modal/History/TxsTab';
 import TxsETHTab from '@containers/Profile/Collected/Modal/History/TxsETHTab';
+import TxsPurchaseTab from '@containers/Profile/Collected/Modal/History/TxsPurchaseTab';
 
 interface IProps {
   showModal: boolean;
@@ -51,6 +52,13 @@ const HistoryModal = ({ showModal, onClose }: IProps): JSX.Element => {
                   title="Buy Inscription ETH"
                 >
                   <TxsETHTab />
+                </Tab>
+                <Tab
+                  tabClassName={s.tab}
+                  eventKey="txsPurchase"
+                  title="Purchase"
+                >
+                  <TxsPurchaseTab />
                 </Tab>
               </Tabs>
             </div>

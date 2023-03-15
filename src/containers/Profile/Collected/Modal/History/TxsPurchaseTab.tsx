@@ -4,14 +4,14 @@ import { toast } from 'react-hot-toast';
 import Text from '@components/Text';
 import { formatUnixDateTime } from '@utils/time';
 import { Stack } from 'react-bootstrap';
-import { ellipsisCenter, formatEthPrice } from '@utils/format';
+import { ellipsisCenter, formatBTCPrice } from '@utils/format';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import s from '@containers/Profile/Collected/Modal/History/styles.module.scss';
 import Table from '@components/Table';
 
-const TxsETHTab = () => {
-  const { txsETH } = useContext(AssetsContext);
+const TxsPurchaseTab = () => {
+  const { txsPurchase } = useContext(AssetsContext);
   const TABLE_HISTORY_HEADING = ['Date', 'Status', 'Inscription', 'Amount'];
   const handleCopy = (text: string): void => {
     navigator.clipboard.writeText(text);
@@ -19,45 +19,41 @@ const TxsETHTab = () => {
     toast.success('Copied');
   };
 
-  const renderLink = (txHash: string, explore: string) => {
-    if (!txHash) return null;
-    return (
-      <Stack direction="horizontal" gap={3}>
-        <Text size="16" fontWeight="medium" color="black-100">
-          {ellipsisCenter({ str: txHash, limit: 6 })}
-        </Text>
-        <SvgInset
-          size={18}
-          svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-          className={s.wrapHistory_copy}
-          onClick={() => handleCopy(txHash)}
-        />
-        <SvgInset
-          size={16}
-          svgUrl={`${CDN_URL}/icons/ic-share.svg`}
-          className={s.wrapHistory_copy}
-          onClick={() => window.open(`${explore}/${txHash}`)}
-        />
-      </Stack>
-    );
-  };
-
-  const tableData = (txsETH || []).map(item => {
+  const tableData = (txsPurchase || []).map(item => {
     return {
-      id: `${item.id}-history`,
+      id: `${item.order_id}-${item.timestamp}-history`,
       render: {
         date: (
           <Text size="16" fontWeight="medium" color="black-100">
-            {item.created_at
-              ? formatUnixDateTime({ dateTime: Number(item.created_at) })
+            {item.timestamp
+              ? formatUnixDateTime({ dateTime: Number(item.timestamp) })
               : '---'}
           </Text>
         ),
         hash: (
           <>
             <div style={{ width: 'fit-content' }}>
-              {renderLink(item.buy_tx, 'https://mempool.space/tx')}
-              {renderLink(item.refund_tx, 'https://etherscan.io/tx')}
+              {!!item.txhash && (
+                <Stack direction="horizontal" gap={3}>
+                  <Text size="16" fontWeight="medium" color="black-100">
+                    {ellipsisCenter({ str: item.txhash, limit: 6 })}
+                  </Text>
+                  <SvgInset
+                    size={18}
+                    svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                    className={s.wrapHistory_copy}
+                    onClick={() => handleCopy(item.txhash)}
+                  />
+                  <SvgInset
+                    size={16}
+                    svgUrl={`${CDN_URL}/icons/ic-share.svg`}
+                    className={s.wrapHistory_copy}
+                    onClick={() =>
+                      window.open(`https://mempool.space/tx/${item.txhash}`)
+                    }
+                  />
+                </Stack>
+              )}
               <Text
                 size="16"
                 fontWeight="medium"
@@ -70,7 +66,7 @@ const TxsETHTab = () => {
         ),
         number: (
           <>
-            {!!item.inscription_id && (
+            {item.inscription_id ? (
               <div>
                 <Stack direction="horizontal" gap={3}>
                   <Text size="16" fontWeight="medium" color="black-100">
@@ -97,22 +93,23 @@ const TxsETHTab = () => {
                   />
                 </Stack>
               </div>
+            ) : (
+              <Text size="16" fontWeight="medium" color="black-100">
+                ---
+              </Text>
             )}
           </>
         ),
         amount: (
-          <>
-            <Text size="16" fontWeight="medium" color="black-100">
-              {item.amount_eth
-                ? `${formatEthPrice(item.amount_eth)} ETH`
-                : '---'}
-            </Text>
-          </>
+          <Text size="16" fontWeight="medium" color="black-100">
+            {item.amount
+              ? `${formatBTCPrice(item.amount.toString())} BTC`
+              : '---'}
+          </Text>
         ),
       },
     };
   });
-
   return (
     <Table
       tableHead={TABLE_HISTORY_HEADING}
@@ -122,4 +119,4 @@ const TxsETHTab = () => {
   );
 };
 
-export default TxsETHTab;
+export default TxsPurchaseTab;

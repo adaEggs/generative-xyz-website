@@ -60,7 +60,7 @@ export enum HistoryStatusType {
   cancelled = 'cancelled',
 
   waitingPayment = 'Waiting for payment',
-  receivedPayment = 'Received payment',
+  receivedPayment = 'Payment received',
   buying = 'Buying',
   bought = 'Bought',
   refunding = 'Refunding',
@@ -68,7 +68,7 @@ export enum HistoryStatusType {
   expired = 'Expired',
 }
 
-export type HistoryStatusColor = '#ff7e21' | '#24c087' | '#ff4747';
+export type HistoryStatusColor = '#ff7e21' | '#24c087' | '#ff4747' | '#5b5b5b';
 
 export interface ITxHistory {
   txhash: string;
@@ -207,7 +207,19 @@ export interface ITxHistoryBuyInsETH {
   statusColor: HistoryStatusColor;
 }
 
+export interface ITxHistoryPurchase {
+  order_id: string;
+  type: HistoryStatusType;
+  timestamp: string;
+  inscription_id: string;
+  txhash: string;
+  amount: string;
+  status: HistoryStatusType;
+  statusColor: HistoryStatusColor;
+}
+
 export interface IHistoryResp {
   txs: ITxHistory[];
   txsETH: ITxHistoryBuyInsETH[];
+  txsPurchase: ITxHistoryPurchase[];
 }
