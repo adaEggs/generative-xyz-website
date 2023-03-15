@@ -18,7 +18,7 @@ const ButtonVerifyMe = ({ className }: IProps) => {
     toast.remove();
     const result = await createDaoArtist();
     if (result) {
-      toast.success('Submit proposal successfully. View');
+      toast.success('Submit proposal successfully.');
     } else {
       toast.error(ErrorMessage.DEFAULT);
     }

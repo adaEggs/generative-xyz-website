@@ -149,11 +149,14 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                       <span
                         className={s.users_pointer}
                         onClick={() =>
-                          goToProfilePage(item?.user?.wallet_address)
+                          goToProfilePage(
+                            item?.user?.wallet_address_btc_taproot ||
+                              item?.user?.wallet_address
+                          )
                         }
                       >
                         {item?.user?.display_name ||
-                          formatAddress(item?.user?.wallet_address)}
+                          formatAddress(item?.user?.wallet_address_btc_taproot)}
                       </span>
                     </div>
                     <div className="col-md-3">{`${dayjs(
