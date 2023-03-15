@@ -53,12 +53,12 @@ const STATUS_USERS: Array<{ value: number | string; label: string }> = [
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
-    value: 'asc',
+    value: 'desc',
     label: 'Sort by: Newest',
   },
   {
-    value: 'desc',
-    label: 'Sort by: Latest',
+    value: 'asc',
+    label: 'Sort by: Oldest',
   },
 ];
 
@@ -91,7 +91,9 @@ export const Filter = ({
           type="text"
           id="request-keyword"
           placeholder={
-            currentTabActive === DAO_TYPE.COLLECTION ? 'collection' : 'artists'
+            currentTabActive === DAO_TYPE.COLLECTION
+              ? 'collection, artist'
+              : 'artists'
           }
           onChange={debounce(e => {
             router.replace({

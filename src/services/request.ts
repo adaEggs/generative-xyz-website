@@ -8,8 +8,9 @@ import {
   IGetDaoArtistsResponse,
   IPutDaoProjectResponse,
   IPutDaoArtistResponse,
+  IPostDaoArtistResponse,
 } from '@interfaces/api/request';
-import { get, put } from '@services/http-client';
+import { get, put, post } from '@services/http-client';
 import log from '@utils/logger';
 
 const LOG_PREFIX = 'DaoRequestService';
@@ -43,7 +44,7 @@ export const voteDaoProject = async (
     });
   } catch (err: unknown) {
     log(`failed to put dao project`, LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to get dao projects');
+    throw Error('Failed to get dao project');
   }
 };
 
@@ -75,6 +76,15 @@ export const voteDaoArtist = async (
     });
   } catch (err: unknown) {
     log(`failed to put dao artist`, LogLevel.ERROR, LOG_PREFIX);
-    throw Error('Failed to put dao artists');
+    throw Error('Failed to put dao artist');
+  }
+};
+
+export const createDaoArtist = async (): Promise<IPostDaoArtistResponse> => {
+  try {
+    return await post(`${API_PATH}artist`, {});
+  } catch (err: unknown) {
+    log(`failed to post dao artist`, LogLevel.ERROR, LOG_PREFIX);
+    throw Error('Failed to post dao artist');
   }
 };

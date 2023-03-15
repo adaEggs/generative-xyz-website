@@ -23,6 +23,7 @@ import ButtonReceiver from '@containers/Profile/ButtonReceiver';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { AssetsContext } from '@contexts/assets-context';
 import { SeeMore } from '@components/SeeMore';
+import ButtonVerifyMe from '../ButtonVerifyMe';
 
 interface IProps {
   toggle: () => void;
@@ -33,7 +34,6 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
   const { isLoadingHistory, history } = useContext(AssetsContext);
   const { currentUser } = useContext(ProfileContext);
   const router = useRouter();
-
   const { walletAddress } = router.query as { walletAddress: string };
 
   const isOwner = currentUser?.id === user?.id;
@@ -78,6 +78,9 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                     link={SOCIALS.twitter}
                   />
                 </div>
+                {isOwner && currentUser?.canCreateProposal && (
+                  <ButtonVerifyMe />
+                )}
               </div>
             </div>
             <div className={s.userInfo_content_address}>
