@@ -45,6 +45,7 @@ const ModalBuyListed = React.memo(
   ({ price, orderID, onHide, ...rest }: IProps) => {
     const user = useSelector(getUserSelector);
     const [step, setStep] = useState<'info' | 'deposit'>('info');
+    const [estimating, setEstimating] = useState<boolean>(false);
 
     const [isLoading, setLoading] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -122,6 +123,7 @@ const ModalBuyListed = React.memo(
       if (!receive) {
         setDepositData(undefined);
         setError('Invalid wallet address.');
+        setEstimating(true);
         return;
       }
       setError('');
@@ -138,6 +140,7 @@ const ModalBuyListed = React.memo(
         onSetError(err);
       } finally {
         setLoading(false);
+        setEstimating(false);
       }
     };
 
@@ -168,6 +171,7 @@ const ModalBuyListed = React.memo(
 
     React.useEffect(() => {
       if (!user?.walletAddress || step === 'deposit') return;
+      setEstimating(true);
       debounceGenDepositAddress(
         receiveAddress,
         user.walletAddress,
@@ -220,6 +224,7 @@ const ModalBuyListed = React.memo(
                         options={{
                           hasRoyalty: !!depositData?.has_royalty,
                           feeETH: depositData?.eth_fee,
+                          loading: estimating,
                         }}
                       />
                     </Row>
