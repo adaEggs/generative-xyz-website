@@ -1,6 +1,6 @@
 export const ROUTE_PATH = {
   HOME: '/',
-  DROPS: '/art-on-bitcoin',
+  DROPS: '/mint',
   CREATE_PROJECT: '/create',
   BENEFIT: '/create',
   GENERATIVE: '/generative',
@@ -33,6 +33,8 @@ export const ROUTE_PATH = {
   DEVELOPER: '/developers',
   PRESERVE: '/preserve',
   PRESERVE_LANDING: '/preserve-cryptoart',
+  SHOP: '/shop',
+  REQUEST: '/requests',
 };
 
 export const STANDALONE_PAGES = [

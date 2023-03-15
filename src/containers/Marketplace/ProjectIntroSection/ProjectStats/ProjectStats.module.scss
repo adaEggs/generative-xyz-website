@@ -1,0 +1,27 @@
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: rem(24);
+
+  @include mobile {
+    margin-bottom: rem(24px);
+  }
+
+  &_item {
+    min-width: rem(120);
+    text-align: right;
+
+    > p:first-of-type {
+      color: $black-40;
+      text-transform: uppercase;
+    }
+
+    &__icon {
+      .stats_item_text {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+      }
+    }
+  }
+}

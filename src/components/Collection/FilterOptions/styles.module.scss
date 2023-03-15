@@ -1,28 +1,12 @@
 .filter_buy {
   display: flex;
   flex-direction: column;
-  // min-width: rem(150px);
-  // justify-content: space-between;
-  margin-bottom: rem(21px);
-
-  @include mobile {
-    min-width: rem(120px);
-  }
-
-  .radio_buynow {
-    margin-top: rem(20);
-  }
+  gap: rem(20);
+  margin-bottom: rem(20px);
 }
 
 .rarity {
   margin-bottom: rem(10);
-  z-index: 11;
-  position: relative;
-}
-
-.price {
-  z-index: 10;
-  position: relative;
 }
 
 .checkbox > input {

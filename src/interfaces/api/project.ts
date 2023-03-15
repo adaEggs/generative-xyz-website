@@ -169,3 +169,7 @@ export interface IProjectMintFeeRate {
 }
 
 export type IProjectMintFeeRateResponse = IProjectMintFeeRate;
+
+// export interface IGetProjectActivitiesResponse {}
+
+// export interface IGetProjectActivityQuery {}

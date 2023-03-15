@@ -563,6 +563,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
           )}
         </div>
         <div className="h-divider" />
+        <TokenActivities />
         <MoreItemsSection genNFTAddr={projectData?.genNFTAddr || ''} />
 
         {!isBitcoinProject ? (
