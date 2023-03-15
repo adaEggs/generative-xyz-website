@@ -4,6 +4,9 @@ export interface ICollectionProject {
   thumbnail: string;
   contractAddress: string;
   creatorAddress: string;
+  mintingInfo: {
+    index: number;
+  };
 }
 
 export interface ICollectionOwner {

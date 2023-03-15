@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { default as BSTable, TableProps } from 'react-bootstrap/Table';
-import { v4 } from 'uuid';
 import cs from 'classnames';
 import _camelCase from 'lodash/camelCase';
 import s from './styles.module.scss';
@@ -8,7 +7,8 @@ import { Empty } from '@components/Collection/Empty';
 
 export type TColumn = {
   id: string;
-  config?: Record<string, string | number | undefined>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  config?: Record<string, any>;
   render: {
     [x: string]: ReactNode;
   };
@@ -64,8 +64,8 @@ const Table = ({
       <tbody>
         {tableData &&
           tableData?.length > 0 &&
-          tableData.map(row => (
-            <TableData rowData={row} key={`trowData-${v4()}`} />
+          tableData.map((row, index) => (
+            <TableData rowData={row} key={`trowData-${index}`} />
           ))}
       </tbody>
     );

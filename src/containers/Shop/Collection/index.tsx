@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Table from '@components/Table';
 import s from './styles.module.scss';
 import { Loading } from '@components/Loading';
@@ -10,6 +10,10 @@ import { getCollectionList } from '@services/shop';
 import _uniqBy from 'lodash/uniqBy';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
+import Link from '@components/Link';
+import { ROUTE_PATH } from '@constants/route-path';
+import { useRouter } from 'next/router';
+import useAsyncEffect from 'use-async-effect';
 
 const TABLE_HEADINGS = [
   'Name',
@@ -27,6 +31,8 @@ const TABLE_HEADINGS = [
 const LOG_PREFIX = 'CollectionTab';
 
 const Collection: React.FC = (): React.ReactElement => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true); // Use only for first load
   const [collectionList, setCollections] = useState<Array<ICollection>>([]);
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
@@ -34,6 +40,11 @@ const Collection: React.FC = (): React.ReactElement => {
   const tableData = collectionList.map(collection => {
     return {
       id: collection.project.tokenId,
+      config: {
+        onClick: () => {
+          router.push(`${ROUTE_PATH.GENERATIVE}/${collection.project.tokenId}`);
+        },
+      },
       render: {
         name: (
           <div className={s.name}>
@@ -43,8 +54,20 @@ const Collection: React.FC = (): React.ReactElement => {
               alt={collection.project.name}
             />
             <div className={s.projectInfo}>
-              <p className={s.owner}>{collection.owner?.displayName}</p>
-              <p className={s.collectionName}>{collection.project.name}</p>
+              <Link
+                href={`${ROUTE_PATH.PROFILE}/${
+                  collection.owner.walletAddress_btc_taproot || ''
+                }`}
+                className={s.owner}
+              >
+                {collection.owner?.displayName}
+              </Link>
+              <Link
+                href={`${ROUTE_PATH.GENERATIVE}/${collection.project.tokenId}`}
+                className={s.collectionName}
+              >
+                {collection.project.name}
+              </Link>
             </div>
           </div>
         ),
@@ -119,14 +142,15 @@ const Collection: React.FC = (): React.ReactElement => {
         ),
         owners: (
           <div className={s.owners}>
-            {`${collection.numberOwners.toLocaleString()} (${
-              collection.numberOwnersPercentage
-            }%)`}
+            {`${collection.numberOwners.toLocaleString()} (${(
+              (collection.numberOwners / collection.project.mintingInfo.index) *
+              100
+            ).toFixed(0)}%)`}
           </div>
         ),
         supply: (
           <div className={s.owners}>
-            {collection.totalSupply.toLocaleString()}
+            {collection.project.mintingInfo.index.toLocaleString()}
           </div>
         ),
       },
@@ -137,7 +161,7 @@ const Collection: React.FC = (): React.ReactElement => {
     try {
       const newPage = page + 1;
       const { result, total } = await getCollectionList({
-        limit: 15,
+        limit: 20,
         page: newPage,
       });
       if (result && Array.isArray(result)) {
@@ -154,31 +178,39 @@ const Collection: React.FC = (): React.ReactElement => {
     }
   };
 
-  useEffect(() => {
-    handleFetchCollections();
+  useAsyncEffect(async () => {
+    await handleFetchCollections();
+    setIsLoading(false);
   }, []);
 
   return (
     <div className={s.collection}>
-      <InfiniteScroll
-        dataLength={collectionList.length}
-        next={handleFetchCollections}
-        className={s.collectionScroller}
-        hasMore={collectionList.length < total}
-        loader={
-          <div className={s.loadingWrapper}>
-            <Loading isLoaded={false} />
-          </div>
-        }
-        endMessage={<></>}
-      >
-        <Table
-          responsive
-          className={s.dataTable}
-          tableHead={TABLE_HEADINGS}
-          data={tableData}
-        />
-      </InfiniteScroll>
+      {isLoading && (
+        <div className={s.loadingWrapper}>
+          <Loading isLoaded={false} />
+        </div>
+      )}
+      {!isLoading && (
+        <InfiniteScroll
+          dataLength={collectionList.length}
+          next={handleFetchCollections}
+          className={s.collectionScroller}
+          hasMore={collectionList.length < total}
+          loader={
+            <div className={s.scrollLoading}>
+              <Loading isLoaded={false} />
+            </div>
+          }
+          endMessage={<></>}
+        >
+          <Table
+            responsive
+            className={s.dataTable}
+            tableHead={TABLE_HEADINGS}
+            data={tableData}
+          />
+        </InfiniteScroll>
+      )}
     </div>
   );
 };
