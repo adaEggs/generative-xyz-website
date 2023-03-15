@@ -18,11 +18,11 @@
     padding-top: 0;
 
     @include min-tablet {
-      width: 840px;
+      width: 840px !important;
     }
 
     @include min-pc-superWide {
-      width: 840px;
+      width: 840px !important;
     }
   }
 }
@@ -33,18 +33,29 @@
   justify-content: space-between;
   align-items: center;
 
+  &_space {
+    margin-bottom: rem(12px);
+  }
+
+  &_divider {
+    background: $black-outline;
+    height: 1px;
+    width: 100%;
+    margin-top: rem(24px);
+    margin-bottom: rem(24px);
+  }
+
+  &_divider2 {
+    background: $black-outline;
+    flex: 1;
+    height: 1px;
+    margin: rem(12px);
+  }
+
   &_title {
     font-weight: 400;
     font-size: rem(16px);
     line-height: rem(26px);
-    color: #333;
-    width: fit-content;
-  }
-
-  &_titleBold {
-    font-weight: 600;
-    font-size: rem(22px);
-    line-height: 140%;
     color: #333;
     width: fit-content;
   }
@@ -55,6 +66,15 @@
     line-height: rem(26px);
     color: #333;
     width: fit-content;
+  }
+
+  &_totalAmount {
+    font-weight: 500;
+    font-size: rem(20px);
+    line-height: rem(30px);
+    letter-spacing: -0.01em;
+    color: #1c1c1c;
+    margin-left: rem(8px);
   }
 
   &_priceBold {
@@ -234,7 +254,7 @@
 }
 
 .buttonBuy {
-  margin-top: rem(16px);
+  margin-top: rem(24px);
   width: 100%;
   justify-content: center;
   align-items: center;
@@ -328,4 +348,26 @@
 .checkBtn {
   justify-content: center;
   width: 100%;
+}
+
+.expired {
+  display: flex;
+  gap: 6px;
+  margin-top: rem(12px);
+
+  &_title {
+    font-weight: 400;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: #333;
+    width: fit-content;
+  }
+
+  &_time {
+    font-weight: 500;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: $secondary-orange;
+    width: fit-content;
+  }
 }

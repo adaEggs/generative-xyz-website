@@ -197,9 +197,18 @@ const ModalBuyListed = React.memo(
                       <div className={s.payment}>
                         <p className={s.payment_title}>Item price</p>
                         <p className={s.payment_price}>{`${formatEthPrice(
-                          depositData?.eth_amount || price
+                          depositData?.eth_amount_origin || price
                         )} ETH`}</p>
                       </div>
+                      {!!depositData && (
+                        <div className={s.payment}>
+                          <p className={s.payment_title}>Network fees</p>
+                          <p className={s.payment_price}>{`${formatEthPrice(
+                            depositData?.eth_fee
+                          )} ETH`}</p>
+                        </div>
+                      )}
+                      <div className={s.payment_space} />
                       <FeeRate
                         handleChangeFee={handleChangeFee}
                         selectedRate={selectedRate}
@@ -207,6 +216,11 @@ const ModalBuyListed = React.memo(
                         useCustomRate={true}
                         handleChangeCustomRate={handleChangeCustomRate}
                         customRate={customRate}
+                        feeType="buyETH"
+                        options={{
+                          hasRoyalty: !!depositData?.has_royalty,
+                          feeETH: depositData?.eth_fee,
+                        }}
                       />
                     </Row>
                     <AccordionComponent
@@ -283,6 +297,19 @@ const ModalBuyListed = React.memo(
                         </>
                       }
                     />
+                    {depositData && (
+                      <>
+                        <div className={s.payment_divider} />
+                        <div className={s.payment}>
+                          <p className={s.payment_total}>Total</p>
+                          <p
+                            className={s.payment_totalAmount}
+                          >{`${formatEthPrice(
+                            depositData?.eth_amount
+                          )} ETH`}</p>
+                        </div>
+                      </>
+                    )}
                     <ButtonIcon
                       className={s.buttonBuy}
                       disabled={isLoading}
@@ -307,18 +334,25 @@ const ModalBuyListed = React.memo(
                     <Col md="6" className={s.padding}>
                       <Row className={s.row}>
                         <div className={s.payment}>
-                          <p className={s.payment_titleBold}>Price</p>
-                          <p className={s.payment_priceBold}>{`${formatEthPrice(
-                            depositData?.eth_amount || price
+                          <p className={s.payment_title}>Item price</p>
+                          <p className={s.payment_price}>{`${formatEthPrice(
+                            depositData?.eth_amount_origin || price
                           )} ETH`}</p>
                         </div>
                         <div className={s.payment}>
-                          <p className={s.payment_title}>Expired at</p>
-                          <p className={s.payment_price}>{`${formatUnixDateTime(
-                            {
-                              dateTime: depositData?.expired_at || 0,
-                            }
-                          )}`}</p>
+                          <p className={s.payment_title}>Network fees</p>
+                          <p className={s.payment_price}>{`${formatEthPrice(
+                            depositData?.eth_fee || 0
+                          )} ETH`}</p>
+                        </div>
+                        <div className={s.payment_divider2} />
+                        <div className={s.payment}>
+                          <p className={s.payment_total}>Total</p>
+                          <p
+                            className={s.payment_totalAmount}
+                          >{`${formatEthPrice(
+                            depositData?.eth_amount || '0'
+                          )} ETH`}</p>
                         </div>
                       </Row>
                     </Col>
@@ -355,6 +389,12 @@ const ModalBuyListed = React.memo(
                           size={128}
                           value={depositData?.eth_address || ''}
                         />
+                        <div className={s.expired}>
+                          <p className={s.expired_title}>Expired at:</p>
+                          <p className={s.expired_time}>{`${formatUnixDateTime({
+                            dateTime: depositData?.expired_at || 0,
+                          })}`}</p>
+                        </div>
                       </div>
                       {isSent && (
                         <div className={s.btnContainer}>

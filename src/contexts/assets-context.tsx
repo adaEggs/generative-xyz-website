@@ -247,12 +247,12 @@ export const AssetsProvider: React.FC<PropsWithChildren> = ({
   }, [currentAddress]);
 
   useEffect(() => {
-    fetchFeeRate();
-    getETH2BTCRate();
+    fetchFeeRate().then().catch();
+    getETH2BTCRate().then().catch();
     const intervalID = setInterval(() => {
-      fetchFeeRate();
-      // getETH2BTCRate();
-    }, 60 * 20 * 1000); // 1 min
+      fetchFeeRate().then().catch();
+      getETH2BTCRate().then().catch();
+    }, 60 * 2 * 1000); // 2 mins
     return () => {
       clearInterval(intervalID);
     };

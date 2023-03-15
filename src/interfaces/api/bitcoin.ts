@@ -187,7 +187,10 @@ export interface IRespGenAddressByETH {
   order_id: string; //buy order id,
   eth_address: string;
   eth_amount: number;
+  eth_amount_origin: string;
+  eth_fee: string;
   expired_at: number;
+  has_royalty: boolean;
 }
 
 export interface IReqSubmitSwapETH {
