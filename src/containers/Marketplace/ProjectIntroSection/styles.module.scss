@@ -8,6 +8,12 @@
     // row-gap: 0 !important;
     align-items: center;
     justify-content: space-between;
+
+    @include mobile {
+      flex-direction: column;
+      gap: rem(24);
+      align-items: start;
+    }
   }
 
   &_center {
@@ -52,6 +58,10 @@
   height: rem(49px);
   padding: rem(5);
   background-color: $primary-light;
+
+  &_inner img {
+    aspect-ratio: 1/1;
+  }
 }
 
 .wrapper {
@@ -496,7 +506,7 @@
 
   border-top: 1px solid $black-5;
   border-bottom: 1px solid $black-5;
-  margin-bottom: rem(24px);
+  // margin-bottom: rem(24px);
 
   // .info,
   // .projectInfo_right_inner {
@@ -555,6 +565,22 @@
 
     &:hover {
       text-decoration: none;
+    }
+  }
+}
+
+.projectName_creator {
+  display: flex;
+  align-items: center;
+  gap: rem(6);
+
+  .small {
+    padding-top: 0;
+
+    svg,
+    img {
+      height: rem(20px);
+      width: rem(20px);
     }
   }
 }

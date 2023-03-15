@@ -14,6 +14,7 @@ import styles from './styles.module.scss';
 
 type Props = {
   attributes?: TraitStats[];
+  layout?: 'mint' | 'shop';
 };
 
 const FilterOptions = ({ attributes }: Props) => {
@@ -155,7 +156,7 @@ const FilterOptions = ({ attributes }: Props) => {
         <RadioGroups
           options={buyNowOptions}
           name="buyNow"
-          defaultValue={buyNowOptions[1].key}
+          defaultValue={buyNowOptions[0].key}
           checked={`${filterBuyNow}`}
           className={styles.radio_buynow}
           onChange={e => {

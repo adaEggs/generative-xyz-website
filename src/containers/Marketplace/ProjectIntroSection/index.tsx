@@ -1,15 +1,14 @@
-import ReportModal from './ReportModal';
-import s from './styles.module.scss';
+import LayoutForMinting from '@containers/Marketplace/ProjectIntroSection/LayoutForMinting';
 import {
   ProjectLayoutContext,
   ProjectLayoutProvider,
 } from '@contexts/project-layout-context';
-import LayoutForMintout from './LayoutForMintout';
-import { useContext } from 'react';
-import { Project } from '@interfaces/project';
 import { PaymentMethod } from '@enums/mint-generative';
-import LayoutForMinting from '@containers/Marketplace/ProjectIntroSection/LayoutForMinting';
 import { IProjectMintFeeRate } from '@interfaces/api/project';
+import { Project } from '@interfaces/project';
+import { useContext } from 'react';
+import LayoutForMintout from './LayoutForMintout';
+import s from './styles.module.scss';
 
 type Props = {
   project?: Project | null;
@@ -19,8 +18,7 @@ type Props = {
 };
 
 const ProjectIntroSection = () => {
-  const { showReportModal, setShowReportModal, hasReported, isLimitMinted } =
-    useContext(ProjectLayoutContext);
+  const { isLimitMinted } = useContext(ProjectLayoutContext);
 
   return (
     <div
@@ -29,11 +27,6 @@ const ProjectIntroSection = () => {
       }`}
     >
       {!isLimitMinted ? <LayoutForMintout /> : <LayoutForMinting />}
-      <ReportModal
-        isShow={showReportModal}
-        onHideModal={() => setShowReportModal(false)}
-        isReported={hasReported}
-      />
     </div>
   );
 };

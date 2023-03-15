@@ -169,12 +169,6 @@
     cursor: pointer;
   }
 
-  &_creator {
-    display: flex;
-    align-items: center;
-    gap: rem(6);
-  }
-
   &_avatar {
     width: rem(34);
     height: rem(34);
