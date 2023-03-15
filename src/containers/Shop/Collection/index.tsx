@@ -10,7 +10,7 @@ import { getCollectionList } from '@services/shop';
 import _uniqBy from 'lodash/uniqBy';
 import log from '@utils/logger';
 import { LogLevel } from '@enums/log-level';
-import Link from '@components/Link';
+import Link from 'next/link';
 import { ROUTE_PATH } from '@constants/route-path';
 import { useRouter } from 'next/router';
 import useAsyncEffect from 'use-async-effect';
@@ -24,7 +24,7 @@ const TABLE_HEADINGS = [
   // '1D volume',
   // '7D volume',
   'Volume',
-  'Owners',
+  // 'Owners',
   'Supply',
 ];
 
@@ -55,6 +55,9 @@ const Collection: React.FC = (): React.ReactElement => {
             />
             <div className={s.projectInfo}>
               <Link
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>): void => {
+                  e.stopPropagation();
+                }}
                 href={`${ROUTE_PATH.PROFILE}/${
                   collection.owner.walletAddress_btc_taproot || ''
                 }`}
@@ -62,23 +65,18 @@ const Collection: React.FC = (): React.ReactElement => {
               >
                 {collection.owner?.displayName}
               </Link>
-              <Link
-                href={`${ROUTE_PATH.GENERATIVE}/${collection.project.tokenId}`}
-                className={s.collectionName}
-              >
-                {collection.project.name}
-              </Link>
+              <p className={s.collectionName}>{collection.project.name}</p>
             </div>
           </div>
         ),
         floorPrice: (
           <div className={s.floorPrice}>
             <span>
-              &#8383;{' '}
               {formatBTCPrice(
                 collection.projectMarketplaceData.floor_price,
                 '0.00'
-              )}
+              )}{' '}
+              &#8383;
             </span>
           </div>
         ),
@@ -135,19 +133,19 @@ const Collection: React.FC = (): React.ReactElement => {
         volume: (
           <div className={s.volume7D}>
             <span>
-              &#8383;{' '}
-              {formatBTCPrice(collection.projectMarketplaceData.volume, '0.00')}
+              {formatBTCPrice(collection.projectMarketplaceData.volume, '0.00')}{' '}
+              &#8383;
             </span>
           </div>
         ),
-        owners: (
-          <div className={s.owners}>
-            {`${collection.numberOwners.toLocaleString()} (${(
-              (collection.numberOwners / collection.project.mintingInfo.index) *
-              100
-            ).toFixed(0)}%)`}
-          </div>
-        ),
+        // owners: (
+        //   <div className={s.owners}>
+        //     {`${collection.numberOwners.toLocaleString()} (${(
+        //       (collection.numberOwners / collection.project.mintingInfo.index) *
+        //       100
+        //     ).toFixed(0)}%)`}
+        //   </div>
+        // ),
         supply: (
           <div className={s.owners}>
             {collection.project.mintingInfo.index.toLocaleString()}
