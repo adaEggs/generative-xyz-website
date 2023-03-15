@@ -7,6 +7,9 @@ import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
 import { v4 } from 'uuid';
 import s from './styles.module.scss';
+import Link from '@components/Link';
+import { ROUTE_PATH } from '@constants/route-path';
+import { TokenActivityType } from '@enums/token-type';
 
 const TABLE_ACTIVITIES_HEADING = ['Event', 'Price', 'From', 'To', 'Date'];
 
@@ -64,10 +67,37 @@ const TableActivities = () => {
       return {
         id: `activity-${v4()}`,
         render: {
-          event: <div className={s.event}>{transaction.title}</div>,
-          price: formatBTCPrice(transaction?.amount),
-          form_address: fromAddress,
-          to_address: toAddress,
+          event: (
+            <div className={s.event}>
+              {TokenActivityType[transaction?.type]}
+            </div>
+          ),
+          price: <>&#8383; {formatBTCPrice(transaction?.amount)}</>,
+          form_address: (
+            <Link
+              href={`${ROUTE_PATH.PROFILE}/${
+                transaction?.user_a?.walletAddressBtcTaproot
+                  ? transaction?.user_a?.walletAddressBtcTaproot
+                  : transaction?.user_a?.walletAddress
+              }`}
+              className="hover-underline"
+            >
+              {fromAddress}
+            </Link>
+          ),
+
+          to_address: (
+            <Link
+              href={`${ROUTE_PATH.PROFILE}/${
+                transaction?.user_b?.walletAddressBtcTaproot
+                  ? transaction?.user_b?.walletAddressBtcTaproot
+                  : transaction?.user_b?.walletAddress
+              }`}
+              className="hover-underline"
+            >
+              {toAddress}
+            </Link>
+          ),
           updated_at: (
             <Stack direction="horizontal" gap={3}>
               {updatedAt}
