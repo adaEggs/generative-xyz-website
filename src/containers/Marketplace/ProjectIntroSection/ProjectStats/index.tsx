@@ -6,8 +6,6 @@ import { ProjectLayoutContext } from '@contexts/project-layout-context';
 import { IProjectMarketplaceData } from '@interfaces/api/project';
 import useAsyncEffect from 'use-async-effect';
 import { projectMarketplaceData } from '@services/project';
-import { CDN_URL } from '@constants/config';
-import SvgInset from '@components/SvgInset';
 import s from './ProjectStats.module.scss';
 
 export const ProjectStats = (): JSX.Element => {
@@ -62,11 +60,11 @@ export const ProjectStats = (): JSX.Element => {
             Floor Price
           </Text>
           <Heading className={s.stats_item_text} as="h6" fontWeight="medium">
-            <SvgInset
+            {/* <SvgInset
               size={24}
               svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
-            />{' '}
-            {formatBTCPrice(project?.btcFloorPrice)}
+            />{' '} */}
+            &#8383; {formatBTCPrice(project?.btcFloorPrice)}
           </Heading>
         </div>
       )}
@@ -76,11 +74,11 @@ export const ProjectStats = (): JSX.Element => {
             Volume
           </Text>
           <Heading className={s.stats_item_text} as="h6" fontWeight="medium">
-            <SvgInset
+            {/* <SvgInset
               size={24}
               svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
-            />{' '}
-            {formatBTCPrice(marketplaceData?.volume)}
+            />{' '} */}
+            &#8383; {formatBTCPrice(marketplaceData?.volume)}
           </Heading>
         </div>
       )}

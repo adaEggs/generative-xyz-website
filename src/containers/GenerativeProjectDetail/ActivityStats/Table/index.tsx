@@ -1,7 +1,11 @@
+import Link from '@components/Link';
 import Table from '@components/Table';
+import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import { formatAddress, formatBTCPrice } from '@utils/format';
+import { TokenActivityType } from '@enums/token-type';
+import { formatBTCPrice } from '@utils/format';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
 import { v4 } from 'uuid';
@@ -12,12 +16,17 @@ const TABLE_COLLECTION_ACTIVITIES_HEADING = [
   'Price',
   'Seller',
   'Buyer',
+  'Event',
 ];
 
 const CollectionActivityTable = () => {
   const { collectionActivities: listData } = useContext(
     GenerativeProjectDetailContext
   );
+
+  const router = useRouter();
+
+  const { projectID } = router.query;
 
   // const listData = [];
 
@@ -28,13 +37,9 @@ const CollectionActivityTable = () => {
       // const seller = '{transaction.seller}' || '-';
 
       const fromAddress =
-        transaction?.user_a?.displayName ||
-        formatAddress(transaction?.user_a_address, 10) ||
-        '-';
+        transaction?.user_a?.displayName || transaction?.user_a_address || '-';
       const toAddress =
-        transaction?.user_b?.displayName ||
-        formatAddress(transaction?.user_b_address, 10) ||
-        '-';
+        transaction?.user_b?.displayName || transaction?.user_b_address || '-';
 
       //   if (index + 1 === transactionList.length) {
       //     // Last transaction is first "Mint"
@@ -70,14 +75,26 @@ const CollectionActivityTable = () => {
         id: `activity-${v4()}`,
         render: {
           item: (
-            <Stack direction="horizontal" gap={2} className={`${s.token}`}>
+            <Stack
+              direction="horizontal"
+              gap={2}
+              className={`${s.token} cursor-pointer`}
+              onClick={() =>
+                router.push({
+                  pathname: `${ROUTE_PATH.GENERATIVE}/${projectID}/${transaction.token_info.tokenID}`,
+                })
+              }
+            >
               <Image
                 src={transaction.token_info.image}
                 alt={transaction.token_info.name}
                 width={20}
                 height={20}
               />
-              #{transaction.token_info.inscriptionIndex}{' '}
+              #
+              {transaction.token_info.orderInscriptionIndex ||
+                transaction.token_info.inscriptionIndex ||
+                ''}{' '}
             </Stack>
           ),
           price: (
@@ -85,8 +102,37 @@ const CollectionActivityTable = () => {
               {formatBTCPrice(transaction.amount)} &#8383;
             </div>
           ),
-          seller: <div className={s.address}>{fromAddress}</div>,
-          buyer: <div className={s.address}>{toAddress}</div>,
+          seller: (
+            <div className={s.address}>
+              <Link
+                href={`${ROUTE_PATH.PROFILE}/${
+                  transaction.user_a.walletAddressBtcTaproot
+                    ? transaction.user_a.walletAddressBtcTaproot
+                    : transaction.user_a.walletAddress
+                }`}
+                className="hover-underline"
+              >
+                {fromAddress.substring(0, 6)}
+              </Link>
+            </div>
+          ),
+          buyer: (
+            <div className={s.address}>
+              <Link
+                href={`${ROUTE_PATH.PROFILE}/${
+                  transaction.user_a.walletAddressBtcTaproot
+                    ? transaction.user_a.walletAddressBtcTaproot
+                    : transaction.user_a.walletAddress
+                }`}
+                className="hover-underline"
+              >
+                {toAddress.substring(0, 6)}
+              </Link>
+            </div>
+          ),
+          event: (
+            <div className={s.event}>{TokenActivityType[transaction.type]}</div>
+          ),
         },
       };
     }

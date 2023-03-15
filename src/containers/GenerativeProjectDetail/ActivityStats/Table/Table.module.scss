@@ -24,4 +24,18 @@
 
     @include disable-scrollbar;
   }
+
+  :global(thead th:not(:first-of-type)) {
+    text-align: right;
+  }
+
+  :global(tbody tr) {
+    border: none !important;
+  }
+
+  :global(tbody td) {
+    padding-top: rem(7) !important;
+    padding-bottom: rem(7) !important;
+    text-align: right;
+  }
 }
