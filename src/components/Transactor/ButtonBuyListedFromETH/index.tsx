@@ -7,6 +7,7 @@ import { WalletContext } from '@contexts/wallet-context';
 import s from './styles.module.scss';
 import { formatEthPrice } from '@utils/format';
 import ModalBuyListed from '@components/Transactor/ButtonBuyListedFromETH/Modal';
+import { isProduction } from '@utils/common';
 
 interface IProps {
   className?: string;
@@ -42,7 +43,7 @@ const ButtonBuyListedFromETH = React.memo(
     const hideModal = () => {
       setShow(false);
     };
-    if (!price) return null;
+    if (!price || isProduction()) return null;
 
     return (
       <>
