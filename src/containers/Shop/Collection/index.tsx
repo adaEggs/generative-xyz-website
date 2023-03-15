@@ -161,7 +161,7 @@ const Collection: React.FC = (): React.ReactElement => {
     try {
       const newPage = page + 1;
       const { result, total } = await getCollectionList({
-        limit: 20,
+        limit: 30,
         page: newPage,
       });
       if (result && Array.isArray(result)) {
