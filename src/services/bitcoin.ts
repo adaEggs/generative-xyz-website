@@ -2,21 +2,33 @@ import { LogLevel } from '@enums/log-level';
 import { get, post } from '@services/http-client';
 import log from '@utils/logger';
 import {
+  BINANCE_PAIR,
   FeeRateName,
   HistoryStatusColor,
   HistoryStatusType,
   ICollectedUTXOResp,
+  IEstimateThorResp,
+  IEstimateThorSwapReq,
   IFeeRate,
+  IHistoryResp,
   IListingPayload,
   IPendingUTXO,
+  IReqGenAddressByETH,
+  IReqSubmitSwapETH,
+  IRespGenAddressByETH,
   IRetrieveOrderPayload,
   IRetrieveOrderResp,
+  ITokenPriceResp,
   ITrackTx,
   ITxHistory,
+  ITxHistoryBuyInsETH,
+  ITxHistoryPurchase,
 } from '@interfaces/api/bitcoin';
 import axios from 'axios';
-import { isExpiredTime } from '@utils/time';
+import { isExpiredUnixTime } from '@utils/time';
 import { orderBy } from 'lodash';
+import { BINANCE_API_URL, THOR_SWAP_API_URL } from '@constants/config';
+import BigNumber from 'bignumber.js';
 
 const LOG_PREFIX = 'COLLECTED_NFT';
 
@@ -104,52 +116,145 @@ export const trackTx = async (payload: ITrackTx): Promise<never> => {
   }
 };
 
-export const getHistory = async (address: string): Promise<ITxHistory[]> => {
+const statusMapper = (
+  createdAt: string | number,
+  respStatus: HistoryStatusType,
+  isTxs = true
+) => {
+  let statusColor: HistoryStatusColor = '#ff7e21';
+  let status: HistoryStatusType = HistoryStatusType.pending;
+  const now = new Date().getTime();
+  const isExpired = isExpiredUnixTime({
+    unixTime: createdAt || now,
+    expiredMin: 4,
+  });
+  if (isExpired || !isTxs) {
+    status = respStatus;
+    switch (status) {
+      case HistoryStatusType.pending:
+      case HistoryStatusType.cancelling:
+      case HistoryStatusType.listing:
+      case HistoryStatusType.buying:
+      case HistoryStatusType.waitingPayment:
+      case HistoryStatusType.refunding:
+      case HistoryStatusType.refunded:
+      case HistoryStatusType.receivedPayment:
+        statusColor = '#ff7e21';
+        break;
+      case HistoryStatusType.bought:
+      case HistoryStatusType.matched:
+      case HistoryStatusType.success:
+        statusColor = '#24c087';
+        break;
+      case HistoryStatusType.failed:
+        statusColor = '#ff4747';
+        break;
+      case HistoryStatusType.cancelled:
+        statusColor = '#5b5b5b';
+        break;
+    }
+  }
+  return {
+    statusColor,
+    status,
+    isExpired,
+  };
+};
+
+const getTxsHistory = async (address: string): Promise<ITxHistory[]> => {
+  let history: ITxHistory[] = [];
   try {
-    const txs = await get<ITxHistory[]>(
+    history = await get<ITxHistory[]>(
       `/wallet/txs?address=${address}&limit=30&offset=0`
     );
-    // const res = await get<ITxHistory[]>(`/dex/history`);
-    // const history = res.filter(
-    //   item => !(txs || []).some(_item => _item.txhash === item.txhash)
-    // );
-    return orderBy(
-      (txs || []).map(history => {
-        let statusColor: HistoryStatusColor = '#ff7e21';
-        let status: HistoryStatusType = HistoryStatusType.pending;
-        const now = new Date().getTime();
-        const isExpired = isExpiredTime({
-          time: history.created_at || now,
-          expiredMin: 4,
-        });
-        if (isExpired) {
-          status = history.status;
-          switch (status) {
-            case HistoryStatusType.cancelled:
-            case HistoryStatusType.pending:
-            case HistoryStatusType.cancelling:
-            case HistoryStatusType.listing:
-              statusColor = '#ff7e21';
-              break;
-            case HistoryStatusType.matched:
-            case HistoryStatusType.success:
-              statusColor = '#24c087';
-              break;
-            case HistoryStatusType.failed:
-              statusColor = '#ff4747';
-              break;
-          }
-        }
+  } catch (_) {
+    log('failed to get txs history', LogLevel.ERROR, LOG_PREFIX);
+  }
+  return history || [];
+};
+
+const getTxsETHHistory = async (): Promise<ITxHistoryBuyInsETH[]> => {
+  let history: ITxHistoryBuyInsETH[] = [];
+  try {
+    history = await get<ITxHistoryBuyInsETH[]>(
+      `/dex/buy-eth-history?limit=20&offset=0`
+    );
+  } catch (_) {
+    log('failed to get txs eth history', LogLevel.ERROR, LOG_PREFIX);
+  }
+  return history || [];
+};
+
+const getTxsPurchaseHistory = async (): Promise<ITxHistoryPurchase[]> => {
+  let history: ITxHistoryPurchase[] = [];
+  try {
+    history = await get<ITxHistoryPurchase[]>(`/dex/history`);
+  } catch (_) {
+    log('failed to get txs purchase history', LogLevel.ERROR, LOG_PREFIX);
+  }
+  return history || [];
+};
+
+export const getHistory = async (address: string): Promise<IHistoryResp> => {
+  try {
+    const [txs, txsETH, txsPurchase] = await Promise.all([
+      await getTxsHistory(address),
+      await getTxsETHHistory(),
+      await getTxsPurchaseHistory(),
+    ]);
+    const _txsETH = txsETH
+      .map(history => {
+        const { statusColor, isExpired, status } = statusMapper(
+          history.created_at,
+          history.status,
+          false
+        );
         return {
           ...history,
           statusColor,
           status,
           isExpired,
         };
-      }),
-      item => item.created_at,
-      'desc'
-    );
+      })
+      .filter(item => {
+        const now = Math.floor(new Date().getTime() / 1000);
+        const isExpired = now - Number(item.expired_at) > 0;
+        return !isExpired;
+      });
+
+    const _txsPurchase = txsPurchase.map(history => {
+      const { statusColor, isExpired, status } = statusMapper(
+        history.timestamp,
+        history.type,
+        false
+      );
+      return {
+        ...history,
+        statusColor,
+        status,
+        isExpired,
+      };
+    });
+
+    const _txs = (txs || []).map(history => {
+      const { statusColor, isExpired, status } = statusMapper(
+        history.created_at,
+        history.status,
+        true
+      );
+
+      return {
+        ...history,
+        statusColor,
+        status,
+        isExpired,
+      };
+    });
+    return {
+      txs: orderBy(_txs, item => item.created_at, 'desc'),
+      txsETH: orderBy(_txsETH, item => item.created_at, 'desc'),
+      txsPurchase: orderBy(_txsPurchase, item => item.timestamp, 'desc'),
+    };
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
     throw err;
@@ -181,15 +286,25 @@ export const submitListForSale = async (
 export const retrieveOrder = async (
   payload: IRetrieveOrderPayload
 ): Promise<IRetrieveOrderResp> => {
+  let data: IRetrieveOrderResp = {
+    raw_psbt: '',
+    buyable: false,
+    sell_verified: false,
+    priceBTC: 0,
+    priceETH: '0',
+    orderID: '',
+  };
   try {
-    const res = await get<IRetrieveOrderResp>(
-      `/dex/retrieve-order?order_id=${payload?.orderID}`
+    data = await get<IRetrieveOrderResp>(
+      `/dex/retrieve-order?${payload?.orderID ? 'order_id' : 'inscription'}=${
+        payload?.orderID || payload.inscriptionID || ''
+      }`
     );
-    return res;
   } catch (err: unknown) {
     log('failed to get retrieve order', LogLevel.ERROR, LOG_PREFIX);
-    throw err;
+    // throw err;
   }
+  return data;
 };
 
 export const submitCancel = async (payload: {
@@ -202,6 +317,77 @@ export const submitCancel = async (payload: {
     return res;
   } catch (err: unknown) {
     log('failed to get collected NFTs', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
+};
+
+export const getGenDepositAddressETH = async (
+  payload: IReqGenAddressByETH
+): Promise<IRespGenAddressByETH> => {
+  try {
+    const res = await post<IReqGenAddressByETH, never>(
+      '/dex/gen-eth-order',
+      payload
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get getThorDepositAddress', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
+};
+
+export const estimateETH2BTC = async ({
+  sellAmount,
+  receiver,
+}: IEstimateThorSwapReq): Promise<IEstimateThorResp> => {
+  try {
+    const res = await fetch(
+      `${THOR_SWAP_API_URL}/quote/swap?amount=${sellAmount}&from_asset=ETH.ETH&to_asset=BTC.BTC&destination=${receiver}`
+    );
+    const data: IEstimateThorResp = await res.json();
+    return data;
+
+    // if (data.error) {
+    //   return data;
+    // }
+    // &tolerance_bps=100
+    // const arrMemos = data.memo.split(':');
+    // const minAmount = arrMemos[arrMemos.length - 1];
+    // return {
+    //   ...data,
+    //   expected_amount_out: minAmount,
+    // };
+  } catch (err: unknown) {
+    log('failed to get estimateETH2BTC', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
+};
+
+export const getTokenRate = async (
+  pair: BINANCE_PAIR = 'ETHBTC'
+): Promise<number> => {
+  try {
+    const res = await fetch(`${BINANCE_API_URL}/ticker/price?symbol=${pair}`);
+    const data: ITokenPriceResp = await res.json();
+    const rate = data?.price;
+    return new BigNumber(rate).toNumber();
+  } catch (err: unknown) {
+    log('failed to get estimateETH2BTC', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
+};
+
+export const submitSwapETH = async (
+  payload: IReqSubmitSwapETH
+): Promise<IRespGenAddressByETH> => {
+  try {
+    const res = await post<IReqSubmitSwapETH, never>(
+      '/dex/update-eth-order-tx',
+      payload
+    );
+    return res;
+  } catch (err: unknown) {
+    log('failed to get submitSwapETH', LogLevel.ERROR, LOG_PREFIX);
     throw err;
   }
 };

@@ -82,3 +82,5 @@ export const FIREBASE_MESSAGING_VAPID_KEY =
   process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_VAPID_KEY;
 
 /* eslint-enable @typescript-eslint/no-non-null-assertion */
+
+export const THOR_SWAP_API_URL = 'https://thornode.ninerealms.com/thorchain';

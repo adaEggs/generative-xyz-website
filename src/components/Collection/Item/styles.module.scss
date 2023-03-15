@@ -159,6 +159,7 @@
         justify-content: space-between;
         // flex-wrap: wrap;
         gap: rem(3px);
+        align-items: flex-start;
       }
 
       .collectionCard_info_wrapper {
@@ -279,4 +280,12 @@
   .ordinalsLinks {
     transform: translateY(-1px);
   }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: end;
 }

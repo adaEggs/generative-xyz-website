@@ -55,4 +55,8 @@
       }
     }
   }
+
+  :global(.loading) {
+    z-index: 6;
+  }
 }

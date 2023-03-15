@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -7,8 +8,8 @@ import Row from 'react-bootstrap/Row';
 import CategoryTab from '@components/CategoryTab';
 import { LoadingProvider } from '@contexts/loading-context';
 // import { ROUTE_PATH } from '@constants/route-path';
-import { CDN_URL } from '@constants/config';
-import SvgInset from '@components/SvgInset';
+// import { CDN_URL } from '@constants/config';
+// import SvgInset from '@components/SvgInset';
 
 // import { WalletContext } from '@contexts/wallet-context';
 // import { getUserSelector } from '@redux/user/selector';
@@ -17,7 +18,7 @@ import SvgInset from '@components/SvgInset';
 // import { useAppSelector } from '@redux';
 
 import CollectionItems from './CollectionItems';
-import UserItems from './UserItems';
+// import UserItems from './UserItems';
 import Filter from './Filter';
 
 import s from './Request.module.scss';
@@ -36,6 +37,9 @@ const CATEGORY = [
     name: 'New artists',
   },
 ];
+const UserItems = dynamic(() => import('./UserItems'), {
+  ssr: false,
+});
 
 // const LOG_PREFIX = 'RequestsPage';
 
@@ -113,7 +117,6 @@ const RequestPage = (): JSX.Element => {
         <Row>
           <Col md={12}>
             <div className={s.request_textNote}>
-              <SvgInset svgUrl={`${CDN_URL}/icons/info-circle.svg`} />
               <p>
                 Artist govern Generative DAO. Artists can vote on new
                 collection. A minimum of 2 artist votes is required for a new

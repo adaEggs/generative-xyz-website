@@ -8,7 +8,7 @@ import Stats from '@components/Stats';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
-import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
 import { SOCIALS } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { EXTERNAL_LINK } from '@constants/external-link';
@@ -46,6 +46,7 @@ import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal
 import { AuthenticCard } from './AuthenticCard';
 import { filterCreatorName } from '@utils/generative';
 import { wordCase } from '@utils/common';
+import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
@@ -260,16 +261,22 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     if (!isBuyable) return null;
     return (
       <div className={s.buy_btc}>
-        {isBuyable && (
-          <ButtonBuyListed
-            sizes={'large'}
-            inscriptionID={tokenData.tokenID}
-            price={tokenData.priceBTC}
-            inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
-            orderID={tokenData.orderID}
-            isDetail={true}
-          />
-        )}
+        <ButtonBuyListedFromETH
+          sizes={'large'}
+          inscriptionID={tokenData.tokenID}
+          price={tokenData.priceETH}
+          inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+          orderID={tokenData.orderID}
+          isDetail={true}
+        />
+        <ButtonBuyListedFromBTC
+          sizes={'large'}
+          inscriptionID={tokenData.tokenID}
+          price={tokenData.priceBTC}
+          inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+          orderID={tokenData.orderID}
+          isDetail={true}
+        />
       </div>
     );
   };
