@@ -221,3 +221,18 @@
     height: 100%;
   }
 }
+
+.action {
+  &_waiting {
+    width: 100%;
+    color: $gray-9c;
+    font-style: italic;
+  }
+
+  &_button {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+  }
+}

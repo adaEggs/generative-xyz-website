@@ -17,6 +17,18 @@ const formatDateTime = ({
   formatPattern = FORMAT_PATTERN,
 }: IFormatDate) => moment(dateTime).format(formatPattern);
 
+interface IUnixExpired {
+  unixTime: number | string | undefined;
+  expiredMin?: number;
+}
+
+const isExpiredUnixTime = ({ unixTime, expiredMin = 1 }: IUnixExpired) => {
+  if (!unixTime || !isNumber(unixTime)) return false;
+  const now = Math.floor(new Date().getTime() / 1000);
+  expiredMin = expiredMin * 60;
+  return now - Number(unixTime) > expiredMin;
+};
+
 interface IExpired {
   time: number | string | undefined;
   expiredMin?: number;
@@ -24,21 +36,9 @@ interface IExpired {
 
 const isExpiredTime = ({ time, expiredMin = 1 }: IExpired) => {
   if (!time || !isNumber(time)) return false;
-  const now = Math.floor(new Date().getTime() / 1000);
+  const now = Math.floor(new Date().getTime());
   expiredMin = expiredMin * 60;
   return now - Number(time) > expiredMin;
 };
 
-const isExpiredTimeClone = ({ time, expiredMin = 1 }: IExpired) => {
-  if (!time || !isNumber(time)) return false;
-  const now = Math.floor(new Date().getTime() / 1000);
-  expiredMin = expiredMin * 60;
-  return now - Number(time) > expiredMin;
-};
-
-export {
-  formatUnixDateTime,
-  formatDateTime,
-  isExpiredTime,
-  isExpiredTimeClone,
-};
+export { formatUnixDateTime, formatDateTime, isExpiredUnixTime, isExpiredTime };
