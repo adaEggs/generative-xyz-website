@@ -31,7 +31,7 @@ const TableActivities = () => {
         formatAddress(transaction?.user_a_address, 10) ||
         '-';
       const toAddress =
-        transaction.user_b?.displayName ||
+        transaction?.user_b?.displayName ||
         formatAddress(transaction?.user_b_address, 10) ||
         '-';
 
