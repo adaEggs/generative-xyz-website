@@ -8,18 +8,20 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
+import { toast } from 'react-hot-toast';
+import { v4 } from 'uuid';
 
-import ProjectListLoading from '@containers/Trade/ProjectListLoading';
+import { ROUTE_PATH } from '@constants/route-path';
 import { Loading } from '@components/Loading';
-import { getDaoProjects } from '@services/request';
+import { getDaoProjects, voteDaoProject } from '@services/request';
 import Button from '@components/Button';
 import { convertIpfsToHttp } from '@utils/image';
 import useDidMountEffect from '@hooks/useDidMountEffect';
+import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
 
 import s from './CollectionItems.module.scss';
-
-import { LIMIT } from '../useApi';
 import NoData from '../NoData';
+import SkeletonItem from '../SkeletonItem';
 
 interface CollectionItemsProps {
   className?: string;
@@ -37,19 +39,21 @@ export const CollectionItems = ({
   const [totalPerPage, setTotalPerPage] = useState<number>(1);
   const [currentCursor, setCurrentCursor] = useState<string>('');
 
+  const initData = async (): Promise<void> => {
+    const collections = await getDaoProjects({
+      keyword,
+      status,
+      sort,
+      limit: LIMIT,
+    });
+    setCombineList([...(collections?.result || [])]);
+    setTotalPerPage(collections?.total || LIMIT);
+    setIsLoaded(true);
+    setCurrentCursor(collections?.cursor || '');
+  };
+
   useDidMountEffect(() => {
-    (async () => {
-      const collections = await getDaoProjects({
-        keyword,
-        status,
-        sort,
-        limit: LIMIT,
-      });
-      setCombineList([...(collections?.result || [])]);
-      setTotalPerPage(collections?.total || LIMIT);
-      setIsLoaded(true);
-      setCurrentCursor(collections?.cursor || '');
-    })();
+    initData();
   }, [keyword, status, sort]);
 
   const fetchCombineList = async () => {
@@ -81,15 +85,42 @@ export const CollectionItems = ({
 
   const getStatusProposal = (status: number) => {
     if (status === 0) {
-      return <span>Voting</span>;
+      return (
+        <span className={cn(s.collections_status, s.collections_voting)}>
+          Voting
+        </span>
+      );
     }
     if (status === 1) {
-      return <span>Executed</span>;
+      return (
+        <span className={cn(s.collections_status, s.collections_executed)}>
+          Executed
+        </span>
+      );
     }
     if (status === 2) {
-      return <span>Defeated</span>;
+      return (
+        <span className={cn(s.collections_status, s.collections_defeated)}>
+          Defeated
+        </span>
+      );
     }
-    return <span>Unknow</span>;
+    return <span className={s.collections_status}>Unknow</span>;
+  };
+
+  const submitVote = async (projectId: string, voteType: number) => {
+    toast.remove();
+    const result = await voteDaoProject(projectId, voteType);
+    if (result?.status) {
+      toast.success('Voted successfully');
+      initData();
+    } else {
+      toast.error('Voted failed');
+    }
+  };
+
+  const goToCollectionPage = (tokenId: string): void => {
+    router.push(`${ROUTE_PATH.GENERATIVE}/${tokenId}`);
   };
 
   return (
@@ -97,7 +128,9 @@ export const CollectionItems = ({
       <Row className={s.items_projects}>
         {isLoaded === false ? (
           <Col xs={12}>
-            <ProjectListLoading numOfItems={12} />
+            {[...Array(LIMIT)].map(() => (
+              <SkeletonItem key={`token-loading-${v4()}`} />
+            ))}
           </Col>
         ) : (
           <>
@@ -143,6 +176,9 @@ export const CollectionItems = ({
                     <div className="col-md-1">{item?.seq_id}</div>
                     <div className="col-md-1">
                       <Image
+                        onClick={() =>
+                          goToCollectionPage(item?.project?.token_id)
+                        }
                         src={convertIpfsToHttp(item?.project?.thumbnail)}
                         width={60}
                         height={60}
@@ -150,7 +186,13 @@ export const CollectionItems = ({
                       />
                     </div>
                     <div className="col-md-2 d-flex justify-content-center">
-                      {item?.project?.name}
+                      <span
+                        onClick={() =>
+                          goToCollectionPage(item?.project?.token_id)
+                        }
+                      >
+                        {item?.project?.name}
+                      </span>
                     </div>
                     <div className="col-md-1 d-flex justify-content-center">
                       {item?.project?.max_supply}
@@ -165,8 +207,19 @@ export const CollectionItems = ({
                       {getStatusProposal(item?.status)}
                     </div>
                     <div className="col-md-2 d-flex justify-content-end">
-                      <Button variant="outline-black">Against</Button>
-                      <Button disabled={item?.action?.can_vote === false}>
+                      <Button
+                        className={cn(s.collections_btn, s.collections_mr6)}
+                        disabled={item?.action?.can_vote === false}
+                        variant="outline-black"
+                        onClick={() => submitVote(item?.id, 0)}
+                      >
+                        Against
+                      </Button>
+                      <Button
+                        className={cn(s.collections_btn, s.collections_btnVote)}
+                        disabled={item?.action?.can_vote === false}
+                        onClick={() => submitVote(item?.id, 1)}
+                      >
                         Vote
                       </Button>
                     </div>

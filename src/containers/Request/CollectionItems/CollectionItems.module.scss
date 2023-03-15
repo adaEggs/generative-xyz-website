@@ -24,4 +24,40 @@
     align-items: center;
     border-bottom: 1px solid #cecece;
   }
+  &_status {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 22px;
+  }
+  &_executed {
+    color: #ff7e21;
+  }
+  &_voting {
+    color: #00aa6c;
+  }
+  &_defeated {
+    color: #ff4747;
+  }
+  &_btn {
+    padding: rem(5px) rem(14px);
+    border-radius: 2px;
+    border: 1px solid #1c1c1c;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+    letter-spacing: 0.01em;
+    text-transform: initial;
+    &:disabled {
+      background-color: #ffffff;
+    }
+  }
+  &_mr6 {
+    margin-right: rem(6px);
+  }
+  &_btnVote {
+    border: none;
+    &:disabled {
+      background-color: #f2f2f2;
+    }
+  }
 }

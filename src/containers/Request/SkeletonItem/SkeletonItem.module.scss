@@ -1,0 +1,9 @@
+.skeletonItem {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  &_item {
+    width: 100%;
+    margin-bottom: rem(20px);
+  }
+}

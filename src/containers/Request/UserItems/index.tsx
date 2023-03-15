@@ -4,22 +4,23 @@ import cn from 'classnames';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import Image from 'next/image';
 import { useRouter } from 'next/router';
 import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
+import { toast } from 'react-hot-toast';
+import { v4 } from 'uuid';
 
-import ProjectListLoading from '@containers/Trade/ProjectListLoading';
+import { ROUTE_PATH } from '@constants/route-path';
 import { Loading } from '@components/Loading';
-import { getDaoArtists } from '@services/request';
+import { getDaoArtists, voteDaoArtist } from '@services/request';
 import Button from '@components/Button';
 import useDidMountEffect from '@hooks/useDidMountEffect';
 import { formatAddress } from '@utils/format';
+import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
 
 import s from './UserItems.module.scss';
-
-import { LIMIT } from '../useApi';
 import NoData from '../NoData';
+import SkeletonItem from '../SkeletonItem';
 
 interface UserItemsProps {
   className?: string;
@@ -35,19 +36,21 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
   const [totalPerPage, setTotalPerPage] = useState<number>(1);
   const [currentCursor, setCurrentCursor] = useState<string>('');
 
+  const initData = async (): Promise<void> => {
+    const users = await getDaoArtists({
+      keyword,
+      status,
+      sort,
+      limit: LIMIT,
+    });
+    setCombineList([...(users?.result || [])]);
+    setTotalPerPage(users?.total || LIMIT);
+    setIsLoaded(true);
+    setCurrentCursor(users?.cursor || '');
+  };
+
   useDidMountEffect(() => {
-    (async () => {
-      const users = await getDaoArtists({
-        keyword,
-        status,
-        sort,
-        limit: LIMIT,
-      });
-      setCombineList([...(users?.result || [])]);
-      setTotalPerPage(users?.total || LIMIT);
-      setIsLoaded(true);
-      setCurrentCursor(users?.cursor || '');
-    })();
+    initData();
   }, [keyword, status, sort]);
 
   const fetchCombineList = async () => {
@@ -77,23 +80,46 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
 
   const getStatusProposal = (status: number) => {
     if (status === 0) {
-      return <span>Voting</span>;
+      return (
+        <span className={cn(s.users_status, s.users_verifying)}>Verifying</span>
+      );
     }
     if (status === 1) {
-      return <span>Executed</span>;
+      return (
+        <span className={cn(s.users_status, s.users_verified)}>Verified</span>
+      );
     }
-    if (status === 2) {
-      return <span>Defeated</span>;
+    return <span className={s.users_status}>Unknow</span>;
+  };
+
+  const submitVote = async (projectId: string, voteType: number) => {
+    toast.remove();
+    const result = await voteDaoArtist(projectId, voteType);
+    if (result?.status) {
+      toast.success('Voted successfully');
+      initData();
+    } else {
+      toast.error('Voted failed');
     }
-    return <span>Unknow</span>;
+  };
+
+  const goToProfilePage = (
+    walletAddressBtcTaproot: string,
+    walletAddress: string
+  ): void => {
+    router.push(
+      `${ROUTE_PATH.PROFILE}/${walletAddressBtcTaproot || walletAddress}`
+    );
   };
 
   return (
     <div className={cn(className, s.users)}>
       <Row className={s.items_projects}>
         {isLoaded === false ? (
-          <Col xs={12}>
-            <ProjectListLoading numOfItems={12} />
+          <Col md={12}>
+            {[...Array(LIMIT)].map(() => (
+              <SkeletonItem key={`token-loading-${v4()}`} />
+            ))}
           </Col>
         ) : (
           <>
@@ -126,11 +152,17 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                   <div key={item.id} className={s.users_row}>
                     <div className="col-md-1">{item?.seq_id}</div>
                     <div className="col-md-2">
-                      {item?.user?.display_name ||
-                        formatAddress(item?.user?.wallet_address)}
+                      <span
+                        onClick={() =>
+                          goToProfilePage('', item?.user?.wallet_address)
+                        }
+                      >
+                        {item?.user?.display_name ||
+                          formatAddress(item?.user?.wallet_address)}
+                      </span>
                     </div>
                     <div className="col-md-2">
-                      {item?.user?.profile_social?.twitter}
+                      {item?.user?.profile_social?.twitter || '-'}
                     </div>
                     <div className="col-md-2">{`${dayjs(
                       item?.user?.updated_at
@@ -139,8 +171,21 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                       {getStatusProposal(item?.status)}
                     </div>
                     <div className="col-md-3 d-flex justify-content-end">
-                      <Button variant="outline-black">Report</Button>
-                      <Button disabled={item?.action?.can_vote === false}>Verify</Button>
+                      <Button
+                        className={cn(s.users_btn, s.users_mr6)}
+                        disabled={item?.action?.can_vote === false}
+                        variant="outline-black"
+                        onClick={() => submitVote(item?.id, 0)}
+                      >
+                        Report
+                      </Button>
+                      <Button
+                        className={cn(s.users_btn, s.users_btnVote)}
+                        disabled={item?.action?.can_vote === false}
+                        onClick={() => submitVote(item?.id, 1)}
+                      >
+                        Verify
+                      </Button>
                     </div>
                   </div>
                 ))}

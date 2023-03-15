@@ -51,3 +51,21 @@ export interface IGetDaoArtistsResponse {
   cursor: string;
   sort: number;
 }
+
+export interface IPutDaoProjectResponse {
+  error: {
+    message: string;
+    code: number;
+  };
+  status: boolean;
+  data: Record<string, string>;
+}
+
+export interface IPutDaoArtistResponse {
+  error: {
+    message: string;
+    code: number;
+  };
+  status: boolean;
+  data: Record<string, string>;
+}

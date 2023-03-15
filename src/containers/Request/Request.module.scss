@@ -2,6 +2,7 @@
   padding: rem(32px) 0 rem(88px) 0;
 
   &_title {
+    margin-bottom: rem(12px);
     font-weight: 500;
     font-size: rem(48px);
     line-height: rem(58px);
@@ -71,28 +72,17 @@
     margin-top: rem(32px);
   }
 
-  &_filter {
-    width: 100%;
+  &_textNote {
+    margin: rem(32px) 0;
     display: flex;
-    justify-content: space-between;
-
-    &_search {
-      position: relative;
-      width: 50%;
-      input {
-        width: 100%;
-        padding: rem(11px) rem(14px) rem(11px) rem(45px);
-        border: 1px solid #cecece;
-        border-radius: 2px;
-        font-weight: 400;
-        font-size: rem(16px);
-        line-height: rem(26px);
-      }
-      label {
-        position: absolute;
-        top: calc(50% - 20px);
-        left: rem(14px);
-      }
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: #4f43e2;
+    p {
+      margin-left: rem(15.25px);
     }
   }
 }
