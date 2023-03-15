@@ -31,21 +31,21 @@ const SAMPLE_DATA: ICollection = {
   numberOwners: 213,
   numberOwnersPercentage: 54,
   floorPrice: {
-    amount: '12000',
+    amount: '120',
   },
   floorPriceOneDay: {
-    amount: '13000',
+    amount: '130',
     percentageChanged: 4.2,
   },
   floorPriceOneWeek: {
-    amount: '15000',
+    amount: '150',
     percentageChanged: 4.2,
   },
   volumeFifteenMinutes: {
-    amount: '123000',
+    amount: '120',
   },
   volumeOneDay: {
-    amount: '1223000',
+    amount: '1220',
   },
   volumeOneWeek: {
     amount: '90123',
