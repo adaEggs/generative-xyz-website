@@ -24,6 +24,7 @@ interface IProps {
   options?: {
     hasRoyalty?: boolean;
     feeETH?: string;
+    loading?: boolean;
   };
 }
 
@@ -77,7 +78,7 @@ const FeeRate = ({
       const isActive =
         (!rateName && !!customRate) ||
         (selectedRate === rateName && !customRate);
-      if (isActive && options?.feeETH) {
+      if (isActive && options?.feeETH && !options?.loading) {
         amount = formatEthPrice(options.feeETH);
         symbol = 'ETH';
       } else {
