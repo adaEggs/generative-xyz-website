@@ -286,15 +286,25 @@ export const submitListForSale = async (
 export const retrieveOrder = async (
   payload: IRetrieveOrderPayload
 ): Promise<IRetrieveOrderResp> => {
+  let data: IRetrieveOrderResp = {
+    raw_psbt: '',
+    buyable: false,
+    sell_verified: false,
+    priceBTC: 0,
+    priceETH: '0',
+    orderID: '',
+  };
   try {
-    const res = await get<IRetrieveOrderResp>(
-      `/dex/retrieve-order?order_id=${payload?.orderID}`
+    data = await get<IRetrieveOrderResp>(
+      `/dex/retrieve-order?${payload?.orderID ? 'order_id' : 'inscription'}=${
+        payload?.orderID || payload.inscriptionID || ''
+      }`
     );
-    return res;
   } catch (err: unknown) {
     log('failed to get retrieve order', LogLevel.ERROR, LOG_PREFIX);
-    throw err;
+    // throw err;
   }
+  return data;
 };
 
 export const submitCancel = async (payload: {

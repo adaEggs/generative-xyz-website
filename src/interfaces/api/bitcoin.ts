@@ -110,11 +110,17 @@ export interface IListingPayload {
 }
 
 export interface IRetrieveOrderPayload {
-  orderID: string;
+  orderID?: string;
+  inscriptionID?: string;
 }
 
 export interface IRetrieveOrderResp {
   raw_psbt: string;
+  buyable: boolean;
+  sell_verified: boolean;
+  priceBTC: number;
+  priceETH: string;
+  orderID: string;
 }
 
 interface Vin {

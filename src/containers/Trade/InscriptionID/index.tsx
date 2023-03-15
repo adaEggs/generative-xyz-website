@@ -1,7 +1,6 @@
-import BigNumber from 'bignumber.js';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Stack } from 'react-bootstrap';
 import useSWR from 'swr';
 
 import Heading from '@components/Heading';
@@ -13,15 +12,15 @@ import { ROUTE_PATH } from '@constants/route-path';
 import useWindowSize from '@hooks/useWindowSize';
 import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
 import { getInscriptionDetail } from '@services/marketplace-btc';
-import {
-  ellipsisCenter,
-  formatBTCPrice,
-  formatLongAddress,
-} from '@utils/format';
+import { ellipsisCenter, formatAddress } from '@utils/format';
 import { getApiKey } from '@utils/swr';
 
 import s from './TokenID.module.scss';
 import MarkdownPreview from '@components/MarkdownPreview';
+import { retrieveOrder } from '@services/bitcoin';
+import usePurchaseStatus from '@hooks/usePurchaseStatus';
+import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
+import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
 
 const InscriptionID: React.FC = (): React.ReactElement => {
   const router = useRouter();
@@ -31,6 +30,19 @@ const InscriptionID: React.FC = (): React.ReactElement => {
     getApiKey(getInscriptionDetail, tokenID),
     () => getInscriptionDetail(tokenID as string)
   );
+
+  const { data: orderData } = useSWR(
+    getApiKey(retrieveOrder, { inscriptionID: tokenID }),
+    () => retrieveOrder({ inscriptionID: tokenID as string })
+  );
+
+  const { isWaiting, isBuyETH, isBuyBTC, isBuyable } = usePurchaseStatus({
+    buyable: orderData?.buyable,
+    isVerified: orderData?.sell_verified,
+    orderID: orderData?.orderID,
+    priceBTC: orderData?.priceBTC,
+    priceETH: orderData?.priceETH,
+  });
 
   const [tokenData, setTokenData] = React.useState<
     IGetMarketplaceBtcListItem | undefined
@@ -48,6 +60,43 @@ const InscriptionID: React.FC = (): React.ReactElement => {
       <div className={s.info}>
         <Loading isLoaded={!!tokenData} className={s.loading_project} />
       </div>
+    );
+  };
+
+  const renderButtons = () => {
+    if (!isWaiting && !isBuyable) return null;
+    if (isWaiting) {
+      return (
+        <Heading as={'h6'} fontWeight="medium" className={s.action_waiting}>
+          Incoming...
+        </Heading>
+      );
+    }
+
+    return (
+      <Stack direction="horizontal" className={'justify-between'} gap={2}>
+        {isBuyETH && (
+          <ButtonBuyListedFromETH
+            sizes="large"
+            inscriptionID={tokenData?.inscriptionID || ''}
+            price={orderData?.priceETH || ''}
+            inscriptionNumber={Number(inscriptionData?.inscriptionNumber || 0)}
+            orderID={orderData?.orderID || ''}
+            className={s.action_button}
+          />
+        )}
+        {isBuyBTC && (
+          <ButtonBuyListedFromBTC
+            sizes="large"
+            inscriptionID={tokenData?.inscriptionID || ''}
+            price={orderData?.priceBTC || ''}
+            inscriptionNumber={Number(inscriptionData?.inscriptionNumber || 0)}
+            orderID={orderData?.orderID || ''}
+            className={s.action_button}
+            isDetail={true}
+          />
+        )}
+      </Stack>
     );
   };
 
@@ -99,35 +148,10 @@ const InscriptionID: React.FC = (): React.ReactElement => {
               href={`${ROUTE_PATH.PROFILE}/${tokenData?.owner}`}
               className={s.projectName}
             >
-              {formatLongAddress(tokenData?.owner || '')}
+              {formatAddress(tokenData?.owner || '', 10)}
             </Link>
           </Text>
-          {tokenData.buyable && (
-            <>
-              {' '}
-              <Text size="14" color={'black-60'} className={s.info_labelPrice}>
-                {tokenData?.isCompleted ? 'LAST SALE' : 'PRICE'}
-              </Text>
-              {(Number(tokenData?.price) || 0) > 0 && (
-                <Text
-                  size={'20'}
-                  className={
-                    tokenData?.isCompleted
-                      ? s.info_amountPriceSuccess
-                      : s.info_amountPrice
-                  }
-                  style={{
-                    marginBottom: tokenData?.buyable ? 32 : 0,
-                  }}
-                >
-                  {formatBTCPrice(
-                    new BigNumber(tokenData?.price || 0).toNumber()
-                  )}{' '}
-                  BTC
-                </Text>
-              )}
-            </>
-          )}
+          {renderButtons()}
 
           <div className={s.info_project_desc}>
             {tokenData.buyable && (
