@@ -9,8 +9,17 @@ import dayjs from 'dayjs';
 import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
 
 const TABLE_ACTIVITIES_HEADING = ['Event', 'Price', 'From', 'To', 'Date'];
+
+enum eventIcon {
+  'ic-mint.svg',
+  'ic-tag.svg',
+  'ic-x-circle.svg',
+  'ic-sale.svg',
+}
 
 const TableActivities = () => {
   const { tokenActivities } = useContext(GenerativeTokenDetailContext);
@@ -68,6 +77,10 @@ const TableActivities = () => {
         render: {
           event: (
             <div className={s.event}>
+              <SvgInset
+                size={16}
+                svgUrl={`${CDN_URL}/icons/${eventIcon[transaction?.type]}`}
+              />
               {TokenActivityType[transaction?.type]}
             </div>
           ),
@@ -114,14 +127,7 @@ const TableActivities = () => {
   );
 
   return (
-    <Table
-      tableHead={TABLE_ACTIVITIES_HEADING}
-      data={
-        tokenActivities?.result && tokenActivities?.result.length > 0
-          ? activityDatas
-          : []
-      }
-    ></Table>
+    <Table tableHead={TABLE_ACTIVITIES_HEADING} data={activityDatas}></Table>
   );
 };
 
