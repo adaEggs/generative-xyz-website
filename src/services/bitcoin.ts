@@ -202,26 +202,19 @@ export const getHistory = async (address: string): Promise<IHistoryResp> => {
       await getTxsETHHistory(),
       await getTxsPurchaseHistory(),
     ]);
-    const _txsETH = txsETH
-      .map(history => {
-        const { statusColor, isExpired, status } = statusMapper(
-          history.created_at,
-          history.status,
-          false
-        );
-        return {
-          ...history,
-          statusColor,
-          status,
-          isExpired,
-        };
-      })
-      .filter(item => {
-        const now = Math.floor(new Date().getTime() / 1000);
-        const isExpired = now - Number(item.expired_at) > 0;
-        return !isExpired;
-      });
-
+    const _txsETH = txsETH.map(history => {
+      const { statusColor, isExpired, status } = statusMapper(
+        history.created_at,
+        history.status,
+        false
+      );
+      return {
+        ...history,
+        statusColor,
+        status,
+        isExpired,
+      };
+    });
     const _txsPurchase = txsPurchase.map(history => {
       const { statusColor, isExpired, status } = statusMapper(
         history.timestamp,
