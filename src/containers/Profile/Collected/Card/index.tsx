@@ -153,6 +153,11 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
   const projectName =
     project.status === CollectedNFTStatus.Success ? project.projectName : '';
 
+  const artistName =
+    project.artistName === 'Unverified User'
+      ? project.projectName || ''
+      : project.artistName || '';
+
   const isNotShowBlur =
     project.status === CollectedNFTStatus.Success ||
     project.statusText === 'Transferring';
@@ -386,12 +391,12 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                     <Text size={'16'} fontWeight="medium">
                       {project.quantity > 1
                         ? `Quantity: ${project.quantity}`
-                        : `${capitalizeFirstLetter(project.artistName || '')}`}
+                        : `${capitalizeFirstLetter(artistName)}`}
                     </Text>
                   )
                 ) : (
                   <Text size={'16'} fontWeight="medium">
-                    {`${capitalizeFirstLetter(project.artistName || '')}`}
+                    {`${capitalizeFirstLetter(artistName)}`}
                   </Text>
                 )}
               </div>

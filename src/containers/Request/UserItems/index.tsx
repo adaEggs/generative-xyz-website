@@ -20,6 +20,7 @@ import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { getDaoArtists, voteDaoArtist } from '@services/request';
 import { formatAddress } from '@utils/format';
+import { DEFAULT_USER_AVATAR } from '@constants/common';
 
 import NoData from '../NoData';
 import SkeletonItem from '../SkeletonItem';
@@ -114,7 +115,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
   };
 
   const copyLink = (id: string) => {
-    copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}`);
+    copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}&tab=1`);
     toast.remove();
     toast.success('Copied');
   };
@@ -129,7 +130,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
             ))}
           </Col>
         ) : (
-          <>
+          <Col md={12}>
             <div className={s.users_header}>
               <div className="col-md-1">Proposal ID</div>
               <div className="col-md-3">Artist</div>
@@ -172,7 +173,10 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                       >
                         <Image
                           className={s.users_avatar}
-                          src={convertIpfsToHttp(item?.user?.avatar)}
+                          src={
+                            convertIpfsToHttp(item?.user?.avatar) ||
+                            DEFAULT_USER_AVATAR
+                          }
                           width={48}
                           height={48}
                           alt={item?.user?.display_name}
@@ -186,7 +190,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                       </div>
                     </div>
                     <div className="col-md-3">{`${dayjs(
-                      item?.user?.expired_at
+                      item?.expired_at
                     ).format('MMM DD')}`}</div>
                     <div className="col-md-2">
                       {getStatusProposal(item?.status)}
@@ -199,7 +203,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                         <SvgInset
                           className={s.icCopy}
                           size={16}
-                          svgUrl={`${CDN_URL}/icons/share.svg`}
+                          svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
                       </span>
                       {/* <Button
@@ -222,7 +226,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                 ))}
               </InfiniteScroll>
             )}
-          </>
+          </Col>
         )}
       </Row>
     </div>

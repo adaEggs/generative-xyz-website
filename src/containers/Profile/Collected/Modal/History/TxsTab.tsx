@@ -39,7 +39,8 @@ const TxsTab = () => {
     .filter(
       item =>
         item.type !== TrackTxType.buySplit &&
-        item.type !== TrackTxType.listSplit
+        item.type !== TrackTxType.listSplit &&
+        item.type !== TrackTxType.cancel
     )
     .map(item => {
       return {
