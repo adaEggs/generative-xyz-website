@@ -9,7 +9,6 @@ import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 import cs from 'classnames';
 import { useContext, useMemo } from 'react';
-import { v4 } from 'uuid';
 import FilterOptions from '../FilterOptions';
 import CollectionListLoading from '../Loading';
 import s from './CollectionList.module.scss';
@@ -82,9 +81,9 @@ const CollectionList = ({
       <div className={``}>
         {filterTraits && filterTraits.length > 0 && (
           <div className={s.filterList}>
-            {filterTraits.split(',').map(trait => (
+            {filterTraits.split(',').map((trait, index) => (
               <div
-                key={`trait-${v4()}`}
+                key={`trait-${projectInfo?.tokenID}-${index}`}
                 className={cs(s.filterItem, 'd-flex align-items-center')}
               >
                 <Text>{`${trait.split(':')[0]}: ${trait.split(':')[1]}`}</Text>

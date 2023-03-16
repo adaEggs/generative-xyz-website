@@ -1,5 +1,4 @@
 import React from 'react';
-import { v4 } from 'uuid';
 import s from './Radio.module.scss';
 
 type Props = {
@@ -25,9 +24,9 @@ const RadioGroups = ({
     <div className={className}>
       {label && <label>{label}</label>}
       <div className={s.groups}>
-        {options?.map(option => {
+        {options?.map((option, index) => {
           return (
-            <div key={`${option.key}-${v4()}`} className={s.inputGroups}>
+            <div key={`${option.key}-${index}`} className={s.inputGroups}>
               <input
                 type="radio"
                 id={option.key}

@@ -8,7 +8,6 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
-import { v4 } from 'uuid';
 import s from './Table.module.scss';
 
 const TABLE_COLLECTION_ACTIVITIES_HEADING = [
@@ -20,7 +19,7 @@ const TABLE_COLLECTION_ACTIVITIES_HEADING = [
 ];
 
 const CollectionActivityTable = () => {
-  const { collectionActivities: listData } = useContext(
+  const { collectionActivities: listData, projectData } = useContext(
     GenerativeProjectDetailContext
   );
 
@@ -32,7 +31,7 @@ const CollectionActivityTable = () => {
 
   const activityDatas = listData?.result?.map(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    transaction => {
+    (transaction, index) => {
       // const buyer = '{transaction.buyer}';
       // const seller = '{transaction.seller}' || '-';
 
@@ -72,7 +71,7 @@ const CollectionActivityTable = () => {
       //   }
 
       return {
-        id: `activity-${v4()}`,
+        id: `activity-${projectData?.tokenID}-${index}`,
         render: {
           item: (
             <Stack

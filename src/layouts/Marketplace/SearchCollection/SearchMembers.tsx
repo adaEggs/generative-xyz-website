@@ -1,13 +1,12 @@
-import React from 'react';
 import cs from 'classnames';
+import React from 'react';
 
 import Avatar from '@components/Avatar';
 import Link from '@components/Link';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
-import { formatAddress } from '@utils/format';
-import { v4 } from 'uuid';
 import { User } from '@interfaces/user';
+import { formatAddress } from '@utils/format';
 
 import s from './styles.module.scss';
 
@@ -49,7 +48,7 @@ export const SearchMembersResult = ({ list }: { list: { artist: User }[] }) => {
       </div>
       {list.map(user => (
         <SearchMemberItem
-          key={`member-${v4()}`}
+          key={`member-${user?.artist?.id || user?.artist?.walletAddress}`}
           memberName={
             user?.artist?.displayName ||
             formatAddress(user?.artist?.walletAddress)

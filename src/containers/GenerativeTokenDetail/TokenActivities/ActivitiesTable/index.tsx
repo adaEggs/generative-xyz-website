@@ -1,15 +1,14 @@
+import Link from '@components/Link';
 import NotFound from '@components/NotFound';
 import Table from '@components/Table';
+import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeTokenDetailContext } from '@contexts/generative-token-detail-context';
+import { TokenActivityType } from '@enums/token-type';
 import { formatAddress, formatBTCPrice } from '@utils/format';
 import dayjs from 'dayjs';
 import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
-import { v4 } from 'uuid';
 import s from './styles.module.scss';
-import Link from '@components/Link';
-import { ROUTE_PATH } from '@constants/route-path';
-import { TokenActivityType } from '@enums/token-type';
 
 const TABLE_ACTIVITIES_HEADING = ['Event', 'Price', 'From', 'To', 'Date'];
 
@@ -21,7 +20,7 @@ const TableActivities = () => {
 
   const activityDatas = tokenActivities?.result.map(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    transaction => {
+    (transaction, index) => {
       const updatedAt = transaction?.time
         ? dayjs(transaction?.time).format('MMM DD, YYYY')
         : '-';
@@ -65,7 +64,7 @@ const TableActivities = () => {
       //   };
       // }
       return {
-        id: `activity-${v4()}`,
+        id: `activity-${index}`,
         render: {
           event: (
             <div className={s.event}>

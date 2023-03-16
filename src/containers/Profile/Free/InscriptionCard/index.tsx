@@ -60,7 +60,7 @@ const InscriptionCard = ({
             <div className={s.iframeWrapper}>
               <iframe
                 src={`${HOST_ORDINALS_EXPLORER}/preview/${inscription.inscriptionID}`}
-                sandbox="allow-scripts allow-pointer-lock"
+                sandbox="allow-scripts allow-pointer-lock allow-downloads"
                 className={s.iframeContainer}
                 style={{ overflow: 'hidden' }}
               />
