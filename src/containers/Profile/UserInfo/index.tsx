@@ -20,7 +20,6 @@ import { useContext, useMemo } from 'react';
 import s from './UserInfo.module.scss';
 import { toast } from 'react-hot-toast';
 import { SocialVerify } from '@components/SocialVerify';
-import { SOCIALS } from '@constants/common';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 import ButtonReceiver from '@containers/Profile/ButtonReceiver';
@@ -83,10 +82,7 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                     formatAddress(walletAddress)}
                 </Heading>
                 <div className={s.userInfo_content_wrapper_info_icon}>
-                  <SocialVerify
-                    isTwVerified={isTwVerified}
-                    link={SOCIALS.twitter}
-                  />
+                  <SocialVerify isTwVerified={isTwVerified} />
                 </div>
                 {isOwner && currentUser?.canCreateProposal && (
                   <ButtonVerifyMe />

@@ -59,9 +59,9 @@ const CollectionList = ({
 
   useEffect(() => {
     setIsLayoutShop(layout && layout === 'shop');
-    return () => {
-      setIsLayoutShop(false);
-    };
+    // return () => {
+    //   setIsLayoutShop(false);
+    // };
   }, []);
 
   return (
