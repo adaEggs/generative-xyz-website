@@ -39,6 +39,7 @@ export const MINT_TRANSFER_FEE = 18000;
 export const SANDBOX_BTC_IMAGE_SIZE_LIMIT = 380; // kb
 export const SANDBOX_BTC_NON_IMAGE_SIZE_LIMIT = 3000; // kb
 export const MIN_MINT_BTC_PROJECT_PRICE = 0;
+export const LIST_COLLECTION_MAX_FILE_SIZE = 4; // mb
 
 // Category
 export const CATEGORY_SELECT_BLACKLIST =
@@ -81,6 +82,6 @@ export const FIREBASE_APP_ID = process.env.NEXT_PUBLIC_FIREBASE_APP_ID;
 export const FIREBASE_MESSAGING_VAPID_KEY =
   process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_VAPID_KEY;
 
-/* eslint-enable @typescript-eslint/no-non-null-assertion */
-
 export const THOR_SWAP_API_URL = 'https://thornode.ninerealms.com/thorchain';
+
+/* eslint-enable @typescript-eslint/no-non-null-assertion */
