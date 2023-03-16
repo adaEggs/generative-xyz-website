@@ -1,7 +1,19 @@
 .recentWorks {
-  &_title {
+  &_header {
     margin-top: rem(58px);
     margin-bottom: rem(30px);
+
+    @include min-tablet {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+
+  &_title {
+    @include mobile {
+      margin-bottom: rem(16px);
+    }
   }
 
   &_projects {

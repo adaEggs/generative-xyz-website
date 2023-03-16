@@ -29,7 +29,10 @@ const handleResponse = async <T>(response: Response): Promise<T> => {
     const { data, status, error } = json;
     if (!response.ok || !status) {
       const errorMessage = (error && error.message) || response.statusText;
-      return Promise.reject(errorMessage);
+      return Promise.reject({
+        message: errorMessage,
+        status: response.status,
+      });
     }
     return data as T;
   });

@@ -117,6 +117,7 @@ const CollectionItem = ({
       </div>
     );
   };
+
   const renderHeadDesc = () => {
     const text = data?.orderInscriptionIndex
       ? data?.orderInscriptionIndex

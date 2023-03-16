@@ -5,7 +5,6 @@ import cs from 'classnames';
 import Heading from '@components/Heading';
 import { filterCreatorName } from '@utils/generative';
 import { SocialVerify } from '@components/SocialVerify';
-import { SOCIALS } from '@constants/common';
 import ButtonIcon from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
 import { IC_EDIT_PROJECT } from '@constants/icons';
@@ -67,7 +66,7 @@ export const ProjectName = (): JSX.Element => {
           </div>
         )}
 
-        <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
+        <SocialVerify isTwVerified={isTwVerified} />
       </div>
       <div
         className={`${s.projectHeader_heading} ${isCreated ? s.hasEdit : ''}`}

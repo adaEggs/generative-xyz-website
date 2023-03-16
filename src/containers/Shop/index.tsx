@@ -5,12 +5,25 @@ import { Tab, Tabs } from 'react-bootstrap';
 import Image from 'next/image';
 import Collection from './Collection';
 import { CDN_URL } from '@constants/config';
+import Button from '@components/ButtonIcon';
+import ListCollectionModal from './ListCollectionModal';
 
 const ShopController: React.FC = (): React.ReactElement => {
   const [activeTab, setActiveTab] = useState<ShopTab>(ShopTab.COLLECTION);
+  const [showListCollectionModal, setShowListCollectionModal] = useState(false);
 
   const handleSelectTab = (tab: ShopTab): void => {
     setActiveTab(tab);
+  };
+
+  const handleOpenListCollectionModal = (): void => {
+    setShowListCollectionModal(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const handleCloseListCollectionModal = (): void => {
+    setShowListCollectionModal(false);
+    document.body.style.overflow = 'auto';
   };
 
   const renderCollectionTitle = useMemo(
@@ -30,28 +43,47 @@ const ShopController: React.FC = (): React.ReactElement => {
   );
 
   return (
-    <div className={s.shopController}>
-      <div className="container">
-        <h1 className={s.heading}>
-          Buy art on Bitcoin. Simple. Fast. Zero fees.
-        </h1>
-        <Tabs
-          className={s.tabs}
-          activeKey={activeTab}
-          onSelect={tab => handleSelectTab(tab as ShopTab)}
-        >
-          <Tab
-            tabClassName={s.tab}
-            eventKey={ShopTab.COLLECTION}
-            title={renderCollectionTitle}
-          >
-            <div className={s.collectionTab}>
-              <Collection />
+    <>
+      <div className={s.shopController}>
+        <div className="container">
+          <div className={s.headingWrapper}>
+            <h1 className={s.heading}>
+              Buy art on Bitcoin. Simple. Fast. Zero fees.
+            </h1>
+            <div className={s.actionWrapper}>
+              <Button onClick={handleOpenListCollectionModal}>
+                <Image
+                  className={s.tabIcon}
+                  src={`${CDN_URL}/icons/ic-image-white-18x18.svg`}
+                  width={18}
+                  height={18}
+                  alt="ic collection"
+                />
+                List a collection
+              </Button>
             </div>
-          </Tab>
-        </Tabs>
+          </div>
+          <Tabs
+            className={s.tabs}
+            activeKey={activeTab}
+            onSelect={tab => handleSelectTab(tab as ShopTab)}
+          >
+            <Tab
+              tabClassName={s.tab}
+              eventKey={ShopTab.COLLECTION}
+              title={renderCollectionTitle}
+            >
+              <div className={s.collectionTab}>
+                <Collection />
+              </div>
+            </Tab>
+          </Tabs>
+        </div>
       </div>
-    </div>
+      {showListCollectionModal && (
+        <ListCollectionModal handleClose={handleCloseListCollectionModal} />
+      )}
+    </>
   );
 };
 
