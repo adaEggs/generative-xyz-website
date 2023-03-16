@@ -1,30 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from 'react';
 import cn from 'classnames';
+import dayjs from 'dayjs';
+import debounce from 'lodash/debounce';
+import { useRouter } from 'next/router';
+import React, { useEffect, useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { useRouter } from 'next/router';
-import debounce from 'lodash/debounce';
-import dayjs from 'dayjs';
 import { toast } from 'react-hot-toast';
-import { v4 } from 'uuid';
 import Image from 'next/image';
 import copy from 'copy-to-clipboard';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
-import { ROUTE_PATH } from '@constants/route-path';
-import { Loading } from '@components/Loading';
-import { getDaoArtists, voteDaoArtist } from '@services/request';
 import Button from '@components/Button';
-import { formatAddress } from '@utils/format';
+import { Loading } from '@components/Loading';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
 import { convertIpfsToHttp } from '@utils/image';
 import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
+import { ROUTE_PATH } from '@constants/route-path';
+import { getDaoArtists, voteDaoArtist } from '@services/request';
+import { formatAddress } from '@utils/format';
 
-import s from './UserItems.module.scss';
 import NoData from '../NoData';
 import SkeletonItem from '../SkeletonItem';
+import s from './UserItems.module.scss';
 
 interface UserItemsProps {
   className?: string;
@@ -125,8 +124,8 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
       <Row className={s.items_projects}>
         {isLoaded === false ? (
           <Col md={12}>
-            {[...Array(LIMIT)].map(() => (
-              <SkeletonItem key={`token-loading-${v4()}`} />
+            {[...Array(LIMIT)].map((_, index) => (
+              <SkeletonItem key={`token-loading-${index}`} />
             ))}
           </Col>
         ) : (

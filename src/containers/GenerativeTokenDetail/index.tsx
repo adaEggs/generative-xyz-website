@@ -9,18 +9,24 @@ import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
 import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
+import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
 import { SOCIALS } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { EXTERNAL_LINK } from '@constants/external-link';
 import { ROUTE_PATH } from '@constants/route-path';
+import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
 import {
   GenerativeTokenDetailContext,
   GenerativeTokenDetailProvider,
 } from '@contexts/generative-token-detail-context';
+import usePurchaseStatus from '@hooks/usePurchaseStatus';
 import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
+import { wordCase } from '@utils/common';
 import { formatAddress, formatLongAddress, formatTokenId } from '@utils/format';
+import { filterCreatorName } from '@utils/generative';
+import cs from 'classnames';
 import React, {
   useCallback,
   useContext,
@@ -28,11 +34,11 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Container } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { TwitterShareButton } from 'react-share';
-import { v4 } from 'uuid';
+import { AuthenticCard } from './AuthenticCard';
 import CancelListingModal from './CancelListingModal';
 import ListingTokenModal from './ListingTokenModal';
 import MakeOfferModal from './MakeOfferModal';
@@ -41,13 +47,6 @@ import SwapTokenModal from './SwapTokenModal';
 import TokenActivities from './TokenActivities';
 import TransferTokenModal from './TransferTokenModal';
 import s from './styles.module.scss';
-import cs from 'classnames';
-import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
-import { AuthenticCard } from './AuthenticCard';
-import { filterCreatorName } from '@utils/generative';
-import { wordCase } from '@utils/common';
-import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
-import usePurchaseStatus from '@hooks/usePurchaseStatus';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
@@ -209,7 +208,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
         a.trait_type.localeCompare(b.trait_type)
       );
 
-      return list.map(attr => {
+      return list.map((attr, index) => {
         let rarityValue = 0;
         if (isTraitState) {
           const foundTrait = projectData?.traitStat.find(
@@ -222,7 +221,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
             )?.rarity || 0;
         }
         return {
-          id: `attr-${v4()}`,
+          id: `attr-${index}`,
           info: attr.trait_type,
           value: attr.value.toString(),
           link: '',
@@ -258,28 +257,32 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     }
     if (!isBuyable) return null;
     return (
-      <div className={s.buy_btc}>
+      <Row className={s.buy_btc}>
         {isBuyETH && (
-          <ButtonBuyListedFromETH
-            sizes={'large'}
-            inscriptionID={tokenData.tokenID}
-            price={tokenData.priceETH}
-            inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
-            orderID={tokenData.orderID}
-            isDetail={true}
-          />
+          <Col md="5" lg="5" className={s.buy_btc_wrap}>
+            <ButtonBuyListedFromETH
+              sizes={'large'}
+              inscriptionID={tokenData.tokenID}
+              price={tokenData.priceETH}
+              inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+              orderID={tokenData.orderID}
+              isDetail={true}
+            />
+          </Col>
         )}
         {isBuyBTC && (
-          <ButtonBuyListedFromBTC
-            sizes={'large'}
-            inscriptionID={tokenData.tokenID}
-            price={tokenData.priceBTC}
-            inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
-            orderID={tokenData.orderID}
-            isDetail={true}
-          />
+          <Col md="5" lg="5" className={s.buy_btc_wrap}>
+            <ButtonBuyListedFromBTC
+              sizes={'large'}
+              inscriptionID={tokenData.tokenID}
+              price={tokenData.priceBTC}
+              inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+              orderID={tokenData.orderID}
+              isDetail={true}
+            />
+          </Col>
         )}
-      </div>
+      </Row>
     );
   };
 

@@ -8,16 +8,16 @@ import { TraitStats } from '@interfaces/project';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import Select, { components } from 'react-select';
-import { v4 } from 'uuid';
 import FilterMinMax from './FilterMinMax';
 import styles from './styles.module.scss';
 
 type Props = {
   attributes?: TraitStats[];
   layout?: 'mint' | 'shop';
+  isHideStatusLabel?: boolean;
 };
 
-const FilterOptions = ({ attributes }: Props) => {
+const FilterOptions = ({ attributes, isHideStatusLabel }: Props) => {
   const {
     filterTraits,
     setFilterTraits,
@@ -31,6 +31,7 @@ const FilterOptions = ({ attributes }: Props) => {
     filterBuyNow,
     setFilterBuyNow,
     marketplaceData,
+    projectData,
   } = useContext(GenerativeProjectDetailContext);
 
   const filterdropdownRef = useRef<HTMLDivElement>(null);
@@ -146,17 +147,22 @@ const FilterOptions = ({ attributes }: Props) => {
 
   return (
     <div className={styles.filter_wrapper}>
-      <Heading fontWeight="semibold" className={styles.filter_title}>
-        Filter
-      </Heading>
+      {!isHideStatusLabel && (
+        <Heading fontWeight="semibold" className={styles.filter_title}>
+          Filter
+        </Heading>
+      )}
+
       <div className={styles.filter_buy}>
-        <Text size="18" fontWeight="medium">
-          Status
-        </Text>
+        {!isHideStatusLabel && (
+          <Text size="18" fontWeight="medium">
+            Status
+          </Text>
+        )}
         <RadioGroups
           options={buyNowOptions}
           name="buyNow"
-          defaultValue={buyNowOptions[0].key}
+          defaultValue={buyNowOptions[1].key}
           checked={`${filterBuyNow}`}
           className={styles.radio_buynow}
           onChange={e => {
@@ -295,7 +301,7 @@ const FilterOptions = ({ attributes }: Props) => {
             </Stack>
             <div className={styles.filter_traits_dropdown}>
               {sortedAttributes?.length > 0 &&
-                sortedAttributes.map(attr => {
+                sortedAttributes.map((attr, index) => {
                   const _traitStats = [...attr.traitValuesStat];
 
                   const options: Array<{ value: string; label: string }> =
@@ -311,10 +317,10 @@ const FilterOptions = ({ attributes }: Props) => {
                   return (
                     <Select
                       defaultMenuIsOpen={currentTraitOpen === attr.traitName}
-                      id={`attributes-${v4()}`}
-                      key={`attributes-${v4()}`}
+                      id={`attributes-${projectData?.tokenID}-${index}`}
+                      key={`attributes-${projectData?.tokenID}-${index}`}
                       isMulti
-                      name={`attributes-${v4()}`}
+                      name={`attributes-${projectData?.tokenID}-${index}`}
                       options={options}
                       className={styles.selectInput}
                       components={{

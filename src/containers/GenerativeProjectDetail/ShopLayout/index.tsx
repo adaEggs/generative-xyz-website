@@ -37,13 +37,12 @@ const ShopLayout = (props: Props) => {
 
   const {
     projectData: projectInfo,
-    // marketplaceData,
     listItems,
     isLoaded,
     total,
     isNextPageLoaded,
     handleFetchNextPage,
-    // showFilter,
+    showFilter,
   } = useContext(GenerativeProjectDetailContext);
 
   const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -84,94 +83,126 @@ const ShopLayout = (props: Props) => {
   return (
     <div>
       {mobileScreen && (
-        <div className={styles.filterWrapper} id="PROJECT_LIST">
-          <TokenTopFilter className={styles.filter_sort} />
-        </div>
+        <>
+          <div className={styles.filterWrapper} id="PROJECT_LIST">
+            <TokenTopFilter className={styles.filter_sort} />
+          </div>
+          {showFilter && <FilterOptions attributes={projectInfo?.traitStat} />}
+        </>
       )}
 
       <div className="row">
-        <div className={`col-3 ${styles.layout_left}`}>
-          <ProjectDescription
-            desc={projectInfo?.desc || ''}
-            onlyDesc
-            className={styles.overflow}
-          />
-          <div className={s.projectAttribute}>
-            <Text size="14" color="black-40" className={s.attrs_item}>
-              Created date: {mintedDate}
-            </Text>
-            {!!categoryName && (
-              <Text size="14" color="black-40" className={s.attrs_item}>
-                Category:{' '}
-                <Link href={`${ROUTE_PATH.DROPS}?category=${categoryName}`}>
-                  {categoryName}
-                </Link>
-              </Text>
-            )}
-            <Text size="14" color="black-40" className={s.attrs_item}>
-              Fully on-chain: {projectInfo?.isFullChain ? 'Yes' : 'No'}
-            </Text>
-          </div>
-          <div className={styles.shares_wrapper}>
-            <ul className={s.shares}>
-              <li>
-                <div>
-                  <TwitterShareButton
-                    url={`${origin}${ROUTE_PATH.GENERATIVE}/${projectInfo?.tokenID}`}
-                    title={''}
-                    hashtags={[]}
-                  >
-                    <ButtonIcon
-                      sizes="small"
-                      variants="outline-small"
-                      className={s.projectBtn}
-                      startIcon={
-                        <SvgInset
-                          size={14}
-                          svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
-                        />
-                      }
-                    >
-                      Share
-                    </ButtonIcon>
-                  </TwitterShareButton>
+        <div className={`${styles.layout_left}`}>
+          <Tabs className={styles.tabs} defaultActiveKey="filter">
+            <Tab
+              tabClassName={styles.tab}
+              eventKey="filter"
+              title={
+                <Text size="18" fontWeight="medium" color="primary-color">
+                  Filter
+                </Text>
+              }
+            >
+              <div className={styles.tabContent}>
+                <div className="spacing__small">
+                  <FilterOptions
+                    isHideStatusLabel={true}
+                    attributes={projectInfo?.traitStat}
+                  />
                 </div>
-              </li>
-              <li>
-                <div
-                  className={s.reportBtn}
-                  onClick={() => setShowReportModal(true)}
-                >
-                  <SvgInset size={14} svgUrl={`${CDN_URL}/icons/ic-flag.svg`} />
-                  <Text as="span" size="14" fontWeight="medium">
-                    Report
+              </div>
+            </Tab>
+            <Tab
+              tabClassName={styles.tab}
+              eventKey="desc"
+              title={
+                <Text size="18" fontWeight="medium" color="primary-color">
+                  Description
+                </Text>
+              }
+            >
+              <div className={styles.tabContent}>
+                <ProjectDescription
+                  desc={projectInfo?.desc || ''}
+                  onlyDesc
+                  className={styles.overflow}
+                />
+                <div className={s.projectAttribute}>
+                  <Text size="14" color="black-40" className={s.attrs_item}>
+                    Created date: {mintedDate}
+                  </Text>
+                  {!!categoryName && (
+                    <Text size="14" color="black-40" className={s.attrs_item}>
+                      Category:{' '}
+                      <Link
+                        href={`${ROUTE_PATH.DROPS}?category=${categoryName}`}
+                      >
+                        {categoryName}
+                      </Link>
+                    </Text>
+                  )}
+                  <Text size="14" color="black-40" className={s.attrs_item}>
+                    Fully on-chain: {projectInfo?.isFullChain ? 'Yes' : 'No'}
                   </Text>
                 </div>
-              </li>
-            </ul>
+                <div className={styles.shares_wrapper}>
+                  <ul className={s.shares}>
+                    <li>
+                      <div>
+                        <TwitterShareButton
+                          url={`${origin}${ROUTE_PATH.GENERATIVE}/${projectInfo?.tokenID}`}
+                          title={''}
+                          hashtags={[]}
+                        >
+                          <ButtonIcon
+                            sizes="small"
+                            variants="outline-small"
+                            className={s.projectBtn}
+                            startIcon={
+                              <SvgInset
+                                size={14}
+                                svgUrl={`${CDN_URL}/icons/ic-twitter-20x20.svg`}
+                              />
+                            }
+                          >
+                            Share
+                          </ButtonIcon>
+                        </TwitterShareButton>
+                      </div>
+                    </li>
+                    <li>
+                      <div
+                        className={s.reportBtn}
+                        onClick={() => setShowReportModal(true)}
+                      >
+                        <SvgInset
+                          size={14}
+                          svgUrl={`${CDN_URL}/icons/ic-flag.svg`}
+                        />
+                        <Text as="span" size="14" fontWeight="medium">
+                          Report
+                        </Text>
+                      </div>
+                    </li>
+                  </ul>
 
-            {showReportMsg && (
-              <div className={s.reportMsg}>
-                <SvgInset
-                  size={18}
-                  svgUrl={`${CDN_URL}/icons/ic-bell-ringing.svg`}
-                />
-                <Text size={'14'} fontWeight="bold">
-                  This collection is currently under review.
-                </Text>
+                  {showReportMsg && (
+                    <div className={s.reportMsg}>
+                      <SvgInset
+                        size={18}
+                        svgUrl={`${CDN_URL}/icons/ic-bell-ringing.svg`}
+                      />
+                      <Text size={'14'} fontWeight="bold">
+                        This collection is currently under review.
+                      </Text>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
-          <div className="divider spacing__small"></div>
-          <div className="spacing__small">
-            {mobileScreen ? (
-              <FilterOptions attributes={projectInfo?.traitStat} />
-            ) : (
-              <FilterOptions attributes={projectInfo?.traitStat} />
-            )}
-          </div>
+            </Tab>
+          </Tabs>
         </div>
-        <div className={`col-12 col-md-4 col-xl-6 ${styles.layout_middle}`}>
+        <div className={`${styles.layout_middle}`}>
           <Tabs className={styles.tabs} defaultActiveKey="items">
             <Tab
               tabClassName={styles.tab}
@@ -214,7 +245,7 @@ const ShopLayout = (props: Props) => {
             </Tab>
           </Tabs>
         </div>
-        <div className={`col-5 col-xl-3 ${styles.layout_right}`}>
+        <div className={`${styles.layout_right}`}>
           <ActivityStats />
         </div>
       </div>

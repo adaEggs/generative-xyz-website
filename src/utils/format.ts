@@ -43,6 +43,17 @@ export const formatAddress = (address?: string, length = 10): string => {
   return `${address.substring(0, length)}`;
 };
 
+export const formatAddressDisplayName = (
+  address?: string,
+  length = 6
+): string => {
+  if (!address) return '';
+  if (address.length <= length) {
+    return address;
+  }
+  return `${address.substring(address.length - length, address.length)}`;
+};
+
 export const formatLongAddress = (address?: string): string => {
   if (!address) return '';
   if (address.length < 14) return address;
@@ -123,11 +134,12 @@ export const tokenID = (tokenName: string) => tokenName.split('#')[1];
 
 export const formatBTCPrice = (
   price: number | string,
-  emptyStr?: string
+  emptyStr?: string,
+  precision = 5
 ): string => {
   if (!price) return emptyStr || '-';
   const priceNumb = new BigNumber(price).dividedBy(1e8).toNumber();
-  return ceilPrecised(priceNumb).toString().replace(',', '.');
+  return ceilPrecised(priceNumb, precision).toString().replace(',', '.');
 };
 
 export const formatPrice = (
@@ -153,7 +165,7 @@ export const formatEthPrice = (
   emptyStr?: string
 ): string => {
   if (!price) return emptyStr || '-';
-  return ceilPrecised(parseFloat(Web3.utils.fromWei(`${price}`, 'ether')), 6)
+  return ceilPrecised(parseFloat(Web3.utils.fromWei(`${price}`, 'ether')), 4)
     .toString()
     .replace(',', '.');
 };

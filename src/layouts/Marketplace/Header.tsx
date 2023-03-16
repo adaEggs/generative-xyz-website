@@ -17,7 +17,6 @@ import { Container } from 'react-bootstrap';
 import styles from './Header.module.scss';
 import { getFaucetLink, isTestnet } from '@utils/chain';
 import QuickBuy from '@layouts/Marketplace/QuickBuy';
-import querystring from 'query-string';
 import _isEmpty from 'lodash/isEmpty';
 import { MENU_HEADER } from '@constants/header';
 import MenuMobile from '@layouts/Marketplace/MenuMobile';
@@ -26,6 +25,7 @@ import SearchCollection from './SearchCollection';
 import useOnClickOutside from '@hooks/useOnClickOutSide';
 import Image from 'next/image';
 import Avatar from '@components/Avatar';
+import { isBrowser } from '@utils/common';
 
 const LOG_PREFIX = 'MarketplaceHeader';
 
@@ -43,7 +43,6 @@ const Header: React.FC<IProp> = ({
   const { connect, disconnect, walletBalance } = useContext(WalletContext);
   const user = useAppSelector(getUserSelector);
   const router = useRouter();
-  const { query } = router;
   const activePath = router.pathname.split('/')[1];
   const [isConnecting, setIsConnecting] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
@@ -80,10 +79,13 @@ const Header: React.FC<IProp> = ({
   ];
 
   const getUrlWithQueryParams = (url: string): string => {
-    if (_isEmpty(query)) {
-      return url;
+    if (isBrowser()) {
+      const currentURL = new URL(location.href);
+      if (currentURL.search) {
+        return `${url}${currentURL.search}`;
+      }
     }
-    return `${url}?${querystring.stringify(query)}`;
+    return url;
   };
 
   // const handleOpenFreetoolsDropdown = (): void => {

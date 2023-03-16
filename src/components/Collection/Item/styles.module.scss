@@ -193,6 +193,13 @@
   &:hover {
     cursor: pointer;
   }
+
+  &.isShop {
+    .collectionCard_thumb,
+    .collectionCard_info {
+      padding: rem(16px);
+    }
+  }
 }
 
 .collectionCard_owner {
@@ -288,21 +295,14 @@
   flex-direction: row;
   gap: 6px;
   flex-wrap: wrap;
-  //justify-content: end;
-  //background-color: red;
   justify-content: space-between;
 
-  @include mobile {
+  @include w-min(1400px) {
     gap: 8px;
     flex-direction: column;
   }
 
-  @include min-pc {
-    gap: 8px;
-    flex-direction: column;
-  }
-
-  @include min-pc-wide {
+  @include w-min(1700px) {
     flex-direction: row;
     gap: 6px;
   }

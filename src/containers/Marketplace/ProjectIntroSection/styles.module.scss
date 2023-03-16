@@ -3,7 +3,7 @@
 .projectInfo {
   &_inner {
     display: flex;
-    // flex-wrap: wrap;
+    flex-wrap: wrap;
     // margin-top: rem(16px);
     // row-gap: 0 !important;
     align-items: center;
@@ -11,7 +11,7 @@
 
     @include mobile {
       flex-direction: column;
-      gap: rem(24);
+      gap: rem(5);
       align-items: start;
     }
   }
@@ -24,14 +24,30 @@
     }
   }
 
+  &_left {
+    flex: 0 0 100%;
+    width: 100%;
+
+    @include min-pc {
+      flex: 1;
+    }
+  }
+
   &_right {
-    flex: 1;
+    flex: 0 0 100%;
+    width: 100%;
+
+    @include min-pc {
+      flex: 1;
+    }
 
     &_inner {
-      display: flex;
-      justify-content: flex-end;
-      flex-wrap: wrap;
-      width: 100%;
+      @include min-pc {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        width: 100%;
+      }
     }
 
     &_art {
@@ -161,6 +177,12 @@
     display: flex;
     gap: rem(8);
     align-items: center;
+
+    &_name {
+      display: flex;
+      gap: rem(8px);
+      align-items: center;
+    }
   }
 
   &_social {

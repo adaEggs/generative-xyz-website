@@ -8,6 +8,6 @@ export enum TokenType {
 export enum TokenActivityType {
   'Mint',
   'Listing',
-  'Cancel Listing',
+  'Cancel',
   'Sale',
 }

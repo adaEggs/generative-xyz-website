@@ -1,5 +1,5 @@
 import React from 'react';
-import { v4 } from 'uuid';
+import Text from '@components/Text';
 import s from './Radio.module.scss';
 
 type Props = {
@@ -25,9 +25,9 @@ const RadioGroups = ({
     <div className={className}>
       {label && <label>{label}</label>}
       <div className={s.groups}>
-        {options?.map(option => {
+        {options?.map((option, index) => {
           return (
-            <div key={`${option.key}-${v4()}`} className={s.inputGroups}>
+            <div key={`${option.key}-${index}`} className={s.inputGroups}>
               <input
                 type="radio"
                 id={option.key}
@@ -38,7 +38,9 @@ const RadioGroups = ({
                 checked={checked === option.key}
                 // checked={field.value === option.value}
               />
-              <label htmlFor={option.key}>{option.value}</label>
+              <Text as={'label'} size="16" htmlFor={option.key}>
+                {option.value}
+              </Text>
             </div>
           );
         })}

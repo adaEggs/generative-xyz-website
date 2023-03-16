@@ -64,7 +64,7 @@ const FeeRate = ({
         SDK.estimateTxFee(1, 2, Number(feeRateNumb)) +
         1000;
 
-    const amount = formatBTCPrice(convert2ETH(amountNano));
+    const amount = formatBTCPrice(convert2ETH(amountNano), '0.0', 4);
     return {
       amount,
       symbol: 'ETH',
@@ -94,6 +94,18 @@ const FeeRate = ({
   };
   const renderItem = (rateName: FeeRateName) => {
     const { amount, symbol } = calcAmount(allRate[rateName], rateName);
+    let label = 'Economy';
+    switch (rateName) {
+      case FeeRateName.hourFee:
+        label = 'Economy';
+        break;
+      case FeeRateName.halfHourFee:
+        label = 'Faster';
+        break;
+      case FeeRateName.fastestFee:
+        label = 'Fastest';
+        break;
+    }
     return (
       <Col className={s.row}>
         <div
@@ -105,7 +117,7 @@ const FeeRate = ({
               selectedRate === rateName && !customRate,
           })}
         >
-          <p className={s.feeTitle}>Economy</p>
+          <p className={s.feeTitle}>{label}</p>
           <p className={s.feeDetail}>{`${allRate[rateName]} sats/vByte`}</p>
           <p className={s.feeTotal}>~ {`${amount} ${symbol}`}</p>
         </div>

@@ -41,10 +41,18 @@ interface IProps extends IBaseModalProps {
   isDetail: boolean;
 }
 
+interface IGenEstimatePayload {
+  receive: string;
+  refundAddress: string;
+  sellOrderID: string;
+  currentRate: number;
+  isEstimate: boolean;
+}
+
 const ModalBuyListed = React.memo(
   ({ price, orderID, onHide, ...rest }: IProps) => {
     const user = useSelector(getUserSelector);
-    const [step, setStep] = useState<'info' | 'deposit'>('info');
+    const [step, setStep] = useState<'info' | 'generate' | 'deposit'>('info');
     const [estimating, setEstimating] = useState<boolean>(false);
 
     const [isLoading, setLoading] = useState<boolean>(false);
@@ -114,34 +122,37 @@ const ModalBuyListed = React.memo(
       }
     };
 
-    const genDepositAddress = async (
-      receive: string,
-      refundAddress: string,
-      sellOrderID: string,
-      currentRate: number
-    ) => {
-      if (!receive) {
+    const genDepositAddress = async (payload: IGenEstimatePayload) => {
+      const { receive, isEstimate, refundAddress, sellOrderID, currentRate } =
+        payload;
+      if (!receive && !isEstimate) {
         setDepositData(undefined);
         setError('Invalid wallet address.');
         setEstimating(true);
         return;
       }
       setError('');
+      let depositData: IRespGenAddressByETH | undefined = undefined;
       try {
         setLoading(true);
-        const depositData = await getGenDepositAddressETH({
+        depositData = await getGenDepositAddressETH({
           fee_rate: currentRate,
-          order_id: orderID,
+          order_id: sellOrderID,
           receive_address: receive,
           refund_address: refundAddress,
+          is_estimate: isEstimate,
         });
         setDepositData(depositData);
+        if (!isEstimate) {
+          setStep('deposit');
+        }
       } catch (err) {
         onSetError(err);
       } finally {
         setLoading(false);
         setEstimating(false);
       }
+      return depositData;
     };
 
     const debounceGenDepositAddress = React.useCallback(
@@ -170,14 +181,17 @@ const ModalBuyListed = React.memo(
     };
 
     React.useEffect(() => {
-      if (!user?.walletAddress || step === 'deposit') return;
+      if (!user?.walletAddress || step === 'deposit' || step === 'generate') {
+        return;
+      }
       setEstimating(true);
-      debounceGenDepositAddress(
-        receiveAddress,
-        user.walletAddress,
-        orderID,
-        currentRate
-      );
+      debounceGenDepositAddress({
+        receive: receiveAddress,
+        refundAddress: user.walletAddress,
+        sellOrderID: orderID,
+        currentRate: currentRate,
+        isEstimate: true,
+      });
     }, [receiveAddress, orderID, currentRate, user?.walletAddress, step]);
 
     return (
@@ -195,7 +209,7 @@ const ModalBuyListed = React.memo(
           >
             {({ values, errors, touched, handleChange, handleBlur }) => (
               <>
-                {step === 'info' && (
+                {['info', 'generate'].includes(step) && (
                   <form>
                     <Row className={s.row}>
                       <div className={s.payment}>
@@ -228,6 +242,19 @@ const ModalBuyListed = React.memo(
                         }}
                       />
                     </Row>
+                    {depositData && (
+                      <>
+                        <div className={s.payment_divider} />
+                        <div className={cs(s.payment, s.payment_space)}>
+                          <p className={s.payment_total}>Total</p>
+                          <p
+                            className={s.payment_totalAmount}
+                          >{`${formatEthPrice(
+                            depositData?.eth_amount
+                          )} ETH`}</p>
+                        </div>
+                      </>
+                    )}
                     <AccordionComponent
                       header="Advanced"
                       content={
@@ -302,31 +329,38 @@ const ModalBuyListed = React.memo(
                         </>
                       }
                     />
-                    {depositData && (
-                      <>
-                        <div className={s.payment_divider} />
-                        <div className={s.payment}>
-                          <p className={s.payment_total}>Total</p>
-                          <p
-                            className={s.payment_totalAmount}
-                          >{`${formatEthPrice(
-                            depositData?.eth_amount
-                          )} ETH`}</p>
-                        </div>
-                      </>
-                    )}
                     <ButtonIcon
                       className={s.buttonBuy}
                       disabled={isLoading}
                       sizes="medium"
                       type="button"
                       startIcon={isLoading ? <LoaderIcon /> : null}
-                      onClick={() => {
+                      onClick={async () => {
                         if (useWallet === 'another') {
-                          validateForm(values);
+                          const errors = validateForm(values);
+                          const messages = Object.values(errors || {});
+                          if (!!messages && !!messages.length) {
+                            return setError(Object.values(errors)[0]);
+                          }
                         }
 
-                        handleSubmit(values).then().catch();
+                        if (!user || !user.walletAddress) {
+                          return setError('Please connect wallet.');
+                        }
+
+                        setStep('generate');
+
+                        const data = await genDepositAddress({
+                          receive: receiveAddress,
+                          refundAddress: user.walletAddress,
+                          sellOrderID: orderID,
+                          currentRate: currentRate,
+                          isEstimate: false,
+                        });
+
+                        if (data && data.order_id) {
+                          handleSubmit(values).then().catch();
+                        }
                       }}
                     >
                       Buy now
@@ -334,7 +368,7 @@ const ModalBuyListed = React.memo(
                     {error && <p className={s.inputError}>{error}</p>}
                   </form>
                 )}
-                {step === 'deposit' && (
+                {step === 'deposit' && !!depositData?.order_id && (
                   <Row className={s.deposit}>
                     <Col md="6" className={s.padding}>
                       <Row className={s.row}>

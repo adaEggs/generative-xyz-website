@@ -3,12 +3,11 @@ import Table from '@components/Table';
 import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { TokenActivityType } from '@enums/token-type';
-import { formatBTCPrice } from '@utils/format';
+import { formatAddressDisplayName, formatBTCPrice } from '@utils/format';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
-import { v4 } from 'uuid';
 import s from './Table.module.scss';
 
 const TABLE_COLLECTION_ACTIVITIES_HEADING = [
@@ -20,7 +19,7 @@ const TABLE_COLLECTION_ACTIVITIES_HEADING = [
 ];
 
 const CollectionActivityTable = () => {
-  const { collectionActivities: listData } = useContext(
+  const { collectionActivities: listData, projectData } = useContext(
     GenerativeProjectDetailContext
   );
 
@@ -32,7 +31,7 @@ const CollectionActivityTable = () => {
 
   const activityDatas = listData?.result?.map(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    transaction => {
+    (transaction, index) => {
       // const buyer = '{transaction.buyer}';
       // const seller = '{transaction.seller}' || '-';
 
@@ -72,7 +71,7 @@ const CollectionActivityTable = () => {
       //   }
 
       return {
-        id: `activity-${v4()}`,
+        id: `activity-${projectData?.tokenID}-${index}`,
         render: {
           item: (
             <Stack
@@ -112,7 +111,7 @@ const CollectionActivityTable = () => {
                 }`}
                 className="hover-underline"
               >
-                {fromAddress.substring(0, 6)}
+                {formatAddressDisplayName(fromAddress)}
               </Link>
             </div>
           ),
@@ -126,7 +125,7 @@ const CollectionActivityTable = () => {
                 }`}
                 className="hover-underline"
               >
-                {toAddress.substring(0, 6)}
+                {formatAddressDisplayName(toAddress)}
               </Link>
             </div>
           ),
@@ -162,7 +161,7 @@ const CollectionActivityTable = () => {
             listData?.result && listData?.result.length > 0 ? activityDatas : []
           }
           className={s.collectionActivityTable}
-        ></Table>
+        />
       </div>
       {/* </InfiniteScroll> */}
     </>

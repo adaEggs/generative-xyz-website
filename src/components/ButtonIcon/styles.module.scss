@@ -32,7 +32,8 @@
   &.small,
   &.xsmall {
     line-height: (24/14);
-    font-size: rem(14px);
+
+    @include calcFontAuto(12px, 14px);
   }
 
   /* Button sizes */
@@ -109,7 +110,7 @@
   }
 
   &.small {
-    padding: rem(5px) rem(14px);
+    padding: rem(5px) rem(5px);
     gap: rem(7px);
 
     &:has(.leftIcon) {
