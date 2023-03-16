@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import cs from 'classnames';
 
 import Avatar from '@components/Avatar';
 import Link from '@components/Link';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
-import { formatLongAddress } from '@utils/format';
-import { v4 } from 'uuid';
 import { User } from '@interfaces/user';
+import { formatAddress } from '@utils/format';
 
+import { QuickSearchContext } from './index';
 import s from './styles.module.scss';
 
 export const SearchMemberItem = ({
@@ -20,6 +20,8 @@ export const SearchMemberItem = ({
   avatar?: string;
   memberId: string;
 }) => {
+  const { onCloseSearchResult } = useContext(QuickSearchContext);
+
   return (
     <Link
       className={cs(
@@ -28,6 +30,8 @@ export const SearchMemberItem = ({
         s.searchResult_item_member
       )}
       href={`${ROUTE_PATH.PROFILE}/${memberId}`}
+      onClick={onCloseSearchResult}
+      isKeepDefaultEvent
     >
       <Avatar imgSrcs={avatar || ''} width={34} height={34} />
       <Text as="span" className={s.searchResult_collectionName}>
@@ -49,10 +53,10 @@ export const SearchMembersResult = ({ list }: { list: { artist: User }[] }) => {
       </div>
       {list.map(user => (
         <SearchMemberItem
-          key={`member-${v4()}`}
+          key={`member-${user?.artist?.id || user?.artist?.walletAddress}`}
           memberName={
             user?.artist?.displayName ||
-            formatLongAddress(user?.artist?.walletAddress)
+            formatAddress(user?.artist?.walletAddress)
           }
           avatar={user?.artist?.avatar}
           memberId={user?.artist?.walletAddress}

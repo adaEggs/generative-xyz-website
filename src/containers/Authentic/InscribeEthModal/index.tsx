@@ -1,6 +1,4 @@
 import ButtonIcon from '@components/ButtonIcon';
-import { Loading } from '@components/Loading';
-import QRCodeGenerator from '@components/QRCodeGenerator';
 import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
@@ -18,7 +16,7 @@ import { resizeImage } from '@services/file';
 import { generateAuthReceiverAddress } from '@services/inscribe';
 import { getNFTDetailFromMoralis } from '@services/token-moralis';
 import { blobToBase64, blobToFile, fileToBase64 } from '@utils/file';
-import { ellipsisCenter, formatBTCPrice, formatEthPrice } from '@utils/format';
+import { formatEthPrice } from '@utils/format';
 import { isValidImage } from '@utils/image';
 import { calculateMintFee } from '@utils/inscribe';
 import log from '@utils/logger';
@@ -67,7 +65,7 @@ const InscribeEthModal: React.FC<IProps> = (
   const [file, setFile] = useState<File | null>(null);
   const [fileBase64, setFileBase64] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [receiverAddress, setReceiverAddress] = useState<string | null>(null);
+  const [_, setReceiverAddress] = useState<string | null>(null);
   const [addressInput, setAddressInput] = useState<string>('');
   const [errMessage, setErrMessage] = useState('');
   const [isMinting, setIsMinting] = useState(false);
@@ -97,7 +95,7 @@ const InscribeEthModal: React.FC<IProps> = (
       return 'Loading...';
     }
     if (isMinting) {
-      return 'Processing...';
+      return 'Inscribing...';
     }
     return 'Inscribe';
   }, [isFetching, isMinting]);
@@ -327,7 +325,7 @@ const InscribeEthModal: React.FC<IProps> = (
       setStep('showAddress');
       setReceiverAddress(res?.segwitAddress);
       if (res.segwitAddress && res.amount) {
-        handleTransfer(res?.segwitAddress, formatEthPrice(res.amount));
+        await handleTransfer(res?.segwitAddress, formatEthPrice(res.amount));
       }
     } catch (err: unknown) {
       log(err as Error, LogLevel.ERROR, LOG_PREFIX);
@@ -494,21 +492,23 @@ const InscribeEthModal: React.FC<IProps> = (
                             </>
                           )}
 
-                          {step === 'info' && useWallet === 'another' && (
+                          {useWallet === 'another' && !isSent && (
                             <ButtonIcon
-                              type="submit"
                               sizes="large"
                               className={s.buyBtn}
-                              disabled={isLoading || quantity === 0}
+                              disabled={
+                                isLoading || quantity === 0 || isFetching
+                              }
+                              type="submit"
                             >
-                              Inscribe
+                              {buttonText}
                             </ButtonIcon>
                           )}
                         </form>
                       )}
                     </Formik>
 
-                    {step === 'info' && useWallet === 'default' && (
+                    {useWallet === 'default' && !isSent && (
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
@@ -527,87 +527,32 @@ const InscribeEthModal: React.FC<IProps> = (
                   </div>
                 </Col>
 
-                {step === 'showAddress' &&
-                  inscriptionInfo &&
-                  !isMinting &&
-                  !isAuth && (
-                    <Col md={'6'}>
-                      <div className={s.paymentWrapper}>
-                        {receiverAddress && !isLoading && (
-                          <div className={s.qrCodeWrapper}>
-                            <p className={s.qrTitle}>
-                              Send{' '}
-                              <span style={{ fontWeight: 'bold' }}>
-                                {formatBTCPrice(
-                                  new BigNumber(
-                                    inscriptionInfo?.amount || 0
-                                  ).toNumber()
-                                )}{' '}
-                                ETH
-                              </span>{' '}
-                              to this address
-                            </p>
-
-                            <div className={s.btcAddressContainer}>
-                              <p className={s.btcAddress}>
-                                {ellipsisCenter({
-                                  str: inscriptionInfo.segwitAddress || '',
-                                  limit: 16,
-                                })}
-                              </p>
-                              <SvgInset
-                                className={s.icCopy}
-                                size={18}
-                                svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
-                                onClick={() =>
-                                  onClickCopy(receiverAddress || '')
-                                }
-                              />
-                            </div>
-
-                            <QRCodeGenerator
-                              className={s.qrCodeGenerator}
-                              size={128}
-                              value={receiverAddress || ''}
-                            />
-                          </div>
-                        )}
-
-                        {isLoading && (
-                          <div className={s.loadingWrapper}>
-                            <Loading isLoaded={false} />
-                          </div>
-                        )}
-                      </div>
-
-                      <div className={s.btnContainer}>
-                        {isSent && (
-                          <>
-                            <ButtonIcon
-                              sizes="large"
-                              className={s.buyBtn}
-                              onClick={() => router.push(ROUTE_PATH.PROFILE)}
-                              variants="outline"
-                            >
-                              <Text as="span" size="16" fontWeight="medium">
-                                Check order status
-                              </Text>
-                            </ButtonIcon>
-                            <div style={{ width: 16 }} />
-                            <ButtonIcon
-                              sizes="large"
-                              className={s.buyBtn}
-                              onClick={onClose}
-                            >
-                              <Text as="span" size="16" fontWeight="medium">
-                                Continue collecting
-                              </Text>
-                            </ButtonIcon>
-                          </>
-                        )}
-                      </div>
-                    </Col>
-                  )}
+                {step === 'showAddress' && inscriptionInfo && isSent && (
+                  <Col md={'12'}>
+                    <div className={s.btnContainer}>
+                      <ButtonIcon
+                        sizes="large"
+                        className={s.buyBtn}
+                        onClick={() => router.push(ROUTE_PATH.PROFILE)}
+                        variants="outline"
+                      >
+                        <Text as="span" size="16" fontWeight="medium">
+                          Check order status
+                        </Text>
+                      </ButtonIcon>
+                      <div style={{ width: 16 }} />
+                      <ButtonIcon
+                        sizes="large"
+                        className={s.buyBtn}
+                        onClick={onClose}
+                      >
+                        <Text as="span" size="16" fontWeight="medium">
+                          Continue collecting
+                        </Text>
+                      </ButtonIcon>
+                    </div>
+                  </Col>
+                )}
               </Row>
             </Col>
           </div>

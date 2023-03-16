@@ -1,28 +1,37 @@
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
+import RadioGroups from '@components/Input/Radio';
 import Text from '@components/Text';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
+import useOnClickOutside from '@hooks/useOnClickOutSide';
 import { TraitStats } from '@interfaces/project';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import Select, { components } from 'react-select';
-import { v4 } from 'uuid';
+import FilterMinMax from './FilterMinMax';
 import styles from './styles.module.scss';
-import useOnClickOutside from '@hooks/useOnClickOutSide';
 
 type Props = {
   attributes?: TraitStats[];
+  layout?: 'mint' | 'shop';
+  isHideStatusLabel?: boolean;
 };
 
-const FilterOptions = ({ attributes }: Props) => {
+const FilterOptions = ({ attributes, isHideStatusLabel }: Props) => {
   const {
     filterTraits,
     setFilterTraits,
     setPage,
     showFilter,
     setShowFilter,
-    // filterPrice,
-    // setFilterPrice,
+    filterPrice,
+    setFilterPrice,
+    filterRarity,
+    setFilterRarity,
+    filterBuyNow,
+    setFilterBuyNow,
+    marketplaceData,
+    projectData,
   } = useContext(GenerativeProjectDetailContext);
 
   const filterdropdownRef = useRef<HTMLDivElement>(null);
@@ -31,6 +40,11 @@ const FilterOptions = ({ attributes }: Props) => {
     null
   );
   const [currentTraitOpen, setCurrentTraitOpen] = useState('');
+
+  const buyNowOptions = [
+    { key: 'true', value: 'Only buy now' },
+    { key: 'false', value: 'Show all' },
+  ];
 
   const handleResetAllFilter = () => {
     setFilterTraits('');
@@ -133,18 +147,112 @@ const FilterOptions = ({ attributes }: Props) => {
 
   return (
     <div className={styles.filter_wrapper}>
-      <Heading fontWeight="semibold" className={styles.filter_title}>
-        Filter
-      </Heading>
+      {!isHideStatusLabel && (
+        <Heading fontWeight="semibold" className={styles.filter_title}>
+          Filter
+        </Heading>
+      )}
+
+      <div className={styles.filter_buy}>
+        {!isHideStatusLabel && (
+          <Text size="18" fontWeight="medium">
+            Status
+          </Text>
+        )}
+        <RadioGroups
+          options={buyNowOptions}
+          name="buyNow"
+          defaultValue={buyNowOptions[1].key}
+          checked={`${filterBuyNow}`}
+          className={styles.radio_buynow}
+          onChange={e => {
+            setFilterBuyNow(e.target.value === 'true');
+            setPage(1);
+          }}
+        />
+      </div>
+      {sortedAttributes && sortedAttributes?.length > 0 && (
+        <div className={styles.rarity}>
+          <FilterMinMax
+            label="Rarity"
+            placeholderMin="1"
+            placeholderMax="100"
+            filter={filterRarity}
+            setFilter={setFilterRarity}
+          />
+        </div>
+      )}
+      {marketplaceData && marketplaceData.listed > 0 && (
+        <div className={styles.price}>
+          <FilterMinMax
+            filterPrice
+            label="Price"
+            placeholderMin="0.001"
+            placeholderMax="0.001"
+            filter={filterPrice}
+            setFilter={setFilterPrice}
+          />
+        </div>
+      )}
+
       {/* DO NOT REMOVE CODE BELOW */}
       {/* <div className={styles.filter_buy}>
+            console.log("🚀 ~ FilterOptions ~ e.target.value:", e.target.value)
         <Text size="18" fontWeight="medium">
-          Buy now
+          Status
         </Text>
-        <ToogleSwitch onChange={() => setFilterBuyNow(!filterBuyNow)} />
+        <RadioGroups
+          options={buyNowOptions}
+          name="buyNow"
+          defaultValue={buyNowOptions[1].key}
+        />
       </div>
-      <div className="divider"></div>
-      <div className={styles.filter_price}>
+      <div className={styles.rarity}>
+        <Select
+          id={`rarity`}
+          key={`rarity`}
+          isMulti
+          name={`rarity`}
+          // options={options}
+          className={styles.selectInput}
+          // components={{
+          //   Option,
+          // }}
+          // onFocus={() => setCurrentTraitOpen(attr.traitName)}
+          // onInputChange={() => setCurrentTraitOpen('')}
+          classNamePrefix="select"
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          controlShouldRenderValue={false}
+          isClearable={false}
+          isSearchable={false}
+          placeholder={'Rarity'}
+        />
+      </div>
+      <div className="price">
+        <Select
+          id={`price`}
+          key={`price`}
+          isMulti
+          name={`price`}
+          // options={options}
+          className={styles.selectInput}
+          // components={{
+          //   Option,
+          // }}
+          // onFocus={() => setCurrentTraitOpen(attr.traitName)}
+          // onInputChange={() => setCurrentTraitOpen('')}
+          classNamePrefix="select"
+          closeMenuOnSelect={false}
+          hideSelectedOptions={false}
+          controlShouldRenderValue={false}
+          isClearable={false}
+          isSearchable={false}
+          placeholder={'Price'}
+        />
+      </div>
+      {/* <div className="divider"></div> */}
+      {/* <div className={styles.filter_price}>
         <Text size="18" fontWeight="medium">
           Price range
         </Text>
@@ -174,7 +282,7 @@ const FilterOptions = ({ attributes }: Props) => {
       </div> */}
       {sortedAttributes && sortedAttributes?.length > 0 && (
         <>
-          <div className="divider"></div>
+          {/* <div className="divider"></div> */}
           <div className={styles.filter_traits}>
             <Stack direction="horizontal" className="justify-between">
               <Text size="18" fontWeight="medium">
@@ -193,7 +301,7 @@ const FilterOptions = ({ attributes }: Props) => {
             </Stack>
             <div className={styles.filter_traits_dropdown}>
               {sortedAttributes?.length > 0 &&
-                sortedAttributes.map(attr => {
+                sortedAttributes.map((attr, index) => {
                   const _traitStats = [...attr.traitValuesStat];
 
                   const options: Array<{ value: string; label: string }> =
@@ -209,10 +317,10 @@ const FilterOptions = ({ attributes }: Props) => {
                   return (
                     <Select
                       defaultMenuIsOpen={currentTraitOpen === attr.traitName}
-                      id={`attributes-${v4()}`}
-                      key={`attributes-${v4()}`}
+                      id={`attributes-${projectData?.tokenID}-${index}`}
+                      key={`attributes-${projectData?.tokenID}-${index}`}
                       isMulti
-                      name={`attributes-${v4()}`}
+                      name={`attributes-${projectData?.tokenID}-${index}`}
                       options={options}
                       className={styles.selectInput}
                       components={{

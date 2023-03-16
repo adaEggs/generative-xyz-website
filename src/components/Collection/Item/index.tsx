@@ -3,9 +3,8 @@ import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-// import { ProfileContext } from '@contexts/profile-context';
 import Link from '@components/Link';
-import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
 import { GLB_EXTENSION } from '@constants/file';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import useWindowSize from '@hooks/useWindowSize';
@@ -15,6 +14,8 @@ import cs from 'classnames';
 import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
+import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
+import usePurchaseStatus from '@hooks/usePurchaseStatus';
 
 const CollectionItem = ({
   data,
@@ -30,16 +31,19 @@ const CollectionItem = ({
   const tokenID = data.tokenID;
   const showInscriptionID =
     data.genNFTAddr === '1000012' && !!data.inscriptionIndex && !!total;
-  // const { currentUser } = useContext(ProfileContext);
-  const { mobileScreen } = useWindowSize();
-  const { isWhitelistProject } = useContext(GenerativeProjectDetailContext);
-  const isBuyable = React.useMemo(() => {
-    return data.buyable && !!data.priceBTC && data?.sell_verified;
-  }, [data.buyable, data.priceBTC, data?.sell_verified]);
 
-  const isWaitingVerify = React.useMemo(() => {
-    return data.buyable && !!data.priceBTC && !data?.sell_verified;
-  }, [data.buyable, data.priceBTC, data?.sell_verified]);
+  const { mobileScreen } = useWindowSize();
+  const { isWhitelistProject, isLayoutShop } = useContext(
+    GenerativeProjectDetailContext
+  );
+
+  const { isWaiting, isBuyETH, isBuyBTC, isBuyable } = usePurchaseStatus({
+    buyable: data?.buyable,
+    isVerified: data?.sell_verified,
+    orderID: data?.orderID,
+    priceBTC: data?.priceBTC,
+    priceETH: data?.priceETH,
+  });
 
   const imgRef = useRef<HTMLImageElement>(null);
 
@@ -75,21 +79,45 @@ const CollectionItem = ({
   const renderBuyButton = () => {
     if (!isBuyable) return null;
     return (
-      <Link
-        href=""
-        onClick={() => {
-          // DO NOTHING
-        }}
-      >
-        <ButtonBuyListed
-          inscriptionID={tokenID}
-          price={data.priceBTC}
-          inscriptionNumber={Number(data.inscriptionIndex || 0)}
-          orderID={data.orderID}
-        />
-      </Link>
+      <div className={s.row}>
+        {isBuyETH && (
+          <Link
+            href=""
+            onClick={() => {
+              // DO NOTHING
+            }}
+            className={s.wrapButton}
+          >
+            <ButtonBuyListedFromETH
+              sizes={isLayoutShop ? 'small' : 'medium'}
+              inscriptionID={tokenID}
+              price={data.priceETH}
+              inscriptionNumber={Number(data.inscriptionIndex || 0)}
+              orderID={data.orderID}
+            />
+          </Link>
+        )}
+        {isBuyBTC && (
+          <Link
+            href=""
+            className={s.wrapButton}
+            onClick={() => {
+              // DO NOTHING
+            }}
+          >
+            <ButtonBuyListedFromBTC
+              sizes={isLayoutShop ? 'small' : 'medium'}
+              inscriptionID={tokenID}
+              price={data.priceBTC}
+              inscriptionNumber={Number(data.inscriptionIndex || 0)}
+              orderID={data.orderID}
+            />
+          </Link>
+        )}
+      </div>
     );
   };
+
   const renderHeadDesc = () => {
     const text = data?.orderInscriptionIndex
       ? data?.orderInscriptionIndex
@@ -106,11 +134,15 @@ const CollectionItem = ({
         >{`${data?.orderInscriptionIndex} / ${total}`}</span>
       );
     }
-    return <span>#{text}</span>;
+    return <Heading as={isLayoutShop ? 'p' : 'h4'}>#{text}</Heading>;
   };
 
   return (
-    <div className={`${s.collectionCard} ${className}`}>
+    <div
+      className={`${s.collectionCard} ${className} ${
+        isLayoutShop ? s.isShop : ''
+      }`}
+    >
       <div className={s.collectionCard_inner_wrapper}>
         <Link className={s.collectionCard_inner} href={`${tokenUrl}`}>
           <div
@@ -149,7 +181,7 @@ const CollectionItem = ({
                     title={data?.project?.name}
                     className={s.collectionCard_info_title_name}
                   >
-                    {isWaitingVerify
+                    {isWaiting
                       ? 'Incoming... ' + (data?.project?.name || '')
                       : ''}
                   </span>
@@ -171,7 +203,7 @@ const CollectionItem = ({
           ) : (
             <div className={cs(s.collectionCard_info, s.desktop)}>
               <div className={s.collectionCard_info_title}>
-                {isWaitingVerify && (
+                {isWaiting && (
                   <Heading
                     as={'h6'}
                     fontWeight="medium"
@@ -211,12 +243,12 @@ const CollectionItem = ({
                         {data?.creator?.displayName}
                       </div>
                     )}
-                    {renderBuyButton()}
                   </div>
                 </Stack>
+                {renderBuyButton()}
                 {showInscriptionID && (
                   <Heading
-                    as={'h4'}
+                    as={isLayoutShop ? 'p' : 'h4'}
                     className={`token_id ml-auto ${s.textOverflow}}`}
                   >
                     #{data?.inscriptionIndex}

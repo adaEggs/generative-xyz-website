@@ -1,0 +1,84 @@
+.request {
+  padding: rem(32px) 0 rem(88px) 0;
+
+  &_title {
+    margin-bottom: rem(12px);
+    font-weight: 500;
+    font-size: rem(48px);
+    line-height: rem(58px);
+    letter-spacing: -0.02em;
+    color: $black-100;
+  }
+
+  &_description {
+    p {
+      font-weight: 400;
+      font-size: rem(16px);
+      line-height: rem(26px);
+      color: #010101;
+    }
+  }
+
+  &_control {
+    margin-top: rem(60px);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &_category {
+    padding-bottom: rem(10px);
+    display: flex;
+    align-items: center;
+    gap: rem(24px);
+    overflow-x: scroll;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  &_submit {
+    display: inline-flex;
+    align-items: center;
+
+    &_text {
+      margin-right: rem(12px);
+      font-weight: 500;
+      font-size: rem(16px);
+      line-height: rem(26px);
+      color: #898989;
+    }
+
+    &_btn {
+      padding: rem(11px) rem(20px);
+      background: #4f43e2;
+      border-radius: 2px;
+      text-transform: initial;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 26px;
+      letter-spacing: 0.01em;
+      color: #fff;
+
+      &:hover {
+        background: #4f43e2;
+      }
+    }
+  }
+
+  &_list {
+    margin-top: rem(32px);
+  }
+
+  &_textNote {
+    margin: rem(32px) 0;
+    font-weight: 500;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: #4f43e2;
+  }
+}

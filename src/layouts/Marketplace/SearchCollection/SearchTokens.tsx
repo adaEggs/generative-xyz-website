@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import cs from 'classnames';
 
-import Image from 'next/image';
 import Link from '@components/Link';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
+import Image from 'next/image';
 // import { formatLongAddress } from '@utils/format';
-import { v4 } from 'uuid';
 import { Token } from '@interfaces/token';
 
+import { QuickSearchContext } from './index';
 import s from './styles.module.scss';
 
 const SearchTokenItem = ({
@@ -28,19 +28,20 @@ const SearchTokenItem = ({
   projectName?: string;
   orderInscriptionIndex?: string;
 }) => {
+  const { onCloseSearchResult } = useContext(QuickSearchContext);
+
   return (
     <Link
       className={cs(s.searchResult_item, s.searchResult_item_link)}
       href={`${ROUTE_PATH.GENERATIVE}/${collectionId}/${tokenId}`}
+      onClick={onCloseSearchResult}
+      isKeepDefaultEvent
     >
       <div className={s.searchResult_collectionThumbnail}>
         <Image src={thumbnail} alt={tokenName} width={34} height={34} />
       </div>
       <div className={s.searchResult_collectionInfo}>
         <Text as="span" className={s.searchResult_collectionName}>
-          {/* {inscriptionIndex
-            ? `${projectName} #${inscriptionIndex}`
-            : `${projectName} #${formatLongAddress(tokenId)}`} */}
           {`${projectName} #${orderInscriptionIndex}`}
         </Text>
       </div>
@@ -60,7 +61,7 @@ const SearchTokensResult = ({ list }: { list: { tokenUri: Token }[] }) => {
       </div>
       {list.map(token => (
         <SearchTokenItem
-          key={`token-${v4()}`}
+          key={`token-${token.tokenUri.tokenID}`}
           thumbnail={token?.tokenUri?.image}
           tokenName={token?.tokenUri?.name}
           collectionId={token?.tokenUri?.project?.tokenID}

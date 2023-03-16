@@ -212,7 +212,8 @@ const SetPrice = () => {
           contractAddress: GENERATIVE_PROJECT_CONTRACT,
           projectID,
         });
-        if (projectRes && !projectRes.isHidden && projectRes.status) {
+
+        if (projectRes && projectRes.status) {
           setMintedProject(projectRes);
           setIsMinting(false);
           intervalID.current && clearInterval(intervalID.current);

@@ -13,7 +13,7 @@ class AASession {
 
   getData(key: string): string {
     if (isBrowser()) {
-      localStorage.getItem(key);
+      return localStorage.getItem(key) || '';
     }
     return '';
   }

@@ -29,8 +29,10 @@ export interface IGetProjectItemsQuery extends IPagingParams {
   tokenID?: string;
   keyword?: string;
   has_price?: true | '';
+  is_buy_now?: true | '';
   from_price?: string;
   to_price?: string;
+  rarity?: string;
 }
 
 export interface IGetProjectItemsResponse extends IPagingResponse {
@@ -167,3 +169,7 @@ export interface IProjectMintFeeRate {
 }
 
 export type IProjectMintFeeRateResponse = IProjectMintFeeRate;
+
+// export interface IGetProjectActivitiesResponse {}
+
+// export interface IGetProjectActivityQuery {}

@@ -5,9 +5,9 @@ import { isProduction } from '@utils/common';
 export const MENU_HEADER = [
   {
     id: 'menu-2',
-    name: 'Art on bitcoin',
+    name: 'Mint',
     route: ROUTE_PATH.DROPS,
-    activePath: 'art-on-bitcoin',
+    activePath: 'mint',
   },
   {
     id: 'menu-1',
@@ -74,6 +74,18 @@ export const MENU_HEADER = [
     name: 'CryptoArt & NFT Preservation',
     route: ROUTE_PATH.PRESERVE_LANDING,
     activePath: 'preserve-cryptoart',
+  },
+  {
+    id: 'menu-13',
+    name: 'Shop',
+    route: ROUTE_PATH.SHOP,
+    activePath: 'shop',
+  },
+  {
+    id: 'menu-14',
+    name: 'Dao',
+    route: ROUTE_PATH.DAO,
+    activePath: 'dao',
   },
 ];
 

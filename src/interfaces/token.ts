@@ -27,6 +27,7 @@ export type Token = {
   buyable: boolean;
   isCompleted: boolean;
   priceBTC: string;
+  priceETH: string;
   orderInscriptionIndex: string;
   orderID: string;
   projectID?: string;
@@ -74,3 +75,15 @@ export type TokenOffer = {
 };
 
 export type TokenActivities = IGetTokenActivitiesResponse;
+
+export type TokenActivity = {
+  type: number;
+  title: string;
+  user_a_address: string;
+  user_a: User;
+  user_b_address: string;
+  user_b: User;
+  amount: number;
+  time: string;
+  token_info: Token;
+};

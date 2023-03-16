@@ -1,5 +1,5 @@
 .showFilter {
-  grid-template-columns: 0.2fr 1fr;
+  grid-template-columns: 0.3fr 1fr;
   gap: rem(42px);
 
   @include mobile {
@@ -56,7 +56,7 @@
 
 .list_empty {
   position: absolute;
-  z-index: 0;
+  z-index: 10;
   top: 0;
 
   > div:first-of-type {

@@ -135,17 +135,19 @@
 
 .buy_btc {
   margin-top: rem(24px);
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
 
   p {
     text-transform: uppercase;
     color: $black-60;
   }
 
-  &_button {
-    margin-top: rem(24px);
-    margin-bottom: rem(12px);
+  button {
     display: flex;
     justify-content: center;
+    width: 100%;
   }
 }
 

@@ -1,5 +1,3 @@
-import CollectionList from '@components/Collection/List';
-import { TriggerLoad } from '@components/TriggerLoader';
 import ClientOnly from '@components/Utils/ClientOnly';
 import MintBTCGenerativeModal from '@containers/GenerativeProjectDetail/MintBTCGenerativeModal';
 import MintETHModal from '@containers/GenerativeProjectDetail/MintETHGenerativeModal';
@@ -11,15 +9,18 @@ import {
 } from '@contexts/generative-project-detail-context';
 import { PaymentMethod } from '@enums/mint-generative';
 import { Project } from '@interfaces/project';
-import cs from 'classnames';
-import React, { useContext } from 'react';
-import { Container, Tab, Tabs } from 'react-bootstrap';
+import React, { useContext, useMemo, useState } from 'react';
+import { Container } from 'react-bootstrap';
 
-import useBTCSignOrd from '@hooks/useBTCSignOrd';
-import MintWalletModal from './MintWalletModal';
-import TokenTopFilter from './TokenTopFilter';
-import styles from './styles.module.scss';
 import { GridDebug } from '@components/Grid/grid';
+import { REPORT_COUNT_THRESHOLD } from '@constants/config';
+import ReportModal from '@containers/Marketplace/ProjectIntroSection/ReportModal';
+import useBTCSignOrd from '@hooks/useBTCSignOrd';
+import { useAppSelector } from '@redux';
+import { getUserSelector } from '@redux/user/selector';
+import MintLayout from './MintLayout';
+import MintWalletModal from './MintWalletModal';
+import ShopLayout from './ShopLayout';
 
 const GenerativeProjectDetail: React.FC<{
   isWhitelist?: boolean;
@@ -28,12 +29,37 @@ const GenerativeProjectDetail: React.FC<{
   const {
     projectData: projectInfo,
     projectFeeRate,
-    listItems,
-    handleFetchNextPage,
-    total,
-    isLoaded,
-    isNextPageLoaded,
+    // listItems,
+    // handleFetchNextPage,
+    // total,
+    // isLoaded,
+    // isNextPageLoaded,
+    // marketplaceData,
+    isLimitMinted,
   } = useContext(GenerativeProjectDetailContext);
+
+  const user = useAppSelector(getUserSelector);
+
+  const [showReportModal, setShowReportModal] = useState(false);
+
+  const hasReported = useMemo(() => {
+    if (!projectInfo?.reportUsers || !user) return false;
+
+    const reportedAddressList = projectInfo?.reportUsers.map(
+      item => item.reportUserAddress
+    );
+
+    return reportedAddressList.includes(user?.walletAddress || '');
+  }, [projectInfo?.reportUsers]);
+
+  const showReportMsg = useMemo(() => {
+    if (
+      projectInfo?.reportUsers &&
+      projectInfo?.reportUsers.length >= REPORT_COUNT_THRESHOLD
+    )
+      return true;
+    return false;
+  }, [projectInfo?.reportUsers]);
 
   const {
     setIsPopupPayment,
@@ -45,31 +71,39 @@ const GenerativeProjectDetail: React.FC<{
   } = useContext(BitcoinProjectContext);
 
   const { ordAddress, onButtonClick } = useBTCSignOrd();
+
   return (
     <>
       <section>
+        <ProjectIntroSection
+          openMintBTCModal={(chain: PaymentMethod) => {
+            onButtonClick({
+              cbSigned: () => {
+                setPaymentStep('mint');
+                setIsPopupPayment(true);
+                setPaymentMethod(chain);
+              },
+            })
+              .then()
+              .catch();
+          }}
+          project={project ? project : projectInfo}
+          projectFeeRate={projectFeeRate}
+          isWhitelist={isWhitelist}
+        />
         <Container>
-          <ProjectIntroSection
-            openMintBTCModal={(chain: PaymentMethod) => {
-              onButtonClick({
-                cbSigned: () => {
-                  setPaymentStep('mint');
-                  setIsPopupPayment(true);
-                  setPaymentMethod(chain);
-                },
-              })
-                .then()
-                .catch();
-            }}
-            project={project ? project : projectInfo}
-            projectFeeRate={projectFeeRate}
-            isWhitelist={isWhitelist}
-          />
-
           <ClientOnly>
-            <Tabs className={styles.tabs} defaultActiveKey="outputs">
+            {isLimitMinted ? (
+              <MintLayout />
+            ) : (
+              <ShopLayout
+                showReportMsg={showReportMsg}
+                setShowReportModal={setShowReportModal}
+              />
+            )}
+            {/* <Tabs className={styles.tabs} defaultActiveKey="outputs">
               <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">
-                {projectInfo?.traitStat && projectInfo.traitStat.length > 0 && (
+                {hasFilter && (
                   <div className={cs(styles.filterWrapper)} id="PROJECT_LIST">
                     <TokenTopFilter className={styles.filter_sort} />
                   </div>
@@ -90,7 +124,7 @@ const GenerativeProjectDetail: React.FC<{
                   </div>
                 </div>
               </Tab>
-            </Tabs>
+            </Tabs> */}
           </ClientOnly>
         </Container>
       </section>
@@ -108,6 +142,11 @@ const GenerativeProjectDetail: React.FC<{
         </>
       )}
       <GridDebug />
+      <ReportModal
+        isShow={showReportModal}
+        onHideModal={() => setShowReportModal(false)}
+        isReported={hasReported}
+      />
     </>
   );
 };

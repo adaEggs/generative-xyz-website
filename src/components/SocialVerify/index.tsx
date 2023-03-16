@@ -5,11 +5,16 @@ import Text from '@components/Text';
 import { IconVerified } from '@components/IconVerified';
 import Image from 'next/image';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import cs from 'classnames';
+import Link from 'next/link';
+import { ROUTE_PATH } from '@constants/route-path';
 
 export const SocialVerify: React.FC<{
-  link: string;
   isTwVerified: boolean;
-}> = ({ link = '#', isTwVerified = false }) => {
+  width?: number;
+  height?: number;
+  className?: string;
+}> = ({ isTwVerified = false, width = 34, height = 34, className }) => {
   const [show, setShow] = useState<boolean>(false);
   return (
     <div
@@ -19,10 +24,10 @@ export const SocialVerify: React.FC<{
       onMouseLeave={() => {
         setShow(false);
       }}
-      className={s.whiteList_icon}
+      className={cs(s.whiteList_icon, className)}
     >
       {isTwVerified ? (
-        <IconVerified />
+        <IconVerified width={width} height={height} />
       ) : (
         <>
           <OverlayTrigger
@@ -45,18 +50,19 @@ export const SocialVerify: React.FC<{
                     fontWeight="semibold"
                     color="primary-333"
                   >
-                    Want to get verified? Ping us at{' '}
-                    <a href={link} target="_blank" rel="noreferrer">
-                      @generative_xyz.
-                    </a>
+                    Click{' '}
+                    <Link className={s.link} href={ROUTE_PATH.DAO}>
+                      here
+                    </Link>{' '}
+                    to get verified by the community!
                   </Text>
                 </div>
               </Tooltip>
             }
           >
             <Image
-              width={34}
-              height={34}
+              width={width}
+              height={height}
               src={`${CDN_URL}/icons/badge-question.svg`}
               alt={'badge-question'}
             />

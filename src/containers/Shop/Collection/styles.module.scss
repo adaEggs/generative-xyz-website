@@ -1,0 +1,145 @@
+.collection {
+  .loadingWrapper {
+    position: relative;
+    min-height: rem(450);
+  }
+
+  .scrollLoading {
+    position: relative;
+    min-height: rem(100);
+    margin-top: rem(48);
+  }
+
+  .dataTable {
+    tbody {
+      tr {
+        cursor: pointer;
+      }
+    }
+
+    th:not(:first-child),
+    td:not(:first-child) {
+      text-align: right;
+    }
+
+    tr {
+      display: flex;
+      // justify-content: space-between;
+      width: 100%;
+    }
+
+    td:not(:nth-child(1)),
+    th:not(:nth-child(1)) {
+      display: flex;
+      align-items: center;
+      justify-content: right;
+      width: rem(130);
+
+      @include min-tablet {
+        width: rem(150);
+      }
+
+      @include min-pc {
+        //display: table;
+        //align-items: unset;
+        // justify-content: unset;
+        width: (380/1800) * 100%;
+      }
+    }
+
+    td:nth-child(1),
+    th:nth-child(1) {
+      left: 0;
+      position: sticky;
+      background-color: #fff;
+      width: rem(200);
+      z-index: 2;
+
+      @include tablet {
+        width: rem(300);
+      }
+
+      @include min-pc {
+        left: unset;
+        position: unset;
+        min-width: unset;
+        width: (360/1800) * 100%;
+        background-color: transparent;
+      }
+    }
+
+    td:nth-child(2),
+    th:nth-child(2) {
+      margin-left: auto;
+    }
+
+    .name {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: rem(20);
+    }
+
+    .projectThumbnail {
+      width: rem(40);
+      height: rem(40);
+      object-fit: cover;
+      flex-basis: rem(40);
+      image-rendering: pixelated;
+    }
+
+    .projectInfo {
+      width: calc(100% - rem(60));
+    }
+
+    .owner {
+      font-style: normal;
+      font-weight: 500;
+      font-size: rem(16);
+      line-height: rem(26);
+      color: $black-100;
+      margin-bottom: rem(-4);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /* number of lines to show */
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-decoration: none;
+    }
+
+    .collectionName {
+      font-style: italic;
+      font-weight: 500;
+      font-size: rem(16);
+      line-height: rem(26);
+      max-width: rem(300);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2; /* number of lines to show */
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+
+    .floorPrice,
+    .volume15M,
+    .volume1D,
+    .volume7D {
+      display: inline-flex;
+      align-items: center;
+      gap: rem(2);
+    }
+
+    .oneDayChange,
+    .oneWeekChange {
+      &:global(.negative) {
+        color: $secondary-red;
+      }
+
+      &:global(.positive) {
+        color: $secondary-green-c;
+      }
+    }
+  }
+}

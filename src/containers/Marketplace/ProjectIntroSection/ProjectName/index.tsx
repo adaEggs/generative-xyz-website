@@ -5,10 +5,9 @@ import cs from 'classnames';
 import Heading from '@components/Heading';
 import { filterCreatorName } from '@utils/generative';
 import { SocialVerify } from '@components/SocialVerify';
-import { SOCIALS } from '@constants/common';
 import ButtonIcon from '@components/ButtonIcon';
 import SvgInset from '@components/SvgInset';
-import { IC_EDIT_PROFILE } from '@constants/icons';
+import { IC_EDIT_PROJECT } from '@constants/icons';
 import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
 import { checkForHttpRegex } from '@utils/string';
@@ -67,7 +66,7 @@ export const ProjectName = (): JSX.Element => {
           </div>
         )}
 
-        <SocialVerify isTwVerified={isTwVerified} link={SOCIALS.twitter} />
+        <SocialVerify isTwVerified={isTwVerified} />
       </div>
       <div
         className={`${s.projectHeader_heading} ${isCreated ? s.hasEdit : ''}`}
@@ -80,7 +79,7 @@ export const ProjectName = (): JSX.Element => {
             <ButtonIcon
               sizes="xsmall"
               variants={'outline'}
-              startIcon={<SvgInset svgUrl={IC_EDIT_PROFILE} />}
+              endIcon={<SvgInset svgUrl={IC_EDIT_PROJECT} />}
               onClick={() =>
                 router.push(`${ROUTE_PATH.GENERATIVE_EDIT}/${project?.tokenID}`)
               }

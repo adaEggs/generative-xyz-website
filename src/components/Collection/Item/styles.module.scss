@@ -159,6 +159,7 @@
         justify-content: space-between;
         // flex-wrap: wrap;
         gap: rem(3px);
+        align-items: flex-start;
       }
 
       .collectionCard_info_wrapper {
@@ -191,6 +192,13 @@
 
   &:hover {
     cursor: pointer;
+  }
+
+  &.isShop {
+    .collectionCard_thumb,
+    .collectionCard_info {
+      padding: rem(16px);
+    }
   }
 }
 
@@ -278,5 +286,33 @@
 .collectionCard:hover {
   .ordinalsLinks {
     transform: translateY(-1px);
+  }
+}
+
+.row {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  @include w-min(1400px) {
+    gap: 8px;
+    flex-direction: column;
+  }
+
+  @include w-min(1700px) {
+    flex-direction: row;
+    gap: 6px;
+  }
+}
+
+.wrapButton {
+  flex: 1;
+
+  button {
+    width: 100%;
+    height: 100%;
   }
 }

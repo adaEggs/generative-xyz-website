@@ -40,10 +40,14 @@ import { PaymentMethod } from '@enums/mint-generative';
 import { isWalletWhiteList, wordCase } from '@utils/common';
 import { Project } from '@interfaces/project';
 import { useRouter } from 'next/router';
-import { IProjectMintFeeRate } from '@interfaces/api/project';
+import {
+  IProjectMarketplaceData,
+  IProjectMintFeeRate,
+} from '@interfaces/api/project';
 import { getCategoryList } from '@services/category';
 import { Category } from '@interfaces/category';
 import useAsyncEffect from 'use-async-effect';
+import { projectMarketplaceData } from '@services/project';
 
 const LOG_PREFIX = 'ProjectLayoutContext';
 
@@ -81,6 +85,8 @@ export interface IProjectLayoutContext {
   hasMint?: boolean;
   origin?: string;
   categoryName: string | null;
+  marketplaceData: IProjectMarketplaceData | null;
+  setMarketplaceData: (data: IProjectMarketplaceData) => void;
 }
 
 const initialValue: IProjectLayoutContext = {
@@ -125,6 +131,10 @@ const initialValue: IProjectLayoutContext = {
   origin: '',
   hasMint: false,
   categoryName: '',
+  marketplaceData: null,
+  setMarketplaceData: _data => {
+    return;
+  },
 };
 
 export const ProjectLayoutContext =
@@ -160,6 +170,8 @@ export const ProjectLayoutProvider = ({
   const [hasProjectInteraction, setHasProjectInteraction] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [marketplaceData, setMarketplaceData] =
+    useState<IProjectMarketplaceData | null>(null);
 
   const origin =
     typeof window !== 'undefined' && window.location.origin
@@ -426,6 +438,16 @@ export const ProjectLayoutProvider = ({
     }
   }, [project?.id]);
 
+  useAsyncEffect(async () => {
+    if (project?.tokenID && project?.contractAddress) {
+      const data = await projectMarketplaceData({
+        projectId: String(project?.tokenID),
+        contractAddress: String(project?.contractAddress),
+      });
+      setMarketplaceData(data);
+    }
+  }, [project]);
+
   const categoryName = useMemo(() => {
     if (project && project?.categories?.length) {
       for (let i = 0; i < categoryList.length; i++) {
@@ -472,6 +494,8 @@ export const ProjectLayoutProvider = ({
       origin,
       hasMint,
       categoryName,
+      marketplaceData,
+      setMarketplaceData,
     };
   }, [
     project,
@@ -507,6 +531,8 @@ export const ProjectLayoutProvider = ({
     origin,
     hasMint,
     categoryName,
+    marketplaceData,
+    setMarketplaceData,
   ]);
 
   return (

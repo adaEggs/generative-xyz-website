@@ -70,9 +70,13 @@ const MintGenerativeController: React.FC = (): React.ReactElement => {
           <StepHeader />
         </div>
         <div
-          className={cs(s.stepContent, {
-            [`${s.stepContent__twoColumn}`]: !!filesSandbox,
-          })}
+          className={cs(
+            s.stepContent,
+            {
+              [`${s.stepContent__twoColumn}`]: !!filesSandbox,
+            },
+            `${stepParam}`
+          )}
         >
           <div className={s.previewWrapper}>
             <ProjectPreview />

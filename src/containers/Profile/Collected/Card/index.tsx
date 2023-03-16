@@ -24,8 +24,11 @@ import { TwitterShareButton } from 'react-share';
 import MintStatusModal from '../Modal/MintStatus';
 import s from './CollectedCard.module.scss';
 import { AssetsContext } from '@contexts/assets-context';
-import ButtonBuyListed from '@components/Transactor/ButtonBuyListed';
+import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
+import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
 import { capitalizeFirstLetter } from '@utils/string';
+import { isImageURL } from '@utils/url';
+import { LOGO_MARKETPLACE_URL } from '@constants/common';
 
 interface IPros {
   project: ICollectedNFTItem;
@@ -135,11 +138,25 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
 
   const tokenIdName =
     project.status === CollectedNFTStatus.Success
-      ? project.number || `#${project.inscriptionNumber}`
+      ? `#${
+          project.tokenNumber ? project.tokenNumber : project.inscriptionNumber
+        }`
       : project.projectName || '';
+
+  const imageUrl =
+    project.image && isImageURL(project.image)
+      ? project.image
+      : project.inscriptionID === undefined
+      ? LOGO_MARKETPLACE_URL
+      : undefined;
 
   const projectName =
     project.status === CollectedNFTStatus.Success ? project.projectName : '';
+
+  const artistName =
+    project.artistName === 'Unverified User'
+      ? project.projectName || ''
+      : project.artistName || '';
 
   const isNotShowBlur =
     project.status === CollectedNFTStatus.Success ||
@@ -188,18 +205,32 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
       !project.cancelling
     ) {
       return (
-        <Link
-          href=""
-          onClick={() => ''}
-          className={s.projectCard_status_buyBtn}
-        >
-          <ButtonBuyListed
-            inscriptionID={project.inscriptionID}
-            price={project.priceBTC}
-            inscriptionNumber={Number(project.inscriptionNumber)}
-            orderID={project.orderID}
-          />
-        </Link>
+        <div className={s.row}>
+          <Link
+            href=""
+            onClick={() => ''}
+            className={s.projectCard_status_buyBtn}
+          >
+            <ButtonBuyListedFromETH
+              inscriptionID={project.inscriptionID}
+              price={project.priceETH}
+              inscriptionNumber={Number(project.inscriptionNumber)}
+              orderID={project.orderID}
+            />
+          </Link>
+          <Link
+            href=""
+            onClick={() => ''}
+            className={s.projectCard_status_buyBtn}
+          >
+            <ButtonBuyListedFromBTC
+              inscriptionID={project.inscriptionID}
+              price={project.priceBTC}
+              inscriptionNumber={Number(project.inscriptionNumber)}
+              orderID={project.orderID}
+            />
+          </Link>
+        </div>
       );
     }
     return (
@@ -262,12 +293,12 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
     <>
       <Link href={linkPath} className={`${s.projectCard} ${className}`}>
         <div className={s.projectCard_inner}>
-          {project.image ? (
+          {imageUrl ? (
             <div className={`${s.projectCard_thumb}`}>
               <div className={s.projectCard_thumb_inner}>
                 <img
-                  src={convertIpfsToHttp(project.image)}
-                  alt={project.image}
+                  src={convertIpfsToHttp(imageUrl)}
+                  alt={imageUrl}
                   loading={'lazy'}
                 />
               </div>
@@ -360,12 +391,12 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
                     <Text size={'16'} fontWeight="medium">
                       {project.quantity > 1
                         ? `Quantity: ${project.quantity}`
-                        : `${capitalizeFirstLetter(project.artistName || '')}`}
+                        : `${capitalizeFirstLetter(artistName)}`}
                     </Text>
                   )
                 ) : (
                   <Text size={'16'} fontWeight="medium">
-                    {`${capitalizeFirstLetter(project.artistName || '')}`}
+                    {`${capitalizeFirstLetter(artistName)}`}
                   </Text>
                 )}
               </div>

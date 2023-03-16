@@ -335,12 +335,12 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: rem(24px);
 }
 
 .buyBtn {
   justify-content: center;
   width: 100%;
+  margin-top: rem(24px);
 }
 
 .checkBtn {
@@ -544,7 +544,6 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: rem(24px);
 
   @include mobile {
     margin-bottom: rem(16px);

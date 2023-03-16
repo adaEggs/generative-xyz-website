@@ -146,10 +146,13 @@ export const getCollectedNFTs = async (
             statusText: '',
             buyable: data?.buyable,
             priceBTC: data?.price_btc,
+            priceETH: data?.price_eth,
             orderID: data?.order_id,
             cancelling: data?.cancelling,
             artistName: data?.artist_name,
             number: data.number,
+            tokenNumber: data?.token_number,
+            sell_verified: data?.sell_verified,
           } as ICollectedNFTItem;
         }
       );
@@ -190,6 +193,7 @@ export const getMintingCollectedNFTs = async (
           orderID: '',
           quantity: item.quantity,
           artistName: item?.artist_name,
+          priceETH: '0',
         };
       });
     }
@@ -228,6 +232,7 @@ export const getDetailMintingCollectedNFT = async (
       cancelling: false,
       priceBTC: '0',
       orderID: '',
+      priceETH: '0',
     };
   } catch (err: unknown) {
     log('failed to get detail collected NFT', LogLevel.ERROR, LOG_PREFIX);
@@ -242,7 +247,7 @@ export const cancelMintingCollectedNFT = async (
     await del(`/mint-nft-btc/receive-address/${mintID}`);
     return true;
   } catch (err: unknown) {
-    log('failed to get detail collected NFT', LogLevel.ERROR, LOG_PREFIX);
+    log('failed to cancel minting nft', LogLevel.ERROR, LOG_PREFIX);
     throw Error();
   }
 };
@@ -301,7 +306,7 @@ export const generateApiKey = async (token: string): Promise<IApikey> => {
       status: res.Status,
     };
   } catch (err: unknown) {
-    log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
+    log('failed to generate api key', LogLevel.ERROR, LOG_PREFIX);
     throw Error();
   }
 };

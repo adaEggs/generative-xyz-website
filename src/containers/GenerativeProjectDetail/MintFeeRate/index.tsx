@@ -1,3 +1,5 @@
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
 import { IProjectMintFeeRate } from '@interfaces/api/project';
 import { formatBTCPrice, formatEthPrice } from '@utils/format';
 import cs from 'classnames';
@@ -22,7 +24,6 @@ const MintFeeRate = ({
   handleChangeRateType,
   selectedRateType,
   feeRate,
-  useCustomRate = false,
   handleChangeCustomRate,
   customRate,
   payType = 'btc',
@@ -52,11 +53,9 @@ const MintFeeRate = ({
           <div
             onClick={() => {
               handleChangeRateType('economy');
-              setCurRate('');
             }}
             className={cs(s.mintFeeItem, {
-              [`${s.mintFeeItem__active}`]:
-                selectedRateType === 'economy' && !customRate,
+              [`${s.mintFeeItem__active}`]: selectedRateType === 'economy',
             })}
           >
             <p className={s.feeTitle}>Economy</p>
@@ -75,11 +74,9 @@ const MintFeeRate = ({
           <div
             onClick={() => {
               handleChangeRateType('faster');
-              setCurRate('');
             }}
             className={cs(s.mintFeeItem, {
-              [`${s.mintFeeItem__active}`]:
-                selectedRateType === 'faster' && !customRate,
+              [`${s.mintFeeItem__active}`]: selectedRateType === 'faster',
             })}
           >
             <p className={s.feeTitle}>Faster</p>
@@ -98,11 +95,9 @@ const MintFeeRate = ({
           <div
             onClick={() => {
               handleChangeRateType('fastest');
-              setCurRate('');
             }}
             className={cs(s.mintFeeItem, {
-              [`${s.mintFeeItem__active}`]:
-                selectedRateType === 'fastest' && !customRate,
+              [`${s.mintFeeItem__active}`]: selectedRateType === 'fastest',
             })}
           >
             <p className={s.feeTitle}>Fastest</p>
@@ -118,58 +113,70 @@ const MintFeeRate = ({
           </div>
         </Col>
         <Col className={s.row}>
-          {!!useCustomRate && (
-            <div
-              className={cs(s.mintFeeItem, {
-                [`${s.mintFeeItem__active}`]: !!customRate,
-              })}
-              onClick={() => {
-                if (
-                  !!handleChangeCustomRate &&
-                  typeof handleChangeCustomRate === 'function' &&
-                  !!inputRef &&
-                  !!inputRef.current
-                ) {
-                  // handleChangeCustomRate(`${fastest.rate + 1}`);
-                  inputRef.current.focus();
+          <div
+            className={cs(s.mintFeeItem, {
+              [`${s.mintFeeItem__active}`]: selectedRateType === 'customRate',
+            })}
+            onClick={() => {
+              if (
+                !!handleChangeCustomRate &&
+                typeof handleChangeCustomRate === 'function' &&
+                !!inputRef &&
+                !!inputRef.current
+              ) {
+                handleChangeRateType('customRate');
+                inputRef.current.focus();
+                if (!(customRate && Number(customRate) > 0)) {
+                  handleChangeCustomRate(`${fastest.rate + 1}`);
                 }
-              }}
-            >
-              <p className={s.feeTitle}>Customize Sats</p>
-              <p className={s.feeDetail}>{`${customRate || 0} sats/vByte`}</p>
-              <input
-                ref={inputRef}
-                id="feeRate"
-                type="number"
-                name="feeRate"
-                placeholder="0"
-                value={customRate || cusRate}
-                onChange={onChangeCustomSats}
-                className={s.mintFeeItem_input}
-              />
-              <div className={s.feeTotalContainer}>
-                {!!customRate && feeRate.customRate && (
-                  <p className={s.feeTotal}>
-                    ~{' '}
-                    {`${
-                      payType === 'btc'
-                        ? formatBTCPrice(
-                            feeRate.customRate.mintFees.btc.networkFee
-                          ) + ' BTC'
-                        : formatEthPrice(
-                            feeRate.customRate.mintFees.eth.networkFee
-                          ) + ' ETH'
-                    }`}
-                  </p>
-                )}
-                {/* {cusRate && Number(cusRate) <= feeRate.fastest.rate && (
-                  <p>Customize Sats must be better than fastest</p>
-                )} */}
-              </div>
+              }
+            }}
+          >
+            <p className={s.feeTitle}>Customize Sats</p>
+            <p className={s.feeDetail}>{`${customRate || 0} sats/vByte`}</p>
+            <input
+              ref={inputRef}
+              id="feeRate"
+              type="number"
+              name="feeRate"
+              placeholder="0"
+              value={customRate || cusRate}
+              onChange={onChangeCustomSats}
+              className={s.mintFeeItem_input}
+            />
+            <div className={s.feeTotalContainer}>
+              {!!customRate && feeRate.customRate && (
+                <p className={s.feeTotal}>
+                  ~{' '}
+                  {`${
+                    payType === 'btc'
+                      ? formatBTCPrice(
+                          feeRate.customRate.mintFees.btc.networkFee
+                        ) + ' BTC'
+                      : formatEthPrice(
+                          feeRate.customRate.mintFees.eth.networkFee
+                        ) + ' ETH'
+                  }`}
+                </p>
+              )}
             </div>
-          )}
+          </div>
         </Col>
       </Row>
+      {selectedRateType === 'customRate' &&
+        customRate &&
+        Number(customRate) > 0 &&
+        feeRate.customRate &&
+        feeRate.customRate.rate < feeRate.economy.rate && (
+          <div className={s.warning}>
+            <SvgInset svgUrl={`${CDN_URL}/icons/bell-ringing-01.svg`} />
+            <p className={s.warning_title}>
+              This transaction is expected to take longer than usual to process.
+              You might want to consider another option to reduce your waiting
+              time.
+            </p>
+          </div>
+        )}
     </div>
   );
 };

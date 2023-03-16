@@ -10,7 +10,7 @@
   .mintFeeWrapper {
     display: flex;
     // gap: rem(24px);
-    margin-bottom: rem(24px);
+    margin-bottom: rem(12px);
     margin-top: rem(16px);
 
     .row {
@@ -33,7 +33,7 @@
     .mintFeeItem {
       width: 100%;
       padding: rem(24px);
-      border: 1px solid $black-10;
+      border: 2px solid $black-10;
       border-radius: rem(2px);
       display: flex;
       flex-direction: column;
@@ -64,7 +64,11 @@
       }
 
       .feeTotalContainer {
-        height: rem(22px);
+        min-height: rem(22px);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
 
       .feeTotal {
@@ -84,6 +88,25 @@
         font-weight: 400;
         border-radius: 4px;
       }
+    }
+  }
+
+  .warning {
+    background: rgb(255 126 33 / 6%);
+    border: 1px solid #ff7e21;
+    border-radius: 2px;
+    padding: 6px 16px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &_title {
+      margin-left: 12px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 22px;
+      color: #ff7e21;
     }
   }
 }

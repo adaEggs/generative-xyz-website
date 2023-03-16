@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Image from 'next/image';
 import cs from 'classnames';
 
-import { Project } from '@interfaces/project';
-import { ROUTE_PATH } from '@constants/route-path';
 import Link from '@components/Link';
 import Text from '@components/Text';
+import { ROUTE_PATH } from '@constants/route-path';
+import { Project } from '@interfaces/project';
 import { formatLongAddress } from '@utils/format';
-import { v4 } from 'uuid';
 
+import { QuickSearchContext } from './index';
 import s from './styles.module.scss';
 
 const SearchCollectionItem = ({
@@ -22,10 +22,14 @@ const SearchCollectionItem = ({
   collectionId?: string;
   thumbnail?: string;
 }) => {
+  const { onCloseSearchResult } = useContext(QuickSearchContext);
+
   return (
     <Link
       className={cs(s.searchResult_item, s.searchResult_item_link)}
       href={`${ROUTE_PATH.GENERATIVE}/${collectionId}`}
+      onClick={onCloseSearchResult}
+      isKeepDefaultEvent
     >
       <div className={s.searchResult_collectionThumbnail}>
         <Image src={thumbnail} alt={projectName} width={34} height={34} />
@@ -65,7 +69,7 @@ export const SearchCollectionsResult = ({
       </div>
       {list.map(collection => (
         <SearchCollectionItem
-          key={`collection-${v4()}`}
+          key={`collection-${collection?.project?.tokenID}`}
           thumbnail={collection?.project?.image}
           projectName={collection?.project?.name}
           creatorName={

@@ -1,18 +1,21 @@
 import { NFTHolder } from '@interfaces/nft';
-import { IPagingParams } from './paging';
+import { IPagingParams, IPagingResponse } from './paging';
+import { TokenActivity } from '@interfaces/token';
 
 export interface IGetTokenActivitiesParams {
   contractAddress: string;
-  tokenID: string;
+  // tokenID: string;
+  inscriptionID: string;
 }
 
-export interface IGetTokenActivitiesResponse {
-  updated_at: string;
-  items: {
-    nft_transactions: Array<unknown>;
-    [x: string]: unknown;
-  }[];
-  pagination: unknown;
+export interface IGetTokenActivitiesQuery extends IPagingParams {
+  inscription_id?: string;
+  project_id?: string;
+  types?: string;
+}
+
+export interface IGetTokenActivitiesResponse extends IPagingResponse {
+  result: Array<TokenActivity>;
 }
 
 export interface IGetNFTHolderListParams extends IPagingParams {

@@ -37,10 +37,21 @@ export const toBase64 = (file: File): Promise<string | ArrayBuffer | null> =>
     reader.onerror = error => reject(error);
   });
 
-export const formatAddress = (address?: string): string => {
+export const formatAddress = (address?: string, length = 10): string => {
   if (!address) return '';
   if (address.length < 14) return address;
-  return `${address.substring(0, 7)}`;
+  return `${address.substring(0, length)}`;
+};
+
+export const formatAddressDisplayName = (
+  address?: string,
+  length = 6
+): string => {
+  if (!address) return '';
+  if (address.length <= length) {
+    return address;
+  }
+  return `${address.substring(address.length - length, address.length)}`;
 };
 
 export const formatLongAddress = (address?: string): string => {
@@ -123,11 +134,21 @@ export const tokenID = (tokenName: string) => tokenName.split('#')[1];
 
 export const formatBTCPrice = (
   price: number | string,
-  emptyStr?: string
+  emptyStr?: string,
+  precision = 5
 ): string => {
   if (!price) return emptyStr || '-';
   const priceNumb = new BigNumber(price).dividedBy(1e8).toNumber();
-  return ceilPrecised(priceNumb).toString().replace(',', '.');
+  return ceilPrecised(priceNumb, precision).toString().replace(',', '.');
+};
+
+export const formatPrice = (
+  price: number | string,
+  emptyStr?: string
+): string => {
+  if (!price) return emptyStr || '-';
+  const priceNumb = new BigNumber(price).toNumber();
+  return ceilPrecised(priceNumb, 4).toString().replace(',', '.');
 };
 
 // export const formatEthVolumePrice = (
@@ -140,11 +161,11 @@ export const formatBTCPrice = (
 // };
 
 export const formatEthPrice = (
-  price: string | null,
+  price: string | number | null,
   emptyStr?: string
 ): string => {
   if (!price) return emptyStr || '-';
-  return ceilPrecised(parseFloat(Web3.utils.fromWei(price, 'ether')), 6)
+  return ceilPrecised(parseFloat(Web3.utils.fromWei(`${price}`, 'ether')), 4)
     .toString()
     .replace(',', '.');
 };
@@ -155,7 +176,7 @@ export const formatEthPriceInput = (
 ): string => {
   if (!price) return emptyStr || '-';
   const priceNumb = new BigNumber(price).dividedBy(1e18).toNumber();
-  return ceilPrecised(priceNumb, 6).toString().replace(',', '.');
+  return ceilPrecised(priceNumb, 4).toString().replace(',', '.');
 };
 
 export const ceilPrecised = (number: number, precision = 6) => {

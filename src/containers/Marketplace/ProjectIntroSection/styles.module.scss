@@ -4,11 +4,15 @@
   &_inner {
     display: flex;
     flex-wrap: wrap;
-    margin-top: rem(16px);
-    row-gap: 0 !important;
+    // margin-top: rem(16px);
+    // row-gap: 0 !important;
+    align-items: center;
+    justify-content: space-between;
 
-    @include min-tablet {
-      margin-top: rem(48px);
+    @include mobile {
+      flex-direction: column;
+      gap: rem(5);
+      align-items: start;
     }
   }
 
@@ -20,11 +24,30 @@
     }
   }
 
+  &_left {
+    flex: 0 0 100%;
+    width: 100%;
+
+    @include min-pc {
+      flex: 1;
+    }
+  }
+
   &_right {
+    flex: 0 0 100%;
+    width: 100%;
+
+    @include min-pc {
+      flex: 1;
+    }
+
     &_inner {
-      display: flex;
-      flex-wrap: wrap;
-      width: 100%;
+      @include min-pc {
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        width: 100%;
+      }
     }
 
     &_art {
@@ -46,9 +69,26 @@
   }
 }
 
+.projectCard_thumb {
+  width: rem(49px);
+  height: rem(49px);
+  padding: rem(5);
+  background-color: $primary-light;
+
+  &_inner img {
+    aspect-ratio: 1/1;
+  }
+}
+
 .wrapper {
   color: $black-100;
   // padding-top: rem(32px);
+}
+
+.info_inner {
+  display: flex;
+  align-items: center;
+  gap: rem(16);
 }
 
 .info_wrapper {
@@ -137,6 +177,12 @@
     display: flex;
     gap: rem(8);
     align-items: center;
+
+    &_name {
+      display: flex;
+      gap: rem(8px);
+      align-items: center;
+    }
   }
 
   &_social {
@@ -475,15 +521,13 @@
 }
 
 .wrapper.minted {
-  margin-bottom: rem(24px);
-
-  .info,
-  .projectInfo_right_inner {
-    @include min-pc {
-      position: sticky;
-      top: rem(86px);
-    }
+  padding: {
+    top: rem(16);
+    bottom: rem(16);
   }
+
+  border-top: 1px solid $black-5;
+  border-bottom: 1px solid $black-5;
 
   .shares {
     justify-content: unset;
@@ -534,6 +578,22 @@
 
     &:hover {
       text-decoration: none;
+    }
+  }
+}
+
+.projectName_creator {
+  display: flex;
+  align-items: center;
+  gap: rem(6);
+
+  .small {
+    padding-top: 0;
+
+    svg,
+    img {
+      height: rem(20px);
+      width: rem(20px);
     }
   }
 }

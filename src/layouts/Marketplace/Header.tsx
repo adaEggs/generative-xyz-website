@@ -8,7 +8,7 @@ import { LogLevel } from '@enums/log-level';
 import s from '@layouts/Default/HeaderFixed/Header.module.scss';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { ellipsisCenter, formatAddress } from '@utils/format';
+import { formatAddress, formatAddressDisplayName } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import { useRouter } from 'next/router';
@@ -17,8 +17,6 @@ import { Container } from 'react-bootstrap';
 import styles from './Header.module.scss';
 import { getFaucetLink, isTestnet } from '@utils/chain';
 import QuickBuy from '@layouts/Marketplace/QuickBuy';
-import querystring from 'query-string';
-import _isEmpty from 'lodash/isEmpty';
 import { MENU_HEADER } from '@constants/header';
 import MenuMobile from '@layouts/Marketplace/MenuMobile';
 import { gsap } from 'gsap';
@@ -26,6 +24,7 @@ import SearchCollection from './SearchCollection';
 import useOnClickOutside from '@hooks/useOnClickOutSide';
 import Image from 'next/image';
 import Avatar from '@components/Avatar';
+import { isBrowser } from '@utils/common';
 
 const LOG_PREFIX = 'MarketplaceHeader';
 
@@ -43,7 +42,6 @@ const Header: React.FC<IProp> = ({
   const { connect, disconnect, walletBalance } = useContext(WalletContext);
   const user = useAppSelector(getUserSelector);
   const router = useRouter();
-  const { query } = router;
   const activePath = router.pathname.split('/')[1];
   const [isConnecting, setIsConnecting] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState<boolean>(false);
@@ -59,7 +57,7 @@ const Header: React.FC<IProp> = ({
         router.push(`${ROUTE_PATH.PROFILE}/${btcAddress}`),
     },
     {
-      id: 'disconect-wallet',
+      id: 'disconnect-wallet',
       name: 'Disconnect wallet',
       onClick: () => {
         disconnect().then(() => {
@@ -80,15 +78,14 @@ const Header: React.FC<IProp> = ({
   ];
 
   const getUrlWithQueryParams = (url: string): string => {
-    if (_isEmpty(query)) {
-      return url;
+    if (isBrowser()) {
+      const currentURL = new URL(location.href);
+      if (currentURL.search) {
+        return `${url}${currentURL.search}`;
+      }
     }
-    return `${url}?${querystring.stringify(query)}`;
+    return url;
   };
-
-  // const handleOpenFreetoolsDropdown = (): void => {
-  //   setIsOpenFreetools(true);
-  // };
 
   useOnClickOutside(freeToolsRef, () => setIsOpenFreetools(false));
 
@@ -282,8 +279,9 @@ const Header: React.FC<IProp> = ({
                   <ul className={`${styles.navBar} ${styles[theme]}`}>
                     <li
                       className={cs(
-                        activePath === MENU_HEADER[0].activePath ||
-                          (activePath === '' && styles.active)
+                        (activePath === MENU_HEADER[0].activePath ||
+                          activePath === '') &&
+                          styles.active
                       )}
                       key={`header-${MENU_HEADER[0].id}`}
                     >
@@ -294,13 +292,13 @@ const Header: React.FC<IProp> = ({
 
                     <li
                       className={cs(
-                        activePath === MENU_HEADER[1].activePath &&
+                        activePath === MENU_HEADER[12].activePath &&
                           styles.active
                       )}
-                      key={`header-${MENU_HEADER[1].id}`}
+                      key={`header-${MENU_HEADER[12].id}`}
                     >
-                      <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>
-                        {MENU_HEADER[1].name}
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[12].route)}>
+                        {MENU_HEADER[12].name}
                       </Link>
                     </li>
 
@@ -315,31 +313,6 @@ const Header: React.FC<IProp> = ({
                         {MENU_HEADER[2].name}
                       </Link>
                     </li>
-                  </ul>
-                </div>
-
-                <div className={styles.header_right}>
-                  <SearchCollection theme={theme} />
-
-                  <ul className={`${styles.navBar} ${styles[theme]}`}>
-                    <li
-                      ref={freeToolsRef}
-                      // onClick={handleOpenFreetoolsDropdown}
-                      className={cs(styles.freeTools, {
-                        [`${styles.active}`]:
-                          activePath === MENU_HEADER[7].activePath,
-                      })}
-                    >
-                      <a>
-                        Free tools
-                        <SvgInset
-                          className={styles.arrowIcon}
-                          svgUrl={`${CDN_URL}/icons/ic-chevron-down-20x20.svg`}
-                          size={20}
-                        />
-                      </a>
-                      {renderFreeToolsDropDown()}
-                    </li>
 
                     <li
                       className={cs(
@@ -351,7 +324,53 @@ const Header: React.FC<IProp> = ({
                         {MENU_HEADER[8].name}
                       </Link>
                     </li>
+                  </ul>
+                </div>
 
+                <div className={styles.header_right}>
+                  <SearchCollection theme={theme} />
+
+                  <ul className={`${styles.navBar} ${styles[theme]}`}>
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[13].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[13].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[13].route)}>
+                        {MENU_HEADER[13].name}
+                      </Link>
+                    </li>
+                    <li
+                      ref={freeToolsRef}
+                      // onClick={handleOpenFreetoolsDropdown}
+                      className={cs(styles.freeTools, {
+                        [`${styles.active}`]:
+                          activePath === MENU_HEADER[7].activePath,
+                      })}
+                    >
+                      <a>
+                        Individuals
+                        <SvgInset
+                          className={styles.arrowIcon}
+                          svgUrl={`${CDN_URL}/icons/ic-chevron-down-20x20.svg`}
+                          size={20}
+                        />
+                      </a>
+                      {renderFreeToolsDropDown()}
+                    </li>
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[1].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[1].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>
+                        {MENU_HEADER[1].name}
+                      </Link>
+                    </li>
                     <li
                       className={cs(
                         activePath === MENU_HEADER[10].activePath &&
@@ -379,10 +398,10 @@ const Header: React.FC<IProp> = ({
                             height={32}
                             width={32}
                           />
-                          {ellipsisCenter({
-                            str: user.walletAddressBtcTaproot || '',
-                            limit: 4,
-                          })}
+                          {formatAddressDisplayName(
+                            user.walletAddressBtcTaproot || '',
+                            6
+                          )}
                         </a>
                       </li>
                     )}

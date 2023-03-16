@@ -1,12 +1,12 @@
 .filter_buy {
   display: flex;
-  min-width: rem(150px);
-  justify-content: space-between;
-  margin-bottom: rem(21px);
+  flex-direction: column;
+  gap: rem(20);
+  margin-bottom: rem(20px);
+}
 
-  @include mobile {
-    min-width: rem(120px);
-  }
+.rarity {
+  margin-bottom: rem(10);
 }
 
 .checkbox > input {

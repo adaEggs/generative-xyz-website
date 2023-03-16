@@ -2,17 +2,23 @@ import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { SATOSHIS_PROJECT_ID } from '@constants/generative';
 import { ROUTE_PATH } from '@constants/route-path';
 import { LogLevel } from '@enums/log-level';
-import { IProjectMintFeeRate } from '@interfaces/api/project';
+import { IGetTokenActivitiesResponse } from '@interfaces/api/nfts';
+import {
+  IProjectMarketplaceData,
+  IProjectMintFeeRate,
+} from '@interfaces/api/project';
 import { Project, ProjectItemsTraitList } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 import { useAppSelector } from '@redux';
 import { setProjectCurrent } from '@redux/project/action';
 import { getUserSelector } from '@redux/user/selector';
+import { getTokenActivities } from '@services/nfts';
 import {
   getProjectDetail,
   getProjectItems,
   getProjectItemsTraitsList,
   getProjectMintFeeRate,
+  projectMarketplaceData,
 } from '@services/project';
 import { checkIsBitcoinProject } from '@utils/generative';
 import log from '@utils/logger';
@@ -23,13 +29,14 @@ import React, {
   PropsWithChildren,
   SetStateAction,
   createContext,
+  useCallback,
   useEffect,
   useMemo,
   useState,
-  useCallback,
 } from 'react';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
+import useAsyncEffect from 'use-async-effect';
 
 const LOG_PREFIX = 'GenerativeProjectDetailContext';
 
@@ -62,13 +69,23 @@ export interface IGenerativeProjectDetailContext {
   page: number;
   setPage: Dispatch<SetStateAction<number>>;
   filterPrice: {
-    from_price: string;
-    to_price: string;
+    from: string;
+    to: string;
   };
   setFilterPrice: Dispatch<
     React.SetStateAction<{
-      from_price: string;
-      to_price: string;
+      from: string;
+      to: string;
+    }>
+  >;
+  filterRarity: {
+    from: string;
+    to: string;
+  };
+  setFilterRarity: Dispatch<
+    React.SetStateAction<{
+      from: string;
+      to: string;
     }>
   >;
   isShowMintBTCModal: boolean;
@@ -77,6 +94,13 @@ export interface IGenerativeProjectDetailContext {
   isBitcoinProject: boolean;
   isWhitelistProject: boolean;
   isSatoshisPage: boolean;
+  marketplaceData: IProjectMarketplaceData | null;
+  setMarketplaceData: (data: IProjectMarketplaceData) => void;
+  isLimitMinted: boolean;
+  collectionActivities: IGetTokenActivitiesResponse | null;
+  setFilterActivities: Dispatch<SetStateAction<string>>;
+  isLayoutShop: boolean;
+  setIsLayoutShop: Dispatch<SetStateAction<boolean>>;
 }
 
 const initialValue: IGenerativeProjectDetailContext = {
@@ -127,10 +151,17 @@ const initialValue: IGenerativeProjectDetailContext = {
     return;
   },
   filterPrice: {
-    from_price: '',
-    to_price: '',
+    from: '',
+    to: '',
   },
   setFilterPrice: _ => {
+    return;
+  },
+  filterRarity: {
+    from: '',
+    to: '',
+  },
+  setFilterRarity: _ => {
     return;
   },
   isShowMintBTCModal: false,
@@ -143,6 +174,19 @@ const initialValue: IGenerativeProjectDetailContext = {
   isBitcoinProject: false,
   isWhitelistProject: false,
   isSatoshisPage: false,
+  marketplaceData: null,
+  setMarketplaceData: _data => {
+    return;
+  },
+  isLimitMinted: false,
+  collectionActivities: null,
+  setFilterActivities: _ => {
+    return;
+  },
+  isLayoutShop: false,
+  setIsLayoutShop: _ => {
+    return;
+  },
 };
 
 export const GenerativeProjectDetailContext =
@@ -155,11 +199,16 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
 
   const dispatch = useDispatch();
   const [projectData, setProjectData] = useState<Project | null>(null);
+  const [marketplaceData, setMarketplaceData] =
+    useState<IProjectMarketplaceData | null>(null);
   const [projectFeeRate, setProjectFeeRate] =
     useState<IProjectMintFeeRate | null>(null);
   const currentCustomFeeRate = React.useRef<number | null>();
 
   const [listItems, setListItems] = useState<Token[] | null>(null);
+  const [collectionActivities, setCollectionActivities] =
+    useState<IGetTokenActivitiesResponse | null>(null);
+
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState('price-asc');
@@ -171,9 +220,17 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const [showFilter, setShowFilter] = useState(false);
   const [filterTraits, setFilterTraits] = useState('');
   const [filterPrice, setFilterPrice] = useState({
-    from_price: '',
-    to_price: '',
+    from: '',
+    to: '',
   });
+  const [filterRarity, setFilterRarity] = useState({
+    from: '',
+    to: '',
+  });
+
+  const [filterActivities, setFilterActivities] = useState('1,2,3');
+  const [isLayoutShop, setIsLayoutShop] = useState<boolean>(false);
+
   const [projectItemsTraitList, setProjectItemsTraitList] =
     useState<ProjectItemsTraitList | null>(null);
   const router = useRouter();
@@ -189,6 +246,11 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const isSatoshisPage = useMemo(() => {
     return router.pathname === ROUTE_PATH.SATOSHIS_PAGE;
   }, []);
+
+  const isLimitMinted = useMemo((): boolean => {
+    if (!projectData) return false;
+    return projectData?.mintingInfo?.index < projectData?.maxSupply;
+  }, [projectData]);
 
   const handleFetchNextPage = () => {
     setPage(prev => prev + 1);
@@ -254,7 +316,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     [user]
   );
 
-  const debounceFetchProjectFeeRate = debounce(fetchProjectFeeRate, 800);
+  const debounceFetchProjectFeeRate = debounce(fetchProjectFeeRate, 300);
 
   const fetchProjectItems = async (): Promise<void> => {
     if (projectData?.genNFTAddr && !isWhitelistProject) {
@@ -264,6 +326,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
         } else {
           setIsLoaded(false);
         }
+
+        const rarityMin = filterRarity?.from || '1';
+        const rarityMax = filterRarity?.to || '100';
 
         const res = await getProjectItems(
           {
@@ -275,9 +340,10 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
             sort,
             keyword: searchToken || '',
             attributes: filterTraits || '',
-            has_price: filterBuyNow || '',
-            from_price: filterPrice.from_price || '',
-            to_price: filterPrice.to_price || '',
+            is_buy_now: filterBuyNow || '',
+            from_price: filterPrice.from || '',
+            to_price: filterPrice.to || '',
+            rarity: `${rarityMin},${rarityMax}`,
           }
         );
         if (res.result) {
@@ -310,6 +376,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
           setIsLoaded(false);
         }
 
+        const rarityMin = filterRarity?.from || '1';
+        const rarityMax = filterRarity?.to || '100';
+
         const res = await getProjectItems(
           {
             contractAddress: SATOSHIS_PROJECT_ID,
@@ -321,8 +390,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
             keyword: searchToken || '',
             attributes: filterTraits || '',
             has_price: filterBuyNow || '',
-            from_price: filterPrice.from_price || '',
-            to_price: filterPrice.to_price || '',
+            from_price: filterPrice.from || '',
+            to_price: filterPrice.to || '',
+            rarity: `${rarityMin},${rarityMax}`,
           }
         );
         if (res.result) {
@@ -341,7 +411,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
-  const featProjectItemsTraitsList = async (): Promise<void> => {
+  const fetchProjectItemsTraitsList = async (): Promise<void> => {
     try {
       if (projectID) {
         const res = await getProjectItemsTraitsList({
@@ -358,10 +428,39 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     }
   };
 
+  const fetchProjectActivities = async (): Promise<void> => {
+    try {
+      if (projectID) {
+        const res = await getTokenActivities({
+          project_id: projectID,
+          limit: 100,
+          types: filterActivities,
+        });
+        if (res) {
+          setCollectionActivities(res);
+        }
+      }
+    } catch (err: unknown) {
+      log('failed to get project activities', LogLevel.ERROR, LOG_PREFIX);
+      throw Error();
+    }
+  };
+
   useEffect(() => {
     fetchProjectDetail();
-    featProjectItemsTraitsList();
+    fetchProjectItemsTraitsList();
+    fetchProjectActivities();
   }, [projectID]);
+
+  useEffect(() => {
+    if (projectData && projectData.btcFloorPrice > 0) {
+      setFilterBuyNow(false);
+    }
+  }, [projectData]);
+
+  useEffect(() => {
+    fetchProjectActivities();
+  }, [filterActivities]);
 
   useEffect(() => {
     if (user && user.walletAddressBtcTaproot) {
@@ -370,7 +469,10 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   }, [user?.walletAddressBtcTaproot]);
 
   useEffect(() => {
-    if (filterPrice.to_price && filterPrice.to_price < filterPrice.from_price) {
+    if (
+      filterPrice.to &&
+      parseFloat(filterPrice.to) < parseFloat(filterPrice.from)
+    ) {
       toast.error('Max price must be larger than min price');
     } else {
       fetchProjectItems();
@@ -385,7 +487,18 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     filterBuyNow,
     filterPrice,
     isWhitelistProject,
+    filterRarity,
   ]);
+
+  useAsyncEffect(async () => {
+    if (projectData?.tokenID && projectData?.contractAddress) {
+      const data = await projectMarketplaceData({
+        projectId: String(projectData?.tokenID),
+        contractAddress: String(projectData?.contractAddress),
+      });
+      setMarketplaceData(data);
+    }
+  }, [projectData]);
 
   const isBitcoinProject = useMemo((): boolean => {
     if (!projectData) return false;
@@ -423,6 +536,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       setPage,
       filterPrice,
       setFilterPrice,
+      filterRarity,
+      setFilterRarity,
       isShowMintBTCModal,
       showMintBTCModal,
       hideMintBTCModal,
@@ -430,6 +545,13 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       isWhitelistProject,
       isSatoshisPage,
       projectItemsTraitList,
+      marketplaceData,
+      setMarketplaceData,
+      isLimitMinted,
+      collectionActivities,
+      setFilterActivities,
+      isLayoutShop,
+      setIsLayoutShop,
     };
   }, [
     projectData,
@@ -455,6 +577,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     setPage,
     filterPrice,
     setFilterPrice,
+    filterRarity,
+    setFilterRarity,
     isShowMintBTCModal,
     showMintBTCModal,
     hideMintBTCModal,
@@ -462,6 +586,14 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     isWhitelistProject,
     isSatoshisPage,
     projectItemsTraitList,
+    marketplaceData,
+    setMarketplaceData,
+    isLimitMinted,
+    collectionActivities,
+    setFilterActivities,
+
+    isLayoutShop,
+    setIsLayoutShop,
   ]);
 
   return (
