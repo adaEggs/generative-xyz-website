@@ -329,23 +329,25 @@ const FormEditProject = () => {
             <div className={s.projectEdit_form_wrapper}>
               <div className={s.projectDetail}>
                 <div className={s.formWrapper}>
-                  <div className={s.formItem}>
-                    <label className={s.label_checkbox} htmlFor="isHidden">
-                      <span>
-                        <input
-                          id="isHidden"
-                          type="checkbox"
-                          name="isHidden"
-                          checked={values.isHidden}
-                          className={s.input}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value="yes"
-                        />
-                      </span>
-                      <span>Enabled</span>
-                    </label>
-                  </div>
+                  {!project?.isReviewing && (
+                    <div className={s.formItem}>
+                      <label className={s.label_checkbox} htmlFor="isHidden">
+                        <span>
+                          <input
+                            id="isHidden"
+                            type="checkbox"
+                            name="isHidden"
+                            checked={values.isHidden}
+                            className={s.input}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value="yes"
+                          />
+                        </span>
+                        <span>Enabled</span>
+                      </label>
+                    </div>
+                  )}
                   <div className={s.formItem}>
                     <label className={s.label} htmlFor="name">
                       Name of collection <sup className={s.requiredTag}>*</sup>

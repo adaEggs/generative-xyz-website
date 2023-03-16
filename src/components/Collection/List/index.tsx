@@ -1,20 +1,18 @@
+import ButtonIcon from '@components/ButtonIcon';
 import { Empty } from '@components/Collection/Empty';
 import CollectionItem from '@components/Collection/Item';
+import SvgInset from '@components/SvgInset';
+import Text from '@components/Text';
+import { CDN_URL } from '@constants/config';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 import cs from 'classnames';
 import { useContext, useMemo } from 'react';
+import { v4 } from 'uuid';
 import FilterOptions from '../FilterOptions';
 import CollectionListLoading from '../Loading';
 import s from './CollectionList.module.scss';
-import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import ButtonIcon from '@components/ButtonIcon';
-import SvgInset from '@components/SvgInset';
-import { CDN_URL } from '@constants/config';
-import { v4 } from 'uuid';
-import Text from '@components/Text';
-import useWindowSize from '@hooks/useWindowSize';
-import ActivityStats from '@containers/GenerativeProjectDetail/ActivityStats';
 
 const CollectionList = ({
   listData,
@@ -31,12 +29,12 @@ const CollectionList = ({
     showFilter,
     filterTraits,
     setFilterTraits,
-    collectionActivities,
-    isLimitMinted,
-    marketplaceData,
+    // collectionActivities,
+    // isLimitMinted,
+    // marketplaceData,
   } = useContext(GenerativeProjectDetailContext);
 
-  const { mobileScreen } = useWindowSize();
+  // const { mobileScreen } = useWindowSize();
 
   const hasTraitAtrribute = useMemo(
     () => projectInfo?.traitStat && projectInfo?.traitStat?.length > 0,
@@ -52,26 +50,36 @@ const CollectionList = ({
     setFilterTraits(newFilterTraits);
   };
 
-  const layoutCols = layout === 'mint' ? 'col-xl-6' : 'col-xl-6 ';
+  const layoutCols =
+    layout === 'mint' ? 'col-wide-2_5 col-xl-4 col-12' : 'col-xl-6 ';
+
+  const renderLeftSide = () => {
+    if (layout === 'shop') {
+      return null;
+    } else {
+      return (
+        <>
+          {showFilter && <FilterOptions attributes={projectInfo?.traitStat} />}
+        </>
+      );
+    }
+  };
 
   return (
     <div
-      className={`${s.listToken} row ${
-        layout === 'mint' && !mobileScreen ? s.showFilter : 'grid-cols-1'
+      className={`${s.listToken} grid row ${
+        showFilter ? s.showFilter : 'grid-cols-1'
       }`}
     >
-      {collectionActivities && isLimitMinted && (
-        <div className="col-3">
-          {layout === 'mint' && !mobileScreen && (
-            <FilterOptions attributes={projectInfo?.traitStat} />
-          )}
-        </div>
-      )}
-      <div
-        className={`${
-          collectionActivities && isLimitMinted && 'col-12 col-md-5'
-        }`}
-      >
+      {renderLeftSide()}
+      {/* {collectionActivities && isLimitMinted && ( */}
+      {/* <div className="col-3">
+        {layout === 'mint' && (
+          <FilterOptions attributes={projectInfo?.traitStat} />
+        )}
+      </div> */}
+      {/* )} */}
+      <div className={``}>
         {filterTraits && filterTraits.length > 0 && (
           <div className={s.filterList}>
             {filterTraits.split(',').map(trait => (
@@ -134,11 +142,11 @@ const CollectionList = ({
           )}
         </div>
       </div>
-      {marketplaceData && marketplaceData.listed > 0 && isLimitMinted && (
+      {/* {marketplaceData && marketplaceData.listed > 0 && isLimitMinted && (
         <div className="col-12 col-md-3">
           <ActivityStats />
         </div>
-      )}
+      )} */}
     </div>
   );
 };
