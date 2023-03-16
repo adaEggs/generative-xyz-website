@@ -6,20 +6,15 @@ import { IconVerified } from '@components/IconVerified';
 import Image from 'next/image';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import cs from 'classnames';
+import Link from 'next/link';
+import { ROUTE_PATH } from '@constants/route-path';
 
 export const SocialVerify: React.FC<{
-  link: string;
   isTwVerified: boolean;
   width?: number;
   height?: number;
   className?: string;
-}> = ({
-  link = '#',
-  isTwVerified = false,
-  width = 34,
-  height = 34,
-  className,
-}) => {
+}> = ({ isTwVerified = false, width = 34, height = 34, className }) => {
   const [show, setShow] = useState<boolean>(false);
   return (
     <div
@@ -55,10 +50,11 @@ export const SocialVerify: React.FC<{
                     fontWeight="semibold"
                     color="primary-333"
                   >
-                    Want to get verified? Ping us at{' '}
-                    <a href={link} target="_blank" rel="noreferrer">
-                      @generative_xyz.
-                    </a>
+                    Click{' '}
+                    <Link className={s.link} href={ROUTE_PATH.DAO}>
+                      here
+                    </Link>{' '}
+                    to get verified by the community!
                   </Text>
                 </div>
               </Tooltip>
