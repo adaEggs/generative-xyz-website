@@ -10,6 +10,7 @@ type LinkProps = {
   target?: string;
   rel?: string;
   rest?: HTMLAnchorElement;
+  isKeepDefaultEvent?: boolean;
 };
 
 export default function Link({
@@ -19,6 +20,7 @@ export default function Link({
   href,
   target,
   rel,
+  isKeepDefaultEvent,
   ...rest
 }: PropsWithChildren<LinkProps>) {
   return (
@@ -27,7 +29,9 @@ export default function Link({
       onClick={
         onClick
           ? e => {
-              e.preventDefault();
+              if (!isKeepDefaultEvent) {
+                e.preventDefault();
+              }
               onClick();
             }
           : undefined

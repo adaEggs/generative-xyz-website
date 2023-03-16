@@ -78,4 +78,22 @@
       cursor: pointer;
     }
   }
+
+  &_avatar {
+    margin-right: rem(10px);
+  }
+
+  &_share {
+    margin-right: rem(6px);
+    padding: rem(9px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #1c1c1c;
+    border-radius: 2px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
