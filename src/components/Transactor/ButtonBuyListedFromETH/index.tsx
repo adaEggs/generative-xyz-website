@@ -52,7 +52,7 @@ const ButtonBuyListedFromETH = React.memo(
           className={cs(s.container, `${className}`)}
           onClick={openModal}
         >
-          Buy {`${formatEthPrice(price)} ETH`}
+          {`${formatEthPrice(price)} ETH`}
         </ButtonIcon>
         {!!user?.walletAddressBtcTaproot && isShow && (
           <ModalBuyListed
