@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-// import { useRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 import CategoryTab from '@components/CategoryTab';
 import { LoadingProvider } from '@contexts/loading-context';
@@ -44,11 +44,20 @@ const UserItems = dynamic(() => import('./UserItems'), {
 // const LOG_PREFIX = 'RequestsPage';
 
 const RequestPage = (): JSX.Element => {
-  // const router = useRouter();
+  const router = useRouter();
+  const { tab = 0 } = router.query;
   // const { connect } = useContext(WalletContext);
   // const user = useAppSelector(getUserSelector);
 
   const [currentTabActive, setCurrentTabActive] = useState<number>(0);
+
+  useEffect(() => {
+    if (tab == DAO_TYPE.COLLECTION) {
+      setCurrentTabActive(DAO_TYPE.COLLECTION);
+    } else if (tab == DAO_TYPE.ARTIST) {
+      setCurrentTabActive(DAO_TYPE.ARTIST);
+    }
+  }, [tab]);
   // const [isConnecting, setIsConnecting] = useState<boolean>(false);
 
   // const handleConnectWallet = async (): Promise<void> => {
