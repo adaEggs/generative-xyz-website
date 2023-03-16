@@ -1,6 +1,7 @@
 import { useContext, useState } from 'react';
 import { FeeRateName } from '@interfaces/api/bitcoin';
 import { AssetsContext } from '@contexts/assets-context';
+import { isNumeric } from '@utils/string';
 
 const useFeeRate = () => {
   const { feeRate: RATE } = useContext(AssetsContext);
@@ -21,10 +22,16 @@ const useFeeRate = () => {
     setCustomRate(rate);
   };
 
+  const currentRate =
+    customRate && isNumeric(customRate)
+      ? Number(customRate)
+      : FEE_RATE[selectedRate];
+
   return {
     selectedRate,
     allRate: FEE_RATE,
     customRate,
+    currentRate,
     handleChangeFee,
     handleChangeCustomRate,
   };

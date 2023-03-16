@@ -18,6 +18,8 @@ import {
   IRespGenAddressByETH,
   IRetrieveOrderPayload,
   IRetrieveOrderResp,
+  IRetrieveOrdersPayload,
+  IRetrieveOrdersResp,
   ITokenPriceResp,
   ITrackTx,
   ITxHistory,
@@ -296,6 +298,24 @@ export const retrieveOrder = async (
   } catch (err: unknown) {
     log('failed to get retrieve order', LogLevel.ERROR, LOG_PREFIX);
     // throw err;
+  }
+  return data;
+};
+
+export const retrieveOrders = async (
+  payload: IRetrieveOrdersPayload
+): Promise<IRetrieveOrdersResp> => {
+  let data: IRetrieveOrdersResp = {
+    raw_psbt_list: [],
+  };
+  try {
+    data = await post<IRetrieveOrdersPayload, IRetrieveOrdersResp>(
+      '/dex/retrieve-orders',
+      payload
+    );
+  } catch (err: unknown) {
+    log('failed to get retrieve order', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
   }
   return data;
 };
