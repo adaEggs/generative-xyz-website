@@ -1,68 +1,60 @@
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import { isNumeric } from '@utils/string';
 import { useContext, useEffect, useState } from 'react';
 
-export type IFeeRateType = 'economy' | 'faster' | 'fastest';
+export type IFeeRateType = 'economy' | 'faster' | 'fastest' | 'customRate';
 
 const useMintFeeRate = () => {
   const { projectFeeRate, debounceFetchProjectFeeRate, projectData } =
     useContext(GenerativeProjectDetailContext);
 
-  const [rateType, setRateType] = useState<IFeeRateType>('fastest');
-  const [customRate, setCustomRate] = useState<string>('');
+  const [customFeeRate, setCustomFeeRate] = useState<string>('');
 
-  const currentFee = projectFeeRate
-    ? isNumeric(customRate) && projectFeeRate.customRate
-      ? projectFeeRate.customRate
-      : projectFeeRate[rateType]
+  const [currentFeeRateType, setCurrentFeeRateType] =
+    useState<IFeeRateType>('fastest');
+  const currentFeeRate = projectFeeRate
+    ? projectFeeRate[currentFeeRateType]
     : null;
-
-  // useEffect(() => {
-  //   debounceFetchProjectFeeRate(projectData || undefined);
-  // }, []);
-
-  useEffect(() => {
-    if (
-      projectFeeRate &&
-      projectFeeRate.fastest &&
-      Number(customRate) < (projectFeeRate?.economy.rate || 0)
-    ) {
-      setCustomRate('');
-    }
-  }, [projectFeeRate]);
 
   useEffect(() => {
     const intervalID = setInterval(() => {
-      debounceFetchProjectFeeRate(projectData || undefined, Number(customRate));
+      debounceFetchProjectFeeRate(
+        projectData || undefined,
+        Number(customFeeRate) > (projectFeeRate?.economy.rate || 0)
+          ? Number(customFeeRate)
+          : undefined
+      );
     }, 10000);
     return () => {
       clearInterval(intervalID);
     };
-  }, [customRate]);
+  }, [customFeeRate]);
 
   const handleChangeRateType = (feeType: IFeeRateType): void => {
-    setRateType(feeType);
-    setCustomRate('');
+    setCurrentFeeRateType(feeType);
+    setCustomFeeRate('');
   };
 
   const handleChangeCustomRate = (rate: string): void => {
-    setCustomRate(rate);
+    setCustomFeeRate(rate);
     if (Number(rate) < (projectFeeRate?.economy.rate || 0)) {
-      setCustomRate('');
+      setCustomFeeRate('');
     }
-    if (projectData) {
-      debounceFetchProjectFeeRate(projectData, Number(rate));
-    }
+    debounceFetchProjectFeeRate(
+      projectData || undefined,
+      Number(rate) > (projectFeeRate?.economy.rate || 0)
+        ? Number(rate)
+        : undefined
+    );
   };
 
   return {
     projectFeeRate,
-    currentFee,
+    currentFeeRate,
 
-    customRate,
+    customFeeRate,
     handleChangeCustomRate,
 
-    rateType,
+    currentFeeRateType,
     handleChangeRateType,
   };
 };

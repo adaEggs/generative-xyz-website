@@ -16,7 +16,7 @@ import { getUserSelector } from '@redux/user/selector';
 import { sendAAEvent } from '@services/aa-tracking';
 import { generateMintReceiverAddress } from '@services/mint';
 import { ellipsisCenter, formatBTCPrice } from '@utils/format';
-import { capitalizeFirstLetter } from '@utils/string';
+import { capitalizeFirstLetter, isNumeric } from '@utils/string';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
@@ -40,10 +40,10 @@ const MintBTCGenerativeModal: React.FC = () => {
 
   const {
     projectFeeRate,
-    currentFee,
-    rateType,
+    currentFeeRate,
+    currentFeeRateType,
     handleChangeRateType,
-    customRate,
+    customFeeRate,
     handleChangeCustomRate,
   } = useMintFeeRate();
 
@@ -85,21 +85,35 @@ const MintBTCGenerativeModal: React.FC = () => {
       : projectData?.limitMintPerProcess;
 
   const priceFormat = formatBTCPrice(
-    mintPrice ? mintPrice : currentFee?.mintFees.btc.mintPrice || '',
+    mintPrice
+      ? mintPrice
+      : currentFeeRate?.mintFees.btc.mintPrice ||
+          projectFeeRate?.fastest.mintFees.btc.mintPrice ||
+          '',
     '0.0'
   );
   const feePriceFormat = formatBTCPrice(
     feePrice
       ? Number(feePrice)
-      : Number(currentFee ? currentFee.mintFees.btc.networkFee : 0),
+      : Number(currentFeeRate ? currentFeeRate.mintFees.btc.networkFee : 0),
     '0.0'
   );
   const totalPriceFormat = formatBTCPrice(
     totalPrice
       ? totalPrice
       : `${
-          (Number(currentFee ? currentFee.mintFees.btc.networkFee : 0) +
-            Number(currentFee ? currentFee.mintFees.btc.mintPrice : 0)) *
+          (Number(
+            currentFeeRate
+              ? currentFeeRateType === 'customRate' && !isNumeric(customFeeRate)
+                ? 0
+                : currentFeeRate.mintFees.btc.networkFee
+              : 0
+          ) +
+            Number(
+              currentFeeRate?.mintFees.btc.mintPrice ||
+                projectFeeRate?.fastest.mintFees.btc.mintPrice ||
+                0
+            )) *
           quantity
         }` || ''
   );
@@ -109,6 +123,12 @@ const MintBTCGenerativeModal: React.FC = () => {
     [user]
   );
 
+  const disableBtn =
+    isLoading ||
+    quantity === 0 ||
+    !currentFeeRate ||
+    (currentFeeRateType === 'customRate' ? !isNumeric(customFeeRate) : false);
+
   const onClickUseDefault = () => {
     if (useWallet !== 'default') {
       setUseWallet('default');
@@ -117,7 +137,7 @@ const MintBTCGenerativeModal: React.FC = () => {
           userBtcAddress,
           userBtcAddress,
           quantity,
-          currentFee?.rate
+          currentFeeRate?.rate
         );
       }
     }
@@ -131,7 +151,7 @@ const MintBTCGenerativeModal: React.FC = () => {
           addressInput,
           userBtcAddress,
           quantity,
-          currentFee?.rate
+          currentFeeRate?.rate
         );
       }
     }
@@ -144,7 +164,7 @@ const MintBTCGenerativeModal: React.FC = () => {
           userBtcAddress,
           userBtcAddress,
           quantity,
-          currentFee?.rate
+          currentFeeRate?.rate
         );
       }
     }
@@ -249,7 +269,7 @@ const MintBTCGenerativeModal: React.FC = () => {
           values.address,
           userBtcAddress,
           quantity,
-          currentFee?.rate
+          currentFeeRate?.rate
         );
       }
     }
@@ -263,7 +283,7 @@ const MintBTCGenerativeModal: React.FC = () => {
         values.address,
         userBtcAddress,
         quantity,
-        currentFee?.rate
+        currentFeeRate?.rate
       );
       setAddressInput(values.address);
     }
@@ -360,14 +380,14 @@ const MintBTCGenerativeModal: React.FC = () => {
                       )}
                     </div>
 
-                    {step === 'info' && projectFeeRate && currentFee && (
+                    {step === 'info' && projectFeeRate && (
                       <FeeRate
                         feeRate={projectFeeRate}
-                        selectedRateType={rateType}
+                        selectedRateType={currentFeeRateType}
                         handleChangeRateType={handleChangeRateType}
                         useCustomRate={true}
                         handleChangeCustomRate={handleChangeCustomRate}
-                        customRate={customRate}
+                        customRate={customFeeRate}
                         payType="btc"
                       />
                     )}
@@ -495,9 +515,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                               type="submit"
                               sizes="large"
                               className={s.buyBtn}
-                              disabled={
-                                isLoading || quantity === 0 || !currentFee
-                              }
+                              disabled={disableBtn}
                             >
                               Pay
                             </ButtonIcon>
@@ -510,7 +528,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading || quantity === 0 || !currentFee}
+                        disabled={disableBtn}
                         onClick={onClickPay}
                       >
                         Pay

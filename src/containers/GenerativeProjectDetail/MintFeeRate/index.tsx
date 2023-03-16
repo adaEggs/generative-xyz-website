@@ -121,7 +121,7 @@ const MintFeeRate = ({
           {!!useCustomRate && (
             <div
               className={cs(s.mintFeeItem, {
-                [`${s.mintFeeItem__active}`]: !!customRate,
+                [`${s.mintFeeItem__active}`]: selectedRateType === 'customRate',
               })}
               onClick={() => {
                 if (
@@ -132,6 +132,7 @@ const MintFeeRate = ({
                 ) {
                   // handleChangeCustomRate(`${fastest.rate + 1}`);
                   inputRef.current.focus();
+                  handleChangeRateType('customRate');
                 }
               }}
             >

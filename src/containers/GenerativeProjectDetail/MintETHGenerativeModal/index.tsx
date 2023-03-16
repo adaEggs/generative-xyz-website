@@ -21,7 +21,7 @@ import {
   formatEthPriceInput,
 } from '@utils/format';
 import log from '@utils/logger';
-import { capitalizeFirstLetter } from '@utils/string';
+import { capitalizeFirstLetter, isNumeric } from '@utils/string';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
@@ -59,10 +59,10 @@ const MintEthModal: React.FC = () => {
 
   const {
     projectFeeRate,
-    currentFee,
-    rateType,
+    currentFeeRate,
+    currentFeeRateType,
     handleChangeRateType,
-    customRate,
+    customFeeRate,
     handleChangeCustomRate,
   } = useMintFeeRate();
 
@@ -95,15 +95,30 @@ const MintEthModal: React.FC = () => {
       : projectData?.limitMintPerProcess;
 
   const priceFormat = formatEthPrice(
-    mintPrice ? mintPrice : currentFee?.mintFees.eth.mintPrice || '',
+    mintPrice
+      ? mintPrice
+      : currentFeeRate?.mintFees.eth.mintPrice ||
+          projectFeeRate?.fastest.mintFees.eth.mintPrice ||
+          '',
     '0.0'
   );
   const totalFormatPrice = formatEthPriceInput(
     totalPrice
       ? totalPrice
       : `${
-          (Number(currentFee ? currentFee.mintFees.eth.mintPrice : 0) +
-            Number(currentFee ? currentFee.mintFees.eth.networkFee : 0)) *
+          (Number(
+            currentFeeRate?.mintFees.eth.mintPrice ||
+              projectFeeRate?.fastest.mintFees.eth.mintPrice ||
+              0
+          ) +
+            Number(
+              currentFeeRate
+                ? currentFeeRateType === 'customRate' &&
+                  !isNumeric(customFeeRate)
+                  ? 0
+                  : currentFeeRate.mintFees.eth.networkFee
+                : 0
+            )) *
           quantity
         }` || '',
     '0.0'
@@ -112,10 +127,16 @@ const MintEthModal: React.FC = () => {
     `${
       feePrice
         ? Number(feePrice)
-        : Number(currentFee ? currentFee.mintFees.eth.networkFee : 0)
+        : Number(currentFeeRate ? currentFeeRate.mintFees.eth.networkFee : 0)
     }`,
     '0.0'
   );
+
+  const disableBtn =
+    isLoading ||
+    quantity === 0 ||
+    !currentFeeRate ||
+    (currentFeeRateType === 'customRate' ? !isNumeric(customFeeRate) : false);
 
   const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (limitMint && limitMint >= Number(e.target.value)) {
@@ -227,7 +248,7 @@ const MintEthModal: React.FC = () => {
           userAddress.taproot,
           userAddress.evm,
           quantity,
-          currentFee?.rate
+          currentFeeRate?.rate
         );
       }
     }
@@ -246,7 +267,7 @@ const MintEthModal: React.FC = () => {
           userAddress.taproot,
           userAddress.evm,
           quantity,
-          currentFee?.rate
+          currentFeeRate?.rate
         );
       }
     }
@@ -266,7 +287,7 @@ const MintEthModal: React.FC = () => {
           values.address,
           userAddress.evm,
           quantity,
-          currentFee?.rate
+          currentFeeRate?.rate
         );
       }
     }
@@ -280,7 +301,7 @@ const MintEthModal: React.FC = () => {
         values.address,
         userAddress.evm,
         quantity,
-        currentFee?.rate
+        currentFeeRate?.rate
       );
       setAddressInput(values.address);
     }
@@ -374,14 +395,14 @@ const MintEthModal: React.FC = () => {
                       )}
                     </div>
 
-                    {step === 'info' && projectFeeRate && currentFee && (
+                    {step === 'info' && projectFeeRate && (
                       <FeeRate
                         feeRate={projectFeeRate}
-                        selectedRateType={rateType}
+                        selectedRateType={currentFeeRateType}
                         handleChangeRateType={handleChangeRateType}
                         useCustomRate={true}
                         handleChangeCustomRate={handleChangeCustomRate}
-                        customRate={customRate}
+                        customRate={customFeeRate}
                         payType="eth"
                       />
                     )}
@@ -509,9 +530,7 @@ const MintEthModal: React.FC = () => {
                               type="submit"
                               sizes="large"
                               className={s.buyBtn}
-                              disabled={
-                                isLoading || quantity === 0 || !currentFee
-                              }
+                              disabled={disableBtn}
                             >
                               Pay
                             </ButtonIcon>
@@ -524,7 +543,7 @@ const MintEthModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading || quantity === 0 || !currentFee}
+                        disabled={disableBtn}
                         onClick={onClickPay}
                       >
                         Pay
