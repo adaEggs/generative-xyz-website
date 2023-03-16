@@ -1,5 +1,5 @@
+import React, { useContext } from 'react';
 import cs from 'classnames';
-import React from 'react';
 
 import Link from '@components/Link';
 import Text from '@components/Text';
@@ -8,6 +8,7 @@ import Image from 'next/image';
 // import { formatLongAddress } from '@utils/format';
 import { Token } from '@interfaces/token';
 
+import { QuickSearchContext } from './index';
 import s from './styles.module.scss';
 
 const SearchTokenItem = ({
@@ -27,10 +28,14 @@ const SearchTokenItem = ({
   projectName?: string;
   orderInscriptionIndex?: string;
 }) => {
+  const { onCloseSearchResult } = useContext(QuickSearchContext);
+
   return (
     <Link
       className={cs(s.searchResult_item, s.searchResult_item_link)}
       href={`${ROUTE_PATH.GENERATIVE}/${collectionId}/${tokenId}`}
+      onClick={onCloseSearchResult}
+      isKeepDefaultEvent
     >
       <div className={s.searchResult_collectionThumbnail}>
         <Image src={thumbnail} alt={tokenName} width={34} height={34} />

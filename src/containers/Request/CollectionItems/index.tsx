@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { toast } from 'react-hot-toast';
+import copy from 'copy-to-clipboard';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import Button from '@components/Button';
@@ -16,6 +17,8 @@ import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
 import { ROUTE_PATH } from '@constants/route-path';
 import { getDaoProjects, voteDaoProject } from '@services/request';
 import { formatBTCPrice } from '@utils/format';
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
 import { convertIpfsToHttp } from '@utils/image';
 
 import NoData from '../NoData';
@@ -30,7 +33,7 @@ export const CollectionItems = ({
   className,
 }: CollectionItemsProps): JSX.Element => {
   const router = useRouter();
-  const { keyword = '', status = '', sort = '' } = router.query;
+  const { keyword = '', status = '', sort = '', id = '' } = router.query;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -41,6 +44,7 @@ export const CollectionItems = ({
   const initData = async (): Promise<void> => {
     setIsLoaded(false);
     const collections = await getDaoProjects({
+      id,
       keyword,
       status,
       sort,
@@ -61,6 +65,7 @@ export const CollectionItems = ({
       setIsLoading(true);
       if (totalPerPage > LIMIT) {
         const nextCollections = await getDaoProjects({
+          id,
           keyword,
           status,
           sort,
@@ -125,6 +130,12 @@ export const CollectionItems = ({
 
   const goToProfilePage = (walletAddress: string): void => {
     router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
+  };
+
+  const copyLink = (id: string) => {
+    copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}`);
+    toast.remove();
+    toast.success('Copied');
   };
 
   return (
@@ -213,7 +224,10 @@ export const CollectionItems = ({
                       <span
                         className={s.collections_pointer}
                         onClick={() =>
-                          goToProfilePage(item?.user?.wallet_address)
+                          goToProfilePage(
+                            item?.user?.wallet_address_btc_taproot ||
+                              item?.user?.wallet_address
+                          )
                         }
                       >
                         {item?.user?.display_name}
@@ -226,20 +240,30 @@ export const CollectionItems = ({
                       {getStatusProposal(item?.status)}
                     </div>
                     <div className="col-md-2 d-flex justify-content-end">
-                      <Button
+                      <span
+                        className={s.collections_share}
+                        onClick={() => copyLink(item?.id)}
+                      >
+                        <SvgInset
+                          className={s.icCopy}
+                          size={16}
+                          svgUrl={`${CDN_URL}/icons/share.svg`}
+                        />
+                      </span>
+                      {/* <Button
                         className={cn(s.collections_btn, s.collections_mr6)}
                         disabled={item?.action?.can_vote === false}
                         variant="outline-black"
                         onClick={() => submitVote(item?.id, 0)}
                       >
                         Against
-                      </Button>
+                      </Button> */}
                       <Button
                         className={cn(s.collections_btn, s.collections_btnVote)}
                         disabled={item?.action?.can_vote === false}
                         onClick={() => submitVote(item?.id, 1)}
                       >
-                        Vote
+                        Vote ({item?.total_vote}/2)
                       </Button>
                     </div>
                   </div>
