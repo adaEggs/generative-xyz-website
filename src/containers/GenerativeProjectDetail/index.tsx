@@ -29,12 +29,6 @@ const GenerativeProjectDetail: React.FC<{
   const {
     projectData: projectInfo,
     projectFeeRate,
-    // listItems,
-    // handleFetchNextPage,
-    // total,
-    // isLoaded,
-    // isNextPageLoaded,
-    // marketplaceData,
     isLimitMinted,
   } = useContext(GenerativeProjectDetailContext);
 
@@ -101,30 +95,6 @@ const GenerativeProjectDetail: React.FC<{
                 setShowReportModal={setShowReportModal}
               />
             )}
-            {/* <Tabs className={styles.tabs} defaultActiveKey="outputs">
-              <Tab tabClassName={styles.tab} eventKey="outputs" title="Outputs">
-                {hasFilter && (
-                  <div className={cs(styles.filterWrapper)} id="PROJECT_LIST">
-                    <TokenTopFilter className={styles.filter_sort} />
-                  </div>
-                )}
-                <div className={styles.tokenListWrapper} id="PROJECT_LIST">
-                  <div className={styles.tokenList}>
-                    <CollectionList
-                      projectInfo={projectInfo}
-                      listData={listItems}
-                      isLoaded={isLoaded}
-                    />
-                    <TriggerLoad
-                      len={listItems?.length || 0}
-                      total={total || 0}
-                      isLoaded={isNextPageLoaded}
-                      onEnter={handleFetchNextPage}
-                    />
-                  </div>
-                </div>
-              </Tab>
-            </Tabs> */}
           </ClientOnly>
         </Container>
       </section>

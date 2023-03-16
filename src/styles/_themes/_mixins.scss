@@ -314,7 +314,7 @@
 }
 
 @mixin min-2k {
-  @media screen and (min-width: 2500px) {
+  @media screen and (min-width: 2200px) {
     @content;
   }
 }

@@ -269,6 +269,20 @@
   }
 }
 
+.col-k2-2_5{
+  @media (min-width: map-get($grid-breakpoints, k2)) {
+    flex: 0 0 20%;
+    width: 20%;
+  }
+}
+
+.col-k2-2 {
+  @media (min-width: map-get($grid-breakpoints, k2)) {
+    flex: 0 0 16.66%;
+    width: 16.666%;
+  }
+}
+
 .row {
   // --bs-gutter-y: #{rem(24px)};
   row-gap: rem(24);

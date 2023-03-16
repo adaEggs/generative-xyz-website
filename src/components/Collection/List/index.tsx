@@ -12,6 +12,7 @@ import { useContext, useEffect, useMemo } from 'react';
 import FilterOptions from '../FilterOptions';
 import CollectionListLoading from '../Loading';
 import s from './CollectionList.module.scss';
+import { COLS_CARD, COLS_CARD_FILTER } from '@constants/breakpoint';
 
 const CollectionList = ({
   listData,
@@ -41,9 +42,7 @@ const CollectionList = ({
   };
 
   const layoutCols =
-    layout === 'mint'
-      ? 'col-wide-2_5 col-xl-4 col-12'
-      : 'col-xxxl-3 col-xl-4 col-md-6 col-12 ';
+    layout === 'mint' ? COLS_CARD : 'col-xxxl-3 col-xl-4 col-md-6 col-12 ';
 
   const renderLeftSide = () => {
     if (layout === 'shop') {
@@ -59,9 +58,6 @@ const CollectionList = ({
 
   useEffect(() => {
     setIsLayoutShop(layout && layout === 'shop');
-    // return () => {
-    //   setIsLayoutShop(false);
-    // };
   }, []);
 
   return (
@@ -99,10 +95,7 @@ const CollectionList = ({
         <div className="position-relative">
           {!isLoaded && (
             <>
-              <CollectionListLoading
-                numOfItems={12}
-                showFilter={hasTraitAtrribute}
-              />
+              <CollectionListLoading numOfItems={12} showFilter={showFilter} />
             </>
           )}
 
@@ -110,9 +103,7 @@ const CollectionList = ({
             <div className={cs(s.collectionList, `row animate-grid`)}>
               {listData?.map(item => (
                 <CollectionItem
-                  className={`${
-                    showFilter ? 'col-wide-3 col-xl-4 col-12' : layoutCols
-                  } `}
+                  className={`${showFilter ? COLS_CARD_FILTER : layoutCols} `}
                   key={`collection-item-${item.tokenID}`}
                   data={item}
                   total={projectInfo?.maxSupply}

@@ -20,6 +20,10 @@ const Topbar: React.FC = (): React.ReactElement => {
                 href={ROUTE_PATH.PRESERVE_LANDING}
               >
                 <span>Learn more</span>
+                <SvgInset
+                  size={18}
+                  svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+                />
               </Link>
             </p>
           </div>

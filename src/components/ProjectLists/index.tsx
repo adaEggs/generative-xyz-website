@@ -2,10 +2,11 @@ import React from 'react';
 import { Empty } from '@components/Collection/Empty';
 import { Project } from '@interfaces/project';
 import { ProjectCard } from '@components/ProjectCard';
+import { COLS_CARD } from '@constants/breakpoint';
 
 export const ProjectList = ({
   listData,
-  colClass = 'col-wide-2_5 col-xl-3 col-lg-5 col-6',
+  colClass = COLS_CARD,
 }: {
   listData?: Project[];
   colClass?: string;

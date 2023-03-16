@@ -5,7 +5,7 @@ const ProjectListLoading = ({ numOfItems = 12 }: { numOfItems?: number }) => {
     <div className={'row'}>
       {[...Array(numOfItems)].map((_, index) => (
         <ProjectCardSkeleton
-          className={'col-wide-2_5 col-xl-3 col-lg-5 col-6'}
+          className={'col-k2-2 col-wide-2_5 col-xl-3 col-lg-5 col-sm-6 col-12'}
           key={`token-loading-${index}`}
         />
       ))}

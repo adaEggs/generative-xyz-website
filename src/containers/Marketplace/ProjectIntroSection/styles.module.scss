@@ -369,7 +369,6 @@
   display: flex;
   column-gap: rem(130px);
   row-gap: rem(6px);
-  margin-bottom: rem(24px);
   margin-top: rem(24px);
   flex-wrap: wrap;
 
@@ -437,8 +436,7 @@
 
 .shares {
   display: flex;
-  gap: rem(8px);
-  justify-content: space-between;
+  gap: rem(16px);
   align-items: center;
   cursor: pointer;
 

@@ -20,14 +20,15 @@
 
 $grid-gutter-width: rem(24px);
 $grid-breakpoints: (
-  xs: 0,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-  xxl: 1440px,
-  xxxl: 1600px,
-  wide: 1940px
+        xs: 0,
+        sm: 576px,
+        md: 768px,
+        lg: 992px,
+        xl: 1200px,
+        xxl: 1440px,
+        xxxl: 1600px,
+        wide: 1900px,
+        k2: 2200px,
 );
 
 $blue: #0d6efd;
@@ -43,17 +44,17 @@ $cyan: #0dcaf0;
 $blue-c: #4f43e2;
 
 $colors: (
-  "blue": $blue,
-  "indigo": $indigo,
-  "purple": $purple,
-  "pink": $pink,
-  "red": $red,
-  "orange": $orange,
-  "yellow": $yellow,
-  "green": $green,
-  "teal": $teal,
-  "cyan": $cyan,
-  "black": "#000000",
-  "white": "#ffffff",
-  "blue-c": $blue-c
+        "blue": $blue,
+        "indigo": $indigo,
+        "purple": $purple,
+        "pink": $pink,
+        "red": $red,
+        "orange": $orange,
+        "yellow": $yellow,
+        "green": $green,
+        "teal": $teal,
+        "cyan": $cyan,
+        "black": "#000000",
+        "white": "#ffffff",
+        "blue-c": $blue-c
 );
