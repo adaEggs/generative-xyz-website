@@ -21,6 +21,7 @@ import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { convertIpfsToHttp } from '@utils/image';
 import { IconVerified } from '@components/IconVerified';
+import { formatAddress } from '@utils/format';
 
 import NoData from '../NoData';
 import SkeletonItem from '../SkeletonItem';
@@ -111,7 +112,7 @@ export const CollectionItems = ({
         </span>
       );
     }
-    return <span className={s.collections_status}>Unknow</span>;
+    return <span className={s.collections_status}>Unknown</span>;
   };
 
   const submitVote = async (projectId: string, voteType: number) => {
@@ -125,13 +126,13 @@ export const CollectionItems = ({
     }
   };
 
-  const goToCollectionPage = (tokenId: string): void => {
-    router.push(`${ROUTE_PATH.GENERATIVE}/${tokenId}`);
-  };
+  // const goToCollectionPage = (tokenId: string): void => {
+  //   router.push(`${ROUTE_PATH.GENERATIVE}/${tokenId}`);
+  // };
 
-  const goToProfilePage = (walletAddress: string): void => {
-    router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
-  };
+  // const goToProfilePage = (walletAddress: string): void => {
+  //   router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
+  // };
 
   const copyLink = (id: string) => {
     copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}&tab=0`);
@@ -196,29 +197,35 @@ export const CollectionItems = ({
                       {item?.seq_id}
                     </div>
                     <div className="col-md-2 d-flex justify-content-start">
-                      <Image
-                        className={s.collections_pointer}
-                        onClick={() =>
-                          goToCollectionPage(item?.project?.token_id)
-                        }
-                        src={convertIpfsToHttp(item?.project?.thumbnail)}
-                        width={120}
-                        height={120}
-                        alt={item?.project?.name}
-                      />
+                      <a
+                        className={s.collections_link}
+                        href={`${ROUTE_PATH.GENERATIVE}/${item?.project?.token_id}`}
+                        target="_blank"
+                      >
+                        <Image
+                          className={s.collections_pointer}
+                          src={convertIpfsToHttp(item?.project?.thumbnail)}
+                          width={120}
+                          height={120}
+                          alt={item?.project?.name}
+                        />
+                      </a>
                     </div>
                     <div className="col-md-2 d-flex justify-content-start">
-                      <span
-                        className={cn(
-                          s.collections_pointer,
-                          s.collections_projectName
-                        )}
-                        onClick={() =>
-                          goToCollectionPage(item?.project?.token_id)
-                        }
+                      <a
+                        className={s.collections_link}
+                        href={`${ROUTE_PATH.GENERATIVE}/${item?.project?.token_id}`}
+                        target="_blank"
                       >
-                        {item?.project?.name}
-                      </span>
+                        <span
+                          className={cn(
+                            s.collections_pointer,
+                            s.collections_projectName
+                          )}
+                        >
+                          {item?.project?.name}
+                        </span>
+                      </a>
                     </div>
                     <div className="col-md-1 d-flex justify-content-center">
                       {item?.project?.max_supply}
@@ -228,22 +235,26 @@ export const CollectionItems = ({
                     </div>
                     <div className="col-md-1 d-flex justify-content-start">
                       <div className={s.collections_pointer}>
-                        <span
-                          className={s.collections_artist}
-                          onClick={() =>
-                            goToProfilePage(
-                              item?.user?.wallet_address_btc_taproot ||
-                                item?.user?.wallet_address
-                            )
-                          }
+                        <a
+                          className={s.collections_link}
+                          href={`${ROUTE_PATH.PROFILE}/${
+                            item?.user?.wallet_address_btc_taproot ||
+                            item?.user?.wallet_address
+                          }`}
+                          target="_blank"
                         >
-                          {item?.user?.twitterVerified && (
-                            <span className={s.collections_artist_verified}>
-                              <IconVerified width={16} height={16} />
-                            </span>
-                          )}
-                          {item?.user?.display_name}
-                        </span>
+                          <span className={s.collections_artist}>
+                            {item?.user?.profile_social?.twitterVerified && (
+                              <span className={s.collections_artist_verified}>
+                                <IconVerified width={16} height={16} />
+                              </span>
+                            )}
+                            {item?.user?.display_name ||
+                              formatAddress(
+                                item?.user?.wallet_address_btc_taproot
+                              )}
+                          </span>
+                        </a>
                       </div>
                     </div>
                     <div className="col-md-1 d-flex justify-content-center">{`${dayjs(
@@ -276,7 +287,7 @@ export const CollectionItems = ({
                         disabled={item?.action?.can_vote === false}
                         onClick={() => submitVote(item?.id, 1)}
                       >
-                        Vote ({item?.total_vote}/2)
+                        Vote ({item?.total_vote})
                       </Button>
                     </div>
                   </div>

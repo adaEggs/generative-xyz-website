@@ -1,0 +1,24 @@
+.submitDaoButton {
+  display: inline-flex;
+  align-items: center;
+
+  &_text {
+    margin-right: rem(12px);
+    font-weight: 500;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: #898989;
+  }
+
+  &_btn {
+    padding: rem(11px) rem(20px);
+    background: #4f43e2;
+    border-radius: 2px;
+    text-transform: initial;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 26px;
+    letter-spacing: 0.01em;
+    color: #fff;
+  }
+}
