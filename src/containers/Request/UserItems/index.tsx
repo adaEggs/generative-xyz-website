@@ -166,14 +166,14 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                       {getStatusProposal(item?.status)}
                     </div>
                     <div className="col-md-3 d-flex justify-content-end">
-                      <Button
+                      {/* <Button
                         className={cn(s.users_btn, s.users_mr6)}
                         disabled={item?.action?.can_vote === false}
                         variant="outline-black"
                         onClick={() => submitVote(item?.id, 0)}
                       >
                         Report
-                      </Button>
+                      </Button> */}
                       <Button
                         className={cn(s.users_btn, s.users_btnVote)}
                         disabled={item?.action?.can_vote === false}

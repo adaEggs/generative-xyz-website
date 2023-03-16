@@ -214,7 +214,10 @@ export const CollectionItems = ({
                       <span
                         className={s.collections_pointer}
                         onClick={() =>
-                          goToProfilePage(item?.user?.wallet_address)
+                          goToProfilePage(
+                            item?.user?.wallet_address_btc_taproot ||
+                              item?.user?.wallet_address
+                          )
                         }
                       >
                         {item?.user?.display_name}
@@ -227,14 +230,14 @@ export const CollectionItems = ({
                       {getStatusProposal(item?.status)}
                     </div>
                     <div className="col-md-2 d-flex justify-content-end">
-                      <Button
+                      {/* <Button
                         className={cn(s.collections_btn, s.collections_mr6)}
                         disabled={item?.action?.can_vote === false}
                         variant="outline-black"
                         onClick={() => submitVote(item?.id, 0)}
                       >
                         Against
-                      </Button>
+                      </Button> */}
                       <Button
                         className={cn(s.collections_btn, s.collections_btnVote)}
                         disabled={item?.action?.can_vote === false}
