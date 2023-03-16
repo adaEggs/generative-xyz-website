@@ -31,7 +31,7 @@ export const CollectionItems = ({
   className,
 }: CollectionItemsProps): JSX.Element => {
   const router = useRouter();
-  const { keyword = '', status = '', sort = '' } = router.query;
+  const { keyword = '', status = '', sort = '', id = '' } = router.query;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -42,6 +42,7 @@ export const CollectionItems = ({
   const initData = async (): Promise<void> => {
     setIsLoaded(false);
     const collections = await getDaoProjects({
+      id,
       keyword,
       status,
       sort,
@@ -62,6 +63,7 @@ export const CollectionItems = ({
       setIsLoading(true);
       if (totalPerPage > LIMIT) {
         const nextCollections = await getDaoProjects({
+          id,
           keyword,
           status,
           sort,
@@ -243,7 +245,7 @@ export const CollectionItems = ({
                         disabled={item?.action?.can_vote === false}
                         onClick={() => submitVote(item?.id, 1)}
                       >
-                        Vote
+                        Vote ({item?.total_vote}/2)
                       </Button>
                     </div>
                   </div>

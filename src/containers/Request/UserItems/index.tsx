@@ -9,6 +9,7 @@ import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
 import { toast } from 'react-hot-toast';
 import { v4 } from 'uuid';
+import Image from 'next/image';
 
 import { ROUTE_PATH } from '@constants/route-path';
 import { Loading } from '@components/Loading';
@@ -16,6 +17,7 @@ import { getDaoArtists, voteDaoArtist } from '@services/request';
 import Button from '@components/Button';
 import { formatAddress } from '@utils/format';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
+import { convertIpfsToHttp } from '@utils/image';
 
 import s from './UserItems.module.scss';
 import NoData from '../NoData';
@@ -146,8 +148,11 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                   <div key={item.id} className={s.users_row}>
                     <div className="col-md-1">{item?.seq_id}</div>
                     <div className="col-md-3">
-                      <span
-                        className={s.users_pointer}
+                      <div
+                        className={cn(
+                          'd-flex align-items-center',
+                          s.users_pointer
+                        )}
                         onClick={() =>
                           goToProfilePage(
                             item?.user?.wallet_address_btc_taproot ||
@@ -155,9 +160,20 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                           )
                         }
                       >
-                        {item?.user?.display_name ||
-                          formatAddress(item?.user?.wallet_address_btc_taproot)}
-                      </span>
+                        <Image
+                          className={s.users_avatar}
+                          src={convertIpfsToHttp(item?.user?.avatar)}
+                          width={48}
+                          height={48}
+                          alt={item?.user?.display_name}
+                        />
+                        <span>
+                          {item?.user?.display_name ||
+                            formatAddress(
+                              item?.user?.wallet_address_btc_taproot
+                            )}
+                        </span>
+                      </div>
                     </div>
                     <div className="col-md-3">{`${dayjs(
                       item?.user?.expired_at
@@ -179,7 +195,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                         disabled={item?.action?.can_vote === false}
                         onClick={() => submitVote(item?.id, 1)}
                       >
-                        Verify
+                        Verify ({item?.total_verify}/2)
                       </Button>
                     </div>
                   </div>
