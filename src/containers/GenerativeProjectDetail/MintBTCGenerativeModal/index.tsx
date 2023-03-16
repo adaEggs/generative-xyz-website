@@ -16,7 +16,7 @@ import { getUserSelector } from '@redux/user/selector';
 import { sendAAEvent } from '@services/aa-tracking';
 import { generateMintReceiverAddress } from '@services/mint';
 import { ellipsisCenter, formatBTCPrice } from '@utils/format';
-import { capitalizeFirstLetter } from '@utils/string';
+import { capitalizeFirstLetter, isNumeric } from '@utils/string';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
@@ -85,7 +85,12 @@ const MintBTCGenerativeModal: React.FC = () => {
       : projectData?.limitMintPerProcess;
 
   const priceFormat = formatBTCPrice(
-    mintPrice ? mintPrice : currentFee?.mintFees.btc.mintPrice || '',
+    mintPrice
+      ? mintPrice
+      : currentFee?.mintFees.btc.mintPrice ||
+          projectFeeRate?.fastest.mintFees.btc.mintPrice ||
+          '',
+
     '0.0'
   );
   const feePriceFormat = formatBTCPrice(
@@ -98,8 +103,18 @@ const MintBTCGenerativeModal: React.FC = () => {
     totalPrice
       ? totalPrice
       : `${
-          (Number(currentFee ? currentFee.mintFees.btc.networkFee : 0) +
-            Number(currentFee ? currentFee.mintFees.btc.mintPrice : 0)) *
+          (Number(
+            currentFee
+              ? rateType === 'customRate' && !isNumeric(customRate)
+                ? 0
+                : currentFee.mintFees.btc.networkFee
+              : 0
+          ) +
+            Number(
+              currentFee?.mintFees.btc.mintPrice ||
+                projectFeeRate?.fastest.mintFees.btc.mintPrice ||
+                0
+            )) *
           quantity
         }` || ''
   );
@@ -360,7 +375,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                       )}
                     </div>
 
-                    {step === 'info' && projectFeeRate && currentFee && (
+                    {step === 'info' && projectFeeRate && (
                       <FeeRate
                         feeRate={projectFeeRate}
                         selectedRateType={rateType}
