@@ -1,5 +1,5 @@
+import React, { useContext } from 'react';
 import cs from 'classnames';
-import React from 'react';
 
 import Avatar from '@components/Avatar';
 import Link from '@components/Link';
@@ -8,6 +8,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { User } from '@interfaces/user';
 import { formatAddress } from '@utils/format';
 
+import { QuickSearchContext } from './index';
 import s from './styles.module.scss';
 
 export const SearchMemberItem = ({
@@ -19,6 +20,8 @@ export const SearchMemberItem = ({
   avatar?: string;
   memberId: string;
 }) => {
+  const { onCloseSearchResult } = useContext(QuickSearchContext);
+
   return (
     <Link
       className={cs(
@@ -27,6 +30,8 @@ export const SearchMemberItem = ({
         s.searchResult_item_member
       )}
       href={`${ROUTE_PATH.PROFILE}/${memberId}`}
+      onClick={onCloseSearchResult}
+      isKeepDefaultEvent
     >
       <Avatar imgSrcs={avatar || ''} width={34} height={34} />
       <Text as="span" className={s.searchResult_collectionName}>
