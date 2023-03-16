@@ -8,6 +8,7 @@ import { NETWORK_CHAIN_ID } from '@constants/config';
 import { GEN_TOKEN_ADDRESS } from '@constants/contract-address';
 import { ROUTE_PATH } from '@constants/route-path';
 import { ProposalState } from '@enums/dao';
+import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
 import useContractOperation from '@hooks/useContractOperation';
 import useOnClickOutside from '@hooks/useOnClickOutSide';
@@ -16,6 +17,7 @@ import { SelectOption } from '@interfaces/select-input';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import GetTokenBalanceOperation from '@services/contract-operations/erc20/get-token-balance';
+import DelegateGENTokenOperation from '@services/contract-operations/gen-token/delegate-token';
 import { getProposalList } from '@services/dao';
 import log from '@utils/logger';
 import { useRouter } from 'next/router';
@@ -23,12 +25,9 @@ import React, { useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import Select, { SingleValue } from 'react-select';
 import useAsyncEffect from 'use-async-effect';
-import { v4 } from 'uuid';
 import ProposalItem from '../ProposalItem';
 import DelegateVoteModal from './DelegateVoteModal';
 import s from './styles.module.scss';
-import DelegateGENTokenOperation from '@services/contract-operations/gen-token/delegate-token';
-import { ErrorMessage } from '@enums/error-message';
 
 const FILTER_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -248,19 +247,19 @@ const ProposalList: React.FC = (): React.ReactElement => {
           <div className={`${s.proposalList_container}`}>
             {isLoading && (
               <>
-                {[...Array(6)].map(() => (
-                  <Card isLoading key={`proposal-skeleton-${v4()}`} />
+                {[...Array(6)].map((_, index) => (
+                  <Card isLoading key={`proposal-skeleton-${index}`} />
                 ))}
               </>
             )}
             {!isLoading &&
               proposalList &&
               proposalList?.length > 0 &&
-              proposalList.map(item => (
+              proposalList.map((item, index) => (
                 <Link
                   href={`${ROUTE_PATH.DAO}/${item.proposalID}`}
                   className="no-underline"
-                  key={`proposal-item-${v4()}`}
+                  key={`proposal-item-${index}`}
                 >
                   <Card heading={item?.title} status={item?.state}>
                     <ProposalItem data={item} />
