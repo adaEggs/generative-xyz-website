@@ -48,6 +48,8 @@ import { filterCreatorName } from '@utils/generative';
 import { wordCase } from '@utils/common';
 import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
 import usePurchaseStatus from '@hooks/usePurchaseStatus';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
   // const router = useRouter();
@@ -258,28 +260,32 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     }
     if (!isBuyable) return null;
     return (
-      <div className={s.buy_btc}>
+      <Row className={s.buy_btc}>
         {isBuyETH && (
-          <ButtonBuyListedFromETH
-            sizes={'large'}
-            inscriptionID={tokenData.tokenID}
-            price={tokenData.priceETH}
-            inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
-            orderID={tokenData.orderID}
-            isDetail={true}
-          />
+          <Col md="5" lg="5" className={s.buy_btc_wrap}>
+            <ButtonBuyListedFromETH
+              sizes={'large'}
+              inscriptionID={tokenData.tokenID}
+              price={tokenData.priceETH}
+              inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+              orderID={tokenData.orderID}
+              isDetail={true}
+            />
+          </Col>
         )}
         {isBuyBTC && (
-          <ButtonBuyListedFromBTC
-            sizes={'large'}
-            inscriptionID={tokenData.tokenID}
-            price={tokenData.priceBTC}
-            inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
-            orderID={tokenData.orderID}
-            isDetail={true}
-          />
+          <Col md="5" lg="5" className={s.buy_btc_wrap}>
+            <ButtonBuyListedFromBTC
+              sizes={'large'}
+              inscriptionID={tokenData.tokenID}
+              price={tokenData.priceBTC}
+              inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+              orderID={tokenData.orderID}
+              isDetail={true}
+            />
+          </Col>
         )}
-      </div>
+      </Row>
     );
   };
 

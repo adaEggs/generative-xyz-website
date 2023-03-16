@@ -51,7 +51,7 @@ const ButtonBuyListedFromBTC = React.memo(
           className={cs(s.container, `${className}`)}
           onClick={openModal}
         >
-          Buy {`${formatBTCPrice(price)} BTC`}
+          {`${formatBTCPrice(price)} BTC`}
         </ButtonIcon>
         {!!taprootAddress && isShow && (
           <ModalBuyListed
