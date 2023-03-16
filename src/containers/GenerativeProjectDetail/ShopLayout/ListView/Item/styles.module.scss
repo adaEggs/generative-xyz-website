@@ -1,0 +1,41 @@
+.itemInfo {
+  display: flex;
+  align-items: center;
+  gap: rem(16);
+}
+
+.itemThumbnail {
+  width: 40px;
+  height: 40px;
+  padding: 4px;
+  object-fit: cover;
+  object-position: center;
+  background-color: $primary-light;
+}
+
+.buy_btn {
+  display: flex;
+  align-items: center;
+  gap: rem(8);
+  justify-content: flex-end;
+
+  button {
+    max-height: rem(30px);
+  }
+}
+
+.eth_btn {
+  button {
+    padding-left: rem(12) !important;
+    padding-right: rem(12) !important;
+    min-width: rem(110);
+  }
+}
+
+.btc_btn {
+  button {
+    padding-left: rem(12) !important;
+    padding-right: rem(12) !important;
+    min-width: rem(100);
+  }
+}
