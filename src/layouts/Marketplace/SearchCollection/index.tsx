@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useReducer } from 'react';
+import { useEffect, useRef, useState, useReducer, createContext } from 'react';
 import cs from 'classnames';
 import { debounce } from 'lodash';
 import { useRouter } from 'next/router';
@@ -19,6 +19,11 @@ import SearchTokensResult from './SearchTokens';
 import s from './styles.module.scss';
 
 const CACHE_API = new Map();
+
+export const QuickSearchContext = createContext({
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onCloseSearchResult: () => {},
+});
 
 const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
   const [searchText, setSearchText] = useState<string>('');
@@ -149,19 +154,6 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
           type="text"
         />
         <div className={s.searchIcon}>
-          {/* {inputFocus && searchText ? (
-            <SvgInset
-              onClick={() => {
-                setSearchText('');
-                if (inputSearchRef?.current) {
-                  inputSearchRef.current!.value = '';
-                  inputSearchRef.current.focus();
-                }
-              }}
-              size={16}
-              svgUrl={`${CDN_URL}/icons/ic-close.svg`}
-            />
-          ) : ( */}
           <SvgInset
             onClick={() => {
               goToSearchPage(searchText);
@@ -169,7 +161,6 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
             size={16}
             svgUrl={`${CDN_URL}/icons/ic-search-14x14.svg`}
           />
-          {/* )} */}
         </div>
       </div>
       {isLoading && (
@@ -181,20 +172,26 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
       )}
       {!isLoading && showResult && searchText?.length > 2 && (
         <div className={s.searchResult_wrapper} ref={resultSearchRef}>
-          {searchResults?.projects?.length > 0 && (
-            <SearchCollectionsResult list={searchResults?.projects} />
-          )}
-          {searchResults?.users?.length > 0 && (
-            <SearchMembersResult list={searchResults?.users} />
-          )}
-          {searchResults?.tokens?.length > 0 && (
-            <SearchTokensResult list={searchResults?.tokens} />
-          )}
-          {searchResults?.projects?.length === 0 &&
-            searchResults?.users?.length === 0 &&
-            searchResults?.tokens?.length === 0 && (
-              <div className={s.searchResult_item}>No Result Found</div>
+          <QuickSearchContext.Provider
+            value={{
+              onCloseSearchResult: handleCloseSearchResult,
+            }}
+          >
+            {searchResults?.projects?.length > 0 && (
+              <SearchCollectionsResult list={searchResults?.projects} />
             )}
+            {searchResults?.users?.length > 0 && (
+              <SearchMembersResult list={searchResults?.users} />
+            )}
+            {searchResults?.tokens?.length > 0 && (
+              <SearchTokensResult list={searchResults?.tokens} />
+            )}
+            {searchResults?.projects?.length === 0 &&
+              searchResults?.users?.length === 0 &&
+              searchResults?.tokens?.length === 0 && (
+                <div className={s.searchResult_item}>No Result Found</div>
+              )}
+          </QuickSearchContext.Provider>
         </div>
       )}
     </div>

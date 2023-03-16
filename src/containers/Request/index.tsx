@@ -118,8 +118,8 @@ const RequestPage = (): JSX.Element => {
           <Col md={12}>
             <div className={s.request_textNote}>
               <p>
-                Artist govern Generative DAO. Artists can vote on new
-                collection. A minimum of 2 artist votes is required for a new
+                Artists govern Generative DAO. Artists can vote on new
+                collections. A minimum of 2 artist votes is required for a new
                 collection to be released on Generative.
               </p>
             </div>
