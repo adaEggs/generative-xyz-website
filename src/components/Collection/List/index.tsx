@@ -8,7 +8,7 @@ import { GenerativeProjectDetailContext } from '@contexts/generative-project-det
 import { Project } from '@interfaces/project';
 import { Token } from '@interfaces/token';
 import cs from 'classnames';
-import { useContext, useMemo } from 'react';
+import { useContext, useEffect, useMemo } from 'react';
 import FilterOptions from '../FilterOptions';
 import CollectionListLoading from '../Loading';
 import s from './CollectionList.module.scss';
@@ -24,22 +24,13 @@ const CollectionList = ({
   isLoaded?: boolean;
   layout?: 'mint' | 'shop';
 }) => {
-  const {
-    showFilter,
-    filterTraits,
-    setFilterTraits,
-    // collectionActivities,
-    // isLimitMinted,
-    // marketplaceData,
-  } = useContext(GenerativeProjectDetailContext);
-
-  // const { mobileScreen } = useWindowSize();
+  const { showFilter, filterTraits, setFilterTraits, setIsLayoutShop } =
+    useContext(GenerativeProjectDetailContext);
 
   const hasTraitAtrribute = useMemo(
     () => projectInfo?.traitStat && projectInfo?.traitStat?.length > 0,
     [projectInfo?.traitStat]
   );
-  // const hasTraitAtrribute = true;
 
   const handleRemoveFilter = (trait: string) => {
     const newFilterTraits = filterTraits
@@ -50,7 +41,9 @@ const CollectionList = ({
   };
 
   const layoutCols =
-    layout === 'mint' ? 'col-wide-2_5 col-xl-4 col-12' : 'col-xl-6 ';
+    layout === 'mint'
+      ? 'col-wide-2_5 col-xl-4 col-12'
+      : 'col-xl-3 col-sm-4 col-6 ';
 
   const renderLeftSide = () => {
     if (layout === 'shop') {
@@ -64,6 +57,13 @@ const CollectionList = ({
     }
   };
 
+  useEffect(() => {
+    setIsLayoutShop(layout && layout === 'shop');
+    return () => {
+      setIsLayoutShop(false);
+    };
+  }, []);
+
   return (
     <div
       className={`${s.listToken} grid row ${
@@ -71,13 +71,6 @@ const CollectionList = ({
       }`}
     >
       {renderLeftSide()}
-      {/* {collectionActivities && isLimitMinted && ( */}
-      {/* <div className="col-3">
-        {layout === 'mint' && (
-          <FilterOptions attributes={projectInfo?.traitStat} />
-        )}
-      </div> */}
-      {/* )} */}
       <div className={``}>
         {filterTraits && filterTraits.length > 0 && (
           <div className={s.filterList}>
@@ -141,11 +134,6 @@ const CollectionList = ({
           )}
         </div>
       </div>
-      {/* {marketplaceData && marketplaceData.listed > 0 && isLimitMinted && (
-        <div className="col-12 col-md-3">
-          <ActivityStats />
-        </div>
-      )} */}
     </div>
   );
 };

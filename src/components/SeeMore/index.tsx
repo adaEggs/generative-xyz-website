@@ -1,7 +1,8 @@
 import Text from '@components/Text';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useContext, useLayoutEffect, useRef, useState } from 'react';
 import s from './styles.module.scss';
 import MarkdownPreview from '@components/MarkdownPreview';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 
 export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
   children,
@@ -14,6 +15,8 @@ export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
   const refContent = useRef<HTMLDivElement | null>(null);
   const [contentOver, setContentOver] = useState<boolean>(false);
   const [isShowMore, setIsShowMore] = useState<boolean>(false);
+
+  const { isLayoutShop } = useContext(GenerativeProjectDetailContext);
 
   useLayoutEffect(() => {
     const obResize = new ResizeObserver(() => {
@@ -38,11 +41,12 @@ export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
             setContentOver(false);
           }
         }
-      }, 1000);
+      }, 100);
     });
-    obResize.observe(document.body);
+    refBox && refBox.current && obResize.observe(refBox.current);
     return () => {
-      obResize.unobserve(document.body);
+      if (refOptions.current.timeOut) clearTimeout(refOptions.current.timeOut);
+      refBox && refBox.current && obResize.unobserve(refBox?.current);
       obResize.disconnect();
     };
   }, [children, render]);
@@ -50,12 +54,13 @@ export const SeeMore: React.FC<{ children: string; render?: boolean }> = ({
   return (
     <div>
       <div
-        className={`${s.seemore_description} ${isShowMore ? s.isShowMore : ''}`}
+        className={`${s.seemore_description} ${
+          isShowMore ? s.isShowMore : ''
+        } ${isLayoutShop ? s.isLayoutShop : ''}`}
         ref={refBox}
       >
         <div ref={refContent} className={s.descriptionContent}>
           <MarkdownPreview source={children} />
-          {/* <Text size="18">{children}</Text> */}
         </div>
       </div>
       {(contentOver || isShowMore) && (

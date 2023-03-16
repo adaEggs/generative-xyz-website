@@ -7,6 +7,7 @@ import { WalletContext } from '@contexts/wallet-context';
 import s from './styles.module.scss';
 import { formatEthPrice } from '@utils/format';
 import ModalBuyListed from '@components/Transactor/ButtonBuyListedFromETH/Modal';
+import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 
 interface IProps {
   className?: string;
@@ -29,6 +30,7 @@ const ButtonBuyListedFromETH = React.memo(
     isDetail = false,
   }: IProps) => {
     const [isShow, setShow] = React.useState(false);
+    const { isLayoutShop } = useContext(GenerativeProjectDetailContext);
     const user = useSelector(getUserSelector);
     const walletCtx = useContext(WalletContext);
 
@@ -52,7 +54,7 @@ const ButtonBuyListedFromETH = React.memo(
           className={cs(s.container, `${className}`)}
           onClick={openModal}
         >
-          {`${formatEthPrice(price)} ETH`}
+          {`${isLayoutShop ? '' : 'Buy'} ${formatEthPrice(price)} ETH`}
         </ButtonIcon>
         {!!user?.walletAddressBtcTaproot && isShow && (
           <ModalBuyListed

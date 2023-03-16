@@ -161,6 +161,12 @@
     display: flex;
     gap: rem(8);
     align-items: center;
+
+    &_name {
+      display: flex;
+      gap: rem(8px);
+      align-items: center;
+    }
   }
 
   &_social {

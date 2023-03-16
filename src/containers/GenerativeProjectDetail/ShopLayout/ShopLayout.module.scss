@@ -5,27 +5,30 @@
 .layout_left {
   max-height: calc(100vh - #{rem(210)});
   overflow-y: scroll;
+  flex: 0 0 20%;
+  width: 20%;
 
   @include disable-scrollbar;
 
   padding-right: rem(24);
   border-right: 1px solid $black-5;
-  padding-top: rem(24);
+
+  :global(.nav-tabs) {
+    top: 0;
+    position: sticky;
+    background-color: white;
+    padding-top: rem(24);
+  }
 
   @include mobile {
     display: none;
   }
 
   .overflow {
-    max-height: rem(205);
-    overflow-y: scroll;
-    margin-bottom: rem(16);
-
-    @include disable-scrollbar;
-
     * {
-      font-size: rem(16);
       line-height: (26/16);
+
+      @include calcFontAuto(14px, 16px);
     }
   }
 
@@ -36,31 +39,9 @@
 }
 
 .layout_middle {
-  padding-top: rem(24);
-
-  .tabs {
-    gap: rem(32);
-    // border: none;
-    flex-wrap: nowrap;
-
-    :global(.nav-link) {
-      white-space: nowrap;
-      color: $black-40;
-      font-size: rem(14px);
-      font-weight: 500;
-      border: none;
-      padding: 0;
-      padding-bottom: rem(10);
-
-      &:hover {
-        color: $black-60;
-      }
-    }
-
-    :global(.nav-link.active) {
-      border-bottom: 2px solid $primary-brand;
-    }
-  }
+  padding: rem(24);
+  flex: 0 0 60%;
+  width: 60%;
 
   .spacing {
     padding-top: rem(24);
@@ -75,10 +56,40 @@
   }
 }
 
+.tabs {
+  gap: rem(32);
+  // border: none;
+  flex-wrap: nowrap;
+
+  :global(.nav-link) {
+    white-space: nowrap;
+    color: $black-40;
+    font-size: rem(14px);
+    font-weight: 500;
+    border: none;
+    padding: 0;
+    padding-bottom: rem(10);
+
+    &:hover {
+      color: $black-60;
+    }
+  }
+
+  :global(.nav-link.active) {
+    border-bottom: 2px solid $primary-brand;
+  }
+}
+
+.tabContent {
+  padding-top: rem(24px);
+}
+
 .layout_right {
   padding-top: rem(24);
   padding-left: rem(24);
   border-left: 1px solid $black-5;
+  flex: 0 0 20%;
+  width: 20%;
 
   @include mobile {
     display: none;
