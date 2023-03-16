@@ -1,12 +1,11 @@
-import React from 'react';
 import cs from 'classnames';
+import React from 'react';
 
-import Image from 'next/image';
 import Link from '@components/Link';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
+import Image from 'next/image';
 // import { formatLongAddress } from '@utils/format';
-import { v4 } from 'uuid';
 import { Token } from '@interfaces/token';
 
 import s from './styles.module.scss';
@@ -57,7 +56,7 @@ const SearchTokensResult = ({ list }: { list: { tokenUri: Token }[] }) => {
       </div>
       {list.map(token => (
         <SearchTokenItem
-          key={`token-${v4()}`}
+          key={`token-${token.tokenUri.tokenID}`}
           thumbnail={token?.tokenUri?.image}
           tokenName={token?.tokenUri?.name}
           collectionId={token?.tokenUri?.project?.tokenID}

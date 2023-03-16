@@ -2,10 +2,9 @@ import SvgInset from '@components/SvgInset';
 import Text from '@components/Text';
 import { CDN_URL } from '@constants/config';
 import Link from 'next/link';
-import { Stack } from 'react-bootstrap';
-import { v4 } from 'uuid';
-import s from './styles.module.scss';
 import { useEffect, useState } from 'react';
+import { Stack } from 'react-bootstrap';
+import s from './styles.module.scss';
 
 type TStats = {
   data:
@@ -48,7 +47,7 @@ const Stats = ({ data }: TStats) => {
       {showData?.data &&
         showData?.data.length > 0 &&
         showData?.data.map(item => (
-          <div className={s.statsInfo} key={`token-${v4()}`}>
+          <div className={s.statsInfo} key={`token-${item.id}`}>
             <Text size="18" color="black-80">
               {item.info}
             </Text>
