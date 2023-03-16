@@ -10,6 +10,7 @@ import debounce from 'lodash/debounce';
 import dayjs from 'dayjs';
 import { toast } from 'react-hot-toast';
 import { v4 } from 'uuid';
+import copy from 'copy-to-clipboard';
 
 import { ROUTE_PATH } from '@constants/route-path';
 import { Loading } from '@components/Loading';
@@ -18,6 +19,8 @@ import Button from '@components/Button';
 import { convertIpfsToHttp } from '@utils/image';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
 import { formatBTCPrice } from '@utils/format';
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
 
 import s from './CollectionItems.module.scss';
 import NoData from '../NoData';
@@ -130,6 +133,12 @@ export const CollectionItems = ({
     router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
   };
 
+  const copyLink = (id: string) => {
+    copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}`);
+    toast.remove();
+    toast.success('Copied');
+  };
+
   return (
     <div className={cn(className, s.collections)}>
       <Row className={s.items_projects}>
@@ -232,6 +241,16 @@ export const CollectionItems = ({
                       {getStatusProposal(item?.status)}
                     </div>
                     <div className="col-md-2 d-flex justify-content-end">
+                      <span
+                        className={s.collections_share}
+                        onClick={() => copyLink(item?.id)}
+                      >
+                        <SvgInset
+                          className={s.icCopy}
+                          size={16}
+                          svgUrl={`${CDN_URL}/icons/share.svg`}
+                        />
+                      </span>
                       {/* <Button
                         className={cn(s.collections_btn, s.collections_mr6)}
                         disabled={item?.action?.can_vote === false}

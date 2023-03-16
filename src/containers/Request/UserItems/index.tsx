@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import { toast } from 'react-hot-toast';
 import { v4 } from 'uuid';
 import Image from 'next/image';
+import copy from 'copy-to-clipboard';
 
 import { ROUTE_PATH } from '@constants/route-path';
 import { Loading } from '@components/Loading';
@@ -18,6 +19,8 @@ import Button from '@components/Button';
 import { formatAddress } from '@utils/format';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
 import { convertIpfsToHttp } from '@utils/image';
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
 
 import s from './UserItems.module.scss';
 import NoData from '../NoData';
@@ -29,7 +32,7 @@ interface UserItemsProps {
 
 export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
   const router = useRouter();
-  const { keyword = '', status = '', sort = '' } = router.query;
+  const { keyword = '', status = '', sort = '', id = '' } = router.query;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -40,6 +43,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
   const initData = async (): Promise<void> => {
     setIsLoaded(false);
     const users = await getDaoArtists({
+      id,
       keyword,
       status,
       sort,
@@ -60,6 +64,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
       setIsLoading(true);
       if (totalPerPage > LIMIT) {
         const nextUsers = await getDaoArtists({
+          id,
           keyword,
           status,
           sort,
@@ -107,6 +112,12 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
 
   const goToProfilePage = (walletAddress: string): void => {
     router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
+  };
+
+  const copyLink = (id: string) => {
+    copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}`);
+    toast.remove();
+    toast.success('Copied');
   };
 
   return (
@@ -182,6 +193,16 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                       {getStatusProposal(item?.status)}
                     </div>
                     <div className="col-md-3 d-flex justify-content-end">
+                      <span
+                        className={s.users_share}
+                        onClick={() => copyLink(item?.id)}
+                      >
+                        <SvgInset
+                          className={s.icCopy}
+                          size={16}
+                          svgUrl={`${CDN_URL}/icons/share.svg`}
+                        />
+                      </span>
                       {/* <Button
                         className={cn(s.users_btn, s.users_mr6)}
                         disabled={item?.action?.can_vote === false}
