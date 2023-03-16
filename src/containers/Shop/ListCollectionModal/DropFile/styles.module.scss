@@ -1,0 +1,91 @@
+.dropFile {
+  border: none;
+  width: 100%;
+  text-align: center;
+  background-color: $primary-purple-50;
+
+  .dropZone {
+    padding: rem(20px) rem(24px);
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    border-radius: 2px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .wrap_loader {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .dropZoneWrapDescription {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .dropZoneSize {
+    font-weight: 400;
+    font-size: rem(18px);
+    line-height: rem(28px);
+    color: $black-60-solid;
+  }
+
+  .dropZoneDescription {
+    font-weight: 400;
+    font-size: rem(18px);
+    line-height: rem(28px);
+    color: $black-60-solid;
+  }
+
+  &__drag {
+    background-color: $primary-purple;
+  }
+
+  &__error {
+    border: 1px solid $secondary-red;
+  }
+
+  .errorText {
+    color: $secondary-red;
+  }
+}
+
+.wrapper {
+  .hoverUpload {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #00000059;
+    width: 100%;
+    height: 100%;
+    color: white;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    transition: all 0.3s;
+
+    &:hover {
+      opacity: 1;
+      transition: all 0.3s;
+    }
+
+    .hoverContext {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      svg {
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: rem(8);
+      }
+    }
+  }
+}

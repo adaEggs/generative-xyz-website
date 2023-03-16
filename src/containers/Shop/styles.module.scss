@@ -1,15 +1,38 @@
 .shopController {
   padding: {
-    top: rem(60px);
-    bottom: rem(60px);
+    top: rem(24);
+    bottom: rem(24);
+  }
+
+  @include min-pc {
+    padding: {
+      top: rem(60);
+      bottom: rem(60);
+    }
+  }
+
+  .headingWrapper {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    margin-bottom: rem(32);
+
+    @include min-pc {
+      flex-direction: row;
+      align-items: center;
+    }
   }
 
   .heading {
     font-weight: 500;
-    font-size: rem(34px);
-    line-height: rem(44px);
+    font-size: rem(34);
+    line-height: rem(44);
     color: $primary-brand;
-    margin-bottom: rem(32px);
+    margin-bottom: rem(16);
+
+    @include min-pc {
+      margin-bottom: rem(0);
+    }
   }
 
   .tabs {
