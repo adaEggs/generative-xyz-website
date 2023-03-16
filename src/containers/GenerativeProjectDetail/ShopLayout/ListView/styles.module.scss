@@ -1,0 +1,61 @@
+.table_wrapper {
+  max-height: calc(100vh - 350px);
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  * {
+    font-size: rem(16);
+    font-weight: medium;
+    font-family: $font-paragraph;
+  }
+
+  :global(thead th:not(:nth-child(2))) {
+    text-align: right;
+  }
+
+  :global(thead th) {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: rem(24px);
+    color: $black-40;
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    z-index: 10;
+  }
+
+  :global(tbody tr) {
+    border: none !important;
+
+    &:hover {
+      background-color: $primary-light;
+    }
+  }
+
+  :global(tbody td) {
+    padding-top: rem(4);
+    padding-bottom: rem(4);
+    text-align: right;
+    vertical-align: middle;
+  }
+
+  :global(tbody td:first-of-type) {
+    width: rem(20);
+  }
+}
+
+.buy_btn {
+  display: flex;
+  align-items: center;
+  gap: rem(8);
+  justify-content: flex-end;
+
+  button {
+    max-height: rem(30px);
+  }
+}

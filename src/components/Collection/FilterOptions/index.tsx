@@ -326,8 +326,6 @@ const FilterOptions = ({ attributes, isHideStatusLabel }: Props) => {
                       components={{
                         Option,
                       }}
-                      // onFocus={() => setCurrentTraitOpen(attr.traitName)}
-                      // onInputChange={() => setCurrentTraitOpen('')}
                       onMenuOpen={() => setCurrentTraitOpen(attr.traitName)}
                       onBlur={() => setCurrentTraitOpen('')}
                       classNamePrefix="select"

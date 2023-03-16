@@ -2,13 +2,9 @@ import ButtonIcon from '@components/ButtonIcon';
 import FilterOptions from '@components/Collection/FilterOptions';
 import CollectionList from '@components/Collection/List';
 import Link from '@components/Link';
-import { Loading } from '@components/Loading';
 import ProjectDescription from '@components/ProjectDescription';
 import SvgInset from '@components/SvgInset';
-import Table from '@components/Table';
 import Text from '@components/Text';
-import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
-import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
 import { TriggerLoad } from '@components/TriggerLoader';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
@@ -18,18 +14,16 @@ import { LogLevel } from '@enums/log-level';
 import useWindowSize from '@hooks/useWindowSize';
 import { Category } from '@interfaces/category';
 import { getCategoryList } from '@services/category';
-import { formatAddressDisplayName } from '@utils/format';
 import log from '@utils/logger';
 import dayjs from 'dayjs';
-import { useRouter } from 'next/router';
 import { useContext, useMemo, useState } from 'react';
 import { Stack, Tab, Tabs } from 'react-bootstrap';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { TwitterShareButton } from 'react-share';
 import useAsyncEffect from 'use-async-effect';
 import ActivityStats from '../ActivityStats';
 import TokenTopFilter from '../TokenTopFilter';
 import collectionStyles from '../styles.module.scss';
+import ListView from './ListView';
 import styles from './ShopLayout.module.scss';
 
 type Props = {
@@ -39,20 +33,8 @@ type Props = {
 
 const LOG_PREFIX = 'ShopLayout';
 
-const TABLE_HEADINGS = [
-  // <div className={styles.checkbox}>{/* <input type="checkbox" /> */}</div>,
-  '',
-  'Item',
-  // 'Last sale',
-  'Owner',
-  'Buy now',
-];
-
 const ShopLayout = (props: Props) => {
   const { showReportMsg, setShowReportModal } = props;
-  const router = useRouter();
-
-  const { projectID } = router.query;
 
   const {
     projectData: projectInfo,
@@ -95,109 +77,6 @@ const ShopLayout = (props: Props) => {
       log('failed to fetch category list', LogLevel.ERROR, LOG_PREFIX);
     }
   };
-
-  const tableData = listItems?.map(item => {
-    const isBuyable = item?.buyable && item?.sell_verified;
-
-    const isBuyBTC = isBuyable && !!item?.priceBTC && item?.orderID;
-
-    const isBuyETH = isBuyable && !!item?.priceETH;
-
-    return {
-      id: item.tokenID,
-
-      render: {
-        checkbox: (
-          <div className={styles.checkbox}>
-            {/* <input type="checkbox" /> */}
-          </div>
-        ),
-        name: (
-          <div className={styles.itemInfo}>
-            <img
-              className={styles.itemThumbnail}
-              src={item.thumbnail}
-              alt={item.name}
-            />
-            <div className={styles.itemName}>
-              <Link
-                href={`${ROUTE_PATH.GENERATIVE}/${projectID}/${item.tokenID}`}
-              >
-                <p className={s.collectionName}>
-                  #{item?.orderInscriptionIndex || item?.inscriptionIndex}
-                </p>
-              </Link>
-            </div>
-          </div>
-        ),
-        // lastSale: <div></div>,
-        owners: (
-          <div className={styles.owners}>
-            {formatAddressDisplayName(
-              item?.owner?.displayName ||
-                item?.owner?.walletAddressBtcTaproot ||
-                item?.ownerAddr ||
-                '-'
-            )}
-          </div>
-        ),
-        buyNow: (
-          <>
-            {' '}
-            {isBuyable ? (
-              <div className={styles.buy_btn}>
-                {/* <ButtonIcon variants="outline-small" sizes={'xsmall'}>
-                  {formatEthPrice(item.priceETH) === '—'
-                    ? ''
-                    : `${formatEthPrice(item.priceETH)} ETH`}
-                </ButtonIcon>
-
-                <ButtonIcon variants="primary" sizes={'xsmall'}>
-                  {formatBTCPrice(item.priceBTC) === '—'
-                    ? ''
-                    : `${formatBTCPrice(item.priceBTC)} BTC`}
-                </ButtonIcon> */}
-                {isBuyETH && (
-                  <Link
-                    href=""
-                    onClick={() => {
-                      // DO NOTHING
-                    }}
-                    className={s.wrapButton}
-                  >
-                    <ButtonBuyListedFromETH
-                      inscriptionID={item.tokenID}
-                      price={item.priceETH}
-                      inscriptionNumber={Number(item.inscriptionIndex || 0)}
-                      orderID={item.orderID}
-                    />
-                  </Link>
-                )}
-                {isBuyBTC && (
-                  <Link
-                    href=""
-                    className={s.wrapButton}
-                    onClick={() => {
-                      // DO NOTHING
-                    }}
-                  >
-                    <ButtonBuyListedFromBTC
-                      inscriptionID={item.tokenID}
-                      price={item.priceBTC}
-                      inscriptionNumber={Number(item.inscriptionIndex || 0)}
-                      orderID={item.orderID}
-                    />
-                  </Link>
-                )}
-              </div>
-            ) : (
-              ''
-            )}
-          </>
-        ),
-      },
-    };
-  });
 
   useAsyncEffect(() => {
     fetchAllCategory();
@@ -376,26 +255,27 @@ const ShopLayout = (props: Props) => {
               }`}
             >
               {listItems && listItems.length > 0 && isListLayout ? (
-                <InfiniteScroll
-                  dataLength={listItems.length}
-                  next={handleFetchNextPage}
-                  className={s.collectionScroller}
-                  hasMore={listItems.length < total}
-                  loader={
-                    <div className={s.scrollLoading}>
-                      <Loading isLoaded={false} />
-                    </div>
-                  }
-                  endMessage={<></>}
-                >
-                  <div className={styles.table_wrapper}>
-                    <Table
-                      className={styles.dataTable}
-                      tableHead={TABLE_HEADINGS}
-                      data={tableData}
-                    />
-                  </div>
-                </InfiniteScroll>
+                // <InfiniteScroll
+                //   dataLength={listItems.length}
+                //   next={handleFetchNextPage}
+                //   className={s.collectionScroller}
+                //   hasMore={listItems.length < total}
+                //   loader={
+                //     <div className={s.scrollLoading}>
+                //       <Loading isLoaded={false} />
+                //     </div>
+                //   }
+                //   endMessage={<></>}
+                // >
+                //   <div className={styles.table_wrapper}>
+                //     <Table
+                //       className={styles.dataTable}
+                //       tableHead={TABLE_HEADINGS}
+                //       data={tableData}
+                //     />
+                //   </div>
+                // </InfiniteScroll>
+                <ListView />
               ) : (
                 <div className={styles.projectList}>
                   <CollectionList
