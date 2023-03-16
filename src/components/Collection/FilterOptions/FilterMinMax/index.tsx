@@ -93,7 +93,9 @@ const FilterMinMax = (props: Props) => {
               }, 1000)}
             />
             {filterPrice && (
-              <SvgInset size={10} svgUrl={`${CDN_URL}/icons/ic-bitcoin.svg`} />
+              <Text size="14" color="black-60">
+                BTC
+              </Text>
             )}
           </div>
         </div>
@@ -111,7 +113,9 @@ const FilterMinMax = (props: Props) => {
               }, 1000)}
             />
             {filterPrice && (
-              <SvgInset size={10} svgUrl={`${CDN_URL}/icons/ic-bitcoin.svg`} />
+              <Text size="14" color="black-60">
+                BTC
+              </Text>
             )}
           </div>
         </div>
