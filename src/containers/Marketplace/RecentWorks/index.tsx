@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import CategoryTab from '@components/CategoryTab';
 import Heading from '@components/Heading';
@@ -23,6 +23,10 @@ import useAsyncEffect from 'use-async-effect';
 import s from './RecentWorks.module.scss';
 import { LocalStorageKey } from '@enums/local-storage';
 import { useRouter } from 'next/router';
+import ButtonIcon from '@components/ButtonIcon';
+import { ROUTE_PATH } from '@constants/route-path';
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
 
 const SORT_OPTIONS: Array<{ value: string; label: string }> = [
   {
@@ -173,12 +177,32 @@ export const RecentWorks = (): JSX.Element => {
     await fetchAllCategory();
   }, []);
 
+  const goToArtistLanding = () => {
+    router.push(ROUTE_PATH.ARTISTS);
+  };
+
   return (
     <div className={s.recentWorks}>
       <Container>
-        <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
-          Be the first to collect art on Bitcoin.
-        </Heading>
+        <div className={s.recentWorks_header}>
+          <Heading as="h4" fontWeight="medium" className={s.recentWorks_title}>
+            Be the first to collect art on Bitcoin.
+          </Heading>
+          <div className="">
+            <ButtonIcon
+              variants={'primary'}
+              sizes={'medium'}
+              endIcon={
+                <SvgInset
+                  svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
+                />
+              }
+              onClick={goToArtistLanding}
+            >
+              New artist? Start here
+            </ButtonIcon>
+          </div>
+        </div>
         <Row className={s.recentWorks_heading}>
           <Col
             className={cs(s.recentWorks_heading_col, s.category_list)}
