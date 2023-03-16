@@ -27,7 +27,7 @@ const TokenIDImage = React.memo((props: IProps) => {
         <Skeleton fill isLoaded={!!props.image} />
         {thumb !== LOGO_MARKETPLACE_URL ? (
           <iframe
-            sandbox="allow-scripts"
+            sandbox="allow-scripts allow-pointer-lock allow-downloads"
             scrolling="no"
             loading="lazy"
             src={thumb}

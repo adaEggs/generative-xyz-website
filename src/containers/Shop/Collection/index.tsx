@@ -74,9 +74,14 @@ const Collection: React.FC = (): React.ReactElement => {
             <span>
               {formatBTCPrice(
                 collection.projectMarketplaceData.floor_price,
-                '0.00'
+                '—'
               )}{' '}
-              BTC
+              {formatBTCPrice(
+                collection.projectMarketplaceData.floor_price,
+                '—'
+              ) === '—'
+                ? ''
+                : 'BTC'}
             </span>
           </div>
         ),
@@ -133,8 +138,11 @@ const Collection: React.FC = (): React.ReactElement => {
         volume: (
           <div className={s.volume7D}>
             <span>
-              {formatBTCPrice(collection.projectMarketplaceData.volume, '0.00')}{' '}
-              BTC
+              {formatBTCPrice(collection.projectMarketplaceData.volume, '—')}{' '}
+              {formatBTCPrice(collection.projectMarketplaceData.volume, '—') ===
+              '—'
+                ? ''
+                : 'BTC'}
             </span>
           </div>
         ),
