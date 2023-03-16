@@ -14,9 +14,10 @@ import styles from './styles.module.scss';
 type Props = {
   attributes?: TraitStats[];
   layout?: 'mint' | 'shop';
+  isHideStatusLabel?: boolean;
 };
 
-const FilterOptions = ({ attributes }: Props) => {
+const FilterOptions = ({ attributes, isHideStatusLabel }: Props) => {
   const {
     filterTraits,
     setFilterTraits,
@@ -146,13 +147,18 @@ const FilterOptions = ({ attributes }: Props) => {
 
   return (
     <div className={styles.filter_wrapper}>
-      <Heading fontWeight="semibold" className={styles.filter_title}>
-        Filter
-      </Heading>
+      {!isHideStatusLabel && (
+        <Heading fontWeight="semibold" className={styles.filter_title}>
+          Filter
+        </Heading>
+      )}
+
       <div className={styles.filter_buy}>
-        <Text size="18" fontWeight="medium">
-          Status
-        </Text>
+        {!isHideStatusLabel && (
+          <Text size="18" fontWeight="medium">
+            Status
+          </Text>
+        )}
         <RadioGroups
           options={buyNowOptions}
           name="buyNow"

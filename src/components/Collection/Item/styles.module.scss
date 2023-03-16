@@ -193,6 +193,13 @@
   &:hover {
     cursor: pointer;
   }
+
+  &.isShop {
+    .collectionCard_thumb,
+    .collectionCard_info {
+      padding: rem(16px);
+    }
+  }
 }
 
 .collectionCard_owner {

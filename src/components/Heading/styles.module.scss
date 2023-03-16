@@ -36,4 +36,11 @@
 
     @include calcFontAuto(16px, 20px);
   }
+
+  &:is(p) {
+    font-weight: 500;
+    line-height: (26/16);
+
+    @include calcFontAuto(14px, 16px);
+  }
 }

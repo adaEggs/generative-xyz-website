@@ -99,6 +99,8 @@ export interface IGenerativeProjectDetailContext {
   isLimitMinted: boolean;
   collectionActivities: IGetTokenActivitiesResponse | null;
   setFilterActivities: Dispatch<SetStateAction<string>>;
+  isLayoutShop: boolean;
+  setIsLayoutShop: Dispatch<SetStateAction<boolean>>;
 }
 
 const initialValue: IGenerativeProjectDetailContext = {
@@ -181,6 +183,10 @@ const initialValue: IGenerativeProjectDetailContext = {
   setFilterActivities: _ => {
     return;
   },
+  isLayoutShop: false,
+  setIsLayoutShop: _ => {
+    return;
+  },
 };
 
 export const GenerativeProjectDetailContext =
@@ -223,6 +229,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   });
 
   const [filterActivities, setFilterActivities] = useState('1,2,3');
+  const [isLayoutShop, setIsLayoutShop] = useState<boolean>(false);
 
   const [projectItemsTraitList, setProjectItemsTraitList] =
     useState<ProjectItemsTraitList | null>(null);
@@ -543,6 +550,8 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       isLimitMinted,
       collectionActivities,
       setFilterActivities,
+      isLayoutShop,
+      setIsLayoutShop,
     };
   }, [
     projectData,
@@ -582,6 +591,9 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     isLimitMinted,
     collectionActivities,
     setFilterActivities,
+
+    isLayoutShop,
+    setIsLayoutShop,
   ]);
 
   return (

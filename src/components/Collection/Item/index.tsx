@@ -3,7 +3,6 @@ import Text from '@components/Text';
 import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-// import { ProfileContext } from '@contexts/profile-context';
 import Link from '@components/Link';
 import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
 import { GLB_EXTENSION } from '@constants/file';
@@ -32,9 +31,11 @@ const CollectionItem = ({
   const tokenID = data.tokenID;
   const showInscriptionID =
     data.genNFTAddr === '1000012' && !!data.inscriptionIndex && !!total;
-  // const { currentUser } = useContext(ProfileContext);
+
   const { mobileScreen } = useWindowSize();
-  const { isWhitelistProject } = useContext(GenerativeProjectDetailContext);
+  const { isWhitelistProject, isLayoutShop } = useContext(
+    GenerativeProjectDetailContext
+  );
 
   const { isWaiting, isBuyETH, isBuyBTC, isBuyable } = usePurchaseStatus({
     buyable: data?.buyable,
@@ -88,7 +89,7 @@ const CollectionItem = ({
             className={s.wrapButton}
           >
             <ButtonBuyListedFromETH
-              sizes="medium"
+              sizes={isLayoutShop ? 'small' : 'medium'}
               inscriptionID={tokenID}
               price={data.priceETH}
               inscriptionNumber={Number(data.inscriptionIndex || 0)}
@@ -105,7 +106,7 @@ const CollectionItem = ({
             }}
           >
             <ButtonBuyListedFromBTC
-              sizes="medium"
+              sizes={isLayoutShop ? 'small' : 'medium'}
               inscriptionID={tokenID}
               price={data.priceBTC}
               inscriptionNumber={Number(data.inscriptionIndex || 0)}
@@ -132,11 +133,15 @@ const CollectionItem = ({
         >{`${data?.orderInscriptionIndex} / ${total}`}</span>
       );
     }
-    return <span>#{text}</span>;
+    return <Heading as={isLayoutShop ? 'p' : 'h4'}>#{text}</Heading>;
   };
 
   return (
-    <div className={`${s.collectionCard} ${className}`}>
+    <div
+      className={`${s.collectionCard} ${className} ${
+        isLayoutShop ? s.isShop : ''
+      }`}
+    >
       <div className={s.collectionCard_inner_wrapper}>
         <Link className={s.collectionCard_inner} href={`${tokenUrl}`}>
           <div
@@ -242,7 +247,7 @@ const CollectionItem = ({
                 {renderBuyButton()}
                 {showInscriptionID && (
                   <Heading
-                    as={'h4'}
+                    as={isLayoutShop ? 'p' : 'h4'}
                     className={`token_id ml-auto ${s.textOverflow}}`}
                   >
                     #{data?.inscriptionIndex}

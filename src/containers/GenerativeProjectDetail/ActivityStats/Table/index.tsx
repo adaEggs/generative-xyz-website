@@ -3,7 +3,7 @@ import Table from '@components/Table';
 import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { TokenActivityType } from '@enums/token-type';
-import { formatBTCPrice } from '@utils/format';
+import { formatAddressDisplayName, formatBTCPrice } from '@utils/format';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useContext } from 'react';
@@ -111,7 +111,7 @@ const CollectionActivityTable = () => {
                 }`}
                 className="hover-underline"
               >
-                {fromAddress.substring(0, 6)}
+                {formatAddressDisplayName(fromAddress)}
               </Link>
             </div>
           ),
@@ -125,7 +125,7 @@ const CollectionActivityTable = () => {
                 }`}
                 className="hover-underline"
               >
-                {toAddress.substring(0, 6)}
+                {formatAddressDisplayName(toAddress)}
               </Link>
             </div>
           ),
@@ -161,7 +161,7 @@ const CollectionActivityTable = () => {
             listData?.result && listData?.result.length > 0 ? activityDatas : []
           }
           className={s.collectionActivityTable}
-        ></Table>
+        />
       </div>
       {/* </InfiniteScroll> */}
     </>

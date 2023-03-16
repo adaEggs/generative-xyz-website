@@ -43,6 +43,17 @@ export const formatAddress = (address?: string, length = 10): string => {
   return `${address.substring(0, length)}`;
 };
 
+export const formatAddressDisplayName = (
+  address?: string,
+  length = 6
+): string => {
+  if (!address) return '';
+  if (address.length <= length) {
+    return address;
+  }
+  return `${address.substring(address.length - length, address.length)}`;
+};
+
 export const formatLongAddress = (address?: string): string => {
   if (!address) return '';
   if (address.length < 14) return address;

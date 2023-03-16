@@ -181,6 +181,7 @@ export interface IReqGenAddressByETH {
   fee_rate: number;
   receive_address: string;
   refund_address: string;
+  is_estimate: boolean;
 }
 
 export interface IRespGenAddressByETH {

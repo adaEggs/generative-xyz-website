@@ -9,3 +9,4 @@ export const SOCIAL_ICONS = {
 
 export const IC_OFFER_SETTING = `${CDN_URL}/icons/coin-hand.svg`;
 export const IC_EDIT_PROFILE = `${CDN_URL}/icons/edit-01.svg`;
+export const IC_EDIT_PROJECT = `${CDN_URL}/icons/edit-02.svg`;

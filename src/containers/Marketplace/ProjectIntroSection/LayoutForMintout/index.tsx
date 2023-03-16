@@ -10,12 +10,17 @@ import { ROUTE_PATH } from '@constants/route-path';
 import cs from 'classnames';
 import { filterCreatorName } from '@utils/generative';
 import { SocialVerify } from '@components/SocialVerify';
+import ButtonIcon from '@components/ButtonIcon';
+import SvgInset from '@components/SvgInset';
+import { IC_EDIT_PROJECT } from '@constants/icons';
+import Text from '@components/Text';
+import { useRouter } from 'next/router';
 
 const LayoutForMintout = () => {
-  const { project, isHasBtcWallet, creatorAddress, isTwVerified } =
+  const { project, isHasBtcWallet, creatorAddress, isTwVerified, isEdit } =
     useContext(ProjectLayoutContext);
   const [thumb, setThumb] = useState<string>();
-
+  const router = useRouter();
   const imgRef = useRef<HTMLImageElement>(null);
 
   const onThumbError = () => {
@@ -31,8 +36,6 @@ const LayoutForMintout = () => {
       imgRef.current.style.imageRendering = 'pixelated';
     }
   };
-
-  // const { desktopScreen } = useWindowSize();
 
   useEffect(() => {
     if (project && project.image) {
@@ -109,23 +112,33 @@ const LayoutForMintout = () => {
                     className={s.small}
                   />
                 </div>
-                <Heading as="h6" fontWeight="medium" className="font-italic">
-                  {project?.name}
-                </Heading>
+                <div className={s.creator_info_name}>
+                  <Heading as="h6" fontWeight="medium" className="font-italic">
+                    {project?.name}
+                  </Heading>
+                  {isEdit && (
+                    <div className={s.projectHeader_btn}>
+                      <ButtonIcon
+                        sizes="xsmall"
+                        variants={'ghost'}
+                        endIcon={<SvgInset svgUrl={IC_EDIT_PROJECT} />}
+                        onClick={() =>
+                          router.push(
+                            `${ROUTE_PATH.GENERATIVE_EDIT}/${project?.tokenID}`
+                          )
+                        }
+                      >
+                        <Text fontWeight="medium" as="span">
+                          Edit
+                        </Text>
+                      </ButtonIcon>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </div>
-        {/* <div
-          className={`${s.projectInfo_center} col-xl-5 col-12  order-xl-2 order-3`}
-        >
-          <ProjectDescription
-            onlyDesc={true}
-            desc={project?.desc || ''}
-            hasInteraction={hasProjectInteraction}
-            profileBio={project?.creatorProfile?.bio || ''}
-          />
-        </div> */}
         <div className={`${s.projectInfo_right}`}>
           <div className={s.projectInfo_right_inner}>{<ProjectStats />}</div>
         </div>
