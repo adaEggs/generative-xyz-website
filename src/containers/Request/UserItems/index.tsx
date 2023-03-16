@@ -129,7 +129,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
             ))}
           </Col>
         ) : (
-          <>
+          <Col md={12}>
             <div className={s.users_header}>
               <div className="col-md-1">Proposal ID</div>
               <div className="col-md-3">Artist</div>
@@ -222,7 +222,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                 ))}
               </InfiniteScroll>
             )}
-          </>
+          </Col>
         )}
       </Row>
     </div>
