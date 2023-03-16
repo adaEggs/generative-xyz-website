@@ -1,9 +1,8 @@
-import Image from 'next/image';
-import React, { memo } from 'react';
-import styles from './styles.module.scss';
-import { v4 } from 'uuid';
-import { convertIpfsToHttp } from '@utils/image';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
+import { convertIpfsToHttp } from '@utils/image';
+import Image from 'next/image';
+import { memo } from 'react';
+import styles from './styles.module.scss';
 
 type Props = {
   imgSrcs: string | string[];
@@ -61,8 +60,8 @@ const Avatar = memo(
     if (imgSrcs?.length > 0 && typeof imgSrcs === 'object') {
       return (
         <div className={styles.avatarStack}>
-          {imgSrcs.map(src => (
-            <SingleAvatar src={src} key={`avatar-${v4()}`} />
+          {imgSrcs.map((src, index) => (
+            <SingleAvatar src={src} key={`avatar-${index}`} />
           ))}
         </div>
       );

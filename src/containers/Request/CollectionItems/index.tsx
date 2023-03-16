@@ -1,27 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect } from 'react';
 import cn from 'classnames';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
-import InfiniteScroll from 'react-infinite-scroll-component';
+import dayjs from 'dayjs';
+import debounce from 'lodash/debounce';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import debounce from 'lodash/debounce';
-import dayjs from 'dayjs';
+import React, { useEffect, useState } from 'react';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import { toast } from 'react-hot-toast';
-import { v4 } from 'uuid';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
-import { ROUTE_PATH } from '@constants/route-path';
-import { Loading } from '@components/Loading';
-import { getDaoProjects, voteDaoProject } from '@services/request';
 import Button from '@components/Button';
-import { convertIpfsToHttp } from '@utils/image';
+import { Loading } from '@components/Loading';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
+import { ROUTE_PATH } from '@constants/route-path';
+import { getDaoProjects, voteDaoProject } from '@services/request';
 import { formatBTCPrice } from '@utils/format';
+import { convertIpfsToHttp } from '@utils/image';
 
-import s from './CollectionItems.module.scss';
 import NoData from '../NoData';
 import SkeletonItem from '../SkeletonItem';
+import s from './CollectionItems.module.scss';
 
 interface CollectionItemsProps {
   className?: string;
@@ -133,8 +132,8 @@ export const CollectionItems = ({
       <Row className={s.items_projects}>
         {isLoaded === false ? (
           <Col xs={12}>
-            {[...Array(LIMIT)].map(() => (
-              <SkeletonItem key={`token-loading-${v4()}`} />
+            {[...Array(LIMIT)].map((_, index) => (
+              <SkeletonItem key={`token-loading-${index}`} />
             ))}
           </Col>
         ) : (
