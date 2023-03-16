@@ -97,6 +97,9 @@ const ShopLayout = (props: Props) => {
     selectedOrders.length > 0 ? removeAllOrders() : selectAllOrders();
   };
 
+  const titleItems =
+    selectedOrders.length > 0 ? `${selectedOrders.length} Selected` : 'Items';
+
   const TABLE_HEADINGS = [
     // <div className={styles.checkbox}>{/* <input type="checkbox" /> */}</div>,
     <SvgInset
@@ -106,8 +109,9 @@ const ShopLayout = (props: Props) => {
         selectedOrders.length > 0 ? 'ic_checkboxed' : 'ic_checkbox'
       }.svg`}
       onClick={onClickItems}
+      className={styles.checkbox}
     />,
-    selectedOrders.length > 0 ? `${selectedOrders.length} Selected` : 'Items',
+    titleItems,
     // 'Last sale',
     'Owner',
     'Buy now',
@@ -411,6 +415,17 @@ const ShopLayout = (props: Props) => {
                 listItems && listItems.length > 0 && styles.spacing
               }`}
             >
+              <div className={styles.itemsContainer}>
+                <SvgInset
+                  size={14}
+                  svgUrl={`${CDN_URL}/icons/${
+                    selectedOrders.length > 0 ? 'ic_checkboxed' : 'ic_checkbox'
+                  }.svg`}
+                  onClick={onClickItems}
+                  className={styles.checkbox}
+                />
+                <p className={styles.textItems}>{titleItems}</p>
+              </div>
               {listItems && listItems.length > 0 && isListLayout ? (
                 <InfiniteScroll
                   dataLength={listItems.length}

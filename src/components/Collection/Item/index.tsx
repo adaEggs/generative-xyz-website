@@ -175,7 +175,7 @@ const CollectionItem = ({
             {isBuyable && (
               <SvgInset
                 className={s.collectionCard_thumb_selectIcon}
-                size={18}
+                size={14}
                 svgUrl={`${CDN_URL}/icons/${
                   isSelectedOrder ? 'ic_checkboxed' : 'ic_checkbox'
                 }.svg`}

@@ -3,10 +3,27 @@
   margin-bottom: rem(16);
 }
 
-.tableItemsHead {
+.itemsContainer {
   display: flex;
   flex-direction: row;
   align-items: center;
+  margin-top: -16px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid $black-5;
+  margin-bottom: 12px;
+}
+
+.checkbox {
+  cursor: pointer;
+}
+
+.textItems {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  margin-left: 16px;
+  color: #898989;
 }
 
 .layout_left {
