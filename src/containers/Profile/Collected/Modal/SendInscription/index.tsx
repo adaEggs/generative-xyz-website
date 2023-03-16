@@ -18,9 +18,9 @@ import { setStorageIns } from '@containers/Profile/Collected/Modal/SendInscripti
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
 import Text from '@components/Text';
-import * as SDK from 'generative-sdk';
 import { getError } from '@utils/text';
 import { AssetsContext } from '@contexts/assets-context';
+import SDK from '@utils/sdk';
 
 interface IFormValue {
   address: string;
@@ -74,14 +74,12 @@ const SendInscriptionModal = ({
         'Invalid wallet address. Please send the inscription to another wallet address.';
     }
     try {
-      GENERATIVE_SDK.selectUTXOs(
-        currentAssets?.txrefs || [],
-        currentAssets?.inscriptions_by_outputs || {},
+      SDK.amountValidator({
+        amount: '0',
+        assets: currentAssets,
         inscriptionID,
-        0,
-        FEE_RATE[feeRate],
-        true
-      );
+        feeRate: FEE_RATE[feeRate],
+      });
     } catch (err) {
       errors.address =
         getError(err)?.message || 'Your BTC balance is insufficient.';
@@ -203,7 +201,11 @@ const SendInscriptionModal = ({
                             <p className={s.feeTotal}>
                               ~{' '}
                               {`${formatBTCPrice(
-                                SDK.estimateTxFee(2, 2, FEE_RATE?.hourFee)
+                                GENERATIVE_SDK.estimateTxFee(
+                                  2,
+                                  2,
+                                  FEE_RATE?.hourFee
+                                )
                               )} BTC`}
                             </p>
                           </div>
@@ -223,7 +225,11 @@ const SendInscriptionModal = ({
                             <p className={s.feeTotal}>
                               ~{' '}
                               {`${formatBTCPrice(
-                                SDK.estimateTxFee(2, 2, FEE_RATE?.halfHourFee)
+                                GENERATIVE_SDK.estimateTxFee(
+                                  2,
+                                  2,
+                                  FEE_RATE?.halfHourFee
+                                )
                               )} BTC`}
                             </p>
                           </div>
@@ -243,7 +249,11 @@ const SendInscriptionModal = ({
                             <p className={s.feeTotal}>
                               ~{' '}
                               {`${formatBTCPrice(
-                                SDK.estimateTxFee(2, 2, FEE_RATE?.fastestFee)
+                                GENERATIVE_SDK.estimateTxFee(
+                                  2,
+                                  2,
+                                  FEE_RATE?.fastestFee
+                                )
                               )} BTC`}
                             </p>
                           </div>

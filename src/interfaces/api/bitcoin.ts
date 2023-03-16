@@ -1,11 +1,7 @@
 import * as GENERATIVE_SDK from 'generative-sdk';
 
-export interface IInscriptionByOutputValue {
-  offset: number;
-  id: string;
-}
 export interface IInscriptionByOutput {
-  [key: string]: IInscriptionByOutputValue[];
+  [key: string]: GENERATIVE_SDK.Inscription[];
 }
 
 export interface ICollectedUTXOResp {

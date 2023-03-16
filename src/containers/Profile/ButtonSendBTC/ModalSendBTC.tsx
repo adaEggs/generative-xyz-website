@@ -7,7 +7,6 @@ import { Formik } from 'formik';
 import s from './styles.module.scss';
 import { Loading } from '@components/Loading';
 import { validateBTCAddress } from '@utils/validate';
-import * as GENERATIVE_SDK from 'generative-sdk';
 import { toast } from 'react-hot-toast';
 import FeeRate from '@containers/Profile/FeeRate';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
@@ -26,6 +25,7 @@ import { getError } from '@utils/text';
 import { AssetsContext } from '@contexts/assets-context';
 import { useSelector } from 'react-redux';
 import { getUserSelector } from '@redux/user/selector';
+import SDK from '@utils/sdk';
 
 interface IFormValue {
   address: string;
@@ -41,8 +41,7 @@ interface IProps {
 const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
   const [isLoading, setIsLoading] = useState(false);
   const currentUser = useSelector(getUserSelector);
-  const { currentAssets: collectedUTXOs, debounceFetchData } =
-    useContext(AssetsContext);
+  const { currentAssets, debounceFetchData } = useContext(AssetsContext);
 
   const {
     selectedRate,
@@ -85,14 +84,11 @@ const ModalSendBTC = ({ isShow, onHideModal, title }: IProps): JSX.Element => {
         )} BTC.`;
       } else {
         try {
-          GENERATIVE_SDK.selectUTXOs(
-            collectedUTXOs?.txrefs || [],
-            collectedUTXOs?.inscriptions_by_outputs || {},
-            '',
-            convertToSatoshiNumber(values.amount),
-            currentRate,
-            true
-          );
+          SDK.amountValidator({
+            amount: values.amount,
+            assets: currentAssets,
+            feeRate: currentRate,
+          });
         } catch (err) {
           errors.amount =
             getError(err)?.message || 'Your BTC balance is insufficient.';

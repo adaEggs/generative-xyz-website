@@ -19,9 +19,9 @@ export interface IBuyInsProps {
 }
 
 export interface IListInsProps {
-  receiverBTCAddress: string;
-  amountPayToSeller: number;
-  feePayToCreator: number;
+  receiver: string;
+  paySeller: string;
+  payCreator: string;
   creatorAddress: string;
   feeRate: number;
   inscriptionNumber: number;
@@ -32,4 +32,10 @@ export interface ICancelInsProps {
   feeRate: number;
   inscriptionNumber: number;
   orderID: string;
+}
+
+export interface ISignKeyResp {
+  privateKey: Buffer;
+  tpAddress: string;
+  evmAddress: string;
 }

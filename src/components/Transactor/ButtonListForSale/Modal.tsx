@@ -156,12 +156,12 @@ const ModalListForSale = React.memo(
         );
 
         await listInscription({
-          amountPayToSeller: amountSeller,
+          paySeller: `${amountSeller}`,
           creatorAddress: amountArtist ? listingFee.royaltyAddress : '',
-          feePayToCreator: amountArtist,
+          payCreator: `${amountArtist}`,
           feeRate: allRate[selectedRate],
           inscriptionNumber: inscriptionNumber,
-          receiverBTCAddress: values.receiveBTCAddress,
+          receiver: values.receiveBTCAddress,
         });
         toast.success('Listed for sale successfully');
         setTimeout(() => {

@@ -16,10 +16,12 @@ import {
   IListInsProps,
   ISendBTCProps,
   ISendInsProps,
+  ISignKeyResp,
 } from '@bitcoin/types';
-import { debounce } from 'lodash';
+import debounce from 'lodash/debounce';
 import { sleep } from '@utils/sleep';
 import { AssetsContext } from '@contexts/assets-context';
+import SDK from '@utils/sdk';
 
 interface IProps {
   inscriptionID?: string;
@@ -31,33 +33,41 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     useContext(AssetsContext);
   const [satoshiAmount, setAmount] = useState(0);
 
+  const signKey = async (): Promise<ISignKeyResp> => {
+    const error = 'Can not sign with metamask';
+    const evmAddress = user?.walletAddress;
+    const tpAddress = user?.walletAddressBtcTaproot;
+    if (!evmAddress || !tpAddress) throw new Error(error);
+    const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
+    const privateKey = taprootChild.privateKey;
+    if (!privateKey) throw new Error(error);
+    return {
+      privateKey,
+      tpAddress,
+      evmAddress,
+    };
+  };
+
   const sendInscription = async ({
     receiverAddress,
     feeRate,
     inscriptionNumber,
   }: ISendInsProps) => {
     if (!inscriptionID || !receiverAddress) return;
-    const evmAddress = user?.walletAddress;
-    const taprootAddress = user?.walletAddressBtcTaproot;
-
-    const _collectedUTXOs = await getAvailableAssetsCreateTx();
-    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
-      return;
-    const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
-    const privateKey = taprootChild.privateKey;
-    if (!privateKey) throw 'Sign error';
-    const { txID, txHex } = GENERATIVE_SDK.createTx(
+    const assets = await getAvailableAssetsCreateTx();
+    const { privateKey, tpAddress } = await signKey();
+    if (!assets) throw new Error('Can not load assets');
+    const { txID, txHex } = await SDK.sendInsTransaction({
       privateKey,
-      _collectedUTXOs.txrefs,
-      _collectedUTXOs.inscriptions_by_outputs,
+      utxos: assets.txrefs,
+      inscriptions: assets.inscriptions_by_outputs,
       inscriptionID,
-      receiverAddress,
-      0,
-      feeRate
-    );
+      receiver: receiverAddress,
+      feeRate,
+    });
     await trackTx({
       txhash: txID,
-      address: taprootAddress,
+      address: tpAddress,
       receiver: receiverAddress,
       inscription_id: inscriptionID,
       inscription_number: inscriptionNumber,
@@ -73,29 +83,23 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     feeRate,
     amount,
   }: ISendBTCProps) => {
-    const evmAddress = user?.walletAddress;
-    const taprootAddress = user?.walletAddressBtcTaproot;
-    const _collectedUTXOs = currentAssets;
-    if (!evmAddress || !_collectedUTXOs || !taprootAddress) return;
-    const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
-    const privateKey = taprootChild.privateKey;
-    if (!privateKey) throw 'Sign error';
-    const { txID, txHex } = GENERATIVE_SDK.createTx(
+    const assets = currentAssets;
+    if (!assets) throw new Error('Can not load assets');
+    const { privateKey, tpAddress } = await signKey();
+    const { txID, txHex } = await SDK.sendBTCTransaction({
       privateKey,
-      _collectedUTXOs.txrefs,
-      _collectedUTXOs.inscriptions_by_outputs,
-      '',
-      receiverAddress,
+      utxos: assets.txrefs,
+      inscriptions: assets.inscriptions_by_outputs,
+      receiver: receiverAddress,
+      feeRate,
       amount,
-      feeRate
-    );
-
+    });
     // broadcast tx
     await broadcastTx(txHex);
-
+    await sleep(1);
     await trackTx({
       txhash: txID,
-      address: taprootAddress,
+      address: tpAddress,
       receiver: receiverAddress,
       inscription_id: '',
       inscription_number: 0,
@@ -115,21 +119,19 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!inscriptionID) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
-    const _collectedUTXOs = await getAvailableAssetsCreateTx();
-
-    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
-      return;
+    const assets = await getAvailableAssetsCreateTx();
+    if (!evmAddress || !inscriptionID || !assets || !taprootAddress) return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex, splitTxRaw } = await GENERATIVE_SDK.reqBuyInscription({
-      buyerPrivateKey: privateKey,
-      feeRatePerByte: feeRate,
-      inscriptions: _collectedUTXOs.inscriptions_by_outputs,
-      price: price,
-      receiverInscriptionAddress: receiverInscriptionAddress,
-      sellerSignedPsbtB64: sellerSignedPsbtB64,
-      utxos: _collectedUTXOs.txrefs,
+    const { txID, txHex, splitTxRaw } = await SDK.buyInsBTCTransaction({
+      privateKey,
+      feeRate,
+      inscriptions: assets.inscriptions_by_outputs,
+      price,
+      psbtB64: sellerSignedPsbtB64,
+      receiver: receiverInscriptionAddress,
+      utxos: assets.txrefs,
     });
     await trackTx({
       txhash: txID,
@@ -140,7 +142,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       send_amount: price,
       type: TrackTxType.buyInscription,
     });
-
+    await sleep(1);
     if (splitTxRaw) {
       await broadcastTx(splitTxRaw);
       await sleep(1);
@@ -150,36 +152,27 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     await broadcastTx(txHex);
   };
 
-  const listInscription = async ({
-    receiverBTCAddress,
-    amountPayToSeller,
-    feePayToCreator,
-    creatorAddress,
-    feeRate,
-    inscriptionNumber,
-  }: IListInsProps) => {
+  const listInscription = async (payload: IListInsProps) => {
     if (!inscriptionID) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
-    const _collectedUTXOs = await getAvailableAssetsCreateTx();
+    const assets = await getAvailableAssetsCreateTx();
 
-    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
-      return;
+    if (!evmAddress || !inscriptionID || !assets || !taprootAddress) return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { splitTxID, base64Psbt, splitTxRaw } =
-      await GENERATIVE_SDK.reqListForSaleInscription({
-        sellerPrivateKey: privateKey,
-        amountPayToSeller: amountPayToSeller,
-        creatorAddress: creatorAddress,
-        feePayToCreator: feePayToCreator,
-        feeRatePerByte: feeRate,
-        inscriptions: _collectedUTXOs.inscriptions_by_outputs,
-        receiverBTCAddress: receiverBTCAddress,
-        sellInscriptionID: inscriptionID,
-        utxos: _collectedUTXOs.txrefs,
-      });
+    const { splitTxID, base64Psbt, splitTxRaw } = await SDK.sellInsTransaction({
+      privateKey,
+      creatorAddress: payload.creatorAddress,
+      feeRate: payload.feeRate,
+      inscriptionID,
+      inscriptions: assets.inscriptions_by_outputs,
+      payCreator: payload.payCreator,
+      paySeller: payload.paySeller,
+      receiver: payload.receiver,
+      utxos: assets.txrefs,
+    });
     const tasks = [
       await submitListForSale({
         raw_psbt: base64Psbt,
@@ -193,9 +186,9 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
         await trackTx({
           txhash: splitTxID,
           address: taprootAddress,
-          receiver: receiverBTCAddress,
+          receiver: payload.receiver,
           inscription_id: inscriptionID,
-          inscription_number: inscriptionNumber,
+          inscription_number: payload.inscriptionNumber,
           send_amount: 0,
           type: TrackTxType.listSplit,
         })
@@ -213,22 +206,20 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!inscriptionID || !receiverAddress) return;
     const evmAddress = user?.walletAddress;
     const taprootAddress = user?.walletAddressBtcTaproot;
-    const _collectedUTXOs = await getAvailableAssetsCreateTx();
+    const assets = await getAvailableAssetsCreateTx();
 
-    if (!evmAddress || !inscriptionID || !_collectedUTXOs || !taprootAddress)
-      return;
+    if (!evmAddress || !inscriptionID || !assets || !taprootAddress) return;
     const { taprootChild } = await generateBitcoinTaprootKey(evmAddress);
     const privateKey = taprootChild.privateKey;
     if (!privateKey) throw 'Sign error';
-    const { txID, txHex } = GENERATIVE_SDK.createTx(
+    const { txID, txHex } = await SDK.sendInsTransaction({
       privateKey,
-      _collectedUTXOs.txrefs,
-      _collectedUTXOs.inscriptions_by_outputs,
+      utxos: assets.txrefs,
+      inscriptions: assets.inscriptions_by_outputs,
       inscriptionID,
-      receiverAddress,
-      0,
-      feeRate
-    );
+      receiver: receiverAddress,
+      feeRate,
+    });
     // broadcast tx
     await broadcastTx(txHex);
     await sleep(1);
@@ -258,7 +249,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       GENERATIVE_SDK.getBTCBalance({
         utxos: _collectedUTXOs.txrefs,
         inscriptions: _collectedUTXOs.inscriptions_by_outputs,
-      })
+      }).toNumber()
     );
   };
   const debounceGetBalance = debounce(getBalance, 200);
