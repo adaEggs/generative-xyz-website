@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
@@ -7,19 +7,10 @@ import { useRouter } from 'next/router';
 
 import CategoryTab from '@components/CategoryTab';
 import { LoadingProvider } from '@contexts/loading-context';
-import { ROUTE_PATH } from '@constants/route-path';
-// import { CDN_URL } from '@constants/config';
-// import SvgInset from '@components/SvgInset';
-import Button from '@components/Button';
-
-import { WalletContext } from '@contexts/wallet-context';
-import { getUserSelector } from '@redux/user/selector';
-import { LogLevel } from '@enums/log-level';
-import log from '@utils/logger';
-import { useAppSelector } from '@redux';
 
 import CollectionItems from './CollectionItems';
 import Filter from './Filter';
+import SubmitDaoButton from './SubmitDaoButton';
 
 import s from './Request.module.scss';
 
@@ -41,13 +32,9 @@ const UserItems = dynamic(() => import('./UserItems'), {
   ssr: false,
 });
 
-const LOG_PREFIX = 'DAOPage';
-
 const RequestPage = (): JSX.Element => {
   const router = useRouter();
   const { tab = 0 } = router.query;
-  const { connect } = useContext(WalletContext);
-  const user = useAppSelector(getUserSelector);
 
   const [currentTabActive, setCurrentTabActive] = useState<number>(0);
 
@@ -58,27 +45,6 @@ const RequestPage = (): JSX.Element => {
       setCurrentTabActive(DAO_TYPE.ARTIST);
     }
   }, [tab]);
-  const [isConnecting, setIsConnecting] = useState<boolean>(false);
-
-  const handleConnectWallet = async (): Promise<void> => {
-    try {
-      setIsConnecting(true);
-      await connect();
-      router.push(ROUTE_PATH.CREATE_BTC_PROJECT);
-    } catch (err: unknown) {
-      log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-    } finally {
-      setIsConnecting(false);
-    }
-  };
-
-  const onClickToUpload = useCallback(async () => {
-    if (user) {
-      router.push(ROUTE_PATH.CREATE_BTC_PROJECT);
-    } else {
-      handleConnectWallet();
-    }
-  }, [user]);
 
   return (
     <div className={s.request}>
@@ -112,19 +78,7 @@ const RequestPage = (): JSX.Element => {
                   />
                 ))}
               </div>
-              <div className={s.request_submit}>
-                <div className={s.request_submit_text}>
-                  {user
-                    ? 'It’s free and simple to release art on Bitcon.'
-                    : 'Connect wallet to submit a collection.'}
-                </div>
-                <Button
-                  className={s.request_submit_btn}
-                  onClick={onClickToUpload}
-                >
-                  {isConnecting ? 'Connecting...' : 'Submit a collection'}
-                </Button>
-              </div>
+              <SubmitDaoButton currentTabActive={currentTabActive} />
             </div>
           </Col>
         </Row>
