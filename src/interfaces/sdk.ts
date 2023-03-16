@@ -3,6 +3,7 @@ import {
   UTXO,
   ICreateTxBuyResp,
   ICreateTxSellResp,
+  BuyReqInfo,
 } from 'generative-sdk';
 import {
   ICollectedUTXOResp,
@@ -58,11 +59,22 @@ interface ISellInsReq {
   feeRate: number;
 }
 
+// Amount validator
 interface IAmountValidatorReq {
   feeRate: number;
   assets: ICollectedUTXOResp | undefined;
   amount: string;
   inscriptionID?: string;
+}
+
+// Buy multiple inscription
+type IBuyMulInsBTCResp = ICreateTxBuyResp;
+interface IBuyMulInsBTCReq {
+  buyInfos: BuyReqInfo[];
+  privateKey: Buffer;
+  utxos: UTXO[];
+  inscriptions: IInscriptionByOutput;
+  feeRate: number;
 }
 
 export type {
@@ -75,4 +87,6 @@ export type {
   ISellInsResp,
   ISellInsReq,
   IAmountValidatorReq,
+  IBuyMulInsBTCResp,
+  IBuyMulInsBTCReq,
 };

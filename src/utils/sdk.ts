@@ -8,6 +8,8 @@ import {
   ISellInsResp,
   ISellInsReq,
   IAmountValidatorReq,
+  IBuyMulInsBTCReq,
+  IBuyMulInsBTCResp,
 } from '@interfaces/sdk';
 import BigNumber from 'bignumber.js';
 import * as GENERATIVE_SDK from 'generative-sdk';
@@ -80,6 +82,17 @@ class GenerativeSDK {
       payload.feeRate,
       true
     );
+  };
+  buyMulInsBTCTransaction = async (
+    payload: IBuyMulInsBTCReq
+  ): Promise<IBuyMulInsBTCResp> => {
+    return GENERATIVE_SDK.reqBuyMultiInscriptions({
+      buyReqInfos: payload.buyInfos,
+      buyerPrivateKey: payload.privateKey,
+      feeRatePerByte: payload.feeRate,
+      inscriptions: payload.inscriptions,
+      utxos: payload.utxos,
+    });
   };
 }
 

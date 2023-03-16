@@ -61,7 +61,6 @@ const ButtonSweepBTC = React.memo(
         </ButtonIcon>
         {!!tpAddress && isShow && (
           <ModalSweepBTC
-            amountOrigin={amount.origin.toString()}
             isShow={isShow}
             onHide={hideModal}
             isDetail={true}

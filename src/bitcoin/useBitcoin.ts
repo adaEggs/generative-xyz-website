@@ -12,6 +12,7 @@ import {
 import { ICollectedUTXOResp, TrackTxType } from '@interfaces/api/bitcoin';
 import {
   IBuyInsProps,
+  IBuyMulInsProps,
   ICancelInsProps,
   IListInsProps,
   ISendBTCProps,
@@ -258,12 +259,43 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     debounceGetBalance(currentAssets);
   }, [currentAssets]);
 
+  const buyMulInscription = async (payload: IBuyMulInsProps) => {
+    if (!inscriptionID) return;
+    const assets = await getAvailableAssetsCreateTx();
+    const { privateKey, tpAddress } = await signKey();
+    if (!inscriptionID || !assets) return;
+    const { txID, txHex, splitTxRaw } = await SDK.buyMulInsBTCTransaction({
+      privateKey,
+      buyInfos: payload.buyInfos,
+      feeRate: payload.feeRate,
+      inscriptions: assets.inscriptions_by_outputs,
+      utxos: assets.txrefs,
+    });
+    await trackTx({
+      txhash: txID,
+      address: tpAddress,
+      receiver: payload.receiver,
+      inscription_id: inscriptionID,
+      inscription_number: 0,
+      send_amount: payload.price,
+      type: TrackTxType.buyInscription,
+    });
+    await sleep(1);
+    if (splitTxRaw) {
+      await broadcastTx(splitTxRaw);
+      await sleep(1);
+    }
+    // broadcast tx
+    await broadcastTx(txHex);
+  };
+
   return {
     sendInscription,
     sendBitcoin,
     buyInscription,
     listInscription,
     cancelInscription,
+    buyMulInscription,
 
     satoshiAmount,
   };

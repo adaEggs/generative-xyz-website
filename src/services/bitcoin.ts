@@ -304,12 +304,9 @@ export const retrieveOrder = async (
 
 export const retrieveOrders = async (
   payload: IRetrieveOrdersPayload
-): Promise<IRetrieveOrdersResp> => {
-  let data: IRetrieveOrdersResp = {
-    raw_psbt_list: [],
-  };
+): Promise<IRetrieveOrdersResp | undefined> => {
   try {
-    data = await post<IRetrieveOrdersPayload, IRetrieveOrdersResp>(
+    return post<IRetrieveOrdersPayload, IRetrieveOrdersResp>(
       '/dex/retrieve-orders',
       payload
     );
@@ -317,7 +314,6 @@ export const retrieveOrders = async (
     log('failed to get retrieve order', LogLevel.ERROR, LOG_PREFIX);
     throw err;
   }
-  return data;
 };
 
 export const submitCancel = async (payload: {

@@ -1,3 +1,5 @@
+import { BuyReqInfo } from 'generative-sdk';
+
 export interface ISendInsProps {
   receiverAddress: string;
   feeRate: number;
@@ -38,4 +40,11 @@ export interface ISignKeyResp {
   privateKey: Buffer;
   tpAddress: string;
   evmAddress: string;
+}
+
+export interface IBuyMulInsProps {
+  feeRate: number;
+  price: number;
+  receiver: string;
+  buyInfos: BuyReqInfo[];
 }

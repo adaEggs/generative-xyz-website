@@ -115,7 +115,12 @@ export interface IRetrieveOrdersPayload {
 }
 
 export interface IRetrieveOrdersResp {
-  raw_psbt_list: string[];
+  raw_psbt_list: {
+    [key: string]: string;
+  };
+  raw_psbt_list_not_avail: {
+    [key: string]: string;
+  };
 }
 
 export interface IRetrieveOrderResp {
