@@ -3,6 +3,12 @@
   margin-bottom: rem(16);
 }
 
+.tableItemsHead {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .layout_left {
   max-height: calc(100vh - #{rem(210)});
   overflow-y: scroll;
@@ -77,7 +83,7 @@
 
   .spacing {
     padding-top: rem(24);
-    max-height: calc(100vh - #{rem(300)});
+    max-height: calc(100vh - #{rem(340)});
     overflow-y: scroll;
 
     @include disable-scrollbar;

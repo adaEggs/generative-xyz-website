@@ -28,6 +28,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { TwitterShareButton } from 'react-share';
 import useAsyncEffect from 'use-async-effect';
 import ActivityStats from '../ActivityStats';
+import BuyBottomBar from '../BuyBottomBar';
 import TokenTopFilter from '../TokenTopFilter';
 import collectionStyles from '../styles.module.scss';
 import styles from './ShopLayout.module.scss';
@@ -39,15 +40,6 @@ type Props = {
 
 const LOG_PREFIX = 'ShopLayout';
 
-const TABLE_HEADINGS = [
-  // <div className={styles.checkbox}>{/* <input type="checkbox" /> */}</div>,
-  '',
-  'Item',
-  // 'Last sale',
-  'Owner',
-  'Buy now',
-];
-
 const ShopLayout = (props: Props) => {
   const { showReportMsg, setShowReportModal } = props;
   const router = useRouter();
@@ -57,6 +49,11 @@ const ShopLayout = (props: Props) => {
   const {
     projectData: projectInfo,
     listItems,
+    selectedOrders,
+    removeAllOrders,
+    selectAllOrders,
+    removeSelectedOrder,
+    addSelectedOrder,
     isLoaded,
     total,
     isNextPageLoaded,
@@ -96,6 +93,26 @@ const ShopLayout = (props: Props) => {
     }
   };
 
+  const onClickItems = () => {
+    selectedOrders.length > 0 ? removeAllOrders() : selectAllOrders();
+  };
+
+  const TABLE_HEADINGS = [
+    // <div className={styles.checkbox}>{/* <input type="checkbox" /> */}</div>,
+    <SvgInset
+      key=""
+      size={14}
+      svgUrl={`${CDN_URL}/icons/${
+        selectedOrders.length > 0 ? 'ic_checkboxed' : 'ic_checkbox'
+      }.svg`}
+      onClick={onClickItems}
+    />,
+    selectedOrders.length > 0 ? `${selectedOrders.length} Selected` : 'Items',
+    // 'Last sale',
+    'Owner',
+    'Buy now',
+  ];
+
   const tableData = listItems?.map(item => {
     const isBuyable = item?.buyable && item?.sell_verified;
 
@@ -103,13 +120,32 @@ const ShopLayout = (props: Props) => {
 
     const isBuyETH = isBuyable && !!item?.priceETH;
 
+    const isSelectedOrder = selectedOrders.includes(item.orderID);
+
+    const onSelectItem = () => {
+      if (isBuyable) {
+        isSelectedOrder
+          ? removeSelectedOrder(item.orderID)
+          : addSelectedOrder(item.orderID);
+      }
+    };
+
     return {
       id: item.tokenID,
 
       render: {
         checkbox: (
           <div className={styles.checkbox}>
-            {/* <input type="checkbox" /> */}
+            {isBuyable && (
+              <SvgInset
+                className={s.collectionCard_thumb_selectIcon}
+                size={14}
+                svgUrl={`${CDN_URL}/icons/${
+                  isSelectedOrder ? 'ic_checkboxed' : 'ic_checkbox'
+                }.svg`}
+                onClick={onSelectItem}
+              />
+            )}
           </div>
         ),
         name: (
@@ -416,6 +452,7 @@ const ShopLayout = (props: Props) => {
           </div>
           {/* </Tab>
           </Tabs> */}
+          <BuyBottomBar />
         </div>
         <div className={`${styles.layout_right}`}>
           <ActivityStats />
