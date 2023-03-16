@@ -1,12 +1,23 @@
 .filterWrapper {
-  margin-top: rem(24);
+  margin-top: rem(16);
+  margin-bottom: rem(16);
 }
 
 .layout_left {
   max-height: calc(100vh - #{rem(210)});
   overflow-y: scroll;
-  flex: 0 0 20%;
-  width: 20%;
+  flex: 0 0 30%;
+  width: 30%;
+  display: none;
+
+  @include min-tablet {
+    display: block;
+  }
+
+  @include min-pc {
+    flex: 0 0 20%;
+    width: 20%;
+  }
 
   @include disable-scrollbar;
 
@@ -36,12 +47,32 @@
     margin-top: rem(16);
     margin-bottom: rem(24);
   }
+
+  :global(.select__control) {
+    min-width: unset;
+    width: 100%;
+  }
 }
 
 .layout_middle {
-  padding: rem(24);
-  flex: 0 0 60%;
-  width: 60%;
+  flex: 0 0 100%;
+  width: 100%;
+
+  @include min-tablet {
+    padding: rem(24);
+    flex: 0 0 70%;
+    width: 70%;
+  }
+
+  @include min-pc {
+    flex: 0 0 55%;
+    width: 55%;
+  }
+
+  @include min-pc-wide {
+    flex: 0 0 60%;
+    width: 60%;
+  }
 
   .spacing {
     padding-top: rem(24);
@@ -85,13 +116,21 @@
 }
 
 .layout_right {
-  padding-top: rem(24);
-  padding-left: rem(24);
-  border-left: 1px solid $black-5;
-  flex: 0 0 20%;
-  width: 20%;
+  padding-top: rem(12);
+  flex: 0 0 100%;
+  width: 100%;
+  margin-bottom: rem(40px);
 
-  @include mobile {
-    display: none;
+  @include min-pc {
+    margin-bottom: 0;
+    flex: 0 0 25%;
+    width: 25%;
+    padding-left: rem(24);
+    border-left: 1px solid $black-5;
+  }
+
+  @include min-pc-wide {
+    flex: 0 0 20%;
+    width: 20%;
   }
 }

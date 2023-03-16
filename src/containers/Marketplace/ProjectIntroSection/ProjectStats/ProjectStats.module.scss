@@ -2,26 +2,29 @@
   display: flex;
   flex-wrap: wrap;
   gap: rem(24);
+  margin-top: rem(16px);
+  margin-left: rem(70px);
+
+  @include min-pc {
+    margin-top: 0;
+    margin-left: 0;
+  }
 
   @include mobile {
     margin-bottom: rem(24px);
   }
 
   &_item {
-    min-width: rem(120);
-    text-align: right;
+    min-width: rem(80);
+
+    @include min-pc {
+      min-width: rem(120);
+      text-align: right;
+    }
 
     > p:first-of-type {
       color: $black-40;
       text-transform: uppercase;
-    }
-
-    &__icon {
-      .stats_item_text {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-      }
     }
   }
 }
