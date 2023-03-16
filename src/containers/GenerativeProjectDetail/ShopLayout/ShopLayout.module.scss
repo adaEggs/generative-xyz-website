@@ -29,6 +29,7 @@
     position: sticky;
     background-color: white;
     padding-top: rem(24);
+    z-index: 2;
   }
 
   @include mobile {
@@ -154,8 +155,9 @@
 
 .tabs {
   gap: rem(32);
-  // border: none;
   flex-wrap: nowrap;
+
+  --bs-nav-tabs-border-color: #{$black-5} !important;
 
   :global(.nav-link) {
     white-space: nowrap;

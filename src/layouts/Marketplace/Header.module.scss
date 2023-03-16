@@ -1,6 +1,11 @@
 @import "src/styles/_themes/mixins";
 
 .header {
+  --bg-freeTools: #{$white};
+  --bg-freeTools-hover: rgb(0 0 0 / 5%);
+  --color-freeTools: #{$black-100};
+  --color-40-freeTools: #{$black-40-solid};
+
   width: 100%;
   z-index: 9;
   position: relative;
@@ -505,12 +510,12 @@
 
   .freeToolsDropdown {
     position: absolute;
-    background-color: $white;
+    background-color: var(--bg-freeTools);
     width: rem(410px);
     left: 50%;
     top: 100%;
     transform: translate(-50%);
-    box-shadow: 35px 15px 120px rgb(0 0 0 / 15%);
+    box-shadow: 35px 15px 120px var(--bg-freeTools-hover);
     border-radius: 2px;
     display: none;
 
@@ -530,7 +535,7 @@
     }
 
     &:hover {
-      background-color: rgb(0 0 0 / 5%);
+      background-color: var(--bg-freeTools-hover);
     }
 
     a {
@@ -542,7 +547,7 @@
     font-weight: 500;
     font-size: rem(16px);
     line-height: rem(26px);
-    color: $black-100;
+    color: var(--color-freeTools);
     text-transform: capitalize;
   }
 
@@ -551,22 +556,29 @@
     font-size: rem(14px);
     line-height: rem(22px);
     text-transform: none;
-    color: $black-40-solid;
+    color: var(--color-40-freeTools);
   }
 
   .arrowIcon {
     display: inline-block;
 
     :global(svg path) {
-      stroke: $black-40-solid;
+      stroke: var(--color-40-freeTools);
     }
   }
 
   :hover {
     .arrowIcon {
       :global(svg path) {
-        stroke: $black-100;
+        stroke: var(--color-freeTools);
       }
     }
   }
+}
+
+.header.dark {
+  --bg-freeTools: #{$primary-brand};
+  --bg-freeTools-hover: rgb(255 255 255 / 5%);
+  --color-freeTools: #{$white};
+  --color-40-freeTools: #{$black-40-solid};
 }

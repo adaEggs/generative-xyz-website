@@ -316,7 +316,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     [user]
   );
 
-  const debounceFetchProjectFeeRate = debounce(fetchProjectFeeRate, 800);
+  const debounceFetchProjectFeeRate = debounce(fetchProjectFeeRate, 300);
 
   const fetchProjectItems = async (): Promise<void> => {
     if (projectData?.genNFTAddr && !isWhitelistProject) {

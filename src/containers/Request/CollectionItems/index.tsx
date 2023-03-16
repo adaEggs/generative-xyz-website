@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { toast } from 'react-hot-toast';
+import copy from 'copy-to-clipboard';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import Button from '@components/Button';
@@ -16,7 +17,10 @@ import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
 import { ROUTE_PATH } from '@constants/route-path';
 import { getDaoProjects, voteDaoProject } from '@services/request';
 import { formatBTCPrice } from '@utils/format';
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
 import { convertIpfsToHttp } from '@utils/image';
+import { IconVerified } from '@components/IconVerified';
 
 import NoData from '../NoData';
 import SkeletonItem from '../SkeletonItem';
@@ -30,7 +34,7 @@ export const CollectionItems = ({
   className,
 }: CollectionItemsProps): JSX.Element => {
   const router = useRouter();
-  const { keyword = '', status = '', sort = '' } = router.query;
+  const { keyword = '', status = '', sort = '', id = '' } = router.query;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -41,6 +45,7 @@ export const CollectionItems = ({
   const initData = async (): Promise<void> => {
     setIsLoaded(false);
     const collections = await getDaoProjects({
+      id,
       keyword,
       status,
       sort,
@@ -61,6 +66,7 @@ export const CollectionItems = ({
       setIsLoading(true);
       if (totalPerPage > LIMIT) {
         const nextCollections = await getDaoProjects({
+          id,
           keyword,
           status,
           sort,
@@ -127,6 +133,12 @@ export const CollectionItems = ({
     router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
   };
 
+  const copyLink = (id: string) => {
+    copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}`);
+    toast.remove();
+    toast.success('Copied');
+  };
+
   return (
     <div className={cn(className, s.collections)}>
       <Row className={s.items_projects}>
@@ -137,26 +149,26 @@ export const CollectionItems = ({
             ))}
           </Col>
         ) : (
-          <>
+          <Col md={12}>
             <div className={cn(s.collections_header)}>
-              <div className="col-md-1">Proposal ID</div>
-              <div className="col-md-2">Image</div>
-              <div className="col-md-2 d-flex justify-content-center">
+              <div className="col-md-1 d-flex justify-content-start">
+                Proposal ID
+              </div>
+              <div className="col-md-2 d-flex justify-content-start">Image</div>
+              <div className="col-md-2 d-flex justify-content-start">
                 Collection
               </div>
-              <div className="col-md-1 d-flex justify-content-center">
+              <div className="col-md-1 d-flex justify-content-start">
                 Max Supply
               </div>
-              <div className="col-md-1 d-flex justify-content-center">
-                Price
-              </div>
-              <div className="col-md-1 d-flex justify-content-center">
+              <div className="col-md-1 d-flex justify-content-start">Price</div>
+              <div className="col-md-1 d-flex justify-content-start">
                 Artist
               </div>
               <div className="col-md-1 d-flex justify-content-center">
                 Expiration
               </div>
-              <div className="col-md-1 d-flex justify-content-center">
+              <div className="col-md-1 d-flex justify-content-start">
                 Status
               </div>
               <div className="col-md-2 invisible">Action</div>
@@ -180,8 +192,10 @@ export const CollectionItems = ({
               >
                 {combineList?.map((item: any) => (
                   <div key={item.id} className={s.collections_row}>
-                    <div className="col-md-1">{item?.seq_id}</div>
-                    <div className="col-md-2">
+                    <div className="col-md-1 d-flex justify-content-start">
+                      {item?.seq_id}
+                    </div>
+                    <div className="col-md-2 d-flex justify-content-start">
                       <Image
                         className={s.collections_pointer}
                         onClick={() =>
@@ -193,9 +207,12 @@ export const CollectionItems = ({
                         alt={item?.project?.name}
                       />
                     </div>
-                    <div className="col-md-2 d-flex justify-content-center">
+                    <div className="col-md-2 d-flex justify-content-start">
                       <span
-                        className={s.collections_pointer}
+                        className={cn(
+                          s.collections_pointer,
+                          s.collections_projectName
+                        )}
                         onClick={() =>
                           goToCollectionPage(item?.project?.token_id)
                         }
@@ -206,47 +223,67 @@ export const CollectionItems = ({
                     <div className="col-md-1 d-flex justify-content-center">
                       {item?.project?.max_supply}
                     </div>
-                    <div className="col-md-1 d-flex justify-content-center">
+                    <div className="col-md-1 d-flex justify-content-start">
                       {formatBTCPrice(item?.project?.mint_price)} BTC
                     </div>
-                    <div className="col-md-1 d-flex justify-content-center">
-                      <span
-                        className={s.collections_pointer}
-                        onClick={() =>
-                          goToProfilePage(item?.user?.wallet_address)
-                        }
-                      >
-                        {item?.user?.display_name}
-                      </span>
+                    <div className="col-md-1 d-flex justify-content-start">
+                      <div className={s.collections_pointer}>
+                        <span
+                          className={s.collections_artist}
+                          onClick={() =>
+                            goToProfilePage(
+                              item?.user?.wallet_address_btc_taproot ||
+                                item?.user?.wallet_address
+                            )
+                          }
+                        >
+                          {item?.user?.twitterVerified && (
+                            <span className={s.collections_artist_verified}>
+                              <IconVerified width={16} height={16} />
+                            </span>
+                          )}
+                          {item?.user?.display_name}
+                        </span>
+                      </div>
                     </div>
                     <div className="col-md-1 d-flex justify-content-center">{`${dayjs(
                       item?.expired_at
                     ).format('MMM DD')}`}</div>
-                    <div className="col-md-1 d-flex justify-content-center">
+                    <div className="col-md-1 d-flex justify-content-start">
                       {getStatusProposal(item?.status)}
                     </div>
                     <div className="col-md-2 d-flex justify-content-end">
-                      <Button
+                      <span
+                        className={s.collections_share}
+                        onClick={() => copyLink(item?.id)}
+                      >
+                        <SvgInset
+                          className={s.icCopy}
+                          size={13}
+                          svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                        />
+                      </span>
+                      {/* <Button
                         className={cn(s.collections_btn, s.collections_mr6)}
                         disabled={item?.action?.can_vote === false}
                         variant="outline-black"
                         onClick={() => submitVote(item?.id, 0)}
                       >
                         Against
-                      </Button>
+                      </Button> */}
                       <Button
                         className={cn(s.collections_btn, s.collections_btnVote)}
                         disabled={item?.action?.can_vote === false}
                         onClick={() => submitVote(item?.id, 1)}
                       >
-                        Vote
+                        Vote ({item?.total_vote}/2)
                       </Button>
                     </div>
                   </div>
                 ))}
               </InfiniteScroll>
             )}
-          </>
+          </Col>
         )}
       </Row>
     </div>

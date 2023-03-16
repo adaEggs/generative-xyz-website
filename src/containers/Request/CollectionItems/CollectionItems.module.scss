@@ -38,7 +38,7 @@
   }
 
   &_executed {
-    color: #ff7e21;
+    color: #4f43e2;
   }
 
   &_voting {
@@ -81,5 +81,34 @@
     &:hover {
       cursor: pointer;
     }
+  }
+
+  &_share {
+    margin-right: rem(6px);
+    padding: rem(9px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #1c1c1c;
+    border-radius: 2px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &_artist {
+    &_verified {
+      img {
+        margin-right: rem(2px);
+        display: inline;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  &_projectName {
+    max-width: 95%;
+    word-wrap: break-word;
   }
 }

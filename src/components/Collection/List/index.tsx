@@ -43,7 +43,7 @@ const CollectionList = ({
   const layoutCols =
     layout === 'mint'
       ? 'col-wide-2_5 col-xl-4 col-12'
-      : 'col-xxxl-3 col-xl-4 col-12 ';
+      : 'col-xxxl-3 col-xl-4 col-md-6 col-12 ';
 
   const renderLeftSide = () => {
     if (layout === 'shop') {

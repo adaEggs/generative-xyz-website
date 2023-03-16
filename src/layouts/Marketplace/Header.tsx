@@ -8,7 +8,7 @@ import { LogLevel } from '@enums/log-level';
 import s from '@layouts/Default/HeaderFixed/Header.module.scss';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress } from '@utils/format';
+import { formatAddress, formatAddressDisplayName } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import { useRouter } from 'next/router';
@@ -17,7 +17,6 @@ import { Container } from 'react-bootstrap';
 import styles from './Header.module.scss';
 import { getFaucetLink, isTestnet } from '@utils/chain';
 import QuickBuy from '@layouts/Marketplace/QuickBuy';
-import _isEmpty from 'lodash/isEmpty';
 import { MENU_HEADER } from '@constants/header';
 import MenuMobile from '@layouts/Marketplace/MenuMobile';
 import { gsap } from 'gsap';
@@ -58,7 +57,7 @@ const Header: React.FC<IProp> = ({
         router.push(`${ROUTE_PATH.PROFILE}/${btcAddress}`),
     },
     {
-      id: 'disconect-wallet',
+      id: 'disconnect-wallet',
       name: 'Disconnect wallet',
       onClick: () => {
         disconnect().then(() => {
@@ -87,10 +86,6 @@ const Header: React.FC<IProp> = ({
     }
     return url;
   };
-
-  // const handleOpenFreetoolsDropdown = (): void => {
-  //   setIsOpenFreetools(true);
-  // };
 
   useOnClickOutside(freeToolsRef, () => setIsOpenFreetools(false));
 
@@ -309,18 +304,6 @@ const Header: React.FC<IProp> = ({
 
                     <li
                       className={cs(
-                        activePath === MENU_HEADER[1].activePath &&
-                          styles.active
-                      )}
-                      key={`header-${MENU_HEADER[1].id}`}
-                    >
-                      <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>
-                        {MENU_HEADER[1].name}
-                      </Link>
-                    </li>
-
-                    <li
-                      className={cs(
                         activePath === MENU_HEADER[2].activePath &&
                           styles.active
                       )}
@@ -329,42 +312,6 @@ const Header: React.FC<IProp> = ({
                       <Link href={getUrlWithQueryParams(MENU_HEADER[2].route)}>
                         {MENU_HEADER[2].name}
                       </Link>
-                    </li>
-                    <li
-                      className={cs(
-                        activePath === MENU_HEADER[13].activePath &&
-                          styles.active
-                      )}
-                      key={`header-${MENU_HEADER[13].id}`}
-                    >
-                      <Link href={getUrlWithQueryParams(MENU_HEADER[13].route)}>
-                        {MENU_HEADER[13].name}
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className={styles.header_right}>
-                  <SearchCollection theme={theme} />
-
-                  <ul className={`${styles.navBar} ${styles[theme]}`}>
-                    <li
-                      ref={freeToolsRef}
-                      // onClick={handleOpenFreetoolsDropdown}
-                      className={cs(styles.freeTools, {
-                        [`${styles.active}`]:
-                          activePath === MENU_HEADER[7].activePath,
-                      })}
-                    >
-                      <a>
-                        Free tools
-                        <SvgInset
-                          className={styles.arrowIcon}
-                          svgUrl={`${CDN_URL}/icons/ic-chevron-down-20x20.svg`}
-                          size={20}
-                        />
-                      </a>
-                      {renderFreeToolsDropDown()}
                     </li>
 
                     <li
@@ -377,7 +324,53 @@ const Header: React.FC<IProp> = ({
                         {MENU_HEADER[8].name}
                       </Link>
                     </li>
+                  </ul>
+                </div>
 
+                <div className={styles.header_right}>
+                  <SearchCollection theme={theme} />
+
+                  <ul className={`${styles.navBar} ${styles[theme]}`}>
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[13].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[13].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[13].route)}>
+                        {MENU_HEADER[13].name}
+                      </Link>
+                    </li>
+                    <li
+                      ref={freeToolsRef}
+                      // onClick={handleOpenFreetoolsDropdown}
+                      className={cs(styles.freeTools, {
+                        [`${styles.active}`]:
+                          activePath === MENU_HEADER[7].activePath,
+                      })}
+                    >
+                      <a>
+                        Individuals
+                        <SvgInset
+                          className={styles.arrowIcon}
+                          svgUrl={`${CDN_URL}/icons/ic-chevron-down-20x20.svg`}
+                          size={20}
+                        />
+                      </a>
+                      {renderFreeToolsDropDown()}
+                    </li>
+                    <li
+                      className={cs(
+                        activePath === MENU_HEADER[1].activePath &&
+                          styles.active
+                      )}
+                      key={`header-${MENU_HEADER[1].id}`}
+                    >
+                      <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>
+                        {MENU_HEADER[1].name}
+                      </Link>
+                    </li>
                     <li
                       className={cs(
                         activePath === MENU_HEADER[10].activePath &&
@@ -405,9 +398,9 @@ const Header: React.FC<IProp> = ({
                             height={32}
                             width={32}
                           />
-                          {formatAddress(
+                          {formatAddressDisplayName(
                             user.walletAddressBtcTaproot || '',
-                            10
+                            6
                           )}
                         </a>
                       </li>

@@ -22,6 +22,7 @@ export interface IGetDaoProjectsPayload {
   limit: number;
   cursor?: string;
   sort?: string | string[];
+  id?: string | string[];
 }
 
 export interface IGetDaoProjectsResponse {
@@ -40,6 +41,7 @@ export interface IGetDaoArtistsPayload {
   limit: number;
   cursor?: string;
   sort?: string | string[];
+  id?: string | string[];
 }
 
 export interface IGetDaoArtistsResponse {

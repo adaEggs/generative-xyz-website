@@ -7,11 +7,16 @@ import React, { useEffect, useState } from 'react';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
+import copy from 'copy-to-clipboard';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import Button from '@components/Button';
 import { Loading } from '@components/Loading';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
+import { convertIpfsToHttp } from '@utils/image';
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { getDaoArtists, voteDaoArtist } from '@services/request';
 import { formatAddress } from '@utils/format';
@@ -26,7 +31,7 @@ interface UserItemsProps {
 
 export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
   const router = useRouter();
-  const { keyword = '', status = '', sort = '' } = router.query;
+  const { keyword = '', status = '', sort = '', id = '' } = router.query;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -37,6 +42,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
   const initData = async (): Promise<void> => {
     setIsLoaded(false);
     const users = await getDaoArtists({
+      id,
       keyword,
       status,
       sort,
@@ -57,6 +63,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
       setIsLoading(true);
       if (totalPerPage > LIMIT) {
         const nextUsers = await getDaoArtists({
+          id,
           keyword,
           status,
           sort,
@@ -106,6 +113,12 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
     router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
   };
 
+  const copyLink = (id: string) => {
+    copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}`);
+    toast.remove();
+    toast.success('Copied');
+  };
+
   return (
     <div className={cn(className, s.users)}>
       <Row className={s.items_projects}>
@@ -116,7 +129,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
             ))}
           </Col>
         ) : (
-          <>
+          <Col md={12}>
             <div className={s.users_header}>
               <div className="col-md-1">Proposal ID</div>
               <div className="col-md-3">Artist</div>
@@ -145,8 +158,11 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                   <div key={item.id} className={s.users_row}>
                     <div className="col-md-1">{item?.seq_id}</div>
                     <div className="col-md-3">
-                      <span
-                        className={s.users_pointer}
+                      <div
+                        className={cn(
+                          'd-flex align-items-center',
+                          s.users_pointer
+                        )}
                         onClick={() =>
                           goToProfilePage(
                             item?.user?.wallet_address_btc_taproot ||
@@ -154,38 +170,59 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                           )
                         }
                       >
-                        {item?.user?.display_name ||
-                          formatAddress(item?.user?.wallet_address_btc_taproot)}
-                      </span>
+                        <Image
+                          className={s.users_avatar}
+                          src={convertIpfsToHttp(item?.user?.avatar)}
+                          width={48}
+                          height={48}
+                          alt={item?.user?.display_name}
+                        />
+                        <span>
+                          {item?.user?.display_name ||
+                            formatAddress(
+                              item?.user?.wallet_address_btc_taproot
+                            )}
+                        </span>
+                      </div>
                     </div>
                     <div className="col-md-3">{`${dayjs(
-                      item?.user?.expired_at
+                      item?.expired_at
                     ).format('MMM DD')}`}</div>
                     <div className="col-md-2">
                       {getStatusProposal(item?.status)}
                     </div>
                     <div className="col-md-3 d-flex justify-content-end">
-                      <Button
+                      <span
+                        className={s.users_share}
+                        onClick={() => copyLink(item?.id)}
+                      >
+                        <SvgInset
+                          className={s.icCopy}
+                          size={13}
+                          svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
+                        />
+                      </span>
+                      {/* <Button
                         className={cn(s.users_btn, s.users_mr6)}
                         disabled={item?.action?.can_vote === false}
                         variant="outline-black"
                         onClick={() => submitVote(item?.id, 0)}
                       >
                         Report
-                      </Button>
+                      </Button> */}
                       <Button
                         className={cn(s.users_btn, s.users_btnVote)}
                         disabled={item?.action?.can_vote === false}
                         onClick={() => submitVote(item?.id, 1)}
                       >
-                        Verify
+                        Verify ({item?.total_verify}/2)
                       </Button>
                     </div>
                   </div>
                 ))}
               </InfiniteScroll>
             )}
-          </>
+          </Col>
         )}
       </Row>
     </div>
