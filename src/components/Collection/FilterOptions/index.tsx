@@ -162,7 +162,7 @@ const FilterOptions = ({ attributes, isHideStatusLabel }: Props) => {
         <RadioGroups
           options={buyNowOptions}
           name="buyNow"
-          defaultValue={buyNowOptions[0].key}
+          defaultValue={buyNowOptions[1].key}
           checked={`${filterBuyNow}`}
           className={styles.radio_buynow}
           onChange={e => {

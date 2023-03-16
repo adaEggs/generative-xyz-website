@@ -42,6 +42,7 @@ const ShopLayout = (props: Props) => {
     total,
     isNextPageLoaded,
     handleFetchNextPage,
+    showFilter,
   } = useContext(GenerativeProjectDetailContext);
 
   const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -82,9 +83,12 @@ const ShopLayout = (props: Props) => {
   return (
     <div>
       {mobileScreen && (
-        <div className={styles.filterWrapper} id="PROJECT_LIST">
-          <TokenTopFilter className={styles.filter_sort} />
-        </div>
+        <>
+          <div className={styles.filterWrapper} id="PROJECT_LIST">
+            <TokenTopFilter className={styles.filter_sort} />
+          </div>
+          {showFilter && <FilterOptions attributes={projectInfo?.traitStat} />}
+        </>
       )}
 
       <div className="row">

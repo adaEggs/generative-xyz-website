@@ -454,7 +454,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
 
   useEffect(() => {
     if (projectData && projectData.btcFloorPrice > 0) {
-      setFilterBuyNow(true);
+      setFilterBuyNow(false);
     }
   }, [projectData]);
 

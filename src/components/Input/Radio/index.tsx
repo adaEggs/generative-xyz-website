@@ -1,4 +1,5 @@
 import React from 'react';
+import Text from '@components/Text';
 import s from './Radio.module.scss';
 
 type Props = {
@@ -37,7 +38,9 @@ const RadioGroups = ({
                 checked={checked === option.key}
                 // checked={field.value === option.value}
               />
-              <label htmlFor={option.key}>{option.value}</label>
+              <Text as={'label'} size="16" htmlFor={option.key}>
+                {option.value}
+              </Text>
             </div>
           );
         })}
