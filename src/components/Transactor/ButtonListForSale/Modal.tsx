@@ -243,12 +243,11 @@ const ModalListForSale = React.memo(
                         />
                         <div className={s.inputContainer_inputPostfix}>BTC</div>
                       </div>
-                      {!!error ||
-                        (!!errors.price && !!touched.price && (
-                          <p className={s.inputContainer_inputError}>
-                            {error ? error : errors.price}
-                          </p>
-                        ))}
+                      {(!!error || (!!errors.price && !!touched.price)) && (
+                        <p className={s.inputContainer_inputError}>
+                          {error ? error : errors.price}
+                        </p>
+                      )}
                     </div>
                     <AccordionComponent
                       header="Advanced"
