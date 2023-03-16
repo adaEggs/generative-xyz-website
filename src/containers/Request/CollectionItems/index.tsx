@@ -134,7 +134,7 @@ export const CollectionItems = ({
   };
 
   const copyLink = (id: string) => {
-    copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}`);
+    copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}&tab=0`);
     toast.remove();
     toast.success('Copied');
   };
@@ -259,7 +259,7 @@ export const CollectionItems = ({
                       >
                         <SvgInset
                           className={s.icCopy}
-                          size={13}
+                          size={16}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
                       </span>

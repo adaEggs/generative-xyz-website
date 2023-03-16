@@ -114,7 +114,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
   };
 
   const copyLink = (id: string) => {
-    copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}`);
+    copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}&tab=1`);
     toast.remove();
     toast.success('Copied');
   };
@@ -198,7 +198,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                       >
                         <SvgInset
                           className={s.icCopy}
-                          size={13}
+                          size={16}
                           svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
                       </span>
