@@ -14,15 +14,12 @@ const Topbar: React.FC = (): React.ReactElement => {
         <div className={s.wrapper}>
           <div className={s.left}>
             <p className={s.text}>
-              Inscribe your existing Ethereum NFTs onto Bitcoin{` - `}
+              Preserve your valuable Ethereum CryptoArt and NFTs on Bitcoin.
               <Link
                 className={s.startedLink}
-                href={ROUTE_PATH.AUTHENTIC_INSCRIPTIONS}
+                href={ROUTE_PATH.PRESERVE_LANDING}
               >
-                <span>Authentic Inscription </span>
-                <SvgInset
-                  svgUrl={`${CDN_URL}/icons/ic-arrow-right-18x18.svg`}
-                />
+                <span>Learn more</span>
               </Link>
             </p>
           </div>
