@@ -228,6 +228,19 @@ const ModalBuyListed = React.memo(
                         }}
                       />
                     </Row>
+                    {depositData && (
+                      <>
+                        <div className={s.payment_divider} />
+                        <div className={cs(s.payment, s.payment_space)}>
+                          <p className={s.payment_total}>Total</p>
+                          <p
+                            className={s.payment_totalAmount}
+                          >{`${formatEthPrice(
+                            depositData?.eth_amount
+                          )} ETH`}</p>
+                        </div>
+                      </>
+                    )}
                     <AccordionComponent
                       header="Advanced"
                       content={
@@ -302,19 +315,6 @@ const ModalBuyListed = React.memo(
                         </>
                       }
                     />
-                    {depositData && (
-                      <>
-                        <div className={s.payment_divider} />
-                        <div className={s.payment}>
-                          <p className={s.payment_total}>Total</p>
-                          <p
-                            className={s.payment_totalAmount}
-                          >{`${formatEthPrice(
-                            depositData?.eth_amount
-                          )} ETH`}</p>
-                        </div>
-                      </>
-                    )}
                     <ButtonIcon
                       className={s.buttonBuy}
                       disabled={isLoading}
