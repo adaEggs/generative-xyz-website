@@ -21,12 +21,10 @@ const ProjectIntroSection = () => {
   const { isLimitMinted } = useContext(ProjectLayoutContext);
 
   return (
-    <div
-      className={`${s.wrapper} ${
-        !isLimitMinted ? `${s.minted} container` : ''
-      }`}
-    >
-      {!isLimitMinted ? <LayoutForMintout /> : <LayoutForMinting />}
+    <div className={`${s.wrapper} ${!isLimitMinted ? `${s.minted}` : ''}`}>
+      <div className={'container'}>
+        {!isLimitMinted ? <LayoutForMintout /> : <LayoutForMinting />}
+      </div>
     </div>
   );
 };
