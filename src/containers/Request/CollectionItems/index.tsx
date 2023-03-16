@@ -259,8 +259,8 @@ export const CollectionItems = ({
                       >
                         <SvgInset
                           className={s.icCopy}
-                          size={16}
-                          svgUrl={`${CDN_URL}/icons/share.svg`}
+                          size={13}
+                          svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
                       </span>
                       {/* <Button

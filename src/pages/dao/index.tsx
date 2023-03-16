@@ -21,7 +21,7 @@ export const getServerSideProps = async () => {
         title: 'Generative | DAO',
         description:
           'Co-owned and co-operated by the community to empower artists.',
-        image: `${CDN_URL}/images/image.png`,
+        image: `${CDN_URL}/images/dao.jpg`,
       },
     },
   };

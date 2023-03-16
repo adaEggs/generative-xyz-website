@@ -186,7 +186,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                       </div>
                     </div>
                     <div className="col-md-3">{`${dayjs(
-                      item?.user?.expired_at
+                      item?.expired_at
                     ).format('MMM DD')}`}</div>
                     <div className="col-md-2">
                       {getStatusProposal(item?.status)}
@@ -198,8 +198,8 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                       >
                         <SvgInset
                           className={s.icCopy}
-                          size={16}
-                          svgUrl={`${CDN_URL}/icons/share.svg`}
+                          size={13}
+                          svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                         />
                       </span>
                       {/* <Button
