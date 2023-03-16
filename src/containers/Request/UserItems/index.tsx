@@ -110,9 +110,9 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
     }
   };
 
-  const goToProfilePage = (walletAddress: string): void => {
-    router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
-  };
+  // const goToProfilePage = (walletAddress: string): void => {
+  //   router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
+  // };
 
   const copyLink = (id: string) => {
     copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}&tab=1`);
@@ -164,29 +164,38 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                           'd-flex align-items-center',
                           s.users_pointer
                         )}
-                        onClick={() =>
-                          goToProfilePage(
-                            item?.user?.wallet_address_btc_taproot ||
-                              item?.user?.wallet_address
-                          )
-                        }
+                        // onClick={() =>
+                        //   goToProfilePage(
+                        //     item?.user?.wallet_address_btc_taproot ||
+                        //       item?.user?.wallet_address
+                        //   )
+                        // }
                       >
-                        <Image
-                          className={s.users_avatar}
-                          src={
-                            convertIpfsToHttp(item?.user?.avatar) ||
-                            DEFAULT_USER_AVATAR
-                          }
-                          width={48}
-                          height={48}
-                          alt={item?.user?.display_name}
-                        />
-                        <span>
-                          {item?.user?.display_name ||
-                            formatAddress(
-                              item?.user?.wallet_address_btc_taproot
-                            )}
-                        </span>
+                        <a
+                          className={s.users_link}
+                          href={`${ROUTE_PATH.PROFILE}/${
+                            item?.user?.wallet_address_btc_taproot ||
+                            item?.user?.wallet_address
+                          }`}
+                          target="_blank"
+                        >
+                          <Image
+                            className={s.users_avatar}
+                            src={
+                              convertIpfsToHttp(item?.user?.avatar) ||
+                              DEFAULT_USER_AVATAR
+                            }
+                            width={48}
+                            height={48}
+                            alt={item?.user?.display_name}
+                          />
+                          <span>
+                            {item?.user?.display_name ||
+                              formatAddress(
+                                item?.user?.wallet_address_btc_taproot
+                              )}
+                          </span>
+                        </a>
                       </div>
                     </div>
                     <div className="col-md-3">{`${dayjs(
@@ -219,7 +228,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                         disabled={item?.action?.can_vote === false}
                         onClick={() => submitVote(item?.id, 1)}
                       >
-                        Verify ({item?.total_verify}/2)
+                        Verify ({item?.total_verify})
                       </Button>
                     </div>
                   </div>

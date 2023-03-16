@@ -7,19 +7,10 @@ import { useRouter } from 'next/router';
 
 import CategoryTab from '@components/CategoryTab';
 import { LoadingProvider } from '@contexts/loading-context';
-// import { ROUTE_PATH } from '@constants/route-path';
-// import { CDN_URL } from '@constants/config';
-// import SvgInset from '@components/SvgInset';
-
-// import { WalletContext } from '@contexts/wallet-context';
-// import { getUserSelector } from '@redux/user/selector';
-// import { LogLevel } from '@enums/log-level';
-// import log from '@utils/logger';
-// import { useAppSelector } from '@redux';
 
 import CollectionItems from './CollectionItems';
-// import UserItems from './UserItems';
 import Filter from './Filter';
+import SubmitDaoButton from './SubmitDaoButton';
 
 import s from './Request.module.scss';
 
@@ -34,20 +25,16 @@ const CATEGORY = [
   },
   {
     id: DAO_TYPE.ARTIST,
-    name: 'New artists',
+    name: 'New Artists',
   },
 ];
 const UserItems = dynamic(() => import('./UserItems'), {
   ssr: false,
 });
 
-// const LOG_PREFIX = 'RequestsPage';
-
 const RequestPage = (): JSX.Element => {
   const router = useRouter();
   const { tab = 0 } = router.query;
-  // const { connect } = useContext(WalletContext);
-  // const user = useAppSelector(getUserSelector);
 
   const [currentTabActive, setCurrentTabActive] = useState<number>(0);
 
@@ -58,27 +45,6 @@ const RequestPage = (): JSX.Element => {
       setCurrentTabActive(DAO_TYPE.ARTIST);
     }
   }, [tab]);
-  // const [isConnecting, setIsConnecting] = useState<boolean>(false);
-
-  // const handleConnectWallet = async (): Promise<void> => {
-  //   try {
-  //     setIsConnecting(true);
-  //     await connect();
-  //     router.push(ROUTE_PATH.CREATE_BTC_PROJECT);
-  //   } catch (err: unknown) {
-  //     log(err as Error, LogLevel.DEBUG, LOG_PREFIX);
-  //   } finally {
-  //     setIsConnecting(false);
-  //   }
-  // };
-
-  // const onClickToUpload = useCallback(async () => {
-  //   if (user) {
-  //     router.push(ROUTE_PATH.CREATE_BTC_PROJECT);
-  //   } else {
-  //     handleConnectWallet();
-  //   }
-  // }, [user]);
 
   return (
     <div className={s.request}>
@@ -101,25 +67,18 @@ const RequestPage = (): JSX.Element => {
                     key={item.id}
                     onClick={() => {
                       setCurrentTabActive(item.id);
+                      router.replace({
+                        query: {
+                          tab: item.id,
+                        },
+                      });
                     }}
                     active={currentTabActive === item.id}
                     loading={false}
                   />
                 ))}
               </div>
-              {/* <div className={s.request_submit}>
-                <div className={s.request_submit_text}>
-                  {user
-                    ? 'It’s free and simple to release art on Bitcon.'
-                    : 'Connect wallet to submit a collection.'}
-                </div>
-                <Button
-                  className={s.request_submit_btn}
-                  onClick={onClickToUpload}
-                >
-                  {isConnecting ? 'Connecting...' : 'Submit a collection'}
-                </Button>
-              </div> */}
+              <SubmitDaoButton currentTabActive={currentTabActive} />
             </div>
           </Col>
         </Row>
