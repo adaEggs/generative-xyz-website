@@ -2,7 +2,7 @@ import { GenerativeProjectDetailContext } from '@contexts/generative-project-det
 import { isNumeric } from '@utils/string';
 import { useContext, useEffect, useState } from 'react';
 
-export type IFeeRateType = 'economy' | 'faster' | 'fastest';
+export type IFeeRateType = 'economy' | 'faster' | 'fastest' | 'customRate';
 
 const useMintFeeRate = () => {
   const { projectFeeRate, debounceFetchProjectFeeRate, projectData } =
@@ -12,24 +12,12 @@ const useMintFeeRate = () => {
   const [customRate, setCustomRate] = useState<string>('');
 
   const currentFee = projectFeeRate
-    ? isNumeric(customRate) && projectFeeRate.customRate
+    ? rateType === 'customRate' &&
+      isNumeric(customRate) &&
+      projectFeeRate.customRate
       ? projectFeeRate.customRate
       : projectFeeRate[rateType]
     : null;
-
-  // useEffect(() => {
-  //   debounceFetchProjectFeeRate(projectData || undefined);
-  // }, []);
-
-  useEffect(() => {
-    if (
-      projectFeeRate &&
-      projectFeeRate.fastest &&
-      Number(customRate) < (projectFeeRate?.economy.rate || 0)
-    ) {
-      setCustomRate('');
-    }
-  }, [projectFeeRate]);
 
   useEffect(() => {
     const intervalID = setInterval(() => {
@@ -42,14 +30,10 @@ const useMintFeeRate = () => {
 
   const handleChangeRateType = (feeType: IFeeRateType): void => {
     setRateType(feeType);
-    setCustomRate('');
   };
 
   const handleChangeCustomRate = (rate: string): void => {
     setCustomRate(rate);
-    if (Number(rate) < (projectFeeRate?.economy.rate || 0)) {
-      setCustomRate('');
-    }
     if (projectData) {
       debounceFetchProjectFeeRate(projectData, Number(rate));
     }
