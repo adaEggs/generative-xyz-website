@@ -123,11 +123,12 @@ export const tokenID = (tokenName: string) => tokenName.split('#')[1];
 
 export const formatBTCPrice = (
   price: number | string,
-  emptyStr?: string
+  emptyStr?: string,
+  precision = 6
 ): string => {
   if (!price) return emptyStr || '-';
   const priceNumb = new BigNumber(price).dividedBy(1e8).toNumber();
-  return ceilPrecised(priceNumb).toString().replace(',', '.');
+  return ceilPrecised(priceNumb, precision).toString().replace(',', '.');
 };
 
 export const formatPrice = (
@@ -153,7 +154,7 @@ export const formatEthPrice = (
   emptyStr?: string
 ): string => {
   if (!price) return emptyStr || '-';
-  return ceilPrecised(parseFloat(Web3.utils.fromWei(`${price}`, 'ether')), 6)
+  return ceilPrecised(parseFloat(Web3.utils.fromWei(`${price}`, 'ether')), 4)
     .toString()
     .replace(',', '.');
 };

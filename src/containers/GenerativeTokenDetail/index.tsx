@@ -34,7 +34,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Container } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
 import { TwitterShareButton } from 'react-share';
@@ -257,28 +257,32 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
     }
     if (!isBuyable) return null;
     return (
-      <div className={s.buy_btc}>
+      <Row className={s.buy_btc}>
         {isBuyETH && (
-          <ButtonBuyListedFromETH
-            sizes={'large'}
-            inscriptionID={tokenData.tokenID}
-            price={tokenData.priceETH}
-            inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
-            orderID={tokenData.orderID}
-            isDetail={true}
-          />
+          <Col md="5" lg="5" className={s.buy_btc_wrap}>
+            <ButtonBuyListedFromETH
+              sizes={'large'}
+              inscriptionID={tokenData.tokenID}
+              price={tokenData.priceETH}
+              inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+              orderID={tokenData.orderID}
+              isDetail={true}
+            />
+          </Col>
         )}
         {isBuyBTC && (
-          <ButtonBuyListedFromBTC
-            sizes={'large'}
-            inscriptionID={tokenData.tokenID}
-            price={tokenData.priceBTC}
-            inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
-            orderID={tokenData.orderID}
-            isDetail={true}
-          />
+          <Col md="5" lg="5" className={s.buy_btc_wrap}>
+            <ButtonBuyListedFromBTC
+              sizes={'large'}
+              inscriptionID={tokenData.tokenID}
+              price={tokenData.priceBTC}
+              inscriptionNumber={Number(tokenData.inscriptionIndex || 0)}
+              orderID={tokenData.orderID}
+              isDetail={true}
+            />
+          </Col>
         )}
-      </div>
+      </Row>
     );
   };
 

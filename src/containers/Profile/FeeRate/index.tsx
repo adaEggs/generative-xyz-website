@@ -64,7 +64,7 @@ const FeeRate = ({
         SDK.estimateTxFee(1, 2, Number(feeRateNumb)) +
         1000;
 
-    const amount = formatBTCPrice(convert2ETH(amountNano));
+    const amount = formatBTCPrice(convert2ETH(amountNano), '0.0', 4);
     return {
       amount,
       symbol: 'ETH',
