@@ -59,14 +59,18 @@ export const SubmitDaoButton = ({
     }
   }, [user]);
 
-  if (currentTabActive !== DAO_TYPE.ARTIST) return <></>;
+  if (
+    currentTabActive !== DAO_TYPE.ARTIST ||
+    user?.profileSocial?.twitterVerified
+  )
+    return <></>;
 
   return (
     <div className={cn(s.submitDaoButton, className)}>
       <div className={s.submitDaoButton_text}>
         {user
-          ? 'Connect wallet and became Generative artist.'
-          : 'Became a Generative artist and sharing your art.'}
+          ? 'Became a Generative artist and sharing your art.'
+          : 'Connect wallet and became Generative artist.'}
       </div>
       <Button
         className={s.submitDaoButton_btn}
