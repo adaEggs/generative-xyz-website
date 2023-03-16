@@ -41,7 +41,7 @@ const LOG_PREFIX = 'ShopLayout';
 
 const TABLE_HEADINGS = [
   // <div className={styles.checkbox}>{/* <input type="checkbox" /> */}</div>,
-  // '',
+  '',
   'Item',
   // 'Last sale',
   'Owner',
@@ -107,11 +107,11 @@ const ShopLayout = (props: Props) => {
       id: item.tokenID,
 
       render: {
-        // checkbox: (
-        //   <div className={styles.checkbox}>
-        //     {/* <input type="checkbox" /> */}
-        //   </div>
-        // ),
+        checkbox: (
+          <div className={styles.checkbox}>
+            {/* <input type="checkbox" /> */}
+          </div>
+        ),
         name: (
           <div className={styles.itemInfo}>
             <img
