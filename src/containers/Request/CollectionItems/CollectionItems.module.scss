@@ -96,4 +96,19 @@
       cursor: pointer;
     }
   }
+
+  &_artist {
+    &_verified {
+      img {
+        margin-right: rem(2px);
+        display: inline;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  &_projectName {
+    max-width: 95%;
+    word-wrap: break-word;
+  }
 }
