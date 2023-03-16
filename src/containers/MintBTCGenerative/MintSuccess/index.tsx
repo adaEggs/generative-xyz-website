@@ -18,7 +18,7 @@ const MintSuccess = () => {
   };
 
   const goToDao = () => {
-    router.push(ROUTE_PATH.REQUEST);
+    router.push(ROUTE_PATH.DAO);
   };
 
   return (
