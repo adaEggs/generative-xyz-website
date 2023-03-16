@@ -20,6 +20,7 @@ import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { getDaoArtists, voteDaoArtist } from '@services/request';
 import { formatAddress } from '@utils/format';
+import { DEFAULT_USER_AVATAR } from '@constants/common';
 
 import NoData from '../NoData';
 import SkeletonItem from '../SkeletonItem';
@@ -172,7 +173,10 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                       >
                         <Image
                           className={s.users_avatar}
-                          src={convertIpfsToHttp(item?.user?.avatar)}
+                          src={
+                            convertIpfsToHttp(item?.user?.avatar) ||
+                            DEFAULT_USER_AVATAR
+                          }
                           width={48}
                           height={48}
                           alt={item?.user?.display_name}
