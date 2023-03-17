@@ -16,7 +16,11 @@ import { ErrorMessage } from '@enums/error-message';
 import { IListingFee } from '@interfaces/api/marketplace-btc';
 import Text from '@components/Text';
 import cs from 'classnames';
-import { convertToSatoshiNumber, formatBTCPrice } from '@utils/format';
+import {
+  convertToSatoshiNumber,
+  formatBTCOriginalPrice,
+  formatBTCPrice,
+} from '@utils/format';
 import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
@@ -184,7 +188,7 @@ const ModalListForSale = React.memo(
       const isZero = fee.lte(0);
       const text = isZero
         ? 'FREE'
-        : formatBTCPrice(Math.floor(fee.toNumber())) + ' BTC';
+        : formatBTCOriginalPrice(Math.floor(fee.toNumber())) + ' BTC';
 
       return (
         <div className={cs(s.wrapInfo_feeRow)}>
