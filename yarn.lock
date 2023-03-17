@@ -4993,9 +4993,9 @@ functions-have-names@^1.2.2:
   resolved "https://registry.npmjs.org/functions-have-names/-/functions-have-names-1.2.3.tgz"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
-"generative-sdk@https://github.com/generative-xyz/generative-sdk#v0.1.11":
+"generative-sdk@https://github.com/generative-xyz/generative-sdk#v0.2.0":
   version "0.0.1"
-  resolved "https://github.com/generative-xyz/generative-sdk#8619ac3e1947b0c0d6d283d043f0e656cfeecd50"
+  resolved "https://github.com/generative-xyz/generative-sdk#43182744fb0305fb9758cf337557d9727eec34a4"
   dependencies:
     "@bitcoinerlab/secp256k1" "^1.0.2"
     "@types/node" "^17.0.13"
