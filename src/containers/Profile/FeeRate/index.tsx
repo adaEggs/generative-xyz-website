@@ -8,6 +8,7 @@ import * as SDK from 'generative-sdk';
 import { Col, Row } from 'react-bootstrap';
 import { AssetsContext } from '@contexts/assets-context';
 import BigNumber from 'bignumber.js';
+import { Token } from '@interfaces/token';
 
 type FeeType = 'normal' | 'buyETH' | 'buyBTC' | 'buyBTCSweep';
 
@@ -25,6 +26,7 @@ interface IProps {
     hasRoyalty?: boolean;
     feeETH?: string;
     loading?: boolean;
+    tokens?: Token[];
   };
 }
 
@@ -71,6 +73,25 @@ const FeeRate = ({
     };
   };
 
+  const calcAmountBuyBTCSweep = (feeRate: number | string, tokens: Token[]) => {
+    // one for dummy utxo, one for network fee
+    let numIns = 2 + tokens.length;
+    // one for new dummy utxo, one for change value
+    let numOuts = 2 + tokens.length;
+    tokens.forEach(_ => {
+      numIns += 2;
+      numOuts += 2;
+    });
+
+    const input = SDK.estimateTxFee(numIns, numOuts, Number(feeRate));
+    const split = SDK.estimateTxFee(numIns, tokens.length + 2, Number(feeRate));
+    const amount = formatBTCPrice(new BigNumber(input).plus(split).toString());
+    return {
+      amount,
+      symbol: 'BTC',
+    };
+  };
+
   const calcAmount = (feeRate: number | string, rateName?: FeeRateName) => {
     let amount = formatBTCPrice(SDK.estimateTxFee(2, 2, Number(feeRate)));
     let symbol = 'BTC';
@@ -89,6 +110,13 @@ const FeeRate = ({
     } else if (feeType === 'buyBTC') {
       amount = formatBTCPrice(SDK.estimateTxFee(5, 5, Number(feeRate)));
       symbol = 'BTC';
+    } else if (feeType === 'buyBTCSweep' && !!options?.tokens) {
+      const { amount: _amount, symbol: _symbol } = calcAmountBuyBTCSweep(
+        feeRate,
+        options?.tokens
+      );
+      amount = _amount;
+      symbol = _symbol;
     }
     return {
       amount,
