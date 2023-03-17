@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-and-push-to-gcr:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     concurrency:
       group: build_production
       cancel-in-progress: false
