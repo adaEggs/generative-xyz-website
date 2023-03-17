@@ -3,7 +3,7 @@ import s from './CreatorInfo.module.scss';
 import { User } from '@interfaces/user';
 import Avatar from '@components/Avatar';
 import { convertIpfsToHttp } from '@utils/image';
-import { formatAddress } from '@utils/format';
+import { formatAddressDisplayName } from '@utils/format';
 
 interface IProps {
   creator: User | null;
@@ -25,7 +25,8 @@ export const CreatorInfo = ({ creator }: IProps): JSX.Element => {
         />
       </div>
       <div className={s.userInfo_displayName}>
-        {creator.displayName || formatAddress(creator.walletAddressBtcTaproot)}
+        {creator.displayName ||
+          formatAddressDisplayName(creator.walletAddressBtcTaproot)}
       </div>
     </div>
   );

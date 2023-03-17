@@ -32,7 +32,9 @@ const ActivityStats = () => {
 
   return (
     <div className={s.wrapper}>
-      <div className="d-flex align-items-center justify-between">
+      <div
+        className={`d-flex align-items-center justify-between ${s.wrapper_header}`}
+      >
         <Text size="18" fontWeight="medium">
           Activity
         </Text>

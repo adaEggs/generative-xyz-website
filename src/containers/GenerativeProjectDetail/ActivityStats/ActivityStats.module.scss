@@ -1,3 +1,10 @@
+.wrapper {
+  &_header {
+    position: relative;
+    z-index: 12;
+  }
+}
+
 .dropDownWrapper {
   @include w-max(500px) {
     width: 100%;

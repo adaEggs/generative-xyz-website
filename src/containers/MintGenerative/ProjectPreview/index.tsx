@@ -7,7 +7,7 @@ import { MintGenerativeContext } from '@contexts/mint-generative-context';
 import { PreviewDisplayMode } from '@enums/mint-generative';
 import { ISandboxRef } from '@interfaces/sandbox';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress } from '@utils/format';
+import { formatAddressDisplayName } from '@utils/format';
 import { generateHash } from '@utils/generate-data';
 import Image from 'next/image';
 import { useContext, useMemo, useRef, useState } from 'react';
@@ -170,7 +170,7 @@ const ProjectPreview = () => {
               ></Image>
               <span className={s.ownerName}>
                 {user?.displayName ||
-                  formatAddress(user?.walletAddressBtcTaproot)}
+                  formatAddressDisplayName(user?.walletAddressBtcTaproot)}
               </span>
             </div>
             <div className={s.projectInfo}>

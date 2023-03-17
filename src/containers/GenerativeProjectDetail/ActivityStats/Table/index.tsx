@@ -53,8 +53,8 @@ const CollectionActivityTable = () => {
       //         ),
       //         price:
       //           transaction.value === '0' ? '-' : convertToETH(transaction.value),
-      //         form_address: formatAddress(fromAddress),
-      //         to_address: formatAddress(toAddress),
+      //         form_address: formatAddressDisplayName(fromAddress),
+      //         to_address: formatAddressDisplayName(toAddress),
       //         updated_at: (
       //           <Stack direction="horizontal" gap={3}>
       //             {updatedAt}

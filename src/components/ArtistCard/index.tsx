@@ -4,7 +4,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { User } from '@interfaces/user';
 import Image from 'next/image';
 import Text from '@components/Text';
-import { formatAddress } from '@utils/format';
+import { formatAddressDisplayName } from '@utils/format';
 import { useMemo, useRef } from 'react';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 
@@ -62,7 +62,7 @@ export const ArtistCard = ({ profile, className }: IPros): JSX.Element => {
         <div className={s.artistCard_info}>
           <Text size="20" fontWeight="medium" color="white">
             {profile.displayName ||
-              formatAddress(profile.walletAddressBtcTaproot)}
+              formatAddressDisplayName(profile.walletAddressBtcTaproot)}
           </Text>
           <Text
             className={s.artistCard_info_arts}

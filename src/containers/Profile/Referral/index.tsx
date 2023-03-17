@@ -14,7 +14,7 @@ import { IWithdrawRefereeRewardPayload } from '@interfaces/api/profile';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { withdrawRewardEarned } from '@services/profile';
-import { formatBTCPrice, formatAddress } from '@utils/format';
+import { formatBTCPrice, formatAddressDisplayName } from '@utils/format';
 import log from '@utils/logger';
 import cs from 'classnames';
 import copy from 'copy-to-clipboard';
@@ -155,7 +155,7 @@ const ReferralTab = () => {
             <Avatar imgSrcs={item.referree?.avatar} width={48} height={48} />
             <Text size="14" fontWeight="medium">
               {item.referree?.displayName ||
-                formatAddress(
+                formatAddressDisplayName(
                   item.referree?.walletAddressBtcTaproot ||
                     item.referree.walletAddress
                 )}
