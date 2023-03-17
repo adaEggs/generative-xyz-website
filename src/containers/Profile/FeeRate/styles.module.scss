@@ -33,6 +33,7 @@
       flex-direction: column;
       align-items: center;
       cursor: pointer;
+      justify-content: center;
 
       @include mobile {
         padding: rem(10px) rem(8px);
