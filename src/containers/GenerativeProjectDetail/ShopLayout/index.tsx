@@ -59,7 +59,7 @@ const ShopLayout = (props: Props) => {
   useEffect(() => {
     setTimeout(() => {
       setComponentDidLoad(true);
-    }, 800);
+    }, 1200);
   }, []);
 
   const { mobileScreen } = useWindowSize();
@@ -278,6 +278,20 @@ const ShopLayout = (props: Props) => {
             </Stack>
           </div>
 
+          {!isListLayout && (
+            <div className={styles.itemsContainer}>
+              <SvgInset
+                size={14}
+                svgUrl={`${CDN_URL}/icons/${
+                  selectedOrders.length > 0 ? 'ic_checkboxed' : 'ic_checkbox'
+                }.svg`}
+                onClick={onClickItems}
+                className={styles.icCheckbox}
+              />
+              <p className={styles.textItems}>{titleItems}</p>
+            </div>
+          )}
+
           <div
             className={
               componentDidLoad
@@ -315,19 +329,6 @@ const ShopLayout = (props: Props) => {
                 <ListView />
               ) : (
                 <div className={styles.projectList}>
-                  <div className={styles.itemsContainer}>
-                    <SvgInset
-                      size={14}
-                      svgUrl={`${CDN_URL}/icons/${
-                        selectedOrders.length > 0
-                          ? 'ic_checkboxed'
-                          : 'ic_checkbox'
-                      }.svg`}
-                      onClick={onClickItems}
-                      className={styles.icCheckbox}
-                    />
-                    <p className={styles.textItems}>{titleItems}</p>
-                  </div>
                   <CollectionList
                     projectInfo={projectInfo}
                     listData={listItems}
