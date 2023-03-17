@@ -115,10 +115,6 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
     }
   };
 
-  // const goToProfilePage = (walletAddress: string): void => {
-  //   router.push(`${ROUTE_PATH.PROFILE}/${walletAddress}`);
-  // };
-
   const copyLink = (id: string) => {
     copy(`${location.origin}${ROUTE_PATH.DAO}?id=${id}&tab=1`);
     toast.remove();
@@ -139,7 +135,8 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
             <div className={s.users_header}>
               <div className="col-md-1">Proposal ID</div>
               <div className="col-md-3">Artist</div>
-              <div className="col-md-3">Expiration</div>
+              <div className="col-md-2">Twitter</div>
+              <div className="col-md-2">Expiration</div>
               <div className="col-md-2">Status</div>
               <div className="invisible col-md-3" />
             </div>
@@ -169,12 +166,6 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                           'd-flex align-items-center',
                           s.users_pointer
                         )}
-                        // onClick={() =>
-                        //   goToProfilePage(
-                        //     item?.user?.wallet_address_btc_taproot ||
-                        //       item?.user?.wallet_address
-                        //   )
-                        // }
                       >
                         <a
                           className={s.users_link}
@@ -194,22 +185,71 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                             height={48}
                             alt={item?.user?.display_name}
                           />
-                          <span>
-                            {item?.user?.display_name ||
-                              formatAddressDisplayName(
-                                item?.user?.wallet_address_btc_taproot
-                              )}
-                          </span>
+                          <div>
+                            <div>
+                              {item?.user?.display_name ||
+                                formatAddressDisplayName(
+                                  item?.user?.wallet_address_btc_taproot
+                                )}
+                            </div>
+                            {item?.user?.stats?.collection_created > 0 && (
+                              <div className={s.users_collectionNum}>
+                                {item?.user?.stats?.collection_created}{' '}
+                                collection
+                                {item?.user?.stats?.collection_created > 1 &&
+                                  's'}
+                              </div>
+                            )}
+                          </div>
                         </a>
                       </div>
                     </div>
-                    <div className="col-md-3">{`${dayjs(
+                    <div className="col-md-2">
+                      <div className="d-flex">
+                        {item?.user?.profile_social?.twitter ? (
+                          <div>
+                            <a
+                              className={s.users_link}
+                              title={item?.user?.display_name}
+                              href={item?.user?.profile_social?.twitter}
+                              target="_blank"
+                            >
+                              {item?.user?.profile_social?.twitter
+                                ?.split('/')
+                                .pop()}
+                            </a>
+                          </div>
+                        ) : (
+                          <span>-&nbsp;</span>
+                        )}
+                        {item?.user?.profile_social?.twitter &&
+                          item?.user?.profile_social?.web && (
+                            <span>&nbsp;-&nbsp;</span>
+                          )}
+
+                        {item?.user?.profile_social?.web ? (
+                          <div>
+                            <a
+                              className={s.users_link}
+                              title={item?.user?.display_name}
+                              href={item?.user?.profile_social?.web}
+                              target="_blank"
+                            >
+                              <span>Website</span>
+                            </a>
+                          </div>
+                        ) : (
+                          <span>&nbsp;-</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="col-md-2">{`${dayjs(
                       item?.expired_at
                     ).format('MMM DD')}`}</div>
                     <div className="col-md-2">
                       {getStatusProposal(item?.status)}
                     </div>
-                    <div className="col-md-3 d-flex justify-content-end">
+                    <div className="col-md-2 d-flex justify-content-end">
                       <span
                         className={s.users_share}
                         onClick={() => copyLink(item?.id)}
