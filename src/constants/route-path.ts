@@ -1,6 +1,6 @@
 export const ROUTE_PATH = {
   HOME: '/',
-  DROPS: '/mint',
+  DROPS: '/drops',
   CREATE_PROJECT: '/create',
   BENEFIT: '/create',
   GENERATIVE: '/generative',
@@ -13,7 +13,7 @@ export const ROUTE_PATH = {
   LEADERBOARDS: '/leaderboards',
   DAO: '/dao',
   INCENTIVIZED_TESTNET: '/incentivized-testnet',
-  TRADE: '/marketplace',
+  TRADE: '/trade',
   LIVE: '/live',
   REFERRAL: '/referral',
   NOT_FOUND: '/404',
@@ -33,7 +33,7 @@ export const ROUTE_PATH = {
   DEVELOPER: '/developers',
   PRESERVE: '/preserve',
   PRESERVE_LANDING: '/preserve-cryptoart',
-  SHOP: '/shop',
+  MARKETPLACE: '/marketplace',
 };
 
 export const STANDALONE_PAGES = [

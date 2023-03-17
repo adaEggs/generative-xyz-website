@@ -6,7 +6,7 @@ import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { calculateFloorDifference, convertToETH } from '@utils/currency';
 import {
-  formatAddress,
+  formatAddressDisplayName,
   formatTokenId,
   getProjectIdFromTokenId,
   tokenID,
@@ -87,7 +87,7 @@ export const OfferTab = (): JSX.Element => {
           ...{
             form:
               offer?.buyerInfo?.displayName ||
-              formatAddress(offer?.buyerInfo?.walletAddress),
+              formatAddressDisplayName(offer?.buyerInfo?.walletAddress),
             accept: user?.walletAddress ===
               offer?.token?.owner?.walletAddress && (
               <div className={s.action_btn}>

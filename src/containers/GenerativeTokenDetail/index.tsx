@@ -10,7 +10,6 @@ import Text from '@components/Text';
 import ThumbnailPreview from '@components/ThumbnailPreview';
 import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
 import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
-import { SOCIALS } from '@constants/common';
 import { CDN_URL } from '@constants/config';
 import { EXTERNAL_LINK } from '@constants/external-link';
 import { ROUTE_PATH } from '@constants/route-path';
@@ -24,7 +23,11 @@ import useWindowSize from '@hooks/useWindowSize';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
 import { wordCase } from '@utils/common';
-import { formatAddress, formatLongAddress, formatTokenId } from '@utils/format';
+import {
+  formatAddressDisplayName,
+  formatLongAddress,
+  formatTokenId,
+} from '@utils/format';
 import { filterCreatorName } from '@utils/generative';
 import cs from 'classnames';
 import React, {
@@ -298,10 +301,11 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               className={s.projectName}
             >
               {tokenData?.owner?.displayName ||
-                formatAddress(
+                formatAddressDisplayName(
                   tokenData?.owner?.walletAddressBtcTaproot ||
                     tokenData?.owner?.walletAddress ||
-                    ''
+                    '',
+                  6
                 )}
             </Link>
           </Text>
@@ -312,7 +316,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
               href={`${ROUTE_PATH.PROFILE}/${tokenData?.ownerAddr}`}
               className={s.projectName}
             >
-              {formatAddress(tokenData?.ownerAddr || '')}
+              {formatAddressDisplayName(tokenData?.ownerAddr || '', 6)}
             </Link>
           </Text>
         )}
@@ -364,10 +368,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                       {projectData && filterCreatorName(projectData)}
                     </Heading>
                   </Link>
-                  <SocialVerify
-                    isTwVerified={isTwVerified}
-                    link={SOCIALS.twitter}
-                  />
+                  <SocialVerify isTwVerified={isTwVerified} />
                 </div>
 
                 <Heading
@@ -390,7 +391,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     </Link>
                     #
                     {isFromAuthentic
-                      ? projectData?.nftTokenId || ''
+                      ? tokenData?.nftTokenId || ''
                       : tokenData?.orderInscriptionIndex
                       ? tokenData?.orderInscriptionIndex
                       : tokenData?.inscriptionIndex

@@ -14,6 +14,7 @@ import Link from 'next/link';
 import { ROUTE_PATH } from '@constants/route-path';
 import { useRouter } from 'next/router';
 import useAsyncEffect from 'use-async-effect';
+import { LOGO_MARKETPLACE_URL } from '@constants/common';
 
 const TABLE_HEADINGS = [
   'Name',
@@ -24,7 +25,7 @@ const TABLE_HEADINGS = [
   // '1D volume',
   // '7D volume',
   'Volume',
-  // 'Owners',
+  'Owners',
   'Supply',
 ];
 
@@ -37,7 +38,21 @@ const Collection: React.FC = (): React.ReactElement => {
   const [page, setPage] = useState(0);
   const [total, setTotal] = useState(0);
 
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    if (e.target) {
+      (e.target as HTMLImageElement).src = LOGO_MARKETPLACE_URL;
+    }
+  };
+
   const tableData = collectionList.map(collection => {
+    const calculateUnqiueOwners = (): string => {
+      if (!collection.project.mintingInfo.index) return '';
+      return `(${(
+        (collection.numberOwners / collection.project.mintingInfo.index) *
+        100
+      ).toFixed(0)}%)`;
+    };
+
     return {
       id: collection.project.tokenId,
       config: {
@@ -52,6 +67,7 @@ const Collection: React.FC = (): React.ReactElement => {
               className={s.projectThumbnail}
               src={collection.project.thumbnail}
               alt={collection.project.name}
+              onError={handleImageError}
             />
             <div className={s.projectInfo}>
               <Link
@@ -146,14 +162,11 @@ const Collection: React.FC = (): React.ReactElement => {
             </span>
           </div>
         ),
-        // owners: (
-        //   <div className={s.owners}>
-        //     {`${collection.numberOwners.toLocaleString()} (${(
-        //       (collection.numberOwners / collection.project.mintingInfo.index) *
-        //       100
-        //     ).toFixed(0)}%)`}
-        //   </div>
-        // ),
+        owners: (
+          <div className={s.owners}>
+            {`${collection.numberOwners.toLocaleString()} ${calculateUnqiueOwners()}`}
+          </div>
+        ),
         supply: (
           <div className={s.owners}>
             {collection.project.mintingInfo.index.toLocaleString()}
@@ -167,7 +180,7 @@ const Collection: React.FC = (): React.ReactElement => {
     try {
       const newPage = page + 1;
       const { result, total } = await getCollectionList({
-        limit: 30,
+        limit: 50,
         page: newPage,
       });
       if (result && Array.isArray(result)) {

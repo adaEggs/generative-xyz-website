@@ -4,13 +4,22 @@ import Table from '@components/Table';
 import { ROUTE_PATH } from '@constants/route-path';
 import { GenerativeTokenDetailContext } from '@contexts/generative-token-detail-context';
 import { TokenActivityType } from '@enums/token-type';
-import { formatAddress, formatBTCPrice } from '@utils/format';
+import { formatAddressDisplayName, formatBTCPrice } from '@utils/format';
 import dayjs from 'dayjs';
 import { useContext } from 'react';
 import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
 
 const TABLE_ACTIVITIES_HEADING = ['Event', 'Price', 'From', 'To', 'Date'];
+
+enum eventIcon {
+  'ic-mint.svg',
+  'ic-tag.svg',
+  'ic-x-circle.svg',
+  'ic-sale.svg',
+}
 
 const TableActivities = () => {
   const { tokenActivities } = useContext(GenerativeTokenDetailContext);
@@ -27,11 +36,11 @@ const TableActivities = () => {
 
       const fromAddress =
         transaction.user_a?.displayName ||
-        formatAddress(transaction?.user_a_address, 10) ||
+        formatAddressDisplayName(transaction?.user_a_address, 10) ||
         '-';
       const toAddress =
         transaction?.user_b?.displayName ||
-        formatAddress(transaction?.user_b_address, 10) ||
+        formatAddressDisplayName(transaction?.user_b_address, 10) ||
         '-';
 
       // if (index + 1 === transactionList.length) {
@@ -47,8 +56,8 @@ const TableActivities = () => {
       //       ),
       //       price:
       //         transaction.value === '0' ? '-' : convertToETH(transaction.value),
-      //       form_address: formatAddress(fromAddress),
-      //       to_address: formatAddress(toAddress),
+      //       form_address: formatAddressDisplayName(fromAddress),
+      //       to_address: formatAddressDisplayName(toAddress),
       //       updated_at: (
       //         <Stack direction="horizontal" gap={3}>
       //           {updatedAt}
@@ -68,6 +77,10 @@ const TableActivities = () => {
         render: {
           event: (
             <div className={s.event}>
+              <SvgInset
+                size={16}
+                svgUrl={`${CDN_URL}/icons/${eventIcon[transaction?.type]}`}
+              />
               {TokenActivityType[transaction?.type]}
             </div>
           ),
@@ -114,14 +127,7 @@ const TableActivities = () => {
   );
 
   return (
-    <Table
-      tableHead={TABLE_ACTIVITIES_HEADING}
-      data={
-        tokenActivities?.result && tokenActivities?.result.length > 0
-          ? activityDatas
-          : []
-      }
-    ></Table>
+    <Table tableHead={TABLE_ACTIVITIES_HEADING} data={activityDatas}></Table>
   );
 };
 

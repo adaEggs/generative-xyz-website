@@ -1,5 +1,5 @@
 import { BITCOIN_PROJECT_FLOOR_ID } from '@constants/generative';
-import { formatAddress } from '@utils/format';
+import { formatAddressDisplayName } from '@utils/format';
 import { Project } from '@interfaces/project';
 import { wordCase } from '@utils/common';
 
@@ -11,7 +11,7 @@ export const checkIsBitcoinProject = (projectID: string) => {
 export const filterCreatorName = (project: Project): string => {
   const creatorName =
     project?.creatorProfile?.displayName ||
-    formatAddress(
+    formatAddressDisplayName(
       project?.creatorProfile?.walletAddressBtcTaproot ||
         project?.creatorProfile?.walletAddress ||
         ''
@@ -21,7 +21,7 @@ export const filterCreatorName = (project: Project): string => {
     return wordCase(
       `${project?.name.indexOf('Ordinal') === -1 ? 'Ordinal' : ''} ${
         project?.name ||
-        formatAddress(
+        formatAddressDisplayName(
           project?.creatorProfile?.walletAddressBtcTaproot ||
             project?.creatorProfile?.walletAddress ||
             ''
@@ -31,7 +31,7 @@ export const filterCreatorName = (project: Project): string => {
   } else if (creatorName.toLowerCase() === 'unverified user') {
     return (
       project?.name ||
-      formatAddress(
+      formatAddressDisplayName(
         project?.creatorProfile?.walletAddressBtcTaproot ||
           project?.creatorProfile?.walletAddress ||
           ''

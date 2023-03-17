@@ -1,5 +1,5 @@
 import Heading from '@components/Heading';
-import { LOGO_MARKETPLACE_URL, SOCIALS } from '@constants/common';
+import { LOGO_MARKETPLACE_URL } from '@constants/common';
 import { ProjectLayoutContext } from '@contexts/project-layout-context';
 import { convertIpfsToHttp } from '@utils/image';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -106,7 +106,6 @@ const LayoutForMintout = () => {
 
                   <SocialVerify
                     isTwVerified={isTwVerified}
-                    link={SOCIALS.twitter}
                     width={18}
                     height={18}
                     className={s.small}

@@ -7,7 +7,7 @@ import { ErrorMessage } from '@enums/error-message';
 import { TokenOffer } from '@interfaces/token';
 import { getUserSelector } from '@redux/user/selector';
 import { calculateFloorDifference, convertToETH } from '@utils/currency';
-import { formatAddress } from '@utils/format';
+import { formatAddressDisplayName } from '@utils/format';
 import { useContext, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { useSelector } from 'react-redux';
@@ -77,7 +77,7 @@ const OfferTable = () => {
           ) : (
             // TODO: Update to correct profile
             <Link href={`${ROUTE_PATH.PROFILE}/${offer?.buyer}`}>
-              {formatAddress(offer?.buyer || '')}
+              {formatAddressDisplayName(offer?.buyer || '')}
             </Link>
           ),
         cancel: (

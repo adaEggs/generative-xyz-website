@@ -81,3 +81,25 @@ button {
 .is-loading {
   overflow: hidden;
 }
+
+.checkbox > input {
+  height: rem(16);
+  width: rem(16);
+  appearance: none;
+  border-radius: 2px;
+  outline: none;
+  transition-duration: 0.3s;
+  border: 1px solid $black-20;
+  cursor: pointer;
+}
+
+.checkbox > input:checked {
+  background-image: url("https://cdn.generative.xyz/icons/ic_checkboxed.svg");
+  background-size: contain;
+  border: none;
+  transition-duration: 0.3s;
+}
+
+.checkbox > input:active {
+  border: 2px solid #34495e;
+}

@@ -67,28 +67,6 @@ const MenuMobile = React.forwardRef(
 
             <li
               className={cs(
-                activePath === MENU_HEADER[7].activePath && s.active
-              )}
-              key={`header-${MENU_HEADER[7].id}`}
-            >
-              <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
-                {MENU_HEADER[7].name}
-              </Link>
-            </li>
-
-            <li
-              className={cs(
-                activePath === MENU_HEADER[1].activePath && s.active
-              )}
-              key={`header-${MENU_HEADER[1].id}`}
-            >
-              <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>
-                {MENU_HEADER[1].name}
-              </Link>
-            </li>
-
-            <li
-              className={cs(
                 activePath === MENU_HEADER[2].activePath && s.active
               )}
               key={`header-${MENU_HEADER[2].id}`}
@@ -111,6 +89,28 @@ const MenuMobile = React.forwardRef(
 
             <li
               className={cs(
+                activePath === MENU_HEADER[13].activePath && s.active
+              )}
+              key={`header-${MENU_HEADER[13].id}`}
+            >
+              <Link href={getUrlWithQueryParams(MENU_HEADER[13].route)}>
+                {MENU_HEADER[13].name}
+              </Link>
+            </li>
+
+            <li
+              className={cs(
+                activePath === MENU_HEADER[7].activePath && s.active
+              )}
+              key={`header-${MENU_HEADER[7].id}`}
+            >
+              <Link href={getUrlWithQueryParams(MENU_HEADER[7].route)}>
+                {MENU_HEADER[7].name}
+              </Link>
+            </li>
+
+            <li
+              className={cs(
                 activePath === MENU_HEADER[11].activePath && s.active
               )}
               key={`header-${MENU_HEADER[11].id}`}
@@ -122,12 +122,12 @@ const MenuMobile = React.forwardRef(
 
             <li
               className={cs(
-                activePath === MENU_HEADER[13].activePath && s.active
+                activePath === MENU_HEADER[1].activePath && s.active
               )}
-              key={`header-${MENU_HEADER[13].id}`}
+              key={`header-${MENU_HEADER[1].id}`}
             >
-              <Link href={getUrlWithQueryParams(MENU_HEADER[13].route)}>
-                {MENU_HEADER[13].name}
+              <Link href={getUrlWithQueryParams(MENU_HEADER[1].route)}>
+                {MENU_HEADER[1].name}
               </Link>
             </li>
 

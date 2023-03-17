@@ -18,55 +18,45 @@
     line-height: rem(22px);
     color: $white;
 
+    @include min-tablet {
+      display: flex;
+      gap: rem(5px);
+    }
+
     .startedLink {
-      // color: var(--bs-link-hover-color);
+      display: flex;
+      align-items: center;
+      gap: rem(5px);
       color: $white;
-      text-decoration: none;
+      text-decoration: underline;
 
       &:hover {
-        text-decoration: underline;
+        text-decoration: none;
       }
+    }
+  }
+
+  .left {
+    flex: 0 0 100%;
+    width: 100%;
+
+    @include min-tablet {
+      flex: 1;
     }
   }
 
   .right {
     display: flex;
     align-items: center;
-    gap: rem(10px);
+    margin-right: rem(-5px);
+
+    a {
+      display: block;
+      padding: rem(5px);
+    }
 
     :global(svg path) {
       fill: $white;
-    }
-  }
-
-  .center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: rem(8);
-
-    @include max-tablet {
-      order: 2;
-    }
-
-    .arrowIcon {
-      display: inline;
-    }
-
-    .centerText {
-      font-weight: 400;
-      font-size: rem(14px);
-      line-height: rem(22px);
-      color: $white;
-      text-align: center;
-
-      a {
-        color: $white;
-        font-weight: 500;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-      }
     }
   }
 }

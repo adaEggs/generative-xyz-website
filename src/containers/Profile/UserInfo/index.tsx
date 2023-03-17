@@ -7,7 +7,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import { formatAddress, formatWebDomain } from '@utils/format';
+import { formatAddressDisplayName, formatWebDomain } from '@utils/format';
 import copy from 'copy-to-clipboard';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,7 +16,6 @@ import { useContext, useMemo } from 'react';
 import s from './UserInfo.module.scss';
 import { toast } from 'react-hot-toast';
 import { SocialVerify } from '@components/SocialVerify';
-import { SOCIALS } from '@constants/common';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 import { IC_EDIT_PROFILE } from '@constants/icons';
 import ButtonReceiver from '@containers/Profile/ButtonReceiver';
@@ -63,20 +62,23 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                   as={'h4'}
                   title={
                     currentUser?.displayName ||
-                    formatAddress(currentUser?.walletAddressBtcTaproot, 10) ||
-                    formatAddress(walletAddress)
+                    formatAddressDisplayName(
+                      currentUser?.walletAddressBtcTaproot,
+                      6
+                    ) ||
+                    formatAddressDisplayName(walletAddress)
                   }
                   className={s.userInfo_content_wrapper_info_name}
                 >
                   {currentUser?.displayName ||
-                    formatAddress(currentUser?.walletAddressBtcTaproot, 10) ||
-                    formatAddress(walletAddress)}
+                    formatAddressDisplayName(
+                      currentUser?.walletAddressBtcTaproot,
+                      6
+                    ) ||
+                    formatAddressDisplayName(walletAddress)}
                 </Heading>
                 <div className={s.userInfo_content_wrapper_info_icon}>
-                  <SocialVerify
-                    isTwVerified={isTwVerified}
-                    link={SOCIALS.twitter}
-                  />
+                  <SocialVerify isTwVerified={isTwVerified} />
                 </div>
                 {isOwner && currentUser?.canCreateProposal && (
                   <ButtonVerifyMe />
@@ -93,9 +95,9 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                     svgUrl={`${CDN_URL}/icons/Frame%20427319538.svg`}
                   />
                   <Text size={'18'} fontWeight={'regular'}>
-                    {formatAddress(
+                    {formatAddressDisplayName(
                       currentUser?.walletAddressBtcTaproot || '',
-                      10
+                      6
                     )}
                   </Text>
                   <SvgInset

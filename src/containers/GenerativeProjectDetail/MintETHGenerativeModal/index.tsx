@@ -21,7 +21,7 @@ import {
   formatEthPriceInput,
 } from '@utils/format';
 import log from '@utils/logger';
-import { capitalizeFirstLetter } from '@utils/string';
+import { capitalizeFirstLetter, isNumeric } from '@utils/string';
 import { validateBTCAddressTaproot } from '@utils/validate';
 import copy from 'copy-to-clipboard';
 import { Formik } from 'formik';
@@ -64,6 +64,7 @@ const MintEthModal: React.FC = () => {
     handleChangeRateType,
     customRate,
     handleChangeCustomRate,
+    minFeeRate,
   } = useMintFeeRate();
 
   const [isSent, setIsSent] = React.useState(false);
@@ -95,15 +96,29 @@ const MintEthModal: React.FC = () => {
       : projectData?.limitMintPerProcess;
 
   const priceFormat = formatEthPrice(
-    mintPrice ? mintPrice : currentFee?.mintFees.eth.mintPrice || '',
+    mintPrice
+      ? mintPrice
+      : currentFee?.mintFees.eth.mintPrice ||
+          projectFeeRate?.fastest.mintFees.eth.mintPrice ||
+          '',
     '0.0'
   );
   const totalFormatPrice = formatEthPriceInput(
     totalPrice
       ? totalPrice
       : `${
-          (Number(currentFee ? currentFee.mintFees.eth.mintPrice : 0) +
-            Number(currentFee ? currentFee.mintFees.eth.networkFee : 0)) *
+          (Number(
+            currentFee?.mintFees.eth.mintPrice ||
+              projectFeeRate?.fastest.mintFees.eth.mintPrice ||
+              0
+          ) +
+            Number(
+              currentFee
+                ? rateType === 'customRate' && !isNumeric(customRate)
+                  ? 0
+                  : currentFee.mintFees.eth.networkFee
+                : 0
+            )) *
           quantity
         }` || '',
     '0.0'
@@ -116,6 +131,13 @@ const MintEthModal: React.FC = () => {
     }`,
     '0.0'
   );
+
+  const disableBtnBuy =
+    isLoading ||
+    quantity === 0 ||
+    !currentFee ||
+    (rateType === 'customRate' &&
+      (Number(customRate) < minFeeRate || !isNumeric(customRate)));
 
   const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (limitMint && limitMint >= Number(e.target.value)) {
@@ -374,7 +396,7 @@ const MintEthModal: React.FC = () => {
                       )}
                     </div>
 
-                    {step === 'info' && projectFeeRate && currentFee && (
+                    {step === 'info' && projectFeeRate && (
                       <FeeRate
                         feeRate={projectFeeRate}
                         selectedRateType={rateType}
@@ -509,9 +531,7 @@ const MintEthModal: React.FC = () => {
                               type="submit"
                               sizes="large"
                               className={s.buyBtn}
-                              disabled={
-                                isLoading || quantity === 0 || !currentFee
-                              }
+                              disabled={disableBtnBuy}
                             >
                               Pay
                             </ButtonIcon>
@@ -524,7 +544,7 @@ const MintEthModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading || quantity === 0 || !currentFee}
+                        disabled={disableBtnBuy}
                         onClick={onClickPay}
                       >
                         Pay

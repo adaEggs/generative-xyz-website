@@ -510,6 +510,17 @@
   background-color: #ff7e210f;
 }
 
+.daoReview {
+  gap: rem(12);
+  flex-direction: column;
+  align-items: flex-start;
+
+  .reportMsg {
+    margin-top: 0;
+    display: flex;
+  }
+}
+
 .reviewOnMobile {
   margin-top: rem(24px);
   padding: rem(32);
@@ -528,15 +539,6 @@
 
   border-top: 1px solid $black-5;
   border-bottom: 1px solid $black-5;
-  // margin-bottom: rem(24px);
-
-  // .info,
-  // .projectInfo_right_inner {
-  //   @include min-pc {
-  //     position: sticky;
-  //     top: rem(86px);
-  //   }
-  // }
 
   .shares {
     justify-content: unset;

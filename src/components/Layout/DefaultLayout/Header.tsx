@@ -6,7 +6,7 @@ import { LogLevel } from '@enums/log-level';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
 import { isProduction } from '@utils/common';
-import { formatAddress } from '@utils/format';
+import { formatAddressDisplayName } from '@utils/format';
 import log from '@utils/logger';
 import React, { useContext, useState } from 'react';
 import { Container, Stack } from 'react-bootstrap';
@@ -54,7 +54,7 @@ const Header: React.FC = (): React.ReactElement => {
             {user ? (
               <div className="d-flex align-items-center gap-3">
                 <Link href={ROUTE_PATH.PROFILE} className={styles.userAddress}>
-                  {formatAddress(user.walletAddress)}
+                  {formatAddressDisplayName(user.walletAddress)}
                 </Link>
               </div>
             ) : (

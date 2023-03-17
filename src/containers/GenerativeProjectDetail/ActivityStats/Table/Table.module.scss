@@ -3,6 +3,10 @@
   overflow: auto;
 
   @include disable-scrollbar;
+
+  thead {
+    border-bottom-color: $black-5 !important;
+  }
 }
 
 .activitiesScroller {

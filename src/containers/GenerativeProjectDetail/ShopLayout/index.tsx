@@ -23,6 +23,7 @@ import useAsyncEffect from 'use-async-effect';
 import ActivityStats from '../ActivityStats';
 import TokenTopFilter from '../TokenTopFilter';
 import collectionStyles from '../styles.module.scss';
+import ListView from './ListView';
 import styles from './ShopLayout.module.scss';
 
 type Props = {
@@ -46,6 +47,7 @@ const ShopLayout = (props: Props) => {
   } = useContext(GenerativeProjectDetailContext);
 
   const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [isListLayout, setIsListLayout] = useState(false);
 
   const { mobileScreen } = useWindowSize();
 
@@ -203,47 +205,99 @@ const ShopLayout = (props: Props) => {
           </Tabs>
         </div>
         <div className={`${styles.layout_middle}`}>
-          <Tabs className={styles.tabs} defaultActiveKey="items">
+          {/* <Tabs className={styles.tabs} defaultActiveKey="items">
             <Tab
               tabClassName={styles.tab}
               eventKey="items"
               title={
-                <Stack direction="horizontal" gap={3}>
-                  <SvgInset
-                    size={14}
-                    svgUrl={`${CDN_URL}/icons/ic-image.svg`}
-                  />
-                  <Text size="18" fontWeight="medium" color="primary-color">
-                    Items {total > 0 && `(${total})`}
-                  </Text>
-                </Stack>
+             
               }
+            > */}
+          <div className={styles.view_option}>
+            <Stack direction="horizontal" gap={3} className={styles.view_title}>
+              <SvgInset size={14} svgUrl={`${CDN_URL}/icons/ic-image.svg`} />
+              <Text size="18" fontWeight="medium" color="primary-color">
+                Items {total > 0 && `(${total})`}
+              </Text>
+            </Stack>
+            <Stack
+              direction="horizontal"
+              gap={3}
+              className={styles.view_layout}
             >
-              <div
-                className={collectionStyles.tokenListWrapper}
-                id="PROJECT_LIST"
-              >
-                <div
-                  className={`${collectionStyles.tokenList} ${
-                    listItems && listItems.length > 0 && styles.spacing
-                  }`}
-                >
+              <SvgInset
+                size={15}
+                svgUrl={`${CDN_URL}/icons/ic-list.svg`}
+                className={`${styles.view_list_ic} ${
+                  isListLayout ? styles.active : ''
+                }`}
+                onClick={() => {
+                  setIsListLayout(true);
+                }}
+              />
+              <SvgInset
+                size={15}
+                svgUrl={`${CDN_URL}/icons/ic-grid.svg`}
+                className={`${styles.view_grid_ic} ${
+                  !isListLayout ? styles.active : ''
+                }`}
+                onClick={() => {
+                  setIsListLayout(false);
+                }}
+              />
+            </Stack>
+          </div>
+
+          <div className={collectionStyles.tokenListWrapper} id="PROJECT_LIST">
+            <div
+              className={`${collectionStyles.tokenList} ${
+                listItems && listItems.length > 0 && styles.spacing
+              }`}
+            >
+              {listItems && listItems.length > 0 && isListLayout ? (
+                // <InfiniteScroll
+                //   dataLength={listItems.length}
+                //   next={handleFetchNextPage}
+                //   className={s.collectionScroller}
+                //   hasMore={listItems.length < total}
+                //   loader={
+                //     <div className={s.scrollLoading}>
+                //       <Loading isLoaded={false} />
+                //     </div>
+                //   }
+                //   endMessage={<></>}
+                // >
+                //   <div className={styles.table_wrapper}>
+                //     <Table
+                //       className={styles.dataTable}
+                //       tableHead={TABLE_HEADINGS}
+                //       data={tableData}
+                //     />
+                //   </div>
+                // </InfiniteScroll>
+                <ListView />
+              ) : (
+                <div className={styles.projectList}>
                   <CollectionList
                     projectInfo={projectInfo}
                     listData={listItems}
                     isLoaded={isLoaded}
                     layout="shop"
                   />
-                  <TriggerLoad
-                    len={listItems?.length || 0}
-                    total={total || 0}
-                    isLoaded={isNextPageLoaded}
-                    onEnter={handleFetchNextPage}
-                  />
+                  {listItems && listItems.length < total && (
+                    <TriggerLoad
+                      len={listItems.length}
+                      total={total || 0}
+                      isLoaded={isNextPageLoaded}
+                      onEnter={handleFetchNextPage}
+                    />
+                  )}
                 </div>
-              </div>
-            </Tab>
-          </Tabs>
+              )}
+            </div>
+          </div>
+          {/* </Tab>
+          </Tabs> */}
         </div>
         <div className={`${styles.layout_right}`}>
           <ActivityStats />
