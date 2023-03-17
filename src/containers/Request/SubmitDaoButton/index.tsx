@@ -3,6 +3,7 @@ import React, { useState, useContext, useCallback } from 'react';
 import { useAppSelector } from '@redux';
 import cn from 'classnames';
 import { toast } from 'react-hot-toast';
+import BaseModal from '@components/Transactor';
 
 import { ErrorMessage } from '@enums/error-message';
 import Button from '@components/Button';
@@ -25,12 +26,14 @@ const LOG_PREFIX = 'DAOPage';
 const SubmitCollection = ({
   user,
   isConnecting,
-  submitCollection,
-}: {
+}: // submitCollection,
+{
   user: any;
   isConnecting: boolean;
-  submitCollection: (...args: any) => any;
+  // submitCollection: (...args: any) => any;
 }) => {
+  const [isShowModal, setIsShowModal] = useState<boolean>(false);
+
   return (
     <>
       <div className={s.submitDaoButton_text}>
@@ -40,11 +43,17 @@ const SubmitCollection = ({
       </div>
       <Button
         className={s.submitDaoButton_btn}
-        onClick={submitCollection}
+        // onClick={submitCollection}
+        onClick={() => setIsShowModal(true)}
         disabled={!user}
       >
         {isConnecting ? 'Connecting...' : 'Submit a collection'}
       </Button>
+      <BaseModal
+        isShow={isShowModal}
+        onHide={() => setIsShowModal(false)}
+        title="Submit a collection"
+      ></BaseModal>
     </>
   );
 };
@@ -101,22 +110,22 @@ export const SubmitDaoButton = ({
     }
   };
 
-  const submitCollection = useCallback(async () => {
-    if (user) {
-      setIsConnecting(true);
-      toast.remove();
-      const result = await createDaoArtist();
-      if (result) {
-        toast.success('Submit proposal successfully.');
-      } else {
-        toast.error(ErrorMessage.DEFAULT);
-      }
-      setIsConnecting(false);
-      setIsClickedVerify(true);
-    } else {
-      handleConnectWallet();
-    }
-  }, [user]);
+  // const submitCollection = useCallback(async () => {
+  //   if (user) {
+  //     setIsConnecting(true);
+  //     toast.remove();
+  //     const result = await createDaoArtist();
+  //     if (result) {
+  //       toast.success('Submit proposal successfully.');
+  //     } else {
+  //       toast.error(ErrorMessage.DEFAULT);
+  //     }
+  //     setIsConnecting(false);
+  //     setIsClickedVerify(true);
+  //   } else {
+  //     handleConnectWallet();
+  //   }
+  // }, [user]);
 
   const submitVerifyMe = useCallback(async () => {
     if (user) {
@@ -136,7 +145,7 @@ export const SubmitDaoButton = ({
   }, [user]);
 
   if (
-    currentTabActive === DAO_TYPE.ARTIST ||
+    currentTabActive !== DAO_TYPE.ARTIST ||
     user?.profileSocial?.twitterVerified
   )
     return <></>;
@@ -147,8 +156,7 @@ export const SubmitDaoButton = ({
         <SubmitCollection
           user={user}
           isConnecting={isConnecting}
-          submitCollection={submitCollection}
-          isClickedVerify={isClickedVerify}
+          // submitCollection={submitCollection}
         />
       )}
       {currentTabActive === DAO_TYPE.ARTIST && (
