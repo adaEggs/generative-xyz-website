@@ -333,7 +333,9 @@ const ShopLayout = (props: Props) => {
           </div>
           {/* </Tab>
           </Tabs> */}
-          <BuyBottomBar />
+          <div className={styles.buy_bottom}>
+            <BuyBottomBar />
+          </div>
         </div>
         <div className={`${styles.layout_right}`}>
           <ActivityStats />

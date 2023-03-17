@@ -102,13 +102,9 @@ const ListViewItem = ({ data }: Props) => {
         )}
       </td>
       <td>
-        <div
+        <Link
           className={styles.itemInfo}
-          onClick={() => {
-            window.open(
-              `${ROUTE_PATH.GENERATIVE}/${projectID}/${data.tokenID}`
-            );
-          }}
+          href={`${ROUTE_PATH.GENERATIVE}/${projectID}/${data.tokenID}`}
         >
           <img
             className={styles.itemThumbnail}
@@ -122,20 +118,14 @@ const ListViewItem = ({ data }: Props) => {
               </Text>
             </Link>
           </div>
-        </div>
+        </Link>
       </td>
       <td>
         <div className={styles.owners}>
           <Link
-            href=""
-            onClick={() => {
-              window.open(
-                `${ROUTE_PATH.PROFILE}/${
-                  data?.owner?.walletAddressBtcTaproot ||
-                  data?.owner?.walletAddress
-                }`
-              );
-            }}
+            href={`${ROUTE_PATH.PROFILE}/${
+              data?.owner?.walletAddressBtcTaproot || data?.owner?.walletAddress
+            }`}
           >
             <Text fontWeight="medium">
               {formatAddressDisplayName(

@@ -49,6 +49,7 @@ export interface IGenerativeProjectDetailContext {
 
   setProjectData: Dispatch<SetStateAction<Project | null>>;
   listItems: Token[] | null;
+  listItemsBuyable: Token[] | null;
   setListItems: Dispatch<SetStateAction<Token[] | null>>;
   selectedOrders: string[];
   selectOrders: (length: number) => void;
@@ -119,6 +120,7 @@ const initialValue: IGenerativeProjectDetailContext = {
     return;
   },
   listItems: null,
+  listItemsBuyable: null,
   setListItems: _ => {
     return;
   },
@@ -275,6 +277,11 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     return projectData?.mintingInfo?.index < projectData?.maxSupply;
   }, [projectData]);
 
+  const listItemsBuyable = useMemo(() => {
+    if (!listItems) return [];
+    return listItems.filter(item => item.buyable && item.sell_verified);
+  }, [listItems]);
+
   const handleFetchNextPage = () => {
     setPage(prev => prev + 1);
   };
@@ -300,21 +307,14 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const selectOrders = (length: number) => {
     if (listItems && listItems.length > 0) {
       setSelectedOrders(
-        listItems
-          .filter(item => item.buyable && item.sell_verified)
-          .slice(0, length)
-          .map(item => item.orderID)
+        listItemsBuyable.slice(0, length).map(item => item.orderID)
       );
     }
   };
 
   const selectAllOrders = () => {
     if (listItems && listItems.length > 0) {
-      setSelectedOrders(
-        listItems
-          .filter(item => item.buyable && item.sell_verified)
-          .map(item => item.orderID)
-      );
+      setSelectedOrders(listItemsBuyable.map(item => item.orderID));
     }
   };
 
@@ -572,6 +572,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       debounceFetchProjectFeeRate,
       setProjectData,
       listItems,
+      listItemsBuyable,
       setListItems,
       selectedOrders,
       removeSelectedOrder,
@@ -619,6 +620,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     projectData,
     setProjectData,
     listItems,
+    listItemsBuyable,
     setListItems,
     selectedOrders,
     removeSelectedOrder,
