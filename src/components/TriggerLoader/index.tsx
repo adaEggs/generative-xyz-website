@@ -34,6 +34,7 @@ export const TriggerLoad = ({
   }, [isLoaded, len, total]);
 
   if (len >= total || total === 0) return <></>;
+
   return (
     <div className={s.triggerLoad}>
       <div ref={refTrigger} />
