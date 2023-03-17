@@ -27,6 +27,8 @@ import s from './Referral.module.scss';
 import WithdrawModal from './WithdrawModal';
 import { sendAAEvent } from '@services/aa-tracking';
 import { BTC_PROJECT } from '@constants/tracking-event-name';
+import { debounce } from 'lodash';
+import { WithdrawStatus } from '@constants/referral';
 
 const LOG_PREFIX = 'ReferralTab';
 
@@ -69,6 +71,34 @@ const ReferralTab = () => {
 
   const referralLink = `${location.origin}${ROUTE_PATH.HOME}?referral_code=${user?.id}`;
 
+  const renderStatus = (status: WithdrawStatus) => {
+    switch (status) {
+      case WithdrawStatus.Approve:
+        return (
+          <div className={cs(s.withdrawStatus, s.approved)}>
+            <div className={s.sonarCircle} />
+            <span>Approved</span>
+          </div>
+        );
+      case WithdrawStatus.Pending:
+        return (
+          <div className={cs(s.withdrawStatus, s.pending)}>
+            <div className={s.sonarCircle} />
+            <span>Checking</span>
+          </div>
+        );
+      case WithdrawStatus.Reject:
+        return (
+          <div className={cs(s.withdrawStatus, s.rejected)}>
+            <div className={s.sonarCircle} />
+            <span>Rejected</span>
+          </div>
+        );
+      default:
+        return <></>;
+    }
+  };
+
   const handleWithdraw = async (amount: string, id: string) => {
     try {
       setIsProcessing(true);
@@ -78,7 +108,12 @@ const ReferralTab = () => {
         type: 'referal',
         id,
       };
+      setShowWithdrawSucessModal({
+        isShow: true,
+        data: payload,
+      });
       await withdrawRewardEarned(payload);
+
       sendAAEvent({
         eventName: BTC_PROJECT.WITHDRAW,
         data: {
@@ -87,10 +122,6 @@ const ReferralTab = () => {
           type: 'referal',
           referree_id: id,
         },
-      });
-      setShowWithdrawSucessModal({
-        isShow: true,
-        data: payload,
       });
     } catch (err: unknown) {
       log('failed to withdraw', LogLevel.ERROR, LOG_PREFIX);
@@ -146,18 +177,30 @@ const ReferralTab = () => {
           </>
         ),
         action: (
-          <div className={s.actions}>
-            <ButtonIcon
-              sizes="small"
-              variants="outline-small"
-              disabled={!Number(calculateWithdrawAmount) || isProcessing}
-              onClick={() =>
-                handleWithdraw(item.referreeVolumn.earn || '', item.referreeID)
-              }
-            >
-              Withdraw
-            </ButtonIcon>
-          </div>
+          <>
+            {(item?.status === WithdrawStatus.Available ||
+              Number(calculateWithdrawAmount) > 0) && (
+              <div className={s.actions}>
+                <ButtonIcon
+                  sizes="small"
+                  variants="outline-small"
+                  disabled={!Number(calculateWithdrawAmount) || isProcessing}
+                  onClick={debounce(() => {
+                    handleWithdraw(
+                      item.referreeVolumn.earn || '',
+                      item.referreeID
+                    );
+                  }, 1000)}
+                >
+                  Withdraw
+                </ButtonIcon>
+              </div>
+            )}
+            {item?.status !== undefined &&
+              item?.status !== WithdrawStatus.Available && (
+                <>{renderStatus(item?.status)}</>
+              )}
+          </>
         ),
       },
     };
@@ -172,8 +215,6 @@ const ReferralTab = () => {
 
   return (
     <div className={s.wrapper}>
-      {/* <Loading isLoaded={needLoading} className={s.loading} /> */}
-
       <div className={s.referral_link}>
         <Stack gap={2}>
           <Heading as="h4" fontWeight="medium">
