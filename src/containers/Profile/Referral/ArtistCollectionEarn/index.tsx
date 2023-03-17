@@ -1,18 +1,20 @@
 import ButtonIcon from '@components/ButtonIcon';
 import Heading from '@components/Heading';
-import { Loading } from '@components/Loading';
 import Table, { TColumn } from '@components/Table';
 import Text from '@components/Text';
 import ToogleSwitch from '@components/Toggle';
+import { TriggerLoad } from '@components/TriggerLoader';
 import { GENERATIVE_PROJECT_CONTRACT } from '@constants/contract-address';
 import { WithdrawStatus } from '@constants/referral';
 import { ROUTE_PATH } from '@constants/route-path';
+import { BTC_PROJECT } from '@constants/tracking-event-name';
 import { ProfileContext } from '@contexts/profile-context';
 import { CurrencyType } from '@enums/currency';
 import { ErrorMessage } from '@enums/error-message';
 import { LogLevel } from '@enums/log-level';
 import { IWithdrawRefereeRewardPayload } from '@interfaces/api/profile';
 import { ProjectVolume } from '@interfaces/project';
+import { sendAAEvent } from '@services/aa-tracking';
 import { withdrawRewardEarned } from '@services/profile';
 import { getProjectVolume } from '@services/project';
 import { formatBTCPrice } from '@utils/format';
@@ -25,8 +27,6 @@ import { Stack } from 'react-bootstrap';
 import { toast } from 'react-hot-toast';
 import useAsyncEffect from 'use-async-effect';
 import s from './ArtistCollectionEarn.module.scss';
-import { sendAAEvent } from '@services/aa-tracking';
-import { BTC_PROJECT } from '@constants/tracking-event-name';
 
 const LOG_PREFIX = 'ArtistCollectionEarn';
 
@@ -39,14 +39,15 @@ const ArtistCollectionEarn = ({
   }) => void;
 }) => {
   const router = useRouter();
-  const { profileProjects } = useContext(ProfileContext);
+  const { profileProjects, isLoadedProfileProjects, handleFetchProjects } =
+    useContext(ProfileContext);
   const [isProcessing, setIsProcessing] = useState(false);
   const [currencyRecord, setCurrencyRecord] = useState<CurrencyType>(
     CurrencyType.BTC
   );
   const [forceRerender, setForceRerender] = useState(0);
 
-  const [isLoading, setisLoading] = useState(false);
+  // const [isLoading, setisLoading] = useState(false);
 
   const TABLE_ARTISTS_HEADING = [
     'Collection',
@@ -247,7 +248,7 @@ const ArtistCollectionEarn = ({
       setTotalVolumeList([]);
       profileProjects?.result?.map(async item => {
         try {
-          setisLoading(true);
+          // setisLoading(true);
           const response = await handleFetchTotalVolume(item.tokenID);
           if (response) {
             setTotalVolumeList((prev: Array<ProjectVolume>) => [
@@ -258,7 +259,7 @@ const ArtistCollectionEarn = ({
         } catch (err: unknown) {
           log('failed to fetch total volume', LogLevel.ERROR, LOG_PREFIX);
         } finally {
-          setisLoading(false);
+          // setisLoading(false);
         }
       });
     }
@@ -284,12 +285,18 @@ const ArtistCollectionEarn = ({
         Records
       </Heading>
       <div className={s.table_wrapper}>
-        <Loading isLoaded={!isLoading} className={s.loading}></Loading>
+        {/* <Loading isLoaded={!isLoading} className={s.loading}></Loading> */}
         <Table
           tableHead={TABLE_ARTISTS_HEADING}
           data={tableData}
           className={s.Records_table}
         ></Table>
+        <TriggerLoad
+          len={profileProjects?.result.length || 0}
+          total={profileProjects?.total || 0}
+          isLoaded={isLoadedProfileProjects}
+          onEnter={handleFetchProjects}
+        />
       </div>
 
       {/* {!!calculateTotalWithdraw && allMyColelctions && (
