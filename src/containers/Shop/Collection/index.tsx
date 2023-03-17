@@ -25,7 +25,7 @@ const TABLE_HEADINGS = [
   // '1D volume',
   // '7D volume',
   'Volume',
-  // 'Owners',
+  'Owners',
   'Supply',
 ];
 
@@ -45,6 +45,14 @@ const Collection: React.FC = (): React.ReactElement => {
   };
 
   const tableData = collectionList.map(collection => {
+    const calculateUnqiueOwners = (): string => {
+      if (!collection.project.mintingInfo.index) return '';
+      return `(${(
+        (collection.numberOwners / collection.project.mintingInfo.index) *
+        100
+      ).toFixed(0)}%)`;
+    };
+
     return {
       id: collection.project.tokenId,
       config: {
@@ -154,14 +162,11 @@ const Collection: React.FC = (): React.ReactElement => {
             </span>
           </div>
         ),
-        // owners: (
-        //   <div className={s.owners}>
-        //     {`${collection.numberOwners.toLocaleString()} (${(
-        //       (collection.numberOwners / collection.project.mintingInfo.index) *
-        //       100
-        //     ).toFixed(0)}%)`}
-        //   </div>
-        // ),
+        owners: (
+          <div className={s.owners}>
+            {`${collection.numberOwners.toLocaleString()} ${calculateUnqiueOwners()}`}
+          </div>
+        ),
         supply: (
           <div className={s.owners}>
             {collection.project.mintingInfo.index.toLocaleString()}
