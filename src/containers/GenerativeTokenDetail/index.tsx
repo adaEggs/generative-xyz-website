@@ -391,7 +391,7 @@ const GenerativeTokenDetail: React.FC = (): React.ReactElement => {
                     </Link>
                     #
                     {isFromAuthentic
-                      ? projectData?.nftTokenId || ''
+                      ? tokenData?.nftTokenId || ''
                       : tokenData?.orderInscriptionIndex
                       ? tokenData?.orderInscriptionIndex
                       : tokenData?.inscriptionIndex
