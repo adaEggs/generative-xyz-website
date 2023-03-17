@@ -187,7 +187,7 @@ const ModalListForSale = React.memo(
         : formatBTCPrice(Math.floor(fee.toNumber())) + ' BTC';
 
       return (
-        <div className={cs(s.wrapFee_feeRow)}>
+        <div className={cs(s.wrapInfo_feeRow)}>
           <Text size="16" fontWeight="medium" color="text-black-80">
             {label}
           </Text>
@@ -283,7 +283,7 @@ const ModalListForSale = React.memo(
                         </div>
                       }
                     />
-                    <div className={cs(s.wrapItem, s.wrapFee)}>
+                    <div className={cs(s.wrapItem, s.wrapInfo)}>
                       {renderFee({
                         price: values.price,
                         label: 'Generative service fees',
