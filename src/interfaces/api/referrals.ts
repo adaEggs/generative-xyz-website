@@ -30,5 +30,6 @@ export interface IGetReferralsResponse extends IPagingResponse {
       earn?: string;
       GenEarn?: string;
     };
+    status: number;
   }[];
 }
