@@ -80,7 +80,7 @@
 .layout_middle {
   flex: 0 0 100%;
   width: 100%;
-  padding-bottom: rem(0);
+  margin-bottom: rem(4px);
   position: relative;
 
   @include min-tablet {
@@ -105,7 +105,7 @@
     right: rem(0);
     bottom: rem(0);
     border-top: 1px solid #f2f2f2;
-    z-index: 10000;
+    z-index: 2;
     background: white;
   }
 

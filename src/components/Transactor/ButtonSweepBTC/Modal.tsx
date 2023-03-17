@@ -19,7 +19,7 @@ import Text from '@components/Text';
 import * as SDK from 'generative-sdk';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import isEmpty from 'lodash/isEmpty';
-import FeeRate from '@containers/Profile/FeeRate';
+import FeeRate, { IRef } from '@containers/Profile/FeeRate';
 
 interface IFormValues {
   price: string;
@@ -39,6 +39,10 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
     IRetrieveOrdersResp | undefined
   >(undefined);
   const [isLoading, setLoading] = useState<boolean>(false);
+  const feeRef = React.useRef<IRef>({
+    getCurrentFee: () => '0',
+  });
+
   const onSetError = (err: unknown) => {
     const _err = getError(err);
     setError(_err.message);
@@ -106,15 +110,6 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
     } else if (!validateBTCAddressTaproot(values.address)) {
       errors.address = 'Invalid wallet address.';
     }
-
-    // const isOutBalance = new BigNumber(amount.fee)
-    //   .plus(amount.amountOrigin)
-    //   .gt(balance);
-    //
-    // if (isOutBalance) {
-    //   errors.price =
-    //     SDK.ERROR_MESSAGE[SDK.ERROR_CODE.NOT_ENOUGH_BTC_TO_SEND].message;
-    // }
     return errors;
   };
 
@@ -160,6 +155,16 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
       setLoading(false);
     }
   };
+
+  const totalAmount = React.useMemo(() => {
+    if (feeRef && feeRef.current) {
+      const fee = feeRef.current.getCurrentFee() || '0';
+      return new BigNumber(amount.amountOrigin)
+        .plus(new BigNumber(fee).multipliedBy(1e8))
+        .toString();
+    }
+    return '0';
+  }, [amount.amountOrigin, feeRef, currentRate, isLoading]);
 
   React.useEffect(() => {
     fetchRetrieves().then().catch();
@@ -217,11 +222,11 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
                     </p>
                   )}
                 </div>
-                <div className={s.wrapFee_feeRow} style={{ marginTop: 16 }}>
+                <div className={s.wrapInfo_feeRow} style={{ marginTop: 16 }}>
                   <Text
                     size="16"
                     fontWeight="medium"
-                    className={s.wrapFee_leftLabel}
+                    className={s.wrapInfo_leftLabel}
                   >
                     Quantity
                   </Text>
@@ -241,10 +246,18 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
                   handleChangeCustomRate={handleChangeCustomRate}
                   customRate={customRate}
                   feeType="buyBTCSweep"
+                  ref={feeRef}
                   options={{
                     tokens: buyableTokens,
                   }}
                 />
+                <div className={s.wrapInfo_divider} />
+                <div className={s.wrapInfo_feeRow}>
+                  <p className={s.wrapInfo_total}>Total</p>
+                  <p className={s.wrapInfo_total}>{`${formatBTCPrice(
+                    totalAmount || 0
+                  )} BTC`}</p>
+                </div>
                 <AccordionComponent
                   header="Advanced"
                   content={
