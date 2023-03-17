@@ -44,6 +44,7 @@ const MintBTCGenerativeModal: React.FC = () => {
     rateType,
     handleChangeRateType,
     customRate,
+    minFeeRate,
     handleChangeCustomRate,
   } = useMintFeeRate();
 
@@ -118,6 +119,13 @@ const MintBTCGenerativeModal: React.FC = () => {
           quantity
         }` || ''
   );
+
+  const disableBtnBuy =
+    isLoading ||
+    quantity === 0 ||
+    !currentFee ||
+    (rateType === 'customRate' &&
+      (Number(customRate) < minFeeRate || !isNumeric(customRate)));
 
   const userBtcAddress = useMemo(
     () => user?.walletAddressBtcTaproot || '',
@@ -510,9 +518,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                               type="submit"
                               sizes="large"
                               className={s.buyBtn}
-                              disabled={
-                                isLoading || quantity === 0 || !currentFee
-                              }
+                              disabled={disableBtnBuy}
                             >
                               Pay
                             </ButtonIcon>
@@ -525,7 +531,7 @@ const MintBTCGenerativeModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading || quantity === 0 || !currentFee}
+                        disabled={disableBtnBuy}
                         onClick={onClickPay}
                       >
                         Pay

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
@@ -7,17 +6,16 @@ import { useRouter } from 'next/router';
 
 import CategoryTab from '@components/CategoryTab';
 import { LoadingProvider } from '@contexts/loading-context';
+import { DAO_TYPE } from '@constants/dao';
 
 import CollectionItems from './CollectionItems';
 import Filter from './Filter';
 import SubmitDaoButton from './SubmitDaoButton';
+import FilterTag from './FilterTag';
+import UserItems from './UserItems';
 
 import s from './Request.module.scss';
 
-const DAO_TYPE = {
-  COLLECTION: 0,
-  ARTIST: 1,
-};
 const CATEGORY = [
   {
     id: DAO_TYPE.COLLECTION,
@@ -28,9 +26,6 @@ const CATEGORY = [
     name: 'New Artists',
   },
 ];
-const UserItems = dynamic(() => import('./UserItems'), {
-  ssr: false,
-});
 
 const RequestPage = (): JSX.Element => {
   const router = useRouter();
@@ -92,6 +87,7 @@ const RequestPage = (): JSX.Element => {
               </p>
             </div>
             <Filter currentTabActive={currentTabActive} />
+            <FilterTag />
           </Col>
         </Row>
         <Row>

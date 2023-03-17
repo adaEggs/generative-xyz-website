@@ -56,6 +56,7 @@
       box-shadow: 35px 15px 120px 0 #00000026;
       width: rem(100);
       transform: translateX(-50%);
+      z-index: 20;
     }
 
     :global(.select__menu-list) {
