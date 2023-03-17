@@ -14,7 +14,7 @@ import { useBitcoin } from '@bitcoin/index';
 import { getError } from '@utils/text';
 import { Token } from '@interfaces/token';
 import ButtonIcon from '@components/ButtonIcon';
-import { LoaderIcon } from 'react-hot-toast';
+import toast, { LoaderIcon } from 'react-hot-toast';
 import Text from '@components/Text';
 import * as SDK from 'generative-sdk';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
@@ -135,6 +135,12 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
         price: new BigNumber(amount.amountOrigin).toNumber(),
         receiver: values.address,
       });
+      toast.success('Bought inscription successfully');
+      setTimeout(() => {
+        setLoading(false);
+        window.location.reload();
+        setError('');
+      }, 2000);
     } catch (e) {
       setLoading(false);
       onSetError(e);
