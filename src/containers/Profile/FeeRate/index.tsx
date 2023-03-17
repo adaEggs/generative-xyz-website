@@ -27,6 +27,7 @@ interface IProps {
     feeETH?: string;
     loading?: boolean;
     tokens?: Token[];
+    hideAmount?: boolean;
   };
 }
 
@@ -150,7 +151,9 @@ const FeeRate = ({
         >
           <p className={s.feeTitle}>{label}</p>
           <p className={s.feeDetail}>{`${allRate[rateName]} sats/vByte`}</p>
-          <p className={s.feeTotal}>~ {`${amount} ${symbol}`}</p>
+          {!options?.hideAmount && (
+            <p className={s.feeTotal}>~ {`${amount} ${symbol}`}</p>
+          )}
         </div>
       </Col>
     );
@@ -191,7 +194,7 @@ const FeeRate = ({
               onChange={onChangeCustomSats}
               className={s.mintFeeItem_input}
             />
-            {!!customRate && (
+            {!!customRate && !options?.hideAmount && (
               <p className={s.feeTotal}>~ {`${amount} ${symbol}`}</p>
             )}
           </div>

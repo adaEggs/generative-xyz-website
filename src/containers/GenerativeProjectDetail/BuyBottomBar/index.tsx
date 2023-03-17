@@ -1,11 +1,9 @@
-import ButtonIcon from '@components/ButtonIcon';
-import Text from '@components/Text';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
-import { formatEthPrice } from '@utils/format';
 import React, { useContext } from 'react';
 import { Range, getTrackBackground } from 'react-range';
 import s from './styles.module.scss';
 import ButtonSweepBTC from '@components/Transactor/ButtonSweepBTC';
+import ButtonSweepETH from '@components/Transactor/ButtonSweepETH';
 
 const MIN = 0;
 const MAX = 30;
@@ -33,31 +31,11 @@ const BuyBottomBar: React.FC = (): React.ReactElement => {
     ? listItems.filter(item => selectedOrders.includes(item.orderID))
     : [];
 
-  const totalETHPrice = formatEthPrice(
-    selectedItems.reduce(
-      (partialSum, item) => partialSum + Number(item.priceETH),
-      0
-    )
-  );
-
-  const onClickBuyETH = () => {
-    // TODO
-  };
-
   return (
     <div className={s.container}>
       <div className={s.leftContainer}>
         <ButtonSweepBTC tokens={selectedItems} />
-        <ButtonIcon
-          sizes="mid"
-          variants="outline-small"
-          onClick={onClickBuyETH}
-        >
-          <Text size="14" fontWeight="medium">
-            Buy {selectedItems.length} items&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            {totalETHPrice} ETH
-          </Text>
-        </ButtonIcon>
+        <ButtonSweepETH tokens={selectedItems} />
       </div>
       <div className={s.rightContainer}>
         <input

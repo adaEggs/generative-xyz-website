@@ -31,7 +31,7 @@ const AccordionComponent = ({ header, content, className }: Props) => {
             <div className={styles.accordion_icon}>
               <SvgInset
                 size={20}
-                className={collapsed ? '' : styles.icClose}
+                className={collapsed ? styles.icOpen : styles.icClose}
                 svgUrl={`${CDN_URL}/icons/arrow-up.svg`}
               />
             </div>

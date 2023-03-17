@@ -186,8 +186,9 @@ export interface ITokenPriceResp {
 }
 
 export interface IReqGenAddressByETH {
-  order_id: string;
+  order_id?: string;
   fee_rate: number;
+  order_list?: string[];
   receive_address: string;
   refund_address: string;
   is_estimate: boolean;

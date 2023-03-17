@@ -41,6 +41,10 @@
     border-radius: 50%;
   }
 
+  .icOpen {
+    transform: rotate(90deg);
+  }
+
   .icClose {
     transform: rotate(-180deg);
   }
