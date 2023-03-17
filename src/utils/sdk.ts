@@ -99,9 +99,7 @@ class GenerativeSDK {
       true
     );
   };
-  buyMulInsBTCTransaction = async (
-    payload: IBuyMulInsBTCReq
-  ): Promise<IBuyMulInsBTCResp> => {
+  buyMulInsBTCTransaction = (payload: IBuyMulInsBTCReq): IBuyMulInsBTCResp => {
     const utxos = this.formatUTXOs(payload.utxos);
     const inscriptions = this.formatInscriptions(payload.inscriptions);
     return GENERATIVE_SDK.reqBuyMultiInscriptions({

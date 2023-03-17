@@ -146,7 +146,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     await sleep(1);
     if (splitTxRaw) {
       await broadcastTx(splitTxRaw);
-      await sleep(1);
+      await sleep(5);
     }
 
     // broadcast tx
@@ -264,7 +264,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   const buyMulInscription = async (payload: IBuyMulInsProps) => {
     const { privateKey, tpAddress } = await signKey();
     const assets = await SDK.getCurrentAssetsForCreateTx(tpAddress);
-    const { txID, txHex, splitTxRaw } = await SDK.buyMulInsBTCTransaction({
+    const { txID, txHex, splitTxRaw } = SDK.buyMulInsBTCTransaction({
       privateKey,
       buyInfos: payload.buyInfos,
       feeRate: payload.feeRate,
@@ -283,7 +283,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     await sleep(1);
     if (splitTxRaw) {
       await broadcastTx(splitTxRaw);
-      await sleep(1);
+      await sleep(5);
     }
     // broadcast tx
     await broadcastTx(txHex);
