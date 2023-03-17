@@ -17,6 +17,7 @@ const ListView = () => {
     total,
     isNextPageLoaded,
     handleFetchNextPage,
+    marketplaceData,
     // showFilter,
   } = useContext(GenerativeProjectDetailContext);
 
@@ -25,7 +26,17 @@ const ListView = () => {
   };
 
   const titleItems =
-    selectedOrders.length > 0 ? `${selectedOrders.length} Selected` : 'Items';
+    selectedOrders.length > 0
+      ? `${selectedOrders.length}${
+          marketplaceData?.listed
+            ? ` / ${marketplaceData?.listed} Selected`
+            : ''
+        }`
+      : `${
+          marketplaceData?.listed
+            ? `${marketplaceData?.listed} Listed`
+            : 'Items'
+        }`;
 
   return (
     <div className={styles.table_wrapper}>

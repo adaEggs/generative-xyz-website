@@ -40,6 +40,7 @@ const ShopLayout = (props: Props) => {
   const {
     projectData: projectInfo,
     listItems,
+    marketplaceData,
     selectedOrders,
     removeAllOrders,
     selectAllOrders,
@@ -60,7 +61,17 @@ const ShopLayout = (props: Props) => {
   };
 
   const titleItems =
-    selectedOrders.length > 0 ? `${selectedOrders.length} Selected` : 'Items';
+    selectedOrders.length > 0
+      ? `${selectedOrders.length}${
+          marketplaceData?.listed
+            ? ` / ${marketplaceData?.listed} Selected`
+            : ''
+        }`
+      : `${
+          marketplaceData?.listed
+            ? `${marketplaceData?.listed} Listed`
+            : 'Items'
+        }`;
 
   const mintedTime = projectInfo?.mintedTime;
   let mintDate = dayjs();
