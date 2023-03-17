@@ -45,7 +45,7 @@
     "file-type": "^16.5.4",
     "firebase": "^9.17.2",
     "formik": "^2.2.9",
-    "generative-sdk": "https://github.com/generative-xyz/generative-sdk#v0.1.7",
+    "generative-sdk": "https://github.com/generative-xyz/generative-sdk#v0.1.8",
     "gsap": "^3.11.3",
     "keccak256": "^1.0.6",
     "lodash": "^4.17.21",
