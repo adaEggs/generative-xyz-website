@@ -3,6 +3,7 @@ import Text from '@components/Text';
 import { GenerativeProjectDetailContext } from '@contexts/generative-project-detail-context';
 import { formatBTCPrice, formatEthPrice } from '@utils/format';
 import React, { useContext } from 'react';
+import { Range, getTrackBackground } from 'react-range';
 import s from './styles.module.scss';
 
 const MIN = 0;
@@ -14,6 +15,13 @@ const BuyBottomBar: React.FC = (): React.ReactElement => {
   );
 
   const max = selectedOrders.length > MAX ? selectedOrders.length : MAX;
+
+  const changeRange = (values: number[]) => {
+    if (values.length > 0) {
+      const value = Math.max(MIN, Math.min(max, values[0]));
+      selectOrders(value);
+    }
+  };
 
   const changeWidth = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = Math.max(MIN, Math.min(max, Number(event.target.value)));
@@ -74,13 +82,30 @@ const BuyBottomBar: React.FC = (): React.ReactElement => {
           max={max}
           value={selectedItems.length}
         />
-        <input
-          type="range"
-          onChange={changeWidth}
+        <Range
+          onChange={changeRange}
           min={MIN}
           max={max}
           step={1}
-          value={selectedItems.length}
+          values={[selectedItems.length]}
+          renderTrack={({ props, children }) => (
+            <div
+              {...props}
+              style={{
+                ...props.style,
+                background: getTrackBackground({
+                  values: [selectedItems.length],
+                  colors: ['#1C1C1C', '#F2F2F2'],
+                  min: MIN,
+                  max: MAX,
+                }),
+              }}
+              className={s.track}
+            >
+              {children}
+            </div>
+          )}
+          renderThumb={({ props }) => <div {...props} className={s.thumb} />}
         />
       </div>
     </div>

@@ -29,5 +29,22 @@
       margin-right: 16px;
       border-right: 1px solid #f2f2f2;
     }
+
+    .track {
+      height: rem(4px);
+      width: 200px;
+      border-radius: rem(8px);
+
+      @include tablet {
+        width: 160px;
+      }
+    }
+
+    .thumb {
+      width: rem(8px);
+      height: rem(8px);
+      border-radius: rem(8px);
+      background: #1c1c1c;
+    }
   }
 }
