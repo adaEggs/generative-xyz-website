@@ -1,6 +1,6 @@
 .container {
   .wrapItem {
-    margin-bottom: 16px;
+    margin-bottom: 32px;
     width: 100%;
 
     &_rowBetween {
@@ -138,6 +138,35 @@
 
     &_leftLabel {
       color: $black-60;
+    }
+  }
+}
+
+.modal {
+  :global(.modal-dialog) {
+    min-width: fit-content;
+  }
+
+  :global(.modal-content) {
+    width: fit-content;
+    padding: rem(42px) rem(24px);
+    position: relative;
+
+    @include mobile {
+      width: 100%;
+    }
+  }
+
+  :global(.modal-body) {
+    width: 100%;
+    padding-top: 0;
+
+    @include min-tablet {
+      width: 1040px !important;
+    }
+
+    @include min-pc-superWide {
+      width: 1040px !important;
     }
   }
 }

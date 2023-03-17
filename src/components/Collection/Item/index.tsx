@@ -16,26 +16,34 @@ import { Stack } from 'react-bootstrap';
 import s from './styles.module.scss';
 import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
 import usePurchaseStatus from '@hooks/usePurchaseStatus';
+import SvgInset from '@components/SvgInset';
+import { CDN_URL } from '@constants/config';
 
 const CollectionItem = ({
   data,
   className,
   showCollectionName,
   total,
+  layout = 'shop',
 }: {
   data: Token;
   className?: string;
   showCollectionName?: boolean;
   total?: string | number;
+  layout?: 'mint' | 'shop';
 }) => {
   const tokenID = data.tokenID;
   const showInscriptionID =
     data.genNFTAddr === '1000012' && !!data.inscriptionIndex && !!total;
 
   const { mobileScreen } = useWindowSize();
-  const { isWhitelistProject, isLayoutShop } = useContext(
-    GenerativeProjectDetailContext
-  );
+  const {
+    isWhitelistProject,
+    isLayoutShop,
+    selectedOrders,
+    removeSelectedOrder,
+    addSelectedOrder,
+  } = useContext(GenerativeProjectDetailContext);
 
   const { isWaiting, isBuyETH, isBuyBTC, isBuyable } = usePurchaseStatus({
     buyable: data?.buyable,
@@ -46,6 +54,8 @@ const CollectionItem = ({
   });
 
   const imgRef = useRef<HTMLImageElement>(null);
+
+  const isSelectedOrder = selectedOrders.includes(data.orderID);
 
   const [thumb, setThumb] = useState<string>(data.image);
 
@@ -75,6 +85,16 @@ const CollectionItem = ({
       return `${ROUTE_PATH.GENERATIVE}/${SATOSHIS_PROJECT_ID}/${tokenID}`;
     return `${ROUTE_PATH.GENERATIVE}/${data.project.tokenID}/${tokenID}`;
   }, [isWhitelistProject, tokenID, data.project.tokenID]);
+
+  const onSelectItem = () => {
+    if (isBuyable && layout === 'shop') {
+      isSelectedOrder
+        ? removeSelectedOrder(data.orderID)
+        : addSelectedOrder(data.orderID);
+    } else {
+      window.open(tokenUrl);
+    }
+  };
 
   const renderBuyButton = () => {
     if (!isBuyable) return null;
@@ -144,12 +164,25 @@ const CollectionItem = ({
       }`}
     >
       <div className={s.collectionCard_inner_wrapper}>
-        <Link className={s.collectionCard_inner} href={`${tokenUrl}`}>
+        <div
+          className={s.collectionCard_inner}
+          // href={`${tokenUrl}`}
+          onClick={onSelectItem}
+        >
           <div
             className={`${s.collectionCard_thumb} ${
               thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
             }`}
           >
+            {isBuyable && layout === 'shop' && (
+              <SvgInset
+                className={s.collectionCard_thumb_selectIcon}
+                size={14}
+                svgUrl={`${CDN_URL}/icons/${
+                  isSelectedOrder ? 'ic_checkboxed' : 'ic_checkbox'
+                }.svg`}
+              />
+            )}
             <div className={s.collectionCard_thumb_inner}>
               <img
                 onError={onThumbError}
@@ -257,7 +290,7 @@ const CollectionItem = ({
               </div>
             </div>
           )}
-        </Link>
+        </div>
       </div>
     </div>
   );

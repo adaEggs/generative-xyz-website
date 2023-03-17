@@ -3,6 +3,28 @@
   margin-bottom: rem(16);
 }
 
+.itemsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-bottom: 6px;
+  border-bottom: 1px solid $black-5;
+  margin-bottom: 12px;
+}
+
+.icCheckbox {
+  cursor: pointer;
+}
+
+.textItems {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 22px;
+  margin-left: 16px;
+  color: #898989;
+}
+
 .layout_left {
   max-height: calc(100vh - #{rem(210)});
   overflow-y: scroll;
@@ -58,6 +80,7 @@
 .layout_middle {
   flex: 0 0 100%;
   width: 100%;
+  padding-bottom: rem(0);
 
   @include min-tablet {
     padding: rem(24);
@@ -77,7 +100,7 @@
 
   .spacing {
     padding-top: rem(24);
-    max-height: calc(100vh - #{rem(300)});
+    max-height: calc(100vh - #{rem(340)});
     overflow-y: scroll;
 
     @include disable-scrollbar;

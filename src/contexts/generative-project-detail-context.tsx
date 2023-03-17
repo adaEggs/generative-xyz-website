@@ -40,7 +40,7 @@ import useAsyncEffect from 'use-async-effect';
 
 const LOG_PREFIX = 'GenerativeProjectDetailContext';
 
-const FETCH_NUM = 20;
+const FETCH_NUM = 30;
 
 export interface IGenerativeProjectDetailContext {
   projectData: Project | null;
@@ -50,6 +50,12 @@ export interface IGenerativeProjectDetailContext {
   setProjectData: Dispatch<SetStateAction<Project | null>>;
   listItems: Token[] | null;
   setListItems: Dispatch<SetStateAction<Token[] | null>>;
+  selectedOrders: string[];
+  selectOrders: (length: number) => void;
+  selectAllOrders: () => void;
+  removeAllOrders: () => void;
+  addSelectedOrder: (oderId: string) => void;
+  removeSelectedOrder: (oderId: string) => void;
   handleFetchNextPage: () => void;
   searchToken: string;
   setSearchToken: Dispatch<SetStateAction<string>>;
@@ -116,7 +122,22 @@ const initialValue: IGenerativeProjectDetailContext = {
   setListItems: _ => {
     return;
   },
-  projectItemsTraitList: null,
+  selectedOrders: [],
+  selectOrders: () => {
+    return;
+  },
+  selectAllOrders: () => {
+    return;
+  },
+  removeAllOrders: () => {
+    return;
+  },
+  addSelectedOrder: () => {
+    return;
+  },
+  removeSelectedOrder: () => {
+    return;
+  },
   handleFetchNextPage: () => {
     return;
   },
@@ -187,6 +208,7 @@ const initialValue: IGenerativeProjectDetailContext = {
   setIsLayoutShop: _ => {
     return;
   },
+  projectItemsTraitList: null,
 };
 
 export const GenerativeProjectDetailContext =
@@ -208,6 +230,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const [listItems, setListItems] = useState<Token[] | null>(null);
   const [collectionActivities, setCollectionActivities] =
     useState<IGetTokenActivitiesResponse | null>(null);
+  const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
 
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -264,6 +287,39 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
   const hideMintBTCModal = () => {
     document.body.style.overflow = 'auto';
     setIsShowMintBTCModal(false);
+  };
+
+  const addSelectedOrder = (orderId: string) => {
+    setSelectedOrders(prev => [...prev, orderId]);
+  };
+
+  const removeSelectedOrder = (orderId: string) => {
+    setSelectedOrders(prev => prev.filter(_orderId => _orderId !== orderId));
+  };
+
+  const selectOrders = (length: number) => {
+    if (listItems && listItems.length > 0) {
+      setSelectedOrders(
+        listItems
+          .filter(item => item.buyable && item.sell_verified)
+          .slice(0, length)
+          .map(item => item.orderID)
+      );
+    }
+  };
+
+  const selectAllOrders = () => {
+    if (listItems && listItems.length > 0) {
+      setSelectedOrders(
+        listItems
+          .filter(item => item.buyable && item.sell_verified)
+          .map(item => item.orderID)
+      );
+    }
+  };
+
+  const removeAllOrders = () => {
+    setSelectedOrders([]);
   };
 
   const fetchProjectDetail = async (): Promise<void> => {
@@ -517,6 +573,12 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       setProjectData,
       listItems,
       setListItems,
+      selectedOrders,
+      removeSelectedOrder,
+      addSelectedOrder,
+      selectOrders,
+      selectAllOrders,
+      removeAllOrders,
       handleFetchNextPage,
       searchToken,
       setSearchToken,
@@ -558,6 +620,12 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
     setProjectData,
     listItems,
     setListItems,
+    selectedOrders,
+    removeSelectedOrder,
+    addSelectedOrder,
+    selectOrders,
+    selectAllOrders,
+    removeAllOrders,
     handleFetchNextPage,
     searchToken,
     setSearchToken,

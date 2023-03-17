@@ -15,9 +15,8 @@ import toast, { LoaderIcon } from 'react-hot-toast';
 import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
-import Text from '@components/Text';
-import { estimateTxFee } from 'generative-sdk';
 import { Loading } from '@components/Loading';
+import FeeRate from '@containers/Profile/FeeRate';
 
 interface IFormValues {
   price: string;
@@ -46,7 +45,15 @@ const ModalBuyListed = React.memo(
     const [orderData, setOrderData] = useState<IRetrieveOrderResp | undefined>(
       undefined
     );
-    const { selectedRate, allRate } = useFeeRate();
+    const {
+      selectedRate,
+      handleChangeFee,
+      allRate,
+      customRate,
+      currentRate,
+      handleChangeCustomRate,
+    } = useFeeRate();
+
     const [isLoading, setLoading] = useState<boolean>(false);
     const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -78,7 +85,7 @@ const ModalBuyListed = React.memo(
       try {
         setIsSubmitting(true);
         await buyInscription({
-          feeRate: allRate[selectedRate],
+          feeRate: currentRate,
           inscriptionNumber: inscriptionNumber,
           price: Number(price),
           receiverInscriptionAddress: values.receiveBTCAddress,
@@ -113,7 +120,7 @@ const ModalBuyListed = React.memo(
     }, []);
 
     return (
-      <BaseModal {...rest}>
+      <BaseModal {...rest} className={s.modal}>
         <div className={s.container}>
           <Formik
             key="buyListedForm"
@@ -164,6 +171,15 @@ const ModalBuyListed = React.memo(
                         <p className={s.inputContainer_inputError}>{error}</p>
                       )}
                     </div>
+                    <FeeRate
+                      handleChangeFee={handleChangeFee}
+                      selectedRate={selectedRate}
+                      allRate={allRate}
+                      handleChangeCustomRate={handleChangeCustomRate}
+                      customRate={customRate}
+                      feeType="buyBTC"
+                      useCustomRate={true}
+                    />
                     <AccordionComponent
                       header="Advanced"
                       content={
@@ -199,25 +215,6 @@ const ModalBuyListed = React.memo(
                         </div>
                       }
                     />
-                    <div className={s.wrapFee_feeRow} style={{ marginTop: 16 }}>
-                      <Text
-                        size="16"
-                        fontWeight="medium"
-                        className={s.wrapFee_leftLabel}
-                      >
-                        Network fees
-                      </Text>
-                      <Text
-                        size="16"
-                        fontWeight="medium"
-                        color="text-secondary-color"
-                      >
-                        {formatBTCPrice(
-                          estimateTxFee(5, 5, allRate?.fastestFee)
-                        )}{' '}
-                        BTC
-                      </Text>
-                    </div>
                     <div>
                       <Loading isLoaded={!isSubmitting} />
                     </div>

@@ -21,8 +21,9 @@ import { Stack, Tab, Tabs } from 'react-bootstrap';
 import { TwitterShareButton } from 'react-share';
 import useAsyncEffect from 'use-async-effect';
 import ActivityStats from '../ActivityStats';
-import TokenTopFilter from '../TokenTopFilter';
+import BuyBottomBar from '../BuyBottomBar';
 import collectionStyles from '../styles.module.scss';
+import TokenTopFilter from '../TokenTopFilter';
 import ListView from './ListView';
 import styles from './ShopLayout.module.scss';
 
@@ -39,6 +40,10 @@ const ShopLayout = (props: Props) => {
   const {
     projectData: projectInfo,
     listItems,
+    marketplaceData,
+    selectedOrders,
+    removeAllOrders,
+    selectAllOrders,
     isLoaded,
     total,
     isNextPageLoaded,
@@ -50,6 +55,23 @@ const ShopLayout = (props: Props) => {
   const [isListLayout, setIsListLayout] = useState(false);
 
   const { mobileScreen } = useWindowSize();
+
+  const onClickItems = () => {
+    selectedOrders.length > 0 ? removeAllOrders() : selectAllOrders();
+  };
+
+  const titleItems =
+    selectedOrders.length > 0
+      ? `${selectedOrders.length}${
+          marketplaceData?.listed
+            ? ` / ${marketplaceData?.listed} Selected`
+            : ''
+        }`
+      : `${
+          marketplaceData?.listed
+            ? `${marketplaceData?.listed} Listed`
+            : 'Items'
+        }`;
 
   const mintedTime = projectInfo?.mintedTime;
   let mintDate = dayjs();
@@ -278,6 +300,19 @@ const ShopLayout = (props: Props) => {
                 <ListView />
               ) : (
                 <div className={styles.projectList}>
+                  <div className={styles.itemsContainer}>
+                    <SvgInset
+                      size={14}
+                      svgUrl={`${CDN_URL}/icons/${
+                        selectedOrders.length > 0
+                          ? 'ic_checkboxed'
+                          : 'ic_checkbox'
+                      }.svg`}
+                      onClick={onClickItems}
+                      className={styles.icCheckbox}
+                    />
+                    <p className={styles.textItems}>{titleItems}</p>
+                  </div>
                   <CollectionList
                     projectInfo={projectInfo}
                     listData={listItems}
@@ -298,6 +333,7 @@ const ShopLayout = (props: Props) => {
           </div>
           {/* </Tab>
           </Tabs> */}
+          <BuyBottomBar />
         </div>
         <div className={`${styles.layout_right}`}>
           <ActivityStats />

@@ -7,11 +7,14 @@ import Text from '@components/Text';
 import React, { PropsWithChildren } from 'react';
 import cs from 'classnames';
 
+type Type = 'normal' | 'expand';
+
 export interface IBaseModalProps {
   isShow: boolean;
   onHide: () => void;
   title: string;
   className?: string;
+  type?: Type;
 }
 
 const BaseModal = (props: PropsWithChildren<IBaseModalProps>): JSX.Element => {
