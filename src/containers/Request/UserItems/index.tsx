@@ -11,6 +11,7 @@ import Image from 'next/image';
 import copy from 'copy-to-clipboard';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+import { Empty } from '@components/Collection/Empty';
 import Button from '@components/Button';
 import { Loading } from '@components/Loading';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
@@ -22,7 +23,6 @@ import { getDaoArtists, voteDaoArtist } from '@services/request';
 import { formatAddress } from '@utils/format';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 
-import NoData from '../NoData';
 import SkeletonItem from '../SkeletonItem';
 import s from './UserItems.module.scss';
 
@@ -32,7 +32,7 @@ interface UserItemsProps {
 
 export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
   const router = useRouter();
-  const { keyword = '', status = '', sort = '', id = '' } = router.query;
+  const { keyword = '', status = '', sort = '', id = '', tab } = router.query;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -57,7 +57,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
 
   useEffect(() => {
     initData();
-  }, [keyword, status, sort]);
+  }, [keyword, status, sort, id, tab]);
 
   const fetchCombineList = async () => {
     try {
@@ -140,7 +140,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
             </div>
 
             {typeof isLoaded && combineList.length === 0 ? (
-              <NoData />
+              <Empty content="No Data Available." />
             ) : (
               <InfiniteScroll
                 dataLength={combineList.length}
