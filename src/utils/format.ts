@@ -135,7 +135,7 @@ export const tokenID = (tokenName: string) => tokenName.split('#')[1];
 export const formatBTCPrice = (
   price: number | string,
   emptyStr?: string,
-  precision = 4
+  precision = 5
 ): string => {
   if (!price) return emptyStr || '-';
   const priceNumb = new BigNumber(price).dividedBy(1e8).toNumber();
