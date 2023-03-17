@@ -4,6 +4,7 @@ import {
   IBuyInsBTCResp,
   IBuyMulInsBTCReq,
   IBuyMulInsBTCResp,
+  IEstimateTxFeeReq,
   ISellInsReq,
   ISellInsResp,
   ISendBTCReq,
@@ -145,12 +146,27 @@ class GenerativeSDK {
         ].message
       );
     }
-
-    // Current assets
-    return currentAssetsBuilder({
+    const currenAssets = currentAssetsBuilder({
       current: assets,
       pending: pendingUTXOs,
     });
+    // Current assets
+    if (!currenAssets) {
+      throw new Error(
+        GENERATIVE_SDK.ERROR_MESSAGE[
+          GENERATIVE_SDK.ERROR_CODE.NOT_ENOUGH_BTC_TO_SEND
+        ].message
+      );
+    }
+    return currenAssets;
+  };
+
+  estimateTxFee = (payload: IEstimateTxFeeReq) => {
+    return GENERATIVE_SDK.estimateTxFee(
+      payload.numIn,
+      payload.numOut,
+      new BigNumber(payload.feeRate).toNumber()
+    );
   };
 }
 

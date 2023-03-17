@@ -77,6 +77,13 @@ interface IBuyMulInsBTCReq {
   feeRate: number;
 }
 
+// Estimate fee
+interface IEstimateTxFeeReq {
+  numIn: number;
+  numOut: number;
+  feeRate: number | string;
+}
+
 export type {
   ISendInsResp,
   ISendInsReq,
@@ -89,4 +96,5 @@ export type {
   IAmountValidatorReq,
   IBuyMulInsBTCResp,
   IBuyMulInsBTCReq,
+  IEstimateTxFeeReq,
 };

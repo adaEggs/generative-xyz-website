@@ -248,8 +248,10 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
     if (!_collectedUTXOs) return setAmount(0);
     setAmount(
       GENERATIVE_SDK.getBTCBalance({
-        utxos: _collectedUTXOs.txrefs,
-        inscriptions: _collectedUTXOs.inscriptions_by_outputs,
+        utxos: SDK.formatUTXOs(_collectedUTXOs.txrefs),
+        inscriptions: SDK.formatInscriptions(
+          _collectedUTXOs.inscriptions_by_outputs
+        ),
       }).toNumber()
     );
   };
@@ -260,10 +262,8 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
   }, [currentAssets]);
 
   const buyMulInscription = async (payload: IBuyMulInsProps) => {
-    if (!inscriptionID) return;
-    const assets = await getAvailableAssetsCreateTx();
     const { privateKey, tpAddress } = await signKey();
-    if (!inscriptionID || !assets) return;
+    const assets = await SDK.getCurrentAssetsForCreateTx(tpAddress);
     const { txID, txHex, splitTxRaw } = await SDK.buyMulInsBTCTransaction({
       privateKey,
       buyInfos: payload.buyInfos,
@@ -275,7 +275,7 @@ const useBitcoin = ({ inscriptionID }: IProps = {}) => {
       txhash: txID,
       address: tpAddress,
       receiver: payload.receiver,
-      inscription_id: inscriptionID,
+      inscription_id: '',
       inscription_number: 0,
       send_amount: payload.price,
       type: TrackTxType.buyInscription,

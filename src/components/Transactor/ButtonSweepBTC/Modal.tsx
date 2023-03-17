@@ -99,37 +99,38 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
       errors.address = 'Invalid wallet address.';
     }
 
-    const isOutBalance = new BigNumber(amount.fee)
-      .plus(amount.amountOrigin)
-      .gt(balance);
-
-    if (isOutBalance) {
-      errors.price =
-        SDK.ERROR_MESSAGE[SDK.ERROR_CODE.NOT_ENOUGH_BTC_TO_SEND].message;
-    }
+    // const isOutBalance = new BigNumber(amount.fee)
+    //   .plus(amount.amountOrigin)
+    //   .gt(balance);
+    //
+    // if (isOutBalance) {
+    //   errors.price =
+    //     SDK.ERROR_MESSAGE[SDK.ERROR_CODE.NOT_ENOUGH_BTC_TO_SEND].message;
+    // }
     return errors;
   };
 
   const handleSubmit = async (values: IFormValues) => {
-    // feeRate: allRate[selectedRate],
-    //     inscriptionNumber: inscriptionNumber,
-    //     price: Number(price),
-    //     receiverInscriptionAddress: values.receiveBTCAddress,
-    //     sellerSignedPsbtB64: orderData.raw_psbt,
+    try {
+      setLoading(true);
+      const buyInfos: SDK.BuyReqInfo[] = buyableTokens.map(token => {
+        return {
+          sellerSignedPsbtB64: ordersData?.raw_psbt_list[token.orderID] || '',
+          receiverInscriptionAddress: values.address,
+          price: new BigNumber(token.priceBTC),
+        };
+      });
 
-    const buyInfos: SDK.BuyReqInfo[] = buyableTokens.map(token => {
-      return {
-        sellerSignedPsbtB64: ordersData?.raw_psbt_list[token.orderID] || '',
-        receiverInscriptionAddress: values.address,
-        price: new BigNumber(token.priceBTC),
-      };
-    });
-    await buyMulInscription({
-      buyInfos: buyInfos,
-      feeRate: currentRate,
-      price: new BigNumber(amount.amountOrigin).toNumber(),
-      receiver: values.address,
-    });
+      await buyMulInscription({
+        buyInfos: buyInfos,
+        feeRate: currentRate,
+        price: new BigNumber(amount.amountOrigin).toNumber(),
+        receiver: values.address,
+      });
+    } catch (e) {
+      setLoading(false);
+      onSetError(e);
+    }
   };
 
   const fetchRetrieves = async () => {
