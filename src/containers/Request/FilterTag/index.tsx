@@ -89,7 +89,9 @@ export const FilterTag = ({ className }: FilterTagProps): JSX.Element => {
         className={s.filterTag_clearBtn}
         onClick={() => {
           router.replace({
-            query: {},
+            query: {
+              tab,
+            },
           });
         }}
       >
