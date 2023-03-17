@@ -178,8 +178,7 @@ const ReferralTab = () => {
         ),
         action: (
           <>
-            {(item?.status === WithdrawStatus.Available ||
-              Number(calculateWithdrawAmount) > 0) && (
+            {item?.status === WithdrawStatus.Available && (
               <div className={s.actions}>
                 <ButtonIcon
                   sizes="small"
