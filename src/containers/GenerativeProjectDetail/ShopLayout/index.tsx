@@ -16,6 +16,7 @@ import { Category } from '@interfaces/category';
 import { getCategoryList } from '@services/category';
 import log from '@utils/logger';
 import dayjs from 'dayjs';
+import { useEffect } from 'react';
 import { useContext, useMemo, useState } from 'react';
 import { Stack, Tab, Tabs } from 'react-bootstrap';
 import { TwitterShareButton } from 'react-share';
@@ -53,6 +54,13 @@ const ShopLayout = (props: Props) => {
 
   const [categoryList, setCategoryList] = useState<Category[]>([]);
   const [isListLayout, setIsListLayout] = useState(false);
+  const [componentDidLoad, setComponentDidLoad] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setComponentDidLoad(true);
+    }, 800);
+  }, []);
 
   const { mobileScreen } = useWindowSize();
 
@@ -270,7 +278,14 @@ const ShopLayout = (props: Props) => {
             </Stack>
           </div>
 
-          <div className={collectionStyles.tokenListWrapper} id="PROJECT_LIST">
+          <div
+            className={
+              componentDidLoad
+                ? styles.tokenLoadListWrapper
+                : styles.tokenListWrapper
+            }
+            id="PROJECT_LIST"
+          >
             <div
               className={`${collectionStyles.tokenList} ${
                 listItems && listItems.length > 0 && styles.spacing
