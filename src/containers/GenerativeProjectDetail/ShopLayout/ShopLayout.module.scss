@@ -326,3 +326,12 @@
 .checkbox > input:active {
   border: 2px solid #34495e;
 }
+
+.tokenListWrapper {
+  position: relative;
+  min-height: rem(584px);
+}
+
+.tokenLoadListWrapper {
+  position: relative;
+}
