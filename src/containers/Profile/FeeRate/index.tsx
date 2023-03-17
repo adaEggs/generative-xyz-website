@@ -9,7 +9,7 @@ import { Col, Row } from 'react-bootstrap';
 import { AssetsContext } from '@contexts/assets-context';
 import BigNumber from 'bignumber.js';
 
-type FeeType = 'normal' | 'buyETH';
+type FeeType = 'normal' | 'buyETH' | 'buyBTC' | 'buyBTCSweep';
 
 interface IProps {
   handleChangeFee: (rate: FeeRateName) => void;
@@ -86,6 +86,9 @@ const FeeRate = ({
         amount = _amount;
         symbol = _symbol;
       }
+    } else if (feeType === 'buyBTC') {
+      amount = formatBTCPrice(SDK.estimateTxFee(5, 5, Number(feeRate)));
+      symbol = 'BTC';
     }
     return {
       amount,
