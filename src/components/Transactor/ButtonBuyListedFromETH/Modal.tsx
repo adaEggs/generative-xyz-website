@@ -104,7 +104,7 @@ const ModalBuyListed = React.memo(
       return errors;
     };
 
-    const handleSubmit = async (_: IFormValues) => {
+    const handleSubmit = async (depositData: IRespGenAddressByETH) => {
       if (!depositData) throw new Error('Estimate error.');
       try {
         setIsSent(false);
@@ -359,7 +359,7 @@ const ModalBuyListed = React.memo(
                         });
 
                         if (data && data.order_id) {
-                          handleSubmit(values).then().catch();
+                          handleSubmit(data).then().catch();
                         }
                       }}
                     >
