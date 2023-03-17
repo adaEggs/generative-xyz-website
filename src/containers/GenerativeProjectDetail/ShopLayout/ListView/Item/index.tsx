@@ -114,7 +114,6 @@ const ListViewItem = ({ data }: Props) => {
             className={styles.itemThumbnail}
             src={data?.thumbnail}
             alt={data?.name}
-            onClick={onSelectItem}
           />
           <div className={styles.itemName}>
             <Link href="">

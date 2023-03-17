@@ -315,22 +315,3 @@
 .checkbox > input:active {
   border: 2px solid #34495e;
 }
-
-.table_wrapper,
-.projectList {
-  animation: fade-in linear 1s;
-}
-
-@keyframes fade-in {
-  0% {
-    visibility: hidden;
-  }
-
-  75% {
-    visibility: hidden;
-  }
-
-  100% {
-    visibility: visible;
-  }
-}
