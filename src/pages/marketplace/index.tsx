@@ -1,25 +1,26 @@
-import TradeWrapper from '@containers/Trade';
 import MarketplaceLayout from '@layouts/Marketplace';
 import { NextPage } from 'next';
+import Shop from '@containers/Shop';
 import { CDN_URL } from '@constants/config';
 
-const TradePage: NextPage = () => {
+const ShopPage: NextPage = () => {
   return (
     <MarketplaceLayout>
-      <TradeWrapper />
+      <Shop />
     </MarketplaceLayout>
   );
 };
 
-export default TradePage;
+export default ShopPage;
 
 export async function getServerSideProps() {
   return {
     props: {
       seoInfo: {
         title: 'Generative | Marketplace',
-        description: 'Bitcoin NFTs. Browse. Curate. Purchase.',
-        image: `${CDN_URL}/images/marketplace.jpg`,
+        description:
+          'Buy art on Bitcoin. It’s easy, fast, with zero platform fees.',
+        image: `${CDN_URL}/images/image.jpg`,
       },
     },
   };

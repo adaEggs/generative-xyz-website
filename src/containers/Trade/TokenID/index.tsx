@@ -224,7 +224,7 @@ const TokenID: React.FC = (): React.ReactElement => {
             )}
           </div>
           {/*<Text size="14" color="black-40" className={s.owner}>*/}
-          {/*  Owner: <Link href="/">{formatAddress('122222')}</Link>*/}
+          {/*  Owner: <Link href="/">{formatAddressDisplayName('122222')}</Link>*/}
           {/*</Text>*/}
         </div>
       </div>

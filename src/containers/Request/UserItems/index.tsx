@@ -19,7 +19,7 @@ import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { ROUTE_PATH } from '@constants/route-path';
 import { getDaoArtists, voteDaoArtist } from '@services/request';
-import { formatAddress } from '@utils/format';
+import { formatAddressDisplayName } from '@utils/format';
 import { DEFAULT_USER_AVATAR } from '@constants/common';
 
 import NoData from '../NoData';
@@ -191,7 +191,7 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
                           />
                           <span>
                             {item?.user?.display_name ||
-                              formatAddress(
+                              formatAddressDisplayName(
                                 item?.user?.wallet_address_btc_taproot
                               )}
                           </span>

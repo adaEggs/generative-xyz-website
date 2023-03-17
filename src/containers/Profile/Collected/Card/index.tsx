@@ -169,7 +169,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
           className={s.projectCard_creator_status}
           size={'16'}
           fontWeight="medium"
-          color="black-40"
+          color="black-40-solid"
         >
           {statusWithHistory.status}
         </Text>
@@ -183,7 +183,7 @@ const CollectedCard = ({ project, className }: IPros): JSX.Element => {
               className={s.projectCard_creator_status_underline}
               size={'16'}
               fontWeight="medium"
-              color="black-40"
+              color="black-40-solid"
             >
               {`${project.statusText}...`}
             </Text>
