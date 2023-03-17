@@ -115,6 +115,7 @@ const ModalBuyListed = React.memo(
           new BigNumber(depositData.eth_amount).div(1e18).toString()
         );
         setIsSent(true);
+        toast.success('Bought inscription successfully.');
         setIsSubmitting(false);
       } catch (err: unknown) {
         setIsSubmitting(false);

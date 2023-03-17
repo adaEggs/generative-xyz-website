@@ -130,7 +130,7 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
         price: new BigNumber(amount.amountOrigin).toNumber(),
         receiver: values.address,
       });
-      toast.success('Bought inscription successfully');
+      toast.success('Bought inscriptions successfully');
       setTimeout(() => {
         setLoading(false);
         window.location.reload();

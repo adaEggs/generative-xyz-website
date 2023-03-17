@@ -15,7 +15,7 @@ import {
 import { getError } from '@utils/text';
 import { Token } from '@interfaces/token';
 import ButtonIcon from '@components/ButtonIcon';
-import { LoaderIcon } from 'react-hot-toast';
+import toast, { LoaderIcon } from 'react-hot-toast';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import FeeRate from '@containers/Profile/FeeRate';
 import { WalletContext } from '@contexts/wallet-context';
@@ -124,6 +124,7 @@ const ModalSweepBTC = React.memo(({ tokens, onHide, ...rest }: IProps) => {
         new BigNumber(depositData.eth_amount).div(1e18).toString()
       );
       setIsSent(true);
+      toast.success('Bought inscriptions successfully');
       setIsSubmitting(false);
     } catch (err: unknown) {
       setIsSubmitting(false);
