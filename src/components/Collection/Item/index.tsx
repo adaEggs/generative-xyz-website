@@ -155,7 +155,7 @@ const CollectionItem = ({
       );
     }
     return (
-      <Link href="" onClick={() => window.open(tokenUrl)}>
+      <Link href={tokenUrl}>
         <Heading as={isLayoutShop ? 'p' : 'h4'}>#{text}</Heading>
       </Link>
     );
@@ -256,7 +256,7 @@ const CollectionItem = ({
                   })}
                   direction="horizontal"
                 >
-                  <Link href="" onClick={() => window.open(tokenUrl)}>
+                  <Link href={tokenUrl}>
                     <Heading
                       as={'h4'}
                       className={`token_id ml-auto ${s.textOverflow}}`}

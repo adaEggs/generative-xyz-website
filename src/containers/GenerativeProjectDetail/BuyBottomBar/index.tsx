@@ -9,11 +9,10 @@ const MIN = 0;
 const MAX = 30;
 
 const BuyBottomBar: React.FC = (): React.ReactElement => {
-  const { listItems, selectedOrders, selectOrders } = useContext(
-    GenerativeProjectDetailContext
-  );
+  const { listItems, listItemsBuyable, selectedOrders, selectOrders } =
+    useContext(GenerativeProjectDetailContext);
 
-  const max = selectedOrders.length > MAX ? selectedOrders.length : MAX;
+  const max = listItemsBuyable?.length || MAX;
 
   const changeRange = (values: number[]) => {
     if (values.length > 0) {
@@ -46,31 +45,33 @@ const BuyBottomBar: React.FC = (): React.ReactElement => {
           max={max}
           value={selectedItems.length}
         />
-        <Range
-          onChange={changeRange}
-          min={MIN}
-          max={max}
-          step={1}
-          values={[selectedItems.length]}
-          renderTrack={({ props, children }) => (
-            <div
-              {...props}
-              style={{
-                ...props.style,
-                background: getTrackBackground({
-                  values: [selectedItems.length],
-                  colors: ['#1C1C1C', '#F2F2F2'],
-                  min: MIN,
-                  max: MAX,
-                }),
-              }}
-              className={s.track}
-            >
-              {children}
-            </div>
-          )}
-          renderThumb={({ props }) => <div {...props} className={s.thumb} />}
-        />
+        {listItemsBuyable?.length && (
+          <Range
+            onChange={changeRange}
+            min={MIN}
+            max={max}
+            step={1}
+            values={[selectedItems.length]}
+            renderTrack={({ props, children }) => (
+              <div
+                {...props}
+                style={{
+                  ...props.style,
+                  background: getTrackBackground({
+                    values: [selectedItems.length],
+                    colors: ['#1C1C1C', '#F2F2F2'],
+                    min: MIN,
+                    max: max,
+                  }),
+                }}
+                className={s.track}
+              >
+                {children}
+              </div>
+            )}
+            renderThumb={({ props }) => <div {...props} className={s.thumb} />}
+          />
+        )}
       </div>
     </div>
   );

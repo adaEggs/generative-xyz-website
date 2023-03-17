@@ -3,9 +3,8 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
   height: 66px;
-  border-top: 1px solid #f2f2f2;
+  padding: rem(0) rem(24px);
 
   .leftContainer {
     display: flex;
@@ -32,11 +31,15 @@
 
     .track {
       height: rem(4px);
-      width: 200px;
+      width: 160px;
       border-radius: rem(8px);
 
+      @include mobile {
+        width: 100px;
+      }
+
       @include tablet {
-        width: 160px;
+        width: 120px;
       }
     }
 
