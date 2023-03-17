@@ -510,6 +510,17 @@
   background-color: #ff7e210f;
 }
 
+.daoReview {
+  gap: rem(12);
+  flex-direction: column;
+  align-items: flex-start;
+
+  .reportMsg {
+    margin-top: 0;
+    display: flex;
+  }
+}
+
 .reviewOnMobile {
   margin-top: rem(24px);
   padding: rem(32);
