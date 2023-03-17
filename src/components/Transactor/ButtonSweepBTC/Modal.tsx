@@ -14,11 +14,12 @@ import { useBitcoin } from '@bitcoin/index';
 import { getError } from '@utils/text';
 import { Token } from '@interfaces/token';
 import ButtonIcon from '@components/ButtonIcon';
-import { LoaderIcon } from 'react-hot-toast';
+import toast, { LoaderIcon } from 'react-hot-toast';
 import Text from '@components/Text';
 import * as SDK from 'generative-sdk';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import isEmpty from 'lodash/isEmpty';
+import FeeRate from '@containers/Profile/FeeRate';
 
 interface IFormValues {
   price: string;
@@ -43,7 +44,14 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
     setError(_err.message);
   };
 
-  const { currentRate } = useFeeRate();
+  const {
+    currentRate,
+    selectedRate,
+    handleChangeFee,
+    allRate,
+    customRate,
+    handleChangeCustomRate,
+  } = useFeeRate();
 
   const buyableTokens = React.useMemo(() => {
     if (!ordersData || !isEmpty(ordersData.raw_psbt_list_not_avail)) {
@@ -127,6 +135,12 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
         price: new BigNumber(amount.amountOrigin).toNumber(),
         receiver: values.address,
       });
+      toast.success('Bought inscription successfully');
+      setTimeout(() => {
+        setLoading(false);
+        window.location.reload();
+        setError('');
+      }, 2000);
     } catch (e) {
       setLoading(false);
       onSetError(e);
@@ -152,7 +166,7 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
   }, []);
 
   return (
-    <BaseModal {...rest}>
+    <BaseModal {...rest} className={s.modal}>
       <div className={s.container}>
         <Formik
           key="buyListedForm"
@@ -209,16 +223,28 @@ const ModalSweepBTC = React.memo(({ tokens, ...rest }: IProps) => {
                     fontWeight="medium"
                     className={s.wrapFee_leftLabel}
                   >
-                    Network fees
+                    Quantity
                   </Text>
                   <Text
                     size="16"
                     fontWeight="medium"
                     color="text-secondary-color"
                   >
-                    {amount.feeStr} BTC
+                    {buyableTokens.length} items
                   </Text>
                 </div>
+                <FeeRate
+                  handleChangeFee={handleChangeFee}
+                  selectedRate={selectedRate}
+                  allRate={allRate}
+                  useCustomRate={true}
+                  handleChangeCustomRate={handleChangeCustomRate}
+                  customRate={customRate}
+                  feeType="buyBTCSweep"
+                  options={{
+                    tokens: buyableTokens,
+                  }}
+                />
                 <AccordionComponent
                   header="Advanced"
                   content={
