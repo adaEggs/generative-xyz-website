@@ -22,7 +22,7 @@ import SvgInset from '@components/SvgInset';
 import { CDN_URL } from '@constants/config';
 import { convertIpfsToHttp } from '@utils/image';
 import { IconVerified } from '@components/IconVerified';
-import { formatAddress } from '@utils/format';
+import { formatAddressDisplayName } from '@utils/format';
 
 import SkeletonItem from '../SkeletonItem';
 import s from './CollectionItems.module.scss';
@@ -255,7 +255,7 @@ export const CollectionItems = ({
                               </span>
                             )}
                             {item?.user?.display_name ||
-                              formatAddress(
+                              formatAddressDisplayName(
                                 item?.user?.wallet_address_btc_taproot
                               )}
                           </span>

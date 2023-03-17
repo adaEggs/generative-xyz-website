@@ -7,11 +7,7 @@ import { ROUTE_PATH } from '@constants/route-path';
 import { ProfileContext } from '@contexts/profile-context';
 import { useAppSelector } from '@redux';
 import { getUserSelector } from '@redux/user/selector';
-import {
-  formatAddress,
-  formatAddressDisplayName,
-  formatWebDomain,
-} from '@utils/format';
+import { formatAddressDisplayName, formatWebDomain } from '@utils/format';
 import copy from 'copy-to-clipboard';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -68,7 +64,7 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                       currentUser?.walletAddressBtcTaproot,
                       6
                     ) ||
-                    formatAddress(walletAddress)
+                    formatAddressDisplayName(walletAddress)
                   }
                   className={s.userInfo_content_wrapper_info_name}
                 >
@@ -77,7 +73,7 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                       currentUser?.walletAddressBtcTaproot,
                       6
                     ) ||
-                    formatAddress(walletAddress)}
+                    formatAddressDisplayName(walletAddress)}
                 </Heading>
                 <div className={s.userInfo_content_wrapper_info_icon}>
                   <SocialVerify isTwVerified={isTwVerified} />

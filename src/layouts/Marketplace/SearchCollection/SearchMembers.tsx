@@ -6,7 +6,7 @@ import Link from '@components/Link';
 import Text from '@components/Text';
 import { ROUTE_PATH } from '@constants/route-path';
 import { User } from '@interfaces/user';
-import { formatAddress } from '@utils/format';
+import { formatAddressDisplayName } from '@utils/format';
 
 import { QuickSearchContext } from './index';
 import s from './styles.module.scss';
@@ -56,7 +56,7 @@ export const SearchMembersResult = ({ list }: { list: { artist: User }[] }) => {
           key={`member-${user?.artist?.id || user?.artist?.walletAddress}`}
           memberName={
             user?.artist?.displayName ||
-            formatAddress(user?.artist?.walletAddress)
+            formatAddressDisplayName(user?.artist?.walletAddress)
           }
           avatar={user?.artist?.avatar}
           memberId={user?.artist?.walletAddress}
