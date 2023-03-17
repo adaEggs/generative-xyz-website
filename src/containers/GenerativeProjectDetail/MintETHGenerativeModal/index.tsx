@@ -64,6 +64,7 @@ const MintEthModal: React.FC = () => {
     handleChangeRateType,
     customRate,
     handleChangeCustomRate,
+    minFeeRate,
   } = useMintFeeRate();
 
   const [isSent, setIsSent] = React.useState(false);
@@ -130,6 +131,13 @@ const MintEthModal: React.FC = () => {
     }`,
     '0.0'
   );
+
+  const disableBtnBuy =
+    isLoading ||
+    quantity === 0 ||
+    !currentFee ||
+    (rateType === 'customRate' &&
+      (Number(customRate) < minFeeRate || !isNumeric(customRate)));
 
   const onChangeQuantity = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (limitMint && limitMint >= Number(e.target.value)) {
@@ -523,9 +531,7 @@ const MintEthModal: React.FC = () => {
                               type="submit"
                               sizes="large"
                               className={s.buyBtn}
-                              disabled={
-                                isLoading || quantity === 0 || !currentFee
-                              }
+                              disabled={disableBtnBuy}
                             >
                               Pay
                             </ButtonIcon>
@@ -538,7 +544,7 @@ const MintEthModal: React.FC = () => {
                       <ButtonIcon
                         sizes="large"
                         className={s.buyBtn}
-                        disabled={isLoading || quantity === 0 || !currentFee}
+                        disabled={disableBtnBuy}
                         onClick={onClickPay}
                       >
                         Pay
