@@ -18,6 +18,8 @@ import {
   IRespGenAddressByETH,
   IRetrieveOrderPayload,
   IRetrieveOrderResp,
+  IRetrieveOrdersPayload,
+  IRetrieveOrdersResp,
   ITokenPriceResp,
   ITrackTx,
   ITxHistory,
@@ -298,6 +300,20 @@ export const retrieveOrder = async (
     // throw err;
   }
   return data;
+};
+
+export const retrieveOrders = async (
+  payload: IRetrieveOrdersPayload
+): Promise<IRetrieveOrdersResp | undefined> => {
+  try {
+    return post<IRetrieveOrdersPayload, IRetrieveOrdersResp>(
+      '/dex/retrieve-orders',
+      payload
+    );
+  } catch (err: unknown) {
+    log('failed to get retrieve order', LogLevel.ERROR, LOG_PREFIX);
+    throw err;
+  }
 };
 
 export const submitCancel = async (payload: {

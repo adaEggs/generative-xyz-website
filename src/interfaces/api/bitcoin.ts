@@ -110,6 +110,19 @@ export interface IRetrieveOrderPayload {
   inscriptionID?: string;
 }
 
+export interface IRetrieveOrdersPayload {
+  order_list: string[];
+}
+
+export interface IRetrieveOrdersResp {
+  raw_psbt_list: {
+    [key: string]: string;
+  };
+  raw_psbt_list_not_avail: {
+    [key: string]: string;
+  };
+}
+
 export interface IRetrieveOrderResp {
   raw_psbt: string;
   buyable: boolean;
