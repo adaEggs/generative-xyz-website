@@ -10,6 +10,9 @@ import React from 'react';
 import NFTDisplayBox from '@components/NFTDisplayBox';
 import { formatBTCPrice, formatLongAddress } from '@utils/format';
 import { IGetMarketplaceBtcListItem } from '@interfaces/api/marketplace-btc';
+import usePurchaseStatus from '@hooks/usePurchaseStatus';
+import ButtonBuyListedFromBTC from '@components/Transactor/ButtonBuyListedFromBTC';
+import ButtonBuyListedFromETH from '@components/Transactor/ButtonBuyListedFromETH';
 
 interface IPros {
   project: IGetMarketplaceBtcListItem;
@@ -23,6 +26,13 @@ export const ProjectCardOrd = ({
   index = 0,
 }: IPros): JSX.Element => {
   const { mobileScreen } = useWindowSize();
+  const { isBuyBTC, isBuyETH } = usePurchaseStatus({
+    buyable: project.buyable,
+    priceBTC: project.priceBtc,
+    priceETH: project.priceEth,
+    orderID: project.orderID,
+    isVerified: project.sellVerified,
+  });
   return (
     <div className={`${s.projectCard} ${className}`}>
       <div className={s.projectCard_inner}>
@@ -83,8 +93,21 @@ export const ProjectCardOrd = ({
                   </Heading>
                 )}
               </div>
-              {project?.buyable && (
-                <div className={cs(s.btnBuyNow)}>Buy Now</div>
+              {isBuyBTC && (
+                <ButtonBuyListedFromBTC
+                  inscriptionID={project.inscriptionID}
+                  price={Number(project.priceBtc || 0)}
+                  inscriptionNumber={Number(project.inscriptionNumber || 0)}
+                  orderID={project.orderID}
+                />
+              )}
+              {isBuyETH && (
+                <ButtonBuyListedFromETH
+                  inscriptionID={project.inscriptionID}
+                  price={Number(project.priceEth || 0)}
+                  inscriptionNumber={Number(project.inscriptionNumber || 0)}
+                  orderID={project.orderID}
+                />
               )}
             </div>
           )}

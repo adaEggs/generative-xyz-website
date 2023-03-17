@@ -227,6 +227,7 @@ const ModalBuyListed = React.memo(
                           )} ETH`}</p>
                         </div>
                       )}
+                      {!!error && <p className={s.inputError}>{error}</p>}
                       <div className={s.payment_space} />
                       <FeeRate
                         handleChangeFee={handleChangeFee}
@@ -366,7 +367,6 @@ const ModalBuyListed = React.memo(
                     >
                       Buy now
                     </ButtonIcon>
-                    {error && <p className={s.inputError}>{error}</p>}
                   </form>
                 )}
                 {step === 'deposit' && !!depositData?.order_id && (

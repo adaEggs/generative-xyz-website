@@ -18,6 +18,9 @@ export interface IGetMarketplaceBtcListItem {
   contentType: IMAGE_TYPE;
   contentLength: string;
   owner: string;
+  priceBtc?: string;
+  priceEth?: string;
+  sellVerified?: boolean;
   paymentListingInfo?: {
     btc: {
       paymentAddress: string;

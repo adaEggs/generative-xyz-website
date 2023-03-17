@@ -366,7 +366,7 @@ const ModalSweepBTC = React.memo(({ tokens, onHide, ...rest }: IProps) => {
                   />
                   <ButtonIcon
                     className={s.buttonBuy}
-                    disabled={isLoading || !getOrderIDs().length}
+                    disabled={isLoading || !countItems().length}
                     sizes="medium"
                     type="button"
                     startIcon={isLoading ? <LoaderIcon /> : null}
