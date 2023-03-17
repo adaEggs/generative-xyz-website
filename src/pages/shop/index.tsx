@@ -20,7 +20,7 @@ export async function getServerSideProps() {
         title: 'Generative | Shop',
         description:
           'Buy art on Bitcoin. It’s easy, fast, with zero platform fees.',
-        image: `${CDN_URL}/images/image.jpg`,
+        image: `${CDN_URL}/images/metadata-shop.jpg`,
       },
     },
   };
