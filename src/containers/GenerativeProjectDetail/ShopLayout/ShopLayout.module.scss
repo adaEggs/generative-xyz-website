@@ -7,9 +7,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-bottom: 6px;
   border-bottom: 1px solid $black-5;
-  margin-bottom: 12px;
+  margin-top: rem(20px);
+  padding-bottom: rem(8px);
 }
 
 .icCheckbox {
@@ -103,7 +103,7 @@
     position: absolute;
     left: rem(0);
     right: rem(0);
-    bottom: rem(0);
+    bottom: rem(16px);
     border-top: 1px solid #f2f2f2;
     z-index: 2;
     background: white;
