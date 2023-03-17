@@ -91,26 +91,33 @@ const ListViewItem = ({ data }: Props) => {
 
   return (
     <tr>
-      <td className={styles.checkbox}>
-        <SvgInset
-          size={14}
-          svgUrl={`${CDN_URL}/icons/${
-            isSelectedOrder ? 'ic_checkboxed' : 'ic_checkbox'
-          }.svg`}
-          onClick={onSelectItem}
-        />
+      <td className={styles.checkbox} onClick={onSelectItem}>
+        {isBuyable && (
+          <SvgInset
+            size={14}
+            svgUrl={`${CDN_URL}/icons/${
+              isSelectedOrder ? 'ic_checkboxed' : 'ic_checkbox'
+            }.svg`}
+          />
+        )}
       </td>
       <td>
-        <div className={styles.itemInfo}>
+        <div
+          className={styles.itemInfo}
+          onClick={() => {
+            window.open(
+              `${ROUTE_PATH.GENERATIVE}/${projectID}/${data.tokenID}`
+            );
+          }}
+        >
           <img
             className={styles.itemThumbnail}
             src={data?.thumbnail}
             alt={data?.name}
+            onClick={onSelectItem}
           />
           <div className={styles.itemName}>
-            <Link
-              href={`${ROUTE_PATH.GENERATIVE}/${projectID}/${data.tokenID}`}
-            >
+            <Link href="">
               <Text fontWeight="medium">
                 #{data?.orderInscriptionIndex || data?.inscriptionIndex}
               </Text>
@@ -121,9 +128,15 @@ const ListViewItem = ({ data }: Props) => {
       <td>
         <div className={styles.owners}>
           <Link
-            href={`${ROUTE_PATH.PROFILE}/${
-              data?.owner?.walletAddressBtcTaproot || data?.owner?.walletAddress
-            }`}
+            href=""
+            onClick={() => {
+              window.open(
+                `${ROUTE_PATH.PROFILE}/${
+                  data?.owner?.walletAddressBtcTaproot ||
+                  data?.owner?.walletAddress
+                }`
+              );
+            }}
           >
             <Text fontWeight="medium">
               {formatAddressDisplayName(
