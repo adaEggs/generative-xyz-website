@@ -154,7 +154,11 @@ const CollectionItem = ({
         >{`${data?.orderInscriptionIndex} / ${total}`}</span>
       );
     }
-    return <Heading as={isLayoutShop ? 'p' : 'h4'}>#{text}</Heading>;
+    return (
+      <Link href="" onClick={() => window.open(tokenUrl)}>
+        <Heading as={isLayoutShop ? 'p' : 'h4'}>#{text}</Heading>
+      </Link>
+    );
   };
 
   return (
@@ -252,15 +256,17 @@ const CollectionItem = ({
                   })}
                   direction="horizontal"
                 >
-                  <Heading
-                    as={'h4'}
-                    className={`token_id ml-auto ${s.textOverflow}}`}
-                    style={{
-                      maxWidth: data.stats?.price ? '70%' : '100%',
-                    }}
-                  >
-                    {renderHeadDesc()}
-                  </Heading>
+                  <Link href="" onClick={() => window.open(tokenUrl)}>
+                    <Heading
+                      as={'h4'}
+                      className={`token_id ml-auto ${s.textOverflow}}`}
+                      style={{
+                        maxWidth: data.stats?.price ? '70%' : '100%',
+                      }}
+                    >
+                      {renderHeadDesc()}
+                    </Heading>
+                  </Link>
                   {showCollectionName && data?.project?.name && (
                     <div className={s.collectionCard_info_wrapper_ownerName}>
                       {data?.project?.name}
