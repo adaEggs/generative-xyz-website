@@ -89,6 +89,10 @@ module.exports = withRemoveImports(
           protocol: 'https',
           hostname: '**.generative.xyz',
         },
+        {
+          protocol: 'https',
+          hostname: 'generativeexplorer.com',
+        },
       ],
     },
     sassOptions: {

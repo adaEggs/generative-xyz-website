@@ -21,4 +21,24 @@
     letter-spacing: 0.01em;
     color: #fff;
   }
+
+  &_profileText {
+    margin-bottom: rem(24px);
+    font-weight: 400;
+    font-size: rem(16px);
+    line-height: rem(26px);
+    color: #010101;
+  }
+
+  &_submitBtn {
+    margin-top: rem(32px);
+  }
+
+  &_input {
+    margin-bottom: rem(10px);
+  }
+
+  &_mb24 {
+    margin-bottom: rem(24px);
+  }
 }

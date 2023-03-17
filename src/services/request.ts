@@ -80,9 +80,12 @@ export const voteDaoArtist = async (
   }
 };
 
-export const createDaoArtist = async (): Promise<IPostDaoArtistResponse> => {
+export const createDaoArtist = async (
+  twitter: string,
+  web: string
+): Promise<IPostDaoArtistResponse> => {
   try {
-    return await post(`${API_PATH}artist`, {});
+    return await post(`${API_PATH}artist`, { twitter, web });
   } catch (err: unknown) {
     log(`failed to post dao artist`, LogLevel.ERROR, LOG_PREFIX);
     throw Error('Failed to post dao artist');

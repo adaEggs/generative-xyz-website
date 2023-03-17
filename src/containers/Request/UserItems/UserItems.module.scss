@@ -102,4 +102,11 @@
     align-items: center;
     text-decoration: none;
   }
+
+  &_collectionNum {
+    font-weight: 500;
+    font-size: rem(14px);
+    line-height: rem(22px);
+    color: #5b5b5b;
+  }
 }
