@@ -309,7 +309,7 @@ const ShopLayout = (props: Props) => {
                           : 'ic_checkbox'
                       }.svg`}
                       onClick={onClickItems}
-                      className={styles.checkbox}
+                      className={styles.icCheckbox}
                     />
                     <p className={styles.textItems}>{titleItems}</p>
                   </div>

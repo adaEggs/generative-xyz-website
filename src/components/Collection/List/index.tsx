@@ -116,6 +116,7 @@ const CollectionList = ({
                   key={`collection-item-${item.tokenID}`}
                   data={item}
                   total={projectInfo?.maxSupply}
+                  layout={layout}
                 />
               ))}
             </div>

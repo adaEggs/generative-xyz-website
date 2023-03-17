@@ -43,7 +43,7 @@ const ListView = () => {
       <Table bordered>
         <thead>
           <tr>
-            <th className={'checkbox'}>
+            <th className={styles.checkbox}>
               <SvgInset
                 key=""
                 size={14}

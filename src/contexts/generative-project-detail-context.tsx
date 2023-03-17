@@ -40,7 +40,7 @@ import useAsyncEffect from 'use-async-effect';
 
 const LOG_PREFIX = 'GenerativeProjectDetailContext';
 
-const FETCH_NUM = 20;
+const FETCH_NUM = 30;
 
 export interface IGenerativeProjectDetailContext {
   projectData: Project | null;

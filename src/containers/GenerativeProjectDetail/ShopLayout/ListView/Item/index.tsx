@@ -91,7 +91,7 @@ const ListViewItem = ({ data }: Props) => {
 
   return (
     <tr>
-      <td className="checkbox">
+      <td className={styles.checkbox}>
         <SvgInset
           size={14}
           svgUrl={`${CDN_URL}/icons/${

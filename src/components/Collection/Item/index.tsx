@@ -24,11 +24,13 @@ const CollectionItem = ({
   className,
   showCollectionName,
   total,
+  layout = 'shop',
 }: {
   data: Token;
   className?: string;
   showCollectionName?: boolean;
   total?: string | number;
+  layout?: 'mint' | 'shop';
 }) => {
   const tokenID = data.tokenID;
   const showInscriptionID =
@@ -85,7 +87,7 @@ const CollectionItem = ({
   }, [isWhitelistProject, tokenID, data.project.tokenID]);
 
   const onSelectItem = () => {
-    if (isBuyable) {
+    if (isBuyable && layout === 'shop') {
       isSelectedOrder
         ? removeSelectedOrder(data.orderID)
         : addSelectedOrder(data.orderID);
@@ -172,7 +174,7 @@ const CollectionItem = ({
               thumb === LOGO_MARKETPLACE_URL ? s.isDefault : ''
             }`}
           >
-            {isBuyable && (
+            {isBuyable && layout === 'shop' && (
               <SvgInset
                 className={s.collectionCard_thumb_selectIcon}
                 size={14}
