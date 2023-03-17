@@ -34,14 +34,12 @@ interface IProps {
 
 export const UserInfo = ({ toggle }: IProps): JSX.Element => {
   const user = useAppSelector(getUserSelector);
-  const { isLoadingHistory, history } = useContext(AssetsContext);
+  const { isLoadedHistory } = useContext(AssetsContext);
   const { currentUser } = useContext(ProfileContext);
   const router = useRouter();
   const { walletAddress } = router.query as { walletAddress: string };
 
   const isOwner = currentUser?.id === user?.id;
-  const showHistory =
-    !isLoadingHistory && !!history && !!history.length && isOwner;
 
   const isTwVerified = useMemo(() => {
     return currentUser?.profileSocial?.twitterVerified || false;
@@ -114,7 +112,7 @@ export const UserInfo = ({ toggle }: IProps): JSX.Element => {
                     size={18}
                     svgUrl={`${CDN_URL}/icons/ic-copy.svg`}
                   />
-                  {showHistory && (
+                  {isLoadedHistory && (
                     <SvgInset
                       onClick={toggle}
                       size={18}
