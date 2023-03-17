@@ -63,4 +63,30 @@
       border: 1px solid #cecece;
     }
   }
+
+  @include mobile {
+    flex-wrap: wrap;
+
+    &_search {
+      margin-bottom: rem(12px);
+      width: 100%;
+
+      input {
+        height: rem(32px);
+      }
+    }
+
+    &_status,
+    &_sort {
+      width: 49%;
+    }
+
+    &_select {
+      :global(.select__control) {
+        min-width: auto;
+        height: rem(32px);
+        min-height: rem(32px);
+      }
+    }
+  }
 }

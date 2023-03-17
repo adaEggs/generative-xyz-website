@@ -11,6 +11,8 @@ const useMintFeeRate = () => {
   const [rateType, setRateType] = useState<IFeeRateType>('fastest');
   const [customRate, setCustomRate] = useState<string>('');
 
+  const minFeeRate = 3;
+
   const currentFee = projectFeeRate
     ? rateType === 'customRate' &&
       isNumeric(customRate) &&
@@ -34,12 +36,20 @@ const useMintFeeRate = () => {
 
   const handleChangeCustomRate = (rate: string): void => {
     setCustomRate(rate);
+    if (Number(rate) < minFeeRate) {
+      setCustomRate('');
+    }
     if (projectData) {
-      debounceFetchProjectFeeRate(projectData, Number(rate));
+      debounceFetchProjectFeeRate(
+        projectData,
+        Number(rate) < minFeeRate ? 0 : Number(rate)
+      );
     }
   };
 
   return {
+    minFeeRate,
+
     projectFeeRate,
     currentFee,
 

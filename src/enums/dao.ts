@@ -24,3 +24,8 @@ export enum ProposalStatus {
   Executed = 1,
   Defeated = 2,
 }
+
+export enum ProposalUserStatus {
+  Verifying = 0,
+  Verified = 1,
+}

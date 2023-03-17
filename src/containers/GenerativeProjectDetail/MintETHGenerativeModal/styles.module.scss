@@ -34,7 +34,7 @@
     }
 
     @include min-pc-superWide {
-      width: 918px;
+      width: rem(918px);
     }
   }
 
