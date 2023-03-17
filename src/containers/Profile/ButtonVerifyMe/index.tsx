@@ -16,7 +16,7 @@ const ButtonVerifyMe = ({ className }: IProps) => {
   const [isClickedVerify, setIsClickedVerify] = useState<boolean>(false);
   const submitVerifyMe = async () => {
     toast.remove();
-    const result = await createDaoArtist();
+    const result = await createDaoArtist('', '');
     if (result) {
       toast.success('Submit proposal successfully.');
     } else {
