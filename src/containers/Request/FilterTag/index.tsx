@@ -75,8 +75,8 @@ export const FilterTag = ({ className }: FilterTagProps): JSX.Element => {
     },
     [keyword, status, sort, id]
   );
-
-  if ([keyword, status, sort, id].filter(item => item).length < 2) return <></>;
+  const filterList = [keyword, status, sort, id].filter(item => item);
+  if (filterList?.length < 1) return <></>;
 
   return (
     <div className={cn(s.filterTag, className)}>
@@ -86,7 +86,10 @@ export const FilterTag = ({ className }: FilterTagProps): JSX.Element => {
       {/* default alway sort by newest so don't need to show it */}
       {sort && sort != SORT_OPTIONS[0]?.value && <>{Tag('sort', sort)}</>}
       <Button
-        className={s.filterTag_clearBtn}
+        className={cn(
+          s.filterTag_clearBtn,
+          filterList?.length === 1 && sort == SORT_OPTIONS[0]?.value && 'd-none'
+        )}
         onClick={() => {
           router.replace({
             query: {
