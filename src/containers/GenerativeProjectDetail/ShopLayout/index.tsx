@@ -284,12 +284,14 @@ const ShopLayout = (props: Props) => {
                     isLoaded={isLoaded}
                     layout="shop"
                   />
-                  <TriggerLoad
-                    len={listItems?.length || 0}
-                    total={total || 0}
-                    isLoaded={isNextPageLoaded}
-                    onEnter={handleFetchNextPage}
-                  />
+                  {listItems && listItems.length < total && (
+                    <TriggerLoad
+                      len={listItems.length}
+                      total={total || 0}
+                      isLoaded={isNextPageLoaded}
+                      onEnter={handleFetchNextPage}
+                    />
+                  )}
                 </div>
               )}
             </div>

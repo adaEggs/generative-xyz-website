@@ -100,7 +100,7 @@ const CollectionList = ({
           {!isLoaded && (
             <>
               <CollectionListLoading
-                numOfItems={6}
+                numOfItems={8}
                 showFilter={hasTraitAtrribute}
               />
             </>
