@@ -83,7 +83,7 @@ export const MENU_HEADER = [
   },
   {
     id: 'menu-14',
-    name: 'Dao',
+    name: 'DAO',
     route: ROUTE_PATH.DAO,
     activePath: 'dao',
   },

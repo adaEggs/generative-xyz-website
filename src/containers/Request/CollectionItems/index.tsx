@@ -11,6 +11,7 @@ import { toast } from 'react-hot-toast';
 import copy from 'copy-to-clipboard';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
+import { Empty } from '@components/Collection/Empty';
 import Button from '@components/Button';
 import { Loading } from '@components/Loading';
 import { LIMIT_PER_PAGE as LIMIT } from '@constants/dao';
@@ -23,7 +24,6 @@ import { convertIpfsToHttp } from '@utils/image';
 import { IconVerified } from '@components/IconVerified';
 import { formatAddress } from '@utils/format';
 
-import NoData from '../NoData';
 import SkeletonItem from '../SkeletonItem';
 import s from './CollectionItems.module.scss';
 
@@ -35,7 +35,7 @@ export const CollectionItems = ({
   className,
 }: CollectionItemsProps): JSX.Element => {
   const router = useRouter();
-  const { keyword = '', status = '', sort = '', id = '' } = router.query;
+  const { keyword = '', status = '', sort = '', id = '', tab } = router.query;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -60,7 +60,7 @@ export const CollectionItems = ({
 
   useEffect(() => {
     initData();
-  }, [keyword, status, sort]);
+  }, [keyword, status, sort, id, tab]);
 
   const fetchCombineList = async () => {
     try {
@@ -176,7 +176,7 @@ export const CollectionItems = ({
             </div>
 
             {typeof isLoaded && combineList.length === 0 ? (
-              <NoData />
+              <Empty content="No Data Available." />
             ) : (
               <InfiniteScroll
                 dataLength={combineList.length}
