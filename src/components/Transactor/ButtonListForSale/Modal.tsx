@@ -16,11 +16,7 @@ import { ErrorMessage } from '@enums/error-message';
 import { IListingFee } from '@interfaces/api/marketplace-btc';
 import Text from '@components/Text';
 import cs from 'classnames';
-import {
-  convertToSatoshiNumber,
-  formatBTCOriginalPrice,
-  formatBTCPrice,
-} from '@utils/format';
+import { convertToSatoshiNumber, formatBTCPrice } from '@utils/format';
 import { useBitcoin } from '@bitcoin/index';
 import useFeeRate from '@containers/Profile/FeeRate/useFeeRate';
 import { getError } from '@utils/text';
@@ -122,11 +118,15 @@ const ModalListForSale = React.memo(
             .dividedBy(listingFee?.royaltyFee)
             .toNumber();
           errors.price = `The minimum amount required is ${formatBTCPrice(
-            minAmount
+            minAmount,
+            '0.0',
+            6
           )} BTC.`;
         } else if (amountSeller < MinSats) {
           errors.price = `The minimum amount required is ${formatBTCPrice(
-            MinSats
+            MinSats,
+            '0.0',
+            6
           )} BTC.`;
         }
       }
@@ -188,7 +188,7 @@ const ModalListForSale = React.memo(
       const isZero = fee.lte(0);
       const text = isZero
         ? 'FREE'
-        : formatBTCOriginalPrice(Math.floor(fee.toNumber())) + ' BTC';
+        : formatBTCPrice(Math.floor(fee.toNumber()), '0.0', 6) + ' BTC';
 
       return (
         <div className={cs(s.wrapInfo_feeRow)}>
