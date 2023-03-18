@@ -118,11 +118,15 @@ const ModalListForSale = React.memo(
             .dividedBy(listingFee?.royaltyFee)
             .toNumber();
           errors.price = `The minimum amount required is ${formatBTCPrice(
-            minAmount
+            minAmount,
+            '0.0',
+            6
           )} BTC.`;
         } else if (amountSeller < MinSats) {
           errors.price = `The minimum amount required is ${formatBTCPrice(
-            MinSats
+            MinSats,
+            '0.0',
+            6
           )} BTC.`;
         }
       }
@@ -184,7 +188,7 @@ const ModalListForSale = React.memo(
       const isZero = fee.lte(0);
       const text = isZero
         ? 'FREE'
-        : formatBTCPrice(Math.floor(fee.toNumber())) + ' BTC';
+        : formatBTCPrice(Math.floor(fee.toNumber()), '0.0', 6) + ' BTC';
 
       return (
         <div className={cs(s.wrapFee_feeRow)}>
