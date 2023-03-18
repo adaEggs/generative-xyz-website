@@ -98,12 +98,12 @@ const CollectionList = ({
 
         <div className="position-relative">
           {!isLoaded && (
-            <>
+            <div className={s.loading}>
               <CollectionListLoading
-                numOfItems={8}
+                numOfItems={12}
                 showFilter={hasTraitAtrribute}
               />
-            </>
+            </div>
           )}
 
           {isLoaded && (

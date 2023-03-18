@@ -335,7 +335,7 @@ const ShopLayout = (props: Props) => {
                     isLoaded={isLoaded}
                     layout="shop"
                   />
-                  {listItems && listItems.length < total && (
+                  {isLoaded && listItems && listItems.length < total && (
                     <TriggerLoad
                       len={listItems.length}
                       total={total || 0}
