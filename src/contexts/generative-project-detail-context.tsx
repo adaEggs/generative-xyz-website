@@ -554,6 +554,7 @@ export const GenerativeProjectDetailProvider: React.FC<PropsWithChildren> = ({
       });
       setMarketplaceData(data);
     }
+    setFilterTraits('');
   }, [projectData]);
 
   const isBitcoinProject = useMemo((): boolean => {
