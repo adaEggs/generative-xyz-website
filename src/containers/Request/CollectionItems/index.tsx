@@ -36,7 +36,7 @@ export const CollectionItems = ({
 }: CollectionItemsProps): JSX.Element => {
   const router = useRouter();
   const { keyword = '', status = '', sort = '', id = '', tab } = router.query;
-  let timeoutId = -1 as any;
+  let timeoutId = -1;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -61,11 +61,11 @@ export const CollectionItems = ({
 
   useEffect(() => {
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
+    timeoutId = window.setTimeout(() => {
       initData();
-    }, 200);
+    }, 300);
     return () => clearTimeout(timeoutId);
-  }, [keyword, status, sort, id, tab]);
+  }, [keyword, status, sort, id, tab, timeoutId]);
 
   const fetchCombineList = async () => {
     try {

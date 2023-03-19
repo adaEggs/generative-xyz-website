@@ -33,7 +33,7 @@ interface UserItemsProps {
 export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
   const router = useRouter();
   const { keyword = '', status = '', sort = '', id = '', tab } = router.query;
-  let timeoutId = -1 as any;
+  let timeoutId = -1;
 
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -58,11 +58,11 @@ export const UserItems = ({ className }: UserItemsProps): JSX.Element => {
 
   useEffect(() => {
     clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => {
+    timeoutId = window.setTimeout(() => {
       initData();
-    }, 200);
+    }, 300); // don't need call many times
     return () => clearTimeout(timeoutId);
-  }, [keyword, status, sort, id, tab]);
+  }, [keyword, status, sort, id, tab, timeoutId]);
 
   const fetchCombineList = async () => {
     try {
