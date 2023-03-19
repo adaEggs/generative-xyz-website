@@ -114,10 +114,11 @@ const SearchCollection = ({ theme = 'light' }: { theme: 'light' | 'dark' }) => {
     });
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleKeyDownSearch = async (event: any): Promise<void> => {
+  const handleKeyDownSearch = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ): Promise<void> => {
     if (event?.key === 'Enter') {
-      goToSearchPage(event?.target?.value);
+      goToSearchPage((event?.target as HTMLInputElement)?.value);
       handleCloseSearchResult();
     }
   };
